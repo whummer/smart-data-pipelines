@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--suppress UnparsedCustomBeanInspection -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:metrics="http://www.ryantenney.com/schema/metrics"
+       xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+       xmlns:repo="http://www.springframework.org/schema/data/repository"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.ryantenney.com/schema/metrics http://www.ryantenney.com/schema/metrics/metrics-3.0.xsd
+        http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/data/repository http://www.springframework.org/schema/data/repository/spring-repository.xsd">
+
+    <import resource="cxf-config.xml"/>
+
+    <context:component-scan base-package="com.viotualize"/>
+
+
+    <beans profile="TEST">
+        <context:property-placeholder ignore-resource-not-found="false"
+                                      ignore-unresolvable="false"
+                                      location="classpath*:viotualize-api.properties"/>
+    </beans>
+
+    <beans profile="PRODUCTION">
+        <context:property-placeholder ignore-resource-not-found="false"
+                                      ignore-unresolvable="false"
+                                      location="file:///${VIOTUALIZE_CONFIG_DIR}/viotualize-api.properties"/>
+    </beans>
+
+
+    <beans profile="JVM-METRICS">
+        <metrics:metric-registry id="metrics"/>
+        <metrics:annotation-driven metric-registry="metrics"/>
+        <metrics:reporter type="slf4j" metric-registry="metrics" marker="METRIC" period="1m"/>
+        <!-- <metrics:reporter type="ganglia" metric-registry="metrics" group="localhost" port="8649" ttl="200"
+                           rate-unit="SECONDS" duration-unit="MILLISECONDS" udp-mode="MULTICAST" period="30s"/>-->
+        <metrics:register metric-registry="metrics">
+            <bean metrics:name="jvm.gc" class="com.codahale.metrics.jvm.GarbageCollectorMetricSet"/>
+            <bean metrics:name="jvm.memory" class="com.codahale.metrics.jvm.MemoryUsageGaugeSet"/>
+            <bean metrics:name="jvm.thread-states" class="com.codahale.metrics.jvm.ThreadStatesGaugeSet"/>
+            <bean metrics:name="jvm.fd.usage" class="com.codahale.metrics.jvm.FileDescriptorRatioGauge"/>
+        </metrics:register>
+    </beans>
+
+    <beans profile="MONGODB">
+        <mongo:mongo id="mongo" host="localhost" port="27017"/>
+        <mongo:db-factory id="mongoDbFactory" dbname="viotualize" host="127.0.0.1" mongo-ref="mongo"/>
+        <mongo:mapping-converter id="converter"/>
+
+        <mongo:repositories base-package="com.viotualize.core.repositories">
+            <repo:exclude-filter type="regex" expression="com\.viotualize\.core\.repositories\.BaseObjectRepository"/>
+        </mongo:repositories>
+
+
+        <bean id="gridFsTemplate" class="org.springframework.data.mongodb.gridfs.GridFsTemplate">
+            <constructor-arg ref="mongoDbFactory"/>
+            <constructor-arg ref="converter"/>
+        </bean>
+
+        <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+            <constructor-arg ref="mongoDbFactory"/>
+            <constructor-arg ref="converter"/>
+        </bean>
+    </beans>
+
+
+</beans>
