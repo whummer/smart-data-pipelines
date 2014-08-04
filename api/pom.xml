@@ -16,10 +16,6 @@
         <module>viotualize-data</module>
     </modules>
 
-    <!-- <scm>
-         <developerConnection>scm:svn:https://webduxv91.bon.at/svn/sandbox/Asmp/A1AppsHoster/trunk</developerConnection>
-     </scm>-->
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <cxf.version>3.0.1</cxf.version>
