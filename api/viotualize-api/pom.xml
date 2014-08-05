@@ -115,9 +115,16 @@
                 <artifactId>tomcat7-maven-plugin</artifactId>
                 <groupId>org.apache.tomcat.maven</groupId>
                 <version>2.1</version>
+                <configuration>
+                    <path>/</path>
+                    <systemProperties>
+                        <spring.profiles.active>TEST,JVM-METRICS,MONGODB</spring.profiles.active>
+                        <DVIOTUALIZE_LOG_DIR>/var/opt/tmp</DVIOTUALIZE_LOG_DIR>
+                    </systemProperties>
+                </configuration>
                 <executions>
                     <execution>
-                        <id>tomcat-run</id>
+                        <id>package-tomcat</id>
                         <goals>
                             <goal>exec-war-only</goal>
                         </goals>
