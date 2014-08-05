@@ -8,10 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.UUID;
-
-import static org.junit.Assert.assertFalse;
-
 /**
  * @author omoser
  */
@@ -30,7 +26,7 @@ public class DeviceTest {
 
     @Before
     public void setup() {
-        deviceTestFixture.prepareDeviceTestData();
+        //deviceTestFixture.prepareDeviceTestData();
     }
 
     @Test
