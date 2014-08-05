@@ -19,11 +19,6 @@
         <load-on-startup>-1</load-on-startup>
     </servlet>
 
-    <!--<servlet>
-        <servlet-name>Health</servlet-name>
-        <servlet-class>at.a1telekom.asmp.appshoster.health.SimpleHealthServlet</servlet-class>
-    </servlet>-->
-
     <servlet>
         <description>Apache CXF Endpoint</description>
         <display-name>cxf</display-name>
@@ -41,10 +36,5 @@
         <servlet-name>Metrics</servlet-name>
         <url-pattern>/metrics</url-pattern>
     </servlet-mapping>
-
-   <!-- <servlet-mapping>
-        <servlet-name>Health</servlet-name>
-        <url-pattern>/health</url-pattern>
-    </servlet-mapping>-->
 
 </web-app>
