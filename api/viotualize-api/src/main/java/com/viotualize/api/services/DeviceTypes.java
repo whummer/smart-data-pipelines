@@ -20,6 +20,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
+import java.net.URI;
 import java.util.List;
 
 /**
@@ -83,7 +84,9 @@ public class DeviceTypes {
     @ExceptionMetered
     public Response create(DeviceType deviceType) {
         deviceType = deviceTypeCommand.create(deviceType);
-        return Response.created(UriBuilder.fromMethod(DeviceTypes.class, "retrieve").build(deviceType.getId())).build();
+        //String location = UriBuilder.fromMethod(DeviceTypes.class, "retrieve"); // todo check why this is not working
+        URI location = UriBuilder.fromPath("/device-types/{id}").build(deviceType.getId());
+        return Response.created(location).build();
     }
 
     @PUT
