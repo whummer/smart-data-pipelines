@@ -33,6 +33,7 @@ public class DeviceTypeTest {
     @Autowired
     DeviceTypeTestFixture fixture;
 
+
     @Before
     public void setUp() {
         fixture.prepareDeviceTypes();

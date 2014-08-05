@@ -28,7 +28,12 @@ public class DeviceTypeTestFixture {
 
     List<DeviceType> containers = new ArrayList<>();
 
+    private boolean initialized;
+
     public void prepareDeviceTypes() {
+        if (initialized) {
+            return;
+        }
         DB database = mongo.getDB("viotualize");
         DBCollection deviceTypes = database.getCollection("device_types");
         deviceTypes.drop();
@@ -92,5 +97,7 @@ public class DeviceTypeTestFixture {
         repository.save(raspiBPlus);
 
         this.containers.add(raspiBPlus);
+
+        initialized = true;
     }
 }
