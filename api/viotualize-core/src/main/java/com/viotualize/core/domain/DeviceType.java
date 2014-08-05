@@ -1,5 +1,6 @@
 package com.viotualize.core.domain;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -17,7 +18,12 @@ public class DeviceType extends SmartObject<DeviceType> {
 
     private Type type;
 
-    protected DeviceType(String name) {
+    @JsonCreator
+    public DeviceType() {
+        super();
+    }
+
+    public DeviceType(String name) {
         super(name);
     }
 
@@ -41,5 +47,27 @@ public class DeviceType extends SmartObject<DeviceType> {
 
     public Manufacturer getManufacturer() {
         return manufacturer;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof DeviceType)) return false;
+        if (!super.equals(o)) return false;
+
+        DeviceType that = (DeviceType) o;
+
+        if (manufacturer != null ? !manufacturer.equals(that.manufacturer) : that.manufacturer != null) return false;
+        if (type != that.type) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (manufacturer != null ? manufacturer.hashCode() : 0);
+        result = 31 * result + (type != null ? type.hashCode() : 0);
+        return result;
     }
 }

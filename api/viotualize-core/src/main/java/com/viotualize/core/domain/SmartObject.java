@@ -15,7 +15,11 @@ public abstract class SmartObject<T> extends BaseObject<T> {
     @DBRef
     Set<T> children = new HashSet<>();
 
-    protected SmartObject(String name) {
+    public SmartObject() {
+        super();
+    }
+
+    public SmartObject(String name) {
         super(name);
     }
 
