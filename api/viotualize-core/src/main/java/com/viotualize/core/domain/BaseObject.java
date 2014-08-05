@@ -1,11 +1,9 @@
 package com.viotualize.core.domain;
 
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
-
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.springframework.data.annotation.Id;
 
 /**
  * @author omoser
@@ -22,15 +20,15 @@ public abstract class BaseObject<T> {
 
     Map<String, String> properties = new HashMap<>();
 
-    @CreatedDate
-    Date created;
-
-    public BaseObject() {
-    }
-
+    /**
+     * Default c'tor.
+     */
+    public BaseObject() { }
+    /**
+     * C'tor with name.
+     */
     public BaseObject(String name) {
         this.name = name;
-        created = new Date();
     }
 
     public String getId() {
@@ -72,21 +70,8 @@ public abstract class BaseObject<T> {
         return properties;
     }
 
-    public Date getCreated() {
-        return created;
-    }
-
-    public T withCreated(final Date created) {
-        this.created = created;
-        return (T) this;
-    }
-
     public void setProperties(Map<String, String> properties) {
         this.properties = properties;
-    }
-
-    public void setCreated(Date created) {
-        this.created = created;
     }
 
     @Override
@@ -94,9 +79,8 @@ public abstract class BaseObject<T> {
         if (this == o) return true;
         if (!(o instanceof BaseObject)) return false;
 
-        BaseObject that = (BaseObject) o;
+        BaseObject<T> that = (BaseObject<T>) o;
 
-        if (created != null ? !created.equals(that.created) : that.created != null) return false;
         if (description != null ? !description.equals(that.description) : that.description != null) return false;
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
@@ -109,7 +93,6 @@ public abstract class BaseObject<T> {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (description != null ? description.hashCode() : 0);
-        result = 31 * result + (created != null ? created.hashCode() : 0);
         return result;
     }
 }

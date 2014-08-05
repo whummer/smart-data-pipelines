@@ -1,18 +1,17 @@
 package com.viotualize.core.domain;
 
-import com.mongodb.Mongo;
-import com.viotualize.core.repositories.DeviceRepository;
-import com.viotualize.core.repositories.DeviceTypeRepository;
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import static org.junit.Assert.assertFalse;
 
 import java.util.Random;
 import java.util.UUID;
 
-import static org.junit.Assert.assertFalse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import com.mongodb.Mongo;
+import com.viotualize.core.repositories.DeviceRepository;
+import com.viotualize.core.repositories.DeviceTypeRepository;
 
 /**
  * @author omoser

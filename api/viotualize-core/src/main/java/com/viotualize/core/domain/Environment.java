@@ -8,8 +8,8 @@ import java.util.Set;
 /**
  * @author omoser
  */
-@Document(collection = "environments")
-public class Environment extends BaseObject<Environment> {
+@Document(collection = Constants.COLL_ENVIRONMENTS)
+public class Environment extends BaseObjectCreated<Environment> {
 
     private Set<Device> devices = new HashSet<>();
 

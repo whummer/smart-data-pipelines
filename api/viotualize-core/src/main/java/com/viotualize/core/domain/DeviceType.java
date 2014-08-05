@@ -1,6 +1,7 @@
 package com.viotualize.core.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -8,8 +9,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * @author omoser
  */
 
-@Document(collection = "device_types")
-public class DeviceType extends SmartObject<DeviceType> {
+@Document(collection = Constants.COLL_DEVICE_TYPES)
+public class DeviceType extends AssetType<DeviceType> {
 
     public enum Type {CONTAINER, SENSOR, ACTUATOR}
 

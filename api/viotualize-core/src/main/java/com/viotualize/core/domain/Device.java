@@ -1,26 +1,20 @@
 package com.viotualize.core.domain;
 
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * @author omoser
  */
 
-@Document(collection = "devices")
-public class Device extends SmartObject<Device> {
-
-    @DBRef
-    private DeviceType deviceType;
-
-    private double[] location;
+@Document(collection = Constants.COLL_DEVICES)
+public class Device extends Asset<Device,DeviceType> {
 
     protected Device(String name) {
         super(name);
     }
 
     public Device withDeviceType(final DeviceType deviceType) {
-        this.deviceType = deviceType;
+        this.assetType = deviceType;
         return this;
     }
 
@@ -34,11 +28,7 @@ public class Device extends SmartObject<Device> {
     }
 
     public DeviceType getDeviceType() {
-        return deviceType;
-    }
-
-    public void setDeviceType(DeviceType deviceType) {
-        this.deviceType = deviceType;
+        return assetType;
     }
 
     @Override

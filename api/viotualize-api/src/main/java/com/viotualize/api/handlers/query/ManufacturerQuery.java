@@ -30,7 +30,8 @@ public class ManufacturerQuery {
 
     // todo implement query
     public List<Manufacturer> query(String query, Paged paged) {
-        List<Manufacturer> manufacturers = manufacturerRepository.findAll(new PageRequest(paged.getPage(), paged.getSize())).getContent();
+        List<Manufacturer> manufacturers = manufacturerRepository.findAll(
+        		new PageRequest(paged.getPage(), paged.getSize())).getContent();
         if (manufacturers.isEmpty()) {
             throw new NotFoundException("No Manufacturers found");
         }

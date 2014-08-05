@@ -2,6 +2,7 @@ package com.viotualize.core.domain;
 
 import com.mongodb.Mongo;
 import com.viotualize.core.repositories.DeviceTypeRepository;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,7 +53,7 @@ public class DeviceTypeTest {
 
         assertEquals("512MB RAM, new GPIO, microSD", raspiBPlus.getDescription());
         assertEquals(DeviceType.Type.CONTAINER, raspiBPlus.getType());
-        Set<DeviceType> childDevices = raspiBPlus.getChildren();
+		Set<DeviceType> childDevices = (Set<DeviceType>)raspiBPlus.getChildren();
         assertNotNull(childDevices);
         assertFalse(childDevices.isEmpty());
     }

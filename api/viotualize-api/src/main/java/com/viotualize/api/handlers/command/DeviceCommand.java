@@ -1,14 +1,13 @@
 package com.viotualize.api.handlers.command;
 
-import com.viotualize.core.domain.Device;
-import com.viotualize.core.domain.DeviceType;
-import com.viotualize.core.logging.Markers;
-import com.viotualize.core.repositories.DeviceRepository;
-import com.viotualize.core.repositories.DeviceTypeRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.viotualize.core.domain.Device;
+import com.viotualize.core.logging.Markers;
+import com.viotualize.core.repositories.DeviceRepository;
 
 /**
  * @author omoser
