@@ -7,14 +7,21 @@ import org.springframework.data.mongodb.core.mapping.Document;
  */
 
 @Document(collection = Constants.COLL_DEVICES)
-public class Device extends Asset<Device,DeviceType> {
+public class Device extends CompositeObject<Device> {
 
-    protected Device(String name) {
+    double[] location;
+
+    DeviceType deviceType;
+
+    public Device() {
+        super();
+    }
+
+    public Device(String name) {
         super(name);
     }
 
     public Device withDeviceType(final DeviceType deviceType) {
-        this.assetType = deviceType;
         return this;
     }
 
@@ -28,7 +35,7 @@ public class Device extends Asset<Device,DeviceType> {
     }
 
     public DeviceType getDeviceType() {
-        return assetType;
+        return deviceType;
     }
 
     @Override

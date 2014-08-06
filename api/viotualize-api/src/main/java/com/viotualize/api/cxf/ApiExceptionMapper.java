@@ -1,19 +1,12 @@
 package com.viotualize.api.cxf;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.viotualize.api.docs.DocumentationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
-
-import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static javax.ws.rs.core.Response.Status.CONFLICT;
-import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 
 /**
  * @author omoser
@@ -52,7 +45,7 @@ public class ApiExceptionMapper implements ExceptionMapper<Exception> {
         return Response.serverError().entity("Internal Error").build();
     }
 
-    class ErrorResponse {
+    /*class ErrorResponse {
 
         private int code;
 
@@ -91,5 +84,5 @@ public class ApiExceptionMapper implements ExceptionMapper<Exception> {
         }
 
 
-    }
+    }*/
 }

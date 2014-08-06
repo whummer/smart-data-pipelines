@@ -9,6 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>viotualize-api</artifactId>
+    <name>viotualize-api</name>
     <packaging>war</packaging>
 
     <dependencies>
@@ -48,10 +49,16 @@
             <artifactId>jackson-jaxrs-json-provider</artifactId>
             <version>${jackson.version}</version>
         </dependency>
+
+
+        <!-- Spring Boot dependencies -->
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-            <version>${jackson.version}</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
         <!-- API documentation via Swagger -->
@@ -73,40 +80,6 @@
             <artifactId>swagger-core_2.10</artifactId>
             <version>${swagger.version}</version>
         </dependency>
-
-        <!-- application insight -->
-        <dependency>
-            <groupId>com.codahale.metrics</groupId>
-            <artifactId>metrics-core</artifactId>
-            <version>${metrics.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.codahale.metrics</groupId>
-            <artifactId>metrics-jvm</artifactId>
-            <version>${metrics.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.codahale.metrics</groupId>
-            <artifactId>metrics-ganglia</artifactId>
-            <version>${metrics.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.codahale.metrics</groupId>
-            <artifactId>metrics-servlets</artifactId>
-            <version>${metrics.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.ryantenney.metrics</groupId>
-            <artifactId>metrics-spring</artifactId>
-            <version>3.0.0</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-beans</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
 
         <!-- TEST dependencies -->
         <dependency>
@@ -136,46 +109,12 @@
     </dependencies>
 
     <build>
-
         <plugins>
             <plugin>
-                <artifactId>tomcat7-maven-plugin</artifactId>
-                <groupId>org.apache.tomcat.maven</groupId>
-                <version>2.1</version>
-                <configuration>
-                    <path>/</path>
-                    <systemProperties>
-                        <spring.profiles.active>TEST,JVM-METRICS,MONGODB</spring.profiles.active>
-                        <DVIOTUALIZE_LOG_DIR>/var/opt/tmp</DVIOTUALIZE_LOG_DIR>
-                    </systemProperties>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>package-tomcat</id>
-                        <goals>
-                            <goal>exec-war-only</goal>
-                        </goals>
-                        <phase>package</phase>
-                        <configuration>
-                            <path>/</path>
-                            <enableNaming>false</enableNaming>
-                            <finalName>viotualize-api.jar</finalName>
-                            <warRunDependencies>
-                                <warRunDependency>
-                                    <dependency>
-                                        <groupId>${project.groupId}</groupId>
-                                        <artifactId>${project.artifactId}</artifactId>
-                                        <version>${project.version}</version>
-                                        <type>war</type>
-                                    </dependency>
-                                </warRunDependency>
-                            </warRunDependencies>
-                        </configuration>
-                    </execution>
-                </executions>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
         </plugins>
-
     </build>
 
 </project>

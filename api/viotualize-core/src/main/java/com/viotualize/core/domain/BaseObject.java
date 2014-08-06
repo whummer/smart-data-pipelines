@@ -95,4 +95,10 @@ public abstract class BaseObject<T> {
         result = 31 * result + (description != null ? description.hashCode() : 0);
         return result;
     }
+
+
+    // om: needed for unit tests
+    public void setId(String id) {
+        this.id = id;
+    }
 }

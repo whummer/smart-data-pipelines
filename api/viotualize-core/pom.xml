@@ -19,27 +19,15 @@
             <version>${spring-data-mongodb.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-            <version>2.4.1</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-mongodb</artifactId>
+            <version>1.1.5.BUILD-SNAPSHOT</version>
         </dependency>
         <dependency>
-			<groupId>javax.enterprise</groupId>
-			<artifactId>cdi-api</artifactId>
-			<version>1.2</version>
-		</dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
     </dependencies>
-
-    <repositories>
-        <repository>
-            <id>spring-snapshots</id>
-            <name>Spring Snapshots</name>
-            <url>http://repo.spring.io/snapshot</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
 
 </project>

@@ -9,7 +9,7 @@ import java.util.Set;
  * @author omoser
  */
 @Document(collection = Constants.COLL_ENVIRONMENTS)
-public class Environment extends BaseObjectCreated<Environment> {
+public class Environment extends BaseObject<Environment> {
 
     private Set<Device> devices = new HashSet<>();
 

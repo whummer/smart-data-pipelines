@@ -4,20 +4,10 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
          version="2.5">
 
-    <context-param>
+   <!-- <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>classpath*:viotualize-api.xml</param-value>
-    </context-param>
-
-    <listener>
-        <listener-class>com.viotualize.api.metrics.MetricsRegistryInitializingContextLoaderListener</listener-class>
-    </listener>
-
-    <servlet>
-        <servlet-name>Metrics</servlet-name>
-        <servlet-class>com.codahale.metrics.servlets.MetricsServlet</servlet-class>
-        <load-on-startup>-1</load-on-startup>
-    </servlet>
+    </context-param> -->
 
     <servlet>
         <description>Apache CXF Endpoint</description>
@@ -30,11 +20,6 @@
     <servlet-mapping>
         <servlet-name>cxf</servlet-name>
         <url-pattern>/api/*</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>Metrics</servlet-name>
-        <url-pattern>/metrics</url-pattern>
     </servlet-mapping>
 
 </web-app>

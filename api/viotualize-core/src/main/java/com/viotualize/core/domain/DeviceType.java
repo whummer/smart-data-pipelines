@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  */
 
 @Document(collection = Constants.COLL_DEVICE_TYPES)
-public class DeviceType extends AssetType<DeviceType> {
+public class DeviceType extends CompositeObject<DeviceType> {
 
     public enum Type {CONTAINER, SENSOR, ACTUATOR}
 

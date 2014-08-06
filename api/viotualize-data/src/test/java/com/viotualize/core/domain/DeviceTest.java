@@ -1,19 +1,19 @@
 package com.viotualize.core.domain;
 
 import com.viotualize.core.repositories.DeviceRepository;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 /**
  * @author omoser
  */
-@RunWith(SpringJUnit4ClassRunner.class)
+//@RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath*:viotualize-mongodb-config-test.xml")
-public class DeviceTest {
+public class DeviceTest extends AbstractTestNGSpringContextTests {
 
     @Autowired
     DeviceTypeTestFixture deviceTypeTestFixture;
@@ -24,7 +24,7 @@ public class DeviceTest {
     @Autowired
     DeviceRepository repository;
 
-    @Before
+    @BeforeClass
     public void setup() {
         //deviceTestFixture.prepareDeviceTestData();
     }

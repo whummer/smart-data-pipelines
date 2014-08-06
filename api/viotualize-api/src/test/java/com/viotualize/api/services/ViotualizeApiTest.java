@@ -2,35 +2,34 @@ package com.viotualize.api.services;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import com.jayway.restassured.RestAssured;
+import com.viotualize.api.Api;
 import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.feature.Feature;
 import org.apache.cxf.feature.LoggingFeature;
 import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
 import org.apache.cxf.jaxrs.lifecycle.SingletonResourceProvider;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.runner.RunWith;
-import org.junit.runners.model.InitializationError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 
 /**
  * @author omoser
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration({"classpath*:viotualize-api.xml"})
-public abstract class ViotualizeApiTest {
+//@ContextConfiguration({"classpath*:viotualize-api.xml"})
+@ContextConfiguration(classes = {Api.class})
+public abstract class ViotualizeApiTest extends AbstractTestNGSpringContextTests {
 
     private final static String ENDPOINT_ADDRESS = "http://localhost";
 
@@ -41,7 +40,7 @@ public abstract class ViotualizeApiTest {
 
     protected static int port;
 
-    @Before
+    @BeforeClass
     @Rollback(false)
     public void initialize() throws Exception {
         assertNotNull(context);
@@ -87,11 +86,11 @@ public abstract class ViotualizeApiTest {
         return getServiceBeanClass().getSimpleName().toLowerCase();
     }
 
-    protected int getAvailablePort() throws InitializationError {
+    protected int getAvailablePort() {
         try (ServerSocket serverSocket = new ServerSocket(0)) {
             return serverSocket.getLocalPort();
         } catch (IOException ignored) {
-            throw new InitializationError("Cannot determine an usable free port");
+            throw new RuntimeException("Cannot determine an usable free port"); // todo hmmmm
         }
     }
 }

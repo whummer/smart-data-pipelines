@@ -18,8 +18,6 @@ import javax.ws.rs.core.UriBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.codahale.metrics.annotation.ExceptionMetered;
-import com.codahale.metrics.annotation.Timed;
 import com.viotualize.api.handlers.command.DeviceTypeCommand;
 import com.viotualize.api.handlers.query.DeviceTypeQuery;
 import com.viotualize.api.handlers.query.Paged;
@@ -53,8 +51,6 @@ public class DeviceTypes {
                     "and cannot be modified. ",
             response = DeviceType.class)
     @ApiResponses(value = {@ApiResponse(code = 404, message = "No device with given ID found")})
-    @Timed
-    @ExceptionMetered
     public Response retrieve(@PathParam("id") String deviceTypeId) {
         return Response.ok(deviceTypeQuery.single(deviceTypeId)).build();
     }
@@ -69,8 +65,6 @@ public class DeviceTypes {
             @ApiResponse(code = 404, message = "No DeviceType with given ID found"),
             @ApiResponse(code = 400, message = "Either the query string or the paging parameters are malformed")
     })
-    @Timed
-    @ExceptionMetered
     public Response list(@QueryParam("q") String query, @QueryParam("page") int page, @QueryParam("size") int size) {
         return Response.ok(deviceTypeQuery.query(query, new Paged(page, size))).build();
     }
@@ -87,8 +81,6 @@ public class DeviceTypes {
     @ApiResponses(value = {
             @ApiResponse(code = 400, message = "Malformed DeviceType provided. See error message for details")
     })
-    @Timed
-    @ExceptionMetered
     public Response create(DeviceType deviceType) {
         deviceType = deviceTypeCommand.create(deviceType);
         //String location = UriBuilder.fromMethod(DeviceTypes.class, "retrieve"); // todo check why this is not working
@@ -106,8 +98,6 @@ public class DeviceTypes {
     @ApiResponses(value = {
             @ApiResponse(code = 400, message = "Malformed DeviceType provided. See error message for details")
     })
-    @Timed
-    @ExceptionMetered
     public Response update(DeviceType deviceType) {
         deviceTypeCommand.update(deviceType);
         return Response.ok().build();
@@ -122,8 +112,6 @@ public class DeviceTypes {
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "No such DeviceType")
     })
-    @Timed
-    @ExceptionMetered
     public Response delete(@PathParam("id") String deviceTypeId) {
         deviceTypeCommand.delete(deviceTypeId);
         return Response.ok().build();

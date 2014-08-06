@@ -13,16 +13,16 @@ import com.viotualize.core.util.cascade.CascadeSave;
 @SuppressWarnings("unchecked")
 // todo is this object "smart"? Should we rename it to "HierarchicalObject"
 // TODO whu: I am in favor of renaming to "HierarchicalObject", or rather "CompositeObject"
-public abstract class SmartObject<T extends SmartObject<T>> extends BaseObjectCreated<T> {
+public abstract class CompositeObject<T extends CompositeObject<T>> extends BaseObject<T> {
 
     @DBRef
     @CascadeSave
     Set<T> children = new HashSet<>();
 
-    public SmartObject() {
+    public CompositeObject() {
         super();
     }
-    public SmartObject(String name) {
+    public CompositeObject(String name) {
         super(name);
     }
 

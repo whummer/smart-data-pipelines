@@ -8,8 +8,6 @@ import javax.ws.rs.core.Response;
 
 import org.springframework.stereotype.Service;
 
-import com.codahale.metrics.annotation.ExceptionMetered;
-import com.codahale.metrics.annotation.Timed;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 
@@ -29,8 +27,6 @@ public class Ping {
             notes = "If everything is fine, returns the string 'pong'",
             response = String.class
     )
-    @Timed
-    @ExceptionMetered
     public Response ping() {
         return Response.ok("pong").build();
     }

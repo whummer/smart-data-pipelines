@@ -2,28 +2,26 @@ package com.viotualize.core.domain;
 
 import com.mongodb.Mongo;
 import com.viotualize.core.repositories.DeviceTypeRepository;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.AssertJUnit.assertFalse;
+
 
 /**
  * @author omoser
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath*:viotualize-mongodb-config-test.xml")
-public class DeviceTypeTest {
+public class DeviceTypeTest extends AbstractTestNGSpringContextTests {
 
     @Autowired
     Mongo mongo;
@@ -35,12 +33,12 @@ public class DeviceTypeTest {
     DeviceTypeTestFixture fixture;
 
 
-    @Before
+    @BeforeClass()
     public void setUp() {
         fixture.prepareDeviceTypes();
     }
 
-    @After
+    @AfterClass
     public void tearDown() {
 
     }
