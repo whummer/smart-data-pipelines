@@ -49,11 +49,11 @@
         </rollingPolicy>
     </appender>
 
-    <logger name="org.springframework" level="WARN">
+    <logger name="org.springframework" level="DEBUG">
         <appender-ref ref="spring"/>
     </logger>
 
-    <logger name="org.apache.cxf" level="INFO">
+    <logger name="org.apache.cxf" level="TRACE">
         <appender-ref ref="cxf"/>
     </logger>
 

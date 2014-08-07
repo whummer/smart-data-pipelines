@@ -1,8 +1,11 @@
 package com.viotualize.api;
 
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.servlets.MetricsServlet;
 import com.mongodb.Mongo;
+import com.ryantenney.metrics.spring.config.annotation.EnableMetrics;
+import com.viotualize.api.cxf.RefIdEnabledCxfServlet;
 import com.wordnik.swagger.jaxrs.config.BeanConfig;
-import org.apache.cxf.transport.servlet.CXFServlet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -11,7 +14,6 @@ import org.springframework.context.annotation.*;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
-import org.springframework.test.context.web.WebAppConfiguration;
 
 /**
  * @author omoser
@@ -24,6 +26,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 @Configuration
 @ComponentScan(basePackages = {"com.viotualize"})
 @ImportResource(value = {"classpath*:/cxf-config.xml"})
+@EnableMetrics // todo om: resgister JVM metrics
 public class Api {
 
     public static void main(String[] args) {
@@ -31,8 +34,14 @@ public class Api {
     }
 
     @Bean
-    public ServletRegistrationBean servletRegistrationBean(){
-        return new ServletRegistrationBean(new CXFServlet(),"/api/*");
+    public ServletRegistrationBean cxfServletRegistrationBean(){
+        return new ServletRegistrationBean(new RefIdEnabledCxfServlet(),"/api/*");
+    }
+
+    @Bean
+    @Autowired
+    public ServletRegistrationBean codahaleMetricsServletRegistrationBean(MetricRegistry metricRegistry){
+        return new ServletRegistrationBean(new MetricsServlet(metricRegistry),"/codahale-metrics");
     }
 
     @Bean

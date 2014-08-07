@@ -1,5 +1,7 @@
 package com.viotualize.api.services;
 
+import com.codahale.metrics.annotation.ExceptionMetered;
+import com.codahale.metrics.annotation.Timed;
 import com.viotualize.api.handlers.command.DeviceCommand;
 import com.viotualize.api.handlers.query.DeviceQuery;
 import com.viotualize.api.handlers.query.Paged;
@@ -54,6 +56,8 @@ public class Devices {
             @ApiResponse(code = 404, message = "No Device with given ID found"),
             @ApiResponse(code = 400, message = "Either the query string or the paging parameters are malformed")
     })
+    @Timed
+    @ExceptionMetered
     public Response list(@QueryParam("q") String query, @QueryParam("page") int page, @QueryParam("size") int size) {
         return Response.ok(deviceQuery.query(query, new Paged(page, size))).build();
     }
@@ -71,6 +75,8 @@ public class Devices {
     @ApiResponses(value = {
             @ApiResponse(code = 400, message = "Malformed Device provided. See error message for details")
     })
+    @Timed
+    @ExceptionMetered
     public Response create(Device device) {
         device = deviceCommand.create(device);
         return Response.created(UriBuilder.fromMethod(Devices.class, "retrieve").build(device.getId())).build();
@@ -86,6 +92,8 @@ public class Devices {
     @ApiResponses(value = {
             @ApiResponse(code = 400, message = "Malformed Device provided. See error message for details")
     })
+    @Timed
+    @ExceptionMetered
     public Response update(Device device) {
         deviceCommand.update(device);
         return Response.ok().build();
@@ -100,6 +108,8 @@ public class Devices {
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "No such DeviceType")
     })
+    @Timed
+    @ExceptionMetered
     public Response delete(@PathParam("id") String deviceId) {
         deviceCommand.delete(deviceId);
         return Response.ok().build();

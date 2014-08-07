@@ -6,6 +6,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.codahale.metrics.annotation.ExceptionMetered;
+import com.codahale.metrics.annotation.Timed;
 import org.springframework.stereotype.Service;
 
 import com.wordnik.swagger.annotations.Api;
@@ -27,6 +29,8 @@ public class Ping {
             notes = "If everything is fine, returns the string 'pong'",
             response = String.class
     )
+    @Timed
+    @ExceptionMetered
     public Response ping() {
         return Response.ok("pong").build();
     }

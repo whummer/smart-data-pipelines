@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>omoser's very cool spring boot overview</title>
+    <script src='/js/jquery.min.js' type='text/javascript'></script>
+    <script src='/js/bootstrap.js' type='text/javascript'></script>
+    <link href='/css/bootstrap.css' media='screen' rel='stylesheet' type='text/css'/>
+    <link href='/css/bootstrap-theme.css' media='screen' rel='stylesheet' type='text/css'/>
+</head>
+<body>
+<br/>
+
+
+<div class="container">
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title"><strong>Where to go from here?</strong></h3>
+        </div>
+        <div class="panel-body">
+
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="active"><a href="#docs" role="tab" data-toggle="tab">Docs</a></li>
+                <li><a href="#metrics" role="tab" data-toggle="tab">Metrics</a></li>
+                <li><a href="#configuration" role="tab" data-toggle="tab">Configuration</a></li>
+                <li><a href="#trace" role="tab" data-toggle="tab">Tracing Health</a></li>
+                <li><a href="#health" role="tab" data-toggle="tab">Health</a></li>
+                <li><a href="#build-info" role="tab" data-toggle="tab">Build Information</a></li>
+            </ul>
+
+            <div class="tab-content">
+                <div class="tab-pane active" id="docs">
+                    <br>
+
+                    <div class="well">
+                        <a href="/docs/index.html">Swagger Documentation</a>
+                    </div>
+                </div>
+                <div class="tab-pane" id="metrics">
+                    <br>
+
+                    <div class="well">
+                        <p><a href="/metrics">Spring Boot Metrics (JVM &amp; HTTP Processor Metrics)</a></p>
+
+                        <p><a href="/codahale-metrics">Codahale Metrics (API metrics, defined via @Timed and
+                            @ExceptionMetered)</a>
+                        </p>
+                    </div>
+                </div>
+                <div class="tab-pane" id="configuration">
+                    <br>
+
+                    <div class="well">
+                        <p><a href="/autoconfig">Spring Boot Autoconfig (shows which services where
+                            autoconfigured)</a>
+                        </p>
+
+                        <p><a href="/beans">Spring Boot Beans (shows which Spring Beans your application uses, very
+                            cool
+                            feature)</a></p>
+                    </div>
+                </div>
+                <div class="tab-pane" id="trace">
+                    <br>
+
+                    <div class="well">
+                        <a href="/trace">HTTP request/response tracing</a>
+                    </div>
+                </div>
+                <div class="tab-pane" id="health">
+                    <br>
+
+                    <div class="well">
+                        <a href="/health">Spring Boot health check (simple "UP" status message)</a>
+                    </div>
+                </div>
+                <div class="tab-pane" id="build-info">
+                    <br>
+
+                    <div class="well">
+                        <a href="/info">Spring Boot Info (maven, git info)</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
