@@ -26,22 +26,23 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @Configuration
 @ComponentScan(basePackages = {"com.viotualize"})
 @ImportResource(value = {"classpath*:/cxf-config.xml"})
-@EnableMetrics // todo om: resgister JVM metrics
-public class Api {
+@EnableMetrics // todo om: register JVM metrics
+//@ServiceScan
+public class Api  { // extends AbstractCloudConfig {
 
     public static void main(String[] args) {
         SpringApplication.run(Api.class);
     }
 
     @Bean
-    public ServletRegistrationBean cxfServletRegistrationBean(){
-        return new ServletRegistrationBean(new RefIdEnabledCxfServlet(),"/api/*");
+    public ServletRegistrationBean cxfServletRegistrationBean() {
+        return new ServletRegistrationBean(new RefIdEnabledCxfServlet(), "/api/*");
     }
 
     @Bean
     @Autowired
-    public ServletRegistrationBean codahaleMetricsServletRegistrationBean(MetricRegistry metricRegistry){
-        return new ServletRegistrationBean(new MetricsServlet(metricRegistry),"/codahale-metrics");
+    public ServletRegistrationBean codahaleMetricsServletRegistrationBean(MetricRegistry metricRegistry) {
+        return new ServletRegistrationBean(new MetricsServlet(metricRegistry), "/codahale-metrics");
     }
 
     @Bean
@@ -61,4 +62,14 @@ public class Api {
     public MongoDbFactory mongoDbFactory(Mongo mongo) {
         return new SimpleMongoDbFactory(mongo, "viotualize");
     }
+
+    /*@Bean
+    public MongoDbFactory mongoDbFactory() {
+        return connectionFactory().mongoDbFactory("viotualize");
+    }
+
+    @Bean
+    public Properties cloudProperties() {
+        return properties();
+    }*/
 }
