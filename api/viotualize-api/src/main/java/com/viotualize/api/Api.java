@@ -11,6 +11,7 @@ import org.springframework.context.annotation.*;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 /**
  * @author omoser
