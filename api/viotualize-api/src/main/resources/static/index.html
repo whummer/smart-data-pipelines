@@ -27,60 +27,164 @@
                 <li><a href="#trace" role="tab" data-toggle="tab">Tracing Health</a></li>
                 <li><a href="#health" role="tab" data-toggle="tab">Health</a></li>
                 <li><a href="#build-info" role="tab" data-toggle="tab">Build Information</a></li>
+                <li><a href="#actions" role="tab" data-toggle="tab">Actions</a></li>
             </ul>
 
             <div class="tab-content">
                 <div class="tab-pane active" id="docs">
                     <br>
 
-                    <div class="well">
-                        <a href="/docs/index.html">Swagger Documentation</a>
-                    </div>
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Path</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td><a href="/docs/index.html">Swagger Documentation</a></td>
+                            <td >What do you expect?</td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
                 <div class="tab-pane" id="metrics">
                     <br>
 
-                    <div class="well">
-                        <p><a href="/metrics">Spring Boot Metrics (JVM &amp; HTTP Processor Metrics)</a></p>
 
-                        <p><a href="/codahale-metrics">Codahale Metrics (API metrics, defined via @Timed and
-                            @ExceptionMetered)</a>
-                        </p>
-                    </div>
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Path</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td><a href="/metrics">/metrics</a></td>
+                            <td>Shows (Spring Boot built-in) metrics information for the current application.</td>
+                        </tr>
+
+                        <tr>
+                            <td><a href="/codahale-metrics">/codahale-metrics</a></td>
+                            <td>Shows Codahale Metrics (API metrics, defined via @Timed and
+                                @ExceptionMetered).
+                            </td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+
                 </div>
                 <div class="tab-pane" id="configuration">
                     <br>
 
-                    <div class="well">
-                        <p><a href="/autoconfig">Spring Boot Autoconfig (shows which services where
-                            autoconfigured)</a>
-                        </p>
-
-                        <p><a href="/beans">Spring Boot Beans (shows which Spring Beans your application uses, very
-                            cool
-                            feature)</a></p>
-                    </div>
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Path</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td><a href="/autoconfig">/autoconfig</a></td>
+                            <td>Displays an auto-configuration report showing all auto-configuration candidates and the
+                                reason why they "were" or "were not" applied.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><a href="/beans">/beans</a></td>
+                            <td>Displays a complete list of all the Spring Beans in your application. Very cool</td>
+                        </tr>
+                        <tr>
+                            <td><a href="/configprops">/configprops</a></td>
+                            <td>Displays a collated list of all @ConfigurationProperties</td>
+                        </tr>
+                        <tr>
+                            <td><a href="/env">/env</a></td>
+                            <td>Exposes properties from Spring's ConfigurableEnvironment.</td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
                 <div class="tab-pane" id="trace">
                     <br>
 
-                    <div class="well">
-                        <a href="/trace">HTTP request/response tracing</a>
-                    </div>
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Path</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td><a href="/trace">/trace</a></td>
+                            <td>Displays trace information (by default the last few HTTP requests).</td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
                 <div class="tab-pane" id="health">
                     <br>
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Path</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td><a href="/health">/health</a></td>
+                            <td>Shows application health information (defaulting to a simple "UP" message).</td>
+                        </tr>
+                        </tbody>
+                    </table>
 
-                    <div class="well">
-                        <a href="/health">Spring Boot health check (simple "UP" status message)</a>
-                    </div>
                 </div>
                 <div class="tab-pane" id="build-info">
                     <br>
 
-                    <div class="well">
-                        <a href="/info">Spring Boot Info (maven, git info)</a>
-                    </div>
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Path</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td><a href="/info">/info</a></td>
+                            <td>Arbitrary application info (e.g., Maven &amp; Git info)</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane" id="actions">
+                    <br>
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Path</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td><a href="/dump">/dump</a></td>
+                            <td>Performs a thread dump.</td>
+                        </tr>
+                        <tr>
+                            <td><a href="/shutdown">/shutdown</a></td>
+                            <td>Allows the application to be gracefully shutdown (not enabled by default).</td>
+                        </tr>
+                        </tbody>
+                    </table>
+
                 </div>
             </div>
         </div>
