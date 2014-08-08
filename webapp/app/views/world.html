@@ -1,6 +1,6 @@
-<section ng-controller="WorldViewController">
+<section ng-controller="WorldViewController" id="worldViewDiv" style="height: 100%">
 
-	<script type="text/javascript" src="/lib/primeui/development/primeui-1.1.js"/>
+	<div data-dojo-type="dijit/layout/ContentPane" style="height: 100%" id="worldViewDivWrapper">
 
 	<link rel="stylesheet" href="/styles/world.css"/>
 	<style>
@@ -16,87 +16,42 @@
 	}
 	</style>
 
-	<div id="sidebar">
-		<!--<h3>System View</h3>-->
-		<div id="sidebarAccordeon">  
-		    <!--<h3>Asset Categories</h3>  
-		    <div>
-        		<ng-include src="'/views/asset_categories.html'"></ng-include>
-		    </div>
-		    <h3>Asset Types</h3>  
-		    <div>
-		    	Asset Types
-		    </div>-->
-		    <h3>Device Types</h3>  
-		    <div>  
-        		<ng-include src="'/views/device_types.html'"></ng-include>
-		    </div>    
-		</div>
-		<script type="text/javascript">
-			$('#sidebarAccordeon').puiaccordion();
-		</script>
-	</div>
+	<div id="worldViewLayout" data-dojo-type="dijit/layout/BorderContainer" data-dojo-props="liveSplitters:false, design:'sidebar'" style="height: 100%">
 
-	<div id="content">
-		<div id="top-content">
-        	<ng-include src="'/views/world_map.html'"></ng-include>
+		<div data-dojo-type="dijit/layout/AccordionContainer" data-dojo-props="region:'leading', splitter:true, minSize:20"
+			 style="width: 300px;" id="leftAccordion">
+			 <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props='title:"Device Types"'>
+			 	<ng-include src="'/views/device_types.html'"></ng-include>
+			 </div>
+			 <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props='title:"Devices"'>
+			 	TODO
+			 </div>
 		</div>
-		<div id="bottom-content">
-			<div id="detailsTabs" data-dojo-type="dijit/layout/TabContainer" 
-					data-dojo-props="region:'center', tabStrip:true"
-					style="height: 200px;">
-				<div id="propertiesTab" data-dojo-type="dijit/layout/ContentPane"
-					data-dojo-props="title:'Properties', style:'padding:10px;display:none;'">
-					<ng-include src="'/views/asset_properties.html'"></ng-include>
-				</div>
-				<div id="settingsTab" data-dojo-type="dijit/layout/ContentPane"
-					data-dojo-props="title:'Properties', style:'padding:10px;display:none;'">
-					
-				</div>
+
+		<div id="worldMapPane" data-dojo-type="dijit/layout/ContentPane"
+			data-dojo-props="region:'center', style:'height:60%'" style="height: 60%;">
+			<ng-include src="'/views/world_map.html'"></ng-include>
+		</div>
+
+		<div data-dojo-type="dijit/layout/TabContainer" id="bottomTabs"
+		 data-dojo-props="selectedchild:'btab1', region:'bottom', splitter:true, tabStrip:true" style="height: 40%;">
+			<div id="propertiesTab" data-dojo-type="dijit/layout/ContentPane"
+					data-dojo-props="title:'Properties 1', style:'padding:10px;display:none;'">
+				<ng-include src="'/views/asset_properties.html'"></ng-include>
+			</div>
+			<div id="settingsTab" data-dojo-type="dijit/layout/ContentPane"
+				data-dojo-props="title:'Properties 2', style:'padding:10px;display:none;'">
+				
 			</div>
 		</div>
-		<div id="content-resizer" resizer="horizontal" resizer-height="6"
-			resizer-top="#top-content" resizer-bottom="#bottom-content"></div>
+
 	</div>
 
-	<div id="sidebar-resizer" resizer="vertical" resizer-width="6"
-		resizer-left="#sidebar" resizer-right="#content" resizer-max="1000">
 	</div>
-
 </section>
 
 <script>
 
-	require(["app", "dojo/domReady!"], 
-		function(app){
-		app.config(function($provide) {
-		   	$provide.decorator('$compile', function($delegate) {
-				return function customCompile($compileNodes, transcludeFn, maxPriority) {
-					alert("!!! fooo");
-					angular.forEach($compileNodes, function(node) {
-						dojoParser.parse(node);
-					});
-					return $delegate($compileNodes, transcludeFn, maxPriority);
-				}
-			});
-		});
-	});
-	
-
-	require(["dojo", "dijit/layout/TabContainer", "dojo/parser", "dojo/dom",
-			"dijit/layout/ContentPane",
-			"dojo/domReady!"], 
-		function(dojo, TabContainer, parser, dom){
-
-			//alert(dojo.require);
-			//dojo.require("dijit.layout.TabContainer");
-			parser.parse(dom.byId("detailsTabs"));
-
-			//alert($('#detailsTabs'))
-			//alert(TabContainer)
-			//alert(dojo);
-			//new TabContainer({}, "detailsTabs");
-		}
-	)
+	renderElement("worldViewDiv");
 
 </script>

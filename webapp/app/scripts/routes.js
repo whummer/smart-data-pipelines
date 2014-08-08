@@ -12,9 +12,7 @@ define([], function()
             '/world': {
                 templateUrl: '/views/world.html',
                 dependencies: [
-                    'controllers/WorldViewController',
-                    'directives/app-color',
-                    'directives/resizer'
+                    'controllers/WorldViewController'
                 ]
             },
             '/contact': {

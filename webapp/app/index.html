@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
+	<head>
+		<meta charset="utf-8">
 
-        <link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css" >
-        <link rel="stylesheet" href="/lib/bootstrap/css/bootstrap-responsive.min.css" >
+		<link rel="stylesheet" href="/lib/dbootstrap/theme/dbootstrap/dbootstrap.css" >
 
 		<link rel="stylesheet" type="text/css" href="/lib/leaflet/leaflet.css" />
 		<script type="text/javascript" src="/lib/leaflet/leaflet.js"></script>
@@ -14,53 +13,49 @@
 		<script type='text/javascript' src='/scripts/modules/service-calls.js'></script>
 		<script type='text/javascript' src='/scripts/modules/dojo-tables.js'></script>
 
-        <link rel="stylesheet" href="/styles/app.css"/>
+		<link rel="stylesheet" href="/styles/app.css"/>
 
-		<link rel="stylesheet" href="/lib/primeui/development/primeui-1.1.css"/>
-		<link rel="stylesheet" href="/lib/primeui/themes/aristo/theme.css"/>
+		<title>IoT Dev&amp;Test</title>
+	</head>
+	<body class="dbootstrap">
+		<div id="wrapperDiv">
 
-        <title>IoT Dev&amp;Test</title>
-    </head>
-    <body>
-        <div id="wrap">
-        	
-            <div id="header">
-                <div class="navbar navbar-inverse navbar-fixed-top">
-                    <div class="navbar-inner">
-                        <div class="container">
-                            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                            </button>
+			<div id="header" data-dojo-type="dijit/MenuBar" data-dojo-props="region:'top'">
+				<b>Iot Dev&amp;Test</b>
+				<a href="/home"><div data-dojo-type="dijit/MenuBarItem" id="miDashboard">
+					Dashboard
+				</div></a>
+				<a href="/world"><div data-dojo-type="dijit/MenuBarItem" id="miWorld">
+					World
+				</div></a>
+				<a href="/test"><div data-dojo-type="dijit/MenuBarItem" id="miTest">
+					Dev&amp;Test
+				</div></a>
+				<a href="/contact"><div data-dojo-type="dijit/MenuBarItem" id="miContact">
+					Contact
+				</div></a>
+				<div id="loadingDiv" style="display: none;">
+					<img id="loadingImg" src="/img/loading.gif" alt="loading..."/>
+				</div>
+			</div>
 
-                            <a class="brand" href="/">IoT Dev&amp;Test</a>
+			<!-- Main Content Container -->
+			<div id="main" class="container" style="height: 90%; width: 100%" ng-view></div>
 
-                            <div class="nav-collapse collapse">
-                                <ul class="nav">
-                                    <li><a href="/">Dashboard</a></li>
-                                    <li><a href="/world">World</a></li>
-                                    <li><a href="/test">Dev&amp;Test</a></li>
-                                    <li><a href="/contact">Contact</a></li>
-                                </ul>
-                            </div>
-                            
-                            <div id="loadingDiv" style="display: none;">
-                            	<img id="loadingImg" src="/img/loading.gif" alt="loading..."/>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+			<div id="push"></div>
+		</div>
 
-            <!-- Main Content Container -->
-            <div id="main" class="container" style="height: 90%; width: 100%" ng-view></div>
+		<script type="text/javascript" src="/bower_components/requirejs/require.js" data-main="/scripts/bootstrap.js"></script>
+		<script type="text/javascript" src="/scripts/bootstrap.js"></script>
 
-            <div id="push"></div>
-        </div>
+		<script type="text/javascript">
 
-        <script type="text/javascript" src="/bower_components/requirejs/require.js" data-main="/scripts/bootstrap.js"></script>
-		<!--<script type="text/javascript" src="/lib/primeui/development/primeui-1.1.js"/>-->
+			require(["app"],
+				function() {
+					renderElement("wrapperDiv");
+		    });
 
-    </body>
+		</script>
+
+	</body>
 </html>

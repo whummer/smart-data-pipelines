@@ -7,6 +7,24 @@ function setLoadingStatus(status, text) {
 	}
 }
 
+function renderElement(elementID) {
+	$(document).ready(function() { 
+		require(
+			["dojo/parser", "dijit/registry", "dojo/domReady!"],
+			function(parser, registry){
+				var widget = registry.byId(elementID);
+				if(!widget) {
+					el = document.getElementById(elementID);
+					widget = registry.byId(el.children[0].id);
+				}
+				if(widget) {
+					widget.destroyRecursive();
+				}
+				parser.parse(elementID);
+	    });
+	});
+}
+
 define(['routes','services/dependencyResolverFor'], function(config, dependencyResolverFor)
 {
 	var app = angular.module('app', [
