@@ -21,7 +21,9 @@ public class Asset<AssetT extends SmartObject<AssetT>,
     @DBRef
     AssetTypeT assetType;
 
-    double[] location;
+    Location location;
+
+    public Asset() {}
 
     public Asset(String name) {
         super(name);
@@ -32,14 +34,22 @@ public class Asset<AssetT extends SmartObject<AssetT>,
         return this;
     }
 
-    public Asset<AssetT,AssetTypeT> withLocation(final double[] location) {
+    public Asset<AssetT,AssetTypeT> withLocation(final Location location) {
         this.location = location;
         return this;
     }
 
-    public double[] getLocation() {
-        return location;
-    }
+    public Location getLocation() {
+		return location;
+	}
+
+    public AssetTypeT getAssetType() {
+		return assetType;
+	}
+    
+    public void setAssetType(AssetTypeT assetType) {
+		this.assetType = assetType;
+	}
 
     @Override
     public boolean equals(Object o) {

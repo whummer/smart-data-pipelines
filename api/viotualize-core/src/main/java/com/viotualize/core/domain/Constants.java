@@ -16,5 +16,6 @@ public class Constants {
 	public static final String COLL_ROLES = "roles";
 	public static final String COLL_MANUFACTURERS = "manufacturers";
 	public static final String COLL_WORLDS = "worlds";
+	public static final String COLL_SIMULATIONS = "simulations";
 
 }

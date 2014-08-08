@@ -33,8 +33,8 @@ public class DeviceTypeTestFixture {
         if (initialized) {
             return;
         }
-        DB database = mongo.getDB("viotualize");
-        DBCollection deviceTypes = database.getCollection("device_types");
+        DB database = mongo.getDB("viotualize-test"); // TODO redundant - get value from config file..?
+        DBCollection deviceTypes = database.getCollection(Constants.COLL_DEVICE_TYPES);
         deviceTypes.drop();
 
         DeviceType ultraSoniceSensor = new DeviceType("HC-SR04")

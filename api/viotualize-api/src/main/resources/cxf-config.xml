@@ -9,6 +9,7 @@
 
     <import resource="classpath:META-INF/cxf/cxf.xml"/>
     <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
+    <import resource="classpath:viotualize-mongodb-config.xml"/>
 
     <jaxrs:server address="/v1" id="api-v1">
         <jaxrs:serviceBeans>
@@ -16,6 +17,7 @@
             <ref bean="deviceTypes"/>
             <ref bean="devices"/>
             <ref bean="manufacturers"/>
+            <ref bean="assetCategories"/>
             <bean id="swaggerResourceJSON" class="com.wordnik.swagger.jaxrs.listing.ApiListingResourceJSON"/>
         </jaxrs:serviceBeans>
         <jaxrs:features>

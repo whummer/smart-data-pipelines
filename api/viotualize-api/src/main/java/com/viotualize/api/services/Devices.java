@@ -67,7 +67,6 @@ public class Devices {
     @POST
     @Path("/")
     @Consumes({MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_JSON})
     @ApiOperation(value = "Created a new Device",
             notes = "Create a new Device according to the provided JSON payload. Device IDs are auto-assigned " +
                     "by the API and cannot be controlled. Please note that referenced DeviceTypes have to exist prior " +
@@ -80,8 +79,12 @@ public class Devices {
     @Timed
     @ExceptionMetered
     public Response create(Device device) {
+    	System.out.println("Creating asset: " + device);
         device = deviceCommand.create(device);
-        return Response.created(UriBuilder.fromMethod(Devices.class, "retrieve").build(device.getId())).build();
+    	System.out.println("Created asset: " + device.getId());
+        Response r = Response.created(UriBuilder.fromMethod(Devices.class, "retrieve").build(device.getId())).build();
+        System.out.println(r.getEntity());
+        return r;
     }
 
     @PUT

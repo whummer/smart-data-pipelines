@@ -1,0 +1,100 @@
+
+<section ng-controller="DeviceTypeController" id="DeviceTypeCont" style="height: 100%">
+
+	<link rel="stylesheet" href="/bower_components/dijit/themes/claro/claro.css"/>
+	<link rel="stylesheet" href="/bower_components/dgrid/css/skins/claro.css"/>
+
+	<div style="margin:20px 0;">
+		<button class="easyui-linkbutton" onclick="$(this).scope().DeviceTypeAdd()">Add</button>
+		<button class="easyui-linkbutton" onclick="$(this).scope().DeviceTypeSave()">Save</button>
+		<button class="easyui-linkbutton" onclick="$(this).scope().DeviceTypeCancel()">Revert</button>
+	</div>
+
+	<div id="DeviceTypeTree"></div>
+
+</section>
+
+<script type="text/javascript">
+
+	app = angular.module("app");
+	app.controller('DeviceTypeController',
+		function($scope) {
+
+			convertNode = function(node, flat) {
+				return JSON.parse(JSON.stringify(node));
+			}
+
+			selected = null;
+			$scope.DeviceTypeLoadAll = function() {
+				invokeGET($scope.http, $scope.deviceTypesAPI,
+					function(data, status, headers, config) {
+						var nodes = [];
+						var i = 0;
+						for(i = 0; i < data.result.length; i ++) {
+							var obj = data.result[i];
+							var e = convertNode(obj, true);
+							nodes.push(e);
+						};
+						columnsConfig = [
+							{label: "Name", field: "name", sortable: true, editOn: "dblclick"},
+							//{label: "Creator", field: "creator", editOn: "dblclick"},
+							{label: "Properties", field: "num_properties"},
+							{label: "Tags", field: "tags"}
+						];
+						displayDojoTable(nodes, "DeviceTypeTree", columnsConfig);
+					}
+				);
+			}
+			$scope.DeviceTypeLoadAll();
+
+			$scope.DeviceTypeEdit = function(){
+				if (selected != undefined){
+					$('#tg').treegrid('select', selected);
+					return;
+				}
+				var row = $('#tg').treegrid('getSelected');
+				if (row){
+					selected = row.id
+					$('#tg').treegrid('beginEdit', selected);
+				}
+			}
+			$scope.DeviceTypeSave = function(){
+				if (selected != undefined){
+					var t = $('#tg');
+					t.treegrid('endEdit', selected);
+					selected = undefined;
+					var persons = 0;
+					var rows = t.treegrid('getChildren');
+					for(var i=0; i<rows.length; i++){
+						var p = parseInt(rows[i].persons);
+						if (!isNaN(p)){
+							persons += p;
+						}
+					}
+					var frow = t.treegrid('getFooterRows')[0];
+					frow.persons = persons;
+					t.treegrid('reloadFooter');
+				}
+			}
+			$scope.DeviceTypeCancel = function(){
+				if (selected != undefined){
+					$('#tg').treegrid('cancelEdit', selected);
+					selected = undefined;
+				}
+			}
+			$scope.DeviceTypeAdd = function(){
+				deviceType = {
+					name: "unnamed"
+				}
+				invokePOST($scope.http, $scope.deviceTypesAPI + "/",
+					JSON.stringify(deviceType),
+					function(data, status, headers, config) {
+						//alert("Successfully added asset: " + data)
+						$scope.compile(angular.element('#translatedContent').contents())($scope)
+					}
+				);
+			}
+		}
+	);
+
+</script>

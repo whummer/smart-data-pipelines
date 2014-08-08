@@ -28,6 +28,30 @@
 			<artifactId>cdi-api</artifactId>
 			<version>1.2</version>
 		</dependency>
+		<!-- Constraint programming solver -->
+        <dependency>
+			<groupId>org</groupId>
+			<artifactId>jacop</artifactId>
+			<version>4.1.0</version>
+		</dependency>
+		<!--  Groovy Scripting -->
+		<dependency>
+			<groupId>org.codehaus.groovy</groupId>
+			<artifactId>groovy</artifactId>
+			<version>2.3.6</version>
+		</dependency>
+		<!-- Apache Commons Lang -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.3.2</version>
+		</dependency>
+		<!-- Google Guava -->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>17.0</version>
+		</dependency>
     </dependencies>
 
     <repositories>
@@ -38,6 +62,10 @@
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
+        </repository>
+        <repository>
+            <id>infosys-repo</id>
+            <url>http://www.infosys.tuwien.ac.at/mvn</url>
         </repository>
     </repositories>
 

@@ -7,10 +7,13 @@ import org.junit.Test;
 
 import com.viotualize.api.services.DeviceTypes;
 import com.viotualize.api.services.Devices;
+import com.viotualize.api.services.Simulations;
 import com.viotualize.core.domain.Asset;
 import com.viotualize.core.domain.AssetType;
 import com.viotualize.core.domain.Device;
 import com.viotualize.core.domain.DeviceType;
+import com.viotualize.core.domain.Property;
+import com.viotualize.core.domain.ValueDomain;
 
 public class SmartLightingExample {
 
@@ -18,6 +21,7 @@ public class SmartLightingExample {
 	List<Device> sensors;
 	Devices devicesService;
 	DeviceTypes deviceTypesService;
+	Simulations simService;
 
 	@Before
 	@SuppressWarnings("rawtypes")
@@ -25,9 +29,16 @@ public class SmartLightingExample {
 		// TODO fix
 		devicesService = new Devices(); 
 		deviceTypesService = new DeviceTypes();
+		simService = new Simulations();
 
 		DeviceType lightSensor = new DeviceType("lightSensor1");
+		Property<Double> lightProp = new Property<>();
+		lightProp.getMetadata().setSensable(true);
+		lightProp.setValueDomain(
+				new ValueDomain.DiscreteVD<Double>(-30.0, 50.0, 0.01));
+		lightSensor.getDeviceProperties().add(lightProp);
 		System.out.println(lightSensor);
+
 		AssetType lampPost = new AssetType("name");
 		System.out.println(lampPost);
 
@@ -36,7 +47,9 @@ public class SmartLightingExample {
 
 	@Test
 	public void testScenario() {
-		
+
+		SimulationScenario s = simService.
+
 	}
 
 	@SuppressWarnings("rawtypes")

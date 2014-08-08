@@ -15,7 +15,7 @@ public class PropertyValue<T> {
 	public Property<T> getProperty() {
 		return property;
 	}
-	public void setProperty(EventProperty<T> property) {
+	public void setProperty(Property<T> property) {
 		this.property = property;
 	}
 	public Object getValue() {
@@ -24,4 +24,10 @@ public class PropertyValue<T> {
 	public void setValue(Object value) {
 		this.value = value;
 	}
+	@Override
+	public String toString() {
+		return "PropVal[" + property + "=" + value + "]";
+	}
+	
+	
 }

@@ -28,7 +28,7 @@ public class DeviceTypeQuery {
     DeviceTypeRepository repository;
 
     public List<DeviceType> query(String query, Paged paged) {
-        if (query == null) {
+        if (query == null || query.trim().isEmpty()) {
             return all(paged);
         }
 
@@ -98,11 +98,6 @@ public class DeviceTypeQuery {
                 deviceTypes.add(deviceType);
             }
             // throw new BadRequestException("Please use paging for DeviceType listing"); // todo think about this
-        }
-
-
-        if (deviceTypes.isEmpty()) {
-            throw new NotFoundException("No DeviceTypes found");
         }
 
         return deviceTypes;

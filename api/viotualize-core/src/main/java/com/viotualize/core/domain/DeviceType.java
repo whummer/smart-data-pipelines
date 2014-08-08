@@ -1,9 +1,12 @@
 package com.viotualize.core.domain;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
 
 /**
  * @author omoser
@@ -12,12 +15,24 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = Constants.COLL_DEVICE_TYPES)
 public class DeviceType extends AssetType<DeviceType> {
 
-    public enum Type {CONTAINER, SENSOR, ACTUATOR}
+    public enum Type {
+    	CONTAINER, SENSOR, ACTUATOR
+    }
 
     @DBRef
     private Manufacturer manufacturer;
 
     private Type type;
+
+    /**
+     * Contains the list of properties that are "actuatable"
+     * within this device. Actuatable properties are either 1) 
+     * sensable properties reported by a sensor device 
+     * (e.g., room temperature), or 2) actuatable properties 
+     * (e.g., temperature of a heater). A property can also 
+     * be both sensable and actuatable.
+     */
+    private List<Property<?>> deviceProperties = new LinkedList<Property<?>>();
 
     @JsonCreator
     public DeviceType() {
@@ -50,6 +65,14 @@ public class DeviceType extends AssetType<DeviceType> {
         return manufacturer;
     }
 
+    public List<Property<?>> getDeviceProperties() {
+		return deviceProperties;
+	}
+
+    public void setDeviceProperties(List<Property<?>> deviceProperties) {
+		this.deviceProperties = deviceProperties;
+	}
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -60,6 +83,7 @@ public class DeviceType extends AssetType<DeviceType> {
 
         if (manufacturer != null ? !manufacturer.equals(that.manufacturer) : that.manufacturer != null) return false;
         if (type != that.type) return false;
+        if (deviceProperties.equals(that.deviceProperties)) return false;
 
         return true;
     }
@@ -69,6 +93,7 @@ public class DeviceType extends AssetType<DeviceType> {
         int result = super.hashCode();
         result = 31 * result + (manufacturer != null ? manufacturer.hashCode() : 0);
         result = 31 * result + (type != null ? type.hashCode() : 0);
+        result = 31 * result + (deviceProperties != null ? deviceProperties.hashCode() : 0);
         return result;
     }
 }

@@ -66,7 +66,6 @@ public class DeviceTypes {
             notes = "Retrieve all DeviceTypes including their children",
             response = DeviceType.class)
     @ApiResponses(value = {
-            @ApiResponse(code = 404, message = "No DeviceType with given ID found"),
             @ApiResponse(code = 400, message = "Either the query string or the paging parameters are malformed")
     })
     @Timed

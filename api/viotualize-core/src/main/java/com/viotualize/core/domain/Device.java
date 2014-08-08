@@ -9,22 +9,15 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = Constants.COLL_DEVICES)
 public class Device extends Asset<Device,DeviceType> {
 
-    protected Device(String name) {
+	public Device() {}
+
+    public Device(String name) {
         super(name);
     }
 
     public Device withDeviceType(final DeviceType deviceType) {
         this.assetType = deviceType;
         return this;
-    }
-
-    public Device withLocation(final double[] location) {
-        this.location = location;
-        return this;
-    }
-
-    public double[] getLocation() {
-        return location;
     }
 
     public DeviceType getDeviceType() {

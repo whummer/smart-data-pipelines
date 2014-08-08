@@ -32,8 +32,8 @@ import com.wordnik.swagger.annotations.ApiResponses;
  */
 @Service
 @Path("/categories")
-@Api(value = "AssetCategories", description = "CRUD operations for AssetCategories. AssetCategories are"
-		+ "composable named entities which allow to group and categorize/organize the asset types and devices types.")
+@Api(value = "AssetCategories", description = "CRUD operations for AssetCategories. AssetCategories are " +
+		"composable named entities which allow to group and categorize/organize the asset types and devices types.")
 public class AssetCategories {
 
     @Autowired

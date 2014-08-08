@@ -70,27 +70,23 @@ public class AssetCategoryQuery {
         List<AssetCategory> list = new ArrayList<>();
         if (paged.isValid()) {
             Page<AssetCategory> page = repository.findAll(new PageRequest(paged.getPage(), paged.getSize()));
-            log.debug(Markers.QUERY, "Total DeviceTypes: {}", page.getTotalElements());
+            log.debug(Markers.QUERY, "Total AssetCategories: {}", page.getTotalElements());
             list = page.getContent();
         } else {
-            for (AssetCategory deviceType : repository.findAll()) {
-                list.add(deviceType);
+            for (AssetCategory obj : repository.findAll()) {
+                list.add(obj);
             }
-        }
-
-        if (list.isEmpty()) {
-            throw new NotFoundException("No DeviceTypes found");
         }
 
         return list;
     }
 
-    public AssetCategory single(String deviceTypeId) {
-        log.debug(Markers.QUERY, "Handling single DeviceType lookup for deviceTypeId '{}'", deviceTypeId);
-        AssetCategory entity = repository.findOne(deviceTypeId);
+    public AssetCategory single(String id) {
+        log.debug(Markers.QUERY, "Handling single AssetCategory lookup for ID '{}'", id);
+        AssetCategory entity = repository.findOne(id);
         if (entity == null) {
-            log.debug(Markers.QUERY, "No DeviceType for deviceID {}", deviceTypeId);
-            throw new NotFoundException("No DeviceType with ID '" + deviceTypeId + "' found");
+            log.debug(Markers.QUERY, "No AssetCategory for ID {}", id);
+            throw new NotFoundException("No AssetCategory with ID '" + id + "' found");
         } else {
             return entity;
         }

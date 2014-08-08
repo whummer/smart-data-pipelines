@@ -15,7 +15,7 @@
                                   location="classpath*:viotualize-data.properties"/>
 
     <mongo:mongo id="mongo" host="localhost" port="27017"/>
-    <mongo:db-factory id="mongoDbFactory" dbname="viotualize" host="127.0.0.1" mongo-ref="mongo"/>
+    <mongo:db-factory id="mongoDbFactory" dbname="viotualize-test" host="127.0.0.1" mongo-ref="mongo"/>
     <mongo:mapping-converter id="converter" />
     <mongo:repositories base-package="com.viotualize.core.repositories">
         <repo:exclude-filter type="regex" expression="com\.viotualize\.core\.repositories\.BaseObjectRepository"/>

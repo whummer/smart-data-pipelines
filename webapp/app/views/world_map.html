@@ -1,0 +1,14 @@
+<section ng-controller="WorldViewController" id="WorldMapContainer" style="height: 100%">
+	<div id="map"></div>
+	<script type='text/javascript' src='scripts/modules/maps-markers.js'></script>
+	<div style="position: absolute; top: 0px; right: 20px; opacity:0.7; background: #fff; padding: 10px;">
+		<div style="opacity:1.0;">
+			<h3>World View</h3>
+			<div><a ng-click="addAsset()" style="cursor: pointer;">+ Add Thing</a></div>
+			<div><a ng-click="importOSM({'highway':'street_lamp'})" 
+				style="cursor: pointer;">+ Import OSM Lights</a></div>
+			<div><a ng-click="importOSM({'natural':'tree'})" 
+				style="cursor: pointer;">+ Import OSM Trees</a></div>
+		</div>
+	</div>
+</section>

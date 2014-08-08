@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+
+        <link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css" >
+        <link rel="stylesheet" href="/lib/bootstrap/css/bootstrap-responsive.min.css" >
+
+		<link rel="stylesheet" type="text/css" href="/lib/leaflet/leaflet.css" />
+		<script type="text/javascript" src="/lib/leaflet/leaflet.js"></script>
+
+		<script type='text/javascript' src='/bower_components/jquery/dist/jquery.min.js'></script>
+
+		<script type='text/javascript' src='/scripts/modules/service-calls.js'></script>
+		<script type='text/javascript' src='/scripts/modules/dojo-tables.js'></script>
+
+        <link rel="stylesheet" href="/styles/app.css"/>
+
+		<link rel="stylesheet" href="/lib/primeui/development/primeui-1.1.css"/>
+		<link rel="stylesheet" href="/lib/primeui/themes/aristo/theme.css"/>
+
+        <title>IoT Dev&amp;Test</title>
+    </head>
+    <body>
+        <div id="wrap">
+        	
+            <div id="header">
+                <div class="navbar navbar-inverse navbar-fixed-top">
+                    <div class="navbar-inner">
+                        <div class="container">
+                            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+
+                            <a class="brand" href="/">IoT Dev&amp;Test</a>
+
+                            <div class="nav-collapse collapse">
+                                <ul class="nav">
+                                    <li><a href="/">Dashboard</a></li>
+                                    <li><a href="/world">World</a></li>
+                                    <li><a href="/test">Dev&amp;Test</a></li>
+                                    <li><a href="/contact">Contact</a></li>
+                                </ul>
+                            </div>
+                            
+                            <div id="loadingDiv" style="display: none;">
+                            	<img id="loadingImg" src="/img/loading.gif" alt="loading..."/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content Container -->
+            <div id="main" class="container" style="height: 90%; width: 100%" ng-view></div>
+
+            <div id="push"></div>
+        </div>
+
+        <script type="text/javascript" src="/bower_components/requirejs/require.js" data-main="/scripts/bootstrap.js"></script>
+		<!--<script type="text/javascript" src="/lib/primeui/development/primeui-1.1.js"/>-->
+
+    </body>
+</html>
