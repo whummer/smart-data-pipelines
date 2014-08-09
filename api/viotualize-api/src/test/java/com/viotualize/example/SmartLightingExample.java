@@ -32,7 +32,7 @@ public class SmartLightingExample {
 		simService = new Simulations();
 
 		DeviceType lightSensor = new DeviceType("lightSensor1");
-		Property<Double> lightProp = new Property<>();
+		Property<Double> lightProp = new Property.PropertyDouble("prop1");
 		lightProp.getMetadata().setSensable(true);
 		lightProp.setValueDomain(
 				new ValueDomain.DiscreteVD<Double>(-30.0, 50.0, 0.01));
@@ -48,7 +48,8 @@ public class SmartLightingExample {
 	@Test
 	public void testScenario() {
 
-		SimulationScenario s = simService.
+		// TODO
+		//SimulationScenario s = simService.
 
 	}
 

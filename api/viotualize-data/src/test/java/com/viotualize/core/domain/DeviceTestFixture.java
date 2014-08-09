@@ -61,7 +61,9 @@ public class DeviceTestFixture {
                 type = deviceTypeTestFixture.sensors.get(0);
             }
 
-            d.withDeviceType(type).withLocation(getLocation(positionX, positionY, radius));
+            double coords[] = getLocation(positionX, positionY, radius);
+            Location loc = new Location(coords[1], coords[0]);
+            d.withDeviceType(type).withLocation(loc);
 
             deviceRepository.save(d);
         }
