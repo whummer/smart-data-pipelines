@@ -1,17 +1,31 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<artifactId>parent</artifactId>
 		<groupId>com.viotualize</groupId>
+		<artifactId>parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<modelVersion>4.0.0</modelVersion>
-
-	<artifactId>viotualize-core</artifactId>
-	<name>viotualize-core</name>
+	<name>catalog-service</name>
+	<artifactId>catalog-service</artifactId>
 
 	<dependencies>
+
+		<!-- viotualize dependencies -->
+		<dependency>
+			<groupId>com.viotualize</groupId>
+			<artifactId>viotualize-core</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>		
+		<dependency>
+			<groupId>com.viotualize</groupId>
+			<artifactId>viotualize-core</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
 
 		<!-- CXF dependencies -->
 		<dependency>
@@ -42,17 +56,8 @@
 			<version>${jackson.version}</version>
 		</dependency>
 
-		<!-- Spring and Spring Boot dependencies -->
-		<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-mongodb</artifactId>
-			<version>${spring-data-mongodb.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-mongodb</artifactId>
-			<version>1.1.5.BUILD-SNAPSHOT</version>
-		</dependency>
+
+		<!-- Spring Boot dependencies -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -61,6 +66,19 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
+
+		<!-- Spring Cloud dependencies -->
+		<!-- <dependency> <groupId>org.springframework.cloud</groupId> <artifactId>spring-cloud-localconfig-connector</artifactId> 
+			<version>1.1.0.BUILD-SNAPSHOT</version> </dependency> &lt;!&ndash; <dependency> 
+			<groupId>org.springframework.cloud</groupId> <artifactId>spring-cloud-cloudfoundry-connector</artifactId> 
+			<version>1.1.0.BUILD-SNAPSHOT</version> </dependency>&ndash;&gt; <dependency> 
+			<groupId>org.springframework.cloud</groupId> <artifactId>spring-cloud-spring-service-connector</artifactId> 
+			<version>1.1.0.BUILD-SNAPSHOT</version> </dependency> &lt;!&ndash; todo: 
+			https://github.com/spring-projects/spring-cloud/issues/67 &ndash;&gt; <dependency> 
+			<groupId>org.springframework.amqp</groupId> <artifactId>spring-rabbit</artifactId> 
+			<version>1.3.5.RELEASE</version> </dependency> <dependency> <groupId>org.springframework.data</groupId> 
+			<artifactId>spring-data-redis</artifactId> <version>1.3.2.RELEASE</version> 
+			</dependency> -->
 
 		<!-- API documentation via Swagger -->
 		<dependency>
@@ -81,24 +99,6 @@
 			<artifactId>swagger-core_2.10</artifactId>
 			<version>${swagger.version}</version>
 		</dependency>
-
-		<!-- Netflix dependencies -->
-		<dependency>
-			<groupId>com.netflix.hystrix</groupId>
-			<artifactId>hystrix-core</artifactId>
-			<version>1.3.16</version>
-		</dependency>
-		<dependency>
-			<groupId>com.netflix.hystrix</groupId>
-			<artifactId>hystrix-metrics-event-stream</artifactId>
-			<version>1.3.16</version>
-		</dependency>
-		<dependency>
-			<groupId>com.netflix.hystrix</groupId>
-			<artifactId>hystrix-request-servlet</artifactId>
-			<version>1.3.16</version>
-		</dependency>
-
 
 		<!-- application insight -->
 		<dependency>
@@ -132,6 +132,33 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+
+		<!-- for Provider access -->
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<version>1</version>
+		</dependency>
+
+
+		<!-- Netflix dependencies -->
+		<dependency>
+			<groupId>com.netflix.hystrix</groupId>
+			<artifactId>hystrix-core</artifactId>
+			<version>1.3.16</version>
+		</dependency>
+		<dependency>
+			<groupId>com.netflix.hystrix</groupId>
+			<artifactId>hystrix-metrics-event-stream</artifactId>
+			<version>1.3.16</version>
+		</dependency>
+		<dependency>
+			<groupId>com.netflix.hystrix</groupId>
+			<artifactId>hystrix-request-servlet</artifactId>
+			<version>1.3.16</version>
+		</dependency>
+
+
 
 		<!-- TEST dependencies -->
 		<dependency>
@@ -171,24 +198,24 @@
 			<scope>test</scope>
 		</dependency>
 
-
 	</dependencies>
 
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.5</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>test-jar</goal>
-						</goals>
-					</execution>
-				</executions>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>pl.project13.maven</groupId>
+				<artifactId>git-commit-id-plugin</artifactId>
+				<configuration>
+					<dotGitDirectory>${project.basedir}/../../.git</dotGitDirectory>
+					<generateGitPropertiesFilename>src/main/resources/git.properties</generateGitPropertiesFilename>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
+
 
 </project>

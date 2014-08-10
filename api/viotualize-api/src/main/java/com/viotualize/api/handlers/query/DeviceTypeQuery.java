@@ -19,6 +19,7 @@ import java.util.List;
 /**
  * @author omoser
  */
+// TODO FR: shall these be hystrix command
 @Component
 public class DeviceTypeQuery {
 

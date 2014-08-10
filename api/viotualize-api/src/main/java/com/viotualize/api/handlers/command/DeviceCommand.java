@@ -16,7 +16,7 @@ import com.viotualize.core.repositories.DeviceRepository;
 @Component
 public class DeviceCommand {
 
-    static final Logger log = LoggerFactory.getLogger(DeviceTypeCommand.class);
+    static final Logger log = LoggerFactory.getLogger(DeviceCommand.class);
 
     @Autowired
     DeviceRepository repository;

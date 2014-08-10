@@ -1,0 +1,99 @@
+{
+	"smartobject" : {
+		"name" : "PIR KumoSensor", 
+		"type" : "composite", 
+		"manufacturer" : "wirelesstag", 
+		"tag" : [
+			"humidity", 
+			"temperature", 
+			"infra-red"
+		], 
+		"description" : "Kumostat works with your existing Wireless Sensor Tags utilizing their integrated temperature sensors. In addition, we introduce a new wireless infra-red (PIR) occupancy + high precision (+/-0.4°C) temperature + air humidity sensor KumoSensor™.", 
+		"spec" : {
+			"battery" : {
+				"name" : "CR2045", 
+				"quantity" : 1
+			}, 
+			"battery-life" : "2 years", 
+			"range" : "400ft (120m) line of sight", 
+			"dimensions" : {
+				"height" : {
+					"unit" : "mm", 
+					"value" : 26.0
+				}, 
+				"width" : {
+					"unit" : "mm", 
+					"value" : 27.6
+				}, 
+				"length" : {
+					"unit" : "mm", 
+					"value" : 68.6
+				}
+			}, 
+			"smartobjects" : [
+				{
+					"name" : "Passive Infra-Red", 
+					"type" : "sensor", 
+					"tag" : [
+						"infra-red"
+					], 
+					"spec" : {
+						"range" : {
+							"unit" : "meter", 
+							"value" : "12"
+						}, 
+						"field-of-view" : "102° x 92°"
+					}
+				}, 
+				{
+					"name" : "relative humididty", 
+					"type" : "sensor", 
+					"tag" : [
+						"humitity"
+					], 
+					"spec" : {
+						"precision" : "+/-2% RH error", 
+						"resolution" : "10-bit (0.12% step)", 
+						"feature" : "Logging and notification"
+					}
+				}, 
+				{
+					"name" : "temperature", 
+					"type" : "sensor", 
+					"tag" : [
+						"temperature"
+					], 
+					"spec" : {
+						"range" : "-40°C (-40°F) to 85°C (185°F)", 
+						"accuracy" : "+/-0.4°C typical", 
+						"resolution" : "13-bit, 0.02°C step", 
+						"feature" : "Logging and notification"
+					}
+				}
+			]
+		}
+	}, 
+	"product-url" : "http://wirelesstag.net/specs.html#pir", 
+	"image" : "images/kumopir.jpeg", 
+	"creator" : "riox", 
+	"visibility" : "public", 
+	"creation-time" : "2014-08-12 22:14:200 UTC", 
+	"last-update-time" : "2014-08-15 22:14:200 UTC", 
+	"rating" : 4, 
+	"collaborators" : [
+		"olmoser", 
+		"enz", 
+		"whummer"
+	], 
+	"comments" : [
+		{
+			"creation-time" : "2014-08-15 22:14:200 UTC", 
+			"comment" : "simple and perfect to install; great accuracy", 
+			"rating" : 4
+		}
+	], 
+	"cost" : {
+		"currency" : "USD", 
+		"amount" : "231"
+	}
+}

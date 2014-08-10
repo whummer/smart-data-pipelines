@@ -1,4 +1,4 @@
-package com.viotualize.api;
+package com.viotualize.catalog;
 
 import org.springframework.boot.SpringApplication;
 
@@ -8,11 +8,10 @@ import com.viotualize.boot.ServiceStarter;
  * @author omoser
  * @author riox
  */
+public class CatalogServiceStarter extends ServiceStarter {
 
-public class Api extends ServiceStarter { 
-	
     public static void main(String[] args) {
-        SpringApplication.run(Api.class);
+        SpringApplication.run(CatalogServiceStarter.class);
     }
 
 }

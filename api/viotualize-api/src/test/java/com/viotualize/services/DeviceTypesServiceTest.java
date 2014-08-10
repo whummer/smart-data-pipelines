@@ -1,29 +1,32 @@
-package com.viotualize.api.services;
+package com.viotualize.services;
+
+import static com.jayway.restassured.RestAssured.given;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+
+import java.io.IOException;
+
+import org.apache.http.HttpStatus;
+import org.springframework.test.context.ContextConfiguration;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.restassured.filter.log.RequestLoggingFilter;
 import com.jayway.restassured.filter.log.ResponseLoggingFilter;
 import com.jayway.restassured.http.ContentType;
 import com.viotualize.api.Api;
+import com.viotualize.api.services.AbstractServiceTest;
+import com.viotualize.api.services.DeviceTypes;
 import com.viotualize.core.domain.DeviceType;
-import org.apache.http.HttpStatus;
-import org.springframework.test.context.ContextConfiguration;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-
-import javax.ws.rs.NotFoundException;
-import java.io.IOException;
-
-import static com.jayway.restassured.RestAssured.given;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
 
 /**
  * @author omoser
+ * @author riox
  */
 
 @ContextConfiguration(classes = {Api.class})
-public class DeviceTypesServiceTest extends ViotualizeApiTest {
+public class DeviceTypesServiceTest extends AbstractServiceTest {
 
     public static final String DEVICE_TYPES_PATH = "/device-types";
     ObjectMapper mapper = new ObjectMapper();
@@ -44,7 +47,7 @@ public class DeviceTypesServiceTest extends ViotualizeApiTest {
                 .addProperty("cpu", "AM335x 1GHz ARM Cortex-A8")
                 .addProperty("ram", "512MB DDR3 RAM")
                 .addProperty("usb", "USB client for power & communications");
-
+        
     }
 
     //@Test(groups = {"API"})
@@ -79,7 +82,6 @@ public class DeviceTypesServiceTest extends ViotualizeApiTest {
         original.setId(fromJson.getId());
         assertEquals(original, fromJson);
         assertEquals(original.getProperties(), fromJson.getProperties());
-
     }
 
 
@@ -101,6 +103,7 @@ public class DeviceTypesServiceTest extends ViotualizeApiTest {
             .put(DEVICE_TYPES_PATH);
 
         String json = readDeviceFromApi(HttpStatus.SC_OK, ContentType.JSON.toString());
+        System.out.println(json);
         fromJson = mapper.reader(DeviceType.class).readValue(json);
 
         assertEquals(original, fromJson);
@@ -139,12 +142,8 @@ public class DeviceTypesServiceTest extends ViotualizeApiTest {
 
 
     @Override
-    protected Class getServiceBeanClass() {
+    protected Class<?> getServiceBeanClass() {
         return DeviceTypes.class;
     }
 
-    @Override
-    protected String getServiceBeanName() {
-        return "deviceTypes";
-    }
 }
