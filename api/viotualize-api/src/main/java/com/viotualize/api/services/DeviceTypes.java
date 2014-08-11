@@ -109,7 +109,7 @@ public class DeviceTypes {
     @ExceptionMetered
     public Response update(DeviceType deviceType) {
         deviceTypeCommand.update(deviceType);
-        return Response.ok().build();
+		return Response.ok().build();
     }
 
     @DELETE

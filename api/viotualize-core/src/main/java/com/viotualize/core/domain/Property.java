@@ -2,13 +2,29 @@ package com.viotualize.core.domain;
 
 import java.util.Collection;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 /**
  * Represents a property of an asset.
  *
- * @param <BaseType> The base type of the property, e.g., String or Double
+ * @param <BaseType>
+ *            The base type of the property, e.g., String or Double
  * 
  * @author Waldemar Hummer
  */
+@JsonSubTypes({
+	@Type(value = Property.PropertyString.class, name="STRING"),
+	@Type(value = Property.PropertyInt.class, name="INTEGER"),
+	@Type(value = Property.PropertyLong.class, name="LONG"),
+	@Type(value = Property.PropertyDouble.class, name="DOUBLE")
+})
+@JsonTypeInfo(
+		use = JsonTypeInfo.Id.NAME,
+		include = JsonTypeInfo.As.PROPERTY,
+		property = "baseType"
+)
 public abstract class Property<BaseType> {
 
 	String name;
@@ -25,42 +41,51 @@ public abstract class Property<BaseType> {
 		STRING, INTEGER, LONG, DOUBLE
 	}
 
-	public Property() {}
+	public Property() {
+	}
+
 	public Property(String name) {
 		this.name = name;
 	}
 
 	public static class PropertyString extends Property<String> {
-		public PropertyString() { 
+		public PropertyString() {
 			this(null);
 		}
+
 		public PropertyString(String name) {
 			super(name);
 			baseType = BaseTypeEnum.STRING;
 		}
 	}
+
 	public static class PropertyLong extends Property<Long> {
-		public PropertyLong() { 
+		public PropertyLong() {
 			this(null);
 		}
+
 		public PropertyLong(String name) {
 			super(name);
 			baseType = BaseTypeEnum.LONG;
 		}
 	}
+
 	public static class PropertyInt extends Property<Integer> {
-		public PropertyInt()  { 
+		public PropertyInt() {
 			this(null);
 		}
+
 		public PropertyInt(String name) {
 			super(name);
 			baseType = BaseTypeEnum.INTEGER;
 		}
 	}
+
 	public static class PropertyDouble extends Property<Double> {
 		public PropertyDouble() {
 			this(null);
 		}
+
 		public PropertyDouble(String name) {
 			super(name);
 			baseType = BaseTypeEnum.DOUBLE;
@@ -70,27 +95,35 @@ public abstract class Property<BaseType> {
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	public PropertyMetadata getMetadata() {
 		return metadata;
 	}
+
 	public void setMetadata(PropertyMetadata metadata) {
 		this.metadata = metadata;
 	}
+
 	public Collection<Constraint> getConstraints() {
 		return constraints;
 	}
+
 	public ValueDomain<BaseType> getValueDomain() {
 		return valueDomain;
 	}
+
 	public void setValueDomain(ValueDomain<BaseType> valueDomain) {
 		this.valueDomain = valueDomain;
 	}
+
 	public BaseTypeEnum getBaseType() {
 		return baseType;
 	}
+
 	public void setBaseType(BaseTypeEnum baseType) {
 		this.baseType = baseType;
 	}
@@ -99,4 +132,5 @@ public abstract class Property<BaseType> {
 	public String toString() {
 		return "Property['" + name + "']";
 	}
+
 }

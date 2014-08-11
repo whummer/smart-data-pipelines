@@ -1,29 +1,12 @@
-function setLoadingStatus(status, text) {
-	if(!status) {
-		$("#loadingDiv").hide();
-	} else {
-		$("#loadingDiv").show();
-		$("#loadingImg").prop("title", text);
-	}
-}
 
-function renderElement(elementID) {
-	$(document).ready(function() { 
-		require(
-			["dojo/parser", "dijit/registry", "dojo/domReady!"],
-			function(parser, registry){
-				var widget = registry.byId(elementID);
-				if(!widget) {
-					el = document.getElementById(elementID);
-					widget = registry.byId(el.children[0].id);
-				}
-				if(widget) {
-					widget.destroyRecursive();
-				}
-				parser.parse(elementID);
-	    });
-	});
-}
+rootDojo = null;
+rootDijit = null;
+rootDijitRegistry = null;
+require(["dojo/main", "dijit/main", "dijit/registry"], function(dojo, dijit, registry) {
+	rootDojo = dojo;
+	rootDijit = dijit;
+	rootDijitRegistry = registry;
+});
 
 define(['routes','services/dependencyResolverFor'], function(config, dependencyResolverFor)
 {

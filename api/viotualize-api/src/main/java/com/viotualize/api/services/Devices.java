@@ -79,11 +79,8 @@ public class Devices {
     @Timed
     @ExceptionMetered
     public Response create(Device device) {
-    	System.out.println("Creating asset: " + device);
         device = deviceCommand.create(device);
-    	System.out.println("Created asset: " + device.getId());
         Response r = Response.created(UriBuilder.fromMethod(Devices.class, "retrieve").build(device.getId())).build();
-        System.out.println(r.getEntity());
         return r;
     }
 
@@ -100,6 +97,7 @@ public class Devices {
     @Timed
     @ExceptionMetered
     public Response update(Device device) {
+    	
         deviceCommand.update(device);
         return Response.ok().build();
     }

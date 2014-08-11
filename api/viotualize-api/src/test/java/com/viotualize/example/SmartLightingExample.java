@@ -54,7 +54,14 @@ public class SmartLightingExample {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
+
+		com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+		System.out.println(mapper.readValue(
+				"{\"name\":\"unnamed\",\"baseType\":\"STRING\""
+				//+ ",\"_class\":\"com.viotualize.core.domain.Property.PropertyString\""
+				+ "}",
+				Property.class));
 
 		Asset switch1 = new Asset("Switch 1");
 		DeviceType accType = new DeviceType("Sensor 2");

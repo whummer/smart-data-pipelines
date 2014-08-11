@@ -5,6 +5,9 @@ define(['app'], function(app)
 	[
 		'$scope', '$http', '$compile',
 		function($scope, $http, $compile) {
+		
+			AppController($scope, $http, $compile);
+
 			$scope.page = {
 				heading: 'World View'
 			};
@@ -14,7 +17,8 @@ define(['app'], function(app)
 			$scope.devicesAPI = $scope.coreAPI + "/devices";
 			$scope.deviceTypesAPI = $scope.coreAPI + "/device-types";
 			$scope.categoriesAPI = $scope.coreAPI + "/categories";
-			//$scope.extAPI =  "http://localhost:8080/ext/v1";
+			$scope.dojo = rootDojo;
+			$scope.registry = rootDijitRegistry;
 
 			$scope.createAsset = function(asset) {
 				alert("adding asset " + JSON.stringify(asset));
@@ -55,13 +59,13 @@ define(['app'], function(app)
 						"zoom": zoom,
 						"tags": tagFilter
 				};
-				setLoadingStatus(true, "Loading OSM data...");
+				$scope.setLoadingStatus(true, "Loading OSM data...");
 				invokePOST($http, $scope.extAPI + '/osm/nodes',
 					JSON.stringify(request),
 					function(data, status, headers, config) {
 						alert("Load OSM data: " + JSON.stringify(data))
 						//$scope.loadMarkers();
-						setLoadingStatus(false);
+						$scope.setLoadingStatus(false);
 						$.each(data["result"], function(index, obj) {
 							obj["name"] = JSON.stringify(tagFilter);
 							if(obj["tags"]["species"]) {

@@ -1,0 +1,95 @@
+
+<section ng-controller="DeviceTypePropsController" id="DeviceTypePropsCont" style="height: 100%">
+
+	<link rel="stylesheet" href="/bower_components/dijit/themes/claro/claro.css"/>
+	<link rel="stylesheet" href="/bower_components/dgrid/css/skins/claro.css"/>
+
+	<div style="margin:20px 0;">
+		<button id="btnDeviceTypePropsAdd" onclick="$(this).scope().DeviceTypePropsAdd()">Add</button>
+		<button id="btnDeviceTypePropsDelete" disabled="disabled" onclick="$(this).scope().DeviceTypePropsDelete()">Delete</button>
+	</div>
+
+	<div id="DeviceTypePropsTree"></div>
+
+</section>
+
+<script type="text/javascript">
+
+	app = angular.module("app");
+	app.controller('DeviceTypePropsController',
+		function($scope) {
+
+			$scope.buildPropsTable = function(deviceType) {
+
+				// delete existing container
+				destroyElement("DeviceTypePropsTree");
+
+				var nodes = deviceType.deviceProperties;
+				columnsConfig = [
+					{label: "Name", field: "name", sortable: true, editOn: "dblclick"},
+					{label: "Data Type", field: "baseType",
+							selectOptions: ["STRING", "DOUBLE", "INTEGER", "LONG"]},
+					{label: "Value Domain", field: "valueDomain"}
+				];
+				displayDojoTable(nodes, "DeviceTypePropsTree", columnsConfig,
+					function(event) {
+						if(event.type == "dgrid-select") {
+				    		$scope.selectedProperty = event.rows[0].data;
+				    		$scope.dojo.publish("select.DeviceTypeProps", $scope.selectedProperty);
+				    	} else if(event.type == "dgrid-deselect") {
+				    		$scope.selectedProperty = null;
+				    		$scope.dojo.publish("select.DeviceTypeProps", $scope.selectedProperty);
+				    	} else if(event.type == "dgrid-datachange") {
+				    		data = event.grid.row(event).data;
+				    		data[event.cell.column.field] = event.value;
+				    		event = {changedItem: $scope.currentDeviceType}
+				    		$scope.dojo.publish("change.DeviceTypeProps", event);
+				    	}
+
+						/* adjust UI elements */
+						$("#btnDeviceTypePropsDelete").prop("disabled", 
+								$scope.selectedProperty == null);
+					}
+				);
+			};
+			$scope.buildPropsTable({});
+
+			$scope.DeviceTypePropsDelete = function(){
+				selection = $scope.selectedProperty;
+				if(!selection) return;
+				$scope.currentDeviceType.deviceProperties.remove(selection);
+	    		event = {changedItem: $scope.currentDeviceType}
+	    		$scope.dojo.publish("change.DeviceTypeProps", event);
+				$scope.buildPropsTable($scope.currentDeviceType);
+			}
+			$scope.DeviceTypePropsAdd = function(){
+				if(!$scope.currentDeviceType) {
+					return;
+				}
+				var newProp = {
+					"name": "unnamed",
+					"baseType": "STRING"
+				}
+				$scope.currentDeviceType.deviceProperties.push(newProp);
+				invokePUT($scope.http, $scope.deviceTypesAPI + "/",
+					JSON.stringify($scope.currentDeviceType),
+					function(data, status, headers, config) {
+						$scope.buildPropsTable($scope.currentDeviceType);
+					}
+				);
+			}
+
+			$scope.subscribeOnce("select.DeviceType", function(event) {
+					if(!event) {
+						// delete existing container
+						destroyElement("DeviceTypePropsTree");
+					} else {
+						$scope.currentDeviceType = event;
+						$scope.buildPropsTable(event);
+					}
+				}, "deviceTypeSelectionListener"
+			);
+		}
+	);
+
+</script>
