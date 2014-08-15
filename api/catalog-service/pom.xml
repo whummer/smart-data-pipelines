@@ -10,7 +10,8 @@
 	</parent>
 	<name>catalog-service</name>
 	<artifactId>catalog-service</artifactId>
-
+	<version>0.0.1-SNAPSHOT</version>
+	
 	<dependencies>
 
 		<!-- viotualize dependencies -->
@@ -73,7 +74,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>catalog-service</finalName>
+		<finalName>catalog-service-${project.version}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

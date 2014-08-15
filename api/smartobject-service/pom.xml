@@ -10,6 +10,7 @@
 	</parent>
 	<name>smartobject-service</name>
 	<artifactId>smartobject-service</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
 
 	<dependencies>
 
@@ -80,7 +81,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>smartobject-service</finalName>
+		<finalName>smartobject-service-${project.version}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
