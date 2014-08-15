@@ -46,8 +46,7 @@ public class DeviceTypesServiceTest extends AbstractServiceTest {
                         "in less than 5 minutes with just a single USB cable.")
                 .addProperty("cpu", "AM335x 1GHz ARM Cortex-A8")
                 .addProperty("ram", "512MB DDR3 RAM")
-                .addProperty("usb", "USB client for power & communications");
-        
+                .addProperty("usb", "USB client for power & communications");        
     }
 
     //@Test(groups = {"API"})

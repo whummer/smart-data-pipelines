@@ -9,9 +9,11 @@ import com.viotualize.boot.ServiceStarter;
  * @author riox
  */
 public class CatalogServiceStarter extends ServiceStarter {
-
-    public static void main(String[] args) {
-        SpringApplication.run(CatalogServiceStarter.class);
-    }
+	
+	public static void main(String[] args) {
+		
+		SpringApplication.run(CatalogServiceStarter.class, args);
+				
+	}
 
 }

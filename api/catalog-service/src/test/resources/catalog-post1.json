@@ -3,23 +3,38 @@
 		"name" : "DS18B20", 
 		"type" : "sensor", 
 		"manufacturer" : "Maxim", 
-		"tag" : [
+		"tags" : [
 			"thermometer", 
 			"temperature"
 		], 
 		"description" : "dasdals", 
-		"spec" : {
-			"input-voltage" : "3..5 V", 
-			"resolution" : "9..12 bit", 
-			"temperature" : "-55..125 C"
+		"dynamic-properties" : {
+			"input-voltage" : { 
+				"type": "range",
+				"min" : 3,
+				"max" : 5,
+				"unit" : "V"			
+			},
+			"resolution" : { 
+				"type": "range",
+				"min" : 9,
+				"max" : 12, 
+				"unit" : "bit" 				
+			}, 
+			"temperature" : { 
+				"type": "range",
+				"min" : -55,
+				"max" : 125, 
+				"unit" : "C" 				
+			}
 		}
 	}, 
-	"image" : "images/maxim-ds18b20.jpeg", 
+	"image-url" : "images/maxim-ds18b20.jpeg", 
 	"product-url" : "http://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18B20.html", 
 	"creator" : "riox", 
 	"visibility" : "public", 
-	"creation-time" : "2014-08-12 22:14:200 UTC", 
-	"last-update-time" : "2014-08-15 22:14:200 UTC", 
+	"creation-time" : "2014-08-12T22:14 UTC", 
+	"last-update-time" : "2014-08-15T22:14 UTC", 
 	"rating" : 4, 
 	"collaborators" : [
 		"olmoser", 
@@ -28,7 +43,7 @@
 	], 
 	"comments" : [
 		{
-			"creation-time" : "2014-08-15 22:14:200 UTC", 
+			"creation-time" : "2014-08-15T22:14 UTC", 
 			"comment" : "this device is great for very humid areas", 
 			"rating" : 4
 		}
