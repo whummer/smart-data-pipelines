@@ -1,16 +1,11 @@
 package com.viotualize.api.services;
 
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.ServerSocket;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
-import java.beans.Introspector;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
+import com.jayway.restassured.RestAssured;
+import com.viotualize.core.boot.ServiceStarter;
 import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.feature.Feature;
 import org.apache.cxf.feature.LoggingFeature;
@@ -28,17 +23,21 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
-import com.jayway.restassured.RestAssured;
-import com.viotualize.core.boot.ServiceStarter;
+import java.beans.Introspector;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.ServerSocket;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 
 /**
  * @author omoser
  */
-//@ContextConfiguration(classes = {ServiceStarter.class})
+@ContextConfiguration(classes = {ServiceStarter.class})
 public abstract class AbstractServiceTest extends AbstractTestNGSpringContextTests {
 
     private final static String ENDPOINT_ADDRESS = "http://localhost";
@@ -123,24 +122,19 @@ public abstract class AbstractServiceTest extends AbstractTestNGSpringContextTes
         }
     }
 
-    protected HttpEntity<String> createJsonHttpRequest(JsonNode rootNode) {
+    /*protected HttpEntity<String> createJsonHttpRequest(JsonNode rootNode) {
         // create headers
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-
-        HttpEntity<String> request = new HttpEntity<String>(rootNode.toString(),
-                headers);
-        return request;
+        return  new HttpEntity<String>(rootNode.toString(),headers);
     }
 
-    protected JsonNode createJsonNode(String jsonClasspathResource) throws IOException,
-            URISyntaxException, JsonProcessingException {
+    protected JsonNode createJsonNode(String jsonClasspathResource) throws IOException, URISyntaxException {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readTree(readJsonFromClasspath(jsonClasspathResource));
-    }
+    }*/
 
-    protected byte[] readJsonFromClasspath(String jsonClasspathResource) throws IOException,
-            URISyntaxException {
+    protected byte[] readJsonFromClasspath(String jsonClasspathResource) throws IOException, URISyntaxException {
         InputStream is = getClass().getResourceAsStream(jsonClasspathResource);
         return IOUtils.readBytesFromStream(is);
     }

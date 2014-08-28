@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>viotualize-service-base</artifactId>
+    <artifactId>viotualize-common-service-base</artifactId>
     <name>service-base</name>
     <version>0.0.1-SNAPSHOT</version>
 

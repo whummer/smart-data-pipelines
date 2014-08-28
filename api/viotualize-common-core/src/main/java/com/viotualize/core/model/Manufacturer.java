@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = Constants.COLL_MANUFACTURERS)
 public class Manufacturer extends BaseObject<Manufacturer> {
 
-    protected Manufacturer(String name) {
+    public Manufacturer(String name) {
         super(name);
     }
 }

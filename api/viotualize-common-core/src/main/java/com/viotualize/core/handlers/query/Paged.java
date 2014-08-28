@@ -9,9 +9,15 @@ public class Paged {
 
     private final int size;
 
+    public static final int DEFAULT_SIZE = 10;
+
     public Paged(int page, int size) {
         this.page = page;
-        this.size = size;
+        if (size <= 0) {
+            this.size = DEFAULT_SIZE;
+        } else {
+            this.size = size;
+        }
     }
 
     public int getPage() {
