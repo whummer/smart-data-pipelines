@@ -1,0 +1,5 @@
+com/viotualize/core/repositories/EnvironmentRepository.class
+com/viotualize/core/handlers/query/EnvironmentRepositoryQueries.class
+com/viotualize/services/environment/EnvironmentServiceStarter.class
+com/viotualize/services/environment/api/Environments.class
+com/viotualize/core/handlers/command/EnvironmentRepositoryCommands.class

@@ -1,0 +1,5 @@
+/home/omoser/Dropbox/viotualize-bak/viotualize/api/viotualize-environment-service/src/main/java/com/viotualize/services/environment/EnvironmentServiceStarter.java
+/home/omoser/Dropbox/viotualize-bak/viotualize/api/viotualize-environment-service/src/main/java/com/viotualize/core/handlers/command/EnvironmentRepositoryCommands.java
+/home/omoser/Dropbox/viotualize-bak/viotualize/api/viotualize-environment-service/src/main/java/com/viotualize/core/repositories/EnvironmentRepository.java
+/home/omoser/Dropbox/viotualize-bak/viotualize/api/viotualize-environment-service/src/main/java/com/viotualize/core/handlers/query/EnvironmentRepositoryQueries.java
+/home/omoser/Dropbox/viotualize-bak/viotualize/api/viotualize-environment-service/src/main/java/com/viotualize/services/environment/api/Environments.java
