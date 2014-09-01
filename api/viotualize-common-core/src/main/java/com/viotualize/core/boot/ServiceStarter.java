@@ -9,6 +9,7 @@ import com.ryantenney.metrics.spring.config.annotation.EnableMetrics;
 import com.viotualize.core.cxf.RefIdEnabledCxfServlet;
 import com.wordnik.swagger.jaxrs.config.BeanConfig;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.boot.context.embedded.ServletListenerRegistrationBean;
@@ -29,8 +30,9 @@ import org.springframework.context.annotation.ImportResource;
 @ImportResource(value = { "classpath*:/cxf-config.xml" })
 @EnableMetrics
 public abstract class ServiceStarter { // extends AbstractCloudConfig {
-	
-	@Autowired
+
+
+    @Autowired
 	protected ApplicationContext context;
 
 	@Bean
@@ -44,7 +46,7 @@ public abstract class ServiceStarter { // extends AbstractCloudConfig {
 	}
 	
 	@Bean
-	public ServletListenerRegistrationBean<KaryonGuiceContextListener> karyonListner() {
+	public ServletListenerRegistrationBean<KaryonGuiceContextListener> karyonListener() {
 		return new ServletListenerRegistrationBean<>(new KaryonGuiceContextListener());
 	}
 	
