@@ -32,4 +32,4 @@ ENV VIOTUALIZE_LOG_DIR /var/tmp
 EXPOSE ${riots.port}
 
 # run the microservice
-CMD java -Dserver.port=$RIOT_PORT -jar /var/lib/riots/environment-service-0.0.1-SNAPSHOT.jar
+CMD java -Dserver.port=$RIOT_PORT -jar /var/lib/riots/${project.build.finalName}.jar
