@@ -15,6 +15,10 @@
     <description>this service provides environment actions</description>
     <version>0.0.1-SNAPSHOT</version>
 
+    <properties>
+        <riots.port>8282</riots.port>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.viotualize</groupId>
@@ -52,6 +56,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-remote-resources-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

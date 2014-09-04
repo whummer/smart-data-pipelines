@@ -241,14 +241,18 @@
                 <directory>${project.build.directory}/shared-resources</directory>
                 <filtering>true</filtering>
                 <includes>
-                    <include>**/*.*</include>
+                    <include>**/*</include>
                 </includes>
+                <excludes>
+                    <exclude>Dockerfile</exclude>
+                    <exclude>run.sh</exclude>
+                </excludes>
             </resource>
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
                 <includes>
-                    <include>**/*.*</include>
+                    <include>**/*</include>
                 </includes>
             </resource>
         </resources>
@@ -299,6 +303,35 @@
                     </configuration>
                 </plugin>
 
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>copy-resources2</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>copy-resources</goal>
+                            </goals>
+                            <configuration>
+                                <outputDirectory>${project.build.directory}</outputDirectory>
+                                <resources>
+                                    <resource>
+                                        <directory>${project.build.directory}/shared-resources</directory>
+                                        <filtering>true</filtering>
+                                        <includes>
+                                            <include>Dockerfile</include>
+                                            <include>run.sh</include>
+                                        </includes>
+                                        <excludes>
+                                            <exclude>*/*</exclude>
+                                        </excludes>
+                                    </resource>
+                                </resources>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>

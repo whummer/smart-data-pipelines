@@ -45,6 +45,9 @@
         <google-guice.version>3.0</google-guice.version>
         <netflix-kayron-servlet.version>2.0.02</netflix-kayron-servlet.version>
         <testng.version>6.8.8</testng.version>
+
+        <riots.eureka.hostname>eureka</riots.eureka.hostname>
+        <riots.port>8181</riots.port>
     </properties>
 
     <dependencies>

@@ -22,7 +22,7 @@ RUN echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true 
 RUN apt-get install -y oracle-java8-installer
 
 # add the JAR to lib dir
-ADD ${project.artifactId}/target/${project.build.finalName}.jar /var/lib/riots/
+ADD ${project.build.finalName}.jar /var/lib/riots/
 
 # set execution environment
 ENV RIOT_PORT ${riots.port}
@@ -32,6 +32,3 @@ ENV VIOTUALIZE_LOG_DIR /var/tmp
 EXPOSE ${riots.port}
 
 CMD java -Dserver.port=$RIOT_PORT -jar /var/lib/riots/environment-service-0.0.1-SNAPSHOT.jar
-
-# link to eureka and run the container. adapt port and container name.
-# docker run -i -t -p 8181:8181 --link eureka:eureka --name environment-service omoser/riots-base
