@@ -31,4 +31,5 @@ ENV VIOTUALIZE_LOG_DIR /var/tmp
 # expose port from build config (can be overriden with docker run .. -e "RIOT.PORT=1234")
 EXPOSE ${riots.port}
 
-CMD java -Dserver.port=$RIOT_PORT -jar /var/lib/riots/environment-service-0.0.1-SNAPSHOT.jar
+# run the microservice
+CMD java -Dserver.port=$RIOT_PORT -Deureka.client.props=eureka.client -jar /var/lib/riots/environment-service-0.0.1-SNAPSHOT.jar
