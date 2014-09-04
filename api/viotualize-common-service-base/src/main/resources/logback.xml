@@ -50,19 +50,19 @@
     </appender>
 
     <logger name="org.springframework" level="INFO">
-        <appender-ref ref="spring"/>
+        <appender-ref ref="STDOUT"/>
     </logger>
 
     <logger name="org.apache.cxf" level="INFO">
-        <appender-ref ref="cxf"/>
+        <appender-ref ref="STDOUT"/>
     </logger>
 
     <logger name="com.wordnik.swagger" level="INFO">
-        <appender-ref ref="swagger"/>
+        <appender-ref ref="STDOUT"/>
     </logger>
 
-    <logger name="com.viotualize" level="INFO">
-        <appender-ref ref="viotualize-api"/>
+    <logger name="com.viotualize" level="DEBUG">
+        <appender-ref ref="STDOUT"/>
     </logger>
 
     <root level="DEBUG">
