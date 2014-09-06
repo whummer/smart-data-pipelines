@@ -21,8 +21,8 @@ public class ApiExceptionMapper implements ExceptionMapper<Exception> {
 
     @Override
     public Response toResponse(Exception exception) {
-
-       /* if (exception instanceof NoSuchAppIdException) {
+/*
+       if (exception instanceof NoSuchAppIdException) {
             return Response
                     .status(NOT_FOUND)
                     .type(MediaType.APPLICATION_JSON_TYPE)

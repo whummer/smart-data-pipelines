@@ -33,9 +33,14 @@
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} [%F:%L] - [%marker] [%X{REFID:-******}] - %msg%n
             </pattern>
         </encoder>
+
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>${VIOTUALIZE_LOG_DIR}/api-%d{yyyy-MM-dd}.log</fileNamePattern>
         </rollingPolicy>
+    </appender>
+
+    <appender name="viotualize-api-stash" class="net.logstash.logback.appender.LogstashSocketAppender">
+        <syslogHost>logstash</syslogHost>
     </appender>
 
     <appender name="swagger" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -63,6 +68,7 @@
 
     <logger name="com.viotualize" level="DEBUG">
         <appender-ref ref="STDOUT"/>
+        <appender-ref ref="viotualize-api-stash"/>
     </logger>
 
     <root level="DEBUG">
