@@ -67,7 +67,7 @@ Eureka has quite a long startup time so be patient (approx. 3 min). Ensure that 
 
    Point your browser to [http://localhost:10000/hystrix-dashboard](http://localhost:10000/hystrix-dashboard)
 
-# Launching the mirco services
+# Launching the micro services
 
 Currently, we have the following services:
   1. [smartobject-service](./viotualize-service-smartobject/README.md)
