@@ -16,7 +16,7 @@ to orchestrate the deployment but for now a few manual commands will do.
 
 ## Prerequisites
 
-We leverage [docker.io](http://docker.io), so a docker intallation on the dev machine is necessary. If you are using a Mac,
+We leverage [docker.io](http://docker.io), so a docker installation on the dev machine is necessary. If you are using a Mac,
 we suggest to use [boot2docker](https://github.com/boot2docker/boot2docker). It is based on VirtualBox, so you will need forwarding rules to access any service via localhost (more below).
 
 ## Core Service Deployment
