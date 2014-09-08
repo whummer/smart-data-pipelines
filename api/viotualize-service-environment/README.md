@@ -1,7 +1,7 @@
-Microservice "SmartObject"
+Microservice "Environment"
 =========================
 
-The module "smartobject-service" implements a middle-tier service for managing [SmartObject](../../../../wiki/2.-Terminology)s. 
+The module "environment-service" implements a middle-tier service for managing [SmartEnvironment](../../../../wiki/2.-Terminology)s. 
 
 
 # Compile
@@ -16,13 +16,13 @@ mvn clean package
 *TODO* wrap the commands below into `run-standalone.sh` or similar
 
 ```bash
-export SMARTOBJECT_SERVICE_LOGDIR=/tmp/smartobject-service-logs 
-mkdir -p $SMARTOBJECT_SERVICE_LOGDIR
+export ENVIRONMENT_SERVICE_LOGDIR=/tmp/environment-service-logs 
+mkdir -p $ENVIRONMENT_SERVICE_LOGDIR
 
 # default service port is 8080; if you run all services on your dev machine you need to change it
 # to avoid conflicts. 
-java -DVIOTUALIZE_LOG_DIR=$SMARTOBJECT_SERVICE_LOGDIR -Dserver.port=8082 \
-     -jar target/smartobject-service-*.jar 
+java -DVIOTUALIZE_LOG_DIR=$ENVIRONMENT_SERVICE_LOGDIR -Dserver.port=8082 \
+     -jar target/environment-service-*.jar 
 ```
 
 ## Docker
