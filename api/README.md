@@ -24,6 +24,8 @@ we suggest to use [boot2docker](https://github.com/boot2docker/boot2docker). It 
 For a successful deployment we need two supporting service: MongoDB and Netflix Eureka (which we co-deploy
 with the Hystrix dashboard).
 
+### MongoDB
+
   1. Deploy MongoDB
 
     `docker run -d -p 27017:27017 --name mongodb dockerfile/mongodb mongod`
@@ -32,16 +34,17 @@ with the Hystrix dashboard).
 
     `VBoxManage controlvm boot2docker-vm natpf1 "mongodb,tcp,127.0.0.1,27017,,27017"`
 
-  Test this:
+  3. Test this:
 
     `curl localhost:27017`
 
   Should result in:
 
     `It looks like you are trying to access MongoDB over HTTP on the native driver port.`
-
+    
+ ### Netflix Eureka
   
-  3. Deploy Netflix Eureka
+  1. Deploy Netflix Eureka
 
     `docker run -i -t -p 10000:80 --name eureka riox/eureka`
 
@@ -50,25 +53,26 @@ so we leverge this port for dev & test environment. Docker will download the doc
 from the repo riox/eureka upon first run, then it will start the container. 
 Eureka has quite a long startup time so be patient (approx. 3 min). Ensure that you setup a port forwarding rule in VirtualBox if you are using boot2docker. 
 
-4. (For boot2docker only) Portforwarding for Eureka
+2. (For boot2docker only) Portforwarding for Eureka
 
     `VBoxManage controlvm boot2docker-vm natpf1 "eureka,tcp,127.0.0.1,10000,,10000"`
 
-5. Test Eureka
+3. Test Eureka
 
    Point your browser to [http://localhost:10000/eureka](http://localhost:10000/eureka)
 
 You should see the Eureka page with only the EUREKA host itself being registered. 
 
-6. Test Hystrix Dashboard
+4. Optional: Test Hystrix Dashboard
 
    Point your browser to [http://localhost:10000/hystrix-dashboard](http://localhost:10000/hystrix-dashboard)
 
 # Launching the mirco services
 
-Currently, we have the following two services:
-  1. [smartobject-service](./smartobject-service/README.md)
-  2. [catalog-service](./catalog-service/README.md)
+Currently, we have the following services:
+  1. [smartobject-service](./viotualize-service-smartobject/README.md)
+  2. [catalog-service](./viotualize-service-catalog/README.md)
+  3. [environment-service](./viotualize-service-environment/README.md)
 
 Each service is packaged as a JAR file (with `mvn clean package`) and can be started as a single process. Each service may have some individual configuration that you need to be aware of. Please consult the documentation of the individual services as linked above (all service projects have `-services` in the name of the containing folder). 
 
