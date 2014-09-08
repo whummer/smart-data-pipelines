@@ -76,14 +76,14 @@ Currently, we have the following services:
 
 Each service is packaged as a JAR file (with `mvn clean package`) and can be started as a single process. Moreover, we provide a custom Dockerfile for each microservice that spawns a Docker container and links it to both the Eureka container and the Elasticsearch container. To start the container, simply build the project, go to `target/` and run `run.sh`.
 
-Each service may have some individual configuration that you need to be aware of, but there should be reasonable defaults to get started without touching configuration. The one config item you presumabley want to adapt is the port where the microservice is available. You can either change this in the Maven pom.xml of the microservice:
+Each service may have some individual configuration that you need to be aware of, but there should be reasonable defaults to get started without touching configuration. The one config item you presumabley want to adapt is the port where the microservice is available. If you're running the standalone JAR, yous adapt `-Dserver.port` to your needs. If you're running the Docker'ized build, you can either change the port in the Maven pom.xml of the microservice:
 
 ```xml
 <properties>
   <riots.port>8181</riots.port>
 </properties>
 ```
-or add the `RIOTS_PORT` variable to the environment of the container (that is, by modifing the run.sh and adding `-e "RIOTS_PORT=8181`). Please consult the documentation of the individual services as linked above (all service projects have `-services` in the name of the containing folder). 
+or add the `RIOTS_PORT` variable to the environment of the container (that is, modify `run.sh` and add `-e "RIOTS_PORT=8181` to the Docker `run` command). Please consult the documentation of the individual services as linked above (all service projects have `-services` in the name of the containing folder) for special notes. 
 
 After you started them (either via the CLI or via your favorite IDE), you should see them coming up in [Eureka](http://localhost:10000/eureka). **TODO**: We will provide a simple orchestration script to run all container on your development machine. 
 
