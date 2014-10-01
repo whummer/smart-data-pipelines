@@ -3,8 +3,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.viotualize</groupId>
-    <artifactId>viotualize-parent</artifactId>
+    <groupId>io.riots</groupId>
+    <artifactId>riots-parent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>parent</name>
     <packaging>pom</packaging>
@@ -17,14 +17,14 @@
     </parent>
 
     <modules>
-        <module>viotualize-common-core</module>
-        <module>viotualize-common-service-dependencies</module>
-        <module>viotualize-common-rest-model</module>
-        <module>viotualize-common-service-base</module>
+        <module>riots-common-core</module>
+        <module>riots-common-service-dependencies</module>
+        <module>riots-common-rest-model</module>
+        <module>riots-common-service-base</module>
 
-        <module>viotualize-service-smartobject</module>
-        <module>viotualize-service-catalog</module>
-        <module>viotualize-service-environment</module>
+        <module>riots-service-smartobject</module>
+        <module>riots-service-catalog</module>
+        <module>riots-service-environment</module>
     </modules>
 
     <properties>

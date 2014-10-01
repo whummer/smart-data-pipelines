@@ -1,34 +1,33 @@
-<?xml version="1.0"?>
-<project
-        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-        xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>riots-common-service-dependencies</artifactId>
+        <groupId>io.riots</groupId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../riots-common-service-dependencies/pom.xml</relativePath>
+    </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>com.viotualize</groupId>
-        <artifactId>viotualize-common-service-dependencies</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
-        <relativePath>../viotualize-common-service-dependencies/pom.xml</relativePath>
-    </parent>
-
-    <artifactId>viotualize-service-smartobject</artifactId>
-    <name>smartobject-service</name>
-    <description>this service provides smart object actions</description>
+    <artifactId>riots-service-environment</artifactId>
+    <name>environment-service</name>
+    <description>this service provides environment actions</description>
     <version>0.0.1-SNAPSHOT</version>
 
     <properties>
-        <riots.port>8383</riots.port>
+        <riots.port>8282</riots.port>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>com.viotualize</groupId>
-            <artifactId>viotualize-common-core</artifactId>
+            <groupId>io.riots</groupId>
+            <artifactId>riots-common-core</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>com.viotualize</groupId>
-            <artifactId>viotualize-common-core</artifactId>
+            <groupId>io.riots</groupId>
+            <artifactId>riots-common-core</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <type>test-jar</type>
             <scope>test</scope>
@@ -42,7 +41,6 @@
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-mongodb</artifactId>
         </dependency>
-
     </dependencies>
 
     <build>
@@ -65,6 +63,5 @@
             </plugin>
         </plugins>
     </build>
-
 
 </project>

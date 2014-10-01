@@ -6,12 +6,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>viotualize-parent</artifactId>
-        <groupId>com.viotualize</groupId>
+        <artifactId>riots-parent</artifactId>
+        <groupId>io.riots</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>viotualize-common-service-dependencies</artifactId>
+    <artifactId>riots-common-service-dependencies</artifactId>
     <name>service-dependencies</name>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
@@ -20,21 +20,21 @@
 
         <!-- service base -->
         <dependency>
-            <groupId>com.viotualize</groupId>
-            <artifactId>viotualize-common-service-base</artifactId>
+            <groupId>io.riots</groupId>
+            <artifactId>riots-common-service-base</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 
         <!-- rest model -->
         <dependency>
-            <groupId>com.viotualize</groupId>
-            <artifactId>viotualize-common-rest-model</artifactId>
+            <groupId>io.riots</groupId>
+            <artifactId>riots-common-rest-model</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>com.viotualize</groupId>
-            <artifactId>viotualize-common-rest-model</artifactId>
+            <groupId>io.riots</groupId>
+            <artifactId>riots-common-rest-model</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <type>test-jar</type>
             <scope>test</scope>
@@ -288,7 +288,7 @@
                             </goals>
                             <configuration>
                                 <resourceBundles>
-                                    <resourceBundle>com.viotualize:viotualize-common-service-base:${project.version}
+                                    <resourceBundle>io.riots:riots-common-service-base:${project.version}
                                     </resourceBundle>
                                 </resourceBundles>
                                 <!-- om: we need to put the shared resources into another dir and filter them later -->
