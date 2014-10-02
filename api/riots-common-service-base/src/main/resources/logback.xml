@@ -8,49 +8,58 @@
     </appender>
 
     <appender name="spring" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>${VIOTUALIZE_LOG_DIR}/spring.log</File>
+        <File>${RIOTS_LOG_DIR}/spring.log</File>
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} [%F:%L] - [%X{REFID:-******}] - %m%n</pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${VIOTUALIZE_LOG_DIR}/spring-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>${RIOTS_LOG_DIR}/spring-%d{yyyy-MM-dd}.log</fileNamePattern>
         </rollingPolicy>
     </appender>
 
     <appender name="cxf" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>${VIOTUALIZE_LOG_DIR}/cxf.log</File>
+        <File>${RIOTS_LOG_DIR}/cxf.log</File>
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} [%F:%L] - [%X{REFID:-******}] - %msg%n</pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${VIOTUALIZE_LOG_DIR}/cxf-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>${RIOTS_LOG_DIR}/cxf-%d{yyyy-MM-dd}.log</fileNamePattern>
         </rollingPolicy>
     </appender>
 
-    <appender name="viotualize-api" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>${VIOTUALIZE_LOG_DIR}/api.log</File>
+    <appender name="riots-api" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${RIOTS_LOG_DIR}/api.log</File>
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} [%F:%L] - [%marker] [%X{REFID:-******}] - %msg%n
             </pattern>
         </encoder>
 
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${VIOTUALIZE_LOG_DIR}/api-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>${RIOTS_LOG_DIR}/api-%d{yyyy-MM-dd}.log</fileNamePattern>
         </rollingPolicy>
     </appender>
 
-    <appender name="viotualize-api-stash" class="net.logstash.logback.appender.LogstashSocketAppender">
+   <!-- <appender name="riots-api-stash" class="net.logstash.logback.appender.LogstashSocketAppender">
         <syslogHost>logstash</syslogHost>
+    </appender>-->
+
+    <appender name="stash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <!-- remoteHost and port are optional (default values shown) -->
+        <remoteHost>logstash</remoteHost>
+        <port>4560</port>
+
+        <!-- encoder is required -->
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
     </appender>
 
     <appender name="swagger" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>${VIOTUALIZE_LOG_DIR}/swagger.log</File>
+        <File>${RIOTS_LOG_DIR}/swagger.log</File>
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} [%F:%L] - [%marker] [%X{REFID:-******}] - %msg%n
             </pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${VIOTUALIZE_LOG_DIR}/api-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>${RIOTS_LOG_DIR}/api-%d{yyyy-MM-dd}.log</fileNamePattern>
         </rollingPolicy>
     </appender>
 
@@ -66,12 +75,13 @@
         <appender-ref ref="STDOUT"/>
     </logger>
 
-    <logger name="com.viotualize" level="DEBUG">
+    <logger name="io.riots" level="DEBUG">
         <appender-ref ref="STDOUT"/>
-        <appender-ref ref="viotualize-api-stash"/>
+        <appender-ref ref="stash"/>
     </logger>
 
     <root level="DEBUG">
         <appender-ref ref="STDOUT"/>
+        <appender-ref ref="stash" />
     </root>
 </configuration>

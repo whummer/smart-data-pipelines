@@ -1,1 +1,1 @@
-org.springframework.context.ApplicationListener=com.viotualize.core.eureka.EurekaPortAdvisor
+org.springframework.context.ApplicationListener=io.riots.core.eureka.EurekaPortAdvisor
