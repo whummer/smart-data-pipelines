@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--suppress UnparsedCustomBeanInspection -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:metrics="http://www.ryantenney.com/schema/metrics"
+       xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+       xmlns:repo="http://www.springframework.org/schema/data/repository"
+       xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+       xmlns:security="http://www.springframework.org/schema/security" 
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:cxf="http://cxf.apache.org/core"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd
+        http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd
+        http://www.ryantenney.com/schema/metrics http://www.ryantenney.com/schema/metrics/metrics-3.0.xsd
+        http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/data/repository http://www.springframework.org/schema/data/repository/spring-repository.xsd
+        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+<!-- 	<import resource="classpath*:cxf-config.xml"/> -->
+
+<!--     <context:component-scan base-package="io.riots"/> -->
+
+    <beans profile="TEST">
+        <context:property-placeholder ignore-resource-not-found="false"
+                                      ignore-unresolvable="false"
+                                      location="classpath*:riots-api.properties"/>
+    </beans>
+
+    <beans profile="PRODUCTION">
+        <context:property-placeholder ignore-resource-not-found="false"
+                                      ignore-unresolvable="false"
+                                      location="file:///${RIOTS_CONFIG_DIR}/riots-api.properties"/>
+    </beans>
+
+
+    <beans profile="JVM-METRICS">
+        <metrics:metric-registry id="metrics"/>
+        <metrics:annotation-driven metric-registry="metrics"/>
+        <metrics:reporter type="slf4j" metric-registry="metrics" marker="METRIC" period="1m"/>
+        <!-- <metrics:reporter type="ganglia" metric-registry="metrics" group="localhost" port="8649" ttl="200"
+                           rate-unit="SECONDS" duration-unit="MILLISECONDS" udp-mode="MULTICAST" period="30s"/>-->
+        <metrics:register metric-registry="metrics">
+            <bean metrics:name="jvm.gc" class="com.codahale.metrics.jvm.GarbageCollectorMetricSet"/>
+            <bean metrics:name="jvm.memory" class="com.codahale.metrics.jvm.MemoryUsageGaugeSet"/>
+            <bean metrics:name="jvm.thread-states" class="com.codahale.metrics.jvm.ThreadStatesGaugeSet"/>
+            <bean metrics:name="jvm.fd.usage" class="com.codahale.metrics.jvm.FileDescriptorRatioGauge"/>
+        </metrics:register>
+    </beans>
+
+</beans>

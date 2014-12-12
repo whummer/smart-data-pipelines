@@ -1,0 +1,79 @@
+<!--suppress UnparsedCustomBeanInspection -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:cxf="http://cxf.apache.org/core"
+       xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+       xmlns:websocket="http://www.springframework.org/schema/websocket"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd
+                           http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd
+                           http://www.springframework.org/schema/websocket http://www.springframework.org/schema/websocket/spring-websocket.xsd
+                           http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd
+                           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <import resource="classpath:META-INF/cxf/cxf.xml"/>
+    <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
+    <import resource="classpath*:riots-mongodb-config.xml"/>
+
+    <jaxrs:server address="/v1" id="api-v1">
+        <jaxrs:serviceBeans>
+            <ref bean="ping"/>
+            <ref bean="deviceTypes"/>
+            <ref bean="devices"/>
+            <ref bean="manufacturers"/>
+            <ref bean="assetCategories"/>
+            <ref bean="simulations"/>
+            <ref bean="ratings"/>
+            <ref bean="semanticTypes"/>
+            <ref bean="deviceDrivers"/>
+            <ref bean="statistics"/>
+            <bean id="swaggerResourceJSON" class="com.wordnik.swagger.jaxrs.listing.ApiListingResourceJSON"/>
+        </jaxrs:serviceBeans>
+        <jaxrs:features>
+            <cxf:logging/>
+        </jaxrs:features>
+        <jaxrs:providers>
+            <bean id="jsonProvider" class="com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider"/>
+            <bean class="com.wordnik.swagger.jaxrs.listing.ResourceListingProvider"/>
+            <bean class="com.wordnik.swagger.jaxrs.listing.ApiDeclarationProvider"/>
+        </jaxrs:providers>
+    </jaxrs:server>
+
+	<!-- <bean id="websocket" class="io.riots.api.websocket.WebSocketEndPoint"/>
+	<websocket:handlers>
+	    <websocket:mapping path="/websocket" handler="websocketHandler"/>
+	    <websocket:sockjs/>
+	</websocket:handlers>-->
+
+    <bean id="swaggerConfig" class="com.wordnik.swagger.jaxrs.config.BeanConfig">
+        <property name="resourcePackage" value="io.riots.api.services"/>
+        <property name="version" value="0.0.1"/>
+        <property name="basePath" value="http://localhost:8080/api/v1"/>
+        <property name="title" value="riots API"/>
+        <property name="description" value="~~~ riots.io ~~~"/>
+        <property name="contact" value="o@omoser.com"/>
+        <property name="scan" value="true"/>
+        <!--<property name="apiReader" value="com.wordnik.swagger.jaxrs.reader.BasicJaxrsApiReader"/>-->
+        <!--<property name="license" value="Apache 2.0 License"/>
+        <property name="licenseUrl" value="http://www.apache.org/licenses/LICENSE-2.0.html"/>-->
+    </bean>
+
+	<!-- set Spring security configurations -->
+	<bean id="authFilter" class="io.riots.api.services.auth.AuthFilter" />
+ 	<bean id="authAdvice" class="io.riots.api.services.auth.AuthPermissionAdvice" />
+	<bean id="expressionHandler"
+		class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
+		<property name="permissionEvaluator" ref="authPermissionChecker"/>
+	</bean>
+	<security:global-method-security secured-annotations="enabled" pre-post-annotations="enabled">
+		<security:expression-handler ref="expressionHandler"/>
+	</security:global-method-security>
+	<security:authentication-manager>
+        <security:authentication-provider ref="authFilter" />
+    </security:authentication-manager>
+
+	<aop:aspectj-autoproxy/>
+
+</beans>

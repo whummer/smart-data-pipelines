@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>io.riots</groupId>
+        <artifactId>riots-common-service-dependencies</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../riots-common-service-dependencies/pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>riots-webapp</artifactId>
+    <packaging>war</packaging>
+
+    <dependencies>
+
+		<!-- riots dependencies -->
+		<dependency>
+	        <groupId>io.riots</groupId>
+	        <artifactId>riots-service-showcase</artifactId>
+	        <version>${project.version}</version>
+        </dependency>
+
+		<!-- make sure we set the scope to provided, otherwise interferes with tomcat -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
+        </dependency>
+
+    </dependencies>
+
+	<build>
+		<plugins>
+            <plugin>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <version>2.2</version>
+                <configuration>
+                    <path>/</path>
+                    <systemProperties>
+                        <spring.profiles.active>TEST,JVM-METRICS,MONGODB</spring.profiles.active>
+                        <RIOTS_LOG_DIR>/tmp/riots</RIOTS_LOG_DIR>
+                    </systemProperties>
+                    <contextFile>${basedir}/src/main/webapp/META-INF/context.xml</contextFile>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>package-tomcat</id>
+                        <goals>
+                            <goal>exec-war-only</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <path>/</path>
+                            <enableNaming>false</enableNaming>
+                            <finalName>riots-api.jar</finalName>
+                            <warRunDependencies>
+                                <warRunDependency>
+                                    <dependency>
+                                        <groupId>${project.groupId}</groupId>
+                                        <artifactId>${project.artifactId}</artifactId>
+                                        <version>${project.version}</version>
+                                        <type>war</type>
+                                    </dependency>
+                                </warRunDependency>
+                            </warRunDependencies>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>run-tomcat</id>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                                    <contextFile>${basedir}/src/main/webapp/META-INF/context.xml</contextFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+	</build>
+
+</project>

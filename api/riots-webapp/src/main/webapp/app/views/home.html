@@ -1,0 +1,109 @@
+<section ng-controller="HomeViewController" id="homeViewDiv" style="height: 100%">
+
+    <div class="jumbotron">
+        <h3>Hi {{authInfo.name.split(' ')[0]}}</h3>
+
+        <p>It looks like you do not have configured your dashboard. Eager to learn how to add elements to your
+            dashboard?</p>
+
+        <p>
+            <a class="btn btn-primary btn-lg" href="#" data-toggle="modal" data-target="#addWidgetModal" role="button">
+                <span class="glyphicon glyphicon-plus-sign" style="margin-right: 10px"></span> Add Widgets</a>
+        </p>
+    </div>
+
+    <div class="modal fade" id="addWidgetModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span
+                            aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Add a Widget to your Dashboard</h4>
+                </div>
+                <div class="modal-body row">
+                    <div class="col-md-6">Widget 1</div>
+                    <div class="col-md-6">Widget 2</div>
+                </div>
+                <div class="modal-body row">
+                    <div class="col-md-6">Widget 3</div>
+                    <div class="col-md-6">Widget 4</div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--<div data-dojo-type="dijit/layout/ContentPane" style="height: 100%; position: relative;" id="homeViewDivWrapper">-->
+
+    <!--<link rel="stylesheet" href="styles/home.css"/>-->
+
+    <!--<div id="homeViewLayout" ui-layout style="height: 100%">-->
+
+    <!--<bg-splitter orientation="vertical" style="height: 100%">-->
+    <!--<bg-pane>-->
+    <!--<bg-splitter orientation="horizontal">-->
+    <!--<bg-pane>-->
+    <!--&lt;!&ndash;-->
+    <!--<div class="dijitAccordionInnerContainer" style="padding: 0px;">-->
+    <!--<div class="dijitAccordionTitle">Platform Stats</div>-->
+    <!--<div class="dijitAccordionChildWrapper">-->
+    <!--<ng-include src="appConfig['appRootPath'] + '/views/home_stats.html'"></ng-include>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--&ndash;&gt;-->
+    <!--<div class="panel panel-default">-->
+    <!--<div class="panel-heading"><h3 class="panel-title">Platform Stats</h3></div>-->
+    <!--<div class="panel-body">-->
+    <!--<ng-include src="appConfig['appRootPath'] + '/views/home_stats.html'"></ng-include>-->
+
+    <!--</div>-->
+    <!--</div>-->
+    <!--</bg-pane>-->
+    <!--<bg-pane>-->
+    <!--<div class="dijitAccordionInnerContainer" style="padding: 0px;">-->
+    <!--<div class="dijitAccordionTitle">Simulation History</div>-->
+    <!--<div class="dijitAccordionChildWrapper">-->
+    <!--<ng-include src="appConfig['appRootPath'] + '/views/home_history.html'"></ng-include>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</bg-pane>-->
+    <!--</bg-splitter>-->
+    <!--</bg-pane>-->
+    <!--<bg-pane>-->
+    <!--<bg-splitter orientation="horizontal">-->
+    <!--<bg-pane>-->
+    <!--<div class="dijitAccordionInnerContainer" style="padding: 0px;">-->
+    <!--<div class="dijitAccordionTitle">News and Updates and some other <b>stuff</b></div>-->
+    <!--<div class="dijitAccordionChildWrapper">-->
+    <!--<ng-include src="appConfig['appRootPath'] + '/views/home_updates.html'"></ng-include>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</bg-pane>-->
+    <!--<bg-pane>-->
+    <!--<div class="dijitAccordionInnerContainer" style="padding: 0px;">-->
+    <!--<div class="dijitAccordionTitle">Costs Overview</div>-->
+    <!--<div class="dijitAccordionChildWrapper">-->
+    <!--t.b.a.-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</bg-pane>-->
+    <!--</bg-splitter>-->
+    <!--</bg-pane>-->
+    <!--</bg-splitter>-->
+
+    <!--</div>-->
+
+    <!--</div>-->
+
+
+</section>
+
+<script>
+
+    renderElement("homeViewDiv");
+
+</script>
+

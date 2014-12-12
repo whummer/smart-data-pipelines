@@ -4,9 +4,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+/* TODO revise/remove? */
 public class SmartObject {
 	
 	@JsonProperty(required=false)
@@ -19,7 +20,7 @@ public class SmartObject {
 	private List<String> tags;
 	
 	@JsonProperty("dynamic-properties")
-	private Map<String, ValueDomain> dynamicProperties;
+	private Map<String, Object> dynamicProperties;
 	
 	@JsonProperty("static-properties")
 	private Map<String, Map<String, String>> staticProperties;
@@ -80,14 +81,7 @@ public class SmartObject {
 		this.tags = tags;
 	}
 
-	public Map<String, ValueDomain> getDynamicProperties() {
-		return this.dynamicProperties;
-	}
-
-	public void setDynamicProperties(Map<String, ValueDomain> properties) {
-		this.dynamicProperties = properties;
-	}
-
+	
 	public List<SmartObject> getSmartObjects() {
 		return this.smartObjects;
 	}

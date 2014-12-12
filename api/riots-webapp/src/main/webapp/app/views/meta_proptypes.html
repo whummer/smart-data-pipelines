@@ -1,0 +1,47 @@
+<section ng-controller="MetaPropTypesController" id="metaPropTypesSection">
+
+    <div class="text-right">
+        <button class="btn btn-primary btn-sm" id="btnAddTypeProperty"><span class="glyphicon glyphicon-plus"></span>
+            Add
+        </button>
+        <button class="btn btn-warning btn-sm" id="btnDelTypeProperty"><span class="glyphicon glyphicon-minus"></span>
+            Delete
+        </button>
+    </div>
+
+    <div id="metaTypesTableProperty" ui-grid="gridConfig" ui-grid-selection ui-grid-edit ui-grid-row-edit
+         class="grid"></div>
+
+</section>
+
+<script type="text/javascript">
+
+    var app = angular.module("app");
+    app.controller('MetaPropTypesController', [
+        '$scope', '$http', '$compile',
+        function ($scope, $http, $compile) {
+
+            AppController($scope, $http, $compile);
+
+            $scope.gridConfig = {};
+
+            /* register event handlers */
+            $scope.addClickHandler("btnAddTypeProperty", function () {
+                $scope.addMetaType($scope.gridConfig, "Property");
+            });
+            $scope.addClickHandler("btnDelTypeProperty", function () {
+                $scope.deleteMetaType($scope.gridConfig, "Property");
+            });
+
+            /* render main elements */
+            $scope.initTable($scope.gridConfig, "Property");
+            $scope.loadTable($scope.gridConfig, "Property");
+            $scope.onRenderElement("btnDelTypeProperty", function (el) {
+                el.attr("disabled", true);
+            });
+
+        }
+    ]);
+
+</script>
+			

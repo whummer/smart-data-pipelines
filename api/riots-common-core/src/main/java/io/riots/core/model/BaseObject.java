@@ -1,6 +1,8 @@
 package io.riots.core.model;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.annotation.Id;
@@ -18,7 +20,9 @@ public abstract class BaseObject<T> {
 
     String description;
 
-    Map<String, String> properties = new HashMap<>();
+    Map<String,String> properties = new HashMap<>();
+
+    List<String> tags = new LinkedList<String>();
 
     /**
      * Default c'tor.
@@ -34,15 +38,13 @@ public abstract class BaseObject<T> {
     public String getId() {
         return id;
     }
+    public void setId(String id) {
+		this.id = id;
+	}
 
     public String getName() {
         return name;
     }
-
-    public String getDescription() {
-        return description;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -50,6 +52,16 @@ public abstract class BaseObject<T> {
     public void setDescription(String description) {
         this.description = description;
     }
+    public String getDescription() {
+        return description;
+    }
+
+    public List<String> getTags() {
+		return tags;
+	}
+    public void setTags(List<String> tags) {
+		this.tags = tags;
+	}
 
     public T withName(final String name) {
         this.name = name;
@@ -65,14 +77,12 @@ public abstract class BaseObject<T> {
         properties.put(key, value);
         return (T) this;
     }
-
     public Map<String, String> getProperties() {
-        return properties;
-    }
-
+		return properties;
+	}
     public void setProperties(Map<String, String> properties) {
-        this.properties = properties;
-    }
+		this.properties = properties;
+	}
 
     @Override
     public boolean equals(Object o) {
@@ -94,11 +104,5 @@ public abstract class BaseObject<T> {
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (description != null ? description.hashCode() : 0);
         return result;
-    }
-
-
-    // om: needed for unit tests
-    public void setId(String id) {
-        this.id = id;
     }
 }

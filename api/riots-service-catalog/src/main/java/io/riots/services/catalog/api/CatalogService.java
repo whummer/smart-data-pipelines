@@ -1,25 +1,39 @@
 package io.riots.services.catalog.api;
 
+import io.riots.catalog.model.DeviceType;
+import io.riots.catalog.repositories.CatalogRepository;
+//import io.riots.catalog.repositories.CatalogRepository;
+import io.riots.services.model.CatalogEntry;
+
+import java.net.URI;
+import java.util.List;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.query.StringQuery;
+import org.springframework.stereotype.Service;
+
 import com.codahale.metrics.annotation.ExceptionMetered;
 import com.codahale.metrics.annotation.Timed;
-import io.riots.core.handlers.command.CreateSmartObjectCommand;
-import io.riots.services.model.CatalogEntry;
-import io.riots.services.model.SmartObject;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Service;
-
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
-import java.net.URI;
 
 /**
  * Implements the Catalog REST API edge service.
@@ -27,19 +41,22 @@ import java.net.URI;
  * @author riox
  */
 @Service
-@Path("/catalog/entries")
-@Api(value = "Catalog Service", description = "Catalog service for SmartObjects")
+@Path("/catalog/things")
+@Api(value = "Catalog Service", description = "Catalog service for SmartThings")
 public class CatalogService {
 
     static final Logger log = LoggerFactory.getLogger(CatalogService.class);
 
     @Autowired
-    ApplicationContext context;
+    private CatalogRepository repo;
+    
+    @Autowired
+    private ElasticsearchTemplate searchTemplate;
 
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Retrieve single Catalog entry", notes = "", response = CatalogEntry.class)
+    @ApiOperation(value = "Retrieve single thing from the catalog", notes = "", response = CatalogEntry.class)
     @ApiResponses(value = {@ApiResponse(code = 404, message = "No catalog entry with given id found")})
     @Timed
     @ExceptionMetered
@@ -59,6 +76,16 @@ public class CatalogService {
     @ExceptionMetered
     public Response list(@QueryParam("q") String query,
                          @QueryParam("page") int page, @QueryParam("size") int size) {
+    	
+    	// TODO handle page and size parameter
+    	
+    	StringQuery sq = new StringQuery(query);
+    	List<DeviceType> list = searchTemplate.queryForList(sq, DeviceType.class);
+    	
+    	for (DeviceType type : list) {
+    		System.out.println(type);
+    	}
+    	
         return Response.ok().build();
     }
 
@@ -75,14 +102,25 @@ public class CatalogService {
     public Response create(CatalogEntry entry) {
         log.trace("Invoking create()");
 
-        // create a new Hystrix command
-        CreateSmartObjectCommand cmd = context.getBean(CreateSmartObjectCommand.class);
-
-        // set required objects
-        cmd.setSmartObject(entry.getSmartObject());
-
-        SmartObject result = cmd.execute();
-        log.info("result: " + result);
+//        // create a new Hystrix command
+//        CreateSmartObjectCommand cmd = context.getBean(CreateSmartObjectCommand.class);
+//
+//        // set required objects
+//        cmd.setSmartObject(entry.getSmartObject());
+//
+//        SmartObject result = cmd.execute();
+//        log.info("result: " + result);
+        
+        
+        DeviceType type = new DeviceType("foo");
+        type.setManufacturer("Honeywell");
+        type.setName("Rocket");        
+        repo.save(type);      
+        
+        DeviceType type2 = new DeviceType("foo2");
+        type.setManufacturer("Honeywell2");
+        type.setName("Rocket2");        
+        repo.save(type2);    
 
         URI location = UriBuilder.fromPath("/catalog/entries/{id}").build(1);
         return Response.created(location).build();

@@ -1,0 +1,42 @@
+<section ng-controller="UpdatesController" id="homeUpdatesDiv" style="height: 100%">
+
+	<div>
+		<div data-dojo-type="dijit/layout/ContentPane" style="height: 100%">
+			<!--<h3 style="margin-top: -15px;">News and Updates</h3>-->
+
+			<table style="height: auto; margin: auto;">
+				<tr><td><b>Device Types:</b></td>	<td>New:</td><td>{{updates.deviceTypes.created}}</td></tr>
+				<tr><td></td>						<td>Updated:</td><td>{{updates.deviceTypes.created}}</td></tr>
+				<tr><td><b>Drivers:</b></td><td>New:</td><td>{{updates.drivers.created}}</td></tr>
+				<tr><td></td><td>Updated:</td><td>{{updates.drivers.updated}}</td></tr>
+				<tr><td><b>Ratings:</b></td><td>New:</td><td>{{updates.ratings.created}}</td></tr>
+			</table>
+
+		</div>
+	</div>
+
+</section>
+
+<script>
+
+	var app = angular.module("app");
+	app.controller('UpdatesController', [
+		'$scope', '$http', '$compile',
+		function($scope, $http, $compile) {
+
+			AppController($scope, $http, $compile);
+			
+			$scope.updates = {
+				deviceTypes: {created: 12, updated: 57},
+				drivers: {created: 3, updated: 14},
+				ratings: {created: 57}
+			}
+
+			var callback = function(el, registry) {
+			}
+			/* start rendering the main container */
+			renderElement("homeUpdatesDiv", callback);
+		}
+	]);
+
+</script>

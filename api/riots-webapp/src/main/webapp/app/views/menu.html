@@ -1,0 +1,64 @@
+<nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+
+        <!-- navigation toggle -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed"
+                    data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#"><img src="img/riots.png" style="height: 30px; padding-bottom: 10px; vertical-align: middle"/></a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
+            <!-- top level menu items -->
+            <ul class="nav navbar-nav">
+                <li id="menuItemDashboard"><a href="#/home" onclick="return clickMenu(this)"><span class="glyphicon glyphicon-dashboard"></span> Dashboard</a></li>
+                <li id="menuItemCatalog" class="dropdown">
+                    <!--<li><a  ><span class="glyphicon glyphicon-book"></span> Catalog</a></li>-->
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span class="glyphicon glyphicon-book"></span> Catalog<span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#/catalog" onclick="return clickMenu(this)"><span style="margin-right: 10px" class="glyphicon glyphicon-list"></span>Browse Catalog</a></li>
+                        <li><a href="#"><span style="margin-right: 10px" class="glyphicon glyphicon-plus-sign"></span>Add Devices</a></li>
+                        <li><a href="#"><span style="margin-right: 10px" class="glyphicon glyphicon-import"></span>Import Devices</a></li>
+                        <li><a href="#/meta" onclick="return clickMenu(this)"><span style="margin-right: 10px" class="glyphicon glyphicon-edit"></span>Edit Metadata</a></li>
+                    </ul>
+                </li>
+                <li id="menuItemScenario"><a href="#/world" onclick="return clickMenu(this)"><span class="glyphicon glyphicon-globe"></span> Scenario</a></li>
+            </ul>
+
+            <!-- user profile menu -->
+            <ul class="nav navbar-nav navbar-right" ng-show="authInfo">
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Logged in as {{authInfo.name}}<span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#"><span style="margin-right: 10px" class="glyphicon glyphicon-cog"></span>My Devices</a></li>
+                        <li><a href="#"><span style="margin-right: 10px" class="glyphicon glyphicon-list-alt"></span>My Blueprints</a></li>
+                        <li><a href="#"><span style="margin-right: 10px" class="glyphicon glyphicon-wrench"></span>My Profile</a></li>
+                        <li class="divider"></li>
+                        <li><a href="JavaScript: void(0);" ng-click="performLogout()"><span style="margin-right: 10px" class="glyphicon glyphicon-log-out"></span>Logout</a></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <div id="userAvatar" ng-show="authInfo" style="line-height: 39px; padding-top: 5px">
+                        <img class="img-circle" id="imgAvatar" ng-src="{{authInfo.avatar}}" alt="img" ng-if="authInfo.avatar" style="height: 30px;"/>
+                    </div>
+                </li>
+
+            </ul>
+
+            <!-- loading indicator. TODO move this somewhere else -->
+            <div id="loadingDiv" style="display: none;">
+                <img id="loadingImg" src="img/loading.gif" alt="loading..."/>
+            </div>
+
+        </div>
+    </div>
+</nav>

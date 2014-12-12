@@ -39,4 +39,7 @@ git.properties
 /*/target/
 /*/test-output/
 
-/VIOTUALIZE_LOG_DIR_IS_UNDEFINED/
+.metadata/
+/riots-service-catalog/data/
+VIOTUALIZE_LOG_DIR_IS_UNDEFINED
+RIOTS_LOG_DIR_IS_UNDEFINED

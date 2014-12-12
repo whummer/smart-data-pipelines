@@ -6,8 +6,11 @@ import com.google.inject.servlet.GuiceFilter;
 import com.netflix.hystrix.contrib.metrics.eventstream.HystrixMetricsStreamServlet;
 import com.netflix.karyon.server.guice.KaryonGuiceContextListener;
 import com.ryantenney.metrics.spring.config.annotation.EnableMetrics;
+
 import io.riots.core.cxf.RefIdEnabledCxfServlet;
+
 import com.wordnik.swagger.jaxrs.config.BeanConfig;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.embedded.FilterRegistrationBean;
@@ -17,6 +20,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.ImportResource;
 
 /**
@@ -25,11 +29,13 @@ import org.springframework.context.annotation.ImportResource;
  */
 @EnableAutoConfiguration
 @Configuration
-@ComponentScan(basePackages = {"io.riots"})
+@ComponentScan(basePackages = {"io.riots"}, 
+	excludeFilters = @ComponentScan.Filter(
+        type = FilterType.REGEX,
+        pattern = "io\\.riots\\.core\\.handlers.*"))
 @ImportResource(value = { "classpath*:/cxf-config.xml" })
 @EnableMetrics
-public abstract class ServiceStarter { // extends AbstractCloudConfig {
-
+public abstract class ServiceStarter {
 
     @Autowired
 	protected ApplicationContext context;

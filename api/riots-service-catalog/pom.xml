@@ -17,6 +17,7 @@
 
     <properties>
         <riots.port>8181</riots.port>
+        <riots.eureka.hostname>localhost:10000</riots.eureka.hostname>        
     </properties>
 
     <dependencies>
@@ -32,6 +33,10 @@
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
+        <dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-elasticsearch</artifactId>
+		</dependency>		
     </dependencies>
 
     <build>

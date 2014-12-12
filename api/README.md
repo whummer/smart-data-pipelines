@@ -42,6 +42,38 @@ with the Hystrix dashboard).
 
     `It looks like you are trying to access MongoDB over HTTP on the native driver port.`
     
+### ElasticSearch
+
+  1. Deploy ElasticSearch
+
+    `docker run -d -p 9200:9200 -p 9300:9300 dockerfile/elasticsearch`
+
+  2. (For boot2docker only) Portforwarding for MongoDB
+
+    `VBoxManage controlvm boot2docker-vm natpf1 "elasticsearch,tcp,127.0.0.1,9200,,9200"`
+
+  3. Test this:
+
+    `curl localhost:9200`
+
+  Should result in:
+
+    ```
+    {
+	  "status" : 200,
+	  "name" : "Lucas Brand",
+	  "cluster_name" : "elasticsearch",
+	  "version" : {
+	    "number" : "1.4.0",
+	    "build_hash" : "bc94bd81298f81c656893ab1ddddd30a99356066",
+	    "build_timestamp" : "2014-11-05T14:26:12Z",
+	    "build_snapshot" : false,
+	    "lucene_version" : "4.10.2"
+	  },
+	  "tagline" : "You Know, for Search"
+	}
+    ```    
+    
 ### Netflix Eureka
   
   1. Deploy Netflix Eureka
