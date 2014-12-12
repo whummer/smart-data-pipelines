@@ -163,13 +163,20 @@ public class AuthFilter implements Filter, AuthenticationEntryPoint, Authenticat
 	private boolean doFilter(ServletRequest req, ServletResponse res) {
 		cleanupTokens();
 
+		HttpServletRequest request = (HttpServletRequest) req;
+		HttpServletResponse response = (HttpServletResponse) res;
+
 		if(TESTING_DISABLE_AUTH) {
 			/* disable auth checks for testing */
 			return true;
 		}
 
-		HttpServletRequest request = (HttpServletRequest) req;
-		HttpServletResponse response = (HttpServletResponse) res;
+		System.out.println("DEBUG: request type: " + request.getMethod()); // TODO remove
+		if(request.getMethod().equalsIgnoreCase("OPTIONS")) {
+			/* always allow OPTIONS requests */
+			return true;
+		}
+
 		String network = request.getHeader(HEADER_AUTH_NETWORK);
 		String token = request.getHeader(HEADER_AUTH_TOKEN);
 
