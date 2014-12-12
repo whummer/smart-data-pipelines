@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} [%F:%L] - [%X{REFID:-******}] - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="spring" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${RIOTS_LOG_DIR}/spring.log</File>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} [%F:%L] - [%X{REFID:-******}] - %m%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${RIOTS_LOG_DIR}/spring-%d{yyyy-MM-dd}.log</fileNamePattern>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="cxf" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${RIOTS_LOG_DIR}/cxf.log</File>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} [%F:%L] - [%X{REFID:-******}] - %msg%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${RIOTS_LOG_DIR}/cxf-%d{yyyy-MM-dd}.log</fileNamePattern>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="riots-api" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${RIOTS_LOG_DIR}/api.log</File>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} [%F:%L] - [%marker] [%X{REFID:-******}] - %msg%n
+            </pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${RIOTS_LOG_DIR}/api-%d{yyyy-MM-dd}.log</fileNamePattern>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="swagger" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${RIOTS_LOG_DIR}/swagger.log</File>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} [%F:%L] - [%marker] [%X{REFID:-******}] - %msg%n
+            </pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${RIOTS_LOG_DIR}/api-%d{yyyy-MM-dd}.log</fileNamePattern>
+        </rollingPolicy>
+    </appender>
+
+    <logger name="org.springframework" level="WARN">
+        <appender-ref ref="spring"/>
+    </logger>
+
+    <logger name="org.apache.cxf" level="INFO">
+        <appender-ref ref="cxf"/>
+    </logger>
+
+    <logger name="com.wordnik.swagger" level="DEBUG">
+        <appender-ref ref="swagger"/>
+    </logger>
+
+    <logger name="io.riots" level="DEBUG">
+        <appender-ref ref="riots-api"/>
+    </logger>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>

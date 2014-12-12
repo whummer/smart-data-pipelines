@@ -1,0 +1,54 @@
+<section ng-controller="WorldViewController" id="worldViewDiv" style="height: 100%">
+
+	<div style="height: 100%; position: relative;" id="worldViewDivWrapper">
+
+	<script type='text/javascript' src='scripts/modules/maps-markers.js'></script>
+
+	<style>
+	html,body,#map,#detailsTabs {
+		margin: 0;
+		height: 100%;
+	}
+	.leaflet-marker-icon,.leaflet-marker-shadow {
+		-webkit-transition: margin 0.2s;
+		-moz-transition: margin 0.2s;
+		-o-transition: margin 0.2s;
+		transition: margin 0.2s;
+	}
+	</style>
+
+	<bg-splitter orientation="horizontal" style="height: 100%">
+		<bg-pane>
+			<tabset>
+				<tab heading="Device Types">
+					<ng-include src="appConfig['appRootPath'] + '/views/device_types.html'"></ng-include>
+				</tab>
+				<tab heading="Devices">
+					<ng-include src="appConfig['appRootPath'] + '/views/world_assets.html'"></ng-include>
+				</tab>
+			</tabset>
+		</bg-pane>
+		<bg-pane>
+			<bg-splitter orientation="vertical">
+				<bg-pane id="paneMapPreview">
+					<ng-include src="appConfig['appRootPath'] + '/views/world_map.html'"></ng-include>
+				</bg-pane>
+				<bg-pane>
+					<tabset>
+						<tab heading="Asset Details">
+							<ng-include src="appConfig['appRootPath'] + '/views/world_asset_props.html'"></ng-include>
+						</tab>
+					</tabset>
+				</bg-pane>
+			</bg-splitter>
+		</bg-pane>
+	</bg-splitter>
+
+	</div>
+</section>
+
+<script>
+
+	renderElement("worldViewDiv");
+
+</script>

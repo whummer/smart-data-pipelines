@@ -1,11 +1,14 @@
 package io.riots.api.services;
 
-import com.netflix.appinfo.AbstractEurekaIdentity;
-import com.netflix.appinfo.EurekaClientIdentity;
-import com.netflix.appinfo.InstanceInfo;
-import com.netflix.discovery.converters.XmlXStream;
-import com.netflix.discovery.shared.Application;
-import com.netflix.discovery.shared.Applications;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
@@ -13,15 +16,12 @@ import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.springframework.stereotype.Component;
 import org.testng.Assert;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
+import com.netflix.appinfo.AbstractEurekaIdentity;
+import com.netflix.appinfo.EurekaClientIdentity;
+import com.netflix.appinfo.InstanceInfo;
+import com.netflix.discovery.converters.XmlXStream;
+import com.netflix.discovery.shared.Application;
+import com.netflix.discovery.shared.Applications;
 
 /**
  * @author Nitesh Kant

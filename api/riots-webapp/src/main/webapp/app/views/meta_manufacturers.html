@@ -1,0 +1,47 @@
+<section ng-controller="MetaManufacturersController" id="metaPropTypesSection">
+
+    <div class="text-right">
+        <button class="btn btn-primary btn-sm" id="btnAddTypeManufacturer"><span
+                class="glyphicon glyphicon-plus"></span> Add
+        </button>
+        <button class="btn btn-warning btn-sm" id="btnDelTypeManufacturer"><span
+                class="glyphicon glyphicon-minus"></span> Delete
+        </button>
+    </div>
+
+
+    <div id="metaTypesTableManufacturer" ui-grid="gridConfig" ui-grid-selection ui-grid-edit ui-grid-row-edit class="grid"></div>
+
+</section>
+
+<script type="text/javascript">
+
+    var app = angular.module("app");
+    app.controller('MetaManufacturersController', [
+        '$scope', '$http', '$compile',
+        function ($scope, $http, $compile) {
+
+            AppController($scope, $http, $compile);
+
+            $scope.gridConfig = {};
+
+            /* register event handlers */
+            $scope.addClickHandler("btnAddTypeManufacturer", function () {
+                $scope.addMetaType($scope.gridConfig, "Manufacturer");
+            });
+            $scope.addClickHandler("btnDelTypeManufacturer", function () {
+                $scope.deleteMetaType($scope.gridConfig, "Manufacturer");
+            });
+
+            /* render main elements */
+            $scope.initTable($scope.gridConfig, "Manufacturer");
+            $scope.loadTable($scope.gridConfig, "Manufacturer");
+            $scope.onRenderElement("btnDelTypeManufacturer", function (el) {
+                el.attr("disabled", true);
+            });
+
+        }
+    ]);
+
+</script>
+			

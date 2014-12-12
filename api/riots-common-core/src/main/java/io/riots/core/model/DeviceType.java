@@ -1,23 +1,47 @@
 package io.riots.core.model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
+import io.riots.core.model.SemanticType.SemanticDeviceType;
+
+import java.util.LinkedList;
+import java.util.List;
 
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 /**
  * @author omoser
+ * @author whummer
  */
 
 @Document(collection = Constants.COLL_DEVICE_TYPES)
-public class DeviceType extends CompositeObject<DeviceType> {
+public class DeviceType extends AssetType<DeviceType> {
 
-    public enum Type {CONTAINER, SENSOR, ACTUATOR}
+    public static final String CLASS_NAME = DeviceType.class.getCanonicalName();
 
-    @DBRef
+	@DBRef
     private Manufacturer manufacturer;
 
-    private Type type;
+    /**
+     * Semantic type of this device, e.g., temperature sensor.
+     */
+    @DBRef
+    private SemanticDeviceType semanticType;
+
+	private String imageUrl;
+
+    /**
+     * Contains the list of properties that are "actuatable"
+     * within this device. Actuatable properties are either 1)
+     * sensable properties reported by a sensor device
+     * (e.g., room temperature), or 2) actuatable properties
+     * (e.g., temperature of a heater). A property can also
+     * be both sensable and actuatable.
+     */
+    @DBRef
+    //@CascadeSave // TODO fix
+    private List<Property<?>> deviceProperties = new LinkedList<Property<?>>();
 
     @JsonCreator
     public DeviceType() {
@@ -28,19 +52,6 @@ public class DeviceType extends CompositeObject<DeviceType> {
         super(name);
     }
 
-    public Type getType() {
-        return type;
-    }
-
-    public void setType(Type type) {
-        this.type = type;
-    }
-
-    public DeviceType withType(final Type type) {
-        this.type = type;
-        return this;
-    }
-
     public DeviceType withManufacturer(final Manufacturer manufacturer) {
         this.manufacturer = manufacturer;
         return this;
@@ -49,8 +60,39 @@ public class DeviceType extends CompositeObject<DeviceType> {
     public Manufacturer getManufacturer() {
         return manufacturer;
     }
+    public void setManufacturer(Manufacturer manufacturer) {
+		this.manufacturer = manufacturer;
+	}
+
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
+
+	public List<Property<?>> getDeviceProperties() {
+		return deviceProperties;
+	}
+    public void setDeviceProperties(List<Property<?>> deviceProperties) {
+		this.deviceProperties = deviceProperties;
+	}
+
+    public SemanticDeviceType getSemanticType() {
+		return semanticType;
+	}
+    public void setSemanticType(SemanticDeviceType semanticType) {
+		this.semanticType = semanticType;
+	}
 
     @Override
+	public String toString() {
+		return "DeviceType [manufacturer=" + manufacturer +
+				", deviceProperties=" + deviceProperties + "]";
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof DeviceType)) return false;
@@ -59,7 +101,7 @@ public class DeviceType extends CompositeObject<DeviceType> {
         DeviceType that = (DeviceType) o;
 
         if (manufacturer != null ? !manufacturer.equals(that.manufacturer) : that.manufacturer != null) return false;
-        if (type != that.type) return false;
+        if (deviceProperties.equals(that.deviceProperties)) return false;
 
         return true;
     }
@@ -68,7 +110,7 @@ public class DeviceType extends CompositeObject<DeviceType> {
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (manufacturer != null ? manufacturer.hashCode() : 0);
-        result = 31 * result + (type != null ? type.hashCode() : 0);
+        result = 31 * result + (deviceProperties != null ? deviceProperties.hashCode() : 0);
         return result;
     }
 }

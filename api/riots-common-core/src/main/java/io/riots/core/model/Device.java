@@ -2,40 +2,29 @@ package io.riots.core.model;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * @author omoser
  */
 
 @Document(collection = Constants.COLL_DEVICES)
-public class Device extends CompositeObject<Device> {
+public class Device extends Asset<Device,DeviceType> {
 
-    double[] location;
-
-    DeviceType deviceType;
-
-    public Device() {
-        super();
-    }
+	public Device() {}
 
     public Device(String name) {
         super(name);
     }
 
     public Device withDeviceType(final DeviceType deviceType) {
+        this.assetType = deviceType;
         return this;
     }
 
-    public Device withLocation(final double[] location) {
-        this.location = location;
-        return this;
-    }
-
-    public double[] getLocation() {
-        return location;
-    }
-
+    @JsonIgnore
     public DeviceType getDeviceType() {
-        return deviceType;
+        return assetType;
     }
 
     @Override

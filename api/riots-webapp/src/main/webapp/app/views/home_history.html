@@ -1,0 +1,71 @@
+<section ng-controller="HistoryOverviewController" id="homeHistoryDiv" style="height: 100%">
+	<div data-dojo-type="dijit/layout/ContentPane" style="height: 100%">
+		<div id="simHistoryTable" ui-grid="gridConfig" ui-grid-selection ui-grid-edit ui-grid-row-edit class="grid"></div>
+	</div>
+</section>
+
+<style>
+	#simHistoryTable {
+		height: 150px;
+	}
+</style>
+
+<script>
+
+	var app = angular.module("app");
+	app.controller('HistoryOverviewController', [
+		'$scope', '$http', '$compile',
+		function($scope, $http, $compile) {
+
+			AppController($scope, $http, $compile);
+
+			$scope.gridConfig = {};
+
+			$scope.initHistoryTable = function() {
+				var columnsConfig = [
+					{label: "Month", field: "month", sortable: true},
+					{label: "Simulations", field: "simulations"},
+					{label: "API Service Calls", field: "calls"},
+					{label: "Data Traffic", field: "traffic"}
+				];
+				$scope.gridConfig.data = [];
+				renderUITable($scope.gridConfig, "simHistoryTable", columnsConfig,
+					function(event) {
+						if(event.type == "dgrid-select") {
+							$scope.$apply(function(){
+								$scope.selectedMonth = event.rows[0].data;
+							});
+				    	} else if(event.type == "dgrid-deselect") {
+							$scope.$apply(function(){
+								$scope.selectedMonth = null;
+							});
+				    	}
+
+						/* adjust UI elements */
+						$("#btnDeviceTypePropsDelete").prop("disabled", 
+								$scope.selectedProperty == null);
+					}
+				);
+			}
+
+			$scope.buildHistoryTable = function(history) {
+				$scope.gridConfig.data = history.months;
+			};
+
+			/* start rendering the main container */
+
+			// TODO
+			$scope.initHistoryTable();
+			$scope.buildHistoryTable({
+				months: [
+					{id: "14-06", month: "June 2014", simulations: 17, calls: 1141, traffic: "16.3 MB"},
+					{id: "14-07", month: "July 2014", simulations: 1, calls: 102, traffic: "0.9 MB"},
+					{id: "14-08", month: "August 2014", simulations: 0, calls: 0, traffic: "0.0 MB"},
+					{id: "14-09", month: "September 2014", simulations: 24, calls: 5132, traffic: "123.4 MB"}
+				]}
+			);
+
+		}
+	]);
+
+</script>

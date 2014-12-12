@@ -1,0 +1,30 @@
+<section ng-controller="CurrentOverviewController" id="homeCurrentDiv" style="height: 100%">
+
+	<div>
+		<div data-dojo-type="dijit/layout/ContentPane" style="height: 100%">
+			<!--<h3 style="margin-top: -15px;">Current Runtime</h3>-->
+			t.b.a.
+		</div>
+	</div>
+
+</section>
+
+<script>
+
+	var app = angular.module("app");
+	app.controller('CurrentOverviewController', [
+		'$scope', '$http', '$compile',
+		function($scope, $http, $compile) {
+
+			AppController($scope, $http, $compile);
+
+			var callback = function(el, registry) {
+				
+			}
+
+			/* start rendering the main container */
+			renderElement("homeCurrentDiv", callback);
+		}
+	]);
+
+</script>

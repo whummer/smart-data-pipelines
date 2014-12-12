@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>riots-common-service-dependencies</artifactId>
+        <groupId>io.riots</groupId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../riots-common-service-dependencies/pom.xml</relativePath>
+    </parent>
+
+    <artifactId>riots-common-simulation</artifactId>
+    <name>common-simulation</name>
+    <description>riots simulation tools</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.riots</groupId>
+            <artifactId>riots-common-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        
+		<!-- MatSim traffic simulation -->
+		<dependency>
+			<groupId>matsim</groupId>
+			<artifactId>matsim</artifactId>
+			<version>0.6.1</version>
+		</dependency>
+		<dependency>
+			<groupId>io.hummer</groupId>
+			<artifactId>osm-util</artifactId>
+			<version>1.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>jfree</groupId>
+			<artifactId>jfreechart</artifactId>
+			<version>1.0.13</version>
+		</dependency>
+
+		<!--  Groovy Scripting -->
+		<dependency>
+			<groupId>org.codehaus.groovy</groupId>
+			<artifactId>groovy</artifactId>
+		</dependency>
+
+		<!-- Constraint programming solver -->
+        <dependency>
+			<groupId>org</groupId>
+			<artifactId>jacop</artifactId>
+			<version>4.1.0</version>
+		</dependency>
+		
+		<!-- Commons Math -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-math3</artifactId>
+			<version>3.3</version>
+		</dependency>
+		
+		<!-- Websockets Support -->
+		<dependency>
+			<groupId>javax.websocket</groupId>
+			<artifactId>javax.websocket-api</artifactId>
+			<version>1.1</version>
+			<scope>provided</scope>
+		</dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-websocket</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-messaging</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+        </dependency>
+        <!-- Websocket client -->
+		<dependency>
+			<groupId>org.glassfish.tyrus</groupId>
+			<artifactId>tyrus-client</artifactId>
+			<version>1.8.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.tyrus</groupId>
+			<artifactId>tyrus-container-grizzly-client</artifactId>
+			<version>1.8.3</version>
+		</dependency>
+
+    </dependencies>
+
+    <repositories>
+        <repository>
+            <id>infosys-repo</id>
+            <url>http://www.infosys.tuwien.ac.at/mvn</url>
+        </repository>
+		<repository>
+			<id>osm-util-repo</id>
+			<url>https://github.com/whummer/osm-util/raw/master/build/</url>
+		</repository>
+    </repositories>
+
+</project>

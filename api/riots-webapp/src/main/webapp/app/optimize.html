@@ -1,0 +1,96 @@
+<html>
+<head>
+	<script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
+	<script type="text/javascript" src="r.js"></script>
+	<script type="text/javascript" src="config.optimized.js"></script>
+</head>
+<body>
+	<div>
+	Concatenated Script:
+	<textarea id="output"></textarea>
+	</div>
+	<div>
+	Messages:
+	<textarea id="buildMessages"></textarea>
+	</div>
+
+	<script>
+
+	console.log("requirejs.onError", requirejs.onError);
+	requirejs.onError = function(err) {
+		console.log("!!!! error", err);
+		throw err;
+	};
+
+	var cfg = JSON.parse(JSON.stringify(requirejsAppConfig));
+
+	/*
+	require.config(cfg);
+	require(["uglify-js/lib/parse-js"], function(parse) {
+		require(["uglify-js"], function(parse, uglify) {
+			var jsp = uglify.parser;
+			var pro = uglify.uglify;
+			console.log(jsp, pro);
+		});
+	});
+	fooasasd();
+	*/
+
+	cfg.include = [
+		"jquery",
+		"jquery-ui",
+		"app",
+		"angular-route",
+		"bootstrap",
+		"sockjs",
+		"hello",
+		"stomp-websocket",
+		"threejs",
+		"codemirror",
+		"angular-ui-grid",
+		"tag-it",
+		"routes",
+		"riot/charting",
+		"riot/imports",
+		"riot/widgets-angularui",
+		"riot/utils",
+		"riot/service-calls",
+		"riot/threejs-utils",
+		"riot/websockets",
+		"riot/auth",
+		"riot/ratings",
+		"scripts/controllers/AppController"
+
+		//"angular",
+		//"bg-splitter", // dont include here - leads to load error
+		//"ui-codemirror", // dont include here - leads to load error
+		//"angular-bootstrap",
+		//"threejs/examples/js/loaders/STLLoader",
+	];
+
+	cfg.optimize = "none";
+	cfg.optimize = "uglify2";
+	cfg.uglify = cfg.uglify2 = {
+		mangle : false
+	}
+
+	cfg.exclude = [
+		//"angular"
+	];
+
+	cfg.out = function (text) {
+		//console.log("outputting optimized text", text);
+		document.getElementById('output').value = text;
+	}
+
+	requirejs.optimize(cfg, function (buildText) {
+		//console.log("requirejs.optimize success", buildText);
+		document.getElementById('buildMessages').value = buildText;
+	}, function (error) {
+		console.error("requirejs.optimize error", error);
+	});
+
+	</script>
+</body>
+
+</html>

@@ -2,14 +2,22 @@ package io.riots.core.model;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
+
 /**
  * @author omoser
+ * @author whummer
  */
+@Document(collection = Constants.COLL_BASEOBJECT_CATEGORIZED)
+public class Manufacturer extends BaseObjectCategorized<Manufacturer> {
 
-@Document(collection = Constants.COLL_MANUFACTURERS)
-public class Manufacturer extends BaseObject<Manufacturer> {
+	{
+		category = "Manufacturer";
+	}
 
-    public Manufacturer(String name) {
-        super(name);
+	public Manufacturer() {
+	}
+	public Manufacturer(String name) {
+        setName(name);
     }
+
 }
