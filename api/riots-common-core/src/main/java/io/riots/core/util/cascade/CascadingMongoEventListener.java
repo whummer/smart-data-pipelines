@@ -20,6 +20,7 @@ import org.springframework.util.ReflectionUtils;
  */
 @SuppressWarnings("all")
 public class CascadingMongoEventListener extends AbstractMongoEventListener {
+
 	@Autowired
 	private MongoOperations mongoOperations;
 

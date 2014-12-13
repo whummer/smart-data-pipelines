@@ -78,8 +78,8 @@ public class CatalogService {
                          @QueryParam("page") int page, @QueryParam("size") int size) {
     	
     	// TODO handle page and size parameter
-    	
-    	StringQuery sq = new StringQuery(query);
+
+        StringQuery sq = new StringQuery(query);
     	List<DeviceType> list = searchTemplate.queryForList(sq, DeviceType.class);
     	
     	for (DeviceType type : list) {

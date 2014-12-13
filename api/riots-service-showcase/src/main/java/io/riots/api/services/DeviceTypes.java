@@ -74,27 +74,9 @@ public class DeviceTypes {
 
     @Autowired
     DeviceTypeRepository repository;
+
     @Autowired
-    SemanticTypeRepository semRepo; // TODO remove later
-
-    public DeviceTypes() {
-    	// TODO remove!
-		new Thread() {
-			public void run() {
-				while(repository == null) {
-					try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) { }
-				}
-				if(repository != null) {
-					DemoData.insertData(repository, semRepo);
-					return;
-				}
-			}
-		}.start();
-	}
-
-    /* DEVICE TYPES */
+    SemanticTypeRepository semRepo;
 
     @GET
     @Path("/{id}")
