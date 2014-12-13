@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 /**
  * @author Waldemar Hummer
  */
-@Repository
 public interface UserRepository extends BaseObjectRepository<User> {
 
 	List<User> findByEmail(String email);

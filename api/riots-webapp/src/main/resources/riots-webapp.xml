@@ -22,9 +22,9 @@
         http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
 <!-- 	<import resource="classpath*:cxf-config.xml"/> -->
-
-<!--     <context:component-scan base-package="io.riots"/> -->
-
+<!-- 
+    <context:component-scan base-package="io.riots"/>
+ -->
     <beans profile="TEST">
         <context:property-placeholder ignore-resource-not-found="false"
                                       ignore-unresolvable="false"

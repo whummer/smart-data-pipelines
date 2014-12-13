@@ -1,10 +1,10 @@
 package io.riots.core.boot;
 
 import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.servlets.MetricsServlet;
-import com.google.inject.servlet.GuiceFilter;
-import com.netflix.hystrix.contrib.metrics.eventstream.HystrixMetricsStreamServlet;
-import com.netflix.karyon.server.guice.KaryonGuiceContextListener;
+// TODO fix this import com.codahale.metrics.servlets.MetricsServlet;
+//import com.google.inject.servlet.GuiceFilter;
+//import com.netflix.hystrix.contrib.metrics.eventstream.HystrixMetricsStreamServlet;
+//import com.netflix.karyon.server.guice.KaryonGuiceContextListener;
 import com.ryantenney.metrics.spring.config.annotation.EnableMetrics;
 
 import io.riots.core.cxf.RefIdEnabledCxfServlet;
@@ -34,7 +34,7 @@ import org.springframework.context.annotation.ImportResource;
         type = FilterType.REGEX,
         pattern = "io\\.riots\\.core\\.handlers.*"))
 @ImportResource(value = { "classpath*:/cxf-config.xml" })
-@EnableMetrics
+//@EnableMetrics
 public abstract class ServiceStarter {
 
     @Autowired
@@ -43,30 +43,14 @@ public abstract class ServiceStarter {
 	@Bean
 	public ServletRegistrationBean cxfServletRegistrationBean() {
 		return new ServletRegistrationBean(new RefIdEnabledCxfServlet(), "/api/*");
-	}
+	}	
 	
-	@Bean
-	public FilterRegistrationBean googleGuiceBean() {
-		return new FilterRegistrationBean(new GuiceFilter());		
-	}
-	
-	@Bean
-	public ServletListenerRegistrationBean<KaryonGuiceContextListener> karyonListener() {
-		return new ServletListenerRegistrationBean<>(new KaryonGuiceContextListener());
-	}
-	
-	@Bean
-	@Autowired
-	public ServletRegistrationBean codahaleMetricsServletRegistrationBean(MetricRegistry metricRegistry) {
-		return new ServletRegistrationBean(new MetricsServlet(metricRegistry), "/codahale-metrics");
-	}
-
-	@Bean
-	@Autowired
-	public ServletRegistrationBean hystrixServletRegistrationBean() {
-		return new ServletRegistrationBean(new HystrixMetricsStreamServlet(),
-				"/hystrix.stream");
-	}
+// TODO fix this
+//	@Bean
+//	@Autowired
+//	public ServletRegistrationBean codahaleMetricsServletRegistrationBean(MetricRegistry metricRegistry) {
+//		return new ServletRegistrationBean(new MetricsServlet(metricRegistry), "/codahale-metrics");
+//	}
 
 	@Bean
 	public BeanConfig swaggerConfig() {

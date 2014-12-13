@@ -7,6 +7,6 @@ import org.springframework.stereotype.Component;
 /**
  * @author omoser
  */
-@Component
-public class SmartObjectRepositoryCommands extends HystrixProtectedRepositoryCommands<SmartObject, SmartObjectRepository> {
-}
+//@Component
+//public class SmartObjectRepositoryCommands extends HystrixProtectedRepositoryCommands<SmartObject, SmartObjectRepository> {
+//}

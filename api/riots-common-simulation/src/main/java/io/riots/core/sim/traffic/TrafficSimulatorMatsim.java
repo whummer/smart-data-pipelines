@@ -16,11 +16,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -204,7 +200,8 @@ public class TrafficSimulatorMatsim {
 		double mapVicinity = vicinity * 1.5;
 		List<OSMElement> els = OpenStreetMap.getOSMElementsInVicinity(
 				lat, lon, mapVicinity);
-		List<OSMNode> nodes = OpenStreetMap.getOSMNodes(els);
+		List<OSMNode> nodes = new ArrayList<>();
+		//List<OSMNode> nodes = OpenStreetMap.getOSMNodes(els);
 		/* generate scenario */
 		final Scenario s = generate(numVehicles, 
 				new Tile(new Point(lon, lat), vicinity), nodes);

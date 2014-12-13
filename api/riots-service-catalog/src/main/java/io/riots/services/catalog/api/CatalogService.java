@@ -48,10 +48,10 @@ public class CatalogService {
     static final Logger log = LoggerFactory.getLogger(CatalogService.class);
 
     @Autowired
-    private CatalogRepository repo;
+    CatalogRepository repo;
     
     @Autowired
-    private ElasticsearchTemplate searchTemplate;
+    ElasticsearchTemplate searchTemplate;
 
     @GET
     @Path("/{id}")

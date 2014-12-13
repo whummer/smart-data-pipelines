@@ -13,8 +13,9 @@
 
     <artifactId>riots-common-service-dependencies</artifactId>
     <name>service-dependencies</name>
-    <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
+
+
 
     <dependencies>
 
@@ -53,7 +54,15 @@
           <version>3.0</version>
         </dependency>
 
+ 
         <!-- Spring dependencies -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        
+        <!-- 
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
@@ -64,11 +73,7 @@
             <artifactId>spring-web</artifactId>
             <version>${spring.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
+       
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
@@ -79,6 +84,7 @@
             <artifactId>spring-aop</artifactId>
             <version>${spring.version}</version>
         </dependency>
+        -->
 
         <!-- CXF dependencies -->
         <dependency>
@@ -104,10 +110,16 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
+               
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-eureka</artifactId>
+		</dependency>
+				
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-hystrix</artifactId>
+		</dependency>
 
         <!-- API documentation via Swagger -->
         <dependency>
@@ -134,7 +146,7 @@
             <groupId>com.codahale.metrics</groupId>
             <artifactId>metrics-core</artifactId>
             <version>${codahale-metrics.version}</version>
-        </dependency>
+        </dependency>		
         <dependency>
             <groupId>com.codahale.metrics</groupId>
             <artifactId>metrics-jvm</artifactId>
@@ -163,6 +175,7 @@
         </dependency>
 
         <!-- Netflix dependencies -->
+        <!-- 
         <dependency>
             <groupId>com.netflix.hystrix</groupId>
             <artifactId>hystrix-core</artifactId>
@@ -208,6 +221,7 @@
             <artifactId>karyon-servlet</artifactId>
             <version>${netflix-kayron-servlet.version}</version>
         </dependency>
+         -->
 
         <!-- TEST dependencies -->
         <dependency>

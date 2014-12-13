@@ -8,12 +8,31 @@
         <version>0.0.1-SNAPSHOT</version>
         <relativePath>../riots-common-service-dependencies/pom.xml</relativePath>
     </parent>
+    
     <modelVersion>4.0.0</modelVersion>
     <artifactId>riots-webapp</artifactId>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
 
-    <dependencies>
-
+ 	<properties>
+        <riots.port>8080</riots.port>
+        <riots.eureka.hostname>localhost:10000</riots.eureka.hostname>        
+    </properties>
+    
+    <dependencies>  
+    <!--   
+    	<dependency>
+            <groupId>io.riots</groupId>
+            <artifactId>riots-common-core</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>io.riots</groupId>
+            <artifactId>riots-common-core</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+ -->
 		<!-- riots dependencies -->
 		<dependency>
 	        <groupId>io.riots</groupId>
@@ -22,6 +41,7 @@
         </dependency>
 
 		<!-- make sure we set the scope to provided, otherwise interferes with tomcat -->
+		<!-- 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -33,11 +53,61 @@
 			<version>2.5</version>
 			<scope>provided</scope>
         </dependency>
+        -->
 
     </dependencies>
 
 	<build>
 		<plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-remote-resources-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+            </plugin>
+		
+			<!-- Puts all dependent jars in target/lib folder -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/lib/</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>io.riots.webapp.WebappServiceStarter</mainClass>
+							<addClasspath>true</addClasspath>
+							<classpathPrefix>lib/</classpathPrefix>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+			<!-- 
             <plugin>
                 <artifactId>tomcat7-maven-plugin</artifactId>
                 <groupId>org.apache.tomcat.maven</groupId>
@@ -80,11 +150,12 @@
                         </goals>
                         <phase>package</phase>
                         <configuration>
-                                    <contextFile>${basedir}/src/main/webapp/META-INF/context.xml</contextFile>
+                        	<contextFile>${basedir}/src/main/webapp/META-INF/context.xml</contextFile>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
+             -->
         </plugins>
 	</build>
 

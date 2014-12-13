@@ -7,6 +7,5 @@ import org.springframework.stereotype.Repository;
 /**
  * @author Waldemar Hummer
  */
-@Repository
 public interface RoleRepository extends BaseObjectRepository<Role> {
 }

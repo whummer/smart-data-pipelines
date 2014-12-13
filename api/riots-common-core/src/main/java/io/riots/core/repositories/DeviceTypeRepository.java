@@ -11,8 +11,6 @@ import org.springframework.stereotype.Repository;
 /**
  * @author omoser
  */
-
-@Repository
 public interface DeviceTypeRepository extends BaseObjectRepository<DeviceType> {
 
     List<DeviceType> findByManufacturerName(String name);

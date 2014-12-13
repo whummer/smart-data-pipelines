@@ -7,6 +7,5 @@ import org.springframework.stereotype.Repository;
 /**
  * @author omoser
  */
-@Repository
 public interface ManufacturerRepository extends BaseObjectCategorizedRepository<Manufacturer> {
 }
