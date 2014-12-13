@@ -34,12 +34,14 @@
         </dependency>
  -->
 		<!-- riots dependencies -->
+<!-- 		
 		<dependency>
 	        <groupId>io.riots</groupId>
 	        <artifactId>riots-service-showcase</artifactId>
 	        <version>${project.version}</version>
         </dependency>
 
+-->
 		<!-- make sure we set the scope to provided, otherwise interferes with tomcat -->
 		<!-- 
         <dependency>

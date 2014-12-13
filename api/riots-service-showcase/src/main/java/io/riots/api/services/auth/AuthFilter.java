@@ -123,7 +123,7 @@ public class AuthFilter implements Filter, AuthenticationEntryPoint, Authenticat
 	private static final long EXPIRY_PERIOD_MS = 1000*60*20; /* 20 minutes token timeout */
 
 	/**
-	 * Implement {@link Filter}.commence(...)
+	 * Implement {@link Filter}.doFilter(...)
 	 */
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse res, 
@@ -140,6 +140,9 @@ public class AuthFilter implements Filter, AuthenticationEntryPoint, Authenticat
     public void commence(final HttpServletRequest request, 
     		final HttpServletResponse response, 
     		final AuthenticationException authException) throws IOException {
+		if(request.getMethod().equalsIgnoreCase("OPTIONS")) {
+			response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+		}
 		doFilter(request, response);
     }
 	/**

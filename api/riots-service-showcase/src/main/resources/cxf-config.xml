@@ -4,10 +4,12 @@
        xmlns:cxf="http://cxf.apache.org/core"
        xmlns:jaxrs="http://cxf.apache.org/jaxrs"
        xmlns:security="http://www.springframework.org/schema/security"
+       xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
                            http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd
                            http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd
-                           http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd">
+                           http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd
+                           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
     <import resource="classpath:META-INF/cxf/cxf.xml"/>
     <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
@@ -34,8 +36,7 @@
             <bean class="com.wordnik.swagger.jaxrs.listing.ApiDeclarationProvider"/>
         </jaxrs:providers>
     </jaxrs:server>
-
-
+ 
     <bean id="swaggerConfig" class="com.wordnik.swagger.jaxrs.config.BeanConfig">
         <property name="resourcePackage" value="io.riots.api.services"/>
         <property name="version" value="0.0.1"/>
@@ -59,5 +60,9 @@
 	<security:authentication-manager>
         <security:authentication-provider ref="authFilter" />
     </security:authentication-manager>
+  	<aop:aspectj-autoproxy/>
+    <security:http auto-config="true" security="none">
+<!--           <security:custom-filter ref="authFilter" before="HEADERS_FILTER"/> -->
+  	</security:http>
 
 </beans>

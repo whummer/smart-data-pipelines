@@ -72,7 +72,7 @@
 			<version>3.3</version>
 		</dependency>
 		
-		<!-- Websockets Support -->
+		<!-- Websockets Support 
 		<dependency>
 			<groupId>javax.websocket</groupId>
 			<artifactId>javax.websocket-api</artifactId>
@@ -91,7 +91,8 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
         </dependency>
-        <!-- Websocket client -->
+        -->
+        <!-- Websocket client 
 		<dependency>
 			<groupId>org.glassfish.tyrus</groupId>
 			<artifactId>tyrus-client</artifactId>
@@ -102,7 +103,7 @@
 			<artifactId>tyrus-container-grizzly-client</artifactId>
 			<version>1.8.3</version>
 		</dependency>
-
+-->
     </dependencies>
 
     <repositories>

@@ -1,358 +1,277 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
+	<modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <artifactId>riots-parent</artifactId>
-        <groupId>io.riots</groupId>
-        <version>0.0.1-SNAPSHOT</version>
-    </parent>
+	<parent>
+		<artifactId>riots-parent</artifactId>
+		<groupId>io.riots</groupId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
 
-    <artifactId>riots-common-service-dependencies</artifactId>
-    <name>service-dependencies</name>
-    <packaging>pom</packaging>
-
+	<artifactId>riots-common-service-dependencies</artifactId>
+	<name>service-dependencies</name>
+	<packaging>pom</packaging>
 
 
-    <dependencies>
 
-        <!-- service base -->
-        <dependency>
-            <groupId>io.riots</groupId>
-            <artifactId>riots-common-service-base</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
+	<dependencies>
 
-        <!-- rest model -->
-        <dependency>
-            <groupId>io.riots</groupId>
-            <artifactId>riots-common-rest-model</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>io.riots</groupId>
-            <artifactId>riots-common-rest-model</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <type>test-jar</type>
-            <scope>test</scope>
-        </dependency>
+		<!-- service base -->
+		<dependency>
+			<groupId>io.riots</groupId>
+			<artifactId>riots-common-service-base</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- rest model -->
+		<dependency>
+			<groupId>io.riots</groupId>
+			<artifactId>riots-common-rest-model</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>io.riots</groupId>
+			<artifactId>riots-common-rest-model</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
 
 
-        <!-- Logging -->
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-core</artifactId>
-            <version>${logback.version}</version>
-        </dependency>
-        <dependency>
-          <groupId>net.logstash.logback</groupId>
-          <artifactId>logstash-logback-encoder</artifactId>
-          <version>3.0</version>
-        </dependency>
+		<!-- Logging -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.logstash.logback</groupId>
+			<artifactId>logstash-logback-encoder</artifactId>
+			<version>3.0</version>
+		</dependency>
 
- 
-        <!-- Spring dependencies -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        
-        <!-- 
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-       
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context-support</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-aop</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        -->
+		<!-- CXF dependencies -->
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-frontend-jaxrs</artifactId>
+			<version>${cxf.version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>geronimo-servlet_3.0_spec</artifactId>
+					<groupId>org.apache.geronimo.specs</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<artifactId>geronimo-servlet_3.0_spec</artifactId>
+			<groupId>org.apache.geronimo.specs</groupId>
+			<version>1.0</version>
+			<scope>provided</scope>
+		</dependency>
 
-        <!-- CXF dependencies -->
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-frontend-jaxrs</artifactId>
-            <version>${cxf.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>geronimo-servlet_3.0_spec</artifactId>
-                    <groupId>org.apache.geronimo.specs</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <artifactId>geronimo-servlet_3.0_spec</artifactId>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <version>1.0</version>
-            <scope>provided</scope>
-        </dependency>
+		<!-- Spring and Spring Boot dependencies -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
 
-        <!-- Spring and Spring Boot dependencies -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-               
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-eureka</artifactId>
 		</dependency>
-				
+
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-hystrix</artifactId>
 		</dependency>
 
-        <!-- API documentation via Swagger -->
-        <dependency>
-            <groupId>com.wordnik</groupId>
-            <artifactId>swagger-jaxrs_2.10</artifactId>
-            <version>${swagger.version}</version>
+		<!-- API documentation via Swagger -->
+		<dependency>
+			<groupId>com.wordnik</groupId>
+			<artifactId>swagger-jaxrs_2.10</artifactId>
+			<version>${swagger.version}</version>
 
-            <!-- Tomcat 8 incompatible with JAX-RS 1.1 API -->
-            <exclusions>
-                <exclusion>
-                    <artifactId>jsr311-api</artifactId>
-                    <groupId>javax.ws.rs</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>com.wordnik</groupId>
-            <artifactId>swagger-core_2.10</artifactId>
-            <version>${swagger.version}</version>
-        </dependency>
+			<!-- Tomcat 8 incompatible with JAX-RS 1.1 API -->
+			<exclusions>
+				<exclusion>
+					<artifactId>jsr311-api</artifactId>
+					<groupId>javax.ws.rs</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.wordnik</groupId>
+			<artifactId>swagger-core_2.10</artifactId>
+			<version>${swagger.version}</version>
+		</dependency>
 
-        <!-- application insight -->
-        <dependency>
-            <groupId>com.codahale.metrics</groupId>
-            <artifactId>metrics-core</artifactId>
-            <version>${codahale-metrics.version}</version>
-        </dependency>		
-        <dependency>
-            <groupId>com.codahale.metrics</groupId>
-            <artifactId>metrics-jvm</artifactId>
-            <version>${codahale-metrics.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.codahale.metrics</groupId>
-            <artifactId>metrics-annotation</artifactId>
-            <version>${codahale-metrics.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.codahale.metrics</groupId>
-            <artifactId>metrics-servlets</artifactId>
-            <version>${codahale-metrics.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.ryantenney.metrics</groupId>
-            <artifactId>metrics-spring</artifactId>
-            <version>3.0.1</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-beans</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+		<!-- application insight -->
+		<dependency>
+			<groupId>com.codahale.metrics</groupId>
+			<artifactId>metrics-core</artifactId>
+			<version>${codahale-metrics.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.codahale.metrics</groupId>
+			<artifactId>metrics-jvm</artifactId>
+			<version>${codahale-metrics.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.codahale.metrics</groupId>
+			<artifactId>metrics-annotation</artifactId>
+			<version>${codahale-metrics.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.codahale.metrics</groupId>
+			<artifactId>metrics-servlets</artifactId>
+			<version>${codahale-metrics.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ryantenney.metrics</groupId>
+			<artifactId>metrics-spring</artifactId>
+			<version>3.0.1</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-beans</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 
-        <!-- Netflix dependencies -->
-        <!-- 
-        <dependency>
-            <groupId>com.netflix.hystrix</groupId>
-            <artifactId>hystrix-core</artifactId>
-            <version>${netflix-hystrix.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.netflix.hystrix</groupId>
-            <artifactId>hystrix-metrics-event-stream</artifactId>
-            <version>${netflix-hystrix.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.netflix.hystrix</groupId>
-            <artifactId>hystrix-request-servlet</artifactId>
-            <version>${netflix-hystrix.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.netflix.ribbon</groupId>
-            <artifactId>ribbon-eureka</artifactId>
-            <version>${netflix-ribbon.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.netflix.ribbon</groupId>
-            <artifactId>ribbon-httpclient</artifactId>
-            <version>${netflix-ribbon.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.netflix.archaius</groupId>
-            <artifactId>archaius-core</artifactId>
-            <version>${netflix-archaius.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.netflix.eureka</groupId>
-            <artifactId>eureka-client</artifactId>
-            <version>${netflix-eureka.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.inject.extensions</groupId>
-            <artifactId>guice-servlet</artifactId>
-            <version>${google-guice.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.netflix.karyon</groupId>
-            <artifactId>karyon-servlet</artifactId>
-            <version>${netflix-kayron-servlet.version}</version>
-        </dependency>
-         -->
+		<!-- TEST dependencies -->
+		<dependency>
+			<groupId>com.jayway.restassured</groupId>
+			<artifactId>rest-assured</artifactId>
+			<version>${rest-assured.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.codehaus.groovy</groupId>
+					<artifactId>groovy</artifactId>
+				</exclusion>
+			</exclusions>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.groovy</groupId>
+			<artifactId>groovy-all</artifactId>
+			<version>${rest-assured.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-transports-http-jetty</artifactId>
+			<version>${cxf.version}</version>
+			<scope>test</scope>
+		</dependency>
 
-        <!-- TEST dependencies -->
-        <dependency>
-            <groupId>com.jayway.restassured</groupId>
-            <artifactId>rest-assured</artifactId>
-            <version>${rest-assured.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.codehaus.groovy</groupId>
-                    <artifactId>groovy</artifactId>
-                </exclusion>
-            </exclusions>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-all</artifactId>
-            <version>${rest-assured.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-transports-http-jetty</artifactId>
-            <version>${cxf.version}</version>
-            <scope>test</scope>
-        </dependency>
+	</dependencies>
 
-    </dependencies>
+	<build>
+		<finalName>${project.name}-${project.version}</finalName>
 
-    <build>
-        <finalName>${project.name}-${project.version}</finalName>
+		<resources>
+			<!-- om: this is required to filter the shared resources -->
+			<resource>
+				<directory>${project.build.directory}/shared-resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>**/*</include>
+				</includes>
+				<excludes>
+					<exclude>Dockerfile</exclude>
+					<exclude>run.sh</exclude>
+				</excludes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>**/*</include>
+				</includes>
+			</resource>
+		</resources>
 
-        <resources>
-            <!-- om: this is required to filter the shared resources -->
-            <resource>
-                <directory>${project.build.directory}/shared-resources</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>**/*</include>
-                </includes>
-                <excludes>
-                    <exclude>Dockerfile</exclude>
-                    <exclude>run.sh</exclude>
-                </excludes>
-            </resource>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>**/*</include>
-                </includes>
-            </resource>
-        </resources>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-maven-plugin</artifactId>
+					<executions>
+						<execution>
+							<goals>
+								<goal>repackage</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
 
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-maven-plugin</artifactId>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>repackage</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-remote-resources-plugin</artifactId>
+					<version>1.5</version>
+					<executions>
+						<execution>
+							<phase>generate-resources</phase>
+							<goals>
+								<goal>process</goal>
+							</goals>
+							<configuration>
+								<resourceBundles>
+									<resourceBundle>io.riots:riots-common-service-base:${project.version}
+									</resourceBundle>
+								</resourceBundles>
+								<!-- om: we need to put the shared resources into another dir and 
+									filter them later -->
+								<attached>false</attached>
+								<outputDirectory>${project.build.directory}/shared-resources</outputDirectory>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
 
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-remote-resources-plugin</artifactId>
-                    <version>1.5</version>
-                    <executions>
-                        <execution>
-                            <phase>generate-resources</phase>
-                            <goals>
-                                <goal>process</goal>
-                            </goals>
-                            <configuration>
-                                <resourceBundles>
-                                    <resourceBundle>io.riots:riots-common-service-base:${project.version}
-                                    </resourceBundle>
-                                </resourceBundles>
-                                <!-- om: we need to put the shared resources into another dir and filter them later -->
-                                <attached>false</attached>
-                                <outputDirectory>${project.build.directory}/shared-resources</outputDirectory>
-                            </configuration>
-                        </execution>
-                    </executions>
-                </plugin>
+				<plugin>
+					<groupId>pl.project13.maven</groupId>
+					<artifactId>git-commit-id-plugin</artifactId>
+					<configuration>
+						<dotGitDirectory>${project.basedir}/../../.git</dotGitDirectory>
+						<generateGitPropertiesFilename>src/main/resources/git.properties</generateGitPropertiesFilename>
+					</configuration>
+				</plugin>
 
-                <plugin>
-                    <groupId>pl.project13.maven</groupId>
-                    <artifactId>git-commit-id-plugin</artifactId>
-                    <configuration>
-                        <dotGitDirectory>${project.basedir}/../../.git</dotGitDirectory>
-                        <generateGitPropertiesFilename>src/main/resources/git.properties</generateGitPropertiesFilename>
-                    </configuration>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-resources-plugin</artifactId>
-                    <executions>
-                        <execution>
-                            <id>copy-resources2</id>
-                            <phase>package</phase>
-                            <goals>
-                                <goal>copy-resources</goal>
-                            </goals>
-                            <configuration>
-                                <outputDirectory>${project.build.directory}</outputDirectory>
-                                <resources>
-                                    <resource>
-                                        <directory>${project.build.directory}/shared-resources</directory>
-                                        <filtering>true</filtering>
-                                        <includes>
-                                            <include>Dockerfile</include>
-                                            <include>run.sh</include>
-                                        </includes>
-                                        <excludes>
-                                            <exclude>*/*</exclude>
-                                        </excludes>
-                                    </resource>
-                                </resources>
-                            </configuration>
-                        </execution>
-                    </executions>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-resources-plugin</artifactId>
+					<executions>
+						<execution>
+							<id>copy-resources2</id>
+							<phase>package</phase>
+							<goals>
+								<goal>copy-resources</goal>
+							</goals>
+							<configuration>
+								<outputDirectory>${project.build.directory}</outputDirectory>
+								<resources>
+									<resource>
+										<directory>${project.build.directory}/shared-resources</directory>
+										<filtering>true</filtering>
+										<includes>
+											<include>Dockerfile</include>
+											<include>run.sh</include>
+										</includes>
+										<excludes>
+											<exclude>*/*</exclude>
+										</excludes>
+									</resource>
+								</resources>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
 
 </project>

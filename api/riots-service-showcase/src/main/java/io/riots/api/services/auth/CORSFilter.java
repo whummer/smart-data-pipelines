@@ -37,6 +37,7 @@ public class CORSFilter implements Filter {
 		response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
 		response.setHeader("Access-Control-Max-Age", "1209600");
 		response.setHeader("Access-Control-Expose-Headers", "Location");
+		response.setStatus(HttpServletResponse.SC_OK);
 		chain.doFilter(req, res);
 		/* TODO simulate a latency/delay for testing */
 		int simulateDelayMS = 0;

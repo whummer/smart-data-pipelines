@@ -1,14 +1,15 @@
 package io.riots.webapp;
-import io.riots.core.boot.ServiceStarter;
 
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.context.annotation.ImportResource;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@ImportResource(value = { "classpath*:/riots-webapp.xml" })
-public class WebappServiceStarter extends ServiceStarter {
+@SpringBootApplication
+@EnableAutoConfiguration
+public class WebappServiceStarter {
 	
 	public static void main(String[] args) {
-        new SpringApplicationBuilder(WebappServiceStarter.class).web(true).run(args);
+      new SpringApplication(WebappServiceStarter.class).run(args);
 	}
 
 }

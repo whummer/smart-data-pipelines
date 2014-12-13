@@ -1,6 +1,7 @@
 package io.riots.api.services;
 
 import io.riots.core.boot.MongoEnabledServiceStarter;
+
 import org.springframework.boot.SpringApplication;
 
 /**
@@ -9,7 +10,7 @@ import org.springframework.boot.SpringApplication;
  */
 
 public class ServicesStarter extends MongoEnabledServiceStarter {
-	
+
 	public static void main(String[] args) {
 		SpringApplication.run(ServicesStarter.class, args);
 	}

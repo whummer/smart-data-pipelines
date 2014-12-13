@@ -1,0 +1,16 @@
+server:
+  port: 8081
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:10000/eureka/v2/
+
+spring:
+  application:
+    name: showcase-service
+
+logging:
+  level:
+    com.netflix.discovery: OFF
+    com.netflix.zuul: OFF
