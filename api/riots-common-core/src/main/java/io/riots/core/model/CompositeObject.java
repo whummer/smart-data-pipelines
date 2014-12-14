@@ -5,13 +5,10 @@ import java.util.Set;
 
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
-
 /**
  * @author omoser
  */
 @SuppressWarnings("unchecked")
-// todo is this object "smart"? Should we rename it to "HierarchicalObject"
-// TODO whu: I am in favor of renaming to "HierarchicalObject", or rather "CompositeObject"
 public abstract class CompositeObject<T extends CompositeObject<T>> extends BaseObject<T> {
 
     @DBRef

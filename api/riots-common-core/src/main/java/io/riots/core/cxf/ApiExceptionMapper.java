@@ -12,8 +12,8 @@ import javax.ws.rs.ext.Provider;
  * @author omoser
  */
 
-@Provider
-@Component
+//@Provider
+//@Component
 public class ApiExceptionMapper implements ExceptionMapper<Exception> {
 
     @Autowired

@@ -45,6 +45,7 @@ public class DemoData {
 		for(DeviceType t : getDeviceData()) {
 			List<DeviceType> types = devRepo.findByNameLike(t.getName());
 			if(types.isEmpty()) {
+				System.err.println("Inserting device type: " + t.toString());
 				devRepo.save(t);
 			}
 		}

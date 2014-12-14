@@ -47,8 +47,6 @@
 		<riots.port>8181</riots.port>
 	</properties>
 
-	
-
 	<dependencies>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -129,7 +127,7 @@
 				<version>2.17</version>
 				<configuration>
 					<systemPropertyVariables>
-						<VIOTUALIZE_LOG_DIR>/tmp</VIOTUALIZE_LOG_DIR>
+						<RIOTS_LOG_DIR>/tmp</RIOTS_LOG_DIR>
 					</systemPropertyVariables>
 				</configuration>
 			</plugin>

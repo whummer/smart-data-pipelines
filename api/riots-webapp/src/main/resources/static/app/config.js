@@ -4,19 +4,19 @@
 var appConfig = {
 	appRootPath: "/app",
 	services: {
-		core: { url: "http://localhost:8081/api/v1" },
-		deviceTypes: { url: "http://localhost:8081/api/v1/device-types" },
-		deviceTypeProps: { url: "http://localhost:8081/api/v1/device-types/properties" },
-		deviceDrivers: { url: "http://localhost:8081/api/v1/drivers" },
-		devices: { url: "http://localhost:8081/api/v1/devices" },
-		categories: { url: "http://localhost:8081/api/v1/categories" },
-		semanticTypes: { url: "http://localhost:8081/api/v1/semantic-types" },
-		simulations: { url: "http://localhost:8081/api/v1/simulations" },
-		ratings: { url: "http://localhost:8081/api/v1/ratings" },
-		simulationProps: { url: "http://localhost:8081/api/v1/simulations/properties" },
-		simulationDevices: { url: "http://localhost:8081/api/v1/simulations/devices" },
-		stats: { url: "http://localhost:8081/api/v1/stats" },
-		websocket: { url: "ws://localhost:9292/" }
+		core: { url: "http://localhost:8080/api/v1" },
+		deviceTypes: { url: "http://localhost:8080/api/v1/device-types" },
+		deviceTypeProps: { url: "http://localhost:8080/api/v1/device-types/properties" },
+		deviceDrivers: { url: "http://localhost:8080/api/v1/drivers" },
+		devices: { url: "http://localhost:8080/api/v1/devices" },
+		categories: { url: "http://localhost:8080/api/v1/categories" },
+		semanticTypes: { url: "http://localhost:8080/api/v1/semantic-types" },
+		simulations: { url: "http://localhost:8080/api/v1/simulations" },
+		ratings: { url: "http://localhost:8080/api/v1/ratings" },
+		simulationProps: { url: "http://localhost:8080/api/v1/simulations/properties" },
+		simulationDevices: { url: "http://localhost:8080/api/v1/simulations/devices" },
+		stats: { url: "http://localhost:8080/api/v1/stats" },
+		websocket: { url: "ws://localhost:8080/websocket" }
 	},
 	auth: {
 		github: {
@@ -27,7 +27,8 @@ var appConfig = {
 		},
 		facebook: {
 			client_id: "543561462440557"
-		}
+		},
+		redirect_uri: "http://localhost:8080/app/views/login_result.html"
 	}
 };
 

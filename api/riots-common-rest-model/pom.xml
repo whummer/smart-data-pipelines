@@ -34,7 +34,7 @@
 	</dependencies>
 	
 	<build>
-		<finalName>viotualize-rest-model-${project.version}</finalName>
+		<finalName>riots-rest-model-${project.version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

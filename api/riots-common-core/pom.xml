@@ -12,17 +12,21 @@
 
     <artifactId>riots-common-core</artifactId>
     <name>common-core</name>
-    <description>shared core components of our viotualize ecosystem</description>
+    <description>shared core components of our riots ecosystem</description>
 
     <dependencies>
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-mongodb</artifactId>
-        </dependency>     
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
-        </dependency>
+        </dependency>        
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+		</dependency>
         
         <!-- JUnit testing -->
         <dependency>

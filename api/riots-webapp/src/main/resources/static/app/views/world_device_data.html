@@ -1,0 +1,49 @@
+<section ng-controller="DeviceDataController" style="height: 100%">
+
+	<div>
+		<table>
+			<thead><tr>
+				<th>Time</th><th>Data</th>
+			</tr></thead>
+	        <tr ng-repeat="n in range(0, deviceData.length - 1)">
+	            <td style="padding: 7px;">{{deviceData[n].time}}</td><td>{{deviceData[n].data}}</td>
+	        </tr>
+	    </table>
+	</div>
+	
+</section>
+
+
+<script type="text/javascript">
+
+	var app = angular.module("app");
+	app.controller('DeviceDataController', [
+		'$scope', '$http', '$compile',
+		function($scope, $http, $compile) {
+
+			AppController($scope, $http, $compile);
+			var wsURL = appConfig.services.websocket.url;
+			$scope.deviceData = [];
+
+			/* open websocket */
+			var ws = new WebSocket(wsURL, authInfo.network + "~" + authInfo.access_token);
+			ws.onopen = function() {
+				console.log("connected!");
+				ws.send("foo");
+			}
+			ws.onmessage = function(msg) {
+				var data = JSON.parse(msg.data);
+				console.log("message!", data);
+				$scope.$apply(function() {
+					$scope.deviceData.push(data);
+				});
+			}
+
+			/* add event handlers*/
+
+			/* start rendering the main container */
+
+		}
+	]);
+
+</script>

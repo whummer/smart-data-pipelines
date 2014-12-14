@@ -11,7 +11,7 @@ function World3DController($scope, $http, $compile) {
 	require(["riot/threejs-utils", "threejs"],
 		function () {
 			//console.log("loadSTLFile");
-			loadSTLFile("http://localhost:8080/models/person.stl", function(arg) {
+			loadSTLFile("/models/person.stl", function(arg) {
 				//console.log("STL loaded", arg);
 				$scope.geometryModels["person"] = arg;
 			});

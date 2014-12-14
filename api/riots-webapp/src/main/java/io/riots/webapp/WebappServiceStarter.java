@@ -1,14 +1,25 @@
 package io.riots.webapp;
-import io.riots.core.boot.ServiceStarter;
 
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.context.annotation.ImportResource;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.web.SpringBootServletInitializer;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-@ImportResource(value = { "classpath*:/riots-webapp.xml" })
-public class WebappServiceStarter extends ServiceStarter {
-	
+@SpringBootApplication
+@EnableAutoConfiguration
+@EnableDiscoveryClient
+public class WebappServiceStarter extends SpringBootServletInitializer {
+
+	// TODO: whu->fro: not working apparently
+	@RequestMapping("/ui")
+	public String foo() {
+		return "forward:/app/index.html";
+	}
+
 	public static void main(String[] args) {
-        new SpringApplicationBuilder(WebappServiceStarter.class).web(true).run(args);
+		new SpringApplication(WebappServiceStarter.class).run(args);
 	}
 
 }

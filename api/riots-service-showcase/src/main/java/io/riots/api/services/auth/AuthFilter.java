@@ -54,6 +54,9 @@ public class AuthFilter implements Filter, AuthenticationEntryPoint, Authenticat
 	public static final String HEADER_AUTH_TOKEN = "riots-auth-token";
 	public static final String HEADER_AUTH_EMAIL = "riots-auth-email";
 	public static final String HEADER_AUTH_USERNAME = "riots-auth-username";
+	public static final String HEADER_WS_PROTOCOL = "Sec-WebSocket-Protocol";
+	/** if auth info is encoded in Websocket header, use this delimiter */
+	public static final String AUTHINFO_DELIMITER = "~";
 
 	/** use this field to disable the auth mechanism for testing. 
 	 * Simply set to true in the setup method of your integration tests. */
@@ -123,7 +126,7 @@ public class AuthFilter implements Filter, AuthenticationEntryPoint, Authenticat
 	private static final long EXPIRY_PERIOD_MS = 1000*60*20; /* 20 minutes token timeout */
 
 	/**
-	 * Implement {@link Filter}.commence(...)
+	 * Implement {@link Filter}.doFilter(...)
 	 */
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse res, 
@@ -140,6 +143,9 @@ public class AuthFilter implements Filter, AuthenticationEntryPoint, Authenticat
     public void commence(final HttpServletRequest request, 
     		final HttpServletResponse response, 
     		final AuthenticationException authException) throws IOException {
+		if(request.getMethod().equalsIgnoreCase("OPTIONS")) {
+			response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+		}
 		doFilter(request, response);
     }
 	/**
@@ -179,6 +185,21 @@ public class AuthFilter implements Filter, AuthenticationEntryPoint, Authenticat
 
 		String network = request.getHeader(HEADER_AUTH_NETWORK);
 		String token = request.getHeader(HEADER_AUTH_TOKEN);
+		if(network == null) {
+			/* get auth info from Websocket headers (encoded in protocol string) */
+			String wsHeader = request.getHeader(HEADER_WS_PROTOCOL);
+			if(wsHeader != null) {
+				int index = wsHeader.indexOf(AUTHINFO_DELIMITER);
+				if(index >= 0) {
+					network = wsHeader.substring(0, index).trim();
+					if(token == null) {
+						token = wsHeader.substring(index + 1, wsHeader.length()).trim();
+					}
+				}
+				/* acknowledge the protocol in response headers */
+				response.setHeader(HEADER_WS_PROTOCOL, request.getHeader(HEADER_WS_PROTOCOL));
+			}
+		}
 
 		String cookie = request.getHeader("cookie");
 		if(!isEmpty(cookie)) {
