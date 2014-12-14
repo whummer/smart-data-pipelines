@@ -1,9 +1,10 @@
 package io.riots.core.model;
 
+import io.riots.core.util.cascade.CascadeSave;
+
 import java.util.HashSet;
 import java.util.Set;
 
-import io.riots.core.util.cascade.CascadeSave;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
 /**
@@ -14,7 +15,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 public abstract class HierarchicalObject<T extends HierarchicalObject<T>> extends BaseObjectCreated<T> {
 
     @DBRef
-    @CascadeSave // TODO fix
+    @CascadeSave
     Set<T> children = new HashSet<>();
 
     public HierarchicalObject() {

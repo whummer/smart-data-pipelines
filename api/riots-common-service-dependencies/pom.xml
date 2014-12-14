@@ -65,12 +65,13 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<dependency>
-			<artifactId>geronimo-servlet_3.0_spec</artifactId>
-			<groupId>org.apache.geronimo.specs</groupId>
-			<version>1.0</version>
-			<scope>provided</scope>
-		</dependency>
+		<!-- whu: TODO removed for conflict with websockets / javax.servlet.ServletContext version conflict -->
+<!-- 		<dependency> -->
+<!-- 			<artifactId>geronimo-servlet_3.0_spec</artifactId> -->
+<!-- 			<groupId>org.apache.geronimo.specs</groupId> -->
+<!-- 			<version>1.0</version> -->
+<!-- 			<scope>provided</scope> -->
+<!-- 		</dependency> -->
 
 		<!-- Spring and Spring Boot dependencies -->
 		<dependency>

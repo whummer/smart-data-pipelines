@@ -5,11 +5,13 @@
        xmlns:jaxrs="http://cxf.apache.org/jaxrs"
        xmlns:security="http://www.springframework.org/schema/security"
        xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:websocket="http://www.springframework.org/schema/websocket"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
                            http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd
                            http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd
                            http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd
-                           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+                           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+                           http://www.springframework.org/schema/websocket http://www.springframework.org/schema/websocket/spring-websocket.xsd">
 
     <import resource="classpath:META-INF/cxf/cxf.xml"/>
     <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
@@ -47,7 +49,13 @@
         <property name="scan" value="true"/>
     </bean>
 
-	<!-- set Spring security configurations -->
+	<!-- Websocket support -->
+    <bean id="websocketHandler" class="io.riots.api.services.websocket.WebsocketHandler"/>
+	<websocket:handlers>
+        <websocket:mapping path="/websocket" handler="websocketHandler"/>
+    </websocket:handlers>
+
+	<!-- Spring security configurations -->
 	<bean id="authFilter" class="io.riots.api.services.auth.AuthFilter" />
  	<bean id="authAdvice" class="io.riots.api.services.auth.AuthPermissionAdvice" />
 	<bean id="expressionHandler"
@@ -62,7 +70,6 @@
     </security:authentication-manager>
   	<aop:aspectj-autoproxy/>
     <security:http auto-config="true" security="none">
-<!--           <security:custom-filter ref="authFilter" before="HEADERS_FILTER"/> -->
   	</security:http>
 
 </beans>

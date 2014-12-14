@@ -33,7 +33,6 @@
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
-        <!--  -->
 		<dependency>
 	        <groupId>io.riots</groupId>
 	        <artifactId>riots-common-simulation</artifactId>
@@ -41,7 +40,6 @@
         </dependency>
 
 		<!-- Spring security -->
-		
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-config</artifactId>
@@ -51,6 +49,11 @@
 			<artifactId>spring-security-web</artifactId>
 		</dependency>
 		
+		<!-- Spring websockets -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
     </dependencies>
 
 	<build>

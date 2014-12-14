@@ -16,7 +16,7 @@ var appConfig = {
 		simulationProps: { url: "http://localhost:8081/api/v1/simulations/properties" },
 		simulationDevices: { url: "http://localhost:8081/api/v1/simulations/devices" },
 		stats: { url: "http://localhost:8081/api/v1/stats" },
-		websocket: { url: "ws://localhost:9292/" }
+		websocket: { url: "ws://localhost:8081/websocket" }
 	},
 	auth: {
 		github: {

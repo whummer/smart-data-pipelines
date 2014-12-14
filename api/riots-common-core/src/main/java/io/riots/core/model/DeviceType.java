@@ -1,11 +1,11 @@
 package io.riots.core.model;
 
 import io.riots.core.model.SemanticType.SemanticDeviceType;
+import io.riots.core.util.cascade.CascadeSave;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import io.riots.core.util.cascade.CascadeSave;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -41,7 +41,7 @@ public class DeviceType extends AssetType<DeviceType> {
      * be both sensable and actuatable.
      */
     @DBRef
-    @CascadeSave // TODO fix
+    @CascadeSave
     private List<Property<?>> deviceProperties = new LinkedList<Property<?>>();
 
     @JsonCreator
