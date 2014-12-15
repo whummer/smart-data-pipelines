@@ -1,3 +1,10 @@
+<!-- todo move to external CSS file -->
+<style>
+    .bootstrap-tagsinput {
+        width: 100% !important;
+    }
+</style>
+
 <section ng-controller="DeviceTypeDetailsController" id="devTypeDetailsSection" style="height: 100%;">
 
     <div ng-show="shared.selectedDeviceType">
@@ -25,7 +32,7 @@
             </div>
 
             <!-- device type name -->
-            <div class="form-group">
+            <div class="form-group">    
                 <label for="devTypeDescr" class="col-sm-2 control-label">Description</label>
 
                 <div class="col-sm-10">
@@ -69,10 +76,45 @@
                 </div>
             </div>
 
+
+
             <!-- device type tags -->
             <div class="form-group">
-                <div id="devTypeTags" class="tag-list" />
+                <label for="devTypeTags" class="col-sm-2 control-label">Tags</label>
+
+                <div class="col-sm-10">
+                    <input id="devTypeTags" class="form-control input-sm"  data-role="tagsinput"/>
+                </div>
             </div>
+
+            <div class="row">
+                <div class="col-xs-2">
+                    <input type="text" class="form-control" placeholder=".col-xs-2">
+                </div>
+                <div class="col-xs-3">
+                    <input type="text" class="form-control" placeholder=".col-xs-3">
+                </div>
+                <div class="col-xs-4">
+                    <input type="text" class="form-control" placeholder=".col-xs-4">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for=""></label>Attributes:</td><td>
+                <table>
+                    <tr ng-repeat="n in range(0, getPropertyList(shared.selectedDeviceType).length - 1)">
+                        <td><input class="domPropValue form-control input-sm"
+                                   ng-model="shared.selectedDeviceType.propertyList[n].key" style="width: 30%"/>
+                            =
+                            <input class="domPropValue form-control input-sm"
+                                   ng-model="shared.selectedDeviceType.propertyList[n].value" style="width: 60%" />
+                        </td>
+                    </tr>
+                </table>
+                <button class="btn btn-default btn-sm"  id="btnDevTypeAddAttr">Add Attribute</button>
+            
+            </div>
+
 
             <hr/>
 
@@ -96,7 +138,7 @@
 
             AppController($scope, $http, $compile);
 
-            require(["bootstrap-tags"], function () {
+            require(["bootstrap-tagsinput"], function () {
 
                 $scope.getPropertyList = function (devType) {
                     if (!devType)
@@ -113,7 +155,8 @@
 
                 $scope.applyProperties = function () {
                     /* apply tags */
-                    //$scope.shared.selectedDeviceType.tags = $("#devTypeTags").tagit("assignedTags");
+                    $scope.shared.selectedDeviceType.tags = $("#devTypeTags").tagsinput('items');
+                    console.dir($scope.shared.selectedDeviceType.tags)
                 };
 
                 $scope.addProperty = function () {
@@ -155,17 +198,24 @@
                 $scope.loadSemanticTypes();
                 $scope.addClickHandler("btnDevTypeAddAttr", $scope.addProperty);
                 $scope.addClickHandler("btnDevTypeSave", $scope.saveDetails);
-               /* $scope.$watch("shared.selectedDeviceType", function () {
+                $scope.$watch("shared.selectedDeviceType", function () {
+                    console.log("watched");
+                    console.dir($scope.shared.selectedDeviceType);
                     if ($scope.shared.selectedDeviceType) {
-
                         $.each($scope.shared.selectedDeviceType.tags, function (idx, el) {
                             console.log("Adding tag " + el);
+                            $("#devTypeTags").tagsinput("add", el);
                         });
-                    }
-                });*/
 
-                /* render main element */
-                //$("#devTypeTags").tags().addTag("Test");
+                    }
+                });
+
+                $("#devTypeTags").tagsinput();
+
+                //console.dir($scope.shared.selectedDeviceType)
+
+
+
 
             });
         }

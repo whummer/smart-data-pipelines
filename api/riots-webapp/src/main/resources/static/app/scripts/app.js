@@ -24,15 +24,14 @@ if (!window.angular) {
 define(
     [
         'routes', 'angular', 'angular-bootstrap',
-        'bootstrap-tags',
-        'angular-route', 'angular-ui-grid',
-        'angular-ui-slider','bg-splitter'
+        'bootstrap-tagsinput',
+        'angular-route', 'angular-ui-grid'
+        //'angular-ui-slider','bg-splitter'
     ],
 
     function (config) {
 
         var app = angular.module('app', [
-            'bgDirectives',
             'ngRoute',
             'ui.bootstrap',
             'ui.grid',
@@ -52,7 +51,6 @@ define(
                         //console.log("Login done. Start rendering.", authInfo);
 
                         if (authInfo) {
-                        	window.authInfo = authInfo;
                             var network = authInfo.network;
                             var token = authInfo.access_token;
                             $http.defaults.headers.common["riots-auth-network"] = network;

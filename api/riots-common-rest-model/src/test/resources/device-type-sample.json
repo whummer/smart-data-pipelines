@@ -1,0 +1,51 @@
+{
+	"id": "548d718486a8764283b91312",
+	"name": "EM-506 GPS Receiver",
+	"description": "EM-506 includes on-board voltage regulation, LED status indicator, battery backed RAM, and a built-in patch antenna. 6-pin interface cable included.",
+	"created": 1418555780379,
+	"type": 
+	{
+		"category": "Device",
+		"id": "548d718486a8764283b912e8",
+		"name": "Location_Sensor"
+	},
+
+	"properties": 
+	[
+		{
+			"data-type": "LIST",
+			"id": "548d718486a8764283b91311",
+			"name": "location",
+			"children": 
+			[
+				{
+					"data-type": "DOUBLE",
+					"id": "548d718486a8764283b9130f",
+					"name": "longitude",
+					"sensable": true,
+					"actuatable": false,
+					"semantic-type": 
+					{
+						"id": "548d718486a8764283b912db",
+						"name": "location_lon",
+						"category": "Property"
+					}
+				},
+
+				{
+					"data-type": "DOUBLE",
+					"id": "548d718486a8764283b91310",
+					"name": "latitude",
+					"sensable": true,
+					"actuatable": false,
+					"semantic-type": 
+					{
+						"category": "Property",
+						"id": "548d718486a8764283b912da",
+						"name": "location_lat"
+					}
+				}
+			]
+		}
+	]
+}

@@ -4,12 +4,10 @@
     <meta charset="utf-8">
 
     <link rel="stylesheet" href="/bower_components/jquery-ui/themes/smoothness/jquery-ui.css"/>
-    <link rel="stylesheet" href="/bower_components/dbootstrap/release/0.1.1/theme/dbootstrap/dbootstrap.css"/>
-    <link rel="stylesheet" href="/bower_components/dbootstrap/release/0.1.1/theme/dbootstrap/dijit.css"/>
     <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/bower_components/bootstrap-tags/dist/css/bootstrap-tags.css" />
+    <link rel="stylesheet" href="/bower_components/bootstrap-tagsinput/dist/bootstrap-tagsinput.css" />
     <link rel="stylesheet" href="/bower_components/angular-ui-grid/ui-grid.min.css"/>
-    <link rel="stylesheet" href="/bower_components/bg-splitter/css/style.css"/>
+
     <!-- last position to enforce overrides -->
     <link rel="stylesheet" href="styles/app.css"/>
 
@@ -87,14 +85,7 @@
             $("#splash").hide();
         }
 
-        /*function highlightActiveMenuItem(element) {
-            $(".nav").find(".active").removeClass("active");
-            var parent = $(element).parent().get(0);
-            $(parent).addClass("active");
-        }*/
-
         function clickMenu(element) {
-            //highlightActiveMenuItem(element);
             window.location.href = element.getAttribute("href");
             return false;
         }
@@ -110,12 +101,12 @@
 
     <title>RIoTS - Dev&amp;Test for the Internet of Things</title>
 </head>
-<body class="dbootstrap">
+<body>
+
 <!-- Splash Screen -->
 <div id="splash">
     <div>
         <p>loading...</p>
-
         <p><img src="img/loading.gif" alt="loading"/></p>
     </div>
 </div>
