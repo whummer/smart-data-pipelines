@@ -1,0 +1,1333 @@
+[
+	{
+		"id": "548d718486a8764283b912f9",
+		"name": "HC-SR04",
+		"description": "The HC-SR04 Ultrasonic Range Sensor uses non-contact ultrasound sonar to measure the distance to an object - they're great for any obstacle avoiding systems on Raspberry Pi robots or rovers! The HC-SR04 consists of two ultrasonic transmitters (basically speakers), a receiver, and a control circuit. ",
+		"properties": 
+		{
+			"width": "20mm",
+			"length": "35mm",
+			"temperature": "-15C..70C",
+			"sensing-angle": "30°",
+			"input_voltage": "5V",
+			"current-draw": "20mA",
+			"height": "15mm"
+		},
+
+		"tags": 
+		[
+			
+		],
+
+		"created": 1418555780377,
+		"creator": null,
+		"children": 
+		[
+			
+		],
+
+		"manufacturer": null,
+		"semanticType": null,
+		"imageUrl": null,
+		"deviceProperties": 
+		[
+			{
+				"baseType": "DOUBLE",
+				"id": "548d718486a8764283b912f8",
+				"name": "distance",
+				"description": null,
+				"properties": 
+				{
+					
+				},
+
+				"tags": 
+				[
+					
+				],
+
+				"created": null,
+				"creator": null,
+				"children": 
+				[
+					
+				],
+
+				"metadata": 
+				{
+					"sensable": true,
+					"actuatable": false
+				},
+
+				"constraints": null,
+				"valueDomain": 
+				{
+					"type": "Continuous",
+					"type": "Continuous",
+					"min": 0.0,
+					"max": 200.0
+				},
+
+				"baseType": "DOUBLE",
+				"semanticType": null
+			}
+		]
+	},
+
+	{
+		"id": "548d718486a8764283b912fb",
+		"name": "HC-SR501",
+		"description": "This PIR includes an adjustable delay before firing (approx 0.5 - 200 seconds), has adjustable sensitivity and two M2 mounting holes! It runs on 4.5V-20V power (or 3V by bypassing the regulator with a bit of soldering) and has a digital signal output  (3.3V) high, 0V low. Its sensing range is up to 7 meters in a 100 degree cone.",
+		"properties": 
+		{
+			"width": "32mm",
+			"length": "25mm",
+			"temperature": "-15C..70C",
+			"range": "5m..7m",
+			"sensing-angle": "100°",
+			"input_voltage": "4.5V..20V",
+			"current-draw": "50mA",
+			"height": "25mm"
+		},
+
+		"tags": 
+		[
+			
+		],
+
+		"created": 1418555780378,
+		"creator": null,
+		"children": 
+		[
+			
+		],
+
+		"manufacturer": null,
+		"semanticType": null,
+		"imageUrl": null,
+		"deviceProperties": 
+		[
+			{
+				"baseType": "BOOLEAN",
+				"id": "548d718486a8764283b912fa",
+				"name": "motion",
+				"description": null,
+				"properties": 
+				{
+					
+				},
+
+				"tags": 
+				[
+					
+				],
+
+				"created": null,
+				"creator": null,
+				"children": 
+				[
+					
+				],
+
+				"metadata": 
+				{
+					"sensable": true,
+					"actuatable": false
+				},
+
+				"constraints": null,
+				"valueDomain": 
+				{
+					"type": "Enumerated",
+					"type": "Enumerated",
+					"values": 
+					[
+						true,
+						false
+					]
+				},
+
+				"baseType": "BOOLEAN",
+				"semanticType": null
+			}
+		]
+	},
+
+	{
+		"id": "548d718486a8764283b912fd",
+		"name": "DS18B20",
+		"description": "A genuine Maxim sourced DS18B20+ One Wire Digital Temperature Sensor. The DS18B20+ is the perfect low-cost solution for a range of Raspberry Pi and Arduino temperature control and data-logging projects! The DS18B20+ measures temperature in degrees Celsius with 9 to 12-bit precision and includes an alarm function with nonvolatile user-programmable upper and lower trigger points. Sensing range is -55C to 125C (accurate to ±0.5°C over the range of -10°C to +85°C), and each sensor has a unique 64-bit serial number hard-programmed enabling the use of a number of sensors on a single data bus.",
+		"properties": 
+		{
+			"temperature": "-55C..125C",
+			"input_voltage": "3V..5V",
+			"resolution": "9bit..12bit"
+		},
+
+		"tags": 
+		[
+			
+		],
+
+		"created": 1418555780378,
+		"creator": null,
+		"children": 
+		[
+			
+		],
+
+		"manufacturer": null,
+		"semanticType": null,
+		"imageUrl": null,
+		"deviceProperties": 
+		[
+			{
+				"baseType": "DOUBLE",
+				"id": "548d718486a8764283b912fc",
+				"name": "temperature",
+				"description": null,
+				"properties": 
+				{
+					
+				},
+
+				"tags": 
+				[
+					
+				],
+
+				"created": null,
+				"creator": null,
+				"children": 
+				[
+					
+				],
+
+				"metadata": 
+				{
+					"sensable": true,
+					"actuatable": false
+				},
+
+				"constraints": null,
+				"valueDomain": 
+				{
+					"type": "Discrete",
+					"type": "Discrete",
+					"min": -15.0,
+					"max": 70.0,
+					"step": 0.1
+				},
+
+				"baseType": "DOUBLE",
+				"semanticType": 
+				{
+					"category": "Property",
+					"id": "548d718486a8764283b912dd",
+					"name": "temperature",
+					"description": null,
+					"properties": 
+					{
+						
+					},
+
+					"tags": 
+					[
+						
+					],
+
+					"created": null,
+					"creator": null,
+					"category": "Property"
+				}
+			}
+		]
+	},
+
+	{
+		"id": "548d718486a8764283b91302",
+		"name": "Raspberry Pi Model B+",
+		"description": "512MB RAM, new GPIO, microSD",
+		"properties": 
+		{
+			
+		},
+
+		"tags": 
+		[
+			
+		],
+
+		"created": 1418555780379,
+		"creator": null,
+		"children": 
+		[
+			{
+				"id": "548d718486a8764283b912fb",
+				"name": "HC-SR501",
+				"description": "This PIR includes an adjustable delay before firing (approx 0.5 - 200 seconds), has adjustable sensitivity and two M2 mounting holes! It runs on 4.5V-20V power (or 3V by bypassing the regulator with a bit of soldering) and has a digital signal output  (3.3V) high, 0V low. Its sensing range is up to 7 meters in a 100 degree cone.",
+				"properties": 
+				{
+					"width": "32mm",
+					"length": "25mm",
+					"temperature": "-15C..70C",
+					"range": "5m..7m",
+					"sensing-angle": "100°",
+					"input_voltage": "4.5V..20V",
+					"current-draw": "50mA",
+					"height": "25mm"
+				},
+
+				"tags": 
+				[
+					
+				],
+
+				"created": 1418555780378,
+				"creator": null,
+				"children": 
+				[
+					
+				],
+
+				"manufacturer": null,
+				"semanticType": null,
+				"imageUrl": null,
+				"deviceProperties": 
+				[
+					{
+						"baseType": "BOOLEAN",
+						"id": "548d718486a8764283b912fa",
+						"name": "motion",
+						"description": null,
+						"properties": 
+						{
+							
+						},
+
+						"tags": 
+						[
+							
+						],
+
+						"created": null,
+						"creator": null,
+						"children": 
+						[
+							
+						],
+
+						"metadata": 
+						{
+							"sensable": true,
+							"actuatable": false
+						},
+
+						"constraints": null,
+						"valueDomain": 
+						{
+							"type": "Enumerated",
+							"type": "Enumerated",
+							"values": 
+							[
+								true,
+								false
+							]
+						},
+
+						"baseType": "BOOLEAN",
+						"semanticType": null
+					}
+				]
+			},
+
+			{
+				"id": "548d718486a8764283b912fd",
+				"name": "DS18B20",
+				"description": "A genuine Maxim sourced DS18B20+ One Wire Digital Temperature Sensor. The DS18B20+ is the perfect low-cost solution for a range of Raspberry Pi and Arduino temperature control and data-logging projects! The DS18B20+ measures temperature in degrees Celsius with 9 to 12-bit precision and includes an alarm function with nonvolatile user-programmable upper and lower trigger points. Sensing range is -55C to 125C (accurate to ±0.5°C over the range of -10°C to +85°C), and each sensor has a unique 64-bit serial number hard-programmed enabling the use of a number of sensors on a single data bus.",
+				"properties": 
+				{
+					"temperature": "-55C..125C",
+					"input_voltage": "3V..5V",
+					"resolution": "9bit..12bit"
+				},
+
+				"tags": 
+				[
+					
+				],
+
+				"created": 1418555780378,
+				"creator": null,
+				"children": 
+				[
+					
+				],
+
+				"manufacturer": null,
+				"semanticType": null,
+				"imageUrl": null,
+				"deviceProperties": 
+				[
+					{
+						"baseType": "DOUBLE",
+						"id": "548d718486a8764283b912fc",
+						"name": "temperature",
+						"description": null,
+						"properties": 
+						{
+							
+						},
+
+						"tags": 
+						[
+							
+						],
+
+						"created": null,
+						"creator": null,
+						"children": 
+						[
+							
+						],
+
+						"metadata": 
+						{
+							"sensable": true,
+							"actuatable": false
+						},
+
+						"constraints": null,
+						"valueDomain": 
+						{
+							"type": "Discrete",
+							"type": "Discrete",
+							"min": -15.0,
+							"max": 70.0,
+							"step": 0.1
+						},
+
+						"baseType": "DOUBLE",
+						"semanticType": 
+						{
+							"category": "Property",
+							"id": "548d718486a8764283b912dd",
+							"name": "temperature",
+							"description": null,
+							"properties": 
+							{
+								
+							},
+
+							"tags": 
+							[
+								
+							],
+
+							"created": null,
+							"creator": null,
+							"category": "Property"
+						}
+					}
+				]
+			},
+
+			{
+				"id": "548d718486a8764283b912f9",
+				"name": "HC-SR04",
+				"description": "The HC-SR04 Ultrasonic Range Sensor uses non-contact ultrasound sonar to measure the distance to an object - they're great for any obstacle avoiding systems on Raspberry Pi robots or rovers! The HC-SR04 consists of two ultrasonic transmitters (basically speakers), a receiver, and a control circuit. ",
+				"properties": 
+				{
+					"width": "20mm",
+					"length": "35mm",
+					"temperature": "-15C..70C",
+					"sensing-angle": "30°",
+					"input_voltage": "5V",
+					"current-draw": "20mA",
+					"height": "15mm"
+				},
+
+				"tags": 
+				[
+					
+				],
+
+				"created": 1418555780377,
+				"creator": null,
+				"children": 
+				[
+					
+				],
+
+				"manufacturer": null,
+				"semanticType": null,
+				"imageUrl": null,
+				"deviceProperties": 
+				[
+					{
+						"baseType": "DOUBLE",
+						"id": "548d718486a8764283b912f8",
+						"name": "distance",
+						"description": null,
+						"properties": 
+						{
+							
+						},
+
+						"tags": 
+						[
+							
+						],
+
+						"created": null,
+						"creator": null,
+						"children": 
+						[
+							
+						],
+
+						"metadata": 
+						{
+							"sensable": true,
+							"actuatable": false
+						},
+
+						"constraints": null,
+						"valueDomain": 
+						{
+							"type": "Continuous",
+							"type": "Continuous",
+							"min": 0.0,
+							"max": 200.0
+						},
+
+						"baseType": "DOUBLE",
+						"semanticType": null
+					}
+				]
+			}
+		],
+
+		"manufacturer": null,
+		"semanticType": null,
+		"imageUrl": null,
+		"deviceProperties": 
+		[
+			{
+				"baseType": "LONG",
+				"id": "548d718486a8764283b912fe",
+				"name": "GPU_MEM",
+				"description": null,
+				"properties": 
+				{
+					
+				},
+
+				"tags": 
+				[
+					
+				],
+
+				"created": null,
+				"creator": null,
+				"children": 
+				[
+					
+				],
+
+				"metadata": 
+				{
+					"sensable": true,
+					"actuatable": true
+				},
+
+				"constraints": null,
+				"valueDomain": 
+				{
+					"type": "Discrete",
+					"type": "Discrete",
+					"min": 16,
+					"max": 448,
+					"step": 1
+				},
+
+				"baseType": "LONG",
+				"semanticType": null
+			},
+
+			{
+				"baseType": "LONG",
+				"id": "548d718486a8764283b912ff",
+				"name": "SDTV_MODE",
+				"description": null,
+				"properties": 
+				{
+					
+				},
+
+				"tags": 
+				[
+					
+				],
+
+				"created": null,
+				"creator": null,
+				"children": 
+				[
+					
+				],
+
+				"metadata": 
+				{
+					"sensable": true,
+					"actuatable": true
+				},
+
+				"constraints": null,
+				"valueDomain": 
+				{
+					"type": "Enumerated",
+					"type": "Enumerated",
+					"values": 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				},
+
+				"baseType": "LONG",
+				"semanticType": null
+			},
+
+			{
+				"baseType": "LONG",
+				"id": "548d718486a8764283b91300",
+				"name": "HDMI_MODE",
+				"description": null,
+				"properties": 
+				{
+					
+				},
+
+				"tags": 
+				[
+					
+				],
+
+				"created": null,
+				"creator": null,
+				"children": 
+				[
+					
+				],
+
+				"metadata": 
+				{
+					"sensable": true,
+					"actuatable": true
+				},
+
+				"constraints": null,
+				"valueDomain": 
+				{
+					"type": "Discrete",
+					"type": "Discrete",
+					"min": 0,
+					"max": 59,
+					"step": 1
+				},
+
+				"baseType": "LONG",
+				"semanticType": null
+			},
+
+			{
+				"baseType": "LONG",
+				"id": "548d718486a8764283b91301",
+				"name": "FRAMEBUFFER_DEPTH",
+				"description": null,
+				"properties": 
+				{
+					
+				},
+
+				"tags": 
+				[
+					
+				],
+
+				"created": null,
+				"creator": null,
+				"children": 
+				[
+					
+				],
+
+				"metadata": 
+				{
+					"sensable": true,
+					"actuatable": true
+				},
+
+				"constraints": null,
+				"valueDomain": 
+				{
+					"type": "Enumerated",
+					"type": "Enumerated",
+					"values": 
+					[
+						8,
+						16,
+						24,
+						32
+					]
+				},
+
+				"baseType": "LONG",
+				"semanticType": null
+			}
+		]
+	},
+
+	{
+		"id": "548d718486a8764283b91305",
+		"name": "AQUAlogger 210PTdeep",
+		"description": "Deep water data logger that measures and records temperature and pressure",
+		"properties": 
+		{
+			
+		},
+
+		"tags": 
+		[
+			
+		],
+
+		"created": 1418555780379,
+		"creator": null,
+		"children": 
+		[
+			
+		],
+
+		"manufacturer": null,
+		"semanticType": null,
+		"imageUrl": null,
+		"deviceProperties": 
+		[
+			{
+				"baseType": "DOUBLE",
+				"id": "548d718486a8764283b91303",
+				"name": "pressure",
+				"description": null,
+				"properties": 
+				{
+					
+				},
+
+				"tags": 
+				[
+					
+				],
+
+				"created": null,
+				"creator": null,
+				"children": 
+				[
+					
+				],
+
+				"metadata": 
+				{
+					"sensable": true,
+					"actuatable": true
+				},
+
+				"constraints": null,
+				"valueDomain": 
+				{
+					"type": "Discrete",
+					"type": "Discrete",
+					"min": 0.0,
+					"max": 100.0,
+					"step": 0.01
+				},
+
+				"baseType": "DOUBLE",
+				"semanticType": 
+				{
+					"category": "Property",
+					"id": "548d718486a8764283b912e3",
+					"name": "pressure",
+					"description": null,
+					"properties": 
+					{
+						
+					},
+
+					"tags": 
+					[
+						
+					],
+
+					"created": null,
+					"creator": null,
+					"category": "Property"
+				}
+			},
+
+			{
+				"baseType": "DOUBLE",
+				"id": "548d718486a8764283b91304",
+				"name": "temperature",
+				"description": null,
+				"properties": 
+				{
+					
+				},
+
+				"tags": 
+				[
+					
+				],
+
+				"created": null,
+				"creator": null,
+				"children": 
+				[
+					
+				],
+
+				"metadata": 
+				{
+					"sensable": true,
+					"actuatable": true
+				},
+
+				"constraints": null,
+				"valueDomain": 
+				{
+					"type": "Discrete",
+					"type": "Discrete",
+					"min": -2.0,
+					"max": 30.0,
+					"step": 0.05
+				},
+
+				"baseType": "DOUBLE",
+				"semanticType": 
+				{
+					"category": "Property",
+					"id": "548d718486a8764283b912dd",
+					"name": "temperature",
+					"description": null,
+					"properties": 
+					{
+						
+					},
+
+					"tags": 
+					[
+						
+					],
+
+					"created": null,
+					"creator": null,
+					"category": "Property"
+				}
+			}
+		]
+	},
+
+	{
+		"id": "548d718486a8764283b9130c",
+		"name": "MPU-6000 Six Axis Motion Tracker",
+		"description": "Motion tracking device which is a combination of a 3-axis gyroscope and a 3-axis accelerometer with an onboard Digital Motion Processor™, which can also access other external sensors",
+		"properties": 
+		{
+			
+		},
+
+		"tags": 
+		[
+			
+		],
+
+		"created": 1418555780379,
+		"creator": null,
+		"children": 
+		[
+			
+		],
+
+		"manufacturer": null,
+		"semanticType": null,
+		"imageUrl": null,
+		"deviceProperties": 
+		[
+			{
+				"baseType": "DOUBLE",
+				"id": "548d718486a8764283b91306",
+				"name": "X_ACCEL",
+				"description": null,
+				"properties": 
+				{
+					
+				},
+
+				"tags": 
+				[
+					
+				],
+
+				"created": null,
+				"creator": null,
+				"children": 
+				[
+					
+				],
+
+				"metadata": 
+				{
+					"sensable": true,
+					"actuatable": false
+				},
+
+				"constraints": null,
+				"valueDomain": null,
+				"baseType": "DOUBLE",
+				"semanticType": null
+			},
+
+			{
+				"baseType": "DOUBLE",
+				"id": "548d718486a8764283b91307",
+				"name": "Y_ACCEL",
+				"description": null,
+				"properties": 
+				{
+					
+				},
+
+				"tags": 
+				[
+					
+				],
+
+				"created": null,
+				"creator": null,
+				"children": 
+				[
+					
+				],
+
+				"metadata": 
+				{
+					"sensable": true,
+					"actuatable": false
+				},
+
+				"constraints": null,
+				"valueDomain": null,
+				"baseType": "DOUBLE",
+				"semanticType": null
+			},
+
+			{
+				"baseType": "DOUBLE",
+				"id": "548d718486a8764283b91308",
+				"name": "Z_ACCEL",
+				"description": null,
+				"properties": 
+				{
+					
+				},
+
+				"tags": 
+				[
+					
+				],
+
+				"created": null,
+				"creator": null,
+				"children": 
+				[
+					
+				],
+
+				"metadata": 
+				{
+					"sensable": true,
+					"actuatable": false
+				},
+
+				"constraints": null,
+				"valueDomain": null,
+				"baseType": "DOUBLE",
+				"semanticType": null
+			},
+
+			{
+				"baseType": "DOUBLE",
+				"id": "548d718486a8764283b91309",
+				"name": "X_GYRO",
+				"description": null,
+				"properties": 
+				{
+					
+				},
+
+				"tags": 
+				[
+					
+				],
+
+				"created": null,
+				"creator": null,
+				"children": 
+				[
+					
+				],
+
+				"metadata": 
+				{
+					"sensable": true,
+					"actuatable": false
+				},
+
+				"constraints": null,
+				"valueDomain": null,
+				"baseType": "DOUBLE",
+				"semanticType": null
+			},
+
+			{
+				"baseType": "DOUBLE",
+				"id": "548d718486a8764283b9130a",
+				"name": "Y_GYRO",
+				"description": null,
+				"properties": 
+				{
+					
+				},
+
+				"tags": 
+				[
+					
+				],
+
+				"created": null,
+				"creator": null,
+				"children": 
+				[
+					
+				],
+
+				"metadata": 
+				{
+					"sensable": true,
+					"actuatable": false
+				},
+
+				"constraints": null,
+				"valueDomain": null,
+				"baseType": "DOUBLE",
+				"semanticType": null
+			},
+
+			{
+				"baseType": "DOUBLE",
+				"id": "548d718486a8764283b9130b",
+				"name": "Z_GYRO",
+				"description": null,
+				"properties": 
+				{
+					
+				},
+
+				"tags": 
+				[
+					
+				],
+
+				"created": null,
+				"creator": null,
+				"children": 
+				[
+					
+				],
+
+				"metadata": 
+				{
+					"sensable": true,
+					"actuatable": false
+				},
+
+				"constraints": null,
+				"valueDomain": null,
+				"baseType": "DOUBLE",
+				"semanticType": null
+			}
+		]
+	},
+
+	{
+		"id": "548d718486a8764283b9130e",
+		"name": "iSmart Alarm",
+		"description": "Wireless motion detector",
+		"properties": 
+		{
+			
+		},
+
+		"tags": 
+		[
+			
+		],
+
+		"created": 1418555780379,
+		"creator": null,
+		"children": 
+		[
+			
+		],
+
+		"manufacturer": null,
+		"semanticType": null,
+		"imageUrl": null,
+		"deviceProperties": 
+		[
+			{
+				"baseType": "BOOLEAN",
+				"id": "548d718486a8764283b9130d",
+				"name": "motion",
+				"description": null,
+				"properties": 
+				{
+					
+				},
+
+				"tags": 
+				[
+					
+				],
+
+				"created": null,
+				"creator": null,
+				"children": 
+				[
+					
+				],
+
+				"metadata": 
+				{
+					"sensable": true,
+					"actuatable": false
+				},
+
+				"constraints": null,
+				"valueDomain": 
+				{
+					"type": "Enumerated",
+					"type": "Enumerated",
+					"values": 
+					[
+						true,
+						false
+					]
+				},
+
+				"baseType": "BOOLEAN",
+				"semanticType": null
+			}
+		]
+	},
+
+	{
+		"id": "548d718486a8764283b91312",
+		"name": "EM-506 GPS Receiver",
+		"description": "EM-506 includes on-board voltage regulation, LED status indicator, battery backed RAM, and a built-in patch antenna. 6-pin interface cable included.",
+		"properties": 
+		{
+			
+		},
+
+		"tags": 
+		[
+			
+		],
+
+		"created": 1418555780379,
+		"creator": null,
+		"children": 
+		[
+			
+		],
+
+		"manufacturer": null,
+		"semanticType": 
+		{
+			"category": "Device",
+			"id": "548d718486a8764283b912e8",
+			"name": "Location_Sensor",
+			"description": null,
+			"properties": 
+			{
+				
+			},
+
+			"tags": 
+			[
+				
+			],
+
+			"created": null,
+			"creator": null,
+			"category": "Device"
+		},
+
+		"imageUrl": null,
+		"deviceProperties": 
+		[
+			{
+				"baseType": "LIST",
+				"id": "548d718486a8764283b91311",
+				"name": "location",
+				"description": null,
+				"properties": 
+				{
+					
+				},
+
+				"tags": 
+				[
+					
+				],
+
+				"created": null,
+				"creator": null,
+				"children": 
+				[
+					{
+						"baseType": "DOUBLE",
+						"id": "548d718486a8764283b9130f",
+						"name": "longitude",
+						"description": null,
+						"properties": 
+						{
+							
+						},
+
+						"tags": 
+						[
+							
+						],
+
+						"created": null,
+						"creator": null,
+						"children": 
+						[
+							
+						],
+
+						"metadata": 
+						{
+							"sensable": true,
+							"actuatable": false
+						},
+
+						"constraints": null,
+						"valueDomain": null,
+						"baseType": "DOUBLE",
+						"semanticType": 
+						{
+							"category": "Property",
+							"id": "548d718486a8764283b912db",
+							"name": "location_lon",
+							"description": null,
+							"properties": 
+							{
+								
+							},
+
+							"tags": 
+							[
+								
+							],
+
+							"created": null,
+							"creator": null,
+							"category": "Property"
+						}
+					},
+
+					{
+						"baseType": "DOUBLE",
+						"id": "548d718486a8764283b91310",
+						"name": "latitude",
+						"description": null,
+						"properties": 
+						{
+							
+						},
+
+						"tags": 
+						[
+							
+						],
+
+						"created": null,
+						"creator": null,
+						"children": 
+						[
+							
+						],
+
+						"metadata": 
+						{
+							"sensable": true,
+							"actuatable": false
+						},
+
+						"constraints": null,
+						"valueDomain": null,
+						"baseType": "DOUBLE",
+						"semanticType": 
+						{
+							"category": "Property",
+							"id": "548d718486a8764283b912da",
+							"name": "location_lat",
+							"description": null,
+							"properties": 
+							{
+								
+							},
+
+							"tags": 
+							[
+								
+							],
+
+							"created": null,
+							"creator": null,
+							"category": "Property"
+						}
+					}
+				],
+
+				"metadata": 
+				{
+					"sensable": null,
+					"actuatable": null
+				},
+
+				"constraints": null,
+				"valueDomain": null,
+				"baseType": "LIST",
+				"semanticType": null
+			}
+		]
+	}
+]

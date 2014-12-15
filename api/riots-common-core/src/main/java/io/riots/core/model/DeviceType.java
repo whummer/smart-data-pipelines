@@ -15,7 +15,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
  * @author omoser
  * @author whummer
  */
-
 @Document(collection = Constants.COLL_DEVICE_TYPES)
 public class DeviceType extends AssetType<DeviceType> {
 
@@ -52,6 +51,17 @@ public class DeviceType extends AssetType<DeviceType> {
     public DeviceType(String name) {
         super(name);
     }
+
+	public Property<?> getDeviceProperty(String propertyName) {
+		for(Property<?> p : deviceProperties) {
+			if(p.getName() != null && p.getName().equals(propertyName)) {
+				return p;
+			}
+		}
+		return null;
+	}
+
+	/* HELPER METHODS */
 
     public DeviceType withManufacturer(final Manufacturer manufacturer) {
         this.manufacturer = manufacturer;
@@ -114,4 +124,5 @@ public class DeviceType extends AssetType<DeviceType> {
         result = 31 * result + (deviceProperties != null ? deviceProperties.hashCode() : 0);
         return result;
     }
+
 }

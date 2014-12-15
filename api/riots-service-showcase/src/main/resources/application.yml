@@ -9,6 +9,8 @@ eureka:
 spring:
   application:
     name: showcase-service
+  profiles:
+    active: native
 
 logging:
   level:

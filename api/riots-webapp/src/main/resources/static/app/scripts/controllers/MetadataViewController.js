@@ -5,8 +5,6 @@ define(['app'], function(app) {
 
 			AppController($scope, $http, $compile);
 
-			rootScope.menuItemActiveClass = { meta: "menuItemActive" }
-
 			$scope.semanticsAPI = appConfig.services.semanticTypes.url;
 			$scope.curSelect = {};
 
@@ -21,7 +19,7 @@ define(['app'], function(app) {
 						displayTable(gridConfig, data.result, category);
 					}
 				);
-			}
+			};
 
 			var displayTable = function(gridConfig, nodes, category) {
 				gridConfig.data = nodes;
@@ -38,7 +36,7 @@ define(['app'], function(app) {
 						});
 					});
 				}, 100);
-			}
+			};
 
 			$scope.initTable = function(gridConfig, category) {
 
@@ -58,15 +56,19 @@ define(['app'], function(app) {
 				renderUITable(gridConfig, elementID, columnsConfig,
 					function(event) {
 						if(event.type == "dgrid-select") {
+							console.log("Event: dgrid-select");
 							$scope.$apply(function(){
 								$scope.curSelect[category] = event.rows[0].data;
 							});
 				    	} else if(event.type == "dgrid-deselect") {
+							console.log("Event: dgrid-deselect");
 							$scope.$apply(function(){
 								$scope.curSelect[category] = null;
 							});
 				    	} else if(event.type == "dgrid-datachange") {
+							console.log("Event: dgrid-datachange");
 				    		var data = event.grid.row(event).data;
+							console.dir(data);
 				    		data[event.cell.column.field] = event.value;
 				    		$scope.updateMetaType(gridConfig, category, data);
 				    	}
@@ -85,7 +87,8 @@ define(['app'], function(app) {
 						$scope.loadTable(gridConfig, category);
 					}
 				);
-			}
+			};
+
 			$scope.updateMetaType = function(gridConfig, category, instance) {
 				invokePUT($scope.http, $scope.semanticsAPI,
 					JSON.stringify(instance),
@@ -93,7 +96,8 @@ define(['app'], function(app) {
 						$scope.loadTable(gridConfig, category);
 					}
 				);
-			}
+			};
+
 			$scope.deleteMetaType = function(gridConfig, category) {
 				var curSelect = $scope.curSelect[category];
 				var url = $scope.semanticsAPI + "/" + curSelect.id;
@@ -104,7 +108,6 @@ define(['app'], function(app) {
 					}
 				);
 			}
-
         }
     ]);
 });

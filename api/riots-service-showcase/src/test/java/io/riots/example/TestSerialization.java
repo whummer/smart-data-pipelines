@@ -8,6 +8,8 @@ import io.riots.core.model.sim.Simulation;
 
 import org.junit.Test;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class TestSerialization {
 
 	@Test

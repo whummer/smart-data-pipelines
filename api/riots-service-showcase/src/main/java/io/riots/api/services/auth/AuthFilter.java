@@ -80,6 +80,7 @@ public class AuthFilter implements Filter, AuthenticationEntryPoint, Authenticat
 		"^/bower_components/.*$",
 		"^/models/.*$",
 		"^/examples/.*$",
+		"^/app/favicon\\.ico$",
 
 		"^/app/scripts/app\\.js$",
 		"^/app/scripts/controllers/AppController\\.js$",
