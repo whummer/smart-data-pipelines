@@ -62,7 +62,7 @@
     </appender>
 -->
 
-    <logger name="org.springframework" level="DEBUG">
+    <logger name="org.springframework" level="INFO">
         <!--<appender-ref ref="STDOUT"/>-->
         <appender-ref ref="spring"/>
     </logger>
@@ -83,7 +83,7 @@
         <!--<appender-ref ref="stash"/>-->
     </logger>
 
-    <root level="DEBUG">
+    <root level="INFO">
         <appender-ref ref="STDOUT"/>
         <!--<appender-ref ref="stash" />-->
     </root>
