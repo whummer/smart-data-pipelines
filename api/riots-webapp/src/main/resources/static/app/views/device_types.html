@@ -26,7 +26,7 @@
 			  <div class="row">
                   <div class="col-sm-6 col-md-4" ng-if="devices[$index] != undefined">
                       <div class="thumbnail">
-                          <img src="{{devices[$index].imageUrl}}" style="max-height: 100px"
+                          <img ng-src="{{devices[$index].imageUrl}}" style="max-height: 100px"
                                alt="{{devices[$index].name}}">
 
                           <div class="caption">
@@ -63,7 +63,7 @@
 
                   <div class="col-sm-6 col-md-4 " ng-if="devices[$index+1] != undefined">
                       <div class="thumbnail ">
-                          <img src="{{devices[$index+1].imageUrl}}" style="max-height: 100px"
+                          <img ng-src="{{devices[$index+1].imageUrl}}" style="max-height: 100px"
                                alt="{{devices[$index+1].name}}">
 
                           <div class="caption">
@@ -98,7 +98,7 @@
 
                   <div class="col-sm-6 col-md-4 " ng-if="devices[$index+2] != undefined">
                       <div class="thumbnail ">
-                          <img src="{{devices[$index+2].imageUrl}}" style="max-height: 100px"
+                          <img ng-src="{{devices[$index+2].imageUrl}}" style="max-height: 100px"
                                alt="{{devices[$index+2].name}}">
 
                           <div class="caption">
