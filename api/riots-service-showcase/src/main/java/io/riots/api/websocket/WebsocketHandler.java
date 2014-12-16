@@ -75,8 +75,7 @@ public class WebsocketHandler extends TextWebSocketHandler {
 	@Override
 	public void handleTextMessage(WebSocketSession session, TextMessage message) {
 		System.out.println("Incoming message: " + message);
-		WebsocketMessage m = JSONUtil.fromJSON(
-				message.getPayload(), WebsocketMessage.class);
+		WebsocketMessage m = JSONUtil.fromJSON(message.getPayload(), WebsocketMessage.class);
 		if(m instanceof WSMessageSubscribe) {
 			WSMessageSubscribe m1 = (WSMessageSubscribe)m;
 			Subscription s = new Subscription();

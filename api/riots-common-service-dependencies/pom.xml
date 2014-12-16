@@ -89,6 +89,16 @@
 			<artifactId>spring-cloud-starter-hystrix</artifactId>
 		</dependency>
 
+		<!-- Spring security -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+		</dependency>
+
 		<!-- API documentation via Swagger -->
 		<dependency>
 			<groupId>com.wordnik</groupId>

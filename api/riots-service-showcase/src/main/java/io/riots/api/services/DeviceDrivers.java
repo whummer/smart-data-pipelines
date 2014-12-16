@@ -1,6 +1,6 @@
 package io.riots.api.services;
 
-import io.riots.api.services.auth.AuthFilter;
+import io.riots.core.auth.AuthFilter;
 import io.riots.core.model.User;
 import io.riots.core.model.driver.DeviceDriver;
 import io.riots.core.repositories.DeviceDriverRepository;

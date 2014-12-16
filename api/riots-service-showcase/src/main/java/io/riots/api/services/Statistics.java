@@ -1,6 +1,6 @@
 package io.riots.api.services;
 
-import io.riots.api.services.auth.AuthFilter;
+import io.riots.core.auth.AuthFilter;
 import io.riots.core.repositories.DeviceRepository;
 import io.riots.core.repositories.DeviceTypeRepository;
 import io.riots.core.repositories.PropertyRepository;

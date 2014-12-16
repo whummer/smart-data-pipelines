@@ -7,7 +7,7 @@ import io.riots.api.handlers.command.SemanticTypeCommand;
 import io.riots.api.handlers.query.DeviceTypeQuery;
 import io.riots.api.handlers.query.Paged;
 import io.riots.api.handlers.query.PropertyQuery;
-import io.riots.api.services.auth.AuthPermissionChecker;
+import io.riots.core.auth.AuthPermissionChecker;
 import io.riots.core.model.DeviceType;
 import io.riots.core.model.Permission.Operation;
 import io.riots.core.model.Permission.Target;

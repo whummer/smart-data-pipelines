@@ -84,6 +84,7 @@ public class DeviceData {
 		} else {
 			throw new IllegalArgumentException("Unknown update type: " + data);
 		}
+
 		postValue(prop);
 	}
 
@@ -178,9 +179,9 @@ public class DeviceData {
 		if(propValue.getTimestamp() <= 0) {
 			propValue.setTimestamp(System.currentTimeMillis());
 		}
+
     	propValue = propValueRepo.save(propValue);
-    	Response r = Response.created(UriBuilder.fromPath(
-        		"/devices/properties/{valueID}").build(propValue.getId())).build();
+    	Response r = Response.created(UriBuilder.fromPath("/devices/properties/{valueID}").build(propValue.getId())).build();
     	EventBroker.sendMessage(EventBroker.MQ_PROP_CHANGE_NOTIFY, template, propValue);
         return r;
 	}

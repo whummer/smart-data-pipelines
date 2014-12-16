@@ -19,7 +19,7 @@ spring:
 
 log4j:
   category:
-    org.springframework: WARN
+    org.springframework: DEBUG
   level:
     com.netflix.discovery: DEBUG
     com.netflix.zuul: WARN
