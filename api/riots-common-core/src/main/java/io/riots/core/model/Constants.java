@@ -8,6 +8,7 @@ public class Constants {
 	public static final String COLL_ASSET_TYPES = "asset_types";
 	public static final String COLL_DEVICE_TYPES = "device_types";
 	public static final String COLL_PROPERTIES = "asset_type_properties";
+	public static final String COLL_PROPERTY_VALUES = "asset_property_values";
 	public static final String COLL_ASSETS = "assets";
 	public static final String COLL_DEVICES = "devices";
 	public static final String COLL_DEVICE_DRIVERS = "drivers";

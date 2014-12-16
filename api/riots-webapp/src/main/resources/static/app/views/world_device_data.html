@@ -1,45 +1,234 @@
 <section ng-controller="DeviceDataController" style="height: 100%">
 
 	<div>
-		<table>
-			<thead><tr>
-				<th>Time</th><th>Data</th>
-			</tr></thead>
-	        <tr ng-repeat="n in range(0, deviceData.length - 1)">
-	            <td style="padding: 7px;">{{deviceData[n].time}}</td><td>{{deviceData[n].data}}</td>
-	        </tr>
-	    </table>
+		<div id="DevicePropsTable" ui-grid="propsGridConfig" ui-grid-selection ui-grid-edit ui-grid-row-edit
+             class="grid"></div>
+
+        <div ng-if="selectedProperty">
+	        <div>
+	        	<table style="margin: auto;"><tr>
+		        <td>Track live data</td><td><input type="checkbox" ng-model="dataOptions.trackLive" class=""/></td>
+		        </tr><tr>
+		        <td>Number of data points:</td><td><input class="form-control" ng-model="dataOptions.numPoints"/></td>
+		        </tr><tr>
+		        <td></td><td><button ng-click="displayPropertyData()" class="btn btn-primary">Update</button></td>
+		        </tr></table>
+	        </div>
+	        <div>
+				<div id="PropsDataTable" ui-grid="dataGridConfig" ui-grid-selection ui-grid-edit ui-grid-row-edit
+		             ui-grid-cellnav class="grid"></div>
+				<button class="form-control" ng-click="publishData()">Publish random data (for testing)</button>
+			</div>
+			<div>
+				Visualization Type:
+				<select ng-model="dataOptions.visType">
+					<option value="none">None</option>
+					<option value="chart">Chart</option>
+					<option value="map">Map</option>
+				</select>
+				<div ng-show="dataOptions.visType == 'chart'" style="overflow: auto;">
+					<canvas id="chart1" width="400" height="400"></canvas>
+					<br class="clear"/>
+				</div>
+				<div ng-show="dataOptions.visType == 'map'">
+					map
+				</div>
+			</div>
+		</div>
 	</div>
-	
+
 </section>
-
-
+<style type="text/css">
+	#DevicePropsTable, #PropsDataTable {
+		height: 200px;
+	}
+</style>
 <script type="text/javascript">
 
 	var app = angular.module("app");
 	app.controller('DeviceDataController', [
-		'$scope', '$http', '$compile',
-		function($scope, $http, $compile) {
+		'$scope', '$http', '$compile', '$routeParams',
+		function($scope, $http, $compile, $routeParams) {
 
 			AppController($scope, $http, $compile);
 			var wsURL = appConfig.services.websocket.url;
-			$scope.deviceData = [];
+
+			$scope.deviceID = $routeParams.deviceID;
+			$scope.propsGridConfig = {};
+			$scope.dataGridConfig = {};
+			$scope.selectedDevice = null;
+			var defaultNumPoints = 50;
+			$scope.dataOptions = {
+				trackLive: false,
+				numPoints: defaultNumPoints,
+				visType: "none"
+			}
+
+            var initTables = function () {
+                var propsGridColumns = [
+                    {label: "Property", field: "name", sortable: true},
+                    {label: "Data Type", field: "baseType"},
+                    {label: "Last Data Time", field: "lastTime"}
+                ];
+                $scope.propsGridConfig.data = [];
+                renderUITable($scope.propsGridConfig, "DevicePropsTable", propsGridColumns,
+                    function (event) {
+                        if (event.type == "dgrid-select") {
+                            $scope.$apply(function () {
+                                $scope.selectedProperty = event.rows[0].data;
+                            });
+                        } else if (event.type == "dgrid-deselect") {
+                            $scope.$apply(function () {
+                                $scope.selectedProperty = null;
+                            });
+                        }
+                    }
+                );
+
+                var dataGridColumns = [
+                    {label: "Timestamp", field: "timestamp1", sortable: true,
+						cellTemplate: "<div class='ui-grid-cell-contents'>{{row.entity.timestamp}}</div>",
+					},
+                    {label: "Time", name: "timestamp", sortable: true,
+						cellFilter: 'date:\'MM/dd/yyyy HH:MM:ss\'' 
+					},
+                    {label: "Data Value", field: "value", sortable: true}
+                ];
+                $scope.dataGridConfig.data = [];
+                renderUITable($scope.dataGridConfig, "PropsDataTable", dataGridColumns);
+            }
+            initTables();
+
+            var loadPropsTable = function() {
+            	if($scope.selectedDevice) {
+            		buildPropsTable($scope.selectedDevice);
+            		return;
+            	}
+            	invokeGET($http, $scope.devicesAPI + "/" + $scope.deviceID,
+					function(data, status, headers, config) {
+						$scope.selectedDevice = data.result;
+   		         		buildPropsTable($scope.selectedDevice);
+					}
+				);
+            }
+
+            var buildPropsTable = function (device) {
+            	var deviceType = device.assetType;
+            	var data = deviceType.deviceProperties;
+				$.each(data, function(idx,el) {
+					var url = $scope.propValuesAPI + "/" + 
+						$scope.selectedDevice.id + "/" + el.name;
+					invokeGET($http, url,
+						function(data, status, headers, config) {
+							el.lastTime = data.result.timestamp;
+						}
+					);
+				});
+				//console.log("setting propsGridConfig.data", data);
+                $scope.propsGridConfig.data = data;
+            };
+
+            loadPropsTable();
 
 			/* open websocket */
-			var ws = new WebSocket(wsURL, authInfo.network + "~" + authInfo.access_token);
-			ws.onopen = function() {
-				console.log("connected!");
-				ws.send("foo");
+			var connectWebsocket = function() {
+				var ws = $scope.websocket = new WebSocket(wsURL, authInfo.network + "~" + authInfo.access_token);
+				ws.onopen = function() {
+					var msg = {
+								type: "SUBSCRIBE",
+								propertyID: $scope.selectedProperty.id
+							};
+					msg = JSON.stringify(msg);
+					ws.send(msg);
+				}
+				ws.onmessage = function(msg) {
+					var data = JSON.parse(msg.data);
+					$scope.$apply(function() {
+						$scope.dataGridConfig.data.unshift(data);
+						var amount = parseInt($scope.dataOptions.numPoints);
+						if(typeof amount != "number") {
+							amount = defaultNumPoints;
+						}
+						while($scope.dataGridConfig.data.length > amount) {
+							$scope.dataGridConfig.data.pop();
+						}
+						renderVisualization();
+					});
+				}
 			}
-			ws.onmessage = function(msg) {
-				var data = JSON.parse(msg.data);
-				console.log("message!", data);
-				$scope.$apply(function() {
-					$scope.deviceData.push(data);
+
+			$scope.displayPropertyData = function() {
+				var prop = $scope.selectedProperty;
+				if(!prop || !$scope.selectedDevice) 
+					return;
+				var amount = $scope.dataOptions.numPoints;
+				var url = $scope.propValuesAPI + "/" + 
+						$scope.selectedDevice.id + "/" + prop.name + 
+						"/history?amount=" + amount;
+				invokeGET($http, url,
+					function(data, status, headers, config) {
+						$scope.dataGridConfig.data = data.result;
+					}
+				);
+			}
+
+			$scope.publishData = function() {
+				var propName = "distance";
+				var data = {value: 1};
+				invokePOST($http, $scope.propValuesAPI + "/" + $routeParams.deviceID + "/" + propName,
+					JSON.stringify(data),
+					function(data, status, headers, config) {
+						//console.log("successfully pushed data");
+					}
+				);
+			}
+
+			var toggleLiveWatch = function() {
+				if(!$scope.dataOptions.trackLive) {
+					if($scope.websocket)
+						$scope.websocket.close();
+					$scope.websocket = null;
+				} else {
+					connectWebsocket();
+				}
+			}
+
+			var renderVisualization = function() {
+				var type = $scope.dataOptions.visType;
+				if(type == "chart") {
+					renderGraph($scope.dataGridConfig.data);
+				} else if(type == "map") {
+					// TODO
+				}
+			}
+
+			var renderGraph = function(values) {
+				labels = [];
+				datasets = [ {data: []} ];
+				$.each(values, function(idx,val) {
+					var isReverse = true;
+					if(isReverse) {
+						datasets[0].data.unshift(val.value);
+						labels.unshift(formatDate(val.timestamp));
+					} else {
+						datasets[0].data.push(val.value);
+						labels.push(formatDate(val.timestamp));
+					}
 				});
+				drawLineChart("chart1", datasets, labels);
+				$("#chartWrapper").show();
 			}
 
 			/* add event handlers*/
+			$scope.$watch("selectedProperty", function(value) {
+				$scope.displayPropertyData();
+			});
+			$scope.$watch("dataOptions.trackLive", function(value) {
+				toggleLiveWatch();
+			});
+			$scope.$watch("dataOptions.visType", function(value) {
+				renderVisualization();
+			});
 
 			/* start rendering the main container */
 

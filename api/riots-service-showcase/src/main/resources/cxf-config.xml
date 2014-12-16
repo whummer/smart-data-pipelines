@@ -20,6 +20,7 @@
         <jaxrs:serviceBeans>
             <ref bean="deviceTypes"/>
             <ref bean="devices"/>
+            <ref bean="deviceData"/>
             <ref bean="manufacturers"/>
             <ref bean="assetCategories"/>
             <ref bean="simulations"/>
@@ -50,7 +51,7 @@
     </bean>
 
 	<!-- Websocket support -->
-    <bean id="websocketHandler" class="io.riots.api.services.websocket.WebsocketHandler"/>
+    <bean id="websocketHandler" class="io.riots.api.websocket.WebsocketHandler"/>
 	<websocket:handlers>
         <websocket:mapping path="/websocket" handler="websocketHandler"/>
     </websocket:handlers>

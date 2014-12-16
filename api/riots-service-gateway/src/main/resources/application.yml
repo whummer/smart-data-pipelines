@@ -15,6 +15,14 @@ zuul:
       path: /bower_components/**
       stripPrefix: false
       serviceId: webapp-service
+    websocket:
+      path: /websocket
+      stripPrefix: false
+      serviceId: webapp-service
+    favicon:
+      path: /favicon.ico
+      stripPrefix: false
+      serviceId: webapp-service
 
 eureka:
   client:

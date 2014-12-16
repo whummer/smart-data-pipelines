@@ -172,6 +172,7 @@ function AppController($scope, $http, $compile) {
 	}
 
 	/* helper/util methods */
+
 	$scope.range = function(from, to, step) {
 		if(!step) step = 1;
 		var result = [];
@@ -179,6 +180,11 @@ function AppController($scope, $http, $compile) {
 			result.push(i);
 		}
 		return result;
+	}
+
+	rootScope.formatTime = function(timestamp) {
+		console.log("formatDate(timestamp)", timestamp);
+		formatDate(timestamp);
 	}
 
 	rootScope.formatCoords = function(loc) {
