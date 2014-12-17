@@ -1,6 +1,6 @@
 package io.riots.catalog.repositories;
 
-import io.riots.catalog.model.ThingType;
+import io.riots.services.catalog.ThingType;
 
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 

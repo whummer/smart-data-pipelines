@@ -27,4 +27,6 @@ public class Constants {
 	//public static final String COLL_META_TYPES = "metatypes";
 	public static final String COLL_CATEGORIES = "categories";
 	public static final String COLL_EVENTS = "events";
+	public static final String COLL_ENVIRONMENTS = "environments";
+	
 }

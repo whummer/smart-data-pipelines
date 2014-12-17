@@ -1,7 +1,8 @@
 package io.riots.services.catalog.api;
 
-import io.riots.catalog.model.ThingType;
 import io.riots.catalog.repositories.CatalogRepository;
+import io.riots.core.auth.AuthFilter;
+import io.riots.services.catalog.ThingType;
 
 import java.net.URI;
 import java.util.UUID;
@@ -52,7 +53,7 @@ import com.wordnik.swagger.annotations.ApiResponses;
 public class CatalogService {
 
 	static final Logger log = LoggerFactory.getLogger(CatalogService.class);
-
+	
 	@Autowired
 	CatalogRepository repository;
 
