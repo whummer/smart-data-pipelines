@@ -18,7 +18,12 @@
         <riots.eureka.hostname>localhost:10000</riots.eureka.hostname>        
     </properties>
     
-    <dependencies>  
+    <dependencies>
+		<dependency>
+			<groupId>io.riots</groupId>
+			<artifactId>riots-common-core</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
     	
     </dependencies>
 

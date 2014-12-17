@@ -58,7 +58,7 @@
 
 	<filter>
 		<filter-name>cors</filter-name>
-		<filter-class>io.riots.api.services.auth.CORSFilter</filter-class>
+		<filter-class>io.riots.core.auth.CORSFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>cors</filter-name>
@@ -67,7 +67,7 @@
 	
 	<filter>
 		<filter-name>auth</filter-name>
-		<filter-class>io.riots.api.services.auth.AuthFilter</filter-class>
+		<filter-class>io.riots.core.auth.AuthFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>auth</filter-name>

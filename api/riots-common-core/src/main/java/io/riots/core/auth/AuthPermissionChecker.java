@@ -1,6 +1,6 @@
-package io.riots.api.services.auth;
+package io.riots.core.auth;
 
-import io.riots.api.services.auth.AuthFilter.AuthInfo;
+import io.riots.core.auth.AuthFilter.AuthInfo;
 import io.riots.core.model.BaseObjectCreated;
 import io.riots.core.model.Permission.Operation;
 import io.riots.core.model.Permission.Target;

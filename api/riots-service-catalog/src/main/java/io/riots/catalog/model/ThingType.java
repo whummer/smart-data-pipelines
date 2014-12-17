@@ -1,4 +1,4 @@
-package io.riots.services.core;
+package io.riots.catalog.model;
 
 import io.riots.services.core.SemanticType.SemanticDeviceType;
 
@@ -7,9 +7,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.NestedField;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+import static org.springframework.data.elasticsearch.annotations.FieldType.*;
 
 /**
  * Represents the "type" of a {@link Thing}
@@ -17,25 +24,31 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  * @author Waldemar Hummer
  * @author riox
  */
+@Document(indexName = "thing-types", type = "thing", shards = 1, replicas = 0, refreshInterval = "-1", indexStoreType = "memory")
 public class ThingType extends HierarchicalObject<ThingType> {
 
 	@JsonInclude(Include.NON_EMPTY)
+	@JsonProperty("manufacturer-id")
 	private String manufacturerId;
 
 	/**
 	 * Semantic type of this device, e.g., temperature sensor.
 	 */
 	@JsonProperty("type")
+	@Field(type = FieldType.Nested, store = true)
 	private SemanticDeviceType semanticType;
 
 	@JsonInclude(Include.NON_EMPTY)
+    @Field(type = String, store = true)
 	private Map<String, String> features = new HashMap<>();
 
 	@JsonInclude(Include.NON_EMPTY)
+    @Field(type = String, store = true)
 	private List<String> tags = new LinkedList<String>();
 
 	@JsonProperty("image-urls")
 	@JsonInclude(Include.NON_EMPTY)
+    @Field(type = String, store = true)
 	private List<String> imageUrls;
 
 	/**
@@ -47,6 +60,7 @@ public class ThingType extends HierarchicalObject<ThingType> {
 	 */
 	@JsonProperty("properties")
 	@JsonInclude(Include.NON_EMPTY)
+    @Field(type = Object, store = true)
 	private List<Property<?>> properties = new LinkedList<Property<?>>();
 
 	public ThingType() {

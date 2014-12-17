@@ -15,6 +15,7 @@
 
     <import resource="classpath:META-INF/cxf/cxf.xml"/>
     <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
+    <import resource="classpath*:spring-auth.xml"/>
 
     <jaxrs:server address="/v1" id="api-v1">
         <jaxrs:serviceBeans>
@@ -50,13 +51,13 @@
         <property name="scan" value="true"/>
     </bean>
 
+
 	<!-- Websocket support -->
-    <bean id="websocketHandler" class="io.riots.api.websocket.WebsocketHandler"/>
 	<websocket:handlers>
         <websocket:mapping path="/websocket" handler="websocketHandler"/>
     </websocket:handlers>
 
-	<!-- Spring security configurations -->
+	<!-- Spring security configurations
 	<bean id="authFilter" class="io.riots.api.services.auth.AuthFilter" />
  	<bean id="authAdvice" class="io.riots.api.services.auth.AuthPermissionAdvice" />
 	<bean id="expressionHandler"
@@ -72,5 +73,6 @@
   	<aop:aspectj-autoproxy/>
     <security:http auto-config="true" security="none">
   	</security:http>
+  	-->
 
 </beans>

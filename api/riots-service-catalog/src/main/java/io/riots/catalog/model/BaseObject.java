@@ -1,8 +1,16 @@
-package io.riots.services.core;
+package io.riots.catalog.model;
 
 import java.util.Date;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldIndex;
+import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.Parent;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
@@ -13,7 +21,12 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 public abstract class BaseObject<T> {
 
 	@JsonInclude(Include.NON_EMPTY) 
+	@Id
 	private String id;
+	
+	@JsonIgnore
+	@Parent(type = "thing-type")
+	private String parentId;
 
 	@JsonInclude(Include.NON_EMPTY) 
 	private String name;
@@ -21,10 +34,13 @@ public abstract class BaseObject<T> {
 	@JsonInclude(Include.NON_EMPTY) 
 	private String description;
 	
-	@JsonInclude(Include.NON_EMPTY) 
+	@JsonInclude(Include.NON_EMPTY)
+	@JsonProperty("creation-date")
+	@Field(type = FieldType.Date)
 	private Date created;
 	
 	@JsonInclude(Include.NON_EMPTY) 
+	@JsonProperty("creator-id")
 	private String creatorId;
 	
 	/**	
@@ -94,6 +110,14 @@ public abstract class BaseObject<T> {
 	public void setCreator(String creatorId) {
 		this.creatorId = creatorId;
 	}
+	
+	public String getParentId() {
+		return parentId;
+	}
+
+	public void setParentId(String parentId) {
+		this.parentId = parentId;
+	}
 
 	@Override
 	public int hashCode() {
@@ -145,4 +169,5 @@ public abstract class BaseObject<T> {
 		return true;
 	}
 
+	
 }

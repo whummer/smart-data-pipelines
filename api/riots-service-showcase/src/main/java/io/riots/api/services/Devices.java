@@ -3,7 +3,7 @@ package io.riots.api.services;
 import io.riots.api.handlers.command.DeviceCommand;
 import io.riots.api.handlers.query.DeviceQuery;
 import io.riots.api.handlers.query.Paged;
-import io.riots.api.services.auth.AuthFilter;
+import io.riots.core.auth.AuthFilter;
 import io.riots.core.model.Device;
 import io.riots.core.model.DeviceType;
 import io.riots.core.repositories.UserRepository;

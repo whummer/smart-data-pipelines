@@ -2,6 +2,8 @@ package io.riots.services.catalog.acceptance;
 
 import static com.jayway.restassured.RestAssured.given;
 import static org.testng.Assert.assertTrue;
+import io.riots.api.services.AbstractServiceTest;
+import io.riots.services.catalog.api.CatalogService;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -14,8 +16,6 @@ import org.testng.annotations.BeforeClass;
 import com.jayway.restassured.filter.log.RequestLoggingFilter;
 import com.jayway.restassured.filter.log.ResponseLoggingFilter;
 import com.jayway.restassured.http.ContentType;
-import io.riots.api.services.AbstractServiceTest;
-import io.riots.services.catalog.api.CatalogService;
 
 /**
  * Acceptance test class for the Catalog REST Service. Does not use any model classes (on

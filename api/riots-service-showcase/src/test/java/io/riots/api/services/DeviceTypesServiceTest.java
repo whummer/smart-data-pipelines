@@ -2,7 +2,7 @@ package io.riots.api.services;
 
 import static com.jayway.restassured.RestAssured.given;
 import static org.junit.Assert.assertEquals;
-import io.riots.api.services.auth.AuthFilter;
+import io.riots.core.auth.AuthFilter;
 import io.riots.core.model.DeviceType;
 
 import java.io.IOException;

@@ -150,11 +150,15 @@ public class InsertDemoData {
         return list;
     }
 
+
+
+
     public List<DeviceType> getDeviceData() {
 
         List<DeviceType> result = new LinkedList<>();
 
         DeviceType ultraSoniceSensor = new DeviceType("HC-SR04")
+                .withImageUrl("http://fritzing.org/media/fritzing-repo/projects/h/hc-sr04-project/images/HC-SR04-2.jpg")
                 .withDescription(
                         "The HC-SR04 Ultrasonic Range Sensor uses non-contact ultrasound sonar to measure the "
                                 + "distance to an object - they're great for any obstacle avoiding systems on Raspberry Pi robots "
@@ -171,6 +175,7 @@ public class InsertDemoData {
         ultraSoniceSensor.getDeviceProperties().add(propDist);
 
         DeviceType motionSensor = new DeviceType("HC-SR501")
+                .withImageUrl("http://www.linkdelight.com/components/com_virtuemart/shop_image/product/PIR_Sensor_Human_51fb6871f126d.jpg")
                 .withDescription(
                         "This PIR includes an adjustable delay before firing (approx 0.5 - 200 seconds), "
                                 + "has adjustable sensitivity and two M2 mounting holes! It runs on 4.5V-20V power (or 3V by "
@@ -188,6 +193,7 @@ public class InsertDemoData {
         motionSensor.getDeviceProperties().add(propMotion);
 
         DeviceType temperatureSensor = new DeviceType("DS18B20")
+                .withImageUrl("http://www.3bm.de/wp-content/uploads/2013/09/DS18B20.jpg")
                 .withDescription(
                         "A genuine Maxim sourced DS18B20+ One Wire Digital Temperature Sensor. The DS18B20+ "
                                 + "is the perfect low-cost solution for a range of Raspberry Pi and Arduino temperature control "
@@ -206,6 +212,7 @@ public class InsertDemoData {
         temperatureSensor.getDeviceProperties().add(propTemp);
 
         DeviceType raspiBPlus = new DeviceType("Raspberry Pi Model B+")
+                .withImageUrl("https://cdn.sparkfun.com//assets/parts/9/9/4/4/12994-01.jpg")
                 .withDescription("512MB RAM, new GPIO, microSD")
                 .addChild(motionSensor)
                 .addChild(temperatureSensor).addChild(ultraSoniceSensor);
@@ -227,6 +234,7 @@ public class InsertDemoData {
         raspiBPlus.getDeviceProperties().add(propFB);
 
         DeviceType ismartSensor = new DeviceType("iSmart Alarm")
+                .withImageUrl("https://s3.amazonaws.com/ksr/assets/000/317/258/fe73cdeb496407133781ebfc2e152b9f_large.png?1356632247")
                 .withDescription("Wireless motion detector");
         Property.PropertyBoolean propMotion1 = new Property.PropertyBoolean("motion");
         propMotion1.getMetadata().setActuatable(false).setSensable(true);
@@ -234,6 +242,7 @@ public class InsertDemoData {
         ismartSensor.getDeviceProperties().add(propMotion1);
 
         DeviceType waterSensor = new DeviceType("AQUAlogger 210PTdeep")
+                .withImageUrl("http://img.nauticexpo.com/images_ne/photo-m2/hydrophone-probe-oceanographic-survey-preamplified-hydrophone-40202-4913311.jpg")
                 .withDescription("Deep water data logger that measures "
                         + "and records temperature and pressure");
         Property.PropertyDouble propPressure = new Property.PropertyDouble("pressure");
@@ -248,6 +257,7 @@ public class InsertDemoData {
         waterSensor.getDeviceProperties().add(propTemp1);
 
         DeviceType gyroSensor = new DeviceType("MPU-6000 Six Axis Motion Tracker")
+                .withImageUrl("http://img.auctiva.com/imgdata/1/8/7/9/0/1/5/webimg/769218226_o.jpg")
                 .withDescription("Motion tracking device which is a combination of a "
                         + "3-axis gyroscope and a 3-axis accelerometer "
                         + "with an onboard Digital Motion Processor™, "
@@ -272,6 +282,7 @@ public class InsertDemoData {
         gyroSensor.getDeviceProperties().add(propZGyro);
 
         DeviceType gpsSensor = new DeviceType("EM-506 GPS Receiver")
+                .withImageUrl("https://cdn.sparkfun.com//assets/parts/9/5/1/2/12751-01.jpg")
                 .withDescription("EM-506 includes on-board voltage regulation, "
                         + "LED status indicator, battery backed RAM, "
                         + "and a built-in patch antenna. 6-pin interface cable included.");
@@ -298,5 +309,6 @@ public class InsertDemoData {
 
         return result;
     }
+
 
 }

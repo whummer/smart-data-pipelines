@@ -1,12 +1,10 @@
 package io.riots.services.catalog.api;
 
-import io.riots.catalog.model.DeviceType;
+import io.riots.catalog.model.ThingType;
 import io.riots.catalog.repositories.CatalogRepository;
-//import io.riots.catalog.repositories.CatalogRepository;
-import io.riots.services.model.CatalogEntry;
 
 import java.net.URI;
-import java.util.List;
+import java.util.UUID;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -21,12 +19,20 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
+import org.apache.commons.lang.StringUtils;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
-import org.springframework.data.elasticsearch.core.query.StringQuery;
+import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Service;
+
+import scala.tools.nsc.interpreter.Results;
 
 import com.codahale.metrics.annotation.ExceptionMetered;
 import com.codahale.metrics.annotation.Timed;
@@ -45,109 +51,118 @@ import com.wordnik.swagger.annotations.ApiResponses;
 @Api(value = "Catalog Service", description = "Catalog service for SmartThings")
 public class CatalogService {
 
-    static final Logger log = LoggerFactory.getLogger(CatalogService.class);
+	static final Logger log = LoggerFactory.getLogger(CatalogService.class);
 
-    @Autowired
-    CatalogRepository repo;
-    
-    @Autowired
-    ElasticsearchTemplate searchTemplate;
+	@Autowired
+	CatalogRepository repository;
 
-    @GET
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Retrieve single thing from the catalog", notes = "", response = CatalogEntry.class)
-    @ApiResponses(value = {@ApiResponse(code = 404, message = "No catalog entry with given id found")})
-    @Timed
-    @ExceptionMetered
-    public Response retrieveCatalogEntry(@PathParam("id") String deviceTypeId) {
-        // TODO implement
-        return Response.ok().build();
-    }
+	@Autowired
+	ElasticsearchTemplate searchTemplate;
 
-    @GET
-    @Path("/")
-    @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Retrieve all DeviceTypes", notes = "Retrieve all DeviceTypes including their children", response = CatalogEntry.class)
-    @ApiResponses(value = {
-            @ApiResponse(code = 404, message = "No DeviceType with given ID found"),
-            @ApiResponse(code = 400, message = "Either the query string or the paging parameters are malformed")})
-    @Timed
-    @ExceptionMetered
-    public Response list(@QueryParam("q") String query,
-                         @QueryParam("page") int page, @QueryParam("size") int size) {
-    	
-    	// TODO handle page and size parameter
+	@GET
+	@Path("/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "Retrieve single thing from the catalog", notes = "", response = ThingType.class)
+	@ApiResponses(value = { @ApiResponse(code = 404, message = "No ThingType found with given id found") })
+	@Timed
+	@ExceptionMetered
+	public Response retrieveCatalogEntry(@PathParam("id") String thingTypeId) {
+		if (repository.exists(thingTypeId)) {
+			ThingType tt = repository.findOne(thingTypeId);
+			return Response.ok().entity(tt).build();
+		} else { 
+			return Response.status(404).build();
+		}
+	}
 
-        StringQuery sq = new StringQuery(query);
-    	List<DeviceType> list = searchTemplate.queryForList(sq, DeviceType.class);
-    	
-    	for (DeviceType type : list) {
-    		System.out.println(type);
-    	}
-    	
-        return Response.ok().build();
-    }
+	@GET
+	@Path("/")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "Retrieve all ThingTypes", notes = "Retrieve all ThingTypes including their children", response = ThingType.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = 404, message = "No ThingType with given ID found"),
+			@ApiResponse(code = 400, message = "Either the query string or the paging parameters are malformed") })
+	@Timed
+	@ExceptionMetered
+	public Response list(@QueryParam("q") String query,
+			@QueryParam("page") int page, @QueryParam("size") int size) {
+		
+		// set reasonable defaults
+		if (StringUtils.isEmpty(query))
+			query = "*:*";	
+		if (page <= 0)
+			page = 0;		
+		if (size <= 0)
+			size = 100;
+							
+		Page<ThingType> result = repository.search(
+				QueryBuilders.queryString(query),
+				new PageRequest(page, size));
+		
+		if (result.getNumberOfElements() == 0) {
+			return Response.status(404).build();
+		}		
+		return Response.ok().entity(result.getContent()).build();
+	}
 
-    @POST
-    @Path("/")
-    @Consumes({MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_JSON})
-	@ApiOperation(value = "Created a new DeviceType", notes = "Create a new DeviceType according to the provided JSON payload. DeviceType IDs are auto-assigned "
+	@POST
+	@Path("/")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "Creates a new ThingType", notes = "Create a new ThingType according to the provided JSON payload. ThingType IDs are auto-assigned "
 			+ "by the API and cannot be controlled. Upon successful creation, HTTP 201 and a Location header for the"
-			+ " created DeviceType is returned.")
-	@ApiResponses(value = { @ApiResponse(code = 400, message = "Malformed DeviceType provided. See error message for details") })
-    @Timed
-    @ExceptionMetered
-    public Response create(CatalogEntry entry) {
-        log.trace("Invoking create()");
+			+ " created ThingType is returned.")
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "Malformed ThingType provided. See error message for details") })
+	@Timed
+	@ExceptionMetered
+	public Response create(ThingType thingType) {
+		log.trace("Invoking create()");
+		try {
+			Long id = Math.abs(UUID.randomUUID().getMostSignificantBits());
+			thingType.setId(id.toString());
+			ThingType result = repository.index(thingType);
+			URI location = UriBuilder.fromPath("/catalog/things/{id}").build(result.getId());
+			return Response.created(location).build();		
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			return Response.serverError().entity(e.getMessage()).build();
+		}
+	}
 
-//        // create a new Hystrix command
-//        CreateSmartObjectCommand cmd = context.getBean(CreateSmartObjectCommand.class);
-//
-//        // set required objects
-//        cmd.setSmartObject(entry.getSmartObject());
-//
-//        SmartObject result = cmd.execute();
-//        log.info("result: " + result);
-        
-        
-        DeviceType type = new DeviceType("foo");
-        type.setManufacturer("Honeywell");
-        type.setName("Rocket");        
-        repo.save(type);      
-        
-        DeviceType type2 = new DeviceType("foo2");
-        type.setManufacturer("Honeywell2");
-        type.setName("Rocket2");        
-        repo.save(type2);    
+	@PUT
+	@Path("/")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "Update an existing ThingType", notes = "Update an existing ThingType according to the provided JSON payload. Upon success, HTTP 200 is returned.")
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "Malformed ThingType provided. See error message for details") })
+	@Timed
+	@ExceptionMetered
+	public Response update(ThingType thingType) {
+		try {
+			if (StringUtils.isEmpty(thingType.getId())) {
+				return Response.status(400).entity("{ 'message': 'id not present'").build();
+			}
+			repository.index(thingType);
+			return Response.ok().build();		
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			return Response.serverError().entity(e.getMessage()).build();
+		}
+	}
 
-        URI location = UriBuilder.fromPath("/catalog/entries/{id}").build(1);
-        return Response.created(location).build();
-    }
-
-    @PUT
-    @Path("/")
-    @Consumes({MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_JSON})
-	@ApiOperation(value = "Update an existing DeviceType", notes = "Update an existing DeviceType according to the provided JSON payload. Upon success, HTTP 200 is returned.")
-	@ApiResponses(value = { @ApiResponse(code = 400, message = "Malformed DeviceType provided. See error message for details") })
-    @Timed
-    @ExceptionMetered
-    public Response update(CatalogEntry deviceType) {
-        // TODO implement
-        return Response.ok().build();
-    }
-
-    @DELETE
-    @Path("/{id}")
-    @Produces({MediaType.APPLICATION_JSON})
-	@ApiOperation(value = "Delete a DeviceType", notes = "Delete an existing DeviceType by its ID. Upon success, HTTP 200 is returned.")
-	@ApiResponses(value = { @ApiResponse(code = 404, message = "No such DeviceType") })
-    @Timed
-    @ExceptionMetered
-    public Response delete(@PathParam("id") String catalogEntryId) {
-        // TODO implement
-        return Response.ok().build();
-    }
+	@DELETE
+	@Path("/{id}")
+	@Produces({ MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "Delete a ThingType", notes = "Delete an existing ThingType by its ID. Upon success, HTTP 200 is returned.")
+	@ApiResponses(value = { @ApiResponse(code = 404, message = "No such ThingType") })
+	@Timed
+	@ExceptionMetered
+	public Response delete(@PathParam("id") String thingTypeId) {
+		if (repository.exists(thingTypeId)) {
+			repository.delete(thingTypeId);		
+			return Response.ok().build();
+		} else { 
+			return Response.status(404).build();
+		}
+	}
 }

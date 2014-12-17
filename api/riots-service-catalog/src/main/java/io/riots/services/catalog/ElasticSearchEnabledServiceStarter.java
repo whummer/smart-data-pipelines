@@ -1,8 +1,11 @@
 package io.riots.services.catalog;
 
-import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
 import io.riots.core.boot.ServiceStarter;
 
+import org.elasticsearch.client.Client;
+import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
@@ -12,17 +15,23 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
 /**
  * @author riox
  */
-@EnableElasticsearchRepositories(
-        basePackages = {"io.riots.catalog.repositories"},
-        excludeFilters = @ComponentScan.Filter(
-        	                type = FilterType.REGEX,
-        	                pattern = "io\\.riots\\.core\\.repositories\\.BaseObjectRepository")
-)
+@EnableElasticsearchRepositories(basePackages = { "io.riots.catalog.repositories" },
+	excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX,
+											pattern = "io\\.riots\\.core\\.repositories\\.BaseObjectRepository"))
 public class ElasticSearchEnabledServiceStarter extends ServiceStarter {
 
-    @Bean
-    public ElasticsearchTemplate elasticsearchTemplate() throws Exception {
-        return new ElasticsearchTemplate(nodeBuilder().local(true).node().client());
-    }
+	@Autowired
+	public Client transportClient() {
+		// TODO read the hosts from application.yml or better Eureka
+		return new TransportClient()
+				.addTransportAddress(new InetSocketTransportAddress(
+						"localhost", 9300));
+		// .addTransportAddress(new InetSocketTransportAddress("host2", 9300));
+	}
+
+	@Bean
+	public ElasticsearchTemplate elasticsearchTemplate() throws Exception {
+		return new ElasticsearchTemplate(transportClient());
+	}
 
 }
