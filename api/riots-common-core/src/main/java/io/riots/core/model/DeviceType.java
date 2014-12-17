@@ -52,6 +52,8 @@ public class DeviceType extends AssetType<DeviceType> {
         super(name);
     }
 
+
+
 	public Property<?> getDeviceProperty(String propertyName) {
 		for(Property<?> p : deviceProperties) {
 			if(p.getName() != null && p.getName().equals(propertyName)) {
@@ -67,6 +69,12 @@ public class DeviceType extends AssetType<DeviceType> {
         this.manufacturer = manufacturer;
         return this;
     }
+
+    public DeviceType withImageUrl(final String imageUrl) {
+        this.imageUrl = imageUrl;
+        return this;
+    }
+
 
     public Manufacturer getManufacturer() {
         return manufacturer;

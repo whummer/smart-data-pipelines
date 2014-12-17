@@ -1,6 +1,7 @@
 <section ng-controller="WorldMapController" id="WorldMapContainer" style="height: 100%;">
 	<link rel="stylesheet" type="text/css" href="/bower_components/leaflet/dist/leaflet.css" />
-	<div style="height:{{canvas.height}}px; width:{{canvas.width}}px; padding: 0px; position: relative;" id="worldMapWrapper">
+	<!--<div style="height:{{canvas.height}}px; width:{{canvas.width}}px; padding: 0px; position: relative;" id="worldMapWrapper">-->
+	<div style="position: relative; height: 100%; width: 100%;"  id="worldMapWrapper">
 		<div id="worldMap" style="width: 100%; height: 100%;"></div>
 	</div>
 </section>
@@ -15,9 +16,10 @@ app.controller('WorldMapController', [
 		  function (L) {
 
 			$scope.currentLocation = null;
-			$scope.canvas = { height: 200, width: 300 }
+			$scope.canvas = { height: 300, width: 300 }
 			$scope.defaultLocation = [ 48.19742, 16.37127 ];
 
+/*
 			$scope.updateMapSize = function() {
 				$scope.$apply(function(){
 					$scope.canvas.height = $("#paneMapPreview").height() - 50;
@@ -26,6 +28,7 @@ app.controller('WorldMapController', [
 				if($("#worldMap").is(":visible")) 
 					$scope.map.invalidateSize();
 			}
+*/
 
 			$scope.renderMap = function() {
 
@@ -90,9 +93,9 @@ app.controller('WorldMapController', [
 				}).addTo($scope.map);
 
 				setupDropZone();
-				setTimeout(function() {
-					$scope.updateMapSize();
-				}, 200);
+//				setTimeout(function() {
+//					$scope.updateMapSize();
+//				}, 200);
 
 				//console.log("$scope.listOfAssets", $scope.listOfAssets);
 				if($scope.listOfAssets) {
@@ -202,9 +205,11 @@ app.controller('WorldMapController', [
 			};
 
 			/* register event handlers */
+/*
 			$(".split-handler").mouseup(function() {
 				$scope.updateMapSize();
 			});
+*/
 			$scope.subscribeOnce("addOrDel.Asset", function() {
 				//console.log("addOrDel.Asset", $scope.listOfAssets);
 				if($scope.listOfAssets) {
