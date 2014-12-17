@@ -13,3 +13,10 @@
 *.a
 mkmf.log
 .project
+.classpath
+.settings
+target/
+data/
+log/
+RIOTS_LOG_DIR_IS_UNDEFINED
+git.properties
