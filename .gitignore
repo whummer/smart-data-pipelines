@@ -1,27 +1,15 @@
-*.class
-
-# Eclipse metadata
+/.bundle/
+/.yardoc
+/Gemfile.lock
+/_yardoc/
+/coverage/
+/doc/
+/pkg/
+/spec/reports/
+/tmp/
+*.bundle
+*.so
+*.o
+*.a
+mkmf.log
 .project
-.classpath
-.settings
-.metadata
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-.DS_Store
-
-# Package Files #
-*.jar
-*.war
-*.ear
-
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
-
-<<<<<<< HEAD
-.DS_Store
-=======
-jrebel.xml
-docker-logstash
->>>>>>> spring-boot-netflix-refactored

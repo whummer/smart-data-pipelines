@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+
+$LOAD_PATH << File.join(File.dirname(__FILE__), "..", "lib")
+
+begin
+  require 'riots'
+rescue LoadError => e
+	warn 'Could not load "riots/cli"'
+    exit -1
+end
+
+Riots::CLI.start(ARGV)
