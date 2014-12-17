@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--suppress UnparsedCustomBeanInspection -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+       xmlns:repo="http://www.springframework.org/schema/data/repository"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+    <!-- required for AuthFilter injection -->
+    <bean id="httpServletRequest" class="org.springframework.mock.web.MockHttpServletRequest"/>
+
+    <context:component-scan base-package="io.riots.core" >
+    	<context:exclude-filter type="regex" expression="io.riots.core.handlers.*"/>
+    </context:component-scan>
+
+    <context:property-placeholder ignore-resource-not-found="false"
+                                  ignore-unresolvable="false"
+                                  location="classpath*:riots-data.properties"/>
+
+    <mongo:mongo id="mongo" host="localhost" port="27017"/>
+    <mongo:db-factory id="mongoDbFactory" dbname="riots-test" host="127.0.0.1" mongo-ref="mongo"/>
+    <mongo:mapping-converter id="converter" />
+    <mongo:repositories base-package="io.riots.core.repositories">
+        <repo:exclude-filter type="regex" expression="io\.riots\.core\.repositories\.BaseObjectRepository"/>
+    </mongo:repositories>
+
+    <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+        <constructor-arg ref="mongoDbFactory"/>
+        <constructor-arg ref="converter"/>
+    </bean>
+
+
+</beans>
