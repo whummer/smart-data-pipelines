@@ -1,0 +1,39 @@
+<div class="container">
+    <div class="panel panel-default">
+
+        <div class="panel-heading">
+            <div class="panel-title"><span class="glyphicon glyphicon-edit"></span> <b>Metadata</b></div>
+        </div>
+
+        <div class="panel-body">
+
+
+            <section ng-controller="MetadataViewController" id="metaViewDiv" style="height: 100%;">
+
+                <link href="/bower_components/raty/lib/jquery.raty.css" rel="stylesheet"/>
+
+                <div style="position: relative;">
+                    <tabset style="height: 100%;">
+                        <tab heading="Device Type Categories">
+                            <ng-include src="appConfig['appRootPath'] + '/views/meta_devtypes.html'"></ng-include>
+                        </tab>
+
+                        <tab heading="Property Type Categories">
+                            <ng-include src="appConfig['appRootPath'] + '/views/meta_proptypes.html'"></ng-include>
+                        </tab>
+
+                        <tab heading="Manufacturers">
+                            <ng-include src="appConfig['appRootPath'] + '/views/meta_manufacturers.html'"></ng-include>
+                        </tab>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    renderElement("metaViewDiv");
+
+</script>
+

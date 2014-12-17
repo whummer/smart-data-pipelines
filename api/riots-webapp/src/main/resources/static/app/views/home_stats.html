@@ -1,0 +1,33 @@
+<section ng-controller="StatsOverviewController" id="homeHistoryDiv" style="height: 100%">
+	<table class="statsTable">
+		<tr><td>Device Types:</td><td>{{stats.numDeviceTypes}}</td></tr>
+		<tr><td>Device Type Properties:</td><td>{{stats.numDeviceTypeProperties}}</td></tr>
+		<tr><td>Device Instances:</td><td>{{stats.numDevices}}</td></tr>
+		<tr><td>Registered Users:</td><td>{{stats.numUsers}}</td></tr>
+		<tr><td>Online Users:</td><td>{{stats.numUsersOnline}}</td></tr>
+		<tr><td>Processed data points:</td><td>{{stats.numDataPoints}}</td></tr>
+	</table>
+</section>
+
+<script>
+
+var app = angular.module("app");
+app.controller('StatsOverviewController', [
+	'$scope', '$http', '$compile',
+	function($scope, $http, $compile) {
+
+		AppController($scope, $http, $compile);
+
+		$scope.retrieveStats = function() {
+			invokeGET($scope.http, $scope.statsAPI,
+				function(data, status, headers, config) {
+					$scope.stats = data.result;
+				}
+			);
+		}
+
+		$scope.retrieveStats();
+	}
+]);
+
+</script>

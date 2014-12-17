@@ -1,0 +1,38 @@
+<div class="container">
+    <section ng-controller="CatalogViewController" id="catalogViewDiv" style="height: 100%">
+
+        <div id="catalogViewDivWrapper" class="container">
+
+
+            <style>
+                html, body, #map, #detailsTabs {
+                    margin: 0;
+                    height: 100%;
+                }
+
+                .leaflet-marker-icon, .leaflet-marker-shadow {
+                    -webkit-transition: margin 0.2s;
+                    -moz-transition: margin 0.2s;
+                    -o-transition: margin 0.2s;
+                    transition: margin 0.2s;
+                }
+
+                #catalogViewDivWrapper {
+                    position: relative;
+                }
+            </style>
+
+
+            <ng-include src="appConfig['appRootPath'] + '/views/device_types.html'"></ng-include>
+            <br class="clear"/>
+        </div>
+    </section>
+</div>
+
+<script>
+
+    renderElement("catalogViewDiv");
+
+
+</script>
+

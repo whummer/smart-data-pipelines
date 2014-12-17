@@ -1,0 +1,43 @@
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="panel-title"><span class="glyphicon glyphicon-edit"></span> <b>Device Details</b></div>
+        </div>
+        <div class="panel-body">
+			<section ng-controller="WorldViewController" id="devCatalogSection" style="height: 100%">
+			<section ng-controller="DeviceController" id="devInstSection" class="contentNarrow">
+				<tabset>
+					<tab heading="Details">
+						<ng-include src="appConfig['appRootPath'] + '/views/world_asset_props.html'"></ng-include>
+					</tab>
+					<tab heading="Device Data">
+						<ng-include src="appConfig['appRootPath'] + '/views/world_device_data.html'"></ng-include>
+					</tab>
+				</tabset>
+			</section>
+			</section>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+var app = angular.module("app");
+app.controller('DeviceController', [
+	'$scope', '$http', '$compile', '$routeParams',
+	function($scope, $http, $compile, $routeParams) {
+
+		AppController($scope, $http, $compile);
+
+		if($routeParams.deviceID) {
+			invokeGET($scope.http, 
+				$scope.devicesAPI + "/" + $routeParams.deviceID,
+				function(data, status, headers, config) {
+					$scope.shared.selectedAsset = data.result;
+				}
+			);
+		}
+	}
+]);
+
+</script>

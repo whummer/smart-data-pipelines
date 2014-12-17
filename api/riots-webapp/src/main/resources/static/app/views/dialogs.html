@@ -1,0 +1,96 @@
+<section ng-controller="DialogController">
+	<script type="text/ng-template" id="dialogContent.html">
+        <div class="modal-header">
+            <img ng-src="{{titleImg}}"/><h3 class="modal-title">{{title}}</h3>
+        </div>
+        <div class="modal-body">
+	        <span ng-bind-html="dialog"></span>
+			<div ng-show="type == 'input'">
+	            <input class="form-control" ng-model="input"/>
+			</div>
+        	<div ng-show="type == 'select'">
+	            <select class="form-control" ng-model="selected" ng-options="opt.name for opt in options"></select>
+			</div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="ok()">OK</button>
+            <button class="btn btn-warning" ng-click="cancel()" ng-show="type != 'error'">Cancel</button>
+        </div>
+    </script>
+</section>
+
+<script type="text/javascript">
+
+var app = angular.module("app");
+app.controller('DialogController', [
+	'$scope', '$modal', '$sce',
+	function($scope, $modal, $sce) {
+
+	  	window.showSelectDialog = function (dialog, options, callback) {
+	  		rootScope.showDialog("select", dialog, options, callback); 
+	  	}
+	  	window.showInputDialog = function (dialog, callback) {
+	  		rootScope.showDialog("input", dialog, [], callback); 
+	  	}
+	  	window.showErrorDialog = function (dialog, details, callback) {
+	  		var display = '<p>The following error has occured: ' + dialog + '</p>' +
+			//'<p>Please try again, or contact us if the problem persists.</p>' +
+			(details ? ('<h4>Error Details</h4>' + '<p>' + details + '</p>') : "");
+	  		rootScope.showDialog("error", display, [], callback);
+	  	}
+	  	window.showConfirmDialog = function (dialog, callback) {
+	  		var display = '<p>' + dialog + '</p>';
+	  		rootScope.showDialog("confirm", display, [], callback);
+	  	}
+
+	  	rootScope.showDialog = function (type, dialog, options, callback) {
+		    var modalInstance = $modal.open({
+				templateUrl: 'dialogContent.html',
+				controller: 'DialogInstanceController',
+				//size: size,
+				resolve: {
+					dialog: function () {
+						return $sce.trustAsHtml(dialog);
+					},
+			 		options: function () {
+						return options;
+					},
+			 		type: function () {
+						return type;
+					}
+				}
+		    });
+
+		    modalInstance.result.then(function (selectedItem) {
+				if(callback)
+					callback(selectedItem);
+		    }, function () {
+		 		/* modal dismissed/canceled */
+		    });
+		};
+	}
+]);
+
+app.controller('DialogInstanceController', function (
+	$scope, $modalInstance, type, dialog, options) {
+
+		$scope.title = type == "error" ? "" : "Input Dialog";
+		$scope.titleImg = type == "error" ? "img/alert.svg" : "";
+		$scope.type = type;
+		$scope.dialog = dialog;
+		$scope.options = options;
+		$scope.selected = options.length ? options[0] : null;
+		$scope.input = "";
+	
+		$scope.ok = function () {
+	  		$modalInstance.close(
+	    		type == 'select' ? $scope.selected :
+	    		type == 'input' ? $scope.input : null
+	    	);
+	  	};
+	
+		$scope.cancel = function () {
+	  	$modalInstance.dismiss('cancel');
+  	};
+});
+</script>
