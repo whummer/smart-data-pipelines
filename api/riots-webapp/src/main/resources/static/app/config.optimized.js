@@ -16,7 +16,7 @@ var appConfig = {
 		ratings: { url: "http://localhost:8080/api/v1/ratings" },
 		simulationProps: { url: "http://localhost:8080/api/v1/simulations/properties" },
 		simulationDevices: { url: "http://localhost:8080/api/v1/simulations/devices" },
-		websocket: { url: "ws://localhost:9292/" }
+		websocket: { url: "ws://localhost:8082/" }
 	},
 	auth: {
 		github: {
@@ -40,93 +40,53 @@ var requirejsAppConfig = {
     out: '/app/scripts/riots-all.js',
     waitSeconds: 5,
     packages: [
-    	{
-	        name: 'app',
-	        location: appConfig['appRootPath'] + '/scripts/',
-	        main: 'app'
-	    },{
-	        name: 'riot',
-	        location: appConfig['appRootPath'] + '/scripts/modules/'
-	    },{
-	        name: 'leaflet',
-	        location: '/bower_components/leaflet/',
-	        main: 'dist/leaflet-src' 
-	    },{
-	        name: 'chartjs',
-	        location: '/bower_components/chartjs/'
-	    },{
-	        name: 'cassowary',
-	        location: '/bower_components/cassowary/',
-	        main: 'bin/c.min' 
-	    },{
-	        name: 'mathjs',
-	        location: '/bower_components/mathjs/dist',
-	        main: 'math.min'
-	    },{
-	        name: 'bootstrap',
-	        location: '/bower_components/bootstrap',
-	        main: 'dist/js/bootstrap.min'
-	    },{
-	        name: 'prettify',
-	        location: '/bower_components/google-code-prettify',
-	        main: 'src/prettify'
-	    },{
-	        name: 'threejs',
-	        location: '/bower_components/threejs',
-	        main: 'build/three'
-    	},{
-	        name: 'raty',
-	        location: '/bower_components/raty',
-	        main: 'lib/jquery.raty'
-    	},{
-	        name: 'hello',
-	        location: '/bower_components/hello',
-	        main: 'dist/hello.all'
-    	},{
-	        name: 'sockjs',
-	        location: '/bower_components/sockjs',
-	        main: 'sockjs'
-    	},{
-	        name: 'stomp-websocket',
-	        location: '/bower_components/stomp-websocket',
-	        main: 'lib/stomp'
-    	},{
-	        name: 'angular-bootstrap',
-	        location: '/bower_components/angular-bootstrap',
-	        main: 'ui-bootstrap-tpls'
-    	},{
-	        name: 'angular',
-	        location: '/bower_components/angular',
-	        main: 'angular.min'
-    	},{
-	        name: 'angular-ui-grid',
-	        location: '/bower_components/angular-ui-grid',
-	        main: 'ui-grid'
-    	},{
-	        name: 'angular-ui-slider',
-	        location: '/bower_components/angular-ui-slider',
-	        main: 'src/slider'
-    	},{
-	        name: 'bg-splitter',
-	        location: '/bower_components/bg-splitter',
-	        main: 'js/splitter'
-    	},{
-	        name: 'ui-codemirror',
-	        location: '/bower_components/angular-ui-codemirror',
-	        main: 'ui-codemirror'
-    	},{
-	        name: 'codemirror',
-	        location: '/bower_components/codemirror',
-	        main: 'lib/codemirror'
-    	},{
-	        name: 'tag-it',
-	        location: '/bower_components/tag-it',
-	        main: 'js/tag-it'
-    	},{
-	        name: 'uglify-js',
-	        location: '/bower_components/uglify-js',
-	        main: 'uglify-js'
-    	}
+        {
+            name: 'riot',
+            location: appConfig['appRootPath'] + '/scripts/modules/'
+        }, {
+            name: 'leaflet',
+            location: '/bower_components/leaflet/',
+            main: 'dist/leaflet-src'
+        }, {
+            name: 'chartjs',
+            location: '/bower_components/chartjs/'
+        }, {
+            name: 'bootstrap',
+            location: '/bower_components/bootstrap',
+            main: 'dist/js/bootstrap.min'
+        }, {
+            name: 'raty',
+            location: '/bower_components/raty',
+            main: 'lib/jquery.raty'
+        }, {
+            name: 'hello',
+            location: '/bower_components/hello',
+            main: 'dist/hello.all'
+        }, {
+            name: 'sockjs',
+            location: '/bower_components/sockjs',
+            main: 'sockjs'
+        }, {
+            name: 'stomp-websocket',
+            location: '/bower_components/stomp-websocket',
+            main: 'lib/stomp'
+        }, {
+            name: 'angular-bootstrap',
+            location: '/bower_components/angular-bootstrap',
+            main: 'ui-bootstrap-tpls'
+        }, {
+            name: 'angular-ui-grid',
+            location: '/bower_components/angular-ui-grid',
+            main: 'ui-grid'
+        }, {
+            name: 'bootstrap-tagsinput',
+            location: '/bower_components/bootstrap-tagsinput',
+            main: 'dist/bootstrap-tagsinput'
+        }, {
+            name: 'auth',
+            location: '/app/scripts/modules',
+            main: 'auth.js'
+        }
     ],
     paths: {
 		'routes': appConfig['appRootPath'] + '/scripts/routes',

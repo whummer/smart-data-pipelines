@@ -21,7 +21,7 @@ define(['app'], function(app) {
 
 		function ($scope) {
 
-			console.log("DeviceTypeController")
+			console.log("DeviceTypeController");
 
 			$scope.showMore = function(deviceId) {
 				$("#" + deviceId + "_description").removeClass("device-type-box");

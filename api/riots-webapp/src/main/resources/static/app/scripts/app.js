@@ -51,8 +51,10 @@ define(
                         //console.log("Login done. Start rendering.", authInfo);
 
                         if (authInfo) {
+                        	window.authInfo = authInfo;
                             var network = authInfo.network;
                             var token = authInfo.access_token;
+                            console.log("authInfo.access_token", authInfo.access_token);
                             $http.defaults.headers.common["riots-auth-network"] = network;
                             $http.defaults.headers.common["riots-auth-token"] = token;
                             dependencies = defaultDependencies.concat(dependencies);

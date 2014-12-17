@@ -102,7 +102,7 @@ public class CatalogService {
 		
 		if (result.getNumberOfElements() == 0) {
 			return Response.status(404).build();
-		}		
+		}
 		return Response.ok().entity(result.getContent()).build();
 	}
 

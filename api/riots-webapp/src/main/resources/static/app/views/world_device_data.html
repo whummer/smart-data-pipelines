@@ -20,12 +20,14 @@
 				<button class="form-control" ng-click="publishData()">Publish random data (for testing)</button>
 			</div>
 			<div>
-				Visualization Type:
-				<select ng-model="dataOptions.visType">
+				<table><tr>
+				<td>Visualization Type:</td>
+				<td><select ng-model="dataOptions.visType" class="form-control input-sm">
 					<option value="none">None</option>
 					<option value="chart">Chart</option>
 					<option value="map">Map</option>
-				</select>
+				</select></td>
+				</tr></table>
 				<div ng-show="dataOptions.visType == 'chart'" style="overflow: auto;">
 					<canvas id="chart1" width="400" height="400"></canvas>
 					<br class="clear"/>
