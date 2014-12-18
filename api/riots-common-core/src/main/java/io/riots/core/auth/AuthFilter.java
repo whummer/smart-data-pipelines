@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.cxf.helpers.IOUtils;
 import org.apache.log4j.Logger;
+import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -409,17 +410,20 @@ public class AuthFilter implements Filter, AuthenticationEntryPoint, Authenticat
 //        return u;
     }
 
-    public static synchronized User getRequestingUser(HttpServletRequest req) {
-    	IUsers usersService = ServiceClientFactory.getUsersServiceClient();
-        String userEmail = getHeaders(req).get(HEADER_AUTH_EMAIL);
-        String userName = getHeaders(req).get(HEADER_AUTH_USERNAME);
-        return getRequestingUser(userEmail, userName, usersService);
-    }
+//    public synchronized User getRequestingUser(HttpServletRequest req) {
+//    	IUsers usersService = clientfa.getUsersServiceClient();
+//        String userEmail = getHeaders(req).get(HEADER_AUTH_EMAIL);
+//        String userName = getHeaders(req).get(HEADER_AUTH_USERNAME);
+//        return getRequestingUser(userEmail, userName, usersService);
+//    }
 
-    public static synchronized User getRequestingUser(HttpServletRequest req,
-//                                                      UserRepository userRepo
-    													IUsers usersService
-                                                      ) {
+    public static synchronized User getRequestingUser(
+    		HttpServletRequest req, LoadBalancerClient loadBalancer) {
+    	IUsers users = ServiceClientFactory.getUsersServiceClient(loadBalancer);
+    	return getRequestingUser(req, users);
+    }
+    public static synchronized User getRequestingUser(
+    		HttpServletRequest req, IUsers usersService) {
         String userEmail = getHeaders(req).get(HEADER_AUTH_EMAIL);
         String userName = getHeaders(req).get(HEADER_AUTH_USERNAME);
         return getRequestingUser(userEmail, userName, usersService);

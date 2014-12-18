@@ -16,6 +16,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -29,14 +30,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class AuthPermissionChecker implements PermissionEvaluator {
 
-//	@Autowired
-//	private DeviceTypeRepository repoDevType;
-
-//	@Autowired
-//	private UserRepository repoUser;
-
 	@Autowired
 	private HttpServletRequest req;
+	@Autowired
+	private LoadBalancerClient loadBalancer;
 
 	List<String> modificationOps = Arrays.asList(Operation.DELETE,
 			Operation.UPDATE);
@@ -110,7 +107,7 @@ public class AuthPermissionChecker implements PermissionEvaluator {
 	 * @return
 	 */
 	public User getRequestingUser() {
-		IUsers users = ServiceClientFactory.getUsersServiceClient();
+		IUsers users = ServiceClientFactory.getUsersServiceClient(loadBalancer);
 		return AuthFilter.getRequestingUser(req, users);
 	}
 

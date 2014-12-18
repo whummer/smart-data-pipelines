@@ -1,22 +1,16 @@
 package io.riots.services.catalog.api;
 
 import io.riots.catalog.repositories.ThingTypeRepository;
+import io.riots.core.service.ICatalogService;
+import io.riots.core.service.ServiceUtils;
 import io.riots.services.catalog.ThingType;
 
 import java.net.URI;
+import java.util.List;
 import java.util.UUID;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
 import org.apache.commons.lang.StringUtils;
@@ -29,22 +23,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.stereotype.Service;
 
-import com.codahale.metrics.annotation.ExceptionMetered;
-import com.codahale.metrics.annotation.Timed;
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
-import com.wordnik.swagger.annotations.ApiResponse;
-import com.wordnik.swagger.annotations.ApiResponses;
-
 /**
  * Implements the Catalog REST API edge service.
  *
  * @author riox
+ * @author whummer
  */
 @Service
 @Path("/catalog/thing-types")
-@Api(value = "Catalog Service", description = "Catalog service for SmartThings")
-public class CatalogService {
+public class CatalogService implements ICatalogService {
 
 	static final Logger log = LoggerFactory.getLogger(CatalogService.class);
 	
@@ -54,33 +41,20 @@ public class CatalogService {
 	@Autowired
 	ElasticsearchTemplate searchTemplate;
 
-	@GET
-	@Path("/{id}")
-	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "Retrieve single thing from the catalog", notes = "", response = ThingType.class)
-	@ApiResponses(value = { @ApiResponse(code = 404, message = "No ThingType found with given id found") })
-	@Timed
-	@ExceptionMetered
-	public Response retrieveCatalogEntry(@PathParam("id") String thingTypeId) {
+	@Override
+	public ThingType retrieveCatalogEntry(String thingTypeId) {
 		if (repository.exists(thingTypeId)) {
 			ThingType tt = repository.findOne(thingTypeId);
-			return Response.ok().entity(tt).build();
+			return tt;
 		} else { 
-			return Response.status(404).build();
+			ServiceUtils.setResponseStatus(404);
+			return null;
 		}
 	}
 
-	@GET
-	@Path("/")
-	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "Retrieve all ThingTypes", notes = "Retrieve all ThingTypes including their children", response = ThingType.class)
-	@ApiResponses(value = {
-			@ApiResponse(code = 404, message = "No ThingType with given ID found"),
-			@ApiResponse(code = 400, message = "Either the query string or the paging parameters are malformed") })
-	@Timed
-	@ExceptionMetered
-	public Response list(@QueryParam("q") String query,
-			@QueryParam("page") int page, @QueryParam("size") int size) {
+
+	@Override
+	public List<ThingType> list(String query, int page, int size) {
 		
 		// set reasonable defaults
 		if (StringUtils.isEmpty(query))
@@ -94,67 +68,48 @@ public class CatalogService {
 				QueryBuilders.queryString(query),
 				new PageRequest(page, size));
 
-		return Response.ok().entity(result.getContent()).build();
+		return result.getContent();
 	}
 
-	@POST
-	@Path("/")
-	@Consumes({ MediaType.APPLICATION_JSON })
-	@Produces({ MediaType.APPLICATION_JSON })
-	@ApiOperation(value = "Creates a new ThingType", notes = "Create a new ThingType according to the provided JSON payload. ThingType IDs are auto-assigned "
-			+ "by the API and cannot be controlled. Upon successful creation, HTTP 201 and a Location header for the"
-			+ " created ThingType is returned.")
-	@ApiResponses(value = { @ApiResponse(code = 400, message = "Malformed ThingType provided. See error message for details") })
-	@Timed
-	@ExceptionMetered
-	public Response create(ThingType thingType) {
+
+	@Override
+	public ThingType create(ThingType thingType) {
 		log.trace("Invoking create()");
 		try {
 			Long id = Math.abs(UUID.randomUUID().getMostSignificantBits());
 			thingType.setId(id.toString());
 			ThingType result = repository.index(thingType);
 			URI location = UriBuilder.fromPath("/catalog/things/{id}").build(result.getId());
-			return Response.created(location).build();		
+			ServiceUtils.setHeaderLocation(location);
+			return result;	
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
-			return Response.serverError().entity(e.getMessage()).build();
+			ServiceUtils.setResponseStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			return null;
 		}
 	}
 
-	@PUT
-	@Path("/")
-	@Consumes({ MediaType.APPLICATION_JSON })
-	@Produces({ MediaType.APPLICATION_JSON })
-	@ApiOperation(value = "Update an existing ThingType", notes = "Update an existing ThingType according to the provided JSON payload. Upon success, HTTP 200 is returned.")
-	@ApiResponses(value = { @ApiResponse(code = 400, message = "Malformed ThingType provided. See error message for details") })
-	@Timed
-	@ExceptionMetered
-	public Response update(ThingType thingType) {
+	@Override
+	public ThingType update(ThingType thingType) {
 		try {
 			if (StringUtils.isEmpty(thingType.getId())) {
-				return Response.status(400).entity("{ 'message': 'id not present'").build();
+				throw new IllegalArgumentException("id not present");
 			}
-			repository.index(thingType);
-			return Response.ok().build();		
+			thingType = repository.index(thingType);
+			return thingType;
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
-			return Response.serverError().entity(e.getMessage()).build();
+			ServiceUtils.setResponseStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			return null;
 		}
 	}
 
-	@DELETE
-	@Path("/{id}")
-	@Produces({ MediaType.APPLICATION_JSON })
-	@ApiOperation(value = "Delete a ThingType", notes = "Delete an existing ThingType by its ID. Upon success, HTTP 200 is returned.")
-	@ApiResponses(value = { @ApiResponse(code = 404, message = "No such ThingType") })
-	@Timed
-	@ExceptionMetered
-	public Response delete(@PathParam("id") String thingTypeId) {
+	@Override
+	public void delete(String thingTypeId) {
 		if (repository.exists(thingTypeId)) {
-			repository.delete(thingTypeId);		
-			return Response.ok().build();
+			repository.delete(thingTypeId);
 		} else { 
-			return Response.status(404).build();
+			ServiceUtils.setResponseStatus(HttpServletResponse.SC_NOT_FOUND);
 		}
 	}
 }

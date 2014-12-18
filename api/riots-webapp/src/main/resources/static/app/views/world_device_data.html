@@ -116,6 +116,8 @@
 
             var buildPropsTable = function (device) {
             	var deviceType = device.assetType;
+            	if(!deviceType) 
+            		return;
             	var data = deviceType.deviceProperties;
 				$.each(data, function(idx,el) {
 					var url = $scope.propValuesAPI + "/" + 

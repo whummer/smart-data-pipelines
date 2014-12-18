@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @SpringBootApplication
 @EnableAutoConfiguration
 @EnableDiscoveryClient
-@ImportResource(value = {"classpath*:/spring-auth.xml"})
+@ImportResource(value = {"classpath:/spring-noauth.xml"})
 public class WebappServiceStarter extends SpringBootServletInitializer {
 
 	@Controller
