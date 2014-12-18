@@ -1,4 +1,4 @@
-package io.riots.services.catalog;
+package io.riots.services.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;

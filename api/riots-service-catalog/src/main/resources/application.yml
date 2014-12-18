@@ -1,10 +1,16 @@
 server:
   port: 8083
-
+  
 eureka:
   client:
+    registryFetchIntervalSeconds: 5
     serviceUrl:
       defaultZone: http://localhost:10000/eureka/v2/
+  instance:
+    leaseRenewalIntervalInSeconds: 10
+
+ribbon:
+  ServerListRefreshInterval: 5000
 
 spring:
   application:

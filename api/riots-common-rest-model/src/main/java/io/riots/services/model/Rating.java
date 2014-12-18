@@ -1,4 +1,4 @@
-package io.riots.services.catalog;
+package io.riots.services.model;
 
 import java.io.Serializable;
 import java.util.Collection;

@@ -1,7 +1,9 @@
-package io.riots.services.catalog;
+package io.riots.catalog.model;
 
 import static org.springframework.data.elasticsearch.annotations.FieldType.Object;
 import static org.springframework.data.elasticsearch.annotations.FieldType.String;
+import io.riots.services.catalog.Property;
+import io.riots.services.catalog.ThingType;
 import io.riots.services.model.Thing;
 
 import java.util.Date;
@@ -10,14 +12,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Represents the "type" of a {@link Thing}
@@ -26,38 +25,27 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author riox
  */
 @Document(indexName = "thing-types", type = "thing", shards = 1, replicas = 0, refreshInterval = "-1", indexStoreType = "memory")
-public class ThingType extends HierarchicalObject<ThingType> {
+public class ThingTypeElastic extends
+		HierarchicalObjectElastic<ThingTypeElastic> {
 
-	@JsonInclude(Include.NON_EMPTY)
 	@Id
 	private String id;
 
-	@JsonInclude(Include.NON_EMPTY)
 	private String description;
 
-	@JsonInclude(Include.NON_EMPTY)
-	@JsonProperty("creation-date")
 	@Field(type = FieldType.Date)
 	private Date created;
 
-	@JsonInclude(Include.NON_EMPTY)
-	@JsonProperty("creator-id")
 	private String creatorId;
 
-	@JsonInclude(Include.NON_EMPTY)
-	@JsonProperty("manufacturer-id")
 	private String manufacturerId;
 
-	@JsonInclude(Include.NON_EMPTY)
 	@Field(type = String, store = true)
 	private Map<String, String> features = new HashMap<>();
 
-	@JsonInclude(Include.NON_EMPTY)
 	@Field(type = String, store = true)
 	private List<String> tags = new LinkedList<String>();
 
-	@JsonProperty("image-urls")
-	@JsonInclude(Include.NON_EMPTY)
 	@Field(type = String, store = true)
 	private List<String> imageUrls;
 
@@ -68,16 +56,23 @@ public class ThingType extends HierarchicalObject<ThingType> {
 	 * (e.g., temperature of a heater). A property can also be both sensable and
 	 * actuatable.
 	 */
-	@JsonProperty("properties")
-	@JsonInclude(Include.NON_EMPTY)
 	@Field(type = Object, store = true)
-	private List<Property> properties = new LinkedList<Property>();
+	private List<PropertyElastic> properties = new LinkedList<PropertyElastic>();
 
-	public ThingType() {
+	public ThingTypeElastic() {
 	}
 
-	public ThingType(String name) {
+	public ThingTypeElastic(String name) {
 		super(name);
+	}
+
+	public ThingTypeElastic(ThingType t) {
+		BeanUtils.copyProperties(t, this);
+		
+		properties = new LinkedList<PropertyElastic>();
+		for (Property p : t.getProperties()) {
+			this.addProperty(new PropertyElastic(p));
+		}		
 	}
 
 	public String getId() {
@@ -128,15 +123,19 @@ public class ThingType extends HierarchicalObject<ThingType> {
 		this.imageUrls = imageUrls;
 	}
 
-	public List<Property> getProperties() {
+	public List<PropertyElastic> getProperties() {
 		return properties;
 	}
 
-	public void setDeviceProperties(List<Property> properties) {
+	public void setProperties(List<PropertyElastic> properties) {
 		this.properties = properties;
 	}
 
-	public ThingType addFeature(final String key, final String value) {
+	private void addProperty(PropertyElastic property) {
+		properties.add(property);
+	}
+
+	public ThingTypeElastic addFeature(final String key, final String value) {
 		features.put(key, value);
 		return this;
 	}
@@ -188,7 +187,7 @@ public class ThingType extends HierarchicalObject<ThingType> {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ThingType other = (ThingType) obj;
+		ThingTypeElastic other = (ThingTypeElastic) obj;
 		if (features == null) {
 			if (other.features != null)
 				return false;

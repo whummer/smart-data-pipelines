@@ -1,4 +1,4 @@
-package io.riots.services.catalog;
+package io.riots.catalog.model;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  * @author omoser
  * @author whummer
  */
-public abstract class HierarchicalObject<T extends HierarchicalObject<T>> {
+public abstract class HierarchicalObjectElastic<T extends HierarchicalObjectElastic<T>> {
 
 	@JsonInclude(Include.NON_EMPTY)
 	private String name;
@@ -18,10 +18,10 @@ public abstract class HierarchicalObject<T extends HierarchicalObject<T>> {
 	@JsonInclude(Include.NON_EMPTY)
 	Set<T> children = new HashSet<>();
 
-	public HierarchicalObject() {
+	public HierarchicalObjectElastic() {
 	}
 
-	public HierarchicalObject(String name) {
+	public HierarchicalObjectElastic(String name) {
 		setName(name);
 	}
 

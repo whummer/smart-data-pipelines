@@ -1,4 +1,4 @@
-package io.riots.services.catalog.acceptance;
+package io.riots.services.catalog;
 
 import static com.jayway.restassured.RestAssured.given;
 import static org.testng.Assert.assertTrue;

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * @author omoser
+ * @author riox
  */
 @Component
 public class RestObjectMapper<S, T> {
@@ -18,6 +19,11 @@ public class RestObjectMapper<S, T> {
             e.printStackTrace();
         }
 
+        BeanUtils.copyProperties(source, target);
+        return target;
+    }
+    
+    public T map(S source, T target) {
         BeanUtils.copyProperties(source, target);
         return target;
     }

@@ -1,4 +1,7 @@
-package io.riots.services.catalog;
+package io.riots.services.model;
+
+import io.riots.services.catalog.HierarchicalObject;
+import io.riots.services.catalog.ThingType;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

@@ -1,36 +1,36 @@
-package io.riots.services.catalog;
+package io.riots.catalog.model;
 
 import io.riots.services.model.EventProperty;
 
 /**
- * Represents the concrete value of a {@link Property}, e.g., an
+ * Represents the concrete value of a {@link PropertyElastic}, e.g., an
  * {@link EventProperty} within an {@link Event}.
  * 
  * @author Waldemar Hummer
  */
-public class PropertyValue<T> {
+public class PropertyValueElastic<T> {
 
-	private Property property;
+	private PropertyElastic property;
 
 	private T value;
 
-	public PropertyValue() {
+	public PropertyValueElastic() {
 	}
 
-	public PropertyValue(T value) {
+	public PropertyValueElastic(T value) {
 		this(null, value);
 	}
 
-	public PropertyValue(Property property, T value) {
+	public PropertyValueElastic(PropertyElastic property, T value) {
 		this.property = property;
 		this.value = value;
 	}
 
-	public Property getProperty() {
+	public PropertyElastic getProperty() {
 		return property;
 	}
 
-	public void setProperty(Property property) {
+	public void setProperty(PropertyElastic property) {
 		this.property = property;
 	}
 

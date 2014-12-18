@@ -54,5 +54,5 @@ logging:
     com.netflix.discovery: OFF
     com.netflix.zuul: OFF
     com.netflix.servo: WARN
-    org.springframework: DEBUG
+    org.springframework: WARN
     org.springframework.cloud.netflix.zuul: INFO

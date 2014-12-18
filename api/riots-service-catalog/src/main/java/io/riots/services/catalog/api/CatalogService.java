@@ -1,6 +1,6 @@
 package io.riots.services.catalog.api;
 
-import io.riots.catalog.repositories.CatalogRepository;
+import io.riots.catalog.repositories.ThingTypeRepository;
 import io.riots.services.catalog.ThingType;
 
 import java.net.URI;
@@ -49,7 +49,7 @@ public class CatalogService {
 	static final Logger log = LoggerFactory.getLogger(CatalogService.class);
 	
 	@Autowired
-	CatalogRepository repository;
+	ThingTypeRepository repository;
 
 	@Autowired
 	ElasticsearchTemplate searchTemplate;
