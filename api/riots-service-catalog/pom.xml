@@ -33,11 +33,11 @@
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
+	<!--	<dependency>
 			<groupId>io.riots</groupId>
 			<artifactId>riots-common-rest-model</artifactId>
 			<version>0.0.1-SNAPSHOT</version>			
-		</dependency>
+		</dependency>-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-elasticsearch</artifactId>
