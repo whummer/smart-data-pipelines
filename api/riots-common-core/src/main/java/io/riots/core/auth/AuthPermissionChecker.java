@@ -16,7 +16,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -32,8 +31,6 @@ public class AuthPermissionChecker implements PermissionEvaluator {
 
 	@Autowired
 	private HttpServletRequest req;
-	@Autowired
-	private LoadBalancerClient loadBalancer;
 
 	List<String> modificationOps = Arrays.asList(Operation.DELETE,
 			Operation.UPDATE);
@@ -45,8 +42,6 @@ public class AuthPermissionChecker implements PermissionEvaluator {
 	public boolean hasPermission(Authentication authentication,
 			Object targetDomainObject, Object permission) {
 
-		// System.out.println("!!! hasPermission: " + authentication + " - "
-		// + targetDomainObject + " - " + permission);
 		AuthInfo info = (AuthInfo) authentication.getDetails();
 		if (info.user == null) {
 //			info.user = AuthFilter.getRequestingUser(info.email, info.userName,
@@ -107,7 +102,7 @@ public class AuthPermissionChecker implements PermissionEvaluator {
 	 * @return
 	 */
 	public User getRequestingUser() {
-		IUsers users = ServiceClientFactory.getUsersServiceClient(loadBalancer);
+		IUsers users = ServiceClientFactory.getUsersServiceClient();
 		return AuthFilter.getRequestingUser(req, users);
 	}
 

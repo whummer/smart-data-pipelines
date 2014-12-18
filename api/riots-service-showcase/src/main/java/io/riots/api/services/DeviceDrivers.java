@@ -19,7 +19,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 import org.springframework.stereotype.Service;
 
 import com.codahale.metrics.annotation.ExceptionMetered;
@@ -44,8 +43,6 @@ public class DeviceDrivers {
 
     @Autowired
     HttpServletRequest req;
-    @Autowired
-    LoadBalancerClient loadBalancer;
 
     @GET
     @Path("/{id}")
@@ -70,7 +67,7 @@ public class DeviceDrivers {
     @Timed
     @ExceptionMetered
     public Response retrieveForDeviceType(@PathParam("id") String itemId) {
-    	User user = AuthFilter.getRequestingUser(req, loadBalancer);
+    	User user = AuthFilter.getRequestingUser(req);
         return Response.ok(driverRepo.findByDeviceTypeAndCreatorOrDeviceTypeAndCreatorIsNull(itemId, user, itemId)).build();
     }
 
@@ -88,7 +85,7 @@ public class DeviceDrivers {
     @Timed
     @ExceptionMetered
     public Response create(DeviceDriver driver) {
-    	User user = AuthFilter.getRequestingUser(req, loadBalancer);
+    	User user = AuthFilter.getRequestingUser(req);
     	driver.setCreator(user);
         driver = driverRepo.save(driver);
         Response r = Response.created(UriBuilder.fromPath(

@@ -1,6 +1,5 @@
 package io.riots.demo;
 
-import io.riots.api.services.ServicesStarter;
 import io.riots.core.service.ICatalogService;
 import io.riots.core.service.ServiceClientFactory;
 import io.riots.services.catalog.Property;
@@ -17,15 +16,12 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -34,10 +30,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  * @author whummer
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { ServicesStarter.class })
+@ContextConfiguration(classes = { InsertDemoDataViaCatalog.TestConfiguration.class })
 @Configuration
-@ImportResource(value = { "classpath:/spring-noauth.xml" })
-@Ignore // TODO
 public class InsertDemoDataViaCatalog {
 
 	static final Logger LOG = Logger.getLogger(InsertDemoDataViaCatalog.class);
@@ -47,20 +41,25 @@ public class InsertDemoDataViaCatalog {
 		return new MockHttpServletRequest();
 	}
 
+	@EnableAutoConfiguration
+	@Configuration
+	@EnableDiscoveryClient
+	public static class TestConfiguration {
+	}
+
 //	private Map<String, SemanticType.SemanticPropertyType> propTypes = new HashMap<>();
 //	private Map<String, SemanticType.SemanticDeviceType> devTypes = new HashMap<>();
-
-	@Autowired
-	private LoadBalancerClient loadBalancer;
 
 	private static ICatalogService catalog;
 
 	@Before
 	public void setup() {
 		try {
-			catalog = ServiceClientFactory.getCatalogServiceClient(loadBalancer);
+			catalog = ServiceClientFactory.getCatalogServiceClient();
+			System.out.println(catalog);
 		} catch (Exception e) {
-			/* service not running, do not run this test */
+			e.printStackTrace();
+			/* service not running, do not run this test class */
 		}
 	}
 
@@ -80,6 +79,7 @@ public class InsertDemoDataViaCatalog {
 		List<ThingType> types = catalog.list("", 1, 100);
 		for (ThingType t : getThingData()) {
 			if (!isIncluded(types, t.getName())) {
+				System.out.println("creating thingtype " + t);
 				catalog.create(t);
 			}
 		}

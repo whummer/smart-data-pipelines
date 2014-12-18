@@ -22,7 +22,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 import org.springframework.stereotype.Service;
 
 import com.codahale.metrics.annotation.ExceptionMetered;
@@ -50,8 +49,6 @@ public class Devices {
 
     @Autowired
     HttpServletRequest req;
-    @Autowired
-    LoadBalancerClient loadBalancer;
 
     @GET
     @Path("/{id}")
@@ -97,7 +94,7 @@ public class Devices {
     @Timed
     @ExceptionMetered
     public Response create(Device device) {
-    	device.setCreator(AuthFilter.getRequestingUser(req, loadBalancer));
+    	device.setCreator(AuthFilter.getRequestingUser(req));
         device = deviceCommand.create(device);
         Response r = Response.created(UriBuilder.fromPath(
         		"/devices/{id}").build(device.getId())).build();
