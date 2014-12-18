@@ -19,7 +19,7 @@
             <cxf:logging/>
         </jaxrs:features>
         <jaxrs:providers>
-            <bean id="jsonProvider" class="com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider"/>
+            <bean id="jsonProvider" class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider"/>
             <bean class="com.wordnik.swagger.jaxrs.listing.ResourceListingProvider"/>
             <bean class="com.wordnik.swagger.jaxrs.listing.ApiDeclarationProvider"/>
         </jaxrs:providers>

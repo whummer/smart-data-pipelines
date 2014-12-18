@@ -5,7 +5,7 @@ var appConfig = {
 	appRootPath: "/app",
 	services: {
 		core: { url: "http://localhost:8080/api/v1" },
-		deviceTypes: { url: "http://localhost:8080/api/v1/catalog/things" },
+		deviceTypes: { url: "http://localhost:8080/api/v1/catalog/thing-types" },
 		deviceTypeProps: { url: "http://localhost:8080/api/v1/device-types/properties" },
 		deviceDrivers: { url: "http://localhost:8080/api/v1/drivers" },
 		devices: { url: "http://localhost:8080/api/v1/devices" },

@@ -29,7 +29,7 @@ public class DeviceTypesServiceTest extends AbstractServiceTest {
 
     @BeforeClass
     public void setup() {
-    	AuthFilter.TESTING_DISABLE_AUTH = true;
+    	AuthFilter.DISABLE_AUTH = true;
     }
 
     @Test

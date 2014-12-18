@@ -2,7 +2,8 @@ package io.riots.core.auth;
 
 import io.riots.core.model.Role;
 import io.riots.core.model.User;
-import io.riots.core.repositories.UserRepository;
+import io.riots.core.service.IUsers;
+import io.riots.core.service.ServiceClientFactory;
 
 import java.io.IOException;
 import java.net.HttpCookie;
@@ -64,7 +65,7 @@ public class AuthFilter implements Filter, AuthenticationEntryPoint, Authenticat
      * use this field to disable the auth mechanism for testing.
      * Simply set to true in the setup method of your integration tests.
      */
-    public static boolean TESTING_DISABLE_AUTH = false;
+    public static boolean DISABLE_AUTH = false;
 
     /* TODO: put into config file */
     private static final List<String> protectedResources = Arrays.asList(
@@ -183,7 +184,7 @@ public class AuthFilter implements Filter, AuthenticationEntryPoint, Authenticat
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
 
-        if (TESTING_DISABLE_AUTH) {
+        if (DISABLE_AUTH) {
 			/* disable auth checks for testing */
             return true;
         }
@@ -384,30 +385,44 @@ public class AuthFilter implements Filter, AuthenticationEntryPoint, Authenticat
     }
 
     public static synchronized User getRequestingUser(String userEmail,
-                                                      String userName, UserRepository userRepo) {
+                                                      String userName, 
+//                                                      UserRepository userRepo
+  													  IUsers usersService
+  													) {
         if (userEmail == null) {
             return null;
         }
 		/* TODO make find/create transactionally safe */
 		/* find existing user */
-        List<User> existing = userRepo.findByEmail(userEmail);
-        if (!existing.isEmpty()) {
-            User u = existing.get(0);
-            return u;
-        }
-		/* create new user */
-        User u = new User();
-        u.setEmail(userEmail);
-        u.setName(userName);
-        u = userRepo.save(u);
-        return u;
+        System.out.println("INFO: Get requesting user: " + userEmail + " - " + userEmail);
+        System.out.println(usersService);
+        LOG.info("INFO: Get requesting user: " + userEmail + " - " + userEmail);
+        User existing = usersService.findByEmail(userEmail);
+//        if (existing != null) {
+            return existing;
+//        }
+//		/* create new user */
+//        User u = new User();
+//        u.setEmail(userEmail);
+//        u.setName(userName);
+//        u = usersService.save(u);
+//        return u;
+    }
+
+    public static synchronized User getRequestingUser(HttpServletRequest req) {
+    	IUsers usersService = ServiceClientFactory.getUsersServiceClient();
+        String userEmail = getHeaders(req).get(HEADER_AUTH_EMAIL);
+        String userName = getHeaders(req).get(HEADER_AUTH_USERNAME);
+        return getRequestingUser(userEmail, userName, usersService);
     }
 
     public static synchronized User getRequestingUser(HttpServletRequest req,
-                                                      UserRepository userRepo) {
+//                                                      UserRepository userRepo
+    													IUsers usersService
+                                                      ) {
         String userEmail = getHeaders(req).get(HEADER_AUTH_EMAIL);
         String userName = getHeaders(req).get(HEADER_AUTH_USERNAME);
-        return getRequestingUser(userEmail, userName, userRepo);
+        return getRequestingUser(userEmail, userName, usersService);
     }
 
     private List<HttpCookie> parse(String cookieString) {

@@ -1,12 +1,11 @@
 package io.riots.core.cxf;
 
 import io.riots.core.docs.DocumentationProvider;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
-import javax.ws.rs.ext.Provider;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author omoser

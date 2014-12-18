@@ -1,5 +1,6 @@
 package io.riots.api.services;
 
+import io.riots.core.auth.AuthFilter;
 import io.riots.core.boot.MongoEnabledServiceStarter;
 
 import org.springframework.boot.SpringApplication;
@@ -11,6 +12,7 @@ import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 /**
  * @author omoser
  * @author riox
+ * @author whummer
  */
 @EnableDiscoveryClient
 @EnableJms
@@ -20,13 +22,12 @@ public class ServicesStarter extends MongoEnabledServiceStarter {
     public DefaultJmsListenerContainerFactory myContainerFactory() {
         DefaultJmsListenerContainerFactory factory =
                 new DefaultJmsListenerContainerFactory();
-//        factory.setConnectionFactory(connectionFactory());
-//        factory.setDestinationResolver(destinationResolver());
         factory.setConcurrency("3-10");
         return factory;
     }
 
 	public static void main(String[] args) {
+		AuthFilter.DISABLE_AUTH = true;
 		if(System.getProperty("RIOTS_LOG_DIR") == null) {
 			System.setProperty("RIOTS_LOG_DIR", "log");
 		}

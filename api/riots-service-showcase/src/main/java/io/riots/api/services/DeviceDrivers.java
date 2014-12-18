@@ -4,7 +4,6 @@ import io.riots.core.auth.AuthFilter;
 import io.riots.core.model.User;
 import io.riots.core.model.driver.DeviceDriver;
 import io.riots.core.repositories.DeviceDriverRepository;
-import io.riots.core.repositories.UserRepository;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -42,8 +41,6 @@ public class DeviceDrivers {
     @Autowired
     DeviceDriverRepository driverRepo;
 
-	@Autowired
-	UserRepository userRepo;
     @Autowired
     HttpServletRequest req;
 
@@ -70,7 +67,7 @@ public class DeviceDrivers {
     @Timed
     @ExceptionMetered
     public Response retrieveForDeviceType(@PathParam("id") String itemId) {
-    	User user = AuthFilter.getRequestingUser(req, userRepo);
+    	User user = AuthFilter.getRequestingUser(req);
         return Response.ok(driverRepo.findByDeviceTypeAndCreatorOrDeviceTypeAndCreatorIsNull(itemId, user, itemId)).build();
     }
 
@@ -88,7 +85,7 @@ public class DeviceDrivers {
     @Timed
     @ExceptionMetered
     public Response create(DeviceDriver driver) {
-    	User user = AuthFilter.getRequestingUser(req, userRepo);
+    	User user = AuthFilter.getRequestingUser(req);
     	driver.setCreator(user);
         driver = driverRepo.save(driver);
         Response r = Response.created(UriBuilder.fromPath(

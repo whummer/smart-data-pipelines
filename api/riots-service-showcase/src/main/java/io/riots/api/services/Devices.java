@@ -6,7 +6,6 @@ import io.riots.api.handlers.query.Paged;
 import io.riots.core.auth.AuthFilter;
 import io.riots.core.model.Device;
 import io.riots.core.model.DeviceType;
-import io.riots.core.repositories.UserRepository;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -48,8 +47,6 @@ public class Devices {
     @Autowired
     DeviceCommand deviceCommand;
 
-	@Autowired
-	UserRepository userRepo;
     @Autowired
     HttpServletRequest req;
 
@@ -97,7 +94,7 @@ public class Devices {
     @Timed
     @ExceptionMetered
     public Response create(Device device) {
-    	device.setCreator(AuthFilter.getRequestingUser(req, userRepo));
+    	device.setCreator(AuthFilter.getRequestingUser(req));
         device = deviceCommand.create(device);
         Response r = Response.created(UriBuilder.fromPath(
         		"/devices/{id}").build(device.getId())).build();

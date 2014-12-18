@@ -3,17 +3,20 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:cxf="http://cxf.apache.org/core"
        xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+       xmlns:websocket="http://www.springframework.org/schema/websocket"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
                            http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd
-                           http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd">
+                           http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd
+                           http://www.springframework.org/schema/websocket http://www.springframework.org/schema/websocket/spring-websocket.xsd">
 
     <import resource="classpath:META-INF/cxf/cxf.xml"/>
     <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
     <import resource="classpath:spring-noauth.xml"/>
-    
+
     <jaxrs:server address="/v1" id="api-v1">
         <jaxrs:serviceBeans>
-            <ref bean="catalogService"/>
+            <ref bean="users"/>
+            <ref bean="ratings"/>
             <bean id="swaggerResourceJSON" class="com.wordnik.swagger.jaxrs.listing.ApiListingResourceJSON"/>
         </jaxrs:serviceBeans>
         <jaxrs:features>
@@ -25,5 +28,15 @@
             <bean class="com.wordnik.swagger.jaxrs.listing.ApiDeclarationProvider"/>
         </jaxrs:providers>
     </jaxrs:server>
+
+    <bean id="swaggerConfig" class="com.wordnik.swagger.jaxrs.config.BeanConfig">
+        <property name="resourcePackage" value="io.riots.api.services"/>
+        <property name="version" value="0.0.1"/>
+        <property name="basePath" value="http://localhost:8080/api/v1"/>
+        <property name="title" value="riots API"/>
+        <property name="description" value="~~~ riots.io ~~~"/>
+        <property name="contact" value="info@riots.io"/>
+        <property name="scan" value="true"/>
+    </bean>
 
 </beans>

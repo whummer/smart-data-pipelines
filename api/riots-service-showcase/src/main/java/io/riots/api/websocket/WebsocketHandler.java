@@ -84,7 +84,8 @@ public class WebsocketHandler extends TextWebSocketHandler {
 			subscriptions.add(s);
 			startSim(m1.propertyID); // TODO temp
 		} else if(m instanceof WSMessageUnsubscribe) {
-			WSMessageUnsubscribe m1 = (WSMessageUnsubscribe)m;
+			// TODO
+			// WSMessageUnsubscribe m1 = (WSMessageUnsubscribe)m;
 		} else {
 			/* invalid message received */
 		}

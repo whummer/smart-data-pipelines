@@ -6,9 +6,8 @@ import io.riots.core.model.Permission.Operation;
 import io.riots.core.model.Permission.Target;
 import io.riots.core.model.Role;
 import io.riots.core.model.User;
-import io.riots.core.repositories.BaseObjectRepository;
-import io.riots.core.repositories.DeviceTypeRepository;
-import io.riots.core.repositories.UserRepository;
+import io.riots.core.service.IUsers;
+import io.riots.core.service.ServiceClientFactory;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -49,42 +48,42 @@ public class AuthPermissionChecker implements PermissionEvaluator {
 	public boolean hasPermission(Authentication authentication,
 			Object targetDomainObject, Object permission) {
 
-//		// System.out.println("!!! hasPermission: " + authentication + " - "
-//		// + targetDomainObject + " - " + permission);
-//		AuthInfo info = (AuthInfo) authentication.getDetails();
-//		if (info.user == null) {
-////			info.user = AuthFilter.getRequestingUser(info.email, info.userName,
-////					repoUser);
-//		}
-//		// System.out.println("info.user " + info.user + " - " + info.roles);
-//
-//		/* admins are permitted to do anything */
-//		if (info.roles.contains(Role.ROLE_ADMIN)) {
-//			return true;
-//		}
-//
-//		/* non-users are permitted nothing */
-//		if (!info.roles.contains(Role.ROLE_USER)) {
-//			return false;
-//		}
-//
-//		boolean isModification = modificationOps.contains(permission);
-//
-//		if (isModification) {
-//
-//			User creatingUser = ((BaseObjectCreated<?>) targetDomainObject)
-//					.getCreator();
-//			// System.out.println("creatingUser " + creatingUser);
-//
-//			/* non-admin users may not modify objects which they did not create */
-//			if (creatingUser == null) {
-//				return false;
-//			}
-//			/* non-admin users may not modify objects which they did not create */
-//			if (!creatingUser.getId().equals(info.user.getId())) {
-//				return false;
-//			}
-//		}
+		// System.out.println("!!! hasPermission: " + authentication + " - "
+		// + targetDomainObject + " - " + permission);
+		AuthInfo info = (AuthInfo) authentication.getDetails();
+		if (info.user == null) {
+//			info.user = AuthFilter.getRequestingUser(info.email, info.userName,
+//					repoUser);
+		}
+		// System.out.println("info.user " + info.user + " - " + info.roles);
+
+		/* admins are permitted to do anything */
+		if (info.roles.contains(Role.ROLE_ADMIN)) {
+			return true;
+		}
+
+		/* non-users are permitted nothing */
+		if (!info.roles.contains(Role.ROLE_USER)) {
+			return false;
+		}
+
+		boolean isModification = modificationOps.contains(permission);
+
+		if (isModification) {
+
+			User creatingUser = ((BaseObjectCreated<?>) targetDomainObject)
+					.getCreator();
+			// System.out.println("creatingUser " + creatingUser);
+
+			/* non-admin users may not modify objects which they did not create */
+			if (creatingUser == null) {
+				return false;
+			}
+			/* non-admin users may not modify objects which they did not create */
+			if (!creatingUser.getId().equals(info.user.getId())) {
+				return false;
+			}
+		}
 
 		/* all looks good */
 		return true;
@@ -96,10 +95,12 @@ public class AuthPermissionChecker implements PermissionEvaluator {
 	@Override
 	public boolean hasPermission(Authentication authentication,
 			Serializable targetId, String targetType, Object permission) {
-//		@SuppressWarnings("unchecked")
-//		Object entity = getRepo(targetType).findOne(targetId);
-//		return hasPermission(authentication, entity, permission);
-		return true;
+		Object entity = null;
+		// TODO
+		if(Target.DEVICE_TYPE.equals(targetType)) {
+			throw new RuntimeException("TODO: implement device type service");
+		}
+		return hasPermission(authentication, entity, permission);
 	}
 
 	/**
@@ -109,18 +110,8 @@ public class AuthPermissionChecker implements PermissionEvaluator {
 	 * @return
 	 */
 	public User getRequestingUser() {
-//		return AuthFilter.getRequestingUser(req, repoUser);
-		//return new User().wi("riox");
-		return null;
+		IUsers users = ServiceClientFactory.getUsersServiceClient();
+		return AuthFilter.getRequestingUser(req, users);
 	}
-
-	/* PRIVATE HELPER METHODS */
-
-//	@SuppressWarnings("rawtypes")
-//	private BaseObjectRepository getRepo(String target) {
-//		if (Target.DEVICE_TYPE.equals(target))
-//			return repoDevType;
-//		throw new IllegalArgumentException(target);
-//	}
 
 }

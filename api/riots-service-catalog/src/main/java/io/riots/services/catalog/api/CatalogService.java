@@ -1,7 +1,6 @@
 package io.riots.services.catalog.api;
 
 import io.riots.catalog.repositories.CatalogRepository;
-import io.riots.core.auth.AuthFilter;
 import io.riots.services.catalog.ThingType;
 
 import java.net.URI;
@@ -22,18 +21,13 @@ import javax.ws.rs.core.UriBuilder;
 
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
-import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Service;
-
-import scala.tools.nsc.interpreter.Results;
 
 import com.codahale.metrics.annotation.ExceptionMetered;
 import com.codahale.metrics.annotation.Timed;
@@ -48,7 +42,7 @@ import com.wordnik.swagger.annotations.ApiResponses;
  * @author riox
  */
 @Service
-@Path("/catalog/things")
+@Path("/catalog/thing-types")
 @Api(value = "Catalog Service", description = "Catalog service for SmartThings")
 public class CatalogService {
 
@@ -95,14 +89,11 @@ public class CatalogService {
 			page = 0;		
 		if (size <= 0)
 			size = 100;
-							
+
 		Page<ThingType> result = repository.search(
 				QueryBuilders.queryString(query),
 				new PageRequest(page, size));
-		
-		if (result.getNumberOfElements() == 0) {
-			return Response.status(404).build();
-		}
+
 		return Response.ok().entity(result.getContent()).build();
 	}
 

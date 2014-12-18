@@ -12,8 +12,7 @@
 
 	<artifactId>riots-service-catalog</artifactId>
 	<name>catalog-service</name>
-	<description>this service provides catalog actions</description>
-	<version>0.0.1-SNAPSHOT</version>
+	<description>This service provides catalog actions</description>
 
 	<properties>
 		<riots.port>8181</riots.port>

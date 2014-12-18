@@ -23,7 +23,7 @@ public class UserQuery {
     	if(u == null) {
     		u = new User();
     		u.setEmail(email);
-    		repository.save(u);
+    		u = repository.save(u);
     	}
     	return u;
     }
@@ -33,6 +33,10 @@ public class UserQuery {
         if(res.isEmpty())
         	return null;
         return res.get(0);
+    }
+
+    public User findById(String id) {
+        return repository.findOne(id);
     }
 
 }

@@ -20,6 +20,7 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
 											pattern = "io\\.riots\\.core\\.repositories\\.BaseObjectRepository"))
 public class ElasticSearchEnabledServiceStarter extends ServiceStarter {
 
+	@SuppressWarnings("resource")
 	@Autowired
 	public Client transportClient() {
 		// TODO read the hosts from application.yml or better Eureka
