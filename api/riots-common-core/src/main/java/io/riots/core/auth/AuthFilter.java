@@ -88,7 +88,7 @@ public class AuthFilter implements Filter, AuthenticationEntryPoint, Authenticat
             "^/app/favicon\\.ico$",
 
             "^/app/scripts/app\\.js$",
-            "^/app/scripts/controllers/AppController\\.js$",
+            "^/app/scripts/controllers/*.\\.js$",
             "^/app/scripts/modules/.*\\.js$",
             "^/app/scripts/directives/.*\\.js$",
             "^/app/scripts/routes\\.js$",
