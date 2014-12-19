@@ -1,5 +1,5 @@
 define(['app'], function(app) {
-    app.controller('LoginViewController',['$scope',
+    app.register.controller('LoginViewController',['$scope',
         function($scope) {
         }
     ]);

@@ -21,3 +21,6 @@ data/
 log/
 RIOTS_LOG_DIR_IS_UNDEFINED
 git.properties
+.idea
+*.iml
+*.ipr

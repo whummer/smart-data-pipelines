@@ -1,12 +1,13 @@
-<section ng-controller="DeviceTypeController" id="deviceTypesSection" style="height: 100%">
+<section ng-controller="DeviceTypesController" id="deviceTypesSection">
 
     <!-- search input row -->
-    <div style="height: 100%" id="deviceTypesSectionWrapper">
+    <div id="deviceTypesSectionWrapper">
         <div class="row" id="deviceTypeSearch">
             <div class="col-lg-2"></div>
             <div class="col-lg-8">
                 <div class="input-group">
-                    <input type="text" class="form-control" placeholder="To search for specific properties use <property:value> notation (e.g., width:100)">
+                    <input type="text" class="form-control"
+                           placeholder="To search for specific properties use <property:value> notation (e.g., width:100)">
 					  <span class="input-group-btn">
 						<button class="btn btn-primary" type="button" id="btnSearch">
                             <span class="glyphicon glyphicon-search" style="padding-right: 10px"></span> Search
@@ -14,7 +15,7 @@
 					  </span>
                 </div>
                 <button class="btn btn-primary" type="button" id="btnAddDeviceType">
-                    <span class="glyphicon" style="padding-right: 10px"></span> Add
+                    <span class="glyphicon" style="padding-right: 10px"></span> Add Device
                 </button>
             </div>
             <div class="col-lg-2"></div>
@@ -72,7 +73,8 @@
                           <div class="caption">
                               <h4>{{devices[$index+1].name}}</h4>
 
-                              <div class="device-type-box" id="{{devices[$index+1].id}}_description"><p class="">{{devices[$index+1].description}}</p></div>
+                              <div class="device-type-box" id="{{devices[$index+1].id}}_description"><p class="">
+                                  {{devices[$index+1].description}}</p></div>
 
                               <div style="margin-bottom: 10px">
                                   <div style="float:left; margin-right: 3px">
@@ -107,7 +109,8 @@
                           <div class="caption">
                               <h4>{{devices[$index+2].name}}</h4>
 
-                              <div class="device-type-box" id="{{devices[$index+2].id}}_description"><p class="">{{devices[$index+2].description}}</p></div>
+                              <div class="device-type-box" id="{{devices[$index+2].id}}_description"><p class="">
+                                  {{devices[$index+2].description}}</p></div>
 
                               <div style="margin-bottom: 10px">
                                   <div style="float:left; margin-right: 3px">
@@ -133,9 +136,12 @@
                           </div>
                       </div>
                   </div>
-
               </div> <!-- end row -->
 			</span>
         </div>
     </div>
 </section>
+
+
+
+

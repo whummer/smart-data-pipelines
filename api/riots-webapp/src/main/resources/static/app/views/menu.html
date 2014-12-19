@@ -11,44 +11,137 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#"><img src="img/riots.png" style="height: 30px; padding-bottom: 10px; vertical-align: middle"/></a>
+            <a class="navbar-brand" href="#"><img src="img/riots.png"
+                                                  style="height: 30px; padding-bottom: 10px; vertical-align: middle"/></a>
         </div>
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
             <!-- top level menu items -->
             <ul class="nav navbar-nav">
-                <li id="menuItemDashboard"><a href="#/home" onclick="return clickMenu(this)"><span class="glyphicon glyphicon-dashboard"></span> Dashboard</a></li>
+                <li id="menuItemDashboard"><a href="#/home" onclick="return clickMenu(this)"><span
+                        class="glyphicon glyphicon-dashboard"></span> Dashboard</a></li>
                 <li id="menuItemCatalog" class="dropdown">
-                    <!--<li><a  ><span class="glyphicon glyphicon-book"></span> Catalog</a></li>-->
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span class="glyphicon glyphicon-book"></span> Catalog<span class="caret"></span></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span
+                            class="glyphicon glyphicon-book"></span> Catalog<span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
-                        <li><a href="#/catalog" onclick="return clickMenu(this)"><span style="margin-right: 10px" class="glyphicon glyphicon-list"></span>Browse Catalog</a></li>
-                        <li><a href="#"><span style="margin-right: 10px" class="glyphicon glyphicon-plus-sign"></span>Add Device</a></li>
-                        <li><a href="#"><span style="margin-right: 10px" class="glyphicon glyphicon-import"></span>Import Devices</a></li>
-                        <li><a href="#/meta" onclick="return clickMenu(this)"><span style="margin-right: 10px" class="glyphicon glyphicon-edit"></span>Edit Metadata</a></li>
+                        <li><a href="#/catalog" onclick="return clickMenu(this)"><span style="margin-right: 10px"
+                                                                                       class="glyphicon glyphicon-list"></span>Browse
+                            Catalog</a></li>
+
+
+                        <!-- Add new device modal window -->
+                        <li ng-controller="ModalAddDeviceTypeController">
+                            <script type="text/ng-template" id="modalAddDeviceType.html">
+                                <div class="modal-header">
+                                    <h3 class="modal-title"><span style="margin-right: 10px" class="glyphicon glyphicon-plus-sign"></span>Add a new Device</h3>
+                                </div>
+                                <div class="modal-body">
+
+                                    <div style="margin-bottom: 10px">Click on an icon below to add a new device</div>
+
+                                    <div class="media" ng-class="selected.item == 'riots' ? 'well media' :  'media'" id="manual">
+                                        <a class="pull-left" ng-click="selected.item = 'riots'">
+                                            <img width="30" src="/app/img/riots.png" alt="riots">
+                                        </a>
+
+                                        <div class="media-body">
+                                            <h4 class="media-heading">Add Thing manually</h4>
+                                            Manually enter the details of the things you want to add.
+                                        </div>
+                                    </div>
+
+                                    <div class="media" ng-class="selected.item == 'wolfram' ? 'well media' :  'media'" id="wolfram">
+                                        <a class="pull-left" ng-click="selected.item = 'wolfram'">
+                                            <img width="30" height="30" src="/app/img/wolfram_devices.jpeg"
+                                                 alt="wolfram">
+                                        </a>
+
+                                        <div class="media-body">
+                                            <h4 class="media-heading">Wolfram Devices</h4>
+                                            Connected devices are central to our long-term strategy of injecting
+                                            sophisticated computation and knowledge into everything. With the Wolfram
+                                            Language we now have a way to describe and compute about things in the
+                                            world. Connected devices are what we need to measure and interface with
+                                            those things.
+                                        </div>
+                                    </div>
+
+                                    <div class="media" ng-class="selected.item == 'sparkfun' ? 'well media' :  'media'" id="sparkfun">
+                                        <a class="pull-left" ng-click="selected.item = 'sparkfun'">
+                                            <img width="30" src="/app/img/sparkfun.jpg" alt="sparkfun">
+                                        </a>
+
+                                        <div class="media-body">
+                                            <h4 class="media-heading">Sparkfun</h4>
+                                            SparkFun is an online retail store that sells the bits and pieces to make
+                                            your electronics projects possible.
+                                        </div>
+                                    </div>
+
+                                    <div class="media" ng-class="selected.item == 'iotdb' ? 'well media' :  'media'" id="iotdb">
+                                        <a class="pull-left" ng-click="selected.item = 'iotdb'">
+                                            <img width="30" src="/app/img/iotdb.png" alt="iotdb">
+                                        </a>
+
+                                        <div class="media-body">
+                                            <h4 class="media-heading">IOTDB</h4>
+                                            Semantics for the Internet of Things. You don't think of data as being a pin
+                                            value between 0 and 1023, you shouldn't use it that way either! If it's
+                                            temperature, it's temperature in units Celsius or Fahrenheit.
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-primary" ng-click="ok()">OK</button>
+                                    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+                                </div>
+                            </script>
+                            <a href="JavaScript:void(0)" ng-click="open()">
+                                <span style="margin-right: 10px" class="glyphicon glyphicon-plus-sign"></span>Add Device</a>
+                        </li>
+
+
+                        <!-- Import devices -->
+                        <li><a href="#"><span style="margin-right: 10px" class="glyphicon glyphicon-import"></span>Import
+                            Devices</a></li>
+
+                        <!-- Edit Metadata -->
+                        <li><a href="#/meta" onclick="return clickMenu(this)"><span style="margin-right: 10px"
+                                                                                    class="glyphicon glyphicon-edit"></span>Edit
+                            Metadata</a></li>
                     </ul>
                 </li>
-                <li id="menuItemScenario"><a href="#/world" onclick="return clickMenu(this)"><span class="glyphicon glyphicon-globe"></span> Scenario</a></li>
+                <li id="menuItemScenario"><a href="#/world" onclick="return clickMenu(this)"><span
+                        class="glyphicon glyphicon-globe"></span> Scenario</a></li>
             </ul>
 
             <!-- user profile menu -->
             <ul class="nav navbar-nav navbar-right" ng-show="authInfo">
 
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Logged in as {{authInfo.name}}<span class="caret"></span></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Logged
+                        in as {{authInfo.name}}<span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
-                        <li><a href="#"><span style="margin-right: 10px" class="glyphicon glyphicon-cog"></span>My Devices</a></li>
-                        <li><a href="#"><span style="margin-right: 10px" class="glyphicon glyphicon-list-alt"></span>My Blueprints</a></li>
-                        <li><a href="#"><span style="margin-right: 10px" class="glyphicon glyphicon-wrench"></span>My Profile</a></li>
+                        <li><a href="#"><span style="margin-right: 10px" class="glyphicon glyphicon-cog"></span>My
+                            Devices</a></li>
+                        <li><a href="#"><span style="margin-right: 10px" class="glyphicon glyphicon-list-alt"></span>My
+                            Blueprints</a></li>
+                        <li><a href="#"><span style="margin-right: 10px" class="glyphicon glyphicon-wrench"></span>My
+                            Profile</a></li>
                         <li class="divider"></li>
-                        <li><a href="JavaScript: void(0);" ng-click="performLogout()"><span style="margin-right: 10px" class="glyphicon glyphicon-log-out"></span>Logout</a></li>
+                        <li><a href="JavaScript: void(0);" ng-click="performLogout()"><span style="margin-right: 10px"
+                                                                                            class="glyphicon glyphicon-log-out"></span>Logout</a>
+                        </li>
                     </ul>
                 </li>
 
                 <li>
                     <div id="userAvatar" ng-show="authInfo" style="line-height: 39px; padding-top: 5px">
-                        <img class="img-circle" id="imgAvatar" ng-src="{{authInfo.avatar}}" alt="img" ng-if="authInfo.avatar" style="height: 30px;"/>
+                        <img class="img-circle" id="imgAvatar" ng-src="{{authInfo.avatar}}" alt="img"
+                             ng-if="authInfo.avatar" style="height: 30px;"/>
                     </div>
                 </li>
 
@@ -62,3 +155,6 @@
         </div>
     </div>
 </nav>
+
+
+<script src="/app/scripts/controllers/MenuController.js"/>

@@ -26,10 +26,11 @@ define(
         'routes', 'angular', 'angular-bootstrap',
         'bootstrap-tagsinput',
         'angular-route', 'angular-ui-grid'
-        //'angular-ui-slider','bg-splitter'
     ],
 
     function (config) {
+
+        console.log("Entering app.js");
 
         var app = angular.module('app', [
             'ngRoute',
@@ -85,6 +86,7 @@ define(
 
             function ($routeProvider, $locationProvider, $controllerProvider,
                       $compileProvider, $filterProvider, $httpProvider, $provide) {
+
                 app.controller = $controllerProvider.register;
                 app.directive = $compileProvider.directive;
                 app.filter = $filterProvider.register;
@@ -109,6 +111,15 @@ define(
                         redirectTo: config.defaultRoutePaths
                     });
                 }
+
+                app.register =
+                {
+                    controller: $controllerProvider.register,
+                    directive: $compileProvider.directive,
+                    filter: $filterProvider.register,
+                    factory: $provide.factory,
+                    service: $provide.service
+                };
             }
 
         ]);

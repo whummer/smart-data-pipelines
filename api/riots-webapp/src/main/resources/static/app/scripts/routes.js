@@ -3,37 +3,37 @@ define([], function() {
     return {
         defaultRoutePath: '/',
         defaultDependencies: [
-			appRoot + '/scripts/controllers/AppController.js',
+			appRoot + '/scripts/controllers/AppController.js'
 		],
         routes: {
             '/': {
                 templateUrl: appRoot + '/views/home.html',
                 dependencies: [
-                    appRoot + '/scripts/controllers/HomeViewController.js'
+                    appRoot + '/scripts/controllers/HomeViewController.js',
                 ]
             },
             '/home': {
                 templateUrl: appRoot + '/views/home.html',
                 dependencies: [
-                    appRoot + '/scripts/controllers/HomeViewController.js'
+                    appRoot + '/scripts/controllers/HomeViewController.js',
                 ]
             },
             '/meta': {
                 templateUrl: appRoot + '/views/metadata.html',
                 dependencies: [
-                    appRoot + '/scripts/controllers/MetadataViewController.js'
+                    appRoot + '/scripts/controllers/MetadataViewController.js',
                 ]
             },
             '/catalog': {
                 templateUrl: appRoot + '/views/catalog.html',
                 dependencies: [
-                    appRoot + '/scripts/controllers/CatalogViewController.js'
+                    appRoot + '/scripts/controllers/CatalogViewController.js',
                 ]
             },
             '/catalog/:deviceTypeID': {
                 templateUrl: appRoot + '/views/device_type.html',
                 dependencies: [
-                    appRoot + '/scripts/controllers/CatalogViewController.js'
+                    appRoot + '/scripts/controllers/CatalogViewController.js',
                 ]
             },
             '/world': {
@@ -53,6 +53,7 @@ define([], function() {
             '/login': {
                 templateUrl: appRoot + '/views/login.html',
                 dependencies: [
+                    //appRoot + '/scripts/controllers/LoginViewController.js'
                 ]
             }
         }

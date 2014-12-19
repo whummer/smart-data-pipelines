@@ -41,7 +41,7 @@ var requirejsAppConfig = {
     out: 'scripts/riots-all.js',
     packages: [
         {
-            name: 'riot',
+            name: 'riots',
             location: appConfig['appRootPath'] + '/scripts/modules/'
         }, {
             name: 'leaflet',
@@ -82,6 +82,10 @@ var requirejsAppConfig = {
             name: 'bootstrap-tagsinput',
             location: '/bower_components/bootstrap-tagsinput',
             main: 'dist/bootstrap-tagsinput'
+        },{
+            name: 'jsurl',
+            location: '/bower_components/jsurl',
+            main: 'url'
         }, {
             name: 'auth',
             location: '/app/scripts/modules',
@@ -95,7 +99,7 @@ var requirejsAppConfig = {
         'bootstrap': '/bower_components/bootstrap/js',
         'angular-route': '/bower_components/angular-route/angular-route',
         'jquery': '/bower_components/jquery/dist/jquery',
-        'jquery-ui': '/bower_components/jquery-ui/jquery-ui',
+        'jquery-ui': '/bower_components/jquery-ui/jquery-ui'
     },
     shim: {
         'app': {

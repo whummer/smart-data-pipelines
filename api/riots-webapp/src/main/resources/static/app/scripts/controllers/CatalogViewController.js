@@ -1,4 +1,7 @@
 define(['app'], function(app) {
+
+	console.log("Entering CatalogViewController.js");
+
     app.controller('CatalogViewController', [
         '$scope', '$http', '$compile',
 		function($scope, $http, $compile) {
@@ -16,12 +19,11 @@ define(['app'], function(app) {
         }
     ]);
 
-
-	app.controller('DeviceTypeController',
+	app.controller('DeviceTypesController',
 
 		function ($scope) {
 
-			console.log("DeviceTypeController");
+			console.log("DeviceTypesController");
 
 			$scope.showMore = function(deviceId) {
 				$("#" + deviceId + "_description").removeClass("device-type-box");
@@ -157,7 +159,7 @@ define(['app'], function(app) {
 			});
 
 			/* render main container */
-			renderElement("deviceTypesSection");
+			//renderElement("deviceTypesSection");
 		}
 	);
 });
