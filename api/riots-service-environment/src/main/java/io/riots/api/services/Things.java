@@ -35,13 +35,18 @@ public class Things implements IThings {
 
     @Autowired
     ThingQuery thingQuery;
+
     @Autowired
     ThingCommand thingCommand;
 
     @Autowired
     HttpServletRequest req;
+
     @Context
     MessageContext context;
+
+    @Autowired
+    AuthHeaders authHeaders;
 
     @Override
     public Thing retrieve(String thingId) {
@@ -57,7 +62,7 @@ public class Things implements IThings {
 
     @Override
     public Thing create(Thing thing) {
-    	thing.setCreatorId(AuthHeaders.getRequestingUser(req).getId());
+    	thing.setCreatorId(authHeaders.getRequestingUser(req).getId());
     	ThingMongo m = ThingMongo.convert(thing);
         thing = thingCommand.create(m);
         URI location = UriBuilder.fromPath("/things/{id}").build(thing.getId());

@@ -7,6 +7,7 @@ import io.riots.services.users.Stats;
 
 import javax.ws.rs.Path;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -16,10 +17,14 @@ import org.springframework.stereotype.Service;
 @Path("/stats")
 public class Statistics implements IStatistics {
 
+	@Autowired
+	ServiceClientFactory serviceClientFactory;
+
+
 	@Override
 	public Stats retrieveStatistics() {
 		Stats stats = new Stats();
-		IUsers users = ServiceClientFactory.getUsersServiceClient();
+		IUsers users = serviceClientFactory.getUsersServiceClient();
 		stats.setNumUsers(users.getNumUsers());
 		// TODO
 //		stats.numUsersOnline = AuthFilter.getOnlineUsersCount();

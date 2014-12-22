@@ -42,6 +42,9 @@ public class ThingData implements IThingData {
     @Autowired
     PropertyValueRepository propValueRepo;
 
+	@Autowired
+	ServiceClientFactory serviceClientFactory;
+
     @Autowired
     HttpServletRequest req;
 
@@ -93,8 +96,8 @@ public class ThingData implements IThingData {
     @Override
 	public void postValue(String deviceId, String propertyName, 
     		PropertyValue<?> propValue) {
-    	IThings things = ServiceClientFactory.getThingsServiceClient();
-    	ICatalogService catalog = ServiceClientFactory.getCatalogServiceClient();
+    	IThings things = serviceClientFactory.getThingsServiceClient();
+    	ICatalogService catalog = serviceClientFactory.getCatalogServiceClient();
 
     	Thing thing = things.retrieve(deviceId);
     	ThingType tt = catalog.retrieveCatalogEntry(thing.getThingTypeId());

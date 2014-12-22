@@ -14,6 +14,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 
 /**
@@ -31,6 +32,9 @@ public class AuthHeaders {
 
     private static final Logger LOG = Logger.getLogger(AuthHeaders.class);
 
+    @Autowired
+    private ServiceClientFactory clientFactory;
+    
     /**
      * Class which holds authentication information.
      */
@@ -75,8 +79,8 @@ public class AuthHeaders {
 //        return u;
     }
 
-    public static synchronized User getRequestingUser(HttpServletRequest req) {
-    	IUsers users = ServiceClientFactory.getUsersServiceClient();
+    public synchronized User getRequestingUser(HttpServletRequest req) {
+    	IUsers users = clientFactory.getUsersServiceClient();
     	return getRequestingUser(req, users);
     }
     public static synchronized User getRequestingUser(
