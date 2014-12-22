@@ -1,16 +1,11 @@
 package io.riots.api.services;
 
 import io.hummer.osm.model.Point.PathPoint;
-import io.riots.api.handlers.command.DeviceSimulationCommand;
 import io.riots.api.handlers.command.PropertySimulationCommand;
 import io.riots.api.handlers.command.SimulationCommand;
-import io.riots.api.handlers.query.DeviceSimulationQuery;
 import io.riots.api.handlers.query.Paged;
 import io.riots.api.handlers.query.PropertySimulationQuery;
 import io.riots.api.handlers.query.SimulationQuery;
-import io.riots.core.model.Location;
-import io.riots.core.model.PropertyValue;
-import io.riots.core.model.sim.DeviceSimulation;
 import io.riots.core.model.sim.PropertySimulation;
 import io.riots.core.model.sim.PropertySimulationGPS;
 import io.riots.core.model.sim.Simulation;
@@ -21,6 +16,8 @@ import io.riots.core.sim.SimulationManager;
 import io.riots.core.sim.traffic.TrafficSimulatorMatsim;
 import io.riots.core.sim.traffic.TrafficSimulatorMatsim.TrafficTraces;
 import io.riots.core.sim.traffic.TrafficSimulatorMatsim.TrafficTraces.TrafficTrace;
+import io.riots.services.model.Location;
+import io.riots.services.scenario.PropertyValue;
 
 import java.net.URI;
 import java.util.List;
@@ -61,15 +58,11 @@ public class Simulations {
     SimulationQuery simulationQuery;
     @Autowired
     PropertySimulationQuery propSimQuery;
-    @Autowired
-    DeviceSimulationQuery devSimQuery;
 
     @Autowired
     SimulationCommand simulationCommand;
     @Autowired
     PropertySimulationCommand propSimCommand;
-    @Autowired
-    DeviceSimulationCommand devSimCommand;
 
     SimulationManager manager = new SimulationManager();
 
@@ -119,7 +112,6 @@ public class Simulations {
     @Timed
     @ExceptionMetered
     public Response create(Simulation item) {
-        item.generateNecessaryIDs();
         item = simulationCommand.create(item);
         URI location = UriBuilder.fromPath("/simulations/{id}").build(item.getId());
         return Response.created(location).build();
@@ -139,7 +131,6 @@ public class Simulations {
     @ExceptionMetered
     public Response update(Simulation item) {
     	System.out.println("Updating item: " + item);
-        item.generateNecessaryIDs();
         item = simulationCommand.update(item);
 		return Response.ok().build();
     }
@@ -245,76 +236,6 @@ public class Simulations {
     @ExceptionMetered
     public Response deletePropertySimulation(@PathParam("id") String itemId) {
         propSimCommand.delete(itemId);
-        return Response.ok().build();
-    }
-
-    /* SIMULATION DEVICES */
-
-    @GET
-    @Path("/devices/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Retrieve a single device simulation",
-            notes = "Retrieve a device simulation given its ID.",
-            response = DeviceSimulation.class)
-    @ApiResponses(value = {
-            @ApiResponse(code = 404, message = "No entity with given ID found")
-    })
-    @Timed
-    @ExceptionMetered
-    public Response getDeviceSimulation(@PathParam("id") String itemId) {
-    	DeviceSimulation result = devSimQuery.single(itemId);
-    	return Response.ok(result).build();
-    }
-
-    @POST
-    @Path("/devices")
-    @Consumes({MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_JSON})
-    @ApiOperation(value = "Created device simulation.",
-            notes = "Created a new device simulation. Returns the location of the new item as HTTP Location header."
-    )
-    @ApiResponses(value = {
-            @ApiResponse(code = 400, message = "Malformed DeviceSimulation provided. See error message for details")
-    })
-    @Timed
-    @ExceptionMetered
-    public Response createDeviceGroup(DeviceSimulation item) {
-        item = devSimCommand.create(item);
-        URI location = UriBuilder.fromPath("/simulations/devices/{id}").build(item.getId());
-        System.out.println("Created devSim: " + location);
-        return Response.created(location).build();
-    }
-
-    @PUT
-    @Path("/devices")
-    @Consumes({MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_JSON})
-    @ApiOperation(value = "Update device simulation.",
-            notes = "Update a device simulation."
-    )
-    @ApiResponses(value = {
-            @ApiResponse(code = 400, message = "Malformed DeviceSimulation provided. See error message for details")
-    })
-    @Timed
-    @ExceptionMetered
-    public Response update(DeviceSimulation item) {
-    	item = devSimCommand.update(item);
-		return Response.ok().build();
-    }
-
-    @DELETE
-    @Path("/devices/{id}")
-    @Produces({MediaType.APPLICATION_JSON})
-    @ApiOperation(value = "Delete a DeviceSimulation",
-            notes = "Delete an existing DeviceSimulation by its ID. Upon success, HTTP 200 is returned."
-    )
-    @ApiResponses(value = {
-            @ApiResponse(code = 404, message = "No such DeviceSimulation")
-    })
-    @Timed
-    @ExceptionMetered
-    public Response deleteDeviceSimulation(@PathParam("id") String itemId) {
-        devSimCommand.delete(itemId);
         return Response.ok().build();
     }
 

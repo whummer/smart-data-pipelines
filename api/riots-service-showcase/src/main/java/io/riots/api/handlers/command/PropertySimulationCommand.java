@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class PropertySimulationCommand {
 
-    static final Logger log = LoggerFactory.getLogger(DeviceTypeCommand.class);
+    static final Logger log = LoggerFactory.getLogger(PropertySimulationCommand.class);
 
     @Autowired
     PropertySimulationRepository repository;

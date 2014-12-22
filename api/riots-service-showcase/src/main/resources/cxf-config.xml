@@ -11,19 +11,18 @@
 
     <import resource="classpath:META-INF/cxf/cxf.xml"/>
     <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
-    <import resource="classpath*:spring-noauth.xml"/>
+    <import resource="classpath:spring-noauth.xml"/>
 
     <jaxrs:server address="/v1" id="api-v1">
         <jaxrs:serviceBeans>
-            <ref bean="deviceTypes"/>
-            <ref bean="devices"/>
-            <ref bean="deviceData"/>
+<!--             <ref bean="deviceTypes"/> -->
+<!--             <ref bean="devices"/> -->
+<!--             <ref bean="deviceData"/> -->
             <ref bean="manufacturers"/>
             <ref bean="assetCategories"/>
             <ref bean="simulations"/>
             <ref bean="semanticTypes"/>
             <ref bean="deviceDrivers"/>
-            <ref bean="statistics"/>
             <bean id="swaggerResourceJSON" class="com.wordnik.swagger.jaxrs.listing.ApiListingResourceJSON"/>
         </jaxrs:serviceBeans>
         <jaxrs:features>
@@ -46,10 +45,9 @@
         <property name="scan" value="true"/>
     </bean>
 
-
 	<!-- Websocket support -->
-	<websocket:handlers>
-        <websocket:mapping path="/websocket" handler="websocketHandler"/>
-    </websocket:handlers>
+<!-- 	<websocket:handlers> -->
+<!--         <websocket:mapping path="/websocket" handler="websocketHandler"/> -->
+<!--     </websocket:handlers> -->
 
 </beans>

@@ -10,10 +10,10 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  * @author omoser
  * @author whummer
  */
-public abstract class HierarchicalObject<T extends HierarchicalObject<T>> {
+public abstract class HierarchicalObject<T> {
 
 	@JsonInclude(Include.NON_EMPTY)
-	private String name;
+	protected String name;
 
 	@JsonInclude(Include.NON_EMPTY)
 	Set<T> children = new HashSet<>();

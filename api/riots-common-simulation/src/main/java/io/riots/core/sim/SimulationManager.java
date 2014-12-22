@@ -1,9 +1,8 @@
 package io.riots.core.sim;
 
-import io.riots.core.model.Property;
-import io.riots.core.model.PropertyValue;
 import io.riots.core.model.sim.Simulation;
 import io.riots.core.model.sim.SimulationRun;
+import io.riots.services.scenario.PropertyValue;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -50,7 +49,7 @@ public class SimulationManager {
 			// TODO!
 			while(true) {
 				PropertyValue<?> p = new PropertyValue<>(Math.random() * 2);
-				p.setProperty(new Property<>("p1"));
+				p.setPropertyName("p1");
 				synchronized (subscriptions) {
 					System.out.println("notify " + p);
 					if(!subscriptions.containsKey(run.getId())) {

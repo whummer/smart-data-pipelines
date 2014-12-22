@@ -1,7 +1,7 @@
 package io.riots.api.handlers.query;
 
-import io.riots.core.model.User;
 import io.riots.core.repositories.UserRepository;
+import io.riots.services.users.User;
 
 import java.util.List;
 
@@ -38,5 +38,9 @@ public class UserQuery {
     public User findById(String id) {
         return repository.findOne(id);
     }
+
+	public long getCount() {
+		return repository.count();
+	}
 
 }

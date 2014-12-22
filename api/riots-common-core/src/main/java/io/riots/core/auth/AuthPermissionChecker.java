@@ -1,13 +1,13 @@
 package io.riots.core.auth;
 
 import io.riots.core.auth.AuthFilter.AuthInfo;
-import io.riots.core.model.BaseObjectCreated;
-import io.riots.core.model.Permission.Operation;
-import io.riots.core.model.Permission.Target;
-import io.riots.core.model.Role;
-import io.riots.core.model.User;
 import io.riots.core.service.IUsers;
 import io.riots.core.service.ServiceClientFactory;
+import io.riots.services.catalog.ThingType;
+import io.riots.services.users.Role;
+import io.riots.services.users.User;
+import io.riots.services.users.Permission.Operation;
+import io.riots.services.users.Permission.Target;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -63,16 +63,18 @@ public class AuthPermissionChecker implements PermissionEvaluator {
 
 		if (isModification) {
 
-			User creatingUser = ((BaseObjectCreated<?>) targetDomainObject)
-					.getCreator();
+			String creatingUserID = null;
+			if(targetDomainObject instanceof ThingType) {
+				creatingUserID = ((ThingType) targetDomainObject).getCreatorId();
+			}
 			// System.out.println("creatingUser " + creatingUser);
 
 			/* non-admin users may not modify objects which they did not create */
-			if (creatingUser == null) {
+			if (creatingUserID == null) {
 				return false;
 			}
 			/* non-admin users may not modify objects which they did not create */
-			if (!creatingUser.getId().equals(info.user.getId())) {
+			if (!creatingUserID.equals(info.user.getId())) {
 				return false;
 			}
 		}

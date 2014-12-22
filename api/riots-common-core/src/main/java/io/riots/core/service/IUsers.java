@@ -1,6 +1,6 @@
 package io.riots.core.service;
 
-import io.riots.core.model.User;
+import io.riots.services.users.User;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -80,5 +80,14 @@ public interface IUsers {
             response = AuthToken.class)
     @Timed @ExceptionMetered
     public AuthToken login(GetAuthTokenRequest r);
+
+    @GET
+    @Path("/count")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Get number of users.",
+            notes = "Retrieve the number of users registered in the system.",
+            response = AuthToken.class)
+    @Timed @ExceptionMetered
+	long getNumUsers();
 
 }

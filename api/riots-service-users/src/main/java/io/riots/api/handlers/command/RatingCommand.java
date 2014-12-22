@@ -1,8 +1,8 @@
 package io.riots.api.handlers.command;
 
 import io.riots.core.logging.Markers;
-import io.riots.core.model.Rating;
 import io.riots.core.repositories.RatingRepository;
+import io.riots.services.users.Rating;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

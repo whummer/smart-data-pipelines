@@ -1,9 +1,9 @@
 package io.riots.core.auth;
 
-import io.riots.core.model.Role;
-import io.riots.core.model.User;
 import io.riots.core.service.IUsers;
 import io.riots.core.service.ServiceClientFactory;
+import io.riots.services.users.Role;
+import io.riots.services.users.User;
 
 import java.io.IOException;
 import java.net.HttpCookie;

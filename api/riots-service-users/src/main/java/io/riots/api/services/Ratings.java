@@ -3,8 +3,8 @@ package io.riots.api.services;
 import io.riots.api.handlers.command.RatingCommand;
 import io.riots.api.handlers.query.RatingQuery;
 import io.riots.api.handlers.query.UserQuery;
-import io.riots.core.model.Rating;
-import io.riots.core.model.Rating.RatingAggregated;
+import io.riots.services.users.Rating;
+import io.riots.services.users.Rating.RatingAggregated;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;

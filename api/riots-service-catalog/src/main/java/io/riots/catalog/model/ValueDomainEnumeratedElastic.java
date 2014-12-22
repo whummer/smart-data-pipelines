@@ -3,8 +3,6 @@ package io.riots.catalog.model;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 
 /**
  * Represents a value domain with enumerated values.

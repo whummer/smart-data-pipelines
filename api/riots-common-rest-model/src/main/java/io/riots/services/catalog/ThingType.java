@@ -2,7 +2,7 @@ package io.riots.services.catalog;
 
 import static org.springframework.data.elasticsearch.annotations.FieldType.Object;
 import static org.springframework.data.elasticsearch.annotations.FieldType.String;
-import io.riots.services.model.Thing;
+import io.riots.services.scenario.Thing;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -79,6 +79,17 @@ public class ThingType extends HierarchicalObject<ThingType> {
 	public ThingType(String name) {
 		super(name);
 	}
+
+	public Property getProperty(String name) {
+		for(Property p : properties) {
+			if(name.equals(p.getName())) {
+				return p;
+			}
+		}
+		return null;
+	}
+
+	/* GETTERS/SETTERS */
 
 	public String getId() {
 		return id;

@@ -4,7 +4,7 @@ import static org.springframework.data.elasticsearch.annotations.FieldType.Objec
 import static org.springframework.data.elasticsearch.annotations.FieldType.String;
 import io.riots.services.catalog.Property;
 import io.riots.services.catalog.ThingType;
-import io.riots.services.model.Thing;
+import io.riots.services.scenario.Thing;
 
 import java.util.Date;
 import java.util.HashMap;

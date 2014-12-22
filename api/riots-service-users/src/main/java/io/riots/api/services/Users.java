@@ -1,8 +1,8 @@
 package io.riots.api.services;
 
 import io.riots.api.handlers.query.UserQuery;
-import io.riots.core.model.User;
 import io.riots.core.service.IUsers;
+import io.riots.services.users.User;
 
 import javax.ws.rs.Path;
 
@@ -40,4 +40,8 @@ public class Users implements IUsers {
     	return response;
     }
 
+    @Override
+    public long getNumUsers() {
+    	return userQuery.getCount();
+    }
 }

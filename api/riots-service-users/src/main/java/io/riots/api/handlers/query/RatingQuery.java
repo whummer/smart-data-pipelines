@@ -1,9 +1,9 @@
 package io.riots.api.handlers.query;
 
-import io.riots.core.model.Rating;
-import io.riots.core.model.Rating.RatingAggregated;
-import io.riots.core.model.User;
 import io.riots.core.repositories.RatingRepository;
+import io.riots.services.users.Rating;
+import io.riots.services.users.Rating.RatingAggregated;
+import io.riots.services.users.User;
 
 import java.util.List;
 

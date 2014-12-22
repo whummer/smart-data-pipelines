@@ -15,6 +15,7 @@
         <jaxrs:serviceBeans>
             <ref bean="users"/>
             <ref bean="ratings"/>
+            <ref bean="statistics"/>
             <bean id="swaggerResourceJSON" class="com.wordnik.swagger.jaxrs.listing.ApiListingResourceJSON"/>
         </jaxrs:serviceBeans>
         <jaxrs:features>
