@@ -16,12 +16,14 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.stereotype.Component;
 
 /**
  * Retrieve information from authentication headers sent along with 
  * request invocation messages.
  * @author whummer
  */
+@Component
 public class AuthHeaders {
 
     public static final String HEADER_AUTH_NETWORK = "riots-auth-network";
