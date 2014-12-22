@@ -35,7 +35,7 @@ app.controller('ModalAddDeviceTypeController', ['$scope', '$modal', '$log', '$ht
 
 app.controller('ModalAddDeviceTypeInstanceCtrl', function ($scope, $modalInstance, $log, $http, $location, $compile) {
 
-    //AppController($scope, $http, $compile);
+    AppController($scope, $http, $compile);
 
     //$scope.items = items;
     $scope.selected = {

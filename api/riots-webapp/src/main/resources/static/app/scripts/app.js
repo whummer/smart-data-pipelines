@@ -53,6 +53,7 @@ define(
 
                         if (authInfo) {
                         	window.authInfo = authInfo;
+                        	rootScope.authInfo = authInfo;
                             var network = authInfo.network;
                             var token = authInfo.access_token;
                             $http.defaults.headers.common["riots-auth-network"] = network;
@@ -62,8 +63,8 @@ define(
                             dependencies = defaultDependencies;
                         }
 
-                        require(dependencies, function () {
-                            $rootScope.$apply(function () {
+						require(dependencies, function () {
+						    $rootScope.$apply(function () {
                                 deferred.resolve();
                             });
                         });

@@ -12,13 +12,13 @@ zuul:
       stripPrefix: false
       serviceId: users-service
     api-things:
-      path: /api/v1/devices/**
+      path: /api/v1/things/**
       stripPrefix: false
-      serviceId: showcase-service
+      serviceId: environment-service
     api-drivers:
       path: /api/v1/drivers/**
       stripPrefix: false
-      serviceId: showcase-service
+      serviceId: environment-service
     catalog-service:
       path: /api/v1/catalog/**
       stripPrefix: false

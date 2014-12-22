@@ -13,9 +13,9 @@ define(['app'], function(app) {
 			$scope.simAPI = appConfig.services.simulations.url;
 			$scope.propSimAPI = appConfig.services.simulationProps.url;
 			$scope.deviceSimAPI = appConfig.services.simulationDevices.url;
-			$scope.deviceTypesAPI = appConfig.services.deviceTypes.url;
-			$scope.devicesAPI = appConfig.services.devices.url;
-			$scope.deviceTypePropsAPI = appConfig.services.deviceTypeProps.url;
+			$scope.deviceTypesAPI = appConfig.services.thingTypes.url;
+			$scope.devicesAPI = appConfig.services.things.url;
+			$scope.deviceTypePropsAPI = appConfig.services.thingTypeProps.url;
 
 			$scope.curScenario = {id: -1};
 			$scope.scenariosMap = {};
@@ -109,7 +109,6 @@ define(['app'], function(app) {
 				invokePOST($scope.http, $scope.simAPI,
 					JSON.stringify(item),
 					function(data, status, headers, config) {
-						//renderElement("simViewDiv");
 						$scope.renderSelectScenarios();
 					}
 				);
@@ -122,7 +121,6 @@ define(['app'], function(app) {
 				var url = $scope.simAPI + "/" + $scope.curScenario.id;
 				invokeDELETE($scope.http, url,
 					function(data, status, headers, config) {
-						//renderElement("simViewDiv");
 						$scope.curScenario = {id: -1};
 						$scope.renderSelectScenarios();
 					}
@@ -204,7 +202,6 @@ define(['app'], function(app) {
 
 			/* render elements */
 			console.log("starting to render simViewSimSelect");
-			//renderElement("simViewSimSelect");
 			$scope.connectToWebsocket();
         }
     ]);
