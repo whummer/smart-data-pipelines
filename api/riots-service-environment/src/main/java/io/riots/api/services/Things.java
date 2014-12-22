@@ -3,6 +3,7 @@ package io.riots.api.services;
 import io.riots.api.handlers.command.ThingCommand;
 import io.riots.api.handlers.query.Paged;
 import io.riots.api.handlers.query.ThingQuery;
+import io.riots.api.util.ServiceUtil;
 import io.riots.core.auth.AuthHeaders;
 import io.riots.core.service.IThings;
 import io.riots.model.ThingMongo;
@@ -14,7 +15,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.UriBuilder;
 
 import org.apache.cxf.jaxrs.ext.MessageContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,8 +65,9 @@ public class Things implements IThings {
     	thing.setCreatorId(authHeaders.getRequestingUser(req).getId());
     	ThingMongo m = ThingMongo.convert(thing);
         thing = thingCommand.create(m);
-        URI location = UriBuilder.fromPath("/things/{id}").build(thing.getId());
-        context.getHttpServletResponse().addHeader("Location", location.toString());
+        URI location = ServiceUtil.getPath(context, 
+        		String.format("../things/%s", thing.getId()));
+        ServiceUtil.setLocationHeader(context, location);
         return thing;
     }
 

@@ -1,6 +1,6 @@
 package io.riots.services.gateway;
 
-import io.riots.core.auth.AuthFilter;
+import io.riots.core.auth.AuthFilterZuul;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -17,12 +17,12 @@ import org.springframework.context.annotation.ImportResource;
 @EnableAutoConfiguration
 @ComponentScan
 @EnableZuulProxy
-@ImportResource(value = { "classpath*:/spring-auth.xml" })
+@ImportResource(value = { "classpath*:/spring-auth-filter.xml" })
 public class GatewayServiceStarter {
 	
 	@Bean
-    public AuthFilter filter() {
-        return new AuthFilter();
+    public AuthFilterZuul filter() {
+        return new AuthFilterZuul();
     }
 
     public static void main(String[] args) {

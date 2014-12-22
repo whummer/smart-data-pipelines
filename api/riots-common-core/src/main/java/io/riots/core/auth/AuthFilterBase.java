@@ -32,20 +32,21 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.AuthenticationEntryPoint;
-import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.netflix.zuul.context.RequestContext;
 
 /**
  * This filter enforces authentication and authorization.
  * Authentication tokens are validated, and access to protected
  * resources (both static files and services) is restricted.
  *
+ * This class has no @Component annotation, on purpose. Subclasses
+ * should extend this class (possibly with additional functionality 
+ * such as adding Zuul proxy forwarding headers) and use @Component there.
+ *
  * @author Waldemar Hummer
  */
-@Component
-public class AuthFilter implements Filter, AuthenticationEntryPoint, AuthenticationProvider {
+public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint, AuthenticationProvider {
 
     /**
      * if auth info is encoded in Websocket header, use this delimiter
@@ -104,7 +105,7 @@ public class AuthFilter implements Filter, AuthenticationEntryPoint, Authenticat
         userRoleMappings.add(new UserRoleMapping(".*", Role.ROLE_USER));
     }
 
-    private static final Logger LOG = Logger.getLogger(AuthFilter.class);
+    private static final Logger LOG = Logger.getLogger(AuthFilterBase.class);
     private static final ObjectMapper JSON = new ObjectMapper();
 
     private static final Map<String, AuthInfo> tokens = new ConcurrentHashMap<String, AuthInfo>();
@@ -329,18 +330,7 @@ public class AuthFilter implements Filter, AuthenticationEntryPoint, Authenticat
             AuthInfo authInfo = tokens.get(token);
 
 			/* append additional infos to request */
-            System.out.println("Adding headers to request: " + " - " +
-            		authInfo.email + " - " + authInfo + " - " + request);
-            request.setAttribute(AuthHeaders.HEADER_AUTH_EMAIL, authInfo.email);
-            request.setAttribute(AuthHeaders.HEADER_AUTH_USERNAME, authInfo.userName);
-
-            /* append headers to zuul request */
-            RequestContext context = RequestContext.getCurrentContext();
-    		if(context != null) {
-    			context.getZuulRequestHeaders().put(AuthHeaders.HEADER_AUTH_EMAIL, authInfo.email);
-    			context.getZuulRequestHeaders().put(AuthHeaders.HEADER_AUTH_USERNAME, authInfo.userName);
-    			//System.out.println(context.getZuulRequestHeaders());
-    		}
+            setAuthInfoHeaders(request, authInfo);
 
 			/* set the Spring security context */
             UsernamePasswordAuthenticationToken springSecToken =
@@ -351,6 +341,14 @@ public class AuthFilter implements Filter, AuthenticationEntryPoint, Authenticat
         }
 		/* all checks passed, return success */
         return true;
+    }
+
+    void setAuthInfoHeaders(HttpServletRequest request, AuthInfo authInfo) {
+    	/* append additional infos to request */
+        System.out.println("Adding headers to request: " + " - " +
+        		authInfo.email + " - " + authInfo + " - " + request);
+        request.setAttribute(AuthHeaders.HEADER_AUTH_EMAIL, authInfo.email);
+        request.setAttribute(AuthHeaders.HEADER_AUTH_USERNAME, authInfo.userName);
     }
 
     private List<HttpCookie> parse(String cookieString) {
