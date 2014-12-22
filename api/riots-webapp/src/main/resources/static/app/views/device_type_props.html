@@ -435,8 +435,6 @@
             $scope.$watch("shared.selectedDeviceType", function () {
                 var devType = $scope.shared.selectedDeviceType;
                 if (!devType) {
-                    // delete existing container
-                    destroyElement("DeviceTypePropsTable");
                     $scope.selectedProperty = null;
                 } else {
                     $scope.buildPropsTable(devType);
@@ -446,7 +444,6 @@
             });
 
             /* start rendering the main container */
-            renderElement("devicePropsSection");
         }
     ]);
 

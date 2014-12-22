@@ -10,8 +10,8 @@ define(['app'], function(app) {
 
 			$scope.highlightMenuItem("#menuItemCatalog");
 
-			$scope.deviceTypesAPI = appConfig.services.deviceTypes.url;
-			$scope.deviceTypePropsAPI = appConfig.services.deviceTypeProps.url;
+			$scope.deviceTypesAPI = appConfig.services.thingTypes.url;
+			$scope.deviceTypePropsAPI = appConfig.services.thingTypeProps.url;
 			$scope.semanticsAPI = appConfig.services.semanticTypes.url;
 			$scope.driversAPI = appConfig.services.deviceDrivers.url;
 
@@ -159,7 +159,6 @@ define(['app'], function(app) {
 			});
 
 			/* render main container */
-			//renderElement("deviceTypesSection");
 		}
 	);
 });

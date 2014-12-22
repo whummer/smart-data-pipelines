@@ -8,25 +8,12 @@ function setLoadingStatus(status, text) {
 	}
 }
 
-function destroyElement(elementID, registry) {
-	// TODO remove
-}
-
-function getWidget(elementID, registry) {
-	return null; // TODO
-}
-
 var globalRenderStack = [];
 function reduceRenderStack() {
 	globalRenderStack.splice(0,1);
 	if(globalRenderStack.length <= 0) {
 		hideSplashScreen();
 	}
-}
-
-function renderElement(elementID, callback) {
-	reduceRenderStack();
-	return null; // TODO
 }
 
 function watchOnce($scope, evtType, callback, id) {
@@ -56,12 +43,9 @@ subscriptionIDs = [];
 subscriptionHandles = [];
 function AppController($scope, $http, $compile) {
 	$scope.setLoadingStatus = setLoadingStatus;
-	$scope.renderElement = renderElement;
-	$scope.destroyElement = destroyElement;
 	$scope.http = $http;
 	$scope.compile = $compile;
 	$scope.appConfig = appConfig;
-	//$scope.authInfo = null; // todo ask waldemar why we throw the authInfo away!
 
 	$scope.highlightMenuItem = function(itemId) {
 		$(".nav").find(".active").removeClass("active");

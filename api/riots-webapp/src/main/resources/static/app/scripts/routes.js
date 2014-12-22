@@ -3,7 +3,7 @@ define([], function() {
     return {
         defaultRoutePath: '/',
         defaultDependencies: [
-			appRoot + '/scripts/controllers/AppController.js'
+			//appRoot + '/scripts/controllers/AppController.js',
 		],
         routes: {
             '/': {

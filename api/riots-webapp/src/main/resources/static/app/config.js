@@ -5,10 +5,10 @@ var appConfig = {
 	appRootPath: "/app",
 	services: {
 		core: { url: "http://localhost:8080/api/v1" },
-		deviceTypes: { url: "http://localhost:8080/api/v1/catalog/thing-types" },
-		deviceTypeProps: { url: "http://localhost:8080/api/v1/device-types/properties" },
+		thingTypes: { url: "http://localhost:8080/api/v1/catalog/thing-types" },
+		thingTypeProps: { url: "http://localhost:8080/api/v1/thing-types/properties" },
 		deviceDrivers: { url: "http://localhost:8080/api/v1/drivers" },
-		devices: { url: "http://localhost:8080/api/v1/devices" },
+		things: { url: "http://localhost:8080/api/v1/things" },
 		categories: { url: "http://localhost:8080/api/v1/categories" },
 		semanticTypes: { url: "http://localhost:8080/api/v1/semantic-types" },
 		simulations: { url: "http://localhost:8080/api/v1/simulations" },

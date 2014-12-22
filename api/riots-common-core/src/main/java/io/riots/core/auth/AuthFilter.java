@@ -385,16 +385,14 @@ public class AuthFilter implements Filter, AuthenticationEntryPoint, Authenticat
     }
 
     public static synchronized User getRequestingUser(String userEmail,
-                                                      String userName, 
-//                                                      UserRepository userRepo
-  													  IUsers usersService
-  													) {
+                                   String userName, IUsers usersService) {
+
+        System.out.println("INFO: Get requesting user: " + userEmail + " - " + userName);
         if (userEmail == null) {
             return null;
         }
 		/* TODO make find/create transactionally safe */
 		/* find existing user */
-        System.out.println("INFO: Get requesting user: " + userEmail + " - " + userEmail);
         System.out.println(usersService);
         LOG.info("INFO: Get requesting user: " + userEmail + " - " + userEmail);
         User existing = usersService.findByEmail(userEmail);
