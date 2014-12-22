@@ -22,7 +22,7 @@ public class SmartLightingExample {
 	ICatalogService catalogService;
 	Simulations simService;
 
-	@Before
+/*	@Before
 	@SuppressWarnings("rawtypes")
 	public void setUp() {
 		// TODO fix
@@ -56,6 +56,6 @@ public class SmartLightingExample {
 		
 		// TODO
 
-	}
+	}*/
 
 }

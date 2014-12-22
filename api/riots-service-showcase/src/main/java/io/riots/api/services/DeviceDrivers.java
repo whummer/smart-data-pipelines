@@ -42,6 +42,9 @@ public class DeviceDrivers {
     DeviceDriverRepository driverRepo;
 
     @Autowired
+    AuthFilter authFilter;
+
+    @Autowired
     HttpServletRequest req;
 
     @GET
@@ -67,7 +70,7 @@ public class DeviceDrivers {
     @Timed
     @ExceptionMetered
     public Response retrieveForDeviceType(@PathParam("id") String itemId) {
-    	User user = AuthFilter.getRequestingUser(req);
+    	User user = authFilter.getRequestingUser(req);
         return Response.ok(driverRepo.findByThingTypeAndCreatorOrThingTypeAndCreatorIsNull(itemId, user, itemId)).build();
     }
 
@@ -85,7 +88,7 @@ public class DeviceDrivers {
     @Timed
     @ExceptionMetered
     public Response create(DeviceDriver driver) {
-    	User user = AuthFilter.getRequestingUser(req);
+    	User user = authFilter.getRequestingUser(req);
     	driver.setCreator(user);
         driver = driverRepo.save(driver);
         Response r = Response.created(UriBuilder.fromPath(

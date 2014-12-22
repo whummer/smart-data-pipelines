@@ -1,11 +1,11 @@
 package io.riots.core.service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
+import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import org.apache.cxf.jaxrs.client.JAXRSClientFactory;
+import org.apache.cxf.jaxrs.client.WebClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.netflix.appinfo.InstanceInfo;
@@ -19,6 +19,9 @@ import com.netflix.discovery.shared.Application;
  */
 @Component
 public class ServiceClientFactory {
+
+	@Autowired
+	DiscoveryClient discoveryClient;
 
 	private static final String SERVICE_USERS_EUREKA_NAME = "users-service";
 	private static final String SERVICE_USERS_ENDPOINT = "http://%s:%s/api/v1/users";
@@ -34,30 +37,36 @@ public class ServiceClientFactory {
 		serviceEndpoints.put(SERVICE_CATALOG_EUREKA_NAME, SERVICE_CATALOG_ENDPOINT);
 	}
 
-	public static IUsers getUsersServiceClient() {
+	public IUsers getUsersServiceClient() {
 		return getServiceInstanceForName(SERVICE_USERS_EUREKA_NAME, IUsers.class);
 	}
-	public static IThings getThingsServiceClient() {
+	public IThings getThingsServiceClient() {
 		return getServiceInstanceForName(SERVICE_THINGS_EUREKA_NAME, IThings.class);
 	}
-	public static ICatalogService getCatalogServiceClient() {
+	public ICatalogService getCatalogServiceClient() {
 		return getServiceInstanceForName(SERVICE_CATALOG_EUREKA_NAME, ICatalogService.class);
 	}
 
 	/* PRIVATE HELPER METHODS */
 
-	private static <T> T getServiceInstanceForName(String name, Class<T> clazz) {
+	private <T> T getServiceInstanceForName(String name, Class<T> clazz) {
 		InstanceInfo i = getService(name);
 		String addr = String.format(serviceEndpoints.get(name), i.getHostName(), i.getPort());
 		return getServiceInstanceForURL(addr, clazz);
 	}
-	private static <T> T getServiceInstanceForURL(String endpointURL, Class<T> clazz) {
+	private <T> T getServiceInstanceForURL(String endpointURL, Class<T> clazz) {
 		// TODO maybe cache rest clients for a limited amount of time
-		T service = JAXRSClientFactory.create(endpointURL, clazz);
+
+		List<Object> providers = new ArrayList<>();
+		providers.add(new JacksonJaxbJsonProvider());
+		T service = JAXRSClientFactory.create(endpointURL, clazz, providers);
+
 		return service;
 	}
-	private static InstanceInfo getService(String name) {
-		DiscoveryClient d = DiscoveryManager.getInstance().getDiscoveryClient();
+
+	private InstanceInfo getService(String name) {
+		//DiscoveryClient d = DiscoveryManager.getInstance().getDiscoveryClient();
+		DiscoveryClient d = discoveryClient;
 		System.out.println("client " + d);
 		Application app = d.getApplication(name);
 		System.out.println(app);

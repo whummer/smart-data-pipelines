@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.cxf.helpers.IOUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -50,6 +51,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 @Component
 public class AuthFilter implements Filter, AuthenticationEntryPoint, AuthenticationProvider {
+
+    @Autowired
+    ServiceClientFactory serviceClientFactory;
 
     public static final String HEADER_AUTH_NETWORK = "riots-auth-network";
     public static final String HEADER_AUTH_TOKEN = "riots-auth-token";
@@ -384,16 +388,13 @@ public class AuthFilter implements Filter, AuthenticationEntryPoint, Authenticat
         return result;
     }
 
-    public static synchronized User getRequestingUser(String userEmail,
-                                                      String userName, 
-//                                                      UserRepository userRepo
-  													  IUsers usersService
-  													) {
+    public synchronized User getRequestingUser(String userEmail, String userName) {
         if (userEmail == null) {
             return null;
         }
 		/* TODO make find/create transactionally safe */
 		/* find existing user */
+        IUsers usersService = serviceClientFactory.getUsersServiceClient();
         System.out.println("INFO: Get requesting user: " + userEmail + " - " + userEmail);
         System.out.println(usersService);
         LOG.info("INFO: Get requesting user: " + userEmail + " - " + userEmail);
@@ -409,15 +410,10 @@ public class AuthFilter implements Filter, AuthenticationEntryPoint, Authenticat
 //        return u;
     }
 
-    public static synchronized User getRequestingUser(HttpServletRequest req) {
-    	IUsers users = ServiceClientFactory.getUsersServiceClient();
-    	return getRequestingUser(req, users);
-    }
-    public static synchronized User getRequestingUser(
-    		HttpServletRequest req, IUsers usersService) {
+    public  synchronized User getRequestingUser(HttpServletRequest req) {
         String userEmail = getHeaders(req).get(HEADER_AUTH_EMAIL);
         String userName = getHeaders(req).get(HEADER_AUTH_USERNAME);
-        return getRequestingUser(userEmail, userName, usersService);
+        return getRequestingUser(userEmail, userName);
     }
 
     private List<HttpCookie> parse(String cookieString) {

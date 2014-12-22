@@ -18,10 +18,13 @@ import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -30,20 +33,26 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  * @author whummer
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { InsertDemoDataViaCatalog.TestConfiguration.class })
+@ContextConfiguration(classes = { InsertDemoDataViaCatalog.class })
+@ComponentScan(basePackages = "io.riots.core")
 @Configuration
+@EnableAutoConfiguration
+@EnableDiscoveryClient
 public class InsertDemoDataViaCatalog {
 
 	static final Logger LOG = Logger.getLogger(InsertDemoDataViaCatalog.class);
+
+    @Autowired
+    ServiceClientFactory serviceClientFactory;
+
 
 	@Bean
 	public HttpServletRequest getServletRequest() {
 		return new MockHttpServletRequest();
 	}
 
-	@EnableAutoConfiguration
-	@Configuration
-	@EnableDiscoveryClient
+
+
 	public static class TestConfiguration {
 	}
 
@@ -55,7 +64,7 @@ public class InsertDemoDataViaCatalog {
 	@Before
 	public void setup() {
 		try {
-			catalog = ServiceClientFactory.getCatalogServiceClient();
+			catalog = serviceClientFactory.getCatalogServiceClient();
 			System.out.println(catalog);
 		} catch (Exception e) {
 			e.printStackTrace();
