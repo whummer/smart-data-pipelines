@@ -39,14 +39,14 @@ define([], function() {
             '/world': {
                 templateUrl: appRoot + '/views/world.html',
                 dependencies: [
-                    appRoot + '/scripts/controllers/World3DController.js',
+                    //appRoot + '/scripts/controllers/World3DController.js',
                     appRoot + '/scripts/controllers/WorldViewController.js'
                 ]
             },
             '/world/:deviceID': {
                 templateUrl: appRoot + '/views/world_asset.html',
                 dependencies: [
-                    appRoot + '/scripts/controllers/World3DController.js',
+                    //appRoot + '/scripts/controllers/World3DController.js',
                     appRoot + '/scripts/controllers/WorldViewController.js'
                 ]
             },

@@ -5,7 +5,7 @@ define(['app'], function(app) {
 		function($scope, $http, $compile) {
 
 			AppController($scope, $http, $compile);
-			World3DController($scope, $http, $compile);
+			//World3DController($scope, $http, $compile);
 
 			$scope.highlightMenuItem("#menuItemScenario");
 

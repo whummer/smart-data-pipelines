@@ -1,17 +1,13 @@
 package io.riots.core.auth;
 
-import io.riots.core.service.IUsers;
-import io.riots.core.service.ServiceClientFactory;
+import io.riots.core.auth.AuthHeaders.AuthInfo;
 import io.riots.services.users.Role;
-import io.riots.services.users.User;
 
 import java.io.IOException;
 import java.net.HttpCookie;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,13 +29,13 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.netflix.zuul.context.RequestContext;
 
 /**
  * This filter enforces authentication and authorization.
@@ -51,11 +47,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Component
 public class AuthFilter implements Filter, AuthenticationEntryPoint, AuthenticationProvider {
 
-    public static final String HEADER_AUTH_NETWORK = "riots-auth-network";
-    public static final String HEADER_AUTH_TOKEN = "riots-auth-token";
-    public static final String HEADER_AUTH_EMAIL = "riots-auth-email";
-    public static final String HEADER_AUTH_USERNAME = "riots-auth-username";
-    public static final String HEADER_WS_PROTOCOL = "Sec-WebSocket-Protocol";
     /**
      * if auth info is encoded in Websocket header, use this delimiter
      */
@@ -95,7 +86,7 @@ public class AuthFilter implements Filter, AuthenticationEntryPoint, Authenticat
             "^/app/scripts/init\\.js$"
     );
 
-    private static final List<UserRoleMapping> userRoleMappings = new LinkedList<>();
+    private static final List<UserRoleMapping> userRoleMappings = new LinkedList<UserRoleMapping>();
 
     public static class UserRoleMapping {
         String userPattern;
@@ -116,22 +107,7 @@ public class AuthFilter implements Filter, AuthenticationEntryPoint, Authenticat
     private static final Logger LOG = Logger.getLogger(AuthFilter.class);
     private static final ObjectMapper JSON = new ObjectMapper();
 
-    public static class AuthInfo {
-        String accessToken;
-        Date expiry;
-        String userID;
-        String userName;
-        String email;
-        User user;
-        final List<String> roles = new LinkedList<>();
-        final List<GrantedAuthority> rolesAsGrantedAuthorities = new LinkedList<>();
-
-        boolean isExpired() {
-            return expiry.before(new Date());
-        }
-    }
-
-    private static final Map<String, AuthInfo> tokens = new ConcurrentHashMap<>();
+    private static final Map<String, AuthInfo> tokens = new ConcurrentHashMap<String, AuthInfo>();
     private static final long EXPIRY_PERIOD_MS = 1000 * 60 * 20; /* 20 minutes token timeout */
 
     /**
@@ -189,17 +165,16 @@ public class AuthFilter implements Filter, AuthenticationEntryPoint, Authenticat
             return true;
         }
 
-        System.out.println("DEBUG: request type: " + request.getMethod()); // TODO remove
         if (request.getMethod().equalsIgnoreCase("OPTIONS")) {
 			/* always allow OPTIONS requests */
             return true;
         }
 
-        String network = request.getHeader(HEADER_AUTH_NETWORK);
-        String token = request.getHeader(HEADER_AUTH_TOKEN);
+        String network = request.getHeader(AuthHeaders.HEADER_AUTH_NETWORK);
+        String token = request.getHeader(AuthHeaders.HEADER_AUTH_TOKEN);
         if (network == null) {
 			/* get auth info from Websocket headers (encoded in protocol string) */
-            String wsHeader = request.getHeader(HEADER_WS_PROTOCOL);
+            String wsHeader = request.getHeader(AuthHeaders.HEADER_WS_PROTOCOL);
             if (wsHeader != null) {
                 int index = wsHeader.indexOf(AUTHINFO_DELIMITER);
                 if (index >= 0) {
@@ -209,7 +184,8 @@ public class AuthFilter implements Filter, AuthenticationEntryPoint, Authenticat
                     }
                 }
 				/* acknowledge the protocol in response headers */
-                response.setHeader(HEADER_WS_PROTOCOL, request.getHeader(HEADER_WS_PROTOCOL));
+                response.setHeader(AuthHeaders.HEADER_WS_PROTOCOL, 
+                		request.getHeader(AuthHeaders.HEADER_WS_PROTOCOL));
             }
         }
 
@@ -217,10 +193,10 @@ public class AuthFilter implements Filter, AuthenticationEntryPoint, Authenticat
         if (!isEmpty(cookie)) {
             List<HttpCookie> cookies = parse(cookie);
             for (HttpCookie c : cookies) {
-                if (c.getName().equals(HEADER_AUTH_NETWORK) && network == null) {
+                if (c.getName().equals(AuthHeaders.HEADER_AUTH_NETWORK) && network == null) {
                     network = c.getValue();
                 }
-                if (c.getName().equals(HEADER_AUTH_TOKEN) && token == null) {
+                if (c.getName().equals(AuthHeaders.HEADER_AUTH_TOKEN) && token == null) {
                     token = c.getValue();
                 }
             }
@@ -353,8 +329,18 @@ public class AuthFilter implements Filter, AuthenticationEntryPoint, Authenticat
             AuthInfo authInfo = tokens.get(token);
 
 			/* append additional infos to request */
-            request.setAttribute(HEADER_AUTH_EMAIL, authInfo.email);
-            request.setAttribute(HEADER_AUTH_USERNAME, authInfo.userName);
+            System.out.println("Adding headers to request: " + " - " +
+            		authInfo.email + " - " + authInfo + " - " + request);
+            request.setAttribute(AuthHeaders.HEADER_AUTH_EMAIL, authInfo.email);
+            request.setAttribute(AuthHeaders.HEADER_AUTH_USERNAME, authInfo.userName);
+
+            /* append headers to zuul request */
+            RequestContext context = RequestContext.getCurrentContext();
+    		if(context != null) {
+    			context.getZuulRequestHeaders().put(AuthHeaders.HEADER_AUTH_EMAIL, authInfo.email);
+    			context.getZuulRequestHeaders().put(AuthHeaders.HEADER_AUTH_USERNAME, authInfo.userName);
+    			//System.out.println(context.getZuulRequestHeaders());
+    		}
 
 			/* set the Spring security context */
             UsernamePasswordAuthenticationToken springSecToken =
@@ -363,59 +349,8 @@ public class AuthFilter implements Filter, AuthenticationEntryPoint, Authenticat
             springSecToken.setDetails(authInfo);
             SecurityContextHolder.getContext().setAuthentication(springSecToken);
         }
-		/* all tests passed, return success */
+		/* all checks passed, return success */
         return true;
-    }
-
-    public static Map<String, String> getHeaders(HttpServletRequest req) {
-        Map<String, String> result = new HashMap<>();
-        if (req != null) {
-            Enumeration<String> keys = req.getHeaderNames();
-            while (keys.hasMoreElements()) {
-                String key = keys.nextElement();
-                result.put(key, req.getHeader(key));
-            }
-            keys = req.getAttributeNames();
-            while (keys.hasMoreElements()) {
-                String key = keys.nextElement();
-                result.put(key, "" + req.getAttribute(key));
-            }
-        }
-        return result;
-    }
-
-    public static synchronized User getRequestingUser(String userEmail,
-                                   String userName, IUsers usersService) {
-
-        System.out.println("INFO: Get requesting user: " + userEmail + " - " + userName);
-        if (userEmail == null) {
-            return null;
-        }
-		/* TODO make find/create transactionally safe */
-		/* find existing user */
-        System.out.println(usersService);
-        LOG.info("INFO: Get requesting user: " + userEmail + " - " + userEmail);
-        User existing = usersService.findByEmail(userEmail);
-//        if (existing != null) {
-            return existing;
-//        }
-//		/* create new user */
-//        User u = new User();
-//        u.setEmail(userEmail);
-//        u.setName(userName);
-//        u = usersService.save(u);
-//        return u;
-    }
-
-    public static synchronized User getRequestingUser(HttpServletRequest req) {
-    	IUsers users = ServiceClientFactory.getUsersServiceClient();
-    	return getRequestingUser(req, users);
-    }
-    public static synchronized User getRequestingUser(
-    		HttpServletRequest req, IUsers usersService) {
-        String userEmail = getHeaders(req).get(HEADER_AUTH_EMAIL);
-        String userName = getHeaders(req).get(HEADER_AUTH_USERNAME);
-        return getRequestingUser(userEmail, userName, usersService);
     }
 
     private List<HttpCookie> parse(String cookieString) {
@@ -443,7 +378,7 @@ public class AuthFilter implements Filter, AuthenticationEntryPoint, Authenticat
             return;
         }
         synchronized (tokens) {
-            for (String id : new HashSet<>(tokens.keySet())) {
+            for (String id : new HashSet<String>(tokens.keySet())) {
                 AuthInfo token = tokens.get(id);
                 if (token.expiry.before(new Date())) {
                     tokens.remove(id);
@@ -479,4 +414,5 @@ public class AuthFilter implements Filter, AuthenticationEntryPoint, Authenticat
 
     public void destroy() {
     }
+
 }

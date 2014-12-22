@@ -1,6 +1,6 @@
 package io.riots.api.services;
 
-import io.riots.core.auth.AuthFilter;
+import io.riots.core.auth.AuthHeaders;
 import io.riots.core.model.driver.DeviceDriver;
 import io.riots.core.repositories.DeviceDriverRepository;
 import io.riots.services.users.User;
@@ -67,7 +67,7 @@ public class DeviceDrivers {
     @Timed
     @ExceptionMetered
     public Response retrieveForDeviceType(@PathParam("id") String itemId) {
-    	User user = AuthFilter.getRequestingUser(req);
+    	User user = AuthHeaders.getRequestingUser(req);
         return Response.ok(driverRepo.findByThingTypeAndCreatorOrThingTypeAndCreatorIsNull(itemId, user, itemId)).build();
     }
 
@@ -85,7 +85,7 @@ public class DeviceDrivers {
     @Timed
     @ExceptionMetered
     public Response create(DeviceDriver driver) {
-    	User user = AuthFilter.getRequestingUser(req);
+    	User user = AuthHeaders.getRequestingUser(req);
     	driver.setCreator(user);
         driver = driverRepo.save(driver);
         Response r = Response.created(UriBuilder.fromPath(

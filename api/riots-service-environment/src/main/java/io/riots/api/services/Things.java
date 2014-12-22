@@ -3,7 +3,7 @@ package io.riots.api.services;
 import io.riots.api.handlers.command.ThingCommand;
 import io.riots.api.handlers.query.Paged;
 import io.riots.api.handlers.query.ThingQuery;
-import io.riots.core.auth.AuthFilter;
+import io.riots.core.auth.AuthHeaders;
 import io.riots.core.service.IThings;
 import io.riots.model.ThingMongo;
 import io.riots.services.scenario.Thing;
@@ -57,7 +57,7 @@ public class Things implements IThings {
 
     @Override
     public Thing create(Thing thing) {
-    	thing.setCreatorId(AuthFilter.getRequestingUser(req).getId());
+    	thing.setCreatorId(AuthHeaders.getRequestingUser(req).getId());
     	ThingMongo m = ThingMongo.convert(thing);
         thing = thingCommand.create(m);
         URI location = UriBuilder.fromPath("/things/{id}").build(thing.getId());
