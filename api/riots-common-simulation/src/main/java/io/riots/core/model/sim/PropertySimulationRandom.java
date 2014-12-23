@@ -26,10 +26,10 @@ public class PropertySimulationRandom extends PropertySimulation<Double> {
 	Random rand = new Random();
 
 	@Override
-	public PropertyValue<Double> getValueAt(Time atTime, Context t) {
+	public PropertyValue getValueAt(Time atTime, Context t) {
 		double val = minValue + (rand.nextDouble() * (maxValue - minValue));
 		//System.out.println("random value: [" + minValue  + "," + maxValue + "]: " + val);
-		return new PropertyValue<>(val);
+		return new PropertyValue(val);
 	}
 
 	public double getMinValue() {

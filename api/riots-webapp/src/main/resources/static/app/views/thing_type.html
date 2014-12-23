@@ -2,19 +2,19 @@
     <div class="container">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h2 class="panel-title"><span class="glyphicon glyphicon-edit"></span> <b>{{shared.selectedDeviceType.name}}</b></h2>
+                <h2 class="panel-title"><span class="glyphicon glyphicon-edit"></span> <b>{{shared.selectedThingType.name}}</b></h2>
             </div>
             <div class="panel-body">
-                <section ng-controller="DeviceTypeController" id="devTypeSection" >
+                <section ng-controller="ThingTypeController" id="devTypeSection" >
                     <tabset>
                         <tab heading="General Properties">
-                            <ng-include src="appConfig['appRootPath'] + '/views/device_type_details.html'"></ng-include>
+                            <ng-include src="appConfig['appRootPath'] + '/views/thing_type_details.html'"></ng-include>
                         </tab>
                         <tab heading="Virtualizable Properties">
-                            <ng-include src="appConfig['appRootPath'] + '/views/device_type_props.html'"></ng-include>
+                            <ng-include src="appConfig['appRootPath'] + '/views/thing_type_props.html'"></ng-include>
                         </tab>
-                        <tab heading="Device Drivers">
-                            <ng-include src="appConfig['appRootPath'] + '/views/device_type_drivers.html'"></ng-include>
+                        <tab heading="Thing Drivers">
+                            <ng-include src="appConfig['appRootPath'] + '/views/thing_type_drivers.html'"></ng-include>
                         </tab>
                     </tabset>
                 </section>
@@ -26,14 +26,14 @@
 <script type="text/javascript">
 
     var app = angular.module("app");
-    app.controller('DeviceTypeController', [
+    app.controller('ThingTypeController', [
         '$scope', '$http', '$compile', '$routeParams',
         function ($scope, $http, $compile, $routeParams) {
             AppController($scope, $http, $compile);
-            if ($routeParams.deviceTypeID) {
-                invokeGET($scope.http, $scope.deviceTypesAPI + "/" + $routeParams.deviceTypeID,
+            if ($routeParams.thingTypeID) {
+                invokeGET($scope.http, $scope.thingTypesAPI + "/" + $routeParams.thingTypeID,
                         function (data, status, headers, config) {
-                            $scope.shared.selectedDeviceType = data.result;
+                            $scope.shared.selectedThingType = data.result;
                         }
                 );
             }

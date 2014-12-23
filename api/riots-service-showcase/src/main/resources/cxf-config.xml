@@ -45,9 +45,4 @@
         <property name="scan" value="true"/>
     </bean>
 
-	<!-- Websocket support -->
-<!-- 	<websocket:handlers> -->
-<!--         <websocket:mapping path="/websocket" handler="websocketHandler"/> -->
-<!--     </websocket:handlers> -->
-
 </beans>

@@ -1,17 +1,17 @@
-<section ng-controller="DeviceDriverController" id="deviceDriverSection" style="height: 100%">
+<section ng-controller="ThingDriverController" id="thingDriverSection" style="height: 100%">
 
-    <div ng-show="shared.selectedDeviceType">
+    <div ng-show="shared.selectedThingType">
 
         <div style="margin-bottom: 10px;" class="text-right">
-            <button class="btn btn-primary btn-sm" id="btnDeviceDriverAdd">
-                <span class="glyphicon glyphicon-plus"></span> Add Device Driver
+            <button class="btn btn-primary btn-sm" id="btnThingDriverAdd">
+                <span class="glyphicon glyphicon-plus"></span> Add Thing Driver
             </button>
-            <button class="btn btn-warning btn-sm" id="btnDeviceDriverDelete" disabled="disabled"><span
-                    class="glyphicon glyphicon-minus"></span> Delete Device Driver
+            <button class="btn btn-warning btn-sm" id="btnThingDriverDelete" disabled="disabled"><span
+                    class="glyphicon glyphicon-minus"></span> Delete Thing Driver
             </button>
         </div>
 
-        <div id="DeviceDriversTable" ui-grid="gridConfig" ui-grid-selection ui-grid-edit ui-grid-row-edit
+        <div id="ThingDriversTable" ui-grid="gridConfig" ui-grid-selection ui-grid-edit ui-grid-row-edit
              class="grid"></div>
 
         <div ng-show="selectedDriver">
@@ -91,7 +91,7 @@
 
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10 text-right">
-                        <button class="btn btn-default btn-sm btn-primary" id="btnDeviceDriverSave"><span
+                        <button class="btn btn-default btn-sm btn-primary" id="btnThingDriverSave"><span
                                 class="glyphicon glyphicon-ok"></span> Save Changes
                         </button>
                         <a href="#/catalog" class="btn btn-default btn-sm btn-info"><span
@@ -106,7 +106,7 @@
 </section>
 
 <style>
-    #DeviceDriversTable {
+    #ThingDriversTable {
         height: 200px;
     }
 </style>
@@ -114,7 +114,7 @@
 <script type="text/javascript">
 
     var app = angular.module("app");
-    app.controller('DeviceDriverController', [
+    app.controller('ThingDriverController', [
         '$scope', '$http', '$compile',
         function ($scope, $http, $compile) {
 
@@ -130,7 +130,7 @@
                     {label: "Language", field: "driverLanguage"}
                 ];
                 $scope.gridConfig.data = [];
-                renderUITable($scope.gridConfig, "DeviceDriversTable", columnsConfig,
+                renderUITable($scope.gridConfig, "ThingDriversTable", columnsConfig,
                         function (event) {
                             if (event.type == "dgrid-select") {
                                 $scope.$apply(function () {
@@ -142,30 +142,30 @@
                                 });
                             }
                             /* adjust UI elements */
-                            $("#btnDeviceDriverDelete").attr("disabled", !$scope.selectedDriver);
+                            $("#btnThingDriverDelete").attr("disabled", !$scope.selectedDriver);
                         }
                 );
             }
 
             $scope.initDriversTable();
 
-            $scope.loadDriversTable = function (deviceType) {
-                if (!deviceType)
-                    deviceType = $scope.shared.selectedDeviceType;
-                if (!deviceType)
+            $scope.loadDriversTable = function (thingType) {
+                if (!thingType)
+                    thingType = $scope.shared.selectedThingType;
+                if (!thingType)
                     return;
-                if (deviceType.drivers) {
-                    $scope.buildDriversTable(deviceType.drivers);
+                if (thingType.drivers) {
+                    $scope.buildDriversTable(thingType.drivers);
                     return;
                 }
 
-                var url = $scope.driversAPI + "/forDeviceType/" + deviceType.id;
+                var url = $scope.driversAPI + "/forThingType/" + thingType.id;
                 //console.log("url", url);
                 invokeGET($scope.http, url,
                         function (data, status, headers, config) {
-                            deviceType.drivers = data.result;
-                            //console.log("deviceType.drivers", deviceType.drivers);
-                            $scope.buildDriversTable(deviceType.drivers);
+                            thingType.drivers = data.result;
+                            //console.log("thingType.drivers", thingType.drivers);
+                            $scope.buildDriversTable(thingType.drivers);
                         }
                 );
             }
@@ -174,39 +174,39 @@
                 $scope.gridConfig.data = drivers;
             };
 
-            $scope.deleteDeviceDriver = function () {
+            $scope.deleteThingDriver = function () {
                 var selection = $scope.selectedDriver;
                 if (!selection) return;
-                arrayRemove($scope.shared.selectedDeviceType.drivers, selection);
+                arrayRemove($scope.shared.selectedThingType.drivers, selection);
                 invokeDELETE($scope.http, $scope.driversAPI + "/" + selection.id,
                         function (data, status, headers, config) {
                             $scope.selectedDriver = null;
-                            delete $scope.shared.selectedDeviceType.drivers;
+                            delete $scope.shared.selectedThingType.drivers;
                             $scope.loadDriversTable();
                         }
                 );
             }
-            $scope.addDeviceDriver = function () {
-                if (!$scope.shared.selectedDeviceType) {
+            $scope.addThingDriver = function () {
+                if (!$scope.shared.selectedThingType) {
                     return;
                 }
                 var newDriver = {
                     name: "unnamed",
                     connector: "GENERIC",
-                    deviceType: {
-                        id: $scope.shared.selectedDeviceType.id
+                    thingType: {
+                        id: $scope.shared.selectedThingType.id
                     }
                 }
                 invokePOST($scope.http, $scope.driversAPI,
                         JSON.stringify(newDriver),
                         function (data, status, headers, config) {
-                            delete $scope.shared.selectedDeviceType.drivers;
+                            delete $scope.shared.selectedThingType.drivers;
                             $scope.selectedDriver = null;
                             $scope.loadDriversTable();
                         }
                 );
             }
-            $scope.saveDeviceDriver = function (item) {
+            $scope.saveThingDriver = function (item) {
                 if (!item) {
                     item = $scope.selectedDriver;
                 }
@@ -223,15 +223,15 @@
             }
 
             /* register event handlers*/
-            $scope.addClickHandler("btnDeviceDriverAdd", $scope.addDeviceDriver);
-            $scope.addClickHandler("btnDeviceDriverDelete", $scope.deleteDeviceDriver);
-            $scope.addClickHandler("btnDeviceDriverSave", function () {
-                $scope.saveDeviceDriver($scope.selectedDriver);
+            $scope.addClickHandler("btnThingDriverAdd", $scope.addThingDriver);
+            $scope.addClickHandler("btnThingDriverDelete", $scope.deleteThingDriver);
+            $scope.addClickHandler("btnThingDriverSave", function () {
+                $scope.saveThingDriver($scope.selectedDriver);
             });
-            $scope.$watch("shared.selectedDeviceType", function (devType) {
-                $scope.loadDriversTable($scope.shared.selectedDeviceType);
+            $scope.$watch("shared.selectedThingType", function (devType) {
+                $scope.loadDriversTable($scope.shared.selectedThingType);
             });
-            $scope.onRenderElement("btnDeviceDriverDelete", function (el) {
+            $scope.onRenderElement("btnThingDriverDelete", function (el) {
                 el.attr("disabled", true);
             });
 

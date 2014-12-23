@@ -24,7 +24,6 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -45,13 +44,17 @@ public class InsertDemoDataViaCatalog {
     @Autowired
     ServiceClientFactory serviceClientFactory;
 
+    static {
+    	String prop = "eureka.client.serviceUrl.defaultZone";
+    	if(System.getProperty(prop) == null) {
+    		System.setProperty(prop, "http://localhost:10000/eureka/v2/");
+    	}
+    }
 
 	@Bean
 	public HttpServletRequest getServletRequest() {
 		return new MockHttpServletRequest();
 	}
-
-
 
 	public static class TestConfiguration {
 	}

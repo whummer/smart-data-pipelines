@@ -31,6 +31,18 @@ import com.wordnik.swagger.annotations.ApiResponses;
 public interface IThingData {
 
 	@GET
+    @Path("/data/{propertyValueID}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Retrieve a single thing property value",
+            notes = "Retrieve a given thing property value by ID",
+            response = PropertyValue.class)
+    @ApiResponses(value = {@ApiResponse(code = 404, message = "No data value with given ID found")})
+    @Timed
+    @ExceptionMetered
+    public PropertyValue retrieveSinglePropertyValue(
+    		@PathParam("propertyValueID") String propValueId);
+
+	@GET
     @Path("/{thingID}/{propertyName}")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Retrieve thing property value",
@@ -39,7 +51,7 @@ public interface IThingData {
     @ApiResponses(value = {@ApiResponse(code = 404, message = "No thing with given ID found")})
     @Timed
     @ExceptionMetered
-    public PropertyValue<?> retrieve(
+    public PropertyValue retrieve(
     		@PathParam("thingID") String thingId,
     		@PathParam("propertyName") String propertyName);
 
@@ -52,7 +64,7 @@ public interface IThingData {
     @ApiResponses(value = {@ApiResponse(code = 404, message = "No thing with given ID found")})
     @Timed
     @ExceptionMetered
-    public List<PropertyValue<?>> retrieve(
+    public List<PropertyValue> retrieve(
     		@PathParam("thingID") String thingId,
     		@PathParam("propertyName") String propertyName,
     		@QueryParam("amount") int amount);
@@ -71,6 +83,6 @@ public interface IThingData {
     @SuppressWarnings("all")
 	public void postValue(@PathParam("thingID") String thingId,
     		@PathParam("propertyName") String propertyName, 
-    		PropertyValue<?> propValue);
+    		PropertyValue propValue);
 
 }

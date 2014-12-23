@@ -16,7 +16,7 @@ public class TestPropertySimulation {
 				"sin(x)", 0.1);
 		Context ctx = new Context();
 
-		TimelineValues<PropertyValue<Double>> vals = 
+		TimelineValues<PropertyValue> vals = 
 				f.getValues(new Time(0), new Time(10), ctx);
 
 		System.out.println(vals);

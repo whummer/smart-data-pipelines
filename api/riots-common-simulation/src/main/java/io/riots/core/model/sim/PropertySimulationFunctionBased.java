@@ -29,14 +29,14 @@ public class PropertySimulationFunctionBased extends PropertySimulation<Double> 
 	}
 
 	@Override
-	public PropertyValue<Double> getValueAt(Time atTime, Context ctx) {
+	public PropertyValue getValueAt(Time atTime, Context ctx) {
 		JEP parser = getParser();
 		double t = atTime.getTime();
 		parser.addVariable("x", t);
 		parser.parseExpression(function);
 		double val = parser.getValue();
 		// System.out.println("f(x)=" + function + "; f(" + t + ")=" + val);
-		return new PropertyValue<>(val);
+		return new PropertyValue(val);
 	}
 
 	public String getFunction() {

@@ -18,11 +18,11 @@ public class PropertyValueQuery {
     @Autowired
     PropertyValueRepository repository;
 
-    public PropertyValue<?> single(String id) {
+    public PropertyValue single(String id) {
         return repository.findOne(id);
     }
 
-    public List<PropertyValue<?>> query(Paged paged) {
+    public List<PropertyValue> query(Paged paged) {
         return repository.findAll(new PageRequest(
         		paged.getPage(), paged.getSize())).getContent();
     }

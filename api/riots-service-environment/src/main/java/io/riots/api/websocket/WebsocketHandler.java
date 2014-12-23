@@ -38,7 +38,7 @@ public class WebsocketHandler extends TextWebSocketHandler {
 		String thingId;
 		String propertyName;
 		
-		boolean matches(PropertyValue<?> val) {
+		boolean matches(PropertyValue val) {
 			return thingId.equals(val.getThingId()) && 
 					propertyName.equals(val.getPropertyName());
 		}
@@ -63,7 +63,7 @@ public class WebsocketHandler extends TextWebSocketHandler {
 		System.out.println("data: " + data);
 		for (Subscription s : subscriptions) {
 			try {
-				PropertyValue<?> obj = JSONUtil.fromJSON(data, PropertyValue.class);
+				PropertyValue obj = JSONUtil.fromJSON(data, PropertyValue.class);
 				if(s.matches(obj)) {
 					s.session.sendMessage(new TextMessage(data));
 				}
@@ -102,9 +102,9 @@ public class WebsocketHandler extends TextWebSocketHandler {
 					try {
 						Property p = new Property();
 						p.setName(propertyName);
-						PropertyValue<Double> v = new PropertyValue<>(
-								p, Math.random());
+						PropertyValue v = new PropertyValue(p, Math.random());
 						v.setThingId(thingId);
+						v.setPropertyName(propertyName);
 						v.setTimestamp(System.currentTimeMillis());
 						EventBroker.sendMessage(EventBroker.MQ_PROP_SIM_UPDATE, template, v);
 						try {

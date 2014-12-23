@@ -29,7 +29,7 @@ public class ServiceClientFactory {
 	private static final String SERVICE_USERS_ENDPOINT = "http://%s:%s/api/v1/users";
 	private static final String SERVICE_CATALOG_EUREKA_NAME = "catalog-service";
 	private static final String SERVICE_CATALOG_ENDPOINT = "http://%s:%s/api/v1/catalog/thing-types";
-	private static final String SERVICE_THINGS_EUREKA_NAME = "things-service";
+	private static final String SERVICE_THINGS_EUREKA_NAME = "environment-service";
 	private static final String SERVICE_THINGS_ENDPOINT = "http://%s:%s/api/v1/things";
 	private static final Map<String,String> serviceEndpoints = new HashMap<String,String>();
 

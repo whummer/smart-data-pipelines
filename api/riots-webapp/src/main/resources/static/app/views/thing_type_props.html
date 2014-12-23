@@ -1,18 +1,18 @@
-<section ng-controller="DeviceTypePropsController" id="devicePropsSection" style="height: 100%">
+<section ng-controller="ThingTypePropsController" id="thingPropsSection" style="height: 100%">
 
-    <div ng-show="shared.selectedDeviceType">
+    <div ng-show="shared.selectedThingType">
 
         <div style="margin-bottom: 10px;" class="text-right">
-            <button class="btn btn-primary btn-sm" id="btnDeviceTypePropAdd">
+            <button class="btn btn-primary btn-sm" id="btnThingTypePropAdd">
                 <span class="glyphicon glyphicon-plus"></span> Add New Property
             </button>
-            <button class="btn btn-warning btn-sm" id="btnDeviceTypePropDelete"><span
+            <button class="btn btn-warning btn-sm" id="btnThingTypePropDelete"><span
                     class="glyphicon glyphicon-minus"></span> Delete Property
             </button>
         </div>
 
-        <!-- table view for device properties -->
-        <div id="DeviceTypePropsTable" ui-grid="gridConfig" ui-grid-selection ui-grid-edit ui-grid-row-edit
+        <!-- table view for thing properties -->
+        <div id="ThingTypePropsTable" ui-grid="gridConfig" ui-grid-selection ui-grid-edit ui-grid-row-edit
              class="grid"></div>
 
         <div ng-show="selectedProperty">
@@ -98,7 +98,7 @@
                                             </tr>
                                         </table>
                                         <button class="btn btn-default btn-sm" data-dojo-props="iconClass:'icon-plus-sign'"
-                                                id="btnDeviceTypePropAddValue">Add Value
+                                                id="btnThingTypePropAddValue">Add Value
                                         </button>
                                     </td>
                                 </tr>
@@ -125,7 +125,7 @@
 
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10 text-right">
-                        <button class="btn btn-default btn-sm btn-primary" id="btnDeviceTypePropSave"><span class="glyphicon glyphicon-ok"></span> Save Changes
+                        <button class="btn btn-default btn-sm btn-primary" id="btnThingTypePropSave"><span class="glyphicon glyphicon-ok"></span> Save Changes
                         </button>
                         <a href="#/catalog" class="btn btn-default btn-sm btn-info"><span class="glyphicon glyphicon-remove"></span> Cancel</a>
                     </div>
@@ -194,7 +194,7 @@
                             </tr>
                         </table>
                         <button class="btn btn-default btn-sm" data-dojo-props="iconClass:'icon-plus-sign'"
-                                id="btnDeviceTypePropAddValue">Add Value
+                                id="btnThingTypePropAddValue">Add Value
                         </button>
                     </td>
                 </tr>
@@ -218,7 +218,7 @@
                     <td></td>
                     <td>
                         <button class="btn btn-default btn-sm btn-primary" data-dojo-props="iconClass:'icon-save'"
-                                id="btnDeviceTypePropSave">Save Changes
+                                id="btnThingTypePropSave">Save Changes
                         </button>
                     </td>
                 </tr>
@@ -231,7 +231,7 @@
 </section>
 
 <style>
-    #DeviceTypePropsTable {
+    #ThingTypePropsTable {
         height: 200px;
         width: 99%;
     }
@@ -240,7 +240,7 @@
 <script type="text/javascript">
 
     var app = angular.module("app");
-    app.controller('DeviceTypePropsController', [
+    app.controller('ThingTypePropsController', [
         '$scope', '$http', '$compile',
         function ($scope, $http, $compile) {
 
@@ -256,7 +256,7 @@
                     {label: "Value Domain Type", field: "valueDomain.type"}
                 ];
                 $scope.gridConfig.data = [{name: 1}];
-                renderUITable($scope.gridConfig, "DeviceTypePropsTable", columnsConfig,
+                renderUITable($scope.gridConfig, "ThingTypePropsTable", columnsConfig,
                         function (event) {
                             if (event.type == "dgrid-select") {
                                 $scope.$apply(function () {
@@ -264,18 +264,18 @@
                                 });
 
                                 $scope.buildParentPropsSelect();
-                                eventBus.publish("select.DeviceTypeProps", $scope.selectedProperty);
+                                eventBus.publish("select.ThingTypeProps", $scope.selectedProperty);
                             } else if (event.type == "dgrid-deselect") {
                                 $scope.$apply(function () {
                                     $scope.selectedProperty = null;
                                 });
-                                eventBus.publish("select.DeviceTypeProps", $scope.selectedProperty);
+                                eventBus.publish("select.ThingTypeProps", $scope.selectedProperty);
                             } else if (event.type == "dgrid-datachange") {
                                 var data = event.grid.row(event).data;
                                 data[event.cell.column.field] = event.value;
-                                $scope.prepareModelValues($scope.shared.selectedDeviceType);
+                                $scope.prepareModelValues($scope.shared.selectedThingType);
 
-                                $scope.saveDeviceTypeProp(data);
+                                $scope.saveThingTypeProp(data);
                             }
 
                             /* adjust UI elements */
@@ -285,11 +285,11 @@
             }
             $scope.initPropsTable();
 
-            $scope.buildPropsTable = function (deviceType) {
-                $.each(deviceType.deviceProperties, function (idx, el) {
-                    expandChildProps(el, null, deviceType.deviceProperties);
+            $scope.buildPropsTable = function (thingType) {
+                $.each(thingType.thingProperties, function (idx, el) {
+                    expandChildProps(el, null, thingType.thingProperties);
                 });
-                $scope.gridConfig.data = deviceType.deviceProperties;
+                $scope.gridConfig.data = thingType.thingProperties;
             };
             var expandChildProps = function (prop, parent, propsList) {
                 prop.displayName = (parent ? (parent.displayName + ".") : "") + prop.name;
@@ -304,13 +304,13 @@
                 prop.children = [];
             };
 
-            $scope.buildParentPropsSelect = function (deviceType) {
-                if (!deviceType) {
-                    deviceType = $scope.shared.selectedDeviceType;
+            $scope.buildParentPropsSelect = function (thingType) {
+                if (!thingType) {
+                    thingType = $scope.shared.selectedThingType;
                 }
                 var propsList = [];
                 propsList.push({id: -1, name: "ROOT"});
-                $.each(deviceType.deviceProperties, function (idx, el) {
+                $.each(thingType.thingProperties, function (idx, el) {
                     if (el.baseType == "LIST") {
                         propsList.push({id: el.id, name: el.name});
                     }
@@ -321,7 +321,7 @@
             $scope.buildSemanticTypesSelect = function () {
                 //console.log("semanticPropertyTypes0", $scope.shared.semanticPropertyTypes);
                 if (!$scope.shared.semanticPropertyTypes) {
-                    var url = $scope.deviceTypePropsAPI + "/semantic-types";
+                    var url = $scope.thingTypePropsAPI + "/semantic-types";
                     invokeGET($scope.http, url,
                             function (data, status, headers, config) {
                                 $scope.shared.semanticPropertyTypes = data.result;
@@ -338,17 +338,17 @@
                 eventBus.publish("change.SelectedProperty");
             };
 
-            $scope.deleteDeviceTypeProp = function () {
+            $scope.deleteThingTypeProp = function () {
                 var selection = $scope.selectedProperty;
                 if (!selection) return;
 
-                arrayRemove($scope.shared.selectedDeviceType.deviceProperties, selection);
+                arrayRemove($scope.shared.selectedThingType.thingProperties, selection);
 
-                var url = $scope.deviceTypesAPI + "/" + $scope.shared.selectedDeviceType.id + "/properties/" + selection.id;
+                var url = $scope.thingTypesAPI + "/" + $scope.shared.selectedThingType.id + "/properties/" + selection.id;
                 invokeDELETE($scope.http, url,
                         function (data, status, headers, config) {
-                            $scope.buildPropsTable($scope.shared.selectedDeviceType);
-                            $scope.buildParentPropsSelect($scope.shared.selectedDeviceType);
+                            $scope.buildPropsTable($scope.shared.selectedThingType);
+                            $scope.buildParentPropsSelect($scope.shared.selectedThingType);
 
                             eventBus.publish("change.SelectedProperty");
                         }
@@ -356,8 +356,8 @@
                 $scope.unselectProperty();
             };
 
-            $scope.addDeviceTypeProp = function () {
-                if (!$scope.shared.selectedDeviceType) {
+            $scope.addThingTypeProp = function () {
+                if (!$scope.shared.selectedThingType) {
                     return;
                 }
 
@@ -366,33 +366,33 @@
                     "baseType": "STRING"
                 };
 
-                var url = $scope.deviceTypesAPI + "/" +$scope.shared.selectedDeviceType.id + "/properties";
+                var url = $scope.thingTypesAPI + "/" +$scope.shared.selectedThingType.id + "/properties";
                 invokePOST($scope.http, url, JSON.stringify(newProp),function (data, status, headers, config) {
-                            var newEvent = {changedItem: $scope.shared.selectedDeviceType}
-                            eventBus.publish("reload.DeviceTypeProps", newEvent);
-                            $scope.shared.selectedDeviceType = null;
-                            //$scope.buildPropsTable($scope.shared.selectedDeviceType);
-                            //$scope.buildParentPropsSelect($scope.shared.selectedDeviceType);
+                            var newEvent = {changedItem: $scope.shared.selectedThingType}
+                            eventBus.publish("reload.ThingTypeProps", newEvent);
+                            $scope.shared.selectedThingType = null;
+                            //$scope.buildPropsTable($scope.shared.selectedThingType);
+                            //$scope.buildParentPropsSelect($scope.shared.selectedThingType);
                         }
                 );
 
                 $scope.unselectProperty();
             };
 
-            $scope.saveDeviceTypeProp = function (devTypeProp) {
+            $scope.saveThingTypeProp = function (devTypeProp) {
                 if (!devTypeProp) {
                     devTypeProp = $scope.selectedProperty;
                 }
                 //console.log("before prepare", devTypeProp);
-                $scope.prepareModelValues($scope.shared.selectedDeviceType);
-                invokePUT($scope.http, $scope.deviceTypePropsAPI,
+                $scope.prepareModelValues($scope.shared.selectedThingType);
+                invokePUT($scope.http, $scope.thingTypePropsAPI,
                         JSON.stringify(devTypeProp),
                         function (data, status, headers, config) {
-                            $scope.buildPropsTable($scope.shared.selectedDeviceType);
-                            $scope.buildParentPropsSelect($scope.shared.selectedDeviceType);
-                            var event = {changedItem: $scope.shared.selectedDeviceType}
-                            //console.log("change.DeviceTypeProps", event);
-                            eventBus.publish("change.DeviceTypeProps", event);
+                            $scope.buildPropsTable($scope.shared.selectedThingType);
+                            $scope.buildParentPropsSelect($scope.shared.selectedThingType);
+                            var event = {changedItem: $scope.shared.selectedThingType}
+                            //console.log("change.ThingTypeProps", event);
+                            eventBus.publish("change.ThingTypeProps", event);
                         }
                 );
 
@@ -408,12 +408,12 @@
             };
 
             /* register event handlers*/
-            $scope.addClickHandler("btnDeviceTypePropAdd", $scope.addDeviceTypeProp);
-            $scope.addClickHandler("btnDeviceTypePropDelete", $scope.deleteDeviceTypeProp);
-            $scope.addClickHandler("btnDeviceTypePropSave", function () {
-                $scope.saveDeviceTypeProp($scope.selectedProperty);
+            $scope.addClickHandler("btnThingTypePropAdd", $scope.addThingTypeProp);
+            $scope.addClickHandler("btnThingTypePropDelete", $scope.deleteThingTypeProp);
+            $scope.addClickHandler("btnThingTypePropSave", function () {
+                $scope.saveThingTypeProp($scope.selectedProperty);
             });
-            $scope.addClickHandler("btnDeviceTypePropAddValue", $scope.addPropDomainValue);
+            $scope.addClickHandler("btnThingTypePropAddValue", $scope.addPropDomainValue);
             $scope.buildSemanticTypesSelect();
             $scope.onRenderElement("selDomainType", function (el) {
                 el.on("change", function (newValue) {
@@ -427,13 +427,13 @@
 
             $scope.subscribeOnce("change.SelectedProperty", function (event) {
                         /* adjust UI elements */
-                        $("#btnDeviceTypePropDelete").attr("disabled",
+                        $("#btnThingTypePropDelete").attr("disabled",
                                 $scope.selectedProperty == null);
                     }, "propSelectChangeListener"
             );
 
-            $scope.$watch("shared.selectedDeviceType", function () {
-                var devType = $scope.shared.selectedDeviceType;
+            $scope.$watch("shared.selectedThingType", function () {
+                var devType = $scope.shared.selectedThingType;
                 if (!devType) {
                     $scope.selectedProperty = null;
                 } else {

@@ -2,6 +2,7 @@ package io.riots.api.services;
 
 import io.riots.api.services.jms.EventBroker;
 import io.riots.api.util.JSONUtil;
+import io.riots.api.util.ServiceUtil;
 import io.riots.core.repositories.PropertyValueRepository;
 import io.riots.core.service.ICatalogService;
 import io.riots.core.service.IThingData;
@@ -13,14 +14,15 @@ import io.riots.services.scenario.PropertyValue;
 import io.riots.services.scenario.Thing;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 
 import javax.jms.JMSException;
 import javax.jms.TextMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Path;
+import javax.ws.rs.core.Context;
 
+import org.apache.cxf.jaxrs.ext.MessageContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -45,9 +47,10 @@ public class ThingData implements IThingData {
 	@Autowired
 	ServiceClientFactory serviceClientFactory;
 
+    @Context
+    MessageContext context;
     @Autowired
     HttpServletRequest req;
-
 	@Autowired
     JmsTemplate template;
 
@@ -57,7 +60,7 @@ public class ThingData implements IThingData {
 	 */
 	@JmsListener(destination = EventBroker.MQ_PROP_SIM_UPDATE)
 	public void processSimulationUpdate(Object data) {
-		PropertyValue<?> prop = null;
+		PropertyValue prop = null;
 		if(data instanceof String) {
 			prop = JSONUtil.fromJSON((String)data, PropertyValue.class);
 		} else if(data instanceof TextMessage) {
@@ -66,8 +69,8 @@ public class ThingData implements IThingData {
 			} catch (JMSException e) {
 				throw new RuntimeException(e);
 			}
-		} else if(data instanceof PropertyValue<?>) {
-			prop = (PropertyValue<?>)data;
+		} else if(data instanceof PropertyValue) {
+			prop = (PropertyValue)data;
 		} else {
 			throw new IllegalArgumentException("Unknown update type: " + data);
 		}
@@ -75,11 +78,16 @@ public class ThingData implements IThingData {
 		postValue(prop);
 	}
 
+	@Override
+    public PropertyValue retrieveSinglePropertyValue(String propValueId)  {
+    	return propValueRepo.findOne(propValueId);
+    }
+
     @Override
-    public PropertyValue<?> retrieve(
-    		String deviceId, String propertyName) {
-    	List<PropertyValue<?>> values = retrieveValues(deviceId, propertyName, 1);
-    	PropertyValue<?> value = null;
+    public PropertyValue retrieve(
+    		String thingId, String propertyName) {
+    	List<PropertyValue> values = retrieveValues(thingId, propertyName, 1);
+    	PropertyValue value = null;
     	if(!values.isEmpty()) {
     		value = values.get(0);
     	}
@@ -87,52 +95,61 @@ public class ThingData implements IThingData {
     }
 
     @Override
-    public List<PropertyValue<?>> retrieve(String deviceId,
+    public List<PropertyValue> retrieve(String thingId,
     		String propertyName, int amount) {
-    	List<PropertyValue<?>> values = retrieveValues(deviceId, propertyName, amount);
+    	List<PropertyValue> values = retrieveValues(thingId, propertyName, amount);
     	return values;
     }
 
     @Override
-	public void postValue(String deviceId, String propertyName, 
-    		PropertyValue<?> propValue) {
-    	IThings things = serviceClientFactory.getThingsServiceClient();
-    	ICatalogService catalog = serviceClientFactory.getCatalogServiceClient();
-
-    	Thing thing = things.retrieve(deviceId);
-    	ThingType tt = catalog.retrieveCatalogEntry(thing.getThingTypeId());
-    	Property property = tt.getProperty(propertyName);
+	public void postValue(String thingId, String propertyName, 
+    		PropertyValue propValue) {
+    	Property property = searchPropForThing(thingId, propertyName);
+    	if(property == null) {
+    		throw new IllegalArgumentException("Cannot find property '" + 
+    				propertyName + "' for thing '" + thingId + "'");
+    	}
     	propValue.setPropertyName(property.getName());
-    	propValue.setThingId(thing.getId());
+    	propValue.setThingId(thingId);
     	postValue(propValue);
     }
 
     /* HELPER METHODS */
 
-    private List<PropertyValue<?>> retrieveValues(String thingId, String propertyName, int amount) {
-    	//IThings things = ServiceClientFactory.getThingsServiceClient();
-    	//ICatalogService catalog = ServiceClientFactory.getCatalogServiceClient();
+    private Property searchPropForThing(String thingId, String propertyName) {
+    	IThings things = serviceClientFactory.getThingsServiceClient();
+    	Thing thing = things.retrieve(thingId);
+    	String thingTypeId = thing.getThingTypeId();
+    	return searchPropForThingType(thingTypeId, propertyName);
+    }
+    private Property searchPropForThingType(String thingTypeId, String propertyName) {
+    	ICatalogService catalog = serviceClientFactory.getCatalogServiceClient();
+    	ThingType tt = catalog.retrieveCatalogEntry(thingTypeId);
+    	Property property = tt.getProperty(propertyName);
+    	return property;
+    }
 
-    	//Thing thing = things.retrieve(thingId);
-    	//ThingType tt = catalog.retrieveCatalogEntry(thing.getThingTypeId());
-    	//Property prop = tt.getProperty(propertyName);
-    	List<PropertyValue<?>> values = propValueRepo.findByThingIdAndPropertyName(thingId, propertyName, 
-    			new PageRequest(1, amount, new Sort(Direction.DESC, "timestamp"))).getContent();
+    private List<PropertyValue> retrieveValues(String thingId, String propertyName, int amount) {
+    	Property property = searchPropForThing(thingId, propertyName);
+    	if(property == null) {
+    		throw new IllegalArgumentException("Cannot find property '" + 
+    				propertyName + "' for thing '" + thingId + "'");
+    	}
+    	List<PropertyValue> values = propValueRepo.findByThingIdAndPropertyName(thingId, propertyName, 
+    			new PageRequest(0, amount, new Sort(Direction.DESC, "timestamp"))).getContent();
     	return values;
     }
 
-	private URI postValue(PropertyValue<?> propValue) {
+	private URI postValue(PropertyValue propValue) {
 		if(propValue.getTimestamp() <= 0) {
 			propValue.setTimestamp(System.currentTimeMillis());
 		}
     	propValue = propValueRepo.save(propValue);
-    	URI uri;
-		try {
-			uri = new URI(String.format("/devices/properties/{valueID}", propValue.getId()));
-		} catch (URISyntaxException e) {
-			throw new RuntimeException(e);
+    	URI uri = null;
+		if(context != null && context.getHttpServletRequest() != null) {
+			uri = ServiceUtil.getPath(context, String.format("../../data/%s", propValue.getId()));
 		}
-    	EventBroker.sendMessage(EventBroker.MQ_PROP_CHANGE_NOTIFY, template, propValue);
+		EventBroker.sendMessage(EventBroker.MQ_PROP_CHANGE_NOTIFY, template, propValue);
     	return uri;
 	}
 }

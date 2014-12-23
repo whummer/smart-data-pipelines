@@ -31,7 +31,7 @@ public class SimulationRun implements ObjectIdentifiable {
 	public static class TimeTick {
 		public long count;
 		public double timestamp;
-		public List<PropertyValue<?>> properties = new LinkedList<>();
+		public List<PropertyValue> properties = new LinkedList<>();
 	}
 
 	public SimulationRun() {}

@@ -22,14 +22,13 @@
 
 			$scope.tableOptions = {};
 
-			window.foo = function () {return "bar"};
 			$scope.initTable = function() {
 				var columnsConfig = [
 					{label: "Name", field: "name", sortable: true,
 						cellTemplate: "<div class='ui-grid-cell-contents'><a href='#/world/{{row.entity.id}}'>{{row.entity.name}}</a></div>"
 					},
-					{label: "Type", field: "assetType", 
-						cellTemplate: "<div class='ui-grid-cell-contents'>{{row.entity.assetType.name}}</div>"
+					{label: "Type", field: "thing-type", 
+						cellTemplate: "<div class='ui-grid-cell-contents'>{{row.entity['thing-type'].name}}</div>"
 					},
 					{label: "Position", field: "location", 
 						cellTemplate: "<div class='ui-grid-cell-contents'>{{row.entity.formatCoords()}}</div>"
@@ -41,14 +40,13 @@
 					function(event) {
 				    	if(event.type == "dgrid-select") {
 				    		$scope.$apply(function() {
-				    			$scope.shared.selectedAsset = event.rows[0].data;
+				    			$scope.shared.selectedThing = event.rows[0].data;
 							});
 				    	} else if(event.type == "dgrid-deselect") {
 				    		$scope.$apply(function(){
-				    			$scope.shared.selectedAsset = null;
+				    			$scope.shared.selectedThing = null;
 							});
 				    	}
-						//console.log("shared.selectedAsset:", $scope.shared.selectedAsset);
 					},
 					true
 				);
@@ -56,14 +54,18 @@
 			$scope.initTable();
 
 			$scope.loadAllAssets = function() {
-				invokeGET($scope.http, $scope.devicesAPI + "?page=0&size=" + 100,
+				invokeGET($scope.http, $scope.thingsAPI + "?page=0&size=" + 100,
 					function(data, status, headers, config) {
 						$.each(data.result, function(idx,el) {
 							el.formatCoords = function() {
 								return $scope.formatCoords(el.location);
 							}
+							if(el["thing-type"]) {
+								el["thing-type"] = shared.thingType(el["thing-type"]);
+							}
 						});
 						$scope.tableOptions.data = data.result;
+						$scope.shared.listOfThings = data.result;
 						setTimeout(function() {
 							setupDragAndDrop();
 						}, 100);
@@ -88,7 +90,7 @@
 			}
 
 			$scope.saveAsset = function(item){
-				invokePUT($scope.http, $scope.devicesAPI + "/",
+				invokePUT($scope.http, $scope.thingsAPI + "/",
 					JSON.stringify(item),
 					function(data, status, headers, config) {
 						$scope.loadAllAssets();
@@ -105,7 +107,7 @@
 				});
 			}
 			$scope.deleteAsset = function(){
-				var selection = $scope.shared.selectedAsset;
+				var selection = $scope.shared.selectedThing;
 				if(!selection || !selection.id) return;
 				$scope.deleteAssetInDB(selection, function() {
 					//$scope.loadAllAssets();

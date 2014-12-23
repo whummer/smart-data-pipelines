@@ -28,23 +28,23 @@ import com.wordnik.swagger.annotations.Api;
  */
 @Service
 @Path("/things")
-@Api(value = "Things", description = "CRUD operations for Things. Things are virtual representations of physical " +
-        "devices, such as sensors, actuators or appliances. Each Thing has a specific ThingType that has to be " +
-        "created using the ThingTypes service before the Thing can be created")
+@Api(value = "Things", description = "Various operations for Things. "
+		+ "Things are virtual representations of physical devices, "
+		+ "such as sensors, actuators or appliances. Each Thing has "
+		+ "a specific ThingType that has to be created using the "
+		+ "Catalog service before the Thing can be created")
 public class Things implements IThings {
 
+
+    @Autowired
+    ThingCommand thingCommand;
     @Autowired
     ThingQuery thingQuery;
 
     @Autowired
-    ThingCommand thingCommand;
-
-    @Autowired
     HttpServletRequest req;
-
     @Context
     MessageContext context;
-
     @Autowired
     AuthHeaders authHeaders;
 

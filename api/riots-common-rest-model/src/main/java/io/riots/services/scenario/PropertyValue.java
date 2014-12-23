@@ -1,5 +1,7 @@
 package io.riots.services.scenario;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import io.riots.services.catalog.Property;
 import io.riots.services.model.EventProperty;
 import io.riots.services.model.interfaces.ObjectIdentifiable;
@@ -10,27 +12,33 @@ import io.riots.services.model.interfaces.ObjectIdentifiable;
  * 
  * @author Waldemar Hummer
  */
-public class PropertyValue<T> implements ObjectIdentifiable {
+public class PropertyValue implements ObjectIdentifiable {
 
+	@JsonProperty
 	private String id;
 
+	@JsonProperty("thing-id")
 	private String thingId;
 
+	@JsonProperty("property")
 	private String propertyName;
 
-	private T value;
+	@JsonProperty
+	private Object value;
 
 	double timestamp;
 
 	public PropertyValue() {
 	}
 
-	public PropertyValue(T value) {
+	public PropertyValue(Object value) {
 		this(null, value);
 	}
 
-	public PropertyValue(Property property, T value) {
-		this.propertyName = property.getName();
+	public PropertyValue(Property property, Object value) {
+		if(property != null) {
+			this.propertyName = property.getName();
+		}
 		this.value = value;
 	}
 
@@ -49,10 +57,10 @@ public class PropertyValue<T> implements ObjectIdentifiable {
 	public void setPropertyName(String propertyName) {
 		this.propertyName = propertyName;
 	}
-	public T getValue() {
+	public Object getValue() {
 		return value;
 	}
-	public void setValue(T value) {
+	public void setValue(Object value) {
 		this.value = value;
 	}
 	public double getTimestamp() {

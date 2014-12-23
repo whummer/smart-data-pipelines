@@ -155,7 +155,7 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
 
 	/* ACTUAL BUSINESS LOGIC BELOW */
 
-    private boolean doFilter(ServletRequest req, ServletResponse res) {
+    protected boolean doFilter(ServletRequest req, ServletResponse res) {
         cleanupTokens();
 
         HttpServletRequest request = (HttpServletRequest) req;
@@ -345,7 +345,7 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
 
     void setAuthInfoHeaders(HttpServletRequest request, AuthInfo authInfo) {
     	/* append additional infos to request */
-        System.out.println("Adding headers to request: " + " - " +
+        LOG.debug("Adding headers to request: " + " - " +
         		authInfo.email + " - " + authInfo + " - " + request);
         request.setAttribute(AuthHeaders.HEADER_AUTH_EMAIL, authInfo.email);
         request.setAttribute(AuthHeaders.HEADER_AUTH_USERNAME, authInfo.userName);

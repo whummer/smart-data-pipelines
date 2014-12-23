@@ -7,7 +7,7 @@ var appConfig = {
 		core: { url: "http://localhost:8080/api/v1" },
 		thingTypes: { url: "http://localhost:8080/api/v1/catalog/thing-types" },
 		thingTypeProps: { url: "http://localhost:8080/api/v1/thing-types/properties" },
-		deviceDrivers: { url: "http://localhost:8080/api/v1/drivers" },
+		drivers: { url: "http://localhost:8080/api/v1/drivers" },
 		things: { url: "http://localhost:8080/api/v1/things" },
 		categories: { url: "http://localhost:8080/api/v1/categories" },
 		semanticTypes: { url: "http://localhost:8080/api/v1/semantic-types" },
@@ -16,7 +16,7 @@ var appConfig = {
 		simulationProps: { url: "http://localhost:8080/api/v1/simulations/properties" },
 		simulationDevices: { url: "http://localhost:8080/api/v1/simulations/devices" },
 		stats: { url: "http://localhost:8080/api/v1/stats" },
-		websocket: { url: "ws://localhost:8082/websocket" }
+		websocket: { url: "ws://localhost:8085/websocket" }
 	},
 	auth: {
 		github: {

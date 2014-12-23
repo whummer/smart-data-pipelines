@@ -9,6 +9,6 @@ import io.riots.services.scenario.PropertyValue;
  */
 public interface SimulationListener {
 
-	void updateValue(SimulationRun sim, PropertyValue<?> value);
+	void updateValue(SimulationRun sim, PropertyValue value);
 
 }

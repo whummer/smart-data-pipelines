@@ -259,8 +259,8 @@ public class Simulations {
     					1, gps.getLatitude(), gps.getLongitude(), vicinity);
     			TrafficTrace t = traces.traces.get(0);
     			for(PathPoint p : t.points) {
-    				PropertyValue<Location> prop = new PropertyValue<>(new Location(p.y, p.x));
-    				gps.getValues().add(new TimedValue<PropertyValue<Location>>(new Time(p.time), prop));
+    				PropertyValue prop = new PropertyValue(new Location(p.y, p.x));
+    				gps.getValues().add(new TimedValue<PropertyValue>(new Time(p.time), prop));
     			}
     		} catch (Exception e) {
     			throw new RuntimeException(e);

@@ -30,8 +30,8 @@ define([], function() {
                     appRoot + '/scripts/controllers/CatalogViewController.js',
                 ]
             },
-            '/catalog/:deviceTypeID': {
-                templateUrl: appRoot + '/views/device_type.html',
+            '/catalog/:thingTypeID': {
+                templateUrl: appRoot + '/views/thing_type.html',
                 dependencies: [
                     appRoot + '/scripts/controllers/CatalogViewController.js',
                 ]
@@ -43,8 +43,8 @@ define([], function() {
                     appRoot + '/scripts/controllers/WorldViewController.js'
                 ]
             },
-            '/world/:deviceID': {
-                templateUrl: appRoot + '/views/world_asset.html',
+            '/world/:thingID': {
+                templateUrl: appRoot + '/views/world_thing.html',
                 dependencies: [
                     //appRoot + '/scripts/controllers/World3DController.js',
                     appRoot + '/scripts/controllers/WorldViewController.js'

@@ -15,8 +15,8 @@ import java.util.List;
 @SuppressWarnings("all")
 public class SimulationDriverAndroid implements SimulationDriver {
 
-	public void sendProperties(List<PropertyValue<?>> props) {
-		for(PropertyValue<?> prop : props) {
+	public void sendProperties(List<PropertyValue> props) {
+		for(PropertyValue prop : props) {
 			// TODO!
 //			SemanticPropertyType type = prop.getProperty().getSemanticType();
 //			if(type.isType(PredefinedPropTypes.location)) {
@@ -29,11 +29,11 @@ public class SimulationDriverAndroid implements SimulationDriver {
 		}
 	}
 
-	private void processBattery(PropertyValue<?> prop) {
+	private void processBattery(PropertyValue prop) {
 		sendDebuggerCommand("power capacity " + (Double)prop.getValue());
 	}
 
-	private void processNetworkDelay(PropertyValue<?> prop) {
+	private void processNetworkDelay(PropertyValue prop) {
 		String value = (String)prop.getValue();
 		if(!Arrays.asList("gprs", "edge", "umts", "none").contains(value)) {
 			throw new IllegalArgumentException("Unknown network cellular status: " + value);
@@ -41,12 +41,12 @@ public class SimulationDriverAndroid implements SimulationDriver {
 		sendDebuggerCommand("network delay " + value);
 	}
 
-	private void processLocation(PropertyValue<?> prop) {
+	private void processLocation(PropertyValue prop) {
 		double lat = 0;
 		double lon = 0;
 		@SuppressWarnings("unchecked")
-		List<PropertyValue<?>> subValues = (List<PropertyValue<?>>)prop.getValue();
-		for(PropertyValue<?> s : subValues) {
+		List<PropertyValue> subValues = (List<PropertyValue>)prop.getValue();
+		for(PropertyValue s : subValues) {
 			// TODO!!
 //			SemanticPropertyType t = s.getProperty().getSemanticType();
 //			if(t.isType(PredefinedPropTypes.location_lat)) {
