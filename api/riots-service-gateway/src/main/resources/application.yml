@@ -38,9 +38,9 @@ eureka:
   client:
     registryFetchIntervalSeconds: 5
     serviceUrl:
-      defaultZone: http://localhost:10000/eureka/v2/
+      defaultZone: http://localhost:10000/eureka/
   instance:
-    leaseRenewalIntervalInSeconds: 10
+    leaseRenewalIntervalInSeconds: 5
 
 ribbon:
   ServerListRefreshInterval: 5000

@@ -8,23 +8,29 @@ import io.riots.services.catalog.ValueDomainContinuous;
 import io.riots.services.catalog.ValueDomainDiscrete;
 import io.riots.services.catalog.ValueDomainEnumerated;
 
+import java.net.URL;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.test.SpringApplicationContextLoader;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -38,6 +44,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @Configuration
 @EnableAutoConfiguration
 @EnableDiscoveryClient
+@EnableConfigurationProperties
 public class InsertDemoDataViaCatalog {
 
 	static final Logger LOG = Logger.getLogger(InsertDemoDataViaCatalog.class);
@@ -50,6 +57,9 @@ public class InsertDemoDataViaCatalog {
 	public HttpServletRequest getServletRequest() {
 		return new MockHttpServletRequest();
 	}
+
+    @Autowired
+    ApplicationContext context;
 
 
 
@@ -64,7 +74,12 @@ public class InsertDemoDataViaCatalog {
 	@Before
 	public void setup() {
 		try {
-			catalog = serviceClientFactory.getCatalogServiceClient();
+            System.out.println("----------------------------- Context: " + Arrays.toString(context.getEnvironment().getActiveProfiles()));
+
+            ClassPathResource r = new ClassPathResource("application-test.yml");
+            System.out.println("*********************************** here we go " + r.getFile().exists());
+            IOUtils.copy(r.getInputStream(), System.out);
+            catalog = serviceClientFactory.getCatalogServiceClient();
 			System.out.println(catalog);
 		} catch (Exception e) {
 			e.printStackTrace();
