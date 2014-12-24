@@ -48,7 +48,7 @@
 
                 <div class="col-sm-10">
                     <input id="devTypeImageUrl" class="form-control input-sm"
-                           data-ng-model="shared.selectedDeviceType.imageUrl">
+                           data-ng-model="shared.selectedDeviceType['image-urls'][0]">
                 </div>
             </div>
 
@@ -87,33 +87,33 @@
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-xs-2">
-                    <input type="text" class="form-control" placeholder=".col-xs-2">
-                </div>
-                <div class="col-xs-3">
-                    <input type="text" class="form-control" placeholder=".col-xs-3">
-                </div>
-                <div class="col-xs-4">
-                    <input type="text" class="form-control" placeholder=".col-xs-4">
-                </div>
-            </div>
+            <!--<div class="row">-->
+                <!--<div class="col-xs-2">-->
+                    <!--<input type="text" class="form-control" placeholder=".col-xs-2">-->
+                <!--</div>-->
+                <!--<div class="col-xs-3">-->
+                    <!--<input type="text" class="form-control" placeholder=".col-xs-3">-->
+                <!--</div>-->
+                <!--<div class="col-xs-4">-->
+                    <!--<input type="text" class="form-control" placeholder=".col-xs-4">-->
+                <!--</div>-->
+            <!--</div>-->
 
-            <div class="form-group">
-                <label for=""></label>Attributes:</td><td>
-                <table>
-                    <tr ng-repeat="n in range(0, getPropertyList(shared.selectedDeviceType).length - 1)">
-                        <td><input class="domPropValue form-control input-sm"
-                                   ng-model="shared.selectedDeviceType.propertyList[n].key" style="width: 30%"/>
-                            =
-                            <input class="domPropValue form-control input-sm"
-                                   ng-model="shared.selectedDeviceType.propertyList[n].value" style="width: 60%" />
-                        </td>
-                    </tr>
-                </table>
-                <button class="btn btn-default btn-sm"  id="btnDevTypeAddAttr">Add Attribute</button>
-            
-            </div>
+            <!--<div class="form-group">-->
+                <!--<label for=""></label>Attributes:</td><td>-->
+                <!--<table>-->
+                    <!--<tr ng-repeat="n in range(0, getPropertyList(shared.selectedDeviceType).length - 1)">-->
+                        <!--<td><input class="domPropValue form-control input-sm"-->
+                                   <!--ng-model="shared.selectedDeviceType.propertyList[n].key" style="width: 30%"/>-->
+                            <!--=-->
+                            <!--<input class="domPropValue form-control input-sm"-->
+                                   <!--ng-model="shared.selectedDeviceType.propertyList[n].value" style="width: 60%" />-->
+                        <!--</td>-->
+                    <!--</tr>-->
+                <!--</table>-->
+                <!--<button class="btn btn-default btn-sm"  id="btnDevTypeAddAttr">Add Attribute</button>-->
+            <!---->
+            <!--</div>-->
 
 
             <hr/>
@@ -132,9 +132,7 @@
 <script type="text/javascript">
 
     var app = angular.module("app");
-    app.controller('DeviceTypeDetailsController', [
-        '$scope', '$http', '$compile',
-        function ($scope, $http, $compile) {
+    app.controller('DeviceTypeDetailsController', function ($scope, $http, $compile, $log) {
 
             AppController($scope, $http, $compile);
 
@@ -155,8 +153,10 @@
 
                 $scope.applyProperties = function () {
                     /* apply tags */
-                    $scope.shared.selectedDeviceType.tags = $("#devTypeTags").tagsinput('items');
-                    console.dir($scope.shared.selectedDeviceType.tags)
+                    var devTypeTags = $("#devTypeTags");
+                    $log.info("Tags input: ", devTypeTags.tagsinput('val'));
+                    $scope.shared.selectedDeviceType.tags = devTypeTags.tagsinput('items');
+                    $log.info("Scope tags: ", $scope.shared.selectedDeviceType.tags);
                 };
 
                 $scope.addProperty = function () {
@@ -168,8 +168,9 @@
                 };
 
                 $scope.loadManufacturers = function () {
+                    $log.info("Loading manufacturers from catalog service via URL ", appConfig.services.manufacturers.url);
                     if (!$scope.shared.manufacturers) {
-                        invokeGET($http, $scope.semanticsAPI + "/Manufacturer",
+                        invokeGET($http, appConfig.services.manufacturers.url,
                                 function (data, status, headers, config) {
                                     $scope.shared.manufacturers = data.result;
                                 });
@@ -185,21 +186,31 @@
                     }
                 };
 
-                $scope.saveDetails = function () {
-                    console.log("Saving details");
+                $scope.saveDeviceType = function() {
+                    var deviceType = $scope.shared.selectedDeviceType;
                     $scope.applyProperties();
-                    eventBus.publish("change.DeviceTypeProps", {changedItem: $scope.shared.selectedDeviceType});
+                    $log.info("Entering save for device: ", deviceType);
+                    deviceType = JSON.parse(JSON.stringify(deviceType));
+                    $scope.prepareModelValues(deviceType);
+                    delete deviceType.drivers;
+                    console.log("saving deviceType", deviceType);
+                    invokePUT($scope.http, $scope.deviceTypesAPI,
+                            JSON.stringify(deviceType),
+                            function (data, status, headers, config) {
+                                $log.info("Invoked PUT for deviceType ", deviceType);
+                                //$scope.loadAllDeviceTypes();
+                            }
+                    );
                 };
 
                 /* register event handlers */
                 $scope.loadManufacturers();
-                $scope.loadSemanticTypes();
+                //$scope.loadSemanticTypes();
                 $scope.addClickHandler("btnDevTypeAddAttr", $scope.addProperty);
-                $scope.addClickHandler("btnDevTypeSave", $scope.saveDetails);
+                $scope.addClickHandler("btnDevTypeSave", $scope.saveDeviceType);
                 $scope.$watch("shared.selectedDeviceType", function () {
-                    console.log("watched");
-                    console.dir($scope.shared.selectedDeviceType);
-                    if ($scope.shared.selectedDeviceType) {
+                    $log.info("Watching selected deviceType: ", ($scope.shared.selectedDeviceType));
+                    if ($scope.shared.selectedDeviceType.tags) {
                         $.each($scope.shared.selectedDeviceType.tags, function (idx, el) {
                             console.log("Adding tag " + el);
                             $("#devTypeTags").tagsinput("add", el);
@@ -217,6 +228,6 @@
 
             });
         }
-    ]);
+    );
 
 </script>

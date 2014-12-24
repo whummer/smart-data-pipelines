@@ -112,15 +112,6 @@ define(
                         redirectTo: config.defaultRoutePaths
                     });
                 }
-
-                app.register =
-                {
-                    controller: $controllerProvider.register,
-                    directive: $compileProvider.directive,
-                    filter: $filterProvider.register,
-                    factory: $provide.factory,
-                    service: $provide.service
-                };
             }
 
         ]);

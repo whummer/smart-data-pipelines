@@ -5,10 +5,11 @@ var appConfig = {
 	appRootPath: "/app",
 	services: {
 		core: { url: "http://localhost:8080/api/v1" },
-		thingTypes: { url: "http://localhost:8080/api/v1/catalog/thing-types" },
-		thingTypeProps: { url: "http://localhost:8080/api/v1/thing-types/properties" },
+		deviceTypes: { url: "http://localhost:8080/api/v1/catalog/thing-types" },
+		manufacturers: { url: "http://localhost:8080/api/v1/catalog/manufacturers" },
+		deviceTypeProps: { url: "http://localhost:8080/api/v1/device-types/properties" },
 		deviceDrivers: { url: "http://localhost:8080/api/v1/drivers" },
-		things: { url: "http://localhost:8080/api/v1/things" },
+		devices: { url: "http://localhost:8080/api/v1/devices" },
 		categories: { url: "http://localhost:8080/api/v1/categories" },
 		semanticTypes: { url: "http://localhost:8080/api/v1/semantic-types" },
 		simulations: { url: "http://localhost:8080/api/v1/simulations" },
@@ -62,6 +63,10 @@ var requirejsAppConfig = {
             name: 'hello',
             location: '/bower_components/hello',
             main: 'dist/hello.all'
+        }, {
+            name: 'prettify',
+            location: '/bower_components/google-code-prettify',
+            main: 'src/prettify'
         }, {
             name: 'sockjs',
             location: '/bower_components/sockjs',

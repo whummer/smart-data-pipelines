@@ -26,18 +26,19 @@
 <script type="text/javascript">
 
     var app = angular.module("app");
-    app.controller('DeviceTypeController', [
-        '$scope', '$http', '$compile', '$routeParams',
-        function ($scope, $http, $compile, $routeParams) {
+    app.controller('DeviceTypeController', function ($scope, $http, $compile, $routeParams, $log) {
             AppController($scope, $http, $compile);
             if ($routeParams.deviceTypeID) {
                 invokeGET($scope.http, $scope.deviceTypesAPI + "/" + $routeParams.deviceTypeID,
                         function (data, status, headers, config) {
+                            $log.info("Loading ThingType with ID " + $routeParams.deviceTypeID);
                             $scope.shared.selectedDeviceType = data.result;
+                            $scope.shared.selectedDeviceType['image-urls'] = [];
+                            $log.debug("Adding Thing to shared scope: ",data.result);
                         }
                 );
             }
         }
-    ]);
+    );
 
 </script>

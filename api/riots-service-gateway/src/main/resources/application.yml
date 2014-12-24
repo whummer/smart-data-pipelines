@@ -22,6 +22,7 @@ zuul:
     catalog-service:
       path: /api/v1/catalog/**
       stripPrefix: false
+
     webapp-service:
       path: /app/**
       stripPrefix: false

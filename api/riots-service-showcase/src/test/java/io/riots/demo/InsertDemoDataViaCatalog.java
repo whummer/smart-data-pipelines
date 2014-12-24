@@ -100,11 +100,11 @@ public class InsertDemoDataViaCatalog {
 	}
 
 	private void insertDeviceData() {
-		List<ThingType> types = catalog.list("", 1, 100);
+		List<ThingType> types = catalog.listThingTypes("", 1, 100);
 		for (ThingType t : getThingData()) {
 			if (!isIncluded(types, t.getName())) {
 				System.out.println("creating thingtype " + t);
-				catalog.create(t);
+				catalog.createThingType(t);
 			}
 		}
 	}

@@ -9,9 +9,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * Represents a property of an asset.
  *
- * @param <BaseType>
- *            The base type of the property, e.g., String or Double
- * 
  * @author Waldemar Hummer
  * @author riox
  */
@@ -97,6 +94,32 @@ public class Property extends HierarchicalObject<Property> {
 		this.actuatable = actuatable;
 		return this;
 	}
+
+	public Property withActuatable(final Boolean actuatable) {
+		this.actuatable = actuatable;
+		return this;
+	}
+
+	public Property withSensable(final Boolean sensable) {
+		this.sensable = sensable;
+		return this;
+	}
+
+	public Property withPropertyType(final PropertyType propertyType) {
+		this.propertyType = propertyType;
+		return this;
+	}
+
+	public Property withValueDomain(final ValueDomain<?> valueDomain) {
+		this.valueDomain = valueDomain;
+		return this;
+	}
+
+	public Property withConstraints(final Collection<Constraint> constraints) {
+		this.constraints = constraints;
+		return this;
+	}
+
 
 	@Override
 	public String toString() {

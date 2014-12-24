@@ -75,57 +75,12 @@ define(['app'], function(app) {
 
 			$scope.loadAllDeviceTypes();
 
-			$scope.saveDeviceType = function (deviceType) {
-				deviceType = JSON.parse(JSON.stringify(deviceType));
-				$scope.prepareModelValues(deviceType);
-				delete deviceType.drivers;
-				console.log("saving deviceType", deviceType);
-				invokePUT($scope.http, $scope.deviceTypesAPI,
-					JSON.stringify(deviceType),
-					function (data, status, headers, config) {
-						$scope.loadAllDeviceTypes();
-					}
-				);
-			};
-
-			$scope.addDeviceType = function () {
-				var items = [
-					{id: "manual", name: "Add item manually"},
-					{id: "wolfram", name: "Import from Wolfram Devices"},
-					{id: "iotdb", name: "Import from IoTDB"}
-				];
-				showSelectDialog("Select source:", items, function (el) {
-					if (el.id == "manual") {
-						$scope.addDeviceTypeManual();
-					} else if (el.id == "wolfram") {
-						importFromWolfram();
-					} else if (el.id == "iotdb") {
-						importFromIotdb();
-					}
-				});
-			};
-
-
-			$scope.addDeviceTypeManual = function (deviceType) {
-				if (!deviceType) {
-					deviceType = {
-						name: "unnamed"
-					}
-				}
-				invokePOST($scope.http, $scope.deviceTypesAPI + "/",
-					JSON.stringify(deviceType),
-					function (data, status, headers, config) {
-						$scope.loadAllDeviceTypes();
-					}
-				);
-			};
-
-			$scope.deleteDeviceType = function () {
-				var selection = $scope.selectedDeviceType;
-				if (!selection || !selection.id) return;
+			$scope.deleteDeviceType = function (deviceId) {
+				/*var selection = $scope.selectedDeviceType;
+				if (!selection || !selection.id) return;*/
 				showConfirmDialog("Do you really want to delete this device type?", function () {
 					invokeDELETE($scope.http,
-						$scope.deviceTypesAPI + "/" + selection.id,
+						$scope.deviceTypesAPI + "/" + deviceId,
 						function (data, status, headers, config) {
 							$scope.selectedDeviceType = $scope.shared.selectedDeviceType = null;
 							$scope.loadAllDeviceTypes();
@@ -139,11 +94,9 @@ define(['app'], function(app) {
 			};
 
 			/* register event handlers*/
-			$scope.addClickHandler('btnAddDeviceType', $scope.addDeviceType);
-			$scope.addClickHandler('btnDelDeviceType', $scope.deleteDeviceType);
 			$scope.addClickHandler('btnSearchDeviceType', $scope.searchDeviceType);
 
-			$scope.subscribeOnce("change.DeviceTypeProps", function (event) {
+			/*$scope.subscribeOnce("change.DeviceTypeProps", function (event) {
 					console.log("change.DeviceTypeProps", event.changedItem);
 					$scope.saveDeviceType(event.changedItem);
 				}, "deviceTypePropsChangeListener"
@@ -156,7 +109,7 @@ define(['app'], function(app) {
 
 			$scope.$watch("selectedDeviceType", function () {
 				$("#btnDelDeviceType").prop("disabled", $scope.selectedDeviceType == null);
-			});
+			});*/
 
 			/* render main container */
 		}

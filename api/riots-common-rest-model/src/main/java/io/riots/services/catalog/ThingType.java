@@ -25,7 +25,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author Waldemar Hummer
  * @author riox
  */
-@Document(indexName = "thing-types", type = "thing", shards = 1, replicas = 0, refreshInterval = "-1", indexStoreType = "memory")
+//TODO why is the indexStoreType set to "memory"?
+//@Document(indexName = "thing-types", type = "thing-type", shards = 1, replicas = 0, refreshInterval = "-1", indexStoreType = "memory")
+@Document(indexName = "thing-types", type = "thing-type")
 public class ThingType extends HierarchicalObject<ThingType> {
 
 	@JsonInclude(Include.NON_EMPTY)
@@ -167,6 +169,52 @@ public class ThingType extends HierarchicalObject<ThingType> {
 	public void setTags(List<String> tags) {
 		this.tags = tags;
 	}
+
+	public ThingType withProperties(final List<Property> properties) {
+		this.properties = properties;
+		return this;
+	}
+
+	public ThingType withId(final java.lang.String id) {
+		this.id = id;
+		return this;
+	}
+
+	public ThingType withDescription(final java.lang.String description) {
+		this.description = description;
+		return this;
+	}
+
+	public ThingType withCreated(final Date created) {
+		this.created = created;
+		return this;
+	}
+
+	public ThingType withCreatorId(final java.lang.String creatorId) {
+		this.creatorId = creatorId;
+		return this;
+	}
+
+	public ThingType withManufacturerId(final java.lang.String manufacturerId) {
+		this.manufacturerId = manufacturerId;
+		return this;
+	}
+
+	public ThingType withFeatures(final Map<java.lang.String, java.lang.String> features) {
+		this.features = features;
+		return this;
+	}
+
+	public ThingType withTags(final List<java.lang.String> tags) {
+		this.tags = tags;
+		return this;
+	}
+
+	public ThingType withImageUrls(final List<java.lang.String> imageUrls) {
+		this.imageUrls = imageUrls;
+		return this;
+	}
+
 
 	@Override
 	public String toString() {

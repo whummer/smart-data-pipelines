@@ -12,7 +12,7 @@ import org.springframework.context.annotation.ImportResource;
  */
 @Configuration
 @EnableAutoConfiguration
-@ComponentScan
+@ComponentScan(basePackages = "io.riots")
 @EnableZuulProxy
 @ImportResource(value = { "classpath*:/spring-auth.xml" })
 public class GatewayServiceStarter {

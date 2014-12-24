@@ -1,5 +1,6 @@
 package io.riots.core.service;
 
+import io.riots.services.catalog.Manufacturer;
 import io.riots.services.catalog.ThingType;
 
 import java.util.List;
@@ -29,16 +30,16 @@ import com.wordnik.swagger.annotations.ApiResponses;
 public interface ICatalogService {
 
 	@GET
-	@Path("/{id}")
+	@Path("/thing-types/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "Retrieve single thing from the catalog", notes = "", response = ThingType.class)
 	@ApiResponses(value = { @ApiResponse(code = 404, message = "No ThingType found with given id found") })
 	@Timed
 	@ExceptionMetered
-	ThingType retrieveCatalogEntry(@PathParam("id") String thingTypeId);
+	ThingType retrieveThingType(@PathParam("id") String thingTypeId);
 
 	@GET
-	@Path("/")
+	@Path("/thing-types")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "Retrieve all ThingTypes", notes = "Retrieve all ThingTypes including their children", response = ThingType.class)
 	@ApiResponses(value = {
@@ -46,11 +47,10 @@ public interface ICatalogService {
 			@ApiResponse(code = 400, message = "Either the query string or the paging parameters are malformed") })
 	@Timed
 	@ExceptionMetered
-	public List<ThingType> list(@QueryParam("q") String query,
-			@QueryParam("page") int page, @QueryParam("size") int size);
+	List<ThingType> listThingTypes(@QueryParam("q") String query, @QueryParam("page") int page, @QueryParam("size") int size);
 
 	@POST
-	@Path("/")
+	@Path("/thing-types")
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "Creates a new ThingType", notes = "Create a new ThingType according to the provided JSON payload. ThingType IDs are auto-assigned "
@@ -59,25 +59,76 @@ public interface ICatalogService {
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "Malformed ThingType provided. See error message for details") })
 	@Timed
 	@ExceptionMetered
-	ThingType create(ThingType thingType);
+	ThingType createThingType(ThingType thingType);
 
 	@PUT
-	@Path("/")
+	@Path("/thing-types")
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "Update an existing ThingType", notes = "Update an existing ThingType according to the provided JSON payload. Upon success, HTTP 200 is returned.")
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "Malformed ThingType provided. See error message for details") })
 	@Timed
 	@ExceptionMetered
-	ThingType update(ThingType thingType);
+	ThingType updateThingType(ThingType thingType);
 
 	@DELETE
-	@Path("/{id}")
+	@Path("/thing-types/{id}")
 	@Produces({ MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "Delete a ThingType", notes = "Delete an existing ThingType by its ID. Upon success, HTTP 200 is returned.")
 	@ApiResponses(value = { @ApiResponse(code = 404, message = "No such ThingType") })
 	@Timed
 	@ExceptionMetered
-	void delete(@PathParam("id") String thingTypeId);
+	void deleteThingType(@PathParam("id") String thingTypeId);
+
+	@GET
+	@Path("/manufacturers/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "Retrieve single manufacturer from the catalog", notes = "", response = Manufacturer.class)
+	@ApiResponses(value = { @ApiResponse(code = 404, message = "No Manufacturer found with given id found") })
+	@Timed
+	@ExceptionMetered
+	Manufacturer retrieveManufacturer(@PathParam("id") String manufacturerId);
+
+	@GET
+	@Path("/manufacturers")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "Retrieve all Manufacturers", notes = "Retrieve all Manufacturers", response = Manufacturer.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = 404, message = "No Manufacturer with given ID found"),
+			@ApiResponse(code = 400, message = "Either the query string or the paging parameters are malformed") })
+	@Timed
+	@ExceptionMetered
+	public List<Manufacturer> listManufacturers(@QueryParam("q") String query, @QueryParam("page") int page, @QueryParam("size") int size);
+
+	@POST
+	@Path("/manufacturers")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "Creates a new Manufacturer", notes = "Create a new Manufacturer according to the provided JSON payload. Manufacturer IDs are auto-assigned "
+			+ "by the API and cannot be controlled. Upon successful creation, HTTP 201 and a Location header for the"
+			+ " created Manufacturer is returned.")
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "Malformed Manufacturer provided. See error message for details") })
+	@Timed
+	@ExceptionMetered
+	Manufacturer createManufacturer(Manufacturer manufacturer);
+
+	@PUT
+	@Path("/manufacturers")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "Update an existing Manufacturer", notes = "Update an existing Manufacturer according to the provided JSON payload. Upon success, HTTP 200 is returned.")
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "Malformed Manufacturer provided. See error message for details") })
+	@Timed
+	@ExceptionMetered
+	Manufacturer updateManufacturer(Manufacturer manufacturer);
+
+	@DELETE
+	@Path("/manufacturers/{id}")
+	@Produces({ MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "Delete a Manufacturer", notes = "Delete an existing Manufacturer by its ID. Upon success, HTTP 200 is returned.")
+	@ApiResponses(value = { @ApiResponse(code = 404, message = "No such Manufacturer") })
+	@Timed
+	@ExceptionMetered
+	void deleteManufacturer(@PathParam("id") String manufacturerId);
 	
 }

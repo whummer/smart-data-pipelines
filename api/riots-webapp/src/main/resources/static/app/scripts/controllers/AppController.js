@@ -50,7 +50,7 @@ function AppController($scope, $http, $compile) {
 	$scope.highlightMenuItem = function(itemId) {
 		$(".nav").find(".active").removeClass("active");
 		$(itemId).addClass("active");
-	}
+	};
 
 	$scope.preparePropertyValues = function(deviceType, parent, propsList) {
 		if(!propsList) return;
