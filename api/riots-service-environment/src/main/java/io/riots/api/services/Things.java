@@ -3,7 +3,8 @@ package io.riots.api.services;
 import io.riots.api.handlers.command.ThingCommand;
 import io.riots.api.handlers.query.Paged;
 import io.riots.api.handlers.query.ThingQuery;
-import io.riots.core.auth.AuthFilter;
+import io.riots.api.util.ServiceUtil;
+import io.riots.core.auth.AuthHeaders;
 import io.riots.core.service.IThings;
 import io.riots.model.ThingMongo;
 import io.riots.services.scenario.Thing;
@@ -14,7 +15,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.UriBuilder;
 
 import org.apache.cxf.jaxrs.ext.MessageContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,25 +28,25 @@ import com.wordnik.swagger.annotations.Api;
  */
 @Service
 @Path("/things")
-@Api(value = "Things", description = "CRUD operations for Things. Things are virtual representations of physical " +
-        "devices, such as sensors, actuators or appliances. Each Thing has a specific ThingType that has to be " +
-        "created using the ThingTypes service before the Thing can be created")
+@Api(value = "Things", description = "Various operations for Things. "
+		+ "Things are virtual representations of physical devices, "
+		+ "such as sensors, actuators or appliances. Each Thing has "
+		+ "a specific ThingType that has to be created using the "
+		+ "Catalog service before the Thing can be created")
 public class Things implements IThings {
 
+
+    @Autowired
+    ThingCommand thingCommand;
     @Autowired
     ThingQuery thingQuery;
 
     @Autowired
-    ThingCommand thingCommand;
-
-    @Autowired
     HttpServletRequest req;
-
     @Context
     MessageContext context;
-
     @Autowired
-    AuthFilter authFilter;
+    AuthHeaders authHeaders;
 
     @Override
     public Thing retrieve(String thingId) {
@@ -62,11 +62,12 @@ public class Things implements IThings {
 
     @Override
     public Thing create(Thing thing) {
-    	thing.setCreatorId(authFilter.getRequestingUser(req).getId());
+    	thing.setCreatorId(authHeaders.getRequestingUser(req).getId());
     	ThingMongo m = ThingMongo.convert(thing);
         thing = thingCommand.create(m);
-        URI location = UriBuilder.fromPath("/things/{id}").build(thing.getId());
-        context.getHttpServletResponse().addHeader("Location", location.toString());
+        URI location = ServiceUtil.getPath(context, 
+        		String.format("../things/%s", thing.getId()));
+        ServiceUtil.setLocationHeader(context, location);
         return thing;
     }
 

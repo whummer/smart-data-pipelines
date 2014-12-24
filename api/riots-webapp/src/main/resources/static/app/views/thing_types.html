@@ -14,7 +14,9 @@
                         </button>
 					  </span>
                 </div>
-               
+                <button class="btn btn-primary" type="button" id="btnAddDeviceType">
+                    <span class="glyphicon" style="padding-right: 10px"></span> Add Thing Type
+                </button>
             </div>
             <div class="col-lg-2"></div>
         </div>
@@ -23,10 +25,10 @@
 
     <!-- search results as grid view -->
     <div id="searchResults">
-        <div ng-repeat="device in devices">
+        <div ng-repeat="thing in things">
 			<span ng-if="$index % 3 == 0">
 			  <div class="row">
-                  <div class="col-sm-6 col-md-4" ng-if="devices[$index] != undefined">
+                  <div class="col-sm-6 col-md-4" ng-if="things[$index] != undefined">
                       <div class="thumbnail">
                           <img ng-src="{{devices[$index]['image-urls'][0]}}" style="max-height: 100px"
                                alt="{{devices[$index].name}}">

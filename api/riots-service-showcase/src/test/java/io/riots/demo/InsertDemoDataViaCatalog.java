@@ -15,7 +15,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,6 +51,12 @@ public class InsertDemoDataViaCatalog {
     @Autowired
     ServiceClientFactory serviceClientFactory;
 
+    static {
+    	String prop = "eureka.client.serviceUrl.defaultZone";
+    	if(System.getProperty(prop) == null) {
+    		System.setProperty(prop, "http://localhost:10000/eureka/v2/");
+    	}
+    }
 
 	@Bean
 	public HttpServletRequest getServletRequest() {
@@ -60,7 +65,6 @@ public class InsertDemoDataViaCatalog {
 
     @Autowired
     ApplicationContext context;
-
 
 
 	public static class TestConfiguration {
@@ -74,12 +78,7 @@ public class InsertDemoDataViaCatalog {
 	@Before
 	public void setup() {
 		try {
-            System.out.println("----------------------------- Context: " + Arrays.toString(context.getEnvironment().getActiveProfiles()));
-
-            ClassPathResource r = new ClassPathResource("application-test.yml");
-            System.out.println("*********************************** here we go " + r.getFile().exists());
-            IOUtils.copy(r.getInputStream(), System.out);
-            catalog = serviceClientFactory.getCatalogServiceClient();
+			catalog = serviceClientFactory.getCatalogServiceClient();
 			System.out.println(catalog);
 		} catch (Exception e) {
 			e.printStackTrace();

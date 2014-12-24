@@ -1,16 +1,18 @@
 package io.riots.core.service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
-import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import org.apache.cxf.jaxrs.client.JAXRSClientFactory;
-import org.apache.cxf.jaxrs.client.WebClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.discovery.DiscoveryClient;
-import com.netflix.discovery.DiscoveryManager;
 import com.netflix.discovery.shared.Application;
 
 /**
@@ -27,7 +29,7 @@ public class ServiceClientFactory {
 	private static final String SERVICE_USERS_ENDPOINT = "http://%s:%s/api/v1/users";
 	private static final String SERVICE_CATALOG_EUREKA_NAME = "catalog-service";
 	private static final String SERVICE_CATALOG_ENDPOINT = "http://%s:%s/api/v1/catalog/thing-types";
-	private static final String SERVICE_THINGS_EUREKA_NAME = "things-service";
+	private static final String SERVICE_THINGS_EUREKA_NAME = "environment-service";
 	private static final String SERVICE_THINGS_ENDPOINT = "http://%s:%s/api/v1/things";
 	private static final Map<String,String> serviceEndpoints = new HashMap<String,String>();
 

@@ -1,13 +1,12 @@
 package io.riots.core.auth;
 
-import io.riots.core.auth.AuthFilter.AuthInfo;
-import io.riots.core.service.IUsers;
+import io.riots.core.auth.AuthHeaders.AuthInfo;
 import io.riots.core.service.ServiceClientFactory;
 import io.riots.services.catalog.ThingType;
-import io.riots.services.users.Role;
-import io.riots.services.users.User;
 import io.riots.services.users.Permission.Operation;
 import io.riots.services.users.Permission.Target;
+import io.riots.services.users.Role;
+import io.riots.services.users.User;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -33,7 +32,7 @@ public class AuthPermissionChecker implements PermissionEvaluator {
     private HttpServletRequest req;
 
     @Autowired
-    AuthFilter authFilter;
+    AuthHeaders authFilter;
 
     @Autowired
     ServiceClientFactory serviceClientFactory;
@@ -110,9 +109,7 @@ public class AuthPermissionChecker implements PermissionEvaluator {
      * @return
      */
     public User getRequestingUser() {
-        //IUsers users = serviceClientFactory.getUsersServiceClient();
         return authFilter.getRequestingUser(req);
-        //return AuthFilter.getRequestingUser(req, users);
     }
 
 }

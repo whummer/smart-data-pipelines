@@ -9,8 +9,8 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 /**
  * @author whummer
  */
-public interface PropertyValueRepository extends PagingAndSortingRepository<PropertyValue<?>, String> {
+public interface PropertyValueRepository extends PagingAndSortingRepository<PropertyValue, String> {
 
-	Page<PropertyValue<?>> findByThingIdAndPropertyName(String thingId, String propName, Pageable pageable);
+	Page<PropertyValue> findByThingIdAndPropertyName(String thingId, String propName, Pageable pageable);
 
 }

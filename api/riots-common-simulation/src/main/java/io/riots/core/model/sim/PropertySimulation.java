@@ -60,16 +60,16 @@ public abstract class PropertySimulation<T> {
 	@JsonProperty
 	protected String type;
 
-	public TimelineValues<PropertyValue<T>> getValues(Time fromTime, Time toTime,
+	public TimelineValues<PropertyValue> getValues(Time fromTime, Time toTime,
 			Context ctx) {
-		TimelineValues<PropertyValue<T>> result = new TimelineValues<>();
+		TimelineValues<PropertyValue> result = new TimelineValues<>();
 		double timeSpan = toTime.getTime() - fromTime.getTime();
 		if(stepInterval <= 0) {
 			stepInterval = timeSpan / DEFAULT_INTERVAL_STEPS;
 		}
 		for(double t = fromTime.getTime(); t < toTime.getTime(); t += stepInterval) {
 			t = round(t);
-			PropertyValue<T> val = getValueAt(new Time(t), ctx);
+			PropertyValue val = getValueAt(new Time(t), ctx);
 			result.getValues().add(
 					new TimelineValues.TimedValue<>(
 					new Time(t), val));
@@ -84,7 +84,7 @@ public abstract class PropertySimulation<T> {
 	}
 
 	@JsonProperty
-	public abstract PropertyValue<T> getValueAt(Time atTime, Context t);
+	public abstract PropertyValue getValueAt(Time atTime, Context t);
 
 	public String getId() {
 		return id;

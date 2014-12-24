@@ -20,17 +20,17 @@ public class PropertySimulationEnumerated<T> extends PropertySimulation<T> {
 	}
 
 	@JsonProperty
-	protected List<TimedValue<PropertyValue<T>>> values = new LinkedList<>();
+	protected List<TimedValue<PropertyValue>> values = new LinkedList<>();
 
 	@Override
-	public TimelineValues<PropertyValue<T>> getValues(Time fromTime,
+	public TimelineValues<PropertyValue> getValues(Time fromTime,
 			Time toTime, Context ctx) {
-		return new TimelineValues<PropertyValue<T>>(values);
+		return new TimelineValues<PropertyValue>(values);
 	}
 
 	@Override
-	public PropertyValue<T> getValueAt(Time atTime, Context t) {
-		for(TimedValue<PropertyValue<T>> v : values) {
+	public PropertyValue getValueAt(Time atTime, Context t) {
+		for(TimedValue<PropertyValue> v : values) {
 			if(v.time.getTime() == atTime.getTime()) {
 				return v.property;
 			}
@@ -38,7 +38,7 @@ public class PropertySimulationEnumerated<T> extends PropertySimulation<T> {
 		return null;
 	}
 
-	public List<TimedValue<PropertyValue<T>>> getValues() {
+	public List<TimedValue<PropertyValue>> getValues() {
 		return values;
 	}
 

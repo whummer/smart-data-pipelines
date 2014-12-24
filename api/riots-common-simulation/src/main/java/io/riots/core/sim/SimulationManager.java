@@ -48,7 +48,7 @@ public class SimulationManager {
 		public void run() {
 			// TODO!
 			while(true) {
-				PropertyValue<?> p = new PropertyValue<>(Math.random() * 2);
+				PropertyValue p = new PropertyValue(Math.random() * 2);
 				p.setPropertyName("p1");
 				synchronized (subscriptions) {
 					System.out.println("notify " + p);

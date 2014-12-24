@@ -1,6 +1,6 @@
 package io.riots.api.services;
 
-import io.riots.core.auth.AuthFilter;
+import io.riots.core.auth.AuthHeaders;
 import io.riots.core.model.driver.DeviceDriver;
 import io.riots.core.repositories.DeviceDriverRepository;
 import io.riots.services.users.User;
@@ -42,7 +42,7 @@ public class DeviceDrivers {
     DeviceDriverRepository driverRepo;
 
     @Autowired
-    AuthFilter authFilter;
+    AuthHeaders authFilter;
 
     @Autowired
     HttpServletRequest req;

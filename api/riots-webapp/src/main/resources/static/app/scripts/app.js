@@ -121,6 +121,7 @@ define(
             function ($scope, $http, $compile) {
                 if (rootScope == null) {
                     rootScope = $scope;
+                    rootScope.http = $http;
                     /* use this as "shared memory" between
                      controllers of different views. */
                     $scope.shared = {};
@@ -145,9 +146,6 @@ define(
             });
         });
 
-
         return app;
-    });
-
-
-
+    }
+);

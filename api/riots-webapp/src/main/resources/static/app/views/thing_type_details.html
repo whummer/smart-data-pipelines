@@ -5,80 +5,79 @@
     }
 </style>
 
-<section ng-controller="DeviceTypeDetailsController" id="devTypeDetailsSection" style="height: 100%;">
+<section ng-controller="ThingTypeDetailsController" id="devTypeDetailsSection" style="height: 100%;">
 
-    <div ng-show="shared.selectedDeviceType">
+    <div ng-show="shared.selectedThingType">
 
         <form class="form-horizontal" role="form" style="width: 100%">
 
-            <!-- device type ID -->
+            <!-- thing type ID -->
             <div class="form-group">
                 <label for="devTypeId" class="col-sm-2 control-label">ID</label>
 
                 <div class="col-sm-10">
                     <input id="devTypeId" disabled="disabled" class="form-control input-sm"
-                           data-ng-model="shared.selectedDeviceType.id"/>
+                           data-ng-model="shared.selectedThingType.id"/>
                 </div>
             </div>
 
-            <!-- device type name -->
+            <!-- thing type name -->
             <div class="form-group">
                 <label for="devTypeName" class="col-sm-2 control-label">Name</label>
 
                 <div class="col-sm-10">
                     <input id="devTypeName" class="form-control input-sm"
-                           data-ng-model="shared.selectedDeviceType.name"/>
+                           data-ng-model="shared.selectedThingType.name"/>
                 </div>
             </div>
 
-            <!-- device type name -->
+            <!-- thing type name -->
             <div class="form-group">    
                 <label for="devTypeDescr" class="col-sm-2 control-label">Description</label>
 
                 <div class="col-sm-10">
 						<textarea id="devTypeDescr" class="form-control input-sm"
-                                  data-ng-model="shared.selectedDeviceType.description">
+                                  data-ng-model="shared.selectedThingType.description">
                         </textarea>
                 </div>
             </div>
 
-            <!-- device type image URL -->
+            <!-- thing type image URL -->
             <div class="form-group">
                 <label for="devTypeImageUrl" class="col-sm-2 control-label">Image URL</label>
 
                 <div class="col-sm-10">
                     <input id="devTypeImageUrl" class="form-control input-sm"
-                           data-ng-model="shared.selectedDeviceType['image-urls'][0]">
+                           data-ng-model="shared.selectedThingType['image-urls'][0]">
                 </div>
             </div>
 
-            <!-- device type manufactures -->
+            <!-- thing type manufactures -->
             <div class="form-group">
                 <label for="devTypeManufacturers" class="col-sm-2 control-label">Manufacturer</label>
 
                 <div class="col-sm-10">
                     <select id="devTypeManufacturers" class="form-control input-sm"
                             ng-options="opt.name for opt in shared.manufacturers track by opt.id"
-                            ng-model="shared.selectedDeviceType.manufacturer">
+                            ng-model="shared.selectedThingType.manufacturer">
                     </select>
                 </div>
             </div>
 
-            <!-- semantic type for device type -->
+            <!-- semantic type for thing type -->
             <div class="form-group">
                 <label for="devTypeSemantics" class="col-sm-2 control-label">Semantics</label>
 
                 <div class="col-sm-10">
                     <select id="devTypeSemantics" class="form-control input-sm"
-                            ng-options="opt.name for opt in shared.semanticDeviceTypes track by opt.id"
-                            ng-model="shared.selectedDeviceType.semanticType">
+                            ng-options="opt.name for opt in shared.semanticThingTypes track by opt.id"
+                            ng-model="shared.selectedThingType.semanticType">
                     </select>
                 </div>
             </div>
 
 
-
-            <!-- device type tags -->
+            <!-- thing type tags -->
             <div class="form-group">
                 <label for="devTypeTags" class="col-sm-2 control-label">Tags</label>
 
@@ -99,21 +98,21 @@
                 <!--</div>-->
             <!--</div>-->
 
-            <!--<div class="form-group">-->
-                <!--<label for=""></label>Attributes:</td><td>-->
-                <!--<table>-->
-                    <!--<tr ng-repeat="n in range(0, getPropertyList(shared.selectedDeviceType).length - 1)">-->
-                        <!--<td><input class="domPropValue form-control input-sm"-->
-                                   <!--ng-model="shared.selectedDeviceType.propertyList[n].key" style="width: 30%"/>-->
-                            <!--=-->
-                            <!--<input class="domPropValue form-control input-sm"-->
-                                   <!--ng-model="shared.selectedDeviceType.propertyList[n].value" style="width: 60%" />-->
-                        <!--</td>-->
-                    <!--</tr>-->
-                <!--</table>-->
-                <!--<button class="btn btn-default btn-sm"  id="btnDevTypeAddAttr">Add Attribute</button>-->
-            <!---->
-            <!--</div>-->
+            <div class="form-group">
+                <label for=""></label>Attributes:</td><td>
+                <table>
+                    <tr ng-repeat="n in range(0, getPropertyList(shared.selectedDeviceType).length - 1)">
+                        <td><input class="domPropValue form-control input-sm"
+                                   ng-model="shared.selectedDeviceType.propertyList[n].key" style="width: 30%"/>
+                            =
+                            <input class="domPropValue form-control input-sm"
+                                   ng-model="shared.selectedDeviceType.propertyList[n].value" style="width: 60%" />
+                        </td>
+                    </tr>
+                </table>
+                <button class="btn btn-default btn-sm"  id="btnDevTypeAddAttr">Add Attribute</button>
+            
+            </div>
 
 
             <hr/>
@@ -132,7 +131,9 @@
 <script type="text/javascript">
 
     var app = angular.module("app");
-    app.controller('DeviceTypeDetailsController', function ($scope, $http, $compile, $log) {
+    app.controller('ThingTypeDetailsController', [
+        '$scope', '$http', '$compile',
+        function ($scope, $http, $compile) {
 
             AppController($scope, $http, $compile);
 
@@ -153,17 +154,15 @@
 
                 $scope.applyProperties = function () {
                     /* apply tags */
-                    var devTypeTags = $("#devTypeTags");
-                    $log.info("Tags input: ", devTypeTags.tagsinput('val'));
-                    $scope.shared.selectedDeviceType.tags = devTypeTags.tagsinput('items');
-                    $log.info("Scope tags: ", $scope.shared.selectedDeviceType.tags);
+                    $scope.shared.selectedThingType.tags = $("#devTypeTags").tagsinput('items');
+                    console.dir($scope.shared.selectedThingType.tags)
                 };
 
                 $scope.addProperty = function () {
                     $scope.applyProperties();
                     $scope.$apply(function () {
-                        $scope.shared.selectedDeviceType.properties["__new_key__"] = "new_value";
-                        $scope.getPropertyList($scope.shared.selectedDeviceType);
+                        $scope.shared.selectedThingType.properties["__new_key__"] = "new_value";
+                        $scope.getPropertyList($scope.shared.selectedThingType);
                     });
                 };
 
@@ -178,26 +177,26 @@
                 };
 
                 $scope.loadSemanticTypes = function () {
-                    if (!$scope.shared.semanticDeviceTypes) {
-                        invokeGET($http, $scope.semanticsAPI + "/Device",
+                    if (!$scope.shared.semanticThingTypes) {
+                        invokeGET($http, $scope.semanticsAPI + "/Thing",
                                 function (data, status, headers, config) {
-                                    $scope.shared.semanticDeviceTypes = data.result;
+                                    $scope.shared.semanticThingTypes = data.result;
                                 });
                     }
                 };
 
                 $scope.saveDeviceType = function() {
-                    var deviceType = $scope.shared.selectedDeviceType;
+                    var thingType = $scope.shared.selectedThingType;
                     $scope.applyProperties();
-                    $log.info("Entering save for device: ", deviceType);
-                    deviceType = JSON.parse(JSON.stringify(deviceType));
-                    $scope.prepareModelValues(deviceType);
-                    delete deviceType.drivers;
-                    console.log("saving deviceType", deviceType);
-                    invokePUT($scope.http, $scope.deviceTypesAPI,
-                            JSON.stringify(deviceType),
+                    $log.info("Entering save for thing: ", thingType);
+                    deviceType = JSON.parse(JSON.stringify(thingType));
+                    $scope.prepareModelValues(thingType);
+                    delete thingType.drivers;
+                    console.log("saving ThingType", thingType);
+                    invokePUT($scope.http, $scope.thingTypesAPI,
+                            JSON.stringify(thingType),
                             function (data, status, headers, config) {
-                                $log.info("Invoked PUT for deviceType ", deviceType);
+                                $log.info("Invoked PUT for ThingType ", thingType);
                                 //$scope.loadAllDeviceTypes();
                             }
                     );
@@ -207,11 +206,12 @@
                 $scope.loadManufacturers();
                 //$scope.loadSemanticTypes();
                 $scope.addClickHandler("btnDevTypeAddAttr", $scope.addProperty);
-                $scope.addClickHandler("btnDevTypeSave", $scope.saveDeviceType);
-                $scope.$watch("shared.selectedDeviceType", function () {
-                    $log.info("Watching selected deviceType: ", ($scope.shared.selectedDeviceType));
-                    if ($scope.shared.selectedDeviceType.tags) {
-                        $.each($scope.shared.selectedDeviceType.tags, function (idx, el) {
+                $scope.addClickHandler("btnDevTypeSave", $scope.saveDetails);
+                $scope.$watch("shared.selectedThingType", function () {
+                    console.log("watched");
+                    console.dir($scope.shared.selectedThingType);
+                    if ($scope.shared.selectedThingType) {
+                        $.each($scope.shared.selectedThingType.tags, function (idx, el) {
                             console.log("Adding tag " + el);
                             $("#devTypeTags").tagsinput("add", el);
                         });
@@ -228,6 +228,6 @@
 
             });
         }
-    );
+    ]);
 
 </script>

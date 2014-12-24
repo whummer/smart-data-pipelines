@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface SimulationDriver {
 
-	void sendProperties(List<PropertyValue<?>> props);
+	void sendProperties(List<PropertyValue> props);
 
 }

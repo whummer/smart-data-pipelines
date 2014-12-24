@@ -1,0 +1,101 @@
+<section ng-controller="ThingPropsController" id="assetPropsContainer" style="height: 100%">
+
+	<div>
+		<table ng-show="shared.selectedThing">
+			<tr><td>ID:</td>
+				<td>
+					<input class="form-control input-sm" ng-model="shared.selectedThing.id" disabled="disabled" />
+				</td>
+			</tr><tr>
+				<td>Name:</td>
+				<td>
+					<input class="form-control input-sm" ng-model="shared.selectedThing.name" />
+				</td>
+			</tr><tr>
+				<td>Thing Type:</td>
+				<td>
+					<select id="selThingType" class="form-control input-sm"
+						ng-options="opt.name for opt in assetTypes track by opt.id"
+						ng-model="shared.selectedThing['thing-type']">
+					</select>
+				</td>
+			</tr>
+			<!--<tr>
+				<td>Geometry:</td>
+				<td>
+					<select id="selThingGeometry" class="form-control input-sm"
+						ng-model="shared.selectedThing.geometry">
+						<option value="box">Box/Cube</span>
+						<option value="person">Person</span>
+					</select>
+				</td>
+			</tr>-->
+			<tr>
+				<td>Location (lat,lon,alt):</td>
+				<td>
+					<input class="form-control input-sm" style="width: 70px" ng-model="shared.selectedThing.location.latitude" />,
+					<input class="form-control input-sm" style="width: 70px" ng-model="shared.selectedThing.location.longitude" />,
+					<input class="form-control input-sm" style="width: 70px" ng-model="shared.selectedThing.location.altitude" />
+				</td>
+			</tr>
+			<!--
+			<tr>
+				<td>Creator:</td>
+				<td>{{shared.selectedThing.creator.name}}</td>
+			</tr><tr>
+				<td>Properties:</td>
+				<td>{{shared.selectedThing.properties}}</td>
+			</tr><tr>
+				<td>Tags:</td>
+				<td>{{shared.selectedThing.tags}}</td>
+			</tr>
+			-->
+			<tr><td></td>
+				<td>
+					<button class="btn btn-default btn-sm btn-primary" data-dojo-props="iconClass:'icon-save'" id="btnSaveThingDetails">Save</button>
+			</td></tr>
+		</table>
+	</div>
+	
+</section>
+
+
+<script type="text/javascript">
+
+	var app = angular.module("app");
+	app.controller('ThingPropsController', [
+		'$scope', '$http', '$compile',
+		function($scope, $http, $compile) {
+
+			AppController($scope, $http, $compile);
+
+			$scope.saveThingDetails = function() {
+				var thing = $scope.shared.selectedThing;
+				thing = clone(thing);
+				if(thing["thing-type"]) {
+					thing["thing-type"] = thing["thing-type"].id;
+				}
+				$scope.updateThingInDB(thing, function(thing) {
+	    			var event = {changedItem: $scope.shared.selectedThing}
+					eventBus.publish("addOrDel.Asset", event);
+				});
+			};
+
+			$scope.loadThingTypes = function() {
+				invokeGET($scope.http, $scope.thingTypesAPI,
+					function(data, status, headers, config) {
+						$scope.assetTypes = data.result;
+					}
+				);
+			}
+
+			/* add event handlers*/
+			$scope.addClickHandler("btnSaveThingDetails", $scope.saveThingDetails);
+
+			/* start rendering the main container */
+			$scope.loadThingTypes();
+			
+		}
+	]);
+
+</script>
