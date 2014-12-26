@@ -1,9 +1,7 @@
 package io.riots.services.catalog.api;
 
 import io.riots.catalog.repositories.ThingTypeRepository;
-import io.riots.catalog.repositories.ManufacturerRepository;
 import io.riots.core.service.ICatalogService;
-import io.riots.services.catalog.Manufacturer;
 import io.riots.services.catalog.ThingType;
 import org.apache.commons.lang.StringUtils;
 import org.apache.cxf.jaxrs.ext.MessageContext;
@@ -16,7 +14,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.stereotype.Service;
 
-import javax.ws.rs.*;
+import javax.ws.rs.NotFoundException;
+import javax.ws.rs.Path;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;

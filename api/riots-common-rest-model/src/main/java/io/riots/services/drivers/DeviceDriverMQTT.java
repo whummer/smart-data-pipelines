@@ -1,4 +1,4 @@
-package io.riots.core.model.driver;
+package io.riots.services.drivers;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * 
  * @author Waldemar Hummer
  */
-public class DeviceDriverMQTT extends DeviceDriver {
+public class DeviceDriverMQTT extends DataDriver {
 
 	{
 		connector = DriverConnector.MQTT;

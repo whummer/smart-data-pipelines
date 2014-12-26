@@ -1,4 +1,4 @@
-package io.riots.core.model.driver;
+package io.riots.services.drivers;
 
 import io.riots.services.scenario.PropertyValue;
 

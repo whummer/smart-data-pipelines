@@ -34,6 +34,10 @@ public class ServiceUtil {
         context.getHttpServletResponse().addHeader("Location", location);
 	}
 
+	public static void setResponseStatus(MessageContext context, int statusCode) {
+		context.getHttpServletResponse().setStatus(statusCode);
+	}
+
 	public static URI getPath(MessageContext context, String path) {
 		String contextPath = context.getHttpServletRequest().getRequestURI();
 		URI uri = UriBuilder.fromPath(contextPath).path(path).build().normalize();
