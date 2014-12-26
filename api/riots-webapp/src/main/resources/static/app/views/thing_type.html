@@ -1,11 +1,12 @@
-<section ng-controller="CatalogViewController" id="devCatalogSection" style="height: 100%">
+<section ng-controller="CatalogViewController" id="devCatalogSection">
     <div class="container">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h2 class="panel-title"><span class="glyphicon glyphicon-edit"></span> <b>{{shared.selectedThingType.name}}</b></h2>
+                <h2 class="panel-title"><span class="glyphicon glyphicon-edit"></span> <b>{{shared.selectedThingType.name}}</b>
+                </h2>
             </div>
             <div class="panel-body">
-                <section ng-controller="ThingTypeController" id="devTypeSection" >
+                <section ng-controller="ThingTypeController" id="devTypeSection">
                     <tabset>
                         <tab heading="General Properties">
                             <ng-include src="appConfig['appRootPath'] + '/views/thing_type_details.html'"></ng-include>
@@ -26,21 +27,19 @@
 <script type="text/javascript">
 
     var app = angular.module("app");
-    app.controller('ThingTypeController', [
-        '$scope', '$http', '$compile', '$routeParams',
-        function ($scope, $http, $compile, $routeParams) {
-            AppController($scope, $http, $compile);
-            if ($routeParams.thingTypeID) {
-                invokeGET($scope.http, $scope.thingTypesAPI + "/" + $routeParams.thingTypeID,
-                        function (data, status, headers, config) {
-                            $log.info("Loading ThingType with ID " + $routeParams.thingTypeID);
-                            $scope.shared.selectedThingType = data.result;
-                            $scope.shared.selectedThingType['image-urls'] = [];
-                            $log.debug("Adding Thing to shared scope: ", data.result);
-                        }
-                );
+    app.controller('ThingTypeController', function ($scope, $http, $compile, $routeParams, $log) {
+                AppController($scope, $http, $compile);
+                if ($routeParams.thingTypeID) {
+                    invokeGET($scope.http, $scope.thingTypesAPI + "/" + $routeParams.thingTypeID,
+                            function (data, status, headers, config) {
+                                $log.info("Loading ThingType with ID " + $routeParams.thingTypeID);
+                                $scope.shared.selectedThingType = data.result;
+                                $scope.shared.selectedThingType['image-urls'] = [];
+                                $log.debug("Adding Thing to shared scope: ", data.result);
+                            }
+                    );
+                }
             }
-        }
-    ]);
+    );
 
 </script>

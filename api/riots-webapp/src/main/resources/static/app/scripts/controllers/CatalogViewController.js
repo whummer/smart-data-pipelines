@@ -1,10 +1,9 @@
-define(['app'], function(app) {
+define(['app', 'bootstrap-tagsinput'], function(app) {
 
 	console.log("Entering CatalogViewController.js");
 
-    app.controller('CatalogViewController', [
-        '$scope', '$http', '$compile',
-		function($scope, $http, $compile) {
+    app.controller('CatalogViewController',
+		function($scope, $http, $compile, $log) {
 
 			AppController($scope, $http, $compile);
 
@@ -17,11 +16,11 @@ define(['app'], function(app) {
 
 			$scope.shared.selectedThingType = null;
         }
-    ]);
+    );
 
 	app.controller('ThingTypesController',
 
-		function ($scope) {
+		function ($scope, $log) {
 
 			console.log("ThingTypesController");
 

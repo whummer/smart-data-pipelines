@@ -6,8 +6,9 @@ var appConfig = {
 	services: {
 		core: { url: "http://localhost:8080/api/v1" },
 		thingTypes: { url: "http://localhost:8080/api/v1/catalog/thing-types" },
+		manufacturers: { url: "http://localhost:8080/api/v1/catalog/manufacturers" },
 		thingTypeProps: { url: "http://localhost:8080/api/v1/thing-types/properties" },
-		deviceDrivers: { url: "http://localhost:8080/api/v1/drivers" },
+		drivers: { url: "http://localhost:8080/api/v1/drivers" },
 		things: { url: "http://localhost:8080/api/v1/things" },
 		categories: { url: "http://localhost:8080/api/v1/categories" },
 		semanticTypes: { url: "http://localhost:8080/api/v1/semantic-types" },
