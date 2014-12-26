@@ -22,6 +22,7 @@ zuul:
     catalog-service:
       path: /api/v1/catalog/**
       stripPrefix: false
+
     webapp-service:
       path: /app/**
       stripPrefix: false
@@ -40,7 +41,7 @@ eureka:
     serviceUrl:
       defaultZone: http://localhost:10000/eureka/v2/
   instance:
-    leaseRenewalIntervalInSeconds: 10
+    leaseRenewalIntervalInSeconds: 5
 
 ribbon:
   ServerListRefreshInterval: 5000

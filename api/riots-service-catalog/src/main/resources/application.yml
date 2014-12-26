@@ -7,7 +7,7 @@ eureka:
     serviceUrl:
       defaultZone: http://localhost:10000/eureka/v2/
   instance:
-    leaseRenewalIntervalInSeconds: 10
+    leaseRenewalIntervalInSeconds: 5
 
 ribbon:
   ServerListRefreshInterval: 5000
