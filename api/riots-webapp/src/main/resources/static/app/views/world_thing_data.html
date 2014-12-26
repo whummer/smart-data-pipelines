@@ -120,6 +120,9 @@ app.controller('ThingDataController', [
 						if(data.result) {
 							el.lastTime = data.result.timestamp;
 						}
+					},
+					function(data, status, headers, config) {
+						// error callback (ignore)
 					}
 				);
 			});

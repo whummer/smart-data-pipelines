@@ -15,6 +15,7 @@ define(['app'], function(app) {
 			$scope.thingTypesAPI = appConfig.services.thingTypes.url;
 			$scope.thingTypePropsAPI = appConfig.services.thingTypeProps.url;
 			$scope.propValuesAPI = appConfig.services.things.url;
+			$scope.driversAPI = appConfig.services.drivers.url;
 
 			$scope.listOfThings = null;
 			$scope.defaultLocation = {lat: 48.19742, lng: 16.37127};

@@ -2,6 +2,7 @@ package io.riots.core.model.driver;
 
 import io.riots.services.catalog.Property;
 import io.riots.services.catalog.PropertyType;
+import io.riots.services.drivers.SimulationDriverAndroid;
 import io.riots.services.scenario.PropertyValue;
 
 import java.util.Arrays;

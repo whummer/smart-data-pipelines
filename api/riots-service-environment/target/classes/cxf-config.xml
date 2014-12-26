@@ -20,6 +20,7 @@
 <!--             <ref bean="environments"/> -->
             <ref bean="things"/>
             <ref bean="thingData"/>
+            <ref bean="driversServiceImpl"/>
             <bean id="swaggerResourceJSON" class="com.wordnik.swagger.jaxrs.listing.ApiListingResourceJSON"/>
         </jaxrs:serviceBeans>
         <jaxrs:features>
