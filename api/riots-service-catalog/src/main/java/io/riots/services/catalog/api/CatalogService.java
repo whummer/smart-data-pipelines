@@ -1,8 +1,10 @@
 package io.riots.services.catalog.api;
 
+import io.riots.api.util.ServiceUtil;
 import io.riots.catalog.repositories.ThingTypeRepository;
 import io.riots.core.service.ICatalogService;
 import io.riots.services.catalog.ThingType;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.cxf.jaxrs.ext.MessageContext;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -14,11 +16,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriBuilder;
+
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
@@ -99,6 +103,7 @@ public class CatalogService implements ICatalogService {
             return thingType;
         } catch (Exception e) {
             log.error(e.getMessage(), e);
+            ServiceUtil.setResponseStatus(context, HttpServletResponse.SC_NOT_FOUND);
             throw new WebApplicationException(e);
         }
     }
