@@ -4,9 +4,9 @@ import io.riots.api.services.jms.EventBroker;
 import io.riots.api.util.JSONUtil;
 import io.riots.api.util.ServiceUtil;
 import io.riots.core.repositories.PropertyValueRepository;
-import io.riots.core.service.ICatalogService;
-import io.riots.core.service.IThingData;
-import io.riots.core.service.IThings;
+import io.riots.core.service.CatalogService;
+import io.riots.core.service.ThingDataService;
+import io.riots.core.service.ThingsService;
 import io.riots.core.service.ServiceClientFactory;
 import io.riots.services.catalog.Property;
 import io.riots.services.catalog.ThingType;
@@ -39,7 +39,7 @@ import com.wordnik.swagger.annotations.Api;
 @Service
 @Path("/things")
 @Api(value = "Thing Data", description = "Post and retrieve thing data.")
-public class ThingData implements IThingData {
+public class ThingData implements ThingDataService {
 
     @Autowired
     PropertyValueRepository propValueRepo;
@@ -55,7 +55,7 @@ public class ThingData implements IThingData {
     JmsTemplate template;
 
 	/**
-	 * This message is called each time we retrieve a status change 
+	 * This message is called each time we retrieve a status change
 	 * generated in any of the currently running simulations.
 	 */
 	@JmsListener(destination = EventBroker.MQ_PROP_SIM_UPDATE)
@@ -102,11 +102,11 @@ public class ThingData implements IThingData {
     }
 
     @Override
-	public void postValue(String thingId, String propertyName, 
+	public void postValue(String thingId, String propertyName,
     		PropertyValue propValue) {
     	Property property = searchPropForThing(thingId, propertyName);
     	if(property == null) {
-    		throw new IllegalArgumentException("Cannot find property '" + 
+    		throw new IllegalArgumentException("Cannot find property '" +
     				propertyName + "' for thing '" + thingId + "'");
     	}
     	propValue.setPropertyName(property.getName());
@@ -117,13 +117,13 @@ public class ThingData implements IThingData {
     /* HELPER METHODS */
 
     private Property searchPropForThing(String thingId, String propertyName) {
-    	IThings things = serviceClientFactory.getThingsServiceClient();
+    	ThingsService things = serviceClientFactory.getThingsServiceClient();
     	Thing thing = things.retrieve(thingId);
     	String thingTypeId = thing.getThingTypeId();
     	return searchPropForThingType(thingTypeId, propertyName);
     }
     private Property searchPropForThingType(String thingTypeId, String propertyName) {
-    	ICatalogService catalog = serviceClientFactory.getCatalogServiceClient();
+    	CatalogService catalog = serviceClientFactory.getCatalogServiceClient();
     	ThingType tt = catalog.retrieveThingType(thingTypeId);
     	Property property = tt.getProperty(propertyName);
     	return property;
@@ -132,10 +132,10 @@ public class ThingData implements IThingData {
     private List<PropertyValue> retrieveValues(String thingId, String propertyName, int amount) {
     	Property property = searchPropForThing(thingId, propertyName);
     	if(property == null) {
-    		throw new IllegalArgumentException("Cannot find property '" + 
+    		throw new IllegalArgumentException("Cannot find property '" +
     				propertyName + "' for thing '" + thingId + "'");
     	}
-    	List<PropertyValue> values = propValueRepo.findByThingIdAndPropertyName(thingId, propertyName, 
+    	List<PropertyValue> values = propValueRepo.findByThingIdAndPropertyName(thingId, propertyName,
     			new PageRequest(0, amount, new Sort(Direction.DESC, "timestamp"))).getContent();
     	return values;
     }

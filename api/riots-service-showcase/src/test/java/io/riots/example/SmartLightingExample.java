@@ -1,32 +1,25 @@
 package io.riots.example;
 
 import io.riots.api.services.Simulations;
-import io.riots.core.service.ICatalogService;
-import io.riots.core.service.IThings;
-import io.riots.core.service.ServiceClientFactory;
-import io.riots.services.catalog.Property;
-import io.riots.services.catalog.ThingType;
-import io.riots.services.catalog.ValueDomainDiscrete;
+import io.riots.core.service.CatalogService;
+import io.riots.core.service.ThingsService;
 import io.riots.services.scenario.Thing;
 
 import java.util.List;
-
-import org.junit.Before;
-import org.junit.Test;
 
 public class SmartLightingExample {
 
 	String serviceURL = "http://localhost:8080/";
 	List<Thing> sensors;
-	IThings thingsService;
-	ICatalogService catalogService;
+	ThingsService thingsService;
+	CatalogService catalogService;
 	Simulations simService;
 
 /*	@Before
 	@SuppressWarnings("rawtypes")
 	public void setUp() {
 		// TODO fix
-		thingsService = ServiceClientFactory.getThingsServiceClient(); 
+		thingsService = ServiceClientFactory.getThingsServiceClient();
 		catalogService = ServiceClientFactory.getCatalogServiceClient();
 		simService = new Simulations();
 
@@ -53,7 +46,7 @@ public class SmartLightingExample {
 
 		Thing switch1 = new Thing("Switch 1");
 		ThingType accType = new ThingType("Sensor 2");
-		
+
 		// TODO
 
 	}*/

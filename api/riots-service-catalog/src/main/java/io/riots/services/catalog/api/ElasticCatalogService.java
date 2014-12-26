@@ -2,7 +2,7 @@ package io.riots.services.catalog.api;
 
 import io.riots.catalog.repositories.ManufacturerRepository;
 import io.riots.catalog.repositories.ThingTypeRepository;
-import io.riots.core.service.ICatalogService;
+import io.riots.core.service.CatalogService;
 import io.riots.services.catalog.Manufacturer;
 import io.riots.services.catalog.ThingType;
 import org.apache.commons.lang.StringUtils;
@@ -31,9 +31,9 @@ import java.util.UUID;
  */
 @Service
 @Path("/catalog")
-public class CatalogService implements ICatalogService {
+public class ElasticCatalogService implements CatalogService {
 
-    static final Logger log = LoggerFactory.getLogger(CatalogService.class);
+    static final Logger log = LoggerFactory.getLogger(ElasticCatalogService.class);
 
     @Autowired
     ThingTypeRepository thingTypeRepository;

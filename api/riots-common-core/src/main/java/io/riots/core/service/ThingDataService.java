@@ -28,7 +28,7 @@ import com.wordnik.swagger.annotations.ApiResponses;
  */
 @Service
 @Api(value = "ThingData", description = "Service for managing thing data.")
-public interface IThingData {
+public interface ThingDataService {
 
 	@GET
     @Path("/data/{propertyValueID}")
@@ -82,7 +82,7 @@ public interface IThingData {
     @ExceptionMetered
     @SuppressWarnings("all")
 	public void postValue(@PathParam("thingID") String thingId,
-    		@PathParam("propertyName") String propertyName, 
+    		@PathParam("propertyName") String propertyName,
     		PropertyValue propValue);
 
 }

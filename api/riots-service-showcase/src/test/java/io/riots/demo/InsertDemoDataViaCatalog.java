@@ -1,6 +1,6 @@
 package io.riots.demo;
 
-import io.riots.core.service.ICatalogService;
+import io.riots.core.service.CatalogService;
 import io.riots.core.service.ServiceClientFactory;
 import io.riots.services.catalog.Property;
 import io.riots.services.catalog.ThingType;
@@ -8,7 +8,6 @@ import io.riots.services.catalog.ValueDomainContinuous;
 import io.riots.services.catalog.ValueDomainDiscrete;
 import io.riots.services.catalog.ValueDomainEnumerated;
 
-import java.net.URL;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,14 +21,11 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.SpringApplicationContextLoader;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.FilterType;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -73,7 +69,7 @@ public class InsertDemoDataViaCatalog {
 //	private Map<String, SemanticType.SemanticPropertyType> propTypes = new HashMap<>();
 //	private Map<String, SemanticType.SemanticDeviceType> devTypes = new HashMap<>();
 
-	private static ICatalogService catalog;
+	private static CatalogService catalog;
 
 	@Before
 	public void setup() {

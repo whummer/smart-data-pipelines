@@ -20,7 +20,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
  */
 @Service
 @Api(value = "Statistics", description = "Retrieve statistics about the system.")
-public interface IStatistics {
+public interface StatisticsService {
 
 	@GET
 	@Path("/")

@@ -27,7 +27,7 @@ import com.wordnik.swagger.annotations.ApiResponses;
 
 @Service
 @Api(value = "Catalog Service", description = "Catalog service for SmartThings")
-public interface ICatalogService {
+public interface CatalogService {
 
 	@GET
 	@Path("/thing-types/{id}")
@@ -130,5 +130,5 @@ public interface ICatalogService {
 	@Timed
 	@ExceptionMetered
 	void deleteManufacturer(@PathParam("id") String manufacturerId);
-	
+
 }

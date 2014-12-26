@@ -1,6 +1,6 @@
 package io.riots.core.auth;
 
-import io.riots.core.service.IUsers;
+import io.riots.core.service.UsersService;
 import io.riots.core.service.ServiceClientFactory;
 import io.riots.services.users.User;
 
@@ -19,7 +19,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 /**
- * Retrieve information from authentication headers sent along with 
+ * Retrieve information from authentication headers sent along with
  * request invocation messages.
  * @author whummer
  */
@@ -36,7 +36,7 @@ public class AuthHeaders {
 
     @Autowired
     private ServiceClientFactory clientFactory;
-    
+
     /**
      * Class which holds authentication information.
      */
@@ -59,7 +59,7 @@ public class AuthHeaders {
      * Construct requesting user from given information.
      */
     public static synchronized User getRequestingUser(String userEmail,
-                                   String userName, IUsers usersService) {
+                                   String userName, UsersService usersService) {
 
         System.out.println("INFO: Get requesting user: " + userEmail + " - " + userName);
         if (userEmail == null) {
@@ -82,11 +82,11 @@ public class AuthHeaders {
     }
 
     public synchronized User getRequestingUser(HttpServletRequest req) {
-    	IUsers users = clientFactory.getUsersServiceClient();
+    	UsersService users = clientFactory.getUsersServiceClient();
     	return getRequestingUser(req, users);
     }
     public static synchronized User getRequestingUser(
-    		HttpServletRequest req, IUsers usersService) {
+    		HttpServletRequest req, UsersService usersService) {
         String userEmail = getHeaders(req).get(HEADER_AUTH_EMAIL);
         String userName = getHeaders(req).get(HEADER_AUTH_USERNAME);
         System.out.println(getHeaders(req));

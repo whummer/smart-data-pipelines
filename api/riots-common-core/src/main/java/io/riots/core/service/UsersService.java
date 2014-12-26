@@ -23,7 +23,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
  */
 @Service
 @Api(value = "Users", description = "Service for managing users in the systems.")
-public interface IUsers {
+public interface UsersService {
 
 	@GET
     @Path("/{id}")
@@ -44,8 +44,8 @@ public interface IUsers {
     User findByEmail(@PathParam("email") String email);
 
 	public static class AuthToken {
-		/** 
-		 * third-party OAuth network, 
+		/**
+		 * third-party OAuth network,
 		 * e.g., "github", "google", "facebook"
 		 */
 		@JsonProperty
@@ -57,8 +57,8 @@ public interface IUsers {
 	}
 
 	public class GetAuthTokenRequest {
-		/** 
-		 * third-party OAuth network, 
+		/**
+		 * third-party OAuth network,
 		 * e.g., "github", "google", "facebook"
 		 */
 		@JsonProperty

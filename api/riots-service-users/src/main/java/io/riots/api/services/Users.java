@@ -1,7 +1,7 @@
 package io.riots.api.services;
 
 import io.riots.api.handlers.query.UserQuery;
-import io.riots.core.service.IUsers;
+import io.riots.core.service.UsersService;
 import io.riots.services.users.User;
 
 import javax.ws.rs.Path;
@@ -11,12 +11,12 @@ import org.springframework.stereotype.Service;
 
 /**
  * Service for managing users in the systems.
- * 
+ *
  * @author whummer
  */
 @Service
 @Path("/users")
-public class Users implements IUsers {
+public class Users implements UsersService {
 
     @Autowired
     UserQuery userQuery;

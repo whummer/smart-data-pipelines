@@ -1,7 +1,7 @@
 package io.riots.api.services;
 
-import io.riots.core.service.IStatistics;
-import io.riots.core.service.IUsers;
+import io.riots.core.service.StatisticsService;
+import io.riots.core.service.UsersService;
 import io.riots.core.service.ServiceClientFactory;
 import io.riots.services.users.Stats;
 
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Path("/stats")
-public class Statistics implements IStatistics {
+public class Statistics implements StatisticsService {
 
 	@Autowired
 	ServiceClientFactory serviceClientFactory;
@@ -24,7 +24,7 @@ public class Statistics implements IStatistics {
 	@Override
 	public Stats retrieveStatistics() {
 		Stats stats = new Stats();
-		IUsers users = serviceClientFactory.getUsersServiceClient();
+		UsersService users = serviceClientFactory.getUsersServiceClient();
 		stats.setNumUsers(users.getNumUsers());
 		// TODO
 //		stats.numUsersOnline = AuthFilter.getOnlineUsersCount();

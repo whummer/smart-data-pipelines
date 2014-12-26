@@ -5,7 +5,7 @@ import io.riots.api.handlers.query.Paged;
 import io.riots.api.handlers.query.ThingQuery;
 import io.riots.api.util.ServiceUtil;
 import io.riots.core.auth.AuthHeaders;
-import io.riots.core.service.IThings;
+import io.riots.core.service.ThingsService;
 import io.riots.model.ThingMongo;
 import io.riots.services.scenario.Thing;
 
@@ -33,7 +33,7 @@ import com.wordnik.swagger.annotations.Api;
 		+ "such as sensors, actuators or appliances. Each Thing has "
 		+ "a specific ThingType that has to be created using the "
 		+ "Catalog service before the Thing can be created")
-public class Things implements IThings {
+public class Things implements ThingsService {
 
 
     @Autowired
@@ -65,7 +65,7 @@ public class Things implements IThings {
     	thing.setCreatorId(authHeaders.getRequestingUser(req).getId());
     	ThingMongo m = ThingMongo.convert(thing);
         thing = thingCommand.create(m);
-        URI location = ServiceUtil.getPath(context, 
+        URI location = ServiceUtil.getPath(context,
         		String.format("../things/%s", thing.getId()));
         ServiceUtil.setLocationHeader(context, location);
         return thing;

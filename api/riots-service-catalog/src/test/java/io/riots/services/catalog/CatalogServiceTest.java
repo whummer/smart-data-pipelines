@@ -3,7 +3,7 @@ package io.riots.services.catalog;
 import static com.jayway.restassured.RestAssured.given;
 import static org.testng.Assert.assertTrue;
 import io.riots.api.services.AbstractServiceTest;
-import io.riots.services.catalog.api.CatalogService;
+import io.riots.services.catalog.api.ElasticCatalogService;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -21,7 +21,7 @@ import com.jayway.restassured.http.ContentType;
  * Acceptance test class for the Catalog REST Service. Does not use any model classes (on
  * purpose) as it want to deal with JSON according to our specification (how our users
  * would call it).
- * 
+ *
  * @author riox
  */
 public class CatalogServiceTest extends AbstractServiceTest {
@@ -37,7 +37,7 @@ public class CatalogServiceTest extends AbstractServiceTest {
 		endpoint_url = "http://localhost:" + port + PATH;
 	}
 
-	//@Test TODO commented out because I need to change the tests to provision a Eureka as part of it 
+	//@Test TODO commented out because I need to change the tests to provision a Eureka as part of it
 	public void testCatalogPOST1() throws IOException, URISyntaxException {
 		log.info("Executing testCatalogPOST1() ...");
 
@@ -50,7 +50,7 @@ public class CatalogServiceTest extends AbstractServiceTest {
 		assertTrue(location.contains(PATH));
 	}
 
-	//@Test // @Test TODO commented out because I need to change the tests to provision a Eureka as part of it 
+	//@Test // @Test TODO commented out because I need to change the tests to provision a Eureka as part of it
 	public void testCatalogPOST2() throws IOException, URISyntaxException {
 		log.info("Executing testCatalogPOST2() ...");
 
@@ -70,7 +70,7 @@ public class CatalogServiceTest extends AbstractServiceTest {
 
 	@Override
 	protected Class<?> getServiceBeanClass() {
-		return CatalogService.class;
+		return ElasticCatalogService.class;
 	}
 
 }

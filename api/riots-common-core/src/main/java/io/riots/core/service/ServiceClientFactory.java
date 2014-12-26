@@ -17,6 +17,7 @@ import com.netflix.discovery.shared.Application;
 
 /**
  * Factory class for creating service clients.
+ * todo om: move this piece somewhere else
  * @author whummer
  */
 @Component
@@ -39,14 +40,14 @@ public class ServiceClientFactory {
 		serviceEndpoints.put(SERVICE_CATALOG_EUREKA_NAME, SERVICE_CATALOG_ENDPOINT);
 	}
 
-	public IUsers getUsersServiceClient() {
-		return getServiceInstanceForName(SERVICE_USERS_EUREKA_NAME, IUsers.class);
+	public UsersService getUsersServiceClient() {
+		return getServiceInstanceForName(SERVICE_USERS_EUREKA_NAME, UsersService.class);
 	}
-	public IThings getThingsServiceClient() {
-		return getServiceInstanceForName(SERVICE_THINGS_EUREKA_NAME, IThings.class);
+	public ThingsService getThingsServiceClient() {
+		return getServiceInstanceForName(SERVICE_THINGS_EUREKA_NAME, ThingsService.class);
 	}
-	public ICatalogService getCatalogServiceClient() {
-		return getServiceInstanceForName(SERVICE_CATALOG_EUREKA_NAME, ICatalogService.class);
+	public CatalogService getCatalogServiceClient() {
+		return getServiceInstanceForName(SERVICE_CATALOG_EUREKA_NAME, CatalogService.class);
 	}
 
 	/* PRIVATE HELPER METHODS */
@@ -79,8 +80,8 @@ public class ServiceClientFactory {
 		return list.get(new Random().nextInt(list.size()));
 	}
 
-	// TODO: whu: due to Spring's "dependency hell", I am currently unable to 
-	// integrate this properly with LoadBalancerClient. Cannot be injected in the 
+	// TODO: whu: due to Spring's "dependency hell", I am currently unable to
+	// integrate this properly with LoadBalancerClient. Cannot be injected in the
 	// clients using this class, for some reason. For now, we do a simple load balancing
 	// ourselves (see code in this class). Maybe we can fix this later.
 //	public static ICatalogService getCatalogServiceClient(LoadBalancerClient loadBalancer) {

@@ -31,7 +31,7 @@ import com.wordnik.swagger.annotations.ApiResponses;
  */
 @Service
 @Api(value = "Things", description = "Service for managing things.")
-public interface IThings {
+public interface ThingsService {
 
     @GET
     @Path("/{id}")
