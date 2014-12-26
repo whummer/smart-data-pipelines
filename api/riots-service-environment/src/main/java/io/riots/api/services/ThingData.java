@@ -124,7 +124,7 @@ public class ThingData implements IThingData {
     }
     private Property searchPropForThingType(String thingTypeId, String propertyName) {
     	ICatalogService catalog = serviceClientFactory.getCatalogServiceClient();
-    	ThingType tt = catalog.retrieveCatalogEntry(thingTypeId);
+    	ThingType tt = catalog.retrieveThingType(thingTypeId);
     	Property property = tt.getProperty(propertyName);
     	return property;
     }
