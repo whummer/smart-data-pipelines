@@ -30,38 +30,38 @@
 			  <div class="row">
                   <div class="col-sm-6 col-md-4" ng-if="things[$index] != undefined">
                       <div class="thumbnail">
-                          <img ng-src="{{devices[$index]['image-urls'][0]}}" style="max-height: 100px"
-                               alt="{{devices[$index].name}}">
+                          <img ng-src="{{things[$index]['image-urls'][0]}}" style="max-height: 100px"
+                               alt="{{things[$index].name}}">
 
                           <div class="caption">
-                              <h4>{{devices[$index].name}} und os</h4>
+                              <h4>{{things[$index].name}} und os</h4>
 
                               <div class="device-type-box" id="{{devices[$index].id}}_description">
-                                  {{devices[$index].description}}
+                                  {{things[$index].description}}
                               </div>
 
                               <div style="margin-bottom: 10px">
                                   <div style="float:left; margin-right: 3px;">
-                                      <a href="#/catalog/{{devices[$index].id}}" role="button">
+                                      <a href="#/catalog/{{things[$index].id}}" role="button">
                                           <span class="glyphicon glyphicon-edit"></span>
                                       </a>
                                   </div>
                                   <div style="float:left; margin-right: 3px;">
-                                      <a href="JavaScript:void(0)" ng-click="deleteDeviceType(devices[$index].id)" role="button">
+                                      <a href="JavaScript:void(0)" ng-click="deleteDeviceType(things[$index].id)" role="button">
                                           <span class="glyphicon glyphicon-remove"></span>
                                       </a>
                                   </div>
 
-                                  <div id="{{devices[$index].id}}_expand" style="float:left ">
+                                  <div id="{{things[$index].id}}_expand" style="float:left ">
                                       <a href="JavaScript: void(0);"
-                                         ng-click="showMore(devices[$index].id)" role="button">
+                                         ng-click="showMore(things[$index].id)" role="button">
                                           <span class="glyphicon glyphicon-collapse-down"></span>
                                       </a>
                                   </div>
 
-                                  <div id="{{devices[$index].id}}_collapse" class="hidden">
+                                  <div id="{{things[$index].id}}_collapse" class="hidden">
                                       <a href="JavaScript: void(0);"
-                                         ng-click="showLess(devices[$index].id)" role="button">
+                                         ng-click="showLess(things[$index].id)" role="button">
                                           <span class="glyphicon glyphicon-collapse-up"></span>
                                       </a>
                                   </div>
@@ -70,34 +70,34 @@
                       </div>
                   </div>
 
-                  <div class="col-sm-6 col-md-4 " ng-if="devices[$index+1] != undefined">
+                  <div class="col-sm-6 col-md-4 " ng-if="things[$index+1] != undefined">
                       <div class="thumbnail ">
-                          <img ng-src="{{devices[$index+1]['image-urls'][0]}}" style="max-height: 100px"
-                               alt="{{devices[$index+1].name}}">
+                          <img ng-src="{{things[$index+1]['image-urls'][0]}}" style="max-height: 100px"
+                               alt="{{things[$index+1].name}}">
 
                           <div class="caption">
-                              <h4>{{devices[$index+1].name}}</h4>
+                              <h4>{{things[$index+1].name}}</h4>
 
-                              <div class="device-type-box" id="{{devices[$index+1].id}}_description"><p class="">
-                                  {{devices[$index+1].description}}</p></div>
+                              <div class="device-type-box" id="{{things[$index+1].id}}_description"><p class="">
+                                  {{things[$index+1].description}}</p></div>
 
                               <div style="margin-bottom: 10px">
                                   <div style="float:left; margin-right: 3px">
-                                      <a href="#/catalog/{{devices[$index+1].id}}" role="button">
+                                      <a href="#/catalog/{{things[$index+1].id}}" role="button">
                                           <span class="glyphicon glyphicon-edit"></span>
                                       </a>
                                   </div>
 
-                                  <div id="{{devices[$index+1].id}}_expand" style="float:left">
+                                  <div id="{{things[$index+1].id}}_expand" style="float:left">
                                       <a href="JavaScript: void(0);"
-                                         ng-click="showMore(devices[$index+1].id)" role="button">
+                                         ng-click="showMore(things[$index+1].id)" role="button">
                                           <span class="glyphicon glyphicon-collapse-down"></span>
                                       </a>
                                   </div>
 
-                                  <div id="{{devices[$index+1].id}}_collapse" class="hidden">
+                                  <div id="{{things[$index+1].id}}_collapse" class="hidden">
                                       <a href="JavaScript: void(0);"
-                                         ng-click="showLess(devices[$index+1].id)" role="button">
+                                         ng-click="showLess(things[$index+1].id)" role="button">
                                           <span class="glyphicon glyphicon-collapse-up"></span>
                                       </a>
                                   </div>
@@ -106,34 +106,34 @@
                       </div>
                   </div>
 
-                  <div class="col-sm-6 col-md-4 " ng-if="devices[$index+2] != undefined">
+                  <div class="col-sm-6 col-md-4 " ng-if="things[$index+2] != undefined">
                       <div class="thumbnail ">
-                          <img ng-src="{{devices[$index+2].imageUrl}}" style="max-height: 100px"
-                               alt="{{devices[$index+2].name}}">
+                          <img ng-src="{{things[$index+2]['image-urls'][0]}}" style="max-height: 100px"
+                               alt="{{things[$index+2].name}}">
 
                           <div class="caption">
-                              <h4>{{devices[$index+2].name}}</h4>
+                              <h4>{{things[$index+2].name}}</h4>
 
-                              <div class="device-type-box" id="{{devices[$index+2].id}}_description"><p class="">
-                                  {{devices[$index+2].description}}</p></div>
+                              <div class="device-type-box" id="{{things[$index+2].id}}_description"><p class="">
+                                  {{things[$index+2].description}}</p></div>
 
                               <div style="margin-bottom: 10px">
                                   <div style="float:left; margin-right: 3px">
-                                      <a href="#/catalog/{{devices[$index+2].id}}" role="button">
+                                      <a href="#/catalog/{{things[$index+2].id}}" role="button">
                                           <span class="glyphicon glyphicon-edit"></span>
                                       </a>
                                   </div>
 
-                                  <div id="{{devices[$index+2].id}}_expand" style="float:left">
+                                  <div id="{{things[$index+2].id}}_expand" style="float:left">
                                       <a href="JavaScript: void(0);"
-                                         ng-click="showMore(devices[$index+2].id)" role="button">
+                                         ng-click="showMore(things[$index+2].id)" role="button">
                                           <span class="glyphicon glyphicon-collapse-down"></span>
                                       </a>
                                   </div>
 
-                                  <div id="{{devices[$index+2].id}}_collapse" class="hidden">
+                                  <div id="{{things[$index+2].id}}_collapse" class="hidden">
                                       <a href="JavaScript: void(0);"
-                                         ng-click="showLess(devices[$index+2].id)" role="button">
+                                         ng-click="showLess(things[$index+2].id)" role="button">
                                           <span class="glyphicon glyphicon-collapse-up"></span>
                                       </a>
                                   </div>

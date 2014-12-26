@@ -41,7 +41,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * resources (both static files and services) is restricted.
  *
  * This class has no @Component annotation, on purpose. Subclasses
- * should extend this class (possibly with additional functionality 
+ * should extend this class (possibly with additional functionality
  * such as adding Zuul proxy forwarding headers) and use @Component there.
  *
  * @author Waldemar Hummer
@@ -80,7 +80,7 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
             "^/app/favicon\\.ico$",
 
             "^/app/scripts/app\\.js$",
-            "^/app/scripts/controllers/*.\\.js$",
+            "^/app/scripts/controllers/.*\\.js$",
             "^/app/scripts/modules/.*\\.js$",
             "^/app/scripts/directives/.*\\.js$",
             "^/app/scripts/routes\\.js$",
@@ -185,7 +185,7 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
                     }
                 }
 				/* acknowledge the protocol in response headers */
-                response.setHeader(AuthHeaders.HEADER_WS_PROTOCOL, 
+                response.setHeader(AuthHeaders.HEADER_WS_PROTOCOL,
                 		request.getHeader(AuthHeaders.HEADER_WS_PROTOCOL));
             }
         }
