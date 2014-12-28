@@ -51,7 +51,7 @@ public class ThingType extends HierarchicalObject<ThingType> {
 	private String manufacturerId;
 
 	@JsonInclude(Include.NON_EMPTY)
-	@Field(type = String, store = true)
+	@Field(type = Object, store = true)
 	private Map<String, String> features = new HashMap<>();
 
 	@JsonInclude(Include.NON_EMPTY)

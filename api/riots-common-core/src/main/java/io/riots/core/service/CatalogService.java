@@ -26,7 +26,6 @@ import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
 
 @Service
-@Path("/catalog/")
 @Api(value = "Catalog Service", description = "Catalog service for SmartThings")
 public interface CatalogService {
 

@@ -6,6 +6,26 @@ import io.riots.core.service.CatalogService;
 import io.riots.services.catalog.Manufacturer;
 import io.riots.services.catalog.ThingType;
 
+import java.net.URI;
+import java.util.List;
+import java.util.UUID;
+
+import javax.annotation.PostConstruct;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.NotFoundException;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.UriBuilder;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.cxf.jaxrs.ext.MessageContext;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -15,18 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
-import org.springframework.data.elasticsearch.core.query.IndexQuery;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.PostConstruct;
-import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.UriBuilder;
-
-import java.net.URI;
-import java.util.List;
-import java.util.UUID;
 
 /**
  * Implements the Catalog REST API edge service.
@@ -55,30 +64,11 @@ public class ElasticCatalogService implements CatalogService {
     MessageContext context;    
     
     @PostConstruct
-    private void init() {
-    	
-    	
-    	ThingType t = new ThingType();
-    	t.setId(UUID.randomUUID().toString());
-    	
+    private void init() {    	
+    	searchTemplate.deleteIndex(ThingType.class);
+    	searchTemplate.createIndex(ThingType.class);
     	searchTemplate.putMapping(ThingType.class);
-    	
-
-        IndexQuery indexQuery = new IndexQuery();
-        indexQuery.setId(t.getId());
-        indexQuery.setObject(t);
-
-        searchTemplate.index(indexQuery);
-       //refresh
-        searchTemplate.refresh(ThingType.class, true);
-    	
-    	//searchTemplate.put
-//    	if (!searchTemplate.indexExists(ThingType.class)) {
-//        	log.info("Creating index 'thing-types' ...");
-//    		searchTemplate.createIndex(ThingType.class);
-//    	} else {
-//        	log.info("Index 'thing-types' already exists ...");
-//    	}
+    	searchTemplate.refresh(ThingType.class, true);
     }
     
 
@@ -119,7 +109,7 @@ public class ElasticCatalogService implements CatalogService {
             log.debug("Created ID for document: {}", id);
             thingType.setId(id.toString());
             ThingType result = thingTypeRepository.index(thingType);
-            URI location = UriBuilder.fromPath("/catalog/things-types/{id}").build(result.getId());
+            URI location = UriBuilder.fromPath("/catalog/thing-types/{id}").build(result.getId());
             context.getHttpServletResponse().addHeader("Location", location.toString());
             return result;
         } catch (Exception e) {
