@@ -24,7 +24,6 @@
 		<module>riots-common-service-base</module>
 		<module>riots-common-simulation</module>
 
-		<module>riots-service-smartobject</module>
 		<module>riots-service-catalog</module>
 		<module>riots-service-environment</module>
 		<module>riots-service-showcase</module>

@@ -121,7 +121,7 @@ public class ThingType extends HierarchicalObject<ThingType> {
 		return creatorId;
 	}
 
-	public void setCreator(String creatorId) {
+	public void setCreatorId(String creatorId) {
 		this.creatorId = creatorId;
 	}
 
@@ -168,7 +168,7 @@ public class ThingType extends HierarchicalObject<ThingType> {
 
 	public void setTags(List<String> tags) {
 		this.tags = tags;
-	}
+	}	
 
 	public ThingType withProperties(final List<Property> properties) {
 		this.properties = properties;
@@ -218,9 +218,11 @@ public class ThingType extends HierarchicalObject<ThingType> {
 
 	@Override
 	public String toString() {
-		return "ThingType [manufacturer=" + manufacturerId
-				+ ", features=" + features + ", tags=" + tags + ", imageUrls="
-				+ imageUrls + ", properties=" + properties + "]";
+		return "ThingType [id=" + id + ", description=" + description
+				+ ", created=" + created + ", creatorId=" + creatorId
+				+ ", manufacturerId=" + manufacturerId + ", features="
+				+ features + ", tags=" + tags + ", imageUrls=" + imageUrls
+				+ ", properties=" + properties + "]";
 	}
 
 	@Override

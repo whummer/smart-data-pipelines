@@ -10,9 +10,10 @@
 		<relativePath>../riots-common-service-dependencies/pom.xml</relativePath>
 	</parent>
 
-	<artifactId>riots-service-catalog</artifactId>
-	<name>catalog-service</name>
-	<description>This service provides catalog actions</description>
+	<artifactId>riots-service-images</artifactId>
+	<name>catalog-images</name>
+	<description>Provides a simple image service</description>
+	<version>0.0.1-SNAPSHOT</version>
 
 	<properties>
 		<riots.port>8181</riots.port>
@@ -33,33 +34,12 @@
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
-		<!-- 
-    	<dependency>
+		<dependency>
 			<groupId>io.riots</groupId>
 			<artifactId>riots-common-rest-model</artifactId>
-			<version>0.0.1-SNAPSHOT</version>	
+			<version>0.0.1-SNAPSHOT</version>			
 		</dependency>		
-		-->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-elasticsearch</artifactId>
-			<!-- 
-			<exclusions>
-				<exclusion>
-					<groupId>org.springframework.data</groupId>
-					<artifactId>spring-data-elasticsearch</artifactId>
-				</exclusion>
-			</exclusions>
-			 -->
-		</dependency>
-		 
-		<!-- 
-		<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-elasticsearch</artifactId>
-			<version>1.2.0.BUILD-SNAPSHOT</version>
-		</dependency>
-		-->
+
 	</dependencies>
 
 	<build>
