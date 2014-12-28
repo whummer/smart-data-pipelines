@@ -1,27 +1,31 @@
-<section ng-controller="CurrentOverviewController" id="homeCurrentDiv" style="height: 100%">
+<section ng-controller="CurrentOverviewController" id="homeCurrentDiv">
 
-	<div>
-		<div data-dojo-type="dijit/layout/ContentPane" style="height: 100%">
-			<!--<h3 style="margin-top: -15px;">Current Runtime</h3>-->
-			t.b.a.
-		</div>
-	</div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="panel-title"><span class="glyphicon glyphicon-info-sign"></span> <b>Current Health </b>
+                <span ng-click="removeWidget('current')" class="pull-right glyphicon glyphicon-remove"></span>
+            </div>
+        </div>
+        <div class="panel-body">
+            There will be more information I guess.
+        </div>
+    </div>
 
 </section>
 
 <script>
 
-	var app = angular.module("app");
-	app.controller('CurrentOverviewController', [
-		'$scope', '$http', '$compile',
-		function($scope, $http, $compile) {
+    var app = angular.module("app");
+    app.controller('CurrentOverviewController', [
+        '$scope', '$http', '$compile',
+        function ($scope, $http, $compile) {
 
-			AppController($scope, $http, $compile);
+            AppController($scope, $http, $compile);
 
-			var callback = function(el, registry) {
-				
-			}
-		}
-	]);
+            var callback = function (el, registry) {
+
+            }
+        }
+    ]);
 
 </script>

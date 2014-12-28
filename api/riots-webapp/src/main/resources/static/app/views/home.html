@@ -6,20 +6,28 @@
                 src="appConfig['appRootPath'] + '/views/home_' + userConfig.dashboardElements[n].widgetType + '.html'"></ng-include>
     </div>
 
-    <div class="jumbotron">
-        <div ng-show="!userConfig.dashboardElements.length">
+    <div class="jumbotron" ng-show="!userConfig.dashboardElements.length">
+        <div >
             <h3>Hi {{authInfo.name.split(' ')[0]}}</h3>
 
             <p>It looks like you have not yet configured your dashboard.
                 Eager to learn how to add elements to your dashboard?</p>
+            <a class="btn btn-primary btn-default" href="JavaScript:void(0);">
+                <span class="glyphicon glyphicon-question-sign" style="margin-right: 10px"></span> Take the Tour
+            </a>
         </div>
+    </div>
+
+    <div>
         <p>
-            <a class="btn btn-primary btn-default" href="JavaScript:void(0);" data-toggle="modal" data-target="#addWidgetModal"
+            <a class="btn btn-primary btn-default" href="JavaScript:void(0);" data-toggle="modal"
+               data-target="#addWidgetModal"
                role="button">
                 <span class="glyphicon glyphicon-plus-sign" style="margin-right: 10px"></span> Add Widgets
             </a>
 
-            <a class="btn btn-warning btn-default" href="JavaScript:void(0);" ng-show="userConfig.dashboardElements.length"
+            <a class="btn btn-warning btn-default" href="JavaScript:void(0);"
+               ng-show="userConfig.dashboardElements.length"
                ng-click="removeAllWidgets()" role="button">
                 <span class="glyphicon glyphicon-minus-sign" style="margin-right: 10px"></span> Remove All Widgets
             </a>
