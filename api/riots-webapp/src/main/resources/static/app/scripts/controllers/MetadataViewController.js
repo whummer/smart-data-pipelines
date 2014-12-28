@@ -1,20 +1,24 @@
 define(['app'], function(app) {
-    app.controller('MetadataViewController', [
-        '$scope', '$http', '$compile',
-		function($scope, $http, $compile) {
+    app.controller('MetadataViewController', function($scope, $http, $compile, $log) {
+
+			var metadataCatagoryUrls = {
+				"Manufacturer" : appConfig.services.manufacturers.url
+			};
+
 
 			AppController($scope, $http, $compile);
 
-			$scope.semanticsAPI = appConfig.services.semanticTypes.url;
+			//$scope.semanticsAPI = appConfig.services.semanticTypes.url;
 			$scope.curSelect = {};
 
 			$scope.loadTable = function(gridConfig, category) {
-				var categories = ["Property", "Device", "Manufacturer"];
+				/*var categories = ["Property", "Device", "manufacturers"];
 				if(categories.indexOf(category) < 0) {
 					console.warn("Semantic type category should be either of: " + categories);
 					return;
-				}
-				invokeGET($scope.http, $scope.semanticsAPI + "/" + category,
+				}*/
+
+				invokeGET($scope.http, appConfig.services.manufacturers.url,
 					function(data, status, headers, config) {
 						displayTable(gridConfig, data.result, category);
 					}
@@ -28,7 +32,7 @@ define(['app'], function(app) {
 					var authInfo = $scope.authInfo ? $scope.authInfo : rootScope.authInfo;
 					var user = {
 						email: authInfo.email
-					}
+					};
 
 					require(["raty"], function(raty) {
 						$("div.rating_input").each(function(idx, el) {
@@ -100,7 +104,9 @@ define(['app'], function(app) {
 
 			$scope.deleteMetaType = function(gridConfig, category) {
 				var curSelect = $scope.curSelect[category];
-				var url = $scope.semanticsAPI + "/" + curSelect.id;
+				$log.warn("About to delete metadata from category " + category + ": ", curSelect);
+				var url = metadataCatagoryUrls[category] + "/" + curSelect.id;
+				$log.debug("Using URL for metadata DELETE: ", url);
 				//console.log("delete", url);
 				invokeDELETE($scope.http, url,
 					function(data, status, headers, config) {
@@ -109,5 +115,5 @@ define(['app'], function(app) {
 				);
 			}
         }
-    ]);
+    );
 });
