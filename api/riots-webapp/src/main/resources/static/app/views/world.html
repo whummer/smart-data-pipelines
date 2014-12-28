@@ -18,13 +18,15 @@
             }
         </style>
 
-        <!--<bg-splitter orientation="horizontal" style="height: 100%">-->
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
                     <tabset>
                         <tab heading="Devices">
-                            <ng-include src="appConfig['appRootPath'] + '/views/world_assets.html'"></ng-include>
+                            <ng-include src="appConfig['appRootPath'] + '/views/world_things.html'"></ng-include>
+                        </tab>
+                        <tab heading="Simulations">
+							<ng-include src="appConfig['appRootPath'] + '/views/sim.html'"></ng-include>
                         </tab>
                     </tabset>
                 </div>
@@ -41,9 +43,9 @@
             <div class="row">
                 <div class="col-md-12">
                     <tabset>
-                        <tab heading="Asset Details">
+                        <tab heading="Thing Details">
                             <ng-include
-                                    src="appConfig['appRootPath'] + '/views/world_asset_props.html'"></ng-include>
+                                    src="appConfig['appRootPath'] + '/views/world_thing_props.html'"></ng-include>
                         </tab>
                     </tabset>
                 </div>
@@ -54,9 +56,3 @@
     </div>
 
 </section>
-
-<script>
-
-    renderElement("worldViewDiv");
-
-</script>

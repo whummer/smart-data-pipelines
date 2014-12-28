@@ -13,7 +13,9 @@ import java.util.UUID;
  */
 public class RefIdEnabledCxfServlet extends CXFServlet {
 
-    public static final String DEFAULT_REFID_HEADER_NAME = "X-VIOT-REFID";
+	private static final long serialVersionUID = 2369212392519439358L;
+
+	public static final String DEFAULT_REFID_HEADER_NAME = "X-RIOTS-REFID";
 
     private String refIdHeaderName;
 

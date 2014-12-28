@@ -56,6 +56,7 @@
         <url-pattern>/metrics</url-pattern>
     </servlet-mapping>
 
+	<!--
 	<filter>
 		<filter-name>cors</filter-name>
 		<filter-class>io.riots.core.auth.CORSFilter</filter-class>
@@ -64,7 +65,8 @@
 		<filter-name>cors</filter-name>
 		<url-pattern>/api/*</url-pattern>
 	</filter-mapping>
-	
+	 -->
+
 	<filter>
 		<filter-name>auth</filter-name>
 		<filter-class>io.riots.core.auth.AuthFilter</filter-class>

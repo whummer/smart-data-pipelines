@@ -3,8 +3,12 @@ server:
 
 eureka:
   client:
+    registryFetchIntervalSeconds: 5
     serviceUrl:
       defaultZone: http://localhost:10000/eureka/v2/
+  instance:
+    leaseRenewalIntervalInSeconds: 5
+
 
 spring:
   application:

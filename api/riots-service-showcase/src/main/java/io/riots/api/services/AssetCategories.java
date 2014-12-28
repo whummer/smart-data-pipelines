@@ -3,7 +3,7 @@ package io.riots.api.services;
 import io.riots.api.handlers.command.AssetCategoryCommand;
 import io.riots.api.handlers.query.AssetCategoryQuery;
 import io.riots.api.handlers.query.Paged;
-import io.riots.core.model.AssetCategory;
+import io.riots.api.model.AssetCategory;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;

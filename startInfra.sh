@@ -9,15 +9,15 @@ sleep 2
 
 echo "Running MongoDB"
 docker rm mongodb
-docker run -d -p 27017:27017 --name mongodb dockerfile/mongodb mongod
+docker run -d -p 27017:27017 --name mongodb dockerfile/mongodb mongod --smallfiles
 VBoxManage controlvm boot2docker-vm natpf1 "mongodb,tcp,127.0.0.1,27017,,27017"
 sleep 2
 
 echo "Running ElasticSearch"
 docker rm elasticsearch
 docker run -d -p 9200:9200 -p 9300:9300 --name elasticsearch dockerfile/elasticsearch
-VBoxManage controlvm boot2docker-vm natpf1 "elasticsearch,tcp,127.0.0.1,9200,,9200"
-VBoxManage controlvm boot2docker-vm natpf1 "elasticsearch,tcp,127.0.0.1,9300,,9300"
+VBoxManage controlvm boot2docker-vm natpf1 "elasticsearch1,tcp,127.0.0.1,9200,,9200"
+VBoxManage controlvm boot2docker-vm natpf1 "elasticsearch2,tcp,127.0.0.1,9300,,9300"
 sleep 2
 
 echo "Running Eureka"

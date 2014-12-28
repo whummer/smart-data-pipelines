@@ -5,25 +5,27 @@ define(['app'], function(app) {
 		function($scope, $http, $compile) {
 
 			AppController($scope, $http, $compile);
-			World3DController($scope, $http, $compile);
+			//World3DController($scope, $http, $compile);
 
 			$scope.highlightMenuItem("#menuItemScenario");
 
 			rootScope.worldViewEditMode = true;
 
-			$scope.devicesAPI = appConfig.services.devices.url;
-			$scope.deviceTypesAPI = appConfig.services.deviceTypes.url;
-			$scope.deviceTypePropsAPI = appConfig.services.deviceTypeProps.url;
-			$scope.propValuesAPI = appConfig.services.devices.url;
+			$scope.thingsAPI = appConfig.services.things.url;
+			$scope.thingTypesAPI = appConfig.services.thingTypes.url;
+			$scope.thingTypePropsAPI = appConfig.services.thingTypeProps.url;
+			$scope.propValuesAPI = appConfig.services.things.url;
+			$scope.driversAPI = appConfig.services.drivers.url;
+			$scope.usersAPI = appConfig.services.users.url;
 
-			$scope.listOfAssets = null;
+			$scope.listOfThings = null;
 			$scope.defaultLocation = {lat: 48.19742, lng: 16.37127};
 
-			$scope.addAssetInDB = function(asset, callback){
-				if(!asset)
+			$scope.addThingInDB = function(thing, callback){
+				if(!thing)
 					return false;
-				invokePOSTandGET($scope.http, $scope.devicesAPI + "/",
-					JSON.stringify(asset),
+				invokePOSTandGET($scope.http, $scope.thingsAPI + "/",
+					JSON.stringify(thing),
 					function(data, status, headers, config) {
 						if(callback) {
 							callback(data.result);
@@ -32,40 +34,43 @@ define(['app'], function(app) {
 				);
 			}
 
-			$scope.deleteAssetInDB = function(asset, callback){
-				if(!asset || !asset.id) return;
+			$scope.deleteThingInDB = function(thing, callback){
+				if(!thing || !thing.id) return;
 				invokeDELETE($scope.http, 
-					$scope.devicesAPI + "/" + asset.id,
+					$scope.thingsAPI + "/" + thing.id,
 					function(data, status, headers, config) {
 						if(callback) {
-							callback(asset);
+							callback(thing);
 						}
 					}
 				);
 			}
 
-			$scope.updateAssetInDB = function(asset, callback) {
-				assetCopy = JSON.parse(JSON.stringify(asset));
-				delete assetCopy["$$hashKey"];
-				invokePUT($http, $scope.devicesAPI + '/',
-					JSON.stringify(assetCopy),
+			$scope.updateThingInDB = function(thing, callback) {
+				thingCopy = JSON.parse(JSON.stringify(thing));
+				delete thingCopy["$$hashKey"];
+				if(thingCopy[THING_TYPE] && thingCopy[THING_TYPE].id) {
+					thingCopy[THING_TYPE] = thingCopy[THING_TYPE].id;
+				}
+				invokePUT($http, $scope.thingsAPI + '/',
+					JSON.stringify(thingCopy),
 					function(data, status, headers, config) {
 						if(callback) {
-							callback(asset);
+							callback(thing);
 						}
 					}
 				);
 			};
 
-			$scope.loadAssetsFromDB = function(callback) {
+			$scope.loadThingsFromDB = function(callback) {
 				max = 1000; // TODO
-				invokeGET($http, $scope.devicesAPI + '/?page=0&size=' + max,
+				invokeGET($http, $scope.thingsAPI + '/?page=0&size=' + max,
 					function(data, status, headers, config) {
 						if(callback) {
 							callback(data.result);
 						}
-						$scope.listOfAssets = data.result;
-						eventBus.publish("loadAll.Asset", {assets: data.result});
+						$scope.listOfThings = data.result;
+						eventBus.publish("loadAll.Thing", {things: data.result});
 					}
 				);
 			};

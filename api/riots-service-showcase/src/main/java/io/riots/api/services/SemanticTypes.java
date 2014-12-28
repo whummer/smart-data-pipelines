@@ -1,8 +1,8 @@
 package io.riots.api.services;
 
-import io.riots.core.model.BaseObjectCategorized;
-import io.riots.core.model.Manufacturer;
-import io.riots.core.model.SemanticType;
+import io.riots.api.model.BaseObjectCategorized;
+import io.riots.api.model.Manufacturer;
+import io.riots.api.model.SemanticType;
 import io.riots.core.repositories.ManufacturerRepository;
 import io.riots.core.repositories.SemanticTypeRepository;
 

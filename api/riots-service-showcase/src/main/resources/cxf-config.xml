@@ -11,27 +11,25 @@
 
     <import resource="classpath:META-INF/cxf/cxf.xml"/>
     <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
-    <import resource="classpath*:spring-auth.xml"/>
+    <import resource="classpath:spring-noauth.xml"/>
 
     <jaxrs:server address="/v1" id="api-v1">
         <jaxrs:serviceBeans>
-            <ref bean="deviceTypes"/>
-            <ref bean="devices"/>
-            <ref bean="deviceData"/>
+<!--             <ref bean="deviceTypes"/> -->
+<!--             <ref bean="devices"/> -->
+<!--             <ref bean="deviceData"/> -->
             <ref bean="manufacturers"/>
             <ref bean="assetCategories"/>
-            <ref bean="simulations"/>
-            <ref bean="ratings"/>
+            <!--<ref bean="simulations"/>-->
             <ref bean="semanticTypes"/>
-            <ref bean="deviceDrivers"/>
-            <ref bean="statistics"/>
+            <!--<ref bean="deviceDrivers"/>-->
             <bean id="swaggerResourceJSON" class="com.wordnik.swagger.jaxrs.listing.ApiListingResourceJSON"/>
         </jaxrs:serviceBeans>
         <jaxrs:features>
             <cxf:logging/>
         </jaxrs:features>
         <jaxrs:providers>
-            <bean id="jsonProvider" class="com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider"/>
+            <bean id="jsonProvider" class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider"/>
             <bean class="com.wordnik.swagger.jaxrs.listing.ResourceListingProvider"/>
             <bean class="com.wordnik.swagger.jaxrs.listing.ApiDeclarationProvider"/>
         </jaxrs:providers>
@@ -46,29 +44,5 @@
         <property name="contact" value="info@riots.io"/>
         <property name="scan" value="true"/>
     </bean>
-
-
-	<!-- Websocket support -->
-	<websocket:handlers>
-        <websocket:mapping path="/websocket" handler="websocketHandler"/>
-    </websocket:handlers>
-
-	<!-- Spring security configurations
-	<bean id="authFilter" class="io.riots.api.services.auth.AuthFilter" />
- 	<bean id="authAdvice" class="io.riots.api.services.auth.AuthPermissionAdvice" />
-	<bean id="expressionHandler"
-		class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
-		<property name="permissionEvaluator" ref="authPermissionChecker"/>
-	</bean>
-	<security:global-method-security secured-annotations="enabled" pre-post-annotations="enabled">
-		<security:expression-handler ref="expressionHandler"/>
-	</security:global-method-security>
-	<security:authentication-manager>
-        <security:authentication-provider ref="authFilter" />
-    </security:authentication-manager>
-  	<aop:aspectj-autoproxy/>
-    <security:http auto-config="true" security="none">
-  	</security:http>
-  	-->
 
 </beans>

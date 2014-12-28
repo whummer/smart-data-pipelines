@@ -1,0 +1,164 @@
+<section ng-controller="ThingTypesController" id="thingTypesSection">
+
+    <!-- search input row -->
+    <div id="thingTypesSectionWrapper">
+        <div class="row" id="thingTypeSearch">
+            <div class="col-lg-2"></div>
+            <div class="col-lg-8">
+                <div class="input-group">
+                    <input type="text" class="form-control"
+                           placeholder="To search for specific properties use <property:value> notation (e.g., width:100)">
+					  <span class="input-group-btn">
+						<button class="btn btn-primary" type="button" id="btnSearch">
+                            <span class="glyphicon glyphicon-search" style="padding-right: 10px"></span> Search
+                        </button>
+					  </span>
+                </div>
+                <button class="btn btn-primary" type="button" id="btnAddThingType">
+                    <span class="glyphicon" style="padding-right: 10px"></span> Add Thing Type
+                </button>
+            </div>
+            <div class="col-lg-2"></div>
+        </div>
+        <br class="clear"/>
+    </div>
+
+    <!-- search results as grid view -->
+    <div id="searchResults">
+        <div ng-repeat="thing in things">
+			<span ng-if="$index % 3 == 0">
+			  <div class="row">
+                  <div class="col-sm-6 col-md-4" ng-if="things[$index] != undefined">
+                      <div class="thumbnail">
+                          <img ng-src="{{things[$index]['image-urls'][0]}}" style="max-height: 100px"
+                               alt="{{things[$index].name}}">
+
+                          <div class="caption">
+                              <h4>{{things[$index].name}}</h4>
+
+                              <div class="thing-type-box" id="{{things[$index].id}}_description">
+                                  {{things[$index].description}}
+                              </div>
+
+                              <div style="margin-bottom: 10px">
+                                  <div style="float:left; margin-right: 3px;">
+                                      <a href="#/catalog/{{things[$index].id}}" role="button">
+                                          <span class="glyphicon glyphicon-edit"></span>
+                                      </a>
+                                  </div>
+                                  <div style="float:left; margin-right: 3px;">
+                                      <a href="JavaScript:void(0)" ng-click="deleteThingType(things[$index])" role="button">
+                                          <span class="glyphicon glyphicon-remove"></span>
+                                      </a>
+                                  </div>
+
+                                  <div id="{{things[$index].id}}_expand" style="float:left ">
+                                      <a href="JavaScript: void(0);"
+                                         ng-click="showMore(things[$index].id)" role="button">
+                                          <span class="glyphicon glyphicon-collapse-down"></span>
+                                      </a>
+                                  </div>
+
+                                  <div id="{{things[$index].id}}_collapse" class="hidden">
+                                      <a href="JavaScript: void(0);"
+                                         ng-click="showLess(things[$index].id)" role="button">
+                                          <span class="glyphicon glyphicon-collapse-up"></span>
+                                      </a>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+
+                  <div class="col-sm-6 col-md-4 " ng-if="things[$index+1] != undefined">
+                      <div class="thumbnail ">
+                          <img ng-src="{{things[$index+1]['image-urls'][0]}}" style="max-height: 100px"
+                               alt="{{things[$index+1].name}}">
+
+                          <div class="caption">
+                              <h4>{{things[$index+1].name}}</h4>
+
+                              <div class="thing-type-box" id="{{things[$index+1].id}}_description"><p class="">
+                                  {{things[$index+1].description}}</p></div>
+
+                              <div style="margin-bottom: 10px">
+                                  <div style="float:left; margin-right: 3px">
+                                      <a href="#/catalog/{{things[$index+1].id}}" role="button">
+                                          <span class="glyphicon glyphicon-edit"></span>
+                                      </a>
+                                  </div>
+
+                                  <div style="float:left; margin-right: 3px;">
+                                      <a href="JavaScript:void(0)" ng-click="deleteThingType(things[$index+1])" role="button">
+                                          <span class="glyphicon glyphicon-remove"></span>
+                                      </a>
+                                  </div>
+
+                                  <div id="{{things[$index+1].id}}_expand" style="float:left">
+                                      <a href="JavaScript: void(0);"
+                                         ng-click="showMore(things[$index+1].id)" role="button">
+                                          <span class="glyphicon glyphicon-collapse-down"></span>
+                                      </a>
+                                  </div>
+
+                                  <div id="{{things[$index+1].id}}_collapse" class="hidden">
+                                      <a href="JavaScript: void(0);"
+                                         ng-click="showLess(things[$index+1].id)" role="button">
+                                          <span class="glyphicon glyphicon-collapse-up"></span>
+                                      </a>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+
+                  <div class="col-sm-6 col-md-4 " ng-if="things[$index+2] != undefined">
+                      <div class="thumbnail ">
+                          <img ng-src="{{things[$index+2]['image-urls'][0]}}" style="max-height: 100px"
+                               alt="{{things[$index+2].name}}">
+
+                          <div class="caption">
+                              <h4>{{things[$index+2].name}}</h4>
+
+                              <div class="thing-type-box" id="{{things[$index+2].id}}_description"><p class="">
+                                  {{things[$index+2].description}}</p></div>
+
+                              <div style="margin-bottom: 10px">
+                                  <div style="float:left; margin-right: 3px">
+                                      <a href="#/catalog/{{things[$index+2].id}}" role="button">
+                                          <span class="glyphicon glyphicon-edit"></span>
+                                      </a>
+                                  </div>
+
+                                  <div style="float:left; margin-right: 3px;">
+                                      <a href="JavaScript:void(0)" ng-click="deleteThingType(things[$index+2])" role="button">
+                                          <span class="glyphicon glyphicon-remove"></span>
+                                      </a>
+                                  </div>
+
+                                  <div id="{{things[$index+2].id}}_expand" style="float:left">
+                                      <a href="JavaScript: void(0);"
+                                         ng-click="showMore(things[$index+2].id)" role="button">
+                                          <span class="glyphicon glyphicon-collapse-down"></span>
+                                      </a>
+                                  </div>
+
+                                  <div id="{{things[$index+2].id}}_collapse" class="hidden">
+                                      <a href="JavaScript: void(0);"
+                                         ng-click="showLess(things[$index+2].id)" role="button">
+                                          <span class="glyphicon glyphicon-collapse-up"></span>
+                                      </a>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div> <!-- end row -->
+			</span>
+        </div>
+    </div>
+</section>
+
+
+
+

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<parent>
+		<groupId>io.riots</groupId>
+		<artifactId>riots-common-service-dependencies</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../riots-common-service-dependencies/pom.xml</relativePath>
+	</parent>
+
+    <artifactId>riots-service-users</artifactId>
+	<description>this service provides access to user information.</description>
+    <modelVersion>4.0.0</modelVersion>
+
+    <properties>
+        <riots.port>8084</riots.port>
+        <riots.eureka.hostname>localhost:10000</riots.eureka.hostname>
+        <spring.application.name>${project.name}</spring.application.name>
+    </properties>
+
+    <dependencies>
+
+        <!-- riots dependencies -->
+		<dependency>
+			<groupId>io.riots</groupId>
+			<artifactId>riots-common-core</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>io.riots</groupId>
+			<artifactId>riots-common-core</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.riots</groupId>
+			<artifactId>riots-common-rest-model</artifactId>
+			<version>0.0.1-SNAPSHOT</version>			
+		</dependency>
+
+    </dependencies>
+
+    <build>
+
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-remote-resources-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+            </plugin>
+        </plugins>
+
+        <!--
+                <plugins>
+                    <plugin>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>repackage</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>pl.project13.maven</groupId>
+                        <artifactId>git-commit-id-plugin</artifactId>
+                        <configuration>
+                            <dotGitDirectory>${project.basedir}/../../.git</dotGitDirectory>
+                            <generateGitPropertiesFilename>src/main/resources/git.properties</generateGitPropertiesFilename>
+                        </configuration>
+                    </plugin>
+            </plugins>
+        -->
+    </build>
+</project>

@@ -1,32 +1,18 @@
 package io.riots.services.catalog;
 
 import java.util.Collection;
-import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Represents a property of an asset.
  *
- * @param <BaseType>
- *            The base type of the property, e.g., String or Double
- * 
  * @author Waldemar Hummer
+ * @author riox
  */
-@JsonSubTypes({
-		@Type(value = Property.PropertyString.class, name = "STRING"),
-		@Type(value = Property.PropertyLong.class, name = "LONG"),
-		@Type(value = Property.PropertyDouble.class, name = "DOUBLE"),
-		@Type(value = Property.PropertyBoolean.class, name = "BOOLEAN"),
-		@Type(value = Property.PropertyList.class, name = "COMPLEX"),
-		@Type(value = Property.PropertyList.class, name = "SET") })
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "data-type")
-public class Property<BaseType> extends HierarchicalObject<Property<?>> {
+public class Property extends HierarchicalObject<Property> {
 
 	/**
 	 * List of constraints of this property.
@@ -38,13 +24,14 @@ public class Property<BaseType> extends HierarchicalObject<Property<?>> {
 	 * Property value domain.
 	 */
 	@JsonInclude(Include.NON_EMPTY)
-	private ValueDomain<BaseType> valueDomain;
+	private ValueDomain<?> valueDomain;
 
 	/**
 	 * Property base type.
 	 */
-	@JsonIgnore // it as added anyway as a discriminator by the class level annotation
-	private BaseTypeEnum baseType;
+	@JsonInclude(Include.NON_EMPTY)
+	@JsonProperty("data-type")
+	private PropertyType propertyType;
 
 	/**
 	 * Whether a property is readable/sensable
@@ -58,107 +45,43 @@ public class Property<BaseType> extends HierarchicalObject<Property<?>> {
 	@JsonInclude(Include.NON_EMPTY)
 	private Boolean actuatable;
 
-	public enum BaseTypeEnum {
-		STRING, LONG, DOUBLE, BOOLEAN, COMPLEX, SET;
-	}
-
 	public Property() {
 	}
 
 	public Property(String name) {
 		super(name);
 	}
-
-	public static class PropertyList extends Property<List<?>> {
-		{
-			setBaseType(BaseTypeEnum.COMPLEX);
-		}
-
-		public PropertyList() {
-		}
-
-		public PropertyList(String name) {
-			super(name);
-		}
-	}
-
-	public static class PropertyBoolean extends Property<Boolean> {
-		{
-			setBaseType(BaseTypeEnum.BOOLEAN);
-		}
-
-		public PropertyBoolean() {
-		}
-
-		public PropertyBoolean(String name) {
-			super(name);
-		}
-	}
-
-	public static class PropertyString extends Property<String> {
-		{
-			setBaseType(BaseTypeEnum.STRING);
-		}
-
-		public PropertyString() {
-		}
-
-		public PropertyString(String name) {
-			super(name);
-		}
-	}
-
-	public static class PropertyLong extends Property<Long> {
-		{
-			setBaseType(BaseTypeEnum.LONG);
-		}
-
-		public PropertyLong() {
-		}
-
-		public PropertyLong(String name) {
-			super(name);
-		}
-	}
-
-	public static class PropertyDouble extends Property<Double> {
-		{
-			setBaseType(BaseTypeEnum.DOUBLE);
-		}
-
-		public PropertyDouble() {
-		}
-
-		public PropertyDouble(String name) {
-			super(name);
-		}
+	
+	public Property(String name, PropertyType type) {
+		this(name);
+		this.propertyType = type;
 	}
 
 	public Collection<Constraint> getConstraints() {
 		return constraints;
 	}
 
-	public ValueDomain<BaseType> getValueDomain() {
+	public ValueDomain<?> getValueDomain() {
 		return valueDomain;
 	}
 
-	public void setValueDomain(ValueDomain<BaseType> valueDomain) {
+	public void setValueDomain(ValueDomain<?> valueDomain) {
 		this.valueDomain = valueDomain;
 	}
 
-	public BaseTypeEnum getBaseType() {
-		return baseType;
+	public PropertyType getPropertyType() {
+		return propertyType;
 	}
 
-	public void setBaseType(BaseTypeEnum baseType) {
-		this.baseType = baseType;
+	public void setPropertyType(PropertyType propertyType) {
+		this.propertyType = propertyType;
 	}
 
 	public Boolean isSensable() {
 		return sensable;
 	}
 
-	public Property<?> setSensable(Boolean sensable) {
+	public Property setSensable(Boolean sensable) {
 		this.sensable = sensable;
 		return this;
 	}
@@ -167,10 +90,36 @@ public class Property<BaseType> extends HierarchicalObject<Property<?>> {
 		return actuatable;
 	}
 
-	public Property<?> setActuatable(Boolean actuatable) {
+	public Property setActuatable(Boolean actuatable) {
 		this.actuatable = actuatable;
 		return this;
 	}
+
+	public Property withActuatable(final Boolean actuatable) {
+		this.actuatable = actuatable;
+		return this;
+	}
+
+	public Property withSensable(final Boolean sensable) {
+		this.sensable = sensable;
+		return this;
+	}
+
+	public Property withPropertyType(final PropertyType propertyType) {
+		this.propertyType = propertyType;
+		return this;
+	}
+
+	public Property withValueDomain(final ValueDomain<?> valueDomain) {
+		this.valueDomain = valueDomain;
+		return this;
+	}
+
+	public Property withConstraints(final Collection<Constraint> constraints) {
+		this.constraints = constraints;
+		return this;
+	}
+
 
 	@Override
 	public String toString() {

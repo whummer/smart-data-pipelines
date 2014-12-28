@@ -1,0 +1,109 @@
+<section ng-controller="SimThingPropsController" id="simThingPropsSection">
+
+	<div>
+
+		<div id="simThingPropsTable" ui-grid="gridConfig" ui-grid-selection ui-grid-edit ui-grid-row-edit class="grid"></div>
+
+	</div>
+
+</section>
+
+<style>
+	#simThingPropsTable {
+		height: 150px;
+	}
+</style>
+
+<script>
+
+var app = angular.module("app");
+app.controller('SimThingPropsController', [
+	'$scope', '$http', '$compile',
+	function($scope, $http, $compile) {
+
+		AppController($scope, $http, $compile);
+
+		$scope.shared.selectedSimThing = null;
+		$scope.gridConfig = {};
+		$scope.thingTypes = [];
+		$scope.thingInstances = [];
+		$scope.tableEntries = [];
+
+		var loadThingProperties = function(thing, thingType) {
+			//console.log("loadThingProperties", thing, thingType);
+			$.each(thingType.properties, function(idx,el) {
+				var entry = {
+					thing: thing,
+					property: el
+				};
+				$scope.tableEntries.push(entry);
+			});
+		}
+
+		var loadThingType = function(thing) {
+			if(thing[THING_TYPE].id) {
+				console.log("loadThingProperties 1", thing);
+				loadThingProperties(thing, thing[THING_TYPE]);
+			} else {
+				console.log("loadThingProperties 2", thing);
+				thing[THING_TYPE] = shared.thingType(thing[THING_TYPE], 
+					function(thingType) {
+						console.log("loadThingProperties 2 --> ", thing, thingType);
+						loadThingProperties(thing, thingType);
+					}
+				);
+			}
+		}
+
+		var loadTable = function() {
+			shared.things(function(things) {
+				$scope.gridConfig.data = $scope.tableEntries = [];
+				$.each(things, function(idx,el) {
+					loadThingType(el);
+				});
+			});
+		}
+		var initTable = function() {
+
+			var columnsConfig = [
+				{label: "Thing", field: "thing.name", sortable: true},
+				{label: "Type", field: "thing['" + THING_TYPE + "'].name"},
+				{label: "Property", field: "property.name"},
+				{label: "Property Type", field: "property.baseType"}
+			];
+			$scope.gridConfig.data = [];
+			renderUITable($scope.gridConfig, "simThingPropsTable", columnsConfig,
+				function(event) {
+					if(event.type == "dgrid-select") {
+						$scope.$apply(function() {
+							$scope.shared.selectedSimThing = event.rows[0].data.thing;
+							$scope.shared.selectedSimProp = event.rows[0].data.property;
+						});
+			    	} else if(event.type == "dgrid-deselect") {
+						$scope.$apply(function() {
+							$scope.shared.selectedSimThing = null;
+							$scope.shared.selectedSimProp = null;
+						});
+			    	}
+				}
+			);
+		}
+
+		/* register event handlers*/
+		$scope.subscribeOnce("refresh.simulation.scenario", function() {
+			$scope.shared.selectedSimThing = null;
+			loadTable();
+		}, "refresh.scenario.things_view");
+		$scope.$watch("curScenario", function(scenario) {
+			var list = scenario.things ? scenario.things : [];
+			$scope.gridConfig.data = list;
+		});
+
+		/* render main elements */
+		initTable();
+		loadTable();
+
+	}
+]);
+
+</script>

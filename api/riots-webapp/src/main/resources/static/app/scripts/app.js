@@ -26,10 +26,11 @@ define(
         'routes', 'angular', 'angular-bootstrap',
         'bootstrap-tagsinput',
         'angular-route', 'angular-ui-grid'
-        //'angular-ui-slider','bg-splitter'
     ],
 
     function (config) {
+
+        console.log("Entering app.js");
 
         var app = angular.module('app', [
             'ngRoute',
@@ -52,9 +53,9 @@ define(
 
                         if (authInfo) {
                         	window.authInfo = authInfo;
+                        	rootScope.authInfo = authInfo;
                             var network = authInfo.network;
                             var token = authInfo.access_token;
-                            console.log("authInfo.access_token", authInfo.access_token);
                             $http.defaults.headers.common["riots-auth-network"] = network;
                             $http.defaults.headers.common["riots-auth-token"] = token;
                             dependencies = defaultDependencies.concat(dependencies);
@@ -62,8 +63,8 @@ define(
                             dependencies = defaultDependencies;
                         }
 
-                        require(dependencies, function () {
-                            $rootScope.$apply(function () {
+						require(dependencies, function () {
+						    $rootScope.$apply(function () {
                                 deferred.resolve();
                             });
                         });
@@ -86,6 +87,7 @@ define(
 
             function ($routeProvider, $locationProvider, $controllerProvider,
                       $compileProvider, $filterProvider, $httpProvider, $provide) {
+
                 app.controller = $controllerProvider.register;
                 app.directive = $compileProvider.directive;
                 app.filter = $filterProvider.register;
@@ -119,6 +121,7 @@ define(
             function ($scope, $http, $compile) {
                 if (rootScope == null) {
                     rootScope = $scope;
+                    rootScope.http = $http;
                     /* use this as "shared memory" between
                      controllers of different views. */
                     $scope.shared = {};
@@ -143,9 +146,6 @@ define(
             });
         });
 
-
         return app;
-    });
-
-
-
+    }
+);

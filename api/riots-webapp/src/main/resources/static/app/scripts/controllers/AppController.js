@@ -8,25 +8,12 @@ function setLoadingStatus(status, text) {
 	}
 }
 
-function destroyElement(elementID, registry) {
-	// TODO remove
-}
-
-function getWidget(elementID, registry) {
-	return null; // TODO
-}
-
 var globalRenderStack = [];
 function reduceRenderStack() {
 	globalRenderStack.splice(0,1);
 	if(globalRenderStack.length <= 0) {
 		hideSplashScreen();
 	}
-}
-
-function renderElement(elementID, callback) {
-	reduceRenderStack();
-	return null; // TODO
 }
 
 function watchOnce($scope, evtType, callback, id) {
@@ -52,21 +39,18 @@ function unsubscribeOnce(id) {
 }
 
 /* base controller with commonly used functionality */
-subscriptionIDs = []
-subscriptionHandles = []
+subscriptionIDs = [];
+subscriptionHandles = [];
 function AppController($scope, $http, $compile) {
 	$scope.setLoadingStatus = setLoadingStatus;
-	$scope.renderElement = renderElement;
-	$scope.destroyElement = destroyElement;
 	$scope.http = $http;
 	$scope.compile = $compile;
 	$scope.appConfig = appConfig;
-	//$scope.authInfo = null; // todo ask waldemar why we throw the authInfo away!
 
 	$scope.highlightMenuItem = function(itemId) {
 		$(".nav").find(".active").removeClass("active");
 		$(itemId).addClass("active");
-	}
+	};
 
 	$scope.preparePropertyValues = function(deviceType, parent, propsList) {
 		if(!propsList) return;
@@ -130,7 +114,8 @@ function AppController($scope, $http, $compile) {
 		deviceType.propertyList = null;
 		delete deviceType.propertyList;
 		return deviceType;
-	}
+	};
+
 	$scope.prepareModelValues = function(deviceType, doClone) {
 		if(!deviceType)
 			return deviceType;
@@ -138,7 +123,7 @@ function AppController($scope, $http, $compile) {
 			deviceType = JSON.parse(JSON.stringify(deviceType));
 		}
 		return $scope.preparePropertyValues(deviceType, deviceType, deviceType.deviceProperties);
-	}
+	};
 
 
 	$scope.subscribeOnce = function(evtType, callback, id) {
@@ -150,18 +135,20 @@ function AppController($scope, $http, $compile) {
 				subscriptionHandles.push(handle);
 			}
 		}
-	}
+	};
 
 	$scope.onRenderElement = function(elementID, callback, subscrID) {
 		return; // TODO
-	}
+	};
 
 	$scope.addClickHandler = function(elementID, callback) {
 		$("#" + elementID).on("click", callback);
-	}
+	};
+
 	$scope.addChangeHandler = function(elementID, callback) {
 		$scope.addWidgetEventHandler(elementID, "change", callback);
-	}
+	};
+
 	$scope.addWidgetEventHandler = function(elementID, eventType, callback) {
 		var subscrID = "addHandler_" + eventType + "_" + elementID;
 		$scope.onRenderElement(elementID, function(el, registry) {
@@ -169,7 +156,7 @@ function AppController($scope, $http, $compile) {
 				callback(arg1,arg2,arg3);
 			});
 		}, subscrID);
-	}
+	};
 
 	/* helper/util methods */
 
@@ -180,12 +167,12 @@ function AppController($scope, $http, $compile) {
 			result.push(i);
 		}
 		return result;
-	}
+	};
 
 	rootScope.formatTime = function(timestamp) {
 		console.log("formatDate(timestamp)", timestamp);
 		formatDate(timestamp);
-	}
+	};
 
 	rootScope.formatCoords = function(loc) {
 		if(!loc)

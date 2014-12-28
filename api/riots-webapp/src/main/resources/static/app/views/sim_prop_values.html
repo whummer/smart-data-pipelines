@@ -1,0 +1,209 @@
+<section ng-controller="PropsSimController" id="simPropsSection">
+
+	<div style="" ng-show="curScenario">
+	
+		<div ng-show="shared.selectedSimProp && curPropSim">
+			<table>
+				<tr><td>Simulation Type:</td><td>
+					<select id="selPropSimType" class="form-control input-sm"
+							ng-model="curPropSim.type">
+						<option value="GPS">GPS Trace</option>
+						<option value="RANDOM">Random</option>
+						<option value="POINTS">Explicit Points</option>
+						<option value="FUNCTIONBASED">Mathematical Function</option>
+					</select>
+				</td></tr>
+				<tr ng-show="curPropSim.type == 'GPS'"><td>Location (lat,lon):</td><td>
+					<input id="latitude" placeholder="latitude"
+							ng-model="curPropSim.latitude"
+							class="form-control input-sm" style="width: 70px"/>,
+					<input id="longitude" placeholder="longitude"
+							ng-model="curPropSim.longitude"
+							class="form-control input-sm" style="width: 70px"/>
+				</td></tr>
+				<tr ng-show="curPropSim.type == 'GPS'"><td>Area Diameter (km):</td><td>
+					<input id="diameter" ng-model="curPropSim.diameter"
+							class="form-control input-sm" style="width: 70px"/>
+				</td></tr>
+				<tr ng-show="curPropSim.type == 'GPS'"><td>Max. Speed (km/h):</td><td>
+					<input id="maxSpeed" ng-model="curPropSim.maxSpeed"
+							class="form-control input-sm" style="width: 70px"/>
+				</td></tr>
+				<tr ng-show="curPropSim.type != 'POINTS'"><td>Start/End Time:</td><td>
+					<input id="propSimStart" value="0" ng-model="curPropSim.startTime"
+							class="form-control input-sm" style="width: 50px"/> /
+					<input id="propSimEnd" value="10" ng-model="curPropSim.endTime"
+							class="form-control input-sm" style="width: 50px"/>
+				</td></tr>
+				<tr ng-show="curPropSim.type != 'POINTS'"><td>Step Interval:</td><td>
+					<input id="propSimStep" ng-model="curPropSim.stepInterval"
+						class="form-control input-sm" style="width: 50px" />
+				</td></tr>
+				<tr ng-show="curPropSim.type == 'RANDOM'"><td>Value Range:</td><td>
+					<input id="propSimValMin" ng-model="curPropSim.minValue"
+						class="form-control input-sm" style="width: 50px"/> -
+					<input id="propSimValMax" ng-model="curPropSim.maxValue"
+						class="form-control input-sm" style="width: 50px"/>
+				</td></tr>
+				<tr ng-show="curPropSim.type == 'FUNCTIONBASED'"><td>Function f(x):</td><td>
+					<input id="propSimFunc" ng-model="curPropSim.function"
+						class="form-control input-sm" data-dojo-props="style:'width: 300px;'"/>
+				</td></tr>
+				<tr ng-show="curPropSim.type == 'POINTS'"><td style="vertical-align: top;">Step Interval:</td><td>
+					<table>
+						<tr ng-repeat="n in range(0, curPropSim.values.length - 1)">
+							<td>f(<input ng-model="curPropSim.values[n].time.time"
+								class="propSimValueKey form-control input-sm"/>) = 
+							<input ng-model="curPropSim.values[n].property.value"
+								class="propSimValueValue form-control input-sm"/></td>
+						</tr>
+					</table>
+					<button class="btn btn-default btn-sm" data-dojo-props="iconClass:'icon-plus-sign'" id="btnAddPropSimValue">Add Value</button>
+				</td></tr>
+				<tr><td></td><td>
+					<button class="btn btn-default btn-sm" data-dojo-props="iconClass:'icon-bar-chart'" id="btnPreviewPropSim">Preview Curve</button>
+					<button class="btn btn-default btn-sm btn-primary" data-dojo-props="iconClass:'icon-save'" id="btnSavePropSim">Save</button></td>
+				</tr>
+			</table>
+		</div>
+		<div ng-show="shared.selectedSimProp && !curPropSim">
+			No simulation values defined.
+			<button class="btn btn-default btn-sm" id="btnAddPropSim">Configure Simulation...</button>
+		</div>
+		<div ng-show="!shared.selectedSimProp">
+			No thing property selected.
+		</div>
+	</div>
+</section>
+
+<style>
+	#propSimsTable {
+		height: 150px;
+	}
+	.propSimValueKey, .propSimValueValue {
+		width: 40%;
+	}
+</style>
+
+<script type="text/javascript">
+
+var app = angular.module("app");
+app.controller('PropsSimController', [
+	'$scope', '$http', '$compile',
+	function($scope, $http, $compile) {
+
+		AppController($scope, $http, $compile);
+
+		$scope.curPropSim = null;
+		$scope.gpsConfig = {};
+
+		var newBlankPropSim = function() {
+			return {name: "unnamed", type: "RANDOM", minValue: 0, maxValue: 1, stepInterval: 0.1};
+		}
+
+		$scope.addPropSim = function() {
+			var newEntry = $scope.curPropSim = newBlankPropSim();
+			$scope.rectifyScenarioModel();
+			newEntry[PROPERTY_NAME] = $scope.shared.selectedSimProp.name;
+			newEntry[THING_ID] = $scope.shared.selectedSimThing.id;
+			console.log("newEntry", newEntry);
+			var url = $scope.simAPI + "/" + $scope.curScenario.id + "/properties";
+			invokePOSTandGET($scope.http, url,
+				JSON.stringify(newEntry),
+				function(data, status, headers, config) {
+					//console.log(data, status, headers, config);
+					$scope.curScenario.simulationProperties.push(data.result);
+					$scope.saveScenarioChanges($scope.curScenario);
+				}
+			);
+		}
+
+		$scope.savePropSim = function() {
+			var item = $scope.constructCurrentPropSim();
+			//console.log("save prop sim", item);
+			if(item[THING_ID]) {
+				delete item[THING_ID]["$$hashKey"];
+			}
+			if(item[PROPERTY_ID]) {
+				delete item[PROPERTY_ID]["$$hashKey"];
+			}
+			invokePUT($scope.http, $scope.propSimAPI,
+				JSON.stringify(item),
+				function(data, status, headers, config) {
+				}
+			);
+		}
+		$scope.addPropSimValue = function() {
+			if(!$scope.curPropSim.values) {
+				$scope.curPropSim.values = [];
+			}
+			$scope.$apply(function(){
+				$scope.curPropSim.values.push( {} );
+			});
+		}
+
+		$scope.constructCurrentPropSim = function() {
+			var item = $scope.curPropSim;
+				if(!item) return;
+			if($scope.curPropSim.type == "FUNCTIONBASED") {
+				delete item["values"];
+				delete item["minValue"];
+				delete item["maxValue"];
+			} else if($scope.curPropSim.type == "RANDOM") {
+				delete item["values"];
+				delete item["function"];
+			} else if($scope.curPropSim.type == "POINTS") {
+				delete item["function"];
+				delete item["minValue"];
+				delete item["maxValue"];
+			} else if($scope.curPropSim.type == "GPS") {
+				delete item["function"];
+				delete item["minValue"];
+				delete item["maxValue"];
+			}
+			delete item["$$hashKey"];
+			return item;
+		}
+
+		$scope.previewPropSim = function() {
+			var request = $scope.constructCurrentPropSim();
+			//console.log("request", JSON.stringify(request));
+			invokePOST($http, $scope.simAPI + "/curve",
+				JSON.stringify(request),
+				function(data, status, headers, config) {
+					eventBus.publish("update.chart.propSim", data.result);
+				}
+			);
+		}
+
+		$scope.selectCurrentProps = function() {
+			console.log("$scope.curScenario", $scope.curScenario);
+			var props = $scope.curScenario.simulationProperties;
+			if(!props || !props.length) return;
+			var dev = $scope.shared.selectedSimThing;
+			var prop = $scope.shared.selectedSimProp;
+			if(!dev || !prop) return;
+			console.log("selectedSimThing", dev, prop);
+			$scope.curPropSim = null;
+			$.each(props, function(idx,el) {
+				if(el[PROPERTY_NAME] == prop.name && dev.id == el[THING_ID]) {
+					$scope.curPropSim = el;
+				}
+			});
+		}
+
+		/* add event handlers */
+		$scope.addClickHandler("btnAddPropSim", $scope.addPropSim);
+		$scope.addClickHandler("btnDelPropSim", $scope.deletePropSim);
+		$scope.addClickHandler("btnAddPropSimValue", $scope.addPropSimValue);
+		$scope.addClickHandler("btnPreviewPropSim", $scope.previewPropSim);
+		$scope.addClickHandler("btnSavePropSim", $scope.savePropSim);
+		$scope.$watch("shared.selectedSimProp", function(scenario) {
+			$scope.selectCurrentProps();
+		});
+
+	}
+]);
+
+</script>
+			
