@@ -53,7 +53,7 @@ app.controller('WorldMapController', [
 								var source = el.draggable[0].parentElement.parentElement.parentElement.parentElement;
 								if(source.id == "thingTypesTable") {
 									var thingType = $scope.prepareModelValues(object, true);
-									$scope.addAssetToMap(loc, thingType);
+									$scope.addThingToMap(loc, thingType);
 								} else if(source.id == "assetsTable") {
 									object = byId($scope.shared.listOfThings, object.id)[0];
 									var thingType = $scope.prepareModelValues(object.thingType, true);
@@ -96,7 +96,7 @@ app.controller('WorldMapController', [
 				$scope.map.removeLayer(marker);
 			};
 	
-			$scope.addAssetToMap = function(position, thingType) {
+			$scope.addThingToMap = function(position, thingType) {
 				if(!position) {
 					position = $scope.map.getCenter();
 				}
@@ -125,7 +125,7 @@ app.controller('WorldMapController', [
 			}
 
 			$scope.createAsset = function(asset) {
-				$scope.addAssetInDB(asset, function(assetSaved) {
+				$scope.addThingInDB(asset, function(assetSaved) {
 					$scope.loadThingsFromDB();
 					eventBus.publish("addOrDel.Asset", assetSaved);
 				});
@@ -198,7 +198,9 @@ app.controller('WorldMapController', [
 				}
 			}, "addOrDel.Asset.worldMap");
 			$scope.subscribeOnce("loadAll.Asset", function(event) {
-				displayMarkers(event.assets, true);
+				if(event.assets) {
+					displayMarkers(event.assets, true);
+				}
 			}, "loadAll.Asset.worldMap");
 			$scope.$watch("shared.listOfThings", function() {
 				displayMarkers($scope.shared.listOfThings, true);

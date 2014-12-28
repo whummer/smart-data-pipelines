@@ -29,7 +29,7 @@ public interface UsersService {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Get user by ID.",
-            notes = "Retrieve a user for a given email identifier.",
+            notes = "Retrieve a user for a given identifier.",
             response = User.class)
     @Timed @ExceptionMetered
 	User findByID(@PathParam("id") String id);

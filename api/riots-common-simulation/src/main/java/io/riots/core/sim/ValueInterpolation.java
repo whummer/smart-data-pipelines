@@ -1,6 +1,7 @@
 package io.riots.core.sim;
 
-import io.hummer.osm.model.Point.PathPoint;
+import io.riots.core.services.sim.LocationInTime;
+import io.riots.core.services.sim.Time;
 
 import java.util.List;
 
@@ -19,31 +20,34 @@ import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
  */
 public class ValueInterpolation {
 
-	public static void interpolate(List<PathPoint> in, double timeStepSize) {
+	public static void interpolate(List<LocationInTime> in, double timeStepSize) {
 		interpolate(in, timeStepSize, false);
 	}
 
-	public static void interpolate(List<PathPoint> in, double timeStepSize, boolean exact) {
+	public static void interpolate(List<LocationInTime> in, double timeStepSize, boolean exact) {
 		if(in.size() <= 1)
 			return;
 		LinearInterpolator inter = new LinearInterpolator();
 		//double startTime = in.get(0).time;
 		for(int i = 1; i < in.size(); i ++) {
-			PathPoint p1 = in.get(i - 1);
-			PathPoint p2 = in.get(i);
-			if((p2.time - p1.time) < timeStepSize) {
+			LocationInTime p1 = in.get(i - 1);
+			LocationInTime p2 = in.get(i);
+			if((p2.getTime() - p1.getTime()) < timeStepSize) {
 				if(exact) {
 					in.remove(i--);
 				}
 				continue;
 			}
-			double[] times = new double[] {p1.time, p2.time};
-			double[] posX = new double[] {p1.x , p2.x};
+			double[] times = new double[] {p1.getTime(), p2.getTime()};
+			double[] posX = new double[] {p1.getX() , p2.getX()};
 			PolynomialSplineFunction funcX = inter.interpolate(times, posX);
-			double[] posY = new double[] {p1.y, p2.y};
+			double[] posY = new double[] {p1.getY(), p2.getY()};
 			PolynomialSplineFunction funcY = inter.interpolate(times, posY);
-			for(double t = p1.time + timeStepSize; t < p2.time; t += timeStepSize) {
-				PathPoint p = new PathPoint(funcX.value(t), funcY.value(t), t);
+			for(double t = p1.getTime() + timeStepSize; t < p2.getTime(); t += timeStepSize) {
+				LocationInTime p = new LocationInTime();
+				p.property.setLatitude(funcY.value(t));
+				p.property.setLongitude(funcX.value(t));
+				p.time = new Time(t);
 				in.add(i++, p);
 			}
 			if(exact) {

@@ -1,10 +1,12 @@
 package io.riots.api.services;
 
+import io.riots.api.data.drivers.DriverUtilMQTT;
 import io.riots.api.util.ServiceUtil;
 import io.riots.core.auth.AuthHeaders;
 import io.riots.core.repositories.DeviceDriverRepository;
 import io.riots.core.service.DriversService;
 import io.riots.services.drivers.DataDriver;
+import io.riots.services.drivers.DataDriver.DriverConnector;
 import io.riots.services.users.User;
 
 import java.net.URI;
@@ -35,6 +37,9 @@ public class DriversServiceImpl implements DriversService {
     HttpServletRequest req;
     @Context
     MessageContext context;
+    
+    @Autowired
+    DriverUtilMQTT mqttUtil;
 
     @Override
     public DataDriver retrieve(String itemId) {
@@ -68,18 +73,22 @@ public class DriversServiceImpl implements DriversService {
     }
 
     @Override
-    public DataDriver create(DataDriver driver) {
+    public DataDriver setForThing(String thingId, String propertyName, DataDriver driver) {
     	User user = authFilter.getRequestingUser(req);
     	driver.setCreatorId(user.getId());
-        driver = driverRepo.save(driver);
+    	driver.setThingId(thingId);
+    	driver.setPropertyName(propertyName);
+        DataDriver d = retrieveForThing(thingId, propertyName);
+        String oldDriverId = null;
+    	if(d != null) {
+    		oldDriverId = d.getId();
+    		driver.setId(oldDriverId);
+    		stopDriver(d.getConnector(), oldDriverId);
+    	}
+    	driver = driverRepo.save(driver);
+    	startDriver(driver.getConnector(), driver.getId(), driver);
         URI uri = UriBuilder.fromPath("/drivers/{id}").build(driver.getId());
         ServiceUtil.setLocationHeader(context, uri);
-        return driver;
-    }
-
-    @Override
-    public DataDriver update(DataDriver driver) {
-    	driver = driverRepo.save(driver);
         return driver;
     }
 
@@ -87,6 +96,19 @@ public class DriversServiceImpl implements DriversService {
     public boolean delete(String itemId) {
         driverRepo.delete(itemId);
         return true;
+    }
+
+    /* HELPER METHODS */
+
+    private void stopDriver(DriverConnector driverConnector, String oldDriverId) {
+    	if(driverConnector == DriverConnector.MQTT) {
+    		mqttUtil.stop(oldDriverId);
+    	}
+    }
+    private void startDriver(DriverConnector driverConnector, String driverId, DataDriver driver) {
+    	if(driverConnector == DriverConnector.MQTT) {
+    		mqttUtil.start(driverId, driver);
+    	}
     }
 
 }

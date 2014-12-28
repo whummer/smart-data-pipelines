@@ -18,7 +18,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  */
 @JsonSubTypes({
 	@Type(value = DataDriver.class, name="GENERIC"),
-	@Type(value = DeviceDriverMQTT.class, name="MQTT"),
+	@Type(value = DataDriverMQTT.class, name="MQTT"),
 	@Type(value = DataDriver.DataDriverXively.class, name="XIVELY"),
 	@Type(value = DataDriver.DataDriverSpark.class, name="SPARK_IO"),
 	@Type(value = DataDriver.DataDriverCoAP.class, name="CoAP"),
@@ -99,9 +99,6 @@ public class DataDriver implements ObjectIdentifiable, ObjectCreated {
 	public static class DataDriverCoAP extends DataDriver {
 		{ connector = DriverConnector.CoAP; }
 	}
-	public static class DataDriverMQTT extends DataDriver {
-		{ connector = DriverConnector.MQTT; }
-	}
 	public static class DataDriverXMPP extends DataDriver {
 		{ connector = DriverConnector.XMPP; }
 	}
@@ -120,6 +117,9 @@ public class DataDriver implements ObjectIdentifiable, ObjectCreated {
 
 	public String getId() {
 		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public Date getCreated() {
@@ -160,4 +160,5 @@ public class DataDriver implements ObjectIdentifiable, ObjectCreated {
 	public DriverLanguage getDriverLanguage() {
 		return driverLanguage;
 	}
+
 }

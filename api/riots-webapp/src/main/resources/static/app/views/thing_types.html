@@ -1,8 +1,8 @@
-<section ng-controller="DeviceTypesController" id="deviceTypesSection">
+<section ng-controller="ThingTypesController" id="thingTypesSection">
 
     <!-- search input row -->
-    <div id="deviceTypesSectionWrapper">
-        <div class="row" id="deviceTypeSearch">
+    <div id="thingTypesSectionWrapper">
+        <div class="row" id="thingTypeSearch">
             <div class="col-lg-2"></div>
             <div class="col-lg-8">
                 <div class="input-group">
@@ -14,7 +14,7 @@
                         </button>
 					  </span>
                 </div>
-                <button class="btn btn-primary" type="button" id="btnAddDeviceType">
+                <button class="btn btn-primary" type="button" id="btnAddThingType">
                     <span class="glyphicon" style="padding-right: 10px"></span> Add Thing Type
                 </button>
             </div>
@@ -36,7 +36,7 @@
                           <div class="caption">
                               <h4>{{things[$index].name}} und os</h4>
 
-                              <div class="device-type-box" id="{{devices[$index].id}}_description">
+                              <div class="thing-type-box" id="{{things[$index].id}}_description">
                                   {{things[$index].description}}
                               </div>
 
@@ -47,7 +47,7 @@
                                       </a>
                                   </div>
                                   <div style="float:left; margin-right: 3px;">
-                                      <a href="JavaScript:void(0)" ng-click="deleteDeviceType(things[$index].id)" role="button">
+                                      <a href="JavaScript:void(0)" ng-click="deleteThingType(things[$index].id)" role="button">
                                           <span class="glyphicon glyphicon-remove"></span>
                                       </a>
                                   </div>
@@ -78,7 +78,7 @@
                           <div class="caption">
                               <h4>{{things[$index+1].name}}</h4>
 
-                              <div class="device-type-box" id="{{things[$index+1].id}}_description"><p class="">
+                              <div class="thing-type-box" id="{{things[$index+1].id}}_description"><p class="">
                                   {{things[$index+1].description}}</p></div>
 
                               <div style="margin-bottom: 10px">
@@ -114,7 +114,7 @@
                           <div class="caption">
                               <h4>{{things[$index+2].name}}</h4>
 
-                              <div class="device-type-box" id="{{things[$index+2].id}}_description"><p class="">
+                              <div class="thing-type-box" id="{{things[$index+2].id}}_description"><p class="">
                                   {{things[$index+2].description}}</p></div>
 
                               <div style="margin-bottom: 10px">

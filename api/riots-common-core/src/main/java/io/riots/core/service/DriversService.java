@@ -5,7 +5,6 @@ import io.riots.services.drivers.DataDriver;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -64,11 +63,11 @@ public interface DriversService {
     @ExceptionMetered
     DataDriver retrieveForThing(@PathParam("id") String thingId, @PathParam("propName") String propertyName);
 
-    @POST
-    @Path("/")
+    @PUT
+    @Path("/forThing/{id}/{propName}")
     @Consumes({MediaType.APPLICATION_JSON})
-    @ApiOperation(value = "Created a new DataDriver",
-            notes = "Create a new DataDriver according to the provided JSON payload. "
+    @ApiOperation(value = "Create a DataDriver for a thing property",
+            notes = "Create a new DataDriver for a thing property according to the provided JSON payload. "
             		+ "Upon successful creation, HTTP 201 and a Location header for the" +
                     " created DataDriver is returned."
     )
@@ -77,22 +76,8 @@ public interface DriversService {
     })
     @Timed
     @ExceptionMetered
-    DataDriver create(DataDriver driver);
-
-    @PUT
-    @Path("/")
-    @Consumes({MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_JSON})
-    @ApiOperation(value = "Update an existing DataDriver",
-            notes = "Update an existing DataDriver according to the "
-            		+ "provided JSON payload. Upon success, HTTP 200 is returned."
-    )
-    @ApiResponses(value = {
-            @ApiResponse(code = 400, message = "Malformed DataDriver provided. See error message for details")
-    })
-    @Timed
-    @ExceptionMetered
-    DataDriver update(DataDriver driver);
+    DataDriver setForThing(@PathParam("id") String thingId, 
+    		@PathParam("propName") String propertyName, DataDriver driver);
 
     @DELETE
     @Path("/{id}")

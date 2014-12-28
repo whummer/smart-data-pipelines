@@ -16,6 +16,7 @@ define(['app'], function(app) {
 			$scope.thingTypePropsAPI = appConfig.services.thingTypeProps.url;
 			$scope.propValuesAPI = appConfig.services.things.url;
 			$scope.driversAPI = appConfig.services.drivers.url;
+			$scope.usersAPI = appConfig.services.users.url;
 
 			$scope.listOfThings = null;
 			$scope.defaultLocation = {lat: 48.19742, lng: 16.37127};
@@ -48,6 +49,9 @@ define(['app'], function(app) {
 			$scope.updateThingInDB = function(thing, callback) {
 				thingCopy = JSON.parse(JSON.stringify(thing));
 				delete thingCopy["$$hashKey"];
+				if(thingCopy[THING_TYPE] && thingCopy[THING_TYPE].id) {
+					thingCopy[THING_TYPE] = thingCopy[THING_TYPE].id;
+				}
 				invokePUT($http, $scope.thingsAPI + '/',
 					JSON.stringify(thingCopy),
 					function(data, status, headers, config) {

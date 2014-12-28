@@ -47,12 +47,12 @@ public abstract class HierarchicalObject<T> {
 		this.name = name;
 	}
 
-	public HierarchicalObject withName(final String name) {
+	public HierarchicalObject<?> withName(final String name) {
 		this.name = name;
 		return this;
 	}
 
-	public HierarchicalObject withChildren(final Set<T> children) {
+	public HierarchicalObject<?> withChildren(final Set<T> children) {
 		this.children = children;
 		return this;
 	}

@@ -11,6 +11,10 @@ zuul:
       path: /api/v1/ratings/**
       stripPrefix: false
       serviceId: users-service
+    api-stats:
+      path: /api/v1/stats/**
+      stripPrefix: false
+      serviceId: users-service
     api-things:
       path: /api/v1/things/**
       stripPrefix: false
@@ -21,6 +25,9 @@ zuul:
       serviceId: environment-service
     catalog-service:
       path: /api/v1/catalog/**
+      stripPrefix: false
+    simulation-service:
+      path: /api/v1/simulations/**
       stripPrefix: false
 
     webapp-service:

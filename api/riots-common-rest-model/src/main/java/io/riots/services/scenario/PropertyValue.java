@@ -32,13 +32,21 @@ public class PropertyValue implements ObjectIdentifiable {
 	}
 
 	public PropertyValue(Object value) {
-		this(null, value);
+		this((Property)null, value);
 	}
 
 	public PropertyValue(Property property, Object value) {
 		if(property != null) {
 			this.propertyName = property.getName();
 		}
+		this.value = value;
+	}
+
+	public PropertyValue(PropertyValue propValueTemplate, Object value) {
+		this.id = propValueTemplate.id;
+		this.propertyName = propValueTemplate.propertyName;
+		this.thingId = propValueTemplate.thingId;
+		this.timestamp = propValueTemplate.timestamp;
 		this.value = value;
 	}
 

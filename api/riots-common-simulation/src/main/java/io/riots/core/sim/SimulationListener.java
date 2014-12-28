@@ -1,6 +1,6 @@
 package io.riots.core.sim;
 
-import io.riots.core.model.sim.SimulationRun;
+import io.riots.core.services.sim.SimulationRun;
 import io.riots.services.scenario.PropertyValue;
 
 /**

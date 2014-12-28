@@ -13,7 +13,6 @@
     <artifactId>riots-service-environment</artifactId>
     <name>environment-service</name>
     <description>this service provides environment actions</description>
-    <version>0.0.1-SNAPSHOT</version>
 
 	<properties>
 		<riots.port>8185</riots.port>
@@ -51,6 +50,13 @@
             <artifactId>activemq-broker</artifactId>
         </dependency>
 
+		<!-- MQTT client -->
+		<dependency>
+			<groupId>org.eclipse.paho</groupId>
+			<artifactId>mqtt-client</artifactId>
+			<version>0.4.0</version>
+		</dependency>
+
     </dependencies>
 
     <build>
@@ -74,4 +80,10 @@
         </plugins>
     </build>
 
+	<repositories>
+		<repository>
+			<id>paho-mqtt-client</id>
+			<url>https://repo.eclipse.org/content/repositories/paho-releases/</url>
+		</repository>
+	</repositories>
 </project>

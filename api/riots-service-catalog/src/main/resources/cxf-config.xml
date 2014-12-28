@@ -13,7 +13,7 @@
     
     <jaxrs:server address="/v1" id="api-v1">
         <jaxrs:serviceBeans>
-            <ref bean="catalogService"/>
+            <ref bean="elasticCatalogService"/>
             <bean id="swaggerResourceJSON" class="com.wordnik.swagger.jaxrs.listing.ApiListingResourceJSON"/>
         </jaxrs:serviceBeans>
         <jaxrs:features>

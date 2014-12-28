@@ -13,9 +13,10 @@
 
     <jaxrs:server address="/v1" id="api-v1">
         <jaxrs:serviceBeans>
-            <ref bean="users"/>
-            <ref bean="ratings"/>
-            <ref bean="statistics"/>
+            <ref bean="usersServiceImpl"/>
+            <ref bean="userSettingsServiceImpl"/>
+            <ref bean="ratingsServiceImpl"/>
+            <ref bean="statisticsServiceImpl"/>
             <bean id="swaggerResourceJSON" class="com.wordnik.swagger.jaxrs.listing.ApiListingResourceJSON"/>
         </jaxrs:serviceBeans>
         <jaxrs:features>

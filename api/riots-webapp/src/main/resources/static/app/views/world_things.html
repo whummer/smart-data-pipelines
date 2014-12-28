@@ -97,27 +97,27 @@
 					}
 				);
 			}
-			$scope.addAsset = function(){
+			$scope.addThing = function(){
 				item = {
 					name: "unnamed"
 				}
-				$scope.addAssetInDB(item, function(asset) {
+				$scope.addThingInDB(item, function(asset) {
 					//$scope.loadAllAssets();
 					eventBus.publish("addOrDel.Asset", asset);
 				});
 			}
-			$scope.deleteAsset = function(){
+			$scope.deleteThing = function(){
 				var selection = $scope.shared.selectedThing;
 				if(!selection || !selection.id) return;
-				$scope.deleteAssetInDB(selection, function() {
+				$scope.deleteThingInDB(selection, function() {
 					//$scope.loadAllAssets();
 					eventBus.publish("addOrDel.Asset", selection);
 				});
 			}
 
 			/* register event handlers*/
-			$scope.addClickHandler("btnAddAsset", $scope.addAsset);
-			$scope.addClickHandler("btnDeleteAsset", $scope.deleteAsset);
+			$scope.addClickHandler("btnAddAsset", $scope.addThing);
+			$scope.addClickHandler("btnDeleteAsset", $scope.deleteThing);
 			$scope.subscribeOnce("addOrDel.Asset", function() {
 				$scope.loadAllAssets();
 			}, "addOrDel.Asset.worldAssetsView");

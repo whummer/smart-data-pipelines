@@ -1,7 +1,7 @@
 package io.riots.example;
 
-import io.riots.core.model.sim.PropertySimulation;
-import io.riots.core.model.sim.Simulation;
+import io.riots.core.services.sim.PropertySimulation;
+import io.riots.core.services.sim.Simulation;
 import io.riots.services.catalog.Property;
 
 import org.junit.Test;

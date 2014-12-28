@@ -9,14 +9,21 @@ import io.hummer.osm.query.OSMContainer;
 import io.hummer.osm.query.OSMElement;
 import io.hummer.osm.query.OSMNode;
 import io.hummer.osm.util.Util;
+import io.riots.core.services.sim.LocationInTime;
+import io.riots.core.services.sim.TrafficTraces;
+import io.riots.core.services.sim.TrafficTraces.TrafficTrace;
 import io.riots.core.sim.ValueInterpolation;
-import io.riots.core.sim.traffic.TrafficSimulatorMatsim.TrafficTraces.TrafficTrace;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -42,8 +49,6 @@ import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.core.utils.geometry.CoordinateTransformation;
 import org.matsim.core.utils.geometry.transformations.TransformationFactory;
 import org.matsim.core.utils.io.OsmNetworkReader;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Generate realistic GPS traces of vehicles/persons traveling on the map, based
@@ -176,7 +181,7 @@ public class TrafficSimulatorMatsim {
 
 	void dumpVehiclePaths() {
 		for (String id : vehiclePaths.keySet()) {
-			dumpVehiclePath(id, vehiclePaths.get(id));
+			doDumpVehiclePath(id, vehiclePaths.get(id));
 		}
 	}
 	static void dumpVehiclePaths(TrafficTraces traces) {
@@ -184,9 +189,30 @@ public class TrafficSimulatorMatsim {
 			dumpVehiclePath(t.id, t.points);
 		}
 	}
-	static void dumpVehiclePath(String id, List<PathPoint> points) {
+	static void dumpVehiclePath(String id, List<LocationInTime> points) {
+		List<PathPoint> list = convert(points);
+		doDumpVehiclePath(id, list);
+	}
+	static void doDumpVehiclePath(String id, List<PathPoint> list) {
 		Util.write(new File("vehicle_" + id + ".kml"),
-				PathExporter.exportKML(points));
+				PathExporter.exportKML(list));
+	}
+	static List<LocationInTime> convert1(List<PathPoint> points) {
+		List<LocationInTime> list = new LinkedList<>();
+		for(PathPoint l : points) {
+			LocationInTime p = new LocationInTime(l.y, l.x, l.time);
+			list.add(p);
+		}
+		return list;
+	}
+	static List<PathPoint> convert(List<LocationInTime> points) {
+		List<PathPoint> list = new LinkedList<>();
+		for(LocationInTime l : points) {
+			PathPoint p = new PathPoint(l.getLongitude(), 
+					l.getLatitude(), l.getTime());
+			list.add(p);
+		}
+		return list;
 	}
 
 	@SuppressWarnings("deprecation")
@@ -248,27 +274,12 @@ public class TrafficSimulatorMatsim {
 		}
 	}
 
-	private static void trimMaxTime(List<PathPoint> points, double maxTime) {
+	private static void trimMaxTime(List<LocationInTime> points, double maxTime) {
 		for(int i = 0; i < points.size(); i ++) {
-			if(points.get(i).time > maxTime) {
+			if(points.get(i).time.getTime() > maxTime) {
 				points.remove(i --);
 			}
 		}
-	}
-
-	public static class TrafficTraces {
-		public static class TrafficTrace {
-			@JsonProperty
-			public String id;
-			@JsonProperty
-			public List<PathPoint> points = new LinkedList<>();
-			@Override
-			public String toString() {
-				return "TrafficTrace [id=" + id + ", points=" + points + "]";
-			}
-		}
-		@JsonProperty
-		public List<TrafficTrace> traces = new LinkedList<>();
 	}
 
 	public static TrafficTraces generateTraces(int numVehicles,
@@ -279,7 +290,7 @@ public class TrafficSimulatorMatsim {
 		for(String s : r.keySet()) {
 			TrafficTrace t = new TrafficTrace();
 			t.id = s;
-			t.points = r.get(s);
+			t.points = convert1(r.get(s));
 			result.traces.add(t);
 		}
 		return result;

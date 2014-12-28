@@ -16,7 +16,7 @@ public class ServiceUtil {
 
 	public static final String API_HOST = "api.riots.io";
 	public static final int API_PORT = 8080;
-	public static final String API_PATH = "/api/v1";
+	public static final String API_PATH = "/api/v1/";
 	public static final URL API_CONTEXT_URL;
 
 	static {
@@ -28,6 +28,9 @@ public class ServiceUtil {
 	}
 
 	public static void setLocationHeader(MessageContext context, URI location) {
+		setLocationHeader(context, location.toString());
+	}
+	public static void setLocationHeader(MessageContext context, URL location) {
 		setLocationHeader(context, location.toString());
 	}
 	public static void setLocationHeader(MessageContext context, String location) {

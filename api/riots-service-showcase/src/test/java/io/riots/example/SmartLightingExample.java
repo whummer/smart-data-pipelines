@@ -1,6 +1,5 @@
 package io.riots.example;
 
-import io.riots.api.services.Simulations;
 import io.riots.core.service.CatalogService;
 import io.riots.core.service.ThingsService;
 import io.riots.services.scenario.Thing;
@@ -13,7 +12,7 @@ public class SmartLightingExample {
 	List<Thing> sensors;
 	ThingsService thingsService;
 	CatalogService catalogService;
-	Simulations simService;
+//	Simulations simService;
 
 /*	@Before
 	@SuppressWarnings("rawtypes")

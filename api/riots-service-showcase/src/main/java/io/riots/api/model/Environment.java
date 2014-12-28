@@ -1,11 +1,11 @@
 package io.riots.api.model;
 
-import org.springframework.data.mongodb.core.mapping.Document;
-
 import io.riots.services.scenario.Thing;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * @author omoser

@@ -29,7 +29,7 @@ public class ServiceClientFactory {
 	private static final String SERVICE_USERS_EUREKA_NAME = "users-service";
 	private static final String SERVICE_USERS_ENDPOINT = "http://%s:%s/api/v1/users";
 	private static final String SERVICE_CATALOG_EUREKA_NAME = "catalog-service";
-	private static final String SERVICE_CATALOG_ENDPOINT = "http://%s:%s/api/v1/catalog/thing-types";
+	private static final String SERVICE_CATALOG_ENDPOINT = "http://%s:%s/api/v1/catalog";
 	private static final String SERVICE_THINGS_EUREKA_NAME = "environment-service";
 	private static final String SERVICE_THINGS_ENDPOINT = "http://%s:%s/api/v1/things";
 	private static final Map<String,String> serviceEndpoints = new HashMap<String,String>();
@@ -70,9 +70,9 @@ public class ServiceClientFactory {
 	private InstanceInfo getService(String name) {
 		//DiscoveryClient d = DiscoveryManager.getInstance().getDiscoveryClient();
 		DiscoveryClient d = discoveryClient;
-		System.out.println("client " + d);
+		//System.out.println("client " + d);
 		Application app = d.getApplication(name);
-		System.out.println(app);
+		//System.out.println(app);
 		List<InstanceInfo> list = app.getInstances();
 		if(list.isEmpty())
 			throw new RuntimeException("Service '" + name + "' is not available.");

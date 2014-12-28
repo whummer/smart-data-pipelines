@@ -40,14 +40,16 @@ define([], function() {
                 templateUrl: appRoot + '/views/world.html',
                 dependencies: [
                     //appRoot + '/scripts/controllers/World3DController.js',
-                    appRoot + '/scripts/controllers/WorldViewController.js'
+                    appRoot + '/scripts/controllers/WorldViewController.js',
+                    appRoot + '/scripts/controllers/SimViewController.js'
                 ]
             },
             '/world/:thingID': {
                 templateUrl: appRoot + '/views/world_thing.html',
                 dependencies: [
                     //appRoot + '/scripts/controllers/World3DController.js',
-                    appRoot + '/scripts/controllers/WorldViewController.js'
+                    appRoot + '/scripts/controllers/WorldViewController.js',
+                    appRoot + '/scripts/controllers/SimViewController.js'
                 ]
             },
             '/login': {
