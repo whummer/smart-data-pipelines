@@ -2,14 +2,18 @@ package io.riots.services.catalog;
 
 import static org.springframework.data.elasticsearch.annotations.FieldType.Object;
 import static org.springframework.data.elasticsearch.annotations.FieldType.String;
+import io.riots.services.scenario.Thing;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -21,24 +25,42 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author Waldemar Hummer
  * @author riox
  */
-@Document(indexName = "thing-types", type = "thing", shards = 1, replicas = 0, refreshInterval = "-1", indexStoreType = "memory")
+//TODO why is the indexStoreType set to "memory"?
+//@Document(indexName = "thing-types", type = "thing-type", shards = 1, replicas = 0, refreshInterval = "-1", indexStoreType = "memory")
+@Document(indexName = "thing-types", type = "thing-type")
 public class ThingType extends HierarchicalObject<ThingType> {
+
+	@JsonInclude(Include.NON_EMPTY)
+	@Id
+	private String id;
+
+	@JsonInclude(Include.NON_EMPTY)
+	private String description;
+
+	@JsonInclude(Include.NON_EMPTY)
+	@JsonProperty("creation-date")
+	@Field(type = FieldType.Date)
+	private Date created;
+
+	@JsonInclude(Include.NON_EMPTY)
+	@JsonProperty("creator-id")
+	private String creatorId;
 
 	@JsonInclude(Include.NON_EMPTY)
 	@JsonProperty("manufacturer-id")
 	private String manufacturerId;
 
 	@JsonInclude(Include.NON_EMPTY)
-    @Field(type = String, store = true)
+	@Field(type = Object, store = true)
 	private Map<String, String> features = new HashMap<>();
 
 	@JsonInclude(Include.NON_EMPTY)
-    @Field(type = String, store = true)
+	@Field(type = String, store = true)
 	private List<String> tags = new LinkedList<String>();
 
 	@JsonProperty("image-urls")
 	@JsonInclude(Include.NON_EMPTY)
-    @Field(type = String, store = true)
+	@Field(type = String, store = true)
 	private List<String> imageUrls;
 
 	/**
@@ -50,14 +72,57 @@ public class ThingType extends HierarchicalObject<ThingType> {
 	 */
 	@JsonProperty("properties")
 	@JsonInclude(Include.NON_EMPTY)
-    @Field(type = Object, store = true)
-	private List<Property<?>> properties = new LinkedList<Property<?>>();
+	@Field(type = Object, store = true)
+	private List<Property> properties = new LinkedList<Property>();
 
 	public ThingType() {
 	}
 
 	public ThingType(String name) {
 		super(name);
+	}
+
+	public Property getProperty(String name) {
+		for(Property p : properties) {
+			if(name.equals(p.getName())) {
+				return p;
+			}
+		}
+		return null;
+	}
+
+	/* GETTERS/SETTERS */
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public Date getCreated() {
+		return created;
+	}
+
+	public void setCreated(Date created) {
+		this.created = created;
+	}
+
+	public String getCreatorId() {
+		return creatorId;
+	}
+
+	public void setCreatorId(String creatorId) {
+		this.creatorId = creatorId;
 	}
 
 	public String getManufacturerId() {
@@ -76,11 +141,11 @@ public class ThingType extends HierarchicalObject<ThingType> {
 		this.imageUrls = imageUrls;
 	}
 
-	public List<Property<?>> getProperties() {
+	public List<Property> getProperties() {
 		return properties;
 	}
 
-	public void setDeviceProperties(List<Property<?>> properties) {
+	public void setDeviceProperties(List<Property> properties) {
 		this.properties = properties;
 	}
 
@@ -103,14 +168,61 @@ public class ThingType extends HierarchicalObject<ThingType> {
 
 	public void setTags(List<String> tags) {
 		this.tags = tags;
+	}	
+
+	public ThingType withProperties(final List<Property> properties) {
+		this.properties = properties;
+		return this;
 	}
+
+	public ThingType withId(final java.lang.String id) {
+		this.id = id;
+		return this;
+	}
+
+	public ThingType withDescription(final java.lang.String description) {
+		this.description = description;
+		return this;
+	}
+
+	public ThingType withCreated(final Date created) {
+		this.created = created;
+		return this;
+	}
+
+	public ThingType withCreatorId(final java.lang.String creatorId) {
+		this.creatorId = creatorId;
+		return this;
+	}
+
+	public ThingType withManufacturerId(final java.lang.String manufacturerId) {
+		this.manufacturerId = manufacturerId;
+		return this;
+	}
+
+	public ThingType withFeatures(final Map<java.lang.String, java.lang.String> features) {
+		this.features = features;
+		return this;
+	}
+
+	public ThingType withTags(final List<java.lang.String> tags) {
+		this.tags = tags;
+		return this;
+	}
+
+	public ThingType withImageUrls(final List<java.lang.String> imageUrls) {
+		this.imageUrls = imageUrls;
+		return this;
+	}
+
 
 	@Override
 	public String toString() {
-		return "ThingType [manufacturer=" + manufacturerId + ", semanticType="
-				+ "features=" + features + ", tags=" + tags
-				+ ", imageUrls=" + imageUrls + ", properties=" + properties
-				+ "]";
+		return "ThingType [id=" + id + ", description=" + description
+				+ ", created=" + created + ", creatorId=" + creatorId
+				+ ", manufacturerId=" + manufacturerId + ", features="
+				+ features + ", tags=" + tags + ", imageUrls=" + imageUrls
+				+ ", properties=" + properties + "]";
 	}
 
 	@Override
@@ -165,6 +277,5 @@ public class ThingType extends HierarchicalObject<ThingType> {
 			return false;
 		return true;
 	}
-	
 
 }

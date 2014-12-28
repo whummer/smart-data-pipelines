@@ -1,43 +1,46 @@
-define(['app'], function(app) {
-    app.controller('CatalogViewController', [
-        '$scope', '$http', '$compile',
-		function($scope, $http, $compile) {
+define(['app', 'bootstrap-tagsinput'], function(app) {
+
+
+
+    app.controller('CatalogViewController',
+		function($scope, $http, $compile, $log) {
+
+			$log.debug("Inside CatalogViewController");
 
 			AppController($scope, $http, $compile);
 
 			$scope.highlightMenuItem("#menuItemCatalog");
 
-			$scope.deviceTypesAPI = appConfig.services.deviceTypes.url;
-			$scope.deviceTypePropsAPI = appConfig.services.deviceTypeProps.url;
+			$scope.thingTypesAPI = appConfig.services.thingTypes.url;
+			$scope.thingTypePropsAPI = appConfig.services.thingTypeProps.url;
 			$scope.semanticsAPI = appConfig.services.semanticTypes.url;
-			$scope.driversAPI = appConfig.services.deviceDrivers.url;
+			$scope.driversAPI = appConfig.services.drivers.url;
 
-			$scope.shared.selectedDeviceType = null;
+			$scope.shared.selectedThingType = null;
         }
-    ]);
+    );
 
+	app.controller('ThingTypesController',
 
-	app.controller('DeviceTypeController',
+		function ($scope, $log) {
 
-		function ($scope) {
+			$log.debug("Inside ThingTypesController");
 
-			console.log("DeviceTypeController");
-
-			$scope.showMore = function(deviceId) {
-				$("#" + deviceId + "_description").removeClass("device-type-box");
-				$("#" + deviceId + "_expand").addClass("hidden");
-				$("#" + deviceId + "_collapse").removeClass("hidden");
+			$scope.showMore = function(thingId) {
+				$("#" + thingId + "_description").removeClass("thing-type-box");
+				$("#" + thingId + "_expand").addClass("hidden");
+				$("#" + thingId + "_collapse").removeClass("hidden");
 			};
 
-			$scope.showLess = function(deviceId) {
-				$("#" + deviceId + "_description").addClass("device-type-box");
-				$("#" + deviceId + "_expand").removeClass("hidden");
-				$("#" + deviceId + "_collapse").addClass("hidden");
+			$scope.showLess = function(thingId) {
+				$("#" + thingId + "_description").addClass("thing-type-box");
+				$("#" + thingId + "_expand").removeClass("hidden");
+				$("#" + thingId + "_collapse").addClass("hidden");
 			};
 
 			var setupDragAndDrop = function () {
 				// set up drag/drop
-				var selector = "#deviceTypesTable .ui-grid-row";
+				var selector = "#thingTypesTable .ui-grid-row";
 				$(selector).draggable({
 					helper: function () {
 						return $("<div style='z-index: 100000'>" +
@@ -52,9 +55,9 @@ define(['app'], function(app) {
 				});
 			};
 
-			$scope.loadAllDeviceTypes = function () {
-				console.log("Loading all device types")
-				invokeGET($scope.http, $scope.deviceTypesAPI,
+			$scope.loadAllThingTypes = function () {
+				console.log("Loading all thing types")
+				invokeGET($scope.http, $scope.thingTypesAPI,
 					function (data, status, headers, config) {
 						var nodes = [];
 						for (var i = 0; i < data.result.length; i++) {
@@ -62,7 +65,7 @@ define(['app'], function(app) {
 							nodes.push(obj);
 						}
 
-						$scope.devices = nodes;
+						$scope.things = nodes;
 						setTimeout(function () {
 							setupDragAndDrop();
 						}, 100);
@@ -71,30 +74,42 @@ define(['app'], function(app) {
 				);
 			};
 
-			$scope.loadAllDeviceTypes();
-
-			$scope.saveDeviceType = function (deviceType) {
-				deviceType = JSON.parse(JSON.stringify(deviceType));
-				$scope.prepareModelValues(deviceType);
-				delete deviceType.drivers;
-				console.log("saving deviceType", deviceType);
-				invokePUT($scope.http, $scope.deviceTypesAPI,
-					JSON.stringify(deviceType),
+			$scope.loadAllThingTypes();
+			
+			// Entry point for key press during thing type search
+			$scope.searchKeyPress = function ()  {
+				console.log($scope.searchText)				
+				invokeGET($scope.http, $scope.thingTypesAPI+"?q="+$scope.searchText,						
 					function (data, status, headers, config) {
-						$scope.loadAllDeviceTypes();
+						var obj = data.result;
+						console.log(obj.size)						
+						$scope.things = data.result
+					}									
+				);
+			}
+
+			/*$scope.saveThingType = function (thingType) {
+				thingType = JSON.parse(JSON.stringify(thingType));
+				$scope.prepareModelValues(thingType);
+				delete thingType.drivers;
+				console.log("saving thingType", thingType);
+				invokePUT($scope.http, $scope.thingTypesAPI,
+					JSON.stringify(thingType),
+					function (data, status, headers, config) {
+						$scope.loadAllThingTypes();
 					}
 				);
-			};
+			};*/
 
-			$scope.addDeviceType = function () {
+			$scope.addThingType = function () {
 				var items = [
 					{id: "manual", name: "Add item manually"},
-					{id: "wolfram", name: "Import from Wolfram Devices"},
+					{id: "wolfram", name: "Import from Wolfram Things"},
 					{id: "iotdb", name: "Import from IoTDB"}
 				];
 				showSelectDialog("Select source:", items, function (el) {
 					if (el.id == "manual") {
-						$scope.addDeviceTypeManual();
+						$scope.addThingTypeManual();
 					} else if (el.id == "wolfram") {
 						importFromWolfram();
 					} else if (el.id == "iotdb") {
@@ -104,60 +119,61 @@ define(['app'], function(app) {
 			};
 
 
-			$scope.addDeviceTypeManual = function (deviceType) {
-				if (!deviceType) {
-					deviceType = {
+			$scope.addThingTypeManual = function (thingType) {
+				if (!thingType) {
+					thingType = {
 						name: "unnamed"
 					}
 				}
-				invokePOST($scope.http, $scope.deviceTypesAPI + "/",
-					JSON.stringify(deviceType),
+				invokePOST($scope.http, $scope.thingTypesAPI + "/",
+					JSON.stringify(thingType),
 					function (data, status, headers, config) {
-						$scope.loadAllDeviceTypes();
+						$scope.loadAllThingTypes();
 					}
 				);
 			};
 
-			$scope.deleteDeviceType = function () {
-				var selection = $scope.selectedDeviceType;
-				if (!selection || !selection.id) return;
-				showConfirmDialog("Do you really want to delete this device type?", function () {
+			$scope.deleteThingType = function (thingType) {
+				//var selection = $scope.selectedThingType;
+				//if (!selection || !selection.id) return;
+				$log.warn("About to delete ThingType: ", thingType);
+
+				showConfirmDialog("Do you really want to delete this thing type?", function () {
 					invokeDELETE($scope.http,
-						$scope.deviceTypesAPI + "/" + selection.id,
+						$scope.thingTypesAPI + "/" + thingType.id,
 						function (data, status, headers, config) {
-							$scope.selectedDeviceType = $scope.shared.selectedDeviceType = null;
-							$scope.loadAllDeviceTypes();
+							$scope.selectedThingType = $scope.shared.selectedThingType = null;
+							$scope.loadAllThingTypes();
 						}
 					);
 				});
 			};
 
-			$scope.searchDeviceType = function () {
+			$scope.searchThingType = function () {
 				console.log("search: " + $("#inputDevTypeSearch").val());
 			};
 
 			/* register event handlers*/
-			$scope.addClickHandler('btnAddDeviceType', $scope.addDeviceType);
-			$scope.addClickHandler('btnDelDeviceType', $scope.deleteDeviceType);
-			$scope.addClickHandler('btnSearchDeviceType', $scope.searchDeviceType);
+			//$scope.addClickHandler('btnAddThingType', $scope.addThingType);
+			//$scope.addClickHandler('btnDelThingType', $scope.deleteThingType);
+			$scope.addClickHandler('btnSearchThingType', $scope.searchThingType);
 
-			$scope.subscribeOnce("change.DeviceTypeProps", function (event) {
-					console.log("change.DeviceTypeProps", event.changedItem);
-					$scope.saveDeviceType(event.changedItem);
-				}, "deviceTypePropsChangeListener"
+			$scope.subscribeOnce("change.ThingTypeProps", function (event) {
+					console.log("change.ThingTypeProps", event.changedItem);
+					$scope.saveThingType(event.changedItem);
+				}, "thingTypePropsChangeListener"
 			);
 
-			$scope.subscribeOnce("reload.DeviceTypeProps", function (event) {
-					$scope.loadAllDeviceTypes();
-				}, "deviceTypePropsReloadListener"
+			$scope.subscribeOnce("reload.ThingTypeProps", function (event) {
+					$scope.loadAllThingTypes();
+				}, "thingTypePropsReloadListener"
 			);
 
-			$scope.$watch("selectedDeviceType", function () {
-				$("#btnDelDeviceType").prop("disabled", $scope.selectedDeviceType == null);
+			$scope.$watch("selectedThingType", function () {
+				$("#btnDelThingType").prop("disabled", $scope.selectedThingType == null);
 			});
 
 			/* render main container */
-			renderElement("deviceTypesSection");
 		}
 	);
 });

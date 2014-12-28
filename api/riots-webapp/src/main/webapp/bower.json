@@ -1,0 +1,31 @@
+{
+  "name": "iot-webapp",
+  "version": "1.0.0",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.2.0",
+    "angular-route": "~1.2.14",
+    "angular-ui-grid": "angular-ui/bower-ui-grid#3.0.0-RC.18",
+    "angular-bootstrap": "0.11.2",
+    "angular-bootstrap-slider": "#",
+    "jquery": "~2.1.0",
+    "jquery-ui": "~1.11.0",
+    "requirejs": "~2.1.11",
+    "bootstrap": "3.3.1",
+    "bootstrap-tagsinput": "0.4.2",
+    "leaflet": "0.7.3",
+    "chartjs": "nnnick/Chart.js#master",
+    "uglify-js": "#",
+    "sockjs": "0.3.4",
+    "stomp-websocket": "2.3.3",
+    "hello": "1.2.2",
+    "raty": "2.7.0"
+  }
+}

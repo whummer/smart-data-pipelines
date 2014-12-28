@@ -140,3 +140,8 @@ ul.nav-tabs a.ng-binding {
 .ui-grid {
 	margin-bottom: 10px; margin-top: 7px;
 }
+
+/* custom styles */
+.well-flat {
+	display: block; padding: 20px; margin-bottom: 20px;
+}

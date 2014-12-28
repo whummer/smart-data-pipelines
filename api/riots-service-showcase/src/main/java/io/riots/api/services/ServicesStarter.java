@@ -11,6 +11,7 @@ import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 /**
  * @author omoser
  * @author riox
+ * @author whummer
  */
 @EnableDiscoveryClient
 @EnableJms
@@ -20,8 +21,6 @@ public class ServicesStarter extends MongoEnabledServiceStarter {
     public DefaultJmsListenerContainerFactory myContainerFactory() {
         DefaultJmsListenerContainerFactory factory =
                 new DefaultJmsListenerContainerFactory();
-//        factory.setConnectionFactory(connectionFactory());
-//        factory.setDestinationResolver(destinationResolver());
         factory.setConcurrency("3-10");
         return factory;
     }

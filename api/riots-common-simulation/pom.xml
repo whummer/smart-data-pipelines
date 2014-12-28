@@ -38,6 +38,13 @@
 			<version>1.0.13</version>
 		</dependency>
 
+		<!-- Mathematical expression solver -->
+		<dependency>
+			<groupId>org.scijava</groupId>
+			<artifactId>jep</artifactId>
+			<version>2.4.2</version>
+		</dependency>
+
 		<!--  Groovy Scripting -->
 		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
@@ -71,39 +78,7 @@
 			<artifactId>commons-math3</artifactId>
 			<version>3.3</version>
 		</dependency>
-		
-		<!-- Websockets Support 
-		<dependency>
-			<groupId>javax.websocket</groupId>
-			<artifactId>javax.websocket-api</artifactId>
-			<version>1.1</version>
-			<scope>provided</scope>
-		</dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-websocket</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-messaging</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webmvc</artifactId>
-        </dependency>
-        -->
-        <!-- Websocket client 
-		<dependency>
-			<groupId>org.glassfish.tyrus</groupId>
-			<artifactId>tyrus-client</artifactId>
-			<version>1.8.3</version>
-		</dependency>
-		<dependency>
-			<groupId>org.glassfish.tyrus</groupId>
-			<artifactId>tyrus-container-grizzly-client</artifactId>
-			<version>1.8.3</version>
-		</dependency>
--->
+
     </dependencies>
 
     <repositories>

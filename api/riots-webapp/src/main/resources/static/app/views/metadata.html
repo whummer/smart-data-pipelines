@@ -8,19 +8,19 @@
         <div class="panel-body">
 
 
-            <section ng-controller="MetadataViewController" id="metaViewDiv" style="height: 100%;">
+            <section ng-controller="MetadataViewController" id="metaViewDiv">
 
                 <link href="/bower_components/raty/lib/jquery.raty.css" rel="stylesheet"/>
 
                 <div style="position: relative;">
-                    <tabset style="height: 100%;">
-                        <tab heading="Device Type Categories">
+                    <tabset>
+                        <!--<tab heading="Device Type Categories">
                             <ng-include src="appConfig['appRootPath'] + '/views/meta_devtypes.html'"></ng-include>
                         </tab>
 
                         <tab heading="Property Type Categories">
                             <ng-include src="appConfig['appRootPath'] + '/views/meta_proptypes.html'"></ng-include>
-                        </tab>
+                        </tab>-->
 
                         <tab heading="Manufacturers">
                             <ng-include src="appConfig['appRootPath'] + '/views/meta_manufacturers.html'"></ng-include>
@@ -30,10 +30,3 @@
         </div>
     </div>
 </div>
-
-<script>
-
-    renderElement("metaViewDiv");
-
-</script>
-

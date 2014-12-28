@@ -4,7 +4,7 @@ define(['app'], function(app) {
 		function($scope, $http, $compile) {
 
 			AppController($scope, $http, $compile);
-			World3DController($scope, $http, $compile);
+			//World3DController($scope, $http, $compile);
 
 			rootScope.menuItemActiveClass = { sim: "menuItemActive" }
 			rootScope.worldViewEditMode = false;
@@ -12,10 +12,9 @@ define(['app'], function(app) {
 
 			$scope.simAPI = appConfig.services.simulations.url;
 			$scope.propSimAPI = appConfig.services.simulationProps.url;
-			$scope.deviceSimAPI = appConfig.services.simulationDevices.url;
-			$scope.deviceTypesAPI = appConfig.services.deviceTypes.url;
-			$scope.devicesAPI = appConfig.services.devices.url;
-			$scope.deviceTypePropsAPI = appConfig.services.deviceTypeProps.url;
+			$scope.thingTypesAPI = appConfig.services.thingTypes.url;
+			$scope.thingsAPI = appConfig.services.things.url;
+			$scope.thingTypePropsAPI = appConfig.services.thingTypeProps.url;
 
 			$scope.curScenario = {id: -1};
 			$scope.scenariosMap = {};
@@ -55,13 +54,13 @@ define(['app'], function(app) {
 					scenario = $scope.curScenario;
 				}
 				delete scenario["$$hashKey"];
-				if(scenario.devices) {
-					$.each(scenario.devices, function(idx,el) {
+				if(scenario.things) {
+					$.each(scenario.things, function(idx,el) {
 						delete el["$$hashKey"];
 						if(el.type == "GROUP") {
 							delete el.instance;
 						} else if(el.type == "INSTANCE") {
-							delete el.deviceType;
+							delete el.thingType;
 							delete el.numInstances;
 						}
 					});
@@ -109,7 +108,6 @@ define(['app'], function(app) {
 				invokePOST($scope.http, $scope.simAPI,
 					JSON.stringify(item),
 					function(data, status, headers, config) {
-						//renderElement("simViewDiv");
 						$scope.renderSelectScenarios();
 					}
 				);
@@ -122,7 +120,6 @@ define(['app'], function(app) {
 				var url = $scope.simAPI + "/" + $scope.curScenario.id;
 				invokeDELETE($scope.http, url,
 					function(data, status, headers, config) {
-						//renderElement("simViewDiv");
 						$scope.curScenario = {id: -1};
 						$scope.renderSelectScenarios();
 					}
@@ -204,7 +201,6 @@ define(['app'], function(app) {
 
 			/* render elements */
 			console.log("starting to render simViewSimSelect");
-			//renderElement("simViewSimSelect");
 			$scope.connectToWebsocket();
         }
     ]);

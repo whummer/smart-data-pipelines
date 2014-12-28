@@ -1,0 +1,192 @@
+<section ng-controller="ThingDriverController" id="thingDriverSection" style="height: 100%">
+
+    <div ng-show="shared.selectedThing">
+
+		<div id="thingPropsTable" ui-grid="gridConfig" ui-grid-selection ui-grid-edit ui-grid-row-edit
+             class="grid"></div>
+
+        <div ng-show="selectedProperty">
+            <form class="form-horizontal" role="form" style="text-align: left">
+
+                <!-- driver name -->
+                <div class="form-group">
+                    <label for="driverName" class="col-sm-3 control-label">Property Name</label>
+
+                    <div class="col-sm-9">
+                        <input id="driverName" class="form-control input-sm" data-ng-model="selectedProperty.driver.propertyName"/>
+                    </div>
+                </div>
+
+                <!-- platform/protocol support -->
+                <div class="form-group">
+                    <label for="driverProtocol" class="col-sm-3 control-label">Platform/Protocol</label>
+
+                    <div class="col-sm-9">
+                        <select id="driverProtocol" class="form-control input-sm"
+                                ng-model="selectedProperty.driver.connector">
+                            <option value="GENERIC">None/Generic</option>
+                            <option value="XIVELY">Xively</option>
+                            <option value="SPARK_IO">Spark.io</option>
+                            <option value="MQTT">MQTT</option>
+                            <option value="CoAP">CoAP</option>
+                            <option value="XMPP">XMPP</option>
+                            <option value="REST">RESTful HTTP</option>
+                            <option value="AMQP">AMQP</option>
+                            <option value="DDS">DDS</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- MQTT stuff -->
+                <div class="form-group" ng-show="selectedProperty.driver.connector == 'MQTT'">
+                    <label for="driverBrokerURL" class="col-sm-3 control-label">Broker URL</label>
+
+                    <div class="col-sm-9">
+                        <input id="driverBrokerURL" class="form-control input-sm"
+                               data-ng-model="selectedProperty.driver.brokerURL"/>
+                    </div>
+                </div>
+                <div class="form-group" ng-show="selectedProperty.driver.connector == 'MQTT'">
+                    <label for="driverTopic" class="col-sm-3 control-label">Topic Name</label>
+
+                    <div class="col-sm-9">
+                        <input id="driverTopic" class="form-control input-sm"
+                               data-ng-model="selectedProperty.driver.topicFilter"/>
+                    </div>
+                </div>
+
+                <div class="form-group" ng-show="selectedProperty.driver.connector == 'MQTT'">
+                    <label for="driverBrokerURL" class="col-sm-3 control-label">Payload Format</label>
+
+                    <div class="col-sm-9">
+                        <textarea id="driverPayload" data-ng-model="selectedProperty.driver.payloadFormat"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10 text-right">
+                        <button class="btn btn-default btn-sm btn-primary" id="btnThingDriverSave"><span
+                                class="glyphicon glyphicon-ok"></span> Save Changes
+                        </button>
+                        <a href="#/catalog" class="btn btn-default btn-sm btn-info"><span
+                                class="glyphicon glyphicon-remove"></span> Cancel</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <br class="clear"/>
+    </div>
+
+</section>
+
+<style>
+    #thingPropsTable {
+        height: 200px;
+    }
+</style>
+
+<script type="text/javascript">
+
+    var app = angular.module("app");
+    app.controller('ThingDriverController', [
+        '$scope', '$http', '$compile',
+        function ($scope, $http, $compile) {
+
+            AppController($scope, $http, $compile);
+
+            $scope.selectedProperty = null;
+            $scope.gridConfig = {};
+
+            var initPropsTable = function () {
+	            var columnsConfig = [
+	                {label: "Property", field: "name", sortable: true},
+	                {label: "Data Type", field: "baseType"},
+	                {label: "Driver", field: "driver.connector"}
+	            ];
+                $scope.gridConfig.data = [];
+                renderUITable($scope.gridConfig, "thingPropsTable", columnsConfig,
+                        function (event) {
+                            if (event.type == "dgrid-select") {
+                                $scope.$apply(function () {
+                                    $scope.selectedProperty = event.rows[0].data;
+                                });
+                            } else if (event.type == "dgrid-deselect") {
+                                $scope.$apply(function () {
+                                    $scope.selectedProperty = null;
+                                });
+                            }
+                            /* adjust UI elements */
+                            $("#btnThingDriverDelete").attr("disabled", !$scope.selectedProperty);
+                        }
+                );
+            }
+
+            initPropsTable();
+
+	        var buildPropsTable = function (thing) {
+	        	var thingType = thing[THING_TYPE];
+	        	if(!thingType) return;
+	        	var data = thingType[PROPERTIES];
+	        	if(!data) return;
+	        	$.each(data, function(idx,el) {
+	                var url = $scope.driversAPI + "/forThing/" + 
+	                	thing.id + "/" + el.name;
+	                if(!el.driver)
+	                	el.driver = {}
+	                if(!el.driver.thingId)
+	                	el.driver.thingId = thing.id;
+	                if(!el.driver.propertyName)
+	                	el.driver.propertyName = el.name;
+	                invokeGET($scope.http, url,
+                        function (data, status, headers, config) {
+                            if(data.result) {
+								el.driver = data.result;
+								if(!el.driver.thingId)
+				                	el.driver.thingId = thing.id;
+				                if(!el.driver.propertyName)
+				                	el.driver.propertyName = el.name;
+							}
+                        }
+	                );
+				});
+	            $scope.gridConfig.data = data;
+	        };
+
+            $scope.saveThingDriver = function () {
+            	var prop = $scope.selectedProperty;
+            	var thing = $scope.shared.selectedThing;
+                if (!thing || !prop || !prop.driver) {
+                    return;
+                }
+                var item = prop.driver;
+                if (!item.connector)
+                    item.connector = "GENERIC";
+                delete item["$$hashKey"];
+                var url = $scope.driversAPI + "/forThing/" + 
+	                	thing.id + "/" + prop.name;
+                invokePUT($scope.http, url,
+                        JSON.stringify(item),
+                        function (data, status, headers, config) {
+                            // successfully saved
+                        }
+                );
+            }
+
+            /* register event handlers*/
+            $scope.addClickHandler("btnThingDriverAdd", $scope.addThingDriver);
+            $scope.addClickHandler("btnThingDriverDelete", $scope.deleteThingDriver);
+            $scope.addClickHandler("btnThingDriverSave", function () {
+                $scope.saveThingDriver();
+            });
+			$scope.$watch("shared.selectedThing['" + THING_TYPE + "'].id", function(value) {
+				buildPropsTable($scope.shared.selectedThing);
+			});
+            $scope.onRenderElement("btnThingDriverDelete", function (el) {
+                el.attr("disabled", true);
+            });
+
+            /* start rendering the main container */
+        }
+    ]);
+
+</script>

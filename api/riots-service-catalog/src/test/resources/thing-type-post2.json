@@ -1,0 +1,36 @@
+{
+	"name": "HC-SR04",
+	"description": "The HC-SR04 Ultrasonic Range Sensor uses non-contact ultrasound sonar to measure the distance to an object - they're great for any obstacle avoiding systems on Raspberry Pi robots or rovers! The HC-SR04 consists of two ultrasonic transmitters (basically speakers), a receiver, and a control circuit.",
+	"features": 
+	{
+		"width": "20mm",
+		"length": "35mm",
+		"temperature": "-15C..70C",
+		"sensing-angle": "30°",
+		"input_voltage": "5V",
+		"current-draw": "20mA",
+		"height": "15mm"
+	},
+
+	"image-urls": 
+	[
+		"http://fritzing.org/media/fritzing-repo/projects/h/hc-sr04-project/images/HC-SR04-2.jpg"
+	],
+
+	"properties": 
+	[
+		{
+			"name": "distance",
+			"valueDomain": 
+			{
+				"type": "Continuous",
+				"type": "Continuous",
+				"min": 0.0,
+				"max": 200.0
+			},
+
+			"sensable": true,
+			"actuatable": false
+		}
+	]
+}

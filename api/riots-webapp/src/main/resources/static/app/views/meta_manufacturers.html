@@ -17,10 +17,7 @@
 <script type="text/javascript">
 
     var app = angular.module("app");
-    app.controller('MetaManufacturersController', [
-        '$scope', '$http', '$compile',
-        function ($scope, $http, $compile) {
-
+    app.controller('MetaManufacturersController', function ($scope, $http, $compile) {
             AppController($scope, $http, $compile);
 
             $scope.gridConfig = {};
@@ -29,6 +26,7 @@
             $scope.addClickHandler("btnAddTypeManufacturer", function () {
                 $scope.addMetaType($scope.gridConfig, "Manufacturer");
             });
+
             $scope.addClickHandler("btnDelTypeManufacturer", function () {
                 $scope.deleteMetaType($scope.gridConfig, "Manufacturer");
             });
@@ -41,7 +39,7 @@
             });
 
         }
-    ]);
+    );
 
 </script>
 			
