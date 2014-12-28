@@ -25,8 +25,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author Waldemar Hummer
  * @author riox
  */
-//TODO why is the indexStoreType set to "memory"?
-//@Document(indexName = "thing-types", type = "thing-type", shards = 1, replicas = 0, refreshInterval = "-1", indexStoreType = "memory")
 @Document(indexName = "thing-types", type = "thing-type")
 public class ThingType extends HierarchicalObject<ThingType> {
 
@@ -35,6 +33,7 @@ public class ThingType extends HierarchicalObject<ThingType> {
 	private String id;
 
 	@JsonInclude(Include.NON_EMPTY)
+	@Field(type = FieldType.String, store=true)
 	private String description;
 
 	@JsonInclude(Include.NON_EMPTY)
@@ -60,7 +59,7 @@ public class ThingType extends HierarchicalObject<ThingType> {
 
 	@JsonProperty("image-urls")
 	@JsonInclude(Include.NON_EMPTY)
-	@Field(type = String, store = true)
+	@Field(type = String, store = true)	
 	private List<String> imageUrls;
 
 	/**
