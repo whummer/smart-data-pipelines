@@ -1,9 +1,11 @@
 define(['app', 'bootstrap-tagsinput'], function(app) {
 
-	console.log("Entering CatalogViewController.js");
+
 
     app.controller('CatalogViewController',
 		function($scope, $http, $compile, $log) {
+
+			$log.debug("Inside CatalogViewController");
 
 			AppController($scope, $http, $compile);
 
@@ -22,7 +24,7 @@ define(['app', 'bootstrap-tagsinput'], function(app) {
 
 		function ($scope, $log) {
 
-			console.log("ThingTypesController");
+			$log.debug("Inside ThingTypesController");
 
 			$scope.showMore = function(thingId) {
 				$("#" + thingId + "_description").removeClass("thing-type-box");
@@ -74,7 +76,7 @@ define(['app', 'bootstrap-tagsinput'], function(app) {
 
 			$scope.loadAllThingTypes();
 
-			$scope.saveThingType = function (thingType) {
+			/*$scope.saveThingType = function (thingType) {
 				thingType = JSON.parse(JSON.stringify(thingType));
 				$scope.prepareModelValues(thingType);
 				delete thingType.drivers;
@@ -85,7 +87,7 @@ define(['app', 'bootstrap-tagsinput'], function(app) {
 						$scope.loadAllThingTypes();
 					}
 				);
-			};
+			};*/
 
 			$scope.addThingType = function () {
 				var items = [
@@ -119,12 +121,14 @@ define(['app', 'bootstrap-tagsinput'], function(app) {
 				);
 			};
 
-			$scope.deleteThingType = function () {
-				var selection = $scope.selectedThingType;
-				if (!selection || !selection.id) return;
+			$scope.deleteThingType = function (thingType) {
+				//var selection = $scope.selectedThingType;
+				//if (!selection || !selection.id) return;
+				$log.warn("About to delete ThingType: ", thingType);
+
 				showConfirmDialog("Do you really want to delete this thing type?", function () {
 					invokeDELETE($scope.http,
-						$scope.deviceTypesAPI + "/" + selection.id,
+						$scope.thingTypesAPI + "/" + thingType.id,
 						function (data, status, headers, config) {
 							$scope.selectedThingType = $scope.shared.selectedThingType = null;
 							$scope.loadAllThingTypes();
@@ -139,7 +143,7 @@ define(['app', 'bootstrap-tagsinput'], function(app) {
 
 			/* register event handlers*/
 			$scope.addClickHandler('btnAddThingType', $scope.addThingType);
-			$scope.addClickHandler('btnDelThingType', $scope.deleteThingType);
+			//$scope.addClickHandler('btnDelThingType', $scope.deleteThingType);
 			$scope.addClickHandler('btnSearchThingType', $scope.searchThingType);
 
 			$scope.subscribeOnce("change.ThingTypeProps", function (event) {

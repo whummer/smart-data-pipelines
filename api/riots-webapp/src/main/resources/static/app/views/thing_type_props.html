@@ -1,4 +1,4 @@
-<section ng-controller="ThingTypePropsController" id="thingPropsSection" style="height: 100%">
+<section ng-controller="ThingTypePropsController" id="thingPropsSection">
 
     <div ng-show="shared.selectedThingType">
 
@@ -45,7 +45,7 @@
                 </div>
 
                 <!-- semantic type of property -->
-                <div class="form-group">
+                <!--<div class="form-group">
                     <label for="selSemanticType" class="col-sm-3 control-label">Semantic Type</label>
 
                     <div class="col-sm-9">
@@ -54,7 +54,7 @@
                                 ng-model="selectedProperty.semanticType">
                         </select>
                     </div>
-                </div>
+                </div>-->
 
 
                 <!--
@@ -125,9 +125,11 @@
 
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10 text-right">
-                        <button class="btn btn-default btn-sm btn-primary" id="btnThingTypePropSave"><span class="glyphicon glyphicon-ok"></span> Save Changes
+                        <button class="btn btn-default btn-sm btn-primary" id="btnThingTypePropSave"><span
+                                class="glyphicon glyphicon-ok"></span> Save Changes
                         </button>
-                        <a href="#/catalog" class="btn btn-default btn-sm btn-info"><span class="glyphicon glyphicon-remove"></span> Cancel</a>
+                        <a href="#/catalog" class="btn btn-default btn-sm btn-info"><span
+                                class="glyphicon glyphicon-remove"></span> Cancel</a>
                     </div>
                 </div>
 
@@ -238,213 +240,225 @@
 </style>
 
 <script type="text/javascript">
-
     var app = angular.module("app");
-    app.controller('ThingTypePropsController', [
-        '$scope', '$http', '$compile',
-        function ($scope, $http, $compile) {
+    app.controller('ThingTypePropsController', function ($scope, $http, $compile, $log) {
+                AppController($scope, $http, $compile);
 
-            AppController($scope, $http, $compile);
+                $scope.selectedProperty = null;
+                $scope.gridConfig = {};
 
-            $scope.selectedProperty = null;
-            $scope.gridConfig = {};
+                $scope.initPropsTable = function () {
+                    var columnsConfig = [
+                        {label: "Name", field: "displayName", sortable: true},
+                        {label: "Data Type", field: "baseType"},
+                        {label: "Value Domain Type", field: "valueDomain.type"}
+                    ];
+                    //$scope.gridConfig.data = [{name: 1}]; // todo why this?
+                    renderUITable($scope.gridConfig, "ThingTypePropsTable", columnsConfig,
+                            function (event) {
+                                if (event.type == "dgrid-select") {
+                                    $scope.$apply(function () {
+                                        $scope.selectedProperty = event.rows[0].data;
+                                    });
 
-            $scope.initPropsTable = function () {
-                var columnsConfig = [
-                    {label: "Name", field: "displayName", sortable: true},
-                    {label: "Data Type", field: "baseType"},
-                    {label: "Value Domain Type", field: "valueDomain.type"}
-                ];
-                $scope.gridConfig.data = [{name: 1}];
-                renderUITable($scope.gridConfig, "ThingTypePropsTable", columnsConfig,
-                        function (event) {
-                            if (event.type == "dgrid-select") {
-                                $scope.$apply(function () {
-                                    $scope.selectedProperty = event.rows[0].data;
-                                });
+                                    $scope.buildParentPropsSelect();
+                                    eventBus.publish("select.ThingTypeProps", $scope.selectedProperty);
+                                } else if (event.type == "dgrid-deselect") {
+                                    $scope.$apply(function () {
+                                        $scope.selectedProperty = null;
+                                    });
+                                    eventBus.publish("select.ThingTypeProps", $scope.selectedProperty);
+                                } else if (event.type == "dgrid-datachange") {
+                                    var data = event.grid.row(event).data;
+                                    data[event.cell.column.field] = event.value;
+                                    $scope.prepareModelValues($scope.shared.selectedThingType);
+                                    $scope.saveThingTypeProp(data);
+                                }
 
-                                $scope.buildParentPropsSelect();
-                                eventBus.publish("select.ThingTypeProps", $scope.selectedProperty);
-                            } else if (event.type == "dgrid-deselect") {
-                                $scope.$apply(function () {
-                                    $scope.selectedProperty = null;
-                                });
-                                eventBus.publish("select.ThingTypeProps", $scope.selectedProperty);
-                            } else if (event.type == "dgrid-datachange") {
-                                var data = event.grid.row(event).data;
-                                data[event.cell.column.field] = event.value;
-                                $scope.prepareModelValues($scope.shared.selectedThingType);
-
-                                $scope.saveThingTypeProp(data);
-                            }
-
-                            /* adjust UI elements */
-                            eventBus.publish("change.SelectedProperty");
-                        }
-                );
-            }
-            $scope.initPropsTable();
-
-            $scope.buildPropsTable = function (thingType) {
-                $.each(thingType.thingProperties, function (idx, el) {
-                    expandChildProps(el, null, thingType.thingProperties);
-                });
-                $scope.gridConfig.data = thingType.thingProperties;
-            };
-            var expandChildProps = function (prop, parent, propsList) {
-                prop.displayName = (parent ? (parent.displayName + ".") : "") + prop.name;
-                if (!prop.children) {
-                    return;
-                }
-                $.each(prop.children, function (idx, el) {
-                    propsList.push(el);
-                    el.parentProp = prop;
-                    expandChildProps(el, prop, propsList);
-                });
-                prop.children = [];
-            };
-
-            $scope.buildParentPropsSelect = function (thingType) {
-                if (!thingType) {
-                    thingType = $scope.shared.selectedThingType;
-                }
-                var propsList = [];
-                propsList.push({id: -1, name: "ROOT"});
-                $.each(thingType.thingProperties, function (idx, el) {
-                    if (el.baseType == "LIST") {
-                        propsList.push({id: el.id, name: el.name});
-                    }
-                });
-                renderUISelectValues("selParentProp", propsList);
-            }
-
-            /*$scope.buildSemanticTypesSelect = function () {
-                //console.log("semanticPropertyTypes0", $scope.shared.semanticPropertyTypes);
-                if (!$scope.shared.semanticPropertyTypes) {
-                    var url = $scope.thingTypePropsAPI + "/semantic-types";
-                    invokeGET($scope.http, url,
-                            function (data, status, headers, config) {
-                                $scope.shared.semanticPropertyTypes = data.result;
-                                //console.log("semanticPropertyTypes1", $scope.shared.semanticPropertyTypes);
+                                /* adjust UI elements */
+                                eventBus.publish("change.SelectedProperty");
                             }
                     );
-                }
-            };*/
-
-            $scope.unselectProperty = function () {
-                $scope.$apply(function () {
-                    $scope.selectedProperty = null;
-                });
-                eventBus.publish("change.SelectedProperty");
-            };
-
-            $scope.deleteThingTypeProp = function () {
-                var selection = $scope.selectedProperty;
-                if (!selection) return;
-
-                arrayRemove($scope.shared.selectedThingType.thingProperties, selection);
-
-                var url = $scope.thingTypesAPI + "/" + $scope.shared.selectedThingType.id + "/properties/" + selection.id;
-                invokeDELETE($scope.http, url,
-                        function (data, status, headers, config) {
-                            $scope.buildPropsTable($scope.shared.selectedThingType);
-                            $scope.buildParentPropsSelect($scope.shared.selectedThingType);
-
-                            eventBus.publish("change.SelectedProperty");
-                        }
-                );
-                $scope.unselectProperty();
-            };
-
-            $scope.addThingTypeProp = function () {
-                if (!$scope.shared.selectedThingType) {
-                    return;
-                }
-
-                var newProp = {
-                    "name": "unnamed",
-                    "baseType": "STRING"
                 };
 
-                var url = $scope.thingTypesAPI + "/" +$scope.shared.selectedThingType.id + "/properties";
-                invokePOST($scope.http, url, JSON.stringify(newProp),function (data, status, headers, config) {
-                            var newEvent = {changedItem: $scope.shared.selectedThingType}
-                            eventBus.publish("reload.ThingTypeProps", newEvent);
-                            $scope.shared.selectedThingType = null;
-                            //$scope.buildPropsTable($scope.shared.selectedThingType);
-                            //$scope.buildParentPropsSelect($scope.shared.selectedThingType);
-                        }
-                );
+                $scope.initPropsTable();
 
-                $scope.unselectProperty();
-            };
+                $scope.buildPropsTable = function (thingType) {
+                    if (thingType.thingProperties) {
+                        $.each(thingType.thingProperties, function (idx, el) {
+                            expandChildProps(el, null, thingType.thingProperties);
+                        });
 
-            $scope.saveThingTypeProp = function (devTypeProp) {
-                if (!devTypeProp) {
-                    devTypeProp = $scope.selectedProperty;
-                }
-                //console.log("before prepare", devTypeProp);
-                $scope.prepareModelValues($scope.shared.selectedThingType);
-                invokePUT($scope.http, $scope.thingTypePropsAPI,
-                        JSON.stringify(devTypeProp),
-                        function (data, status, headers, config) {
-                            $scope.buildPropsTable($scope.shared.selectedThingType);
-                            $scope.buildParentPropsSelect($scope.shared.selectedThingType);
-                            var event = {changedItem: $scope.shared.selectedThingType}
-                            //console.log("change.ThingTypeProps", event);
-                            eventBus.publish("change.ThingTypeProps", event);
-                        }
-                );
+                        $scope.gridConfig.data = thingType.thingProperties;
+                    }
+                };
 
-            };
+                var expandChildProps = function (prop, parent, propsList) {
+                    prop.displayName = (parent ? (parent.displayName + ".") : "") + prop.name;
+                    if (!prop.children) {
+                        return;
+                    }
 
-            $scope.addPropDomainValue = function () {
-                if (!$scope.selectedProperty.valueDomain.values)
-                    $scope.selectedProperty.valueDomain.values = [];
+                    $.each(prop.children, function (idx, el) {
+                        propsList.push(el);
+                        el.parentProp = prop;
+                        expandChildProps(el, prop, propsList);
+                    });
 
-                $scope.$apply(function () {
-                    $scope.selectedProperty.valueDomain.values.push("");
-                });
-            };
+                    prop.children = [];
+                };
 
-            /* register event handlers*/
-            $scope.addClickHandler("btnThingTypePropAdd", $scope.addThingTypeProp);
-            $scope.addClickHandler("btnThingTypePropDelete", $scope.deleteThingTypeProp);
-            $scope.addClickHandler("btnThingTypePropSave", function () {
-                $scope.saveThingTypeProp($scope.selectedProperty);
-            });
-            $scope.addClickHandler("btnThingTypePropAddValue", $scope.addPropDomainValue);
-            $scope.buildSemanticTypesSelect();
-            $scope.onRenderElement("selDomainType", function (el) {
-                el.on("change", function (newValue) {
+                $scope.buildParentPropsSelect = function (thingType) {
+                    if (!thingType) {
+                        thingType = $scope.shared.selectedThingType;
+                    }
+
+                    if (thingType.thingProperties) {
+
+                        var propsList = [];
+                        propsList.push({id: -1, name: "ROOT"});
+                        $.each(thingType.thingProperties, function (idx, el) {
+                            if (el.baseType == "LIST") {
+                                propsList.push({id: el.id, name: el.name});
+                            }
+                        });
+
+                        renderUISelectValues("selParentProp", propsList);
+                    }
+
+
+                };
+
+                /*$scope.buildSemanticTypesSelect = function () {
+                 //console.log("semanticPropertyTypes0", $scope.shared.semanticPropertyTypes);
+                 if (!$scope.shared.semanticPropertyTypes) {
+                 var url = $scope.thingTypePropsAPI + "/semantic-types";
+                 invokeGET($scope.http, url,
+                 function (data, status, headers, config) {
+                 $scope.shared.semanticPropertyTypes = data.result;
+                 //console.log("semanticPropertyTypes1", $scope.shared.semanticPropertyTypes);
+                 }
+                 );
+                 }
+                 };*/
+
+                $scope.unselectProperty = function () {
                     $scope.$apply(function () {
-                        if (!$scope.selectedProperty.valueDomain)
-                            $scope.selectedProperty.valueDomain = {}
-                        $scope.selectedProperty.valueDomain.type = newValue;
+                        $scope.selectedProperty = null;
+                    });
+                    eventBus.publish("change.SelectedProperty");
+                };
+
+                $scope.deleteThingTypeProp = function () {
+                    var selection = $scope.selectedProperty;
+                    if (!selection) return;
+
+                    arrayRemove($scope.shared.selectedThingType.thingProperties, selection);
+
+                    var url = $scope.thingTypesAPI + "/" + $scope.shared.selectedThingType.id + "/properties/" + selection.id;
+                    invokeDELETE($scope.http, url,
+                            function (data, status, headers, config) {
+                                $scope.buildPropsTable($scope.shared.selectedThingType);
+                                $scope.buildParentPropsSelect($scope.shared.selectedThingType);
+
+                                eventBus.publish("change.SelectedProperty");
+                            }
+                    );
+                    $scope.unselectProperty();
+                };
+
+                $scope.addThingTypeProp = function () {
+                    if (!$scope.shared.selectedThingType) {
+                        return;
+                    }
+
+                    var newProp = {
+                        "name": "unnamed",
+                        "baseType": "STRING"
+                    };
+
+                    var url = $scope.thingTypesAPI + "/" + $scope.shared.selectedThingType.id + "/properties";
+                    invokePOST($scope.http, url, JSON.stringify(newProp), function (data, status, headers, config) {
+                                var newEvent = {changedItem: $scope.shared.selectedThingType}
+                                eventBus.publish("reload.ThingTypeProps", newEvent);
+                                $scope.shared.selectedThingType = null;
+                                //$scope.buildPropsTable($scope.shared.selectedThingType);
+                                //$scope.buildParentPropsSelect($scope.shared.selectedThingType);
+                            }
+                    );
+
+                    $scope.unselectProperty();
+                };
+
+                $scope.saveThingTypeProp = function (devTypeProp) {
+                    if (!devTypeProp) {
+                        devTypeProp = $scope.selectedProperty;
+                    }
+                    //console.log("before prepare", devTypeProp);
+                    $scope.prepareModelValues($scope.shared.selectedThingType);
+                    invokePUT($scope.http, $scope.thingTypePropsAPI,
+                            JSON.stringify(devTypeProp),
+                            function (data, status, headers, config) {
+                                $scope.buildPropsTable($scope.shared.selectedThingType);
+                                $scope.buildParentPropsSelect($scope.shared.selectedThingType);
+                                var event = {changedItem: $scope.shared.selectedThingType}
+                                //console.log("change.ThingTypeProps", event);
+                                eventBus.publish("change.ThingTypeProps", event);
+                            }
+                    );
+
+                };
+
+                $scope.addPropDomainValue = function () {
+                    if (!$scope.selectedProperty.valueDomain.values)
+                        $scope.selectedProperty.valueDomain.values = [];
+
+                    $scope.$apply(function () {
+                        $scope.selectedProperty.valueDomain.values.push("");
+                    });
+                };
+
+                /* register event handlers*/
+                $scope.addClickHandler("btnThingTypePropAdd", $scope.addThingTypeProp);
+                $scope.addClickHandler("btnThingTypePropDelete", $scope.deleteThingTypeProp);
+                $scope.addClickHandler("btnThingTypePropSave", function () {
+                    $scope.saveThingTypeProp($scope.selectedProperty);
+                });
+
+                $scope.addClickHandler("btnThingTypePropAddValue", $scope.addPropDomainValue);
+
+                $scope.onRenderElement("selDomainType", function (el) {
+                    el.on("change", function (newValue) {
+                        $scope.$apply(function () {
+                            if (!$scope.selectedProperty.valueDomain)
+                                $scope.selectedProperty.valueDomain = {};
+
+                            $scope.selectedProperty.valueDomain.type = newValue;
+                        });
                     });
                 });
-            });
 
-            $scope.subscribeOnce("change.SelectedProperty", function (event) {
-                        /* adjust UI elements */
-                        $("#btnThingTypePropDelete").attr("disabled",
-                                $scope.selectedProperty == null);
-                    }, "propSelectChangeListener"
-            );
+                $scope.subscribeOnce("change.SelectedProperty", function (event) {
+                            /* adjust UI elements */
+                            $("#btnThingTypePropDelete").attr("disabled",
+                                    $scope.selectedProperty == null);
+                        }, "propSelectChangeListener"
+                );
 
-            $scope.$watch("shared.selectedThingType", function () {
-                var devType = $scope.shared.selectedThingType;
-                if (!devType) {
-                    $scope.selectedProperty = null;
-                } else {
-                    $scope.buildPropsTable(devType);
-                    $scope.buildParentPropsSelect(devType);
-                }
-                eventBus.publish("change.SelectedProperty");
-            });
+                $scope.$watch("shared.selectedThingType", function () {
+                    var thingType = $scope.shared.selectedThingType;
+                    $log.debug("Watching ThingType for property changes: ", thingType);
+                    if (!thingType) {
+                        $scope.selectedProperty = null;
+                    } else {
+                        $scope.buildPropsTable(thingType);
+                        $scope.buildParentPropsSelect(thingType);
+                    }
+                    eventBus.publish("change.SelectedProperty");
+                });
 
-            /* start rendering the main container */
-        }
-    ]);
+                /* start rendering the main container */
+            }
+    );
 
 </script>

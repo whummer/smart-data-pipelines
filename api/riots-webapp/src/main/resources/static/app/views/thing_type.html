@@ -1,5 +1,5 @@
 <section ng-controller="CatalogViewController" id="devCatalogSection">
-    <div class="container">
+    <div class="container" ng-controller="ThingTypesController">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h2 class="panel-title"><span class="glyphicon glyphicon-edit"></span> <b>{{shared.selectedThingType.name}}</b>
@@ -29,12 +29,18 @@
     var app = angular.module("app");
     app.controller('ThingTypeController', function ($scope, $http, $compile, $routeParams, $log) {
                 AppController($scope, $http, $compile);
+
+                $log.debug("Inside ThingTypeController");
+
                 if ($routeParams.thingTypeID) {
                     invokeGET($scope.http, $scope.thingTypesAPI + "/" + $routeParams.thingTypeID,
                             function (data, status, headers, config) {
                                 $log.info("Loading ThingType with ID " + $routeParams.thingTypeID);
                                 $scope.shared.selectedThingType = data.result;
-                                $scope.shared.selectedThingType['image-urls'] = [];
+                                if (!$scope.shared.selectedThingType['image-urls']) {
+                                    $scope.shared.selectedThingType['image-urls'] = [];
+                                }
+
                                 $log.debug("Adding Thing to shared scope: ", data.result);
                             }
                     );

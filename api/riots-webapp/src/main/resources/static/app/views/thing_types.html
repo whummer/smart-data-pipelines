@@ -34,7 +34,7 @@
                                alt="{{things[$index].name}}">
 
                           <div class="caption">
-                              <h4>{{things[$index].name}} und os</h4>
+                              <h4>{{things[$index].name}}</h4>
 
                               <div class="thing-type-box" id="{{things[$index].id}}_description">
                                   {{things[$index].description}}
@@ -47,7 +47,7 @@
                                       </a>
                                   </div>
                                   <div style="float:left; margin-right: 3px;">
-                                      <a href="JavaScript:void(0)" ng-click="deleteThingType(things[$index].id)" role="button">
+                                      <a href="JavaScript:void(0)" ng-click="deleteThingType(things[$index])" role="button">
                                           <span class="glyphicon glyphicon-remove"></span>
                                       </a>
                                   </div>
@@ -88,6 +88,12 @@
                                       </a>
                                   </div>
 
+                                  <div style="float:left; margin-right: 3px;">
+                                      <a href="JavaScript:void(0)" ng-click="deleteThingType(things[$index+1])" role="button">
+                                          <span class="glyphicon glyphicon-remove"></span>
+                                      </a>
+                                  </div>
+
                                   <div id="{{things[$index+1].id}}_expand" style="float:left">
                                       <a href="JavaScript: void(0);"
                                          ng-click="showMore(things[$index+1].id)" role="button">
@@ -121,6 +127,12 @@
                                   <div style="float:left; margin-right: 3px">
                                       <a href="#/catalog/{{things[$index+2].id}}" role="button">
                                           <span class="glyphicon glyphicon-edit"></span>
+                                      </a>
+                                  </div>
+
+                                  <div style="float:left; margin-right: 3px;">
+                                      <a href="JavaScript:void(0)" ng-click="deleteThingType(things[$index+2])" role="button">
+                                          <span class="glyphicon glyphicon-remove"></span>
                                       </a>
                                   </div>
 
