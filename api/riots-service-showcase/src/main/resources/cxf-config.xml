@@ -22,7 +22,7 @@
             <ref bean="assetCategories"/>
             <!--<ref bean="simulations"/>-->
             <ref bean="semanticTypes"/>
-            <ref bean="deviceDrivers"/>
+            <!--<ref bean="deviceDrivers"/>-->
             <bean id="swaggerResourceJSON" class="com.wordnik.swagger.jaxrs.listing.ApiListingResourceJSON"/>
         </jaxrs:serviceBeans>
         <jaxrs:features>

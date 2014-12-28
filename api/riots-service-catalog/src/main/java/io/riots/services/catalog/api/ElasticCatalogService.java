@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 import java.util.List;
@@ -117,6 +118,9 @@ public class ElasticCatalogService implements CatalogService {
     }
 
     @Override
+    @GET
+    @Path("/manufacturers/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
     public Manufacturer retrieveManufacturer(@PathParam("id") String manufacturerId) {
         if (manufacturerRepository.exists(manufacturerId)) {
             return manufacturerRepository.findOne(manufacturerId);
@@ -126,6 +130,9 @@ public class ElasticCatalogService implements CatalogService {
     }
 
     @Override
+    @GET
+    @Path("/manufacturers")
+    @Produces(MediaType.APPLICATION_JSON)
     public List<Manufacturer> listManufacturers(@QueryParam("q") String query, @QueryParam("page") int page, @QueryParam("size") int size) {
 
         // todo remove duplication and handle the param validation in an aspect
@@ -141,6 +148,10 @@ public class ElasticCatalogService implements CatalogService {
     }
 
     @Override
+    @POST
+    @Path("/manufacturers")
+    @Consumes({ MediaType.APPLICATION_JSON })
+    @Produces({ MediaType.APPLICATION_JSON })
     public Manufacturer createManufacturer(Manufacturer manufacturer) {
         log.trace("Invoking create()");
         try {
@@ -158,6 +169,10 @@ public class ElasticCatalogService implements CatalogService {
     }
 
     @Override
+    @PUT
+    @Path("/manufacturers")
+    @Consumes({ MediaType.APPLICATION_JSON })
+    @Produces({ MediaType.APPLICATION_JSON })
     public Manufacturer updateManufacturer(Manufacturer manufacturer) {
         try {
             if (StringUtils.isEmpty(manufacturer.getId())) {
@@ -173,6 +188,9 @@ public class ElasticCatalogService implements CatalogService {
     }
 
     @Override
+    @DELETE
+    @Path("/manufacturers/{id}")
+    @Produces({ MediaType.APPLICATION_JSON })
     public void deleteManufacturer(@PathParam("id") String manufacturerId) {
         manufacturerRepository.delete(manufacturerId);
     }
