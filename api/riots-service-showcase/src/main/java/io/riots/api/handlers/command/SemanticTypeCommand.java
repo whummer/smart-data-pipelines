@@ -1,7 +1,7 @@
 package io.riots.api.handlers.command;
 
+import io.riots.api.model.SemanticType;
 import io.riots.core.logging.Markers;
-import io.riots.core.model.SemanticType;
 import io.riots.core.repositories.SemanticTypeRepository;
 
 import java.util.List;

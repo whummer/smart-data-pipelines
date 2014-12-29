@@ -3,7 +3,7 @@ package io.riots.api.services;
 import io.riots.api.handlers.command.ManufacturerCommand;
 import io.riots.api.handlers.query.ManufacturerQuery;
 import io.riots.api.handlers.query.Paged;
-import io.riots.core.model.Manufacturer;
+import io.riots.api.model.Manufacturer;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;

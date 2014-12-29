@@ -82,7 +82,7 @@ public abstract class ApiTest {
         server = sf.create();
     }
 
-    protected abstract Class getServiceBeanClass();
+    protected abstract Class<?> getServiceBeanClass();
 
     protected String getServiceBeanName() {
         return getServiceBeanClass().getSimpleName().toLowerCase();

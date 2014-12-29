@@ -1,7 +1,7 @@
 package io.riots.api.handlers.query;
 
+import io.riots.api.model.AssetCategory;
 import io.riots.core.logging.Markers;
-import io.riots.core.model.AssetCategory;
 import io.riots.core.repositories.AssetCategoryRepository;
 
 import java.util.ArrayList;

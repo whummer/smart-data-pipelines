@@ -3,56 +3,65 @@ define([], function() {
     return {
         defaultRoutePath: '/',
         defaultDependencies: [
-			appRoot + '/scripts/controllers/AppController.js',
+			//appRoot + '/scripts/controllers/AppController.js',
 		],
         routes: {
             '/': {
                 templateUrl: appRoot + '/views/home.html',
                 dependencies: [
-                    appRoot + '/scripts/controllers/HomeViewController.js'
+                    appRoot + '/scripts/controllers/HomeViewController.js',
                 ]
             },
             '/home': {
                 templateUrl: appRoot + '/views/home.html',
                 dependencies: [
-                    appRoot + '/scripts/controllers/HomeViewController.js'
+                    appRoot + '/scripts/controllers/HomeViewController.js',
                 ]
             },
             '/meta': {
                 templateUrl: appRoot + '/views/metadata.html',
                 dependencies: [
-                    appRoot + '/scripts/controllers/MetadataViewController.js'
+                    appRoot + '/scripts/controllers/MetadataViewController.js',
                 ]
             },
             '/catalog': {
                 templateUrl: appRoot + '/views/catalog.html',
                 dependencies: [
-                    appRoot + '/scripts/controllers/CatalogViewController.js'
+                    appRoot + '/scripts/controllers/CatalogViewController.js',
                 ]
             },
-            '/catalog/:deviceTypeID': {
-                templateUrl: appRoot + '/views/device_type.html',
+            '/catalog/:thingTypeID': {
+                templateUrl: appRoot + '/views/thing_type.html',
                 dependencies: [
-                    appRoot + '/scripts/controllers/CatalogViewController.js'
+                    appRoot + '/scripts/controllers/CatalogViewController.js',
                 ]
             },
             '/world': {
                 templateUrl: appRoot + '/views/world.html',
                 dependencies: [
-                    appRoot + '/scripts/controllers/World3DController.js',
-                    appRoot + '/scripts/controllers/WorldViewController.js'
+                    //appRoot + '/scripts/controllers/World3DController.js',
+                    appRoot + '/scripts/controllers/WorldViewController.js',
+                    appRoot + '/scripts/controllers/SimViewController.js'
                 ]
             },
-            '/world/:deviceID': {
-                templateUrl: appRoot + '/views/world_asset.html',
+            '/world/:thingID': {
+                templateUrl: appRoot + '/views/world_thing.html',
                 dependencies: [
-                    appRoot + '/scripts/controllers/World3DController.js',
-                    appRoot + '/scripts/controllers/WorldViewController.js'
+                    //appRoot + '/scripts/controllers/World3DController.js',
+                    appRoot + '/scripts/controllers/WorldViewController.js',
+                    appRoot + '/scripts/controllers/SimViewController.js'
                 ]
             },
             '/login': {
                 templateUrl: appRoot + '/views/login.html',
                 dependencies: [
+                    //appRoot + '/scripts/controllers/LoginViewController.js'
+                ]
+            },
+            '/connect': {
+                templateUrl: appRoot + '/views/connect.html',
+                dependencies: [
+                    appRoot + '/scripts/controllers/ConnectViewController.js'
                 ]
             }
         }

@@ -19,17 +19,6 @@ app.controller('WorldMapController', [
 			$scope.canvas = { height: 300, width: 300 }
 			$scope.defaultLocation = [ 48.19742, 16.37127 ];
 
-/*
-			$scope.updateMapSize = function() {
-				$scope.$apply(function(){
-					$scope.canvas.height = $("#paneMapPreview").height() - 50;
-					$scope.canvas.width = $("#paneMapPreview").width();
-				});
-				if($("#worldMap").is(":visible")) 
-					$scope.map.invalidateSize();
-			}
-*/
-
 			$scope.renderMap = function() {
 
 				//console.log("render map", $scope.map);
@@ -58,18 +47,22 @@ app.controller('WorldMapController', [
 
 					mapCanvas.droppable({
 						drop: function(event, el) {
-							loc = $scope.map.mouseEventToLatLng(event);
-							var object = $(el.draggable[0]).scope().row.entity;
-							var source = el.draggable[0].parentElement.parentElement.parentElement.parentElement;
-							if(source.id == "deviceTypesTable") {
-								var deviceType = $scope.prepareModelValues(object, true);
-								$scope.addAssetToMap(loc, deviceType);
-							} else if(source.id == "assetsTable") {
-								object = byId($scope.listOfAssets, object.id)[0];
-								var deviceType = $scope.prepareModelValues(object.assetType, true);
-								object.assetType = deviceType;
-								delete object["$$hashKey"];
-								$scope.updateAssetLocationOnMap(loc, object);
+							try {
+								loc = $scope.map.mouseEventToLatLng(event);
+								var object = $(el.draggable[0]).scope().row.entity;
+								var source = el.draggable[0].parentElement.parentElement.parentElement.parentElement;
+								if(source.id == "thingTypesTable") {
+									var thingType = $scope.prepareModelValues(object, true);
+									$scope.addThingToMap(loc, thingType);
+								} else if(source.id == "assetsTable") {
+									object = byId($scope.shared.listOfThings, object.id)[0];
+									var thingType = $scope.prepareModelValues(object.thingType, true);
+									object.thingType = thingType;
+									delete object["$$hashKey"];
+									$scope.updateThingLocationOnMap(loc, object);
+								}
+							} catch(e) {
+								console.log("Unable to complete drag&drop:", e);
 							}
 						}
 					});
@@ -93,13 +86,9 @@ app.controller('WorldMapController', [
 				}).addTo($scope.map);
 
 				setupDropZone();
-//				setTimeout(function() {
-//					$scope.updateMapSize();
-//				}, 200);
 
-				//console.log("$scope.listOfAssets", $scope.listOfAssets);
-				if($scope.listOfAssets) {
-					$scope.displayMarkers($scope.listOfAssets, true);
+				if($scope.shared.listOfThings) {
+					displayMarkers($scope.shared.listOfThings, true);
 				}
 			}
 
@@ -107,7 +96,7 @@ app.controller('WorldMapController', [
 				$scope.map.removeLayer(marker);
 			};
 	
-			$scope.addAssetToMap = function(position, assetType) {
+			$scope.addThingToMap = function(position, thingType) {
 				if(!position) {
 					position = $scope.map.getCenter();
 				}
@@ -117,12 +106,12 @@ app.controller('WorldMapController', [
 						"latitude": position.lat,
 						"longitude": position.lng
 					},
-					"assetType": assetType
+					"thingType": thingType
 				};
 				$scope.createAsset(asset);
 			};
 			
-			$scope.updateAssetLocationOnMap = function(position, asset) {
+			$scope.updateThingLocationOnMap = function(position, asset) {
 				if(!position) {
 					position = $scope.map.getCenter();
 				}
@@ -130,28 +119,30 @@ app.controller('WorldMapController', [
 					"latitude": position.lat,
 					"longitude": position.lng
 				};
-				var idx = $.inArray(asset, $scope.listOfAssets);
+				var idx = $.inArray(asset, $scope.shared.listOfThings);
 				//console.log("updating location of asset #" + idx + ":", position, asset);
-				$scope.updateAsset(asset);
+				$scope.updateThing(asset);
 			}
 
 			$scope.createAsset = function(asset) {
-				$scope.addAssetInDB(asset, function(assetSaved) {
-					$scope.loadAssetsFromDB();
+				$scope.addThingInDB(asset, function(assetSaved) {
+					$scope.loadThingsFromDB();
 					eventBus.publish("addOrDel.Asset", assetSaved);
 				});
 			};
 
-			$scope.updateAsset = function(asset) {
-				$scope.updateAssetInDB(asset, function(asset) {
-					//$scope.loadMarkers();
+			$scope.updateThing = function(asset) {
+				$scope.updateThingInDB(asset, function(asset) {
 					eventBus.publish("addOrDel.Asset", asset);
 				});
 			};
-	
-			$scope.displayMarkers = function (markers, deleteExisting) {
+
+			var displayMarkers = function (markers, deleteExisting) {
 				if(typeof $scope.map == 'undefined') {
 					console.warn("map is undefined");
+					return;
+				}
+				if(!markers) {
 					return;
 				}
 				if(deleteExisting) {
@@ -160,7 +151,6 @@ app.controller('WorldMapController', [
 					});
 					$scope.map.options.__markers = [];
 				}
-				//console.log("adding " + markers.length + " markers", markers);
 
 				$.each(markers, function(index, marker) {
 					//console.log("adding marker: ", marker.location);
@@ -187,7 +177,7 @@ app.controller('WorldMapController', [
 				bindPopup(m.name).
 				on("click", function() {
 					$scope.$apply(function(){
-						$scope.shared.selectedAsset = m;
+						$scope.shared.selectedThing = m;
 					});
 				}).
 				on("dragend", function(e) {
@@ -196,7 +186,7 @@ app.controller('WorldMapController', [
 						"latitude": e.target.getLatLng().lat,
 						"longitude": e.target.getLatLng().lng
 					}
-					$scope.updateAsset(asset);
+					$scope.updateThing(asset);
 				});
 				$scope.map.addLayer(marker);
 				$scope.map.options.__markers.push(marker);
@@ -205,26 +195,24 @@ app.controller('WorldMapController', [
 			};
 
 			/* register event handlers */
-/*
-			$(".split-handler").mouseup(function() {
-				$scope.updateMapSize();
-			});
-*/
 			$scope.subscribeOnce("addOrDel.Asset", function() {
-				//console.log("addOrDel.Asset", $scope.listOfAssets);
-				if($scope.listOfAssets) {
-					$scope.displayMarkers($scope.listOfAssets, true);
+				if($scope.shared.listOfThings) {
+					displayMarkers($scope.shared.listOfThings, true);
 				}
 			}, "addOrDel.Asset.worldMap");
 			$scope.subscribeOnce("loadAll.Asset", function(event) {
-				$scope.displayMarkers(event.assets, true);
+				if(event.assets) {
+					displayMarkers(event.assets, true);
+				}
 			}, "loadAll.Asset.worldMap");
+			$scope.$watch("shared.listOfThings", function() {
+				displayMarkers($scope.shared.listOfThings, true);
+			});
 
 			/* render main element */
-			//$scope.destroyElement("WorldMapContainer");
 			$scope.renderMap();
-			if($scope.loadAssetsFromDB && $scope.worldViewEditMode !== false) {
-				$scope.loadAssetsFromDB();
+			if($scope.loadThingsFromDB && $scope.worldViewEditMode !== false) {
+				$scope.loadThingsFromDB();
 			}
 
 		});

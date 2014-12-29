@@ -1,0 +1,74 @@
+<section ng-controller="CompositeTypeController">
+    <div ng-show="shared.selectedThingType">
+	    <div style="float: left; width: 45%;">
+	    	<b class="ng-binding">List of Thing Types:</b>
+			<select size="10" multiple ng-multiple="true" ng-model="thingTypesSelected" 
+				ng-options="c.name for c in thingTypesAll" style="width: 100%;" class="form-control"></select>
+	    </div>
+		<div style="float: left; width: 9%; text-align: center;">
+			<p><br/><br/><br/>
+				<button ng-click="addChildren()" class="btn btn-default btn-sm btn-primary" style="width: 80px;">Add &gt;&gt;</button>
+			</p><p>
+				<button ng-click="removeChildren()" class="btn btn-default btn-sm btn-primary" style="width: 80px;">&lt;&lt; Remove</button>
+			</p>
+	    </div>
+		<div style="float: left; width: 45%;">
+			<b class="ng-binding">Child Thing Types:</b>
+			<select size="10" multiple ng-multiple="true" ng-model="childrenSelected" 
+				ng-options="c.name for c in childrenAll" style="width: 100%;" class="form-control"></select>
+			<div style="text-align: right">
+				<button ng-click="addChildren()" class="btn btn-default btn-sm btn-primary" style="width: 80px;">Save</button>
+			</div>
+	    </div>
+	</div>
+</section>
+
+<script type="text/javascript">
+    var app = angular.module("app");
+    app.controller('CompositeTypeController', function ($scope, $http, $compile, $log, $location) {
+
+        AppController($scope, $http, $compile);
+
+		$scope.thingTypesAll = [];
+		$scope.thingTypesSelected = [];
+		$scope.childrenAll = [];
+		$scope.childrenSelected = [];
+
+		$scope.addChildren = function() {
+			$.each($scope.thingTypesSelected, function(idx,el) {
+				$scope.childrenAll.push(el);
+			});
+		}
+
+		$scope.removeChildren = function() {
+			$.each($scope.thingTypesSelected, function(idx,el) {
+				arrayRemove($scope.childrenAll, el);
+			});
+		}
+
+		var loadSelects = function() {
+			var url = "";
+			shared.thingTypes(function(thingTypes) {
+				$scope.thingTypesAll = thingTypes;
+	     	});
+	    	if(!$scope.shared.selectedThingType) {
+	    		return;
+	    	}
+			var theThingType = $scope.shared.selectedThingType;
+			$.each(theThingType.children, function(idx, el) {
+				if(el.id) {
+					$scope.childrenAll.push(el);
+				} else {
+					$scope.childrenAll.push(shared.thingType(el));
+				}
+			});
+		}
+
+		/* register event listeners */
+		$scope.$watch("shared.selectedThingType", function() {
+			loadSelects();
+		});
+
+    });
+
+</script>

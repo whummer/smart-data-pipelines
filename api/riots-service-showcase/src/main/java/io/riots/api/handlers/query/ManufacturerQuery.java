@@ -1,6 +1,6 @@
 package io.riots.api.handlers.query;
 
-import io.riots.core.model.Manufacturer;
+import io.riots.api.model.Manufacturer;
 import io.riots.core.repositories.ManufacturerRepository;
 
 import java.util.List;

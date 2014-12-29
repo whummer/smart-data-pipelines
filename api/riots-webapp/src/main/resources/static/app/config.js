@@ -5,10 +5,11 @@ var appConfig = {
 	appRootPath: "/app",
 	services: {
 		core: { url: "http://localhost:8080/api/v1" },
-		deviceTypes: { url: "http://localhost:8080/api/v1/catalog/things" },
-		deviceTypeProps: { url: "http://localhost:8080/api/v1/device-types/properties" },
-		deviceDrivers: { url: "http://localhost:8080/api/v1/drivers" },
-		devices: { url: "http://localhost:8080/api/v1/devices" },
+		thingTypes: { url: "http://localhost:8080/api/v1/catalog/thing-types" },
+		manufacturers: { url: "http://localhost:8080/api/v1/catalog/manufacturers" },
+		thingTypeProps: { url: "http://localhost:8080/api/v1/thing-types/properties" },
+		drivers: { url: "http://localhost:8080/api/v1/drivers" },
+		things: { url: "http://localhost:8080/api/v1/things" },
 		categories: { url: "http://localhost:8080/api/v1/categories" },
 		semanticTypes: { url: "http://localhost:8080/api/v1/semantic-types" },
 		simulations: { url: "http://localhost:8080/api/v1/simulations" },
@@ -16,7 +17,8 @@ var appConfig = {
 		simulationProps: { url: "http://localhost:8080/api/v1/simulations/properties" },
 		simulationDevices: { url: "http://localhost:8080/api/v1/simulations/devices" },
 		stats: { url: "http://localhost:8080/api/v1/stats" },
-		websocket: { url: "ws://localhost:8082/websocket" }
+		users: { url: "http://localhost:8080/api/v1/users" },
+		websocket: { url: "ws://localhost:8085/websocket" }
 	},
 	auth: {
 		github: {
@@ -41,7 +43,7 @@ var requirejsAppConfig = {
     out: 'scripts/riots-all.js',
     packages: [
         {
-            name: 'riot',
+            name: 'riots',
             location: appConfig['appRootPath'] + '/scripts/modules/'
         }, {
             name: 'leaflet',
@@ -63,6 +65,10 @@ var requirejsAppConfig = {
             location: '/bower_components/hello',
             main: 'dist/hello.all'
         }, {
+            name: 'prettify',
+            location: '/bower_components/google-code-prettify',
+            main: 'src/prettify'
+        }, {
             name: 'sockjs',
             location: '/bower_components/sockjs',
             main: 'sockjs'
@@ -82,6 +88,10 @@ var requirejsAppConfig = {
             name: 'bootstrap-tagsinput',
             location: '/bower_components/bootstrap-tagsinput',
             main: 'dist/bootstrap-tagsinput'
+        },{
+            name: 'jsurl',
+            location: '/bower_components/jsurl',
+            main: 'url'
         }, {
             name: 'auth',
             location: '/app/scripts/modules',
@@ -95,7 +105,7 @@ var requirejsAppConfig = {
         'bootstrap': '/bower_components/bootstrap/js',
         'angular-route': '/bower_components/angular-route/angular-route',
         'jquery': '/bower_components/jquery/dist/jquery',
-        'jquery-ui': '/bower_components/jquery-ui/jquery-ui',
+        'jquery-ui': '/bower_components/jquery-ui/jquery-ui'
     },
     shim: {
         'app': {

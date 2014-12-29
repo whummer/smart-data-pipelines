@@ -10,29 +10,50 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  * @author omoser
  * @author whummer
  */
-public abstract class HierarchicalObject<T extends HierarchicalObject<T>> extends BaseObject<T> {
+public abstract class HierarchicalObject<T> {
 
-	@JsonInclude(Include.NON_EMPTY) 
+	@JsonInclude(Include.NON_EMPTY)
+	protected String name;
+
+	@JsonInclude(Include.NON_EMPTY)
 	Set<T> children = new HashSet<>();
 
-    public HierarchicalObject() {
-        super();
-    }
-    public HierarchicalObject(String name) {
-        super(name);
-    }
+	public HierarchicalObject() {
+	}
 
-    @SuppressWarnings("unchecked")
-    public T addChild(T child) {
-    	child.setParentId(getId());
-        children.add(child);
-        return (T) this;
-    }
-    public Set<T> getChildren() {
-        return children;
-    }
-    public void setChildren(Set<T> children) {
-        this.children = children;
-    }
+	public HierarchicalObject(String name) {
+		setName(name);
+	}
+
+	public void addChild(T child) {
+		children.add(child);
+	}
+
+	public Set<T> getChildren() {
+		return children;
+	}
+
+	public void setChildren(Set<T> children) {
+		this.children = children;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public HierarchicalObject<?> withName(final String name) {
+		this.name = name;
+		return this;
+	}
+
+	public HierarchicalObject<?> withChildren(final Set<T> children) {
+		this.children = children;
+		return this;
+	}
+
 
 }

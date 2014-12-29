@@ -3,20 +3,42 @@ server:
 
 zuul:
   routes:
-    api:
-      path: /api/**
+    api-users:
+      path: /api/v1/users/**
       stripPrefix: false
-      serviceId: showcase-service
-    webapp:
+      serviceId: users-service
+    api-ratings:
+      path: /api/v1/ratings/**
+      stripPrefix: false
+      serviceId: users-service
+    api-stats:
+      path: /api/v1/stats/**
+      stripPrefix: false
+      serviceId: users-service
+    api-things:
+      path: /api/v1/things/**
+      stripPrefix: false
+      serviceId: environment-service
+    api-drivers:
+      path: /api/v1/drivers/**
+      stripPrefix: false
+      serviceId: environment-service
+    catalog-service:
+      path: /api/v1/catalog/**
+      stripPrefix: false
+    simulation-service:
+      path: /api/v1/simulations/**
+      stripPrefix: false
+
+    webapp-service:
       path: /app/**
+      stripPrefix: false
+    connect:
+      path: /connect/**
       stripPrefix: false
       serviceId: webapp-service
     bower:
       path: /bower_components/**
-      stripPrefix: false
-      serviceId: webapp-service
-    websocket:
-      path: /websocket
       stripPrefix: false
       serviceId: webapp-service
     favicon:
@@ -30,7 +52,7 @@ eureka:
     serviceUrl:
       defaultZone: http://localhost:10000/eureka/v2/
   instance:
-    leaseRenewalIntervalInSeconds: 10
+    leaseRenewalIntervalInSeconds: 5
 
 ribbon:
   ServerListRefreshInterval: 5000
@@ -44,5 +66,5 @@ logging:
     com.netflix.discovery: OFF
     com.netflix.zuul: OFF
     com.netflix.servo: WARN
-    org.springframework: DEBUG
+    org.springframework: WARN
     org.springframework.cloud.netflix.zuul: INFO

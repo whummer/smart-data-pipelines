@@ -1,0 +1,21 @@
+server:
+  port: 8084
+
+eureka:
+  client:
+    registryFetchIntervalSeconds: 5
+    serviceUrl:
+      defaultZone: http://localhost:10000/eureka/v2/
+  instance:
+    leaseRenewalIntervalInSeconds: 5
+
+spring:
+  application:
+    name: users-service
+
+logging:
+  level:
+    com.netflix.discovery: DEBUG
+    com.netflix.zuul: WARN
+    com.netflix.servo: WARN
+    org.springframework.boot: WARN

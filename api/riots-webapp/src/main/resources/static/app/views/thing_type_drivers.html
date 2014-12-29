@@ -1,0 +1,242 @@
+<section ng-controller="ThingDriverController" id="thingDriverSection">
+
+    <div ng-show="shared.selectedThingType">
+
+        <div style="margin-bottom: 10px;" class="text-right">
+            <button class="btn btn-primary btn-sm" id="btnThingDriverAdd">
+                <span class="glyphicon glyphicon-plus"></span> Add Thing Driver
+            </button>
+            <button class="btn btn-warning btn-sm" id="btnThingDriverDelete" disabled="disabled"><span
+                    class="glyphicon glyphicon-minus"></span> Delete Thing Driver
+            </button>
+        </div>
+
+        <div id="ThingDriversTable" ui-grid="gridConfig" ui-grid-selection ui-grid-edit ui-grid-row-edit
+             class="grid"></div>
+
+        <div ng-show="selectedDriver">
+            <form class="form-horizontal" role="form" style="text-align: left">
+
+
+                <!-- driver name -->
+                <div class="form-group">
+                    <label for="driverName" class="col-sm-3 control-label">Driver Name</label>
+
+                    <div class="col-sm-9">
+                        <input id="driverName" class="form-control input-sm" data-ng-model="selectedDriver.name"/>
+                    </div>
+                </div>
+
+                <!-- platform/protocol support -->
+                <div class="form-group">
+                    <label for="driverProtocol" class="col-sm-3 control-label">Platform/Protocol</label>
+
+                    <div class="col-sm-9">
+                        <select id="driverProtocol" class="form-control input-sm"
+                                ng-model="selectedDriver.connector">
+                            <option value="GENERIC">None/Generic</option>
+                            <option value="XIVELY">Xively</option>
+                            <option value="SPARK_IO">Spark.io</option>
+                            <option value="MQTT">MQTT</option>
+                            <option value="CoAP">CoAP</option>
+                            <option value="XMPP">XMPP</option>
+                            <option value="REST">RESTful HTTP</option>
+                            <option value="AMQP">AMQP</option>
+                            <option value="DDS">DDS</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- programming language -->
+                <div class="form-group">
+                    <label for="driverProtocol" class="col-sm-3 control-label">Programming Language</label>
+
+                    <div class="col-sm-9">
+                        <select id="driverLanguage" class="form-control input-sm"
+                                ng-model="selectedDriver.driverLanguage">
+                            <option value="JAVA">Java</option>
+                            <option value="C">C</option>
+                            <option value="PYTHON">Python</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- MQTT stuff -->
+                <div class="form-group" ng-show="selectedDriver.connector == 'MQTT'">
+                    <label for="driverBrokerURL" class="col-sm-3 control-label">Broker URL</label>
+
+                    <div class="col-sm-9">
+                        <input id="driverBrokerURL" class="form-control input-sm"
+                               data-ng-model="selectedDriver.brokerURL"/>
+                    </div>
+                </div>
+                <div class="form-group" ng-show="selectedDriver.connector == 'MQTT'">
+                    <label for="driverTopic" class="col-sm-3 control-label">Topic Name</label>
+
+                    <div class="col-sm-9">
+                        <input id="driverTopic" class="form-control input-sm"
+                               data-ng-model="selectedDriver.topicName"/>
+                    </div>
+                </div>
+
+                <!-- todo do we neet this for now?
+                <div class="form-group" ng-show="selectedDriver.connector == 'MQTT'">
+                    <label for="driverBrokerURL" class="col-sm-3 control-label">Payload Format</label>
+
+                    <div class="col-sm-9">
+                        <textarea id="driverPayload" data-ng-model="selectedDriver.payloadFormat"></textarea>
+                    </div>
+                </div>
+                -->
+
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10 text-right">
+                        <button class="btn btn-default btn-sm btn-primary" id="btnThingDriverSave"><span
+                                class="glyphicon glyphicon-ok"></span> Save Changes
+                        </button>
+                        <a href="#/catalog" class="btn btn-default btn-sm btn-info"><span
+                                class="glyphicon glyphicon-remove"></span> Cancel</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <br class="clear"/>
+    </div>
+
+</section>
+
+<style>
+    #ThingDriversTable {
+        height: 200px;
+    }
+</style>
+
+<script type="text/javascript">
+
+    var app = angular.module("app");
+    app.controller('ThingDriverController', [
+        '$scope', '$http', '$compile',
+        function ($scope, $http, $compile) {
+
+            AppController($scope, $http, $compile);
+
+            $scope.selectedDriver = null;
+            $scope.gridConfig = {};
+
+            $scope.initDriversTable = function () {
+                var columnsConfig = [
+                    {label: "Name", field: "name", sortable: true, editOn: "dblclick"},
+                    {label: "Connector/Protocol", field: "connector"},
+                    {label: "Language", field: "driverLanguage"}
+                ];
+                $scope.gridConfig.data = [];
+                renderUITable($scope.gridConfig, "ThingDriversTable", columnsConfig,
+                        function (event) {
+                            if (event.type == "dgrid-select") {
+                                $scope.$apply(function () {
+                                    $scope.selectedDriver = event.rows[0].data;
+                                });
+                            } else if (event.type == "dgrid-deselect") {
+                                $scope.$apply(function () {
+                                    $scope.selectedDriver = null;
+                                });
+                            }
+                            /* adjust UI elements */
+                            $("#btnThingDriverDelete").attr("disabled", !$scope.selectedDriver);
+                        }
+                );
+            }
+
+            $scope.initDriversTable();
+
+            $scope.loadDriversTable = function (thingType) {
+                if (!thingType)
+                    thingType = $scope.shared.selectedThingType;
+                if (!thingType)
+                    return;
+                if (thingType.drivers) {
+                    $scope.buildDriversTable(thingType.drivers);
+                    return;
+                }
+
+                var url = $scope.driversAPI + "/forThingType/" + thingType.id;
+                //console.log("url", url);
+                invokeGET($scope.http, url,
+                        function (data, status, headers, config) {
+                            thingType.drivers = data.result;
+                            //console.log("thingType.drivers", thingType.drivers);
+                            $scope.buildDriversTable(thingType.drivers);
+                        }
+                );
+            }
+
+            $scope.buildDriversTable = function (drivers) {
+                $scope.gridConfig.data = drivers;
+            };
+
+            $scope.deleteThingDriver = function () {
+                var selection = $scope.selectedDriver;
+                if (!selection) return;
+                arrayRemove($scope.shared.selectedThingType.drivers, selection);
+                invokeDELETE($scope.http, $scope.driversAPI + "/" + selection.id,
+                        function (data, status, headers, config) {
+                            $scope.selectedDriver = null;
+                            delete $scope.shared.selectedThingType.drivers;
+                            $scope.loadDriversTable();
+                        }
+                );
+            }
+            $scope.addThingDriver = function () {
+                if (!$scope.shared.selectedThingType) {
+                    return;
+                }
+                var newDriver = {
+                    name: "unnamed",
+                    connector: "GENERIC",
+                    thingType: {
+                        id: $scope.shared.selectedThingType.id
+                    }
+                }
+                invokePOST($scope.http, $scope.driversAPI,
+                        JSON.stringify(newDriver),
+                        function (data, status, headers, config) {
+                            delete $scope.shared.selectedThingType.drivers;
+                            $scope.selectedDriver = null;
+                            $scope.loadDriversTable();
+                        }
+                );
+            }
+            $scope.saveThingDriver = function (item) {
+                if (!item) {
+                    item = $scope.selectedDriver;
+                }
+                if (!item.connector)
+                    item.connector = "GENERIC";
+                delete item["$$hashKey"];
+                //console.log(item);
+                invokePUT($scope.http, $scope.driversAPI,
+                        JSON.stringify(item),
+                        function (data, status, headers, config) {
+                            $scope.loadDriversTable();
+                        }
+                );
+            }
+
+            /* register event handlers*/
+            $scope.addClickHandler("btnThingDriverAdd", $scope.addThingDriver);
+            $scope.addClickHandler("btnThingDriverDelete", $scope.deleteThingDriver);
+            $scope.addClickHandler("btnThingDriverSave", function () {
+                $scope.saveThingDriver($scope.selectedDriver);
+            });
+            $scope.$watch("shared.selectedThingType", function (devType) {
+                $scope.loadDriversTable($scope.shared.selectedThingType);
+            });
+            $scope.onRenderElement("btnThingDriverDelete", function (el) {
+                el.attr("disabled", true);
+            });
+
+            /* start rendering the main container */
+        }
+    ]);
+
+</script>

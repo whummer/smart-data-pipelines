@@ -13,34 +13,50 @@
     <artifactId>riots-service-environment</artifactId>
     <name>environment-service</name>
     <description>this service provides environment actions</description>
-    <version>0.0.1-SNAPSHOT</version>
 
-    <properties>
-        <riots.port>8282</riots.port>
-    </properties>
+	<properties>
+		<riots.port>8185</riots.port>
+		<riots.eureka.hostname>localhost:10000</riots.eureka.hostname>
+		<spring.application.name>${project.name}</spring.application.name>
+	</properties>
 
     <dependencies>
         <dependency>
             <groupId>io.riots</groupId>
             <artifactId>riots-common-core</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>io.riots</groupId>
             <artifactId>riots-common-core</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${project.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
 
+		<!-- Spring websockets -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-mongodb</artifactId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+
+		<!-- Spring JMS messaging -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jms</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-mongodb</artifactId>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-broker</artifactId>
         </dependency>
+
+		<!-- MQTT client -->
+		<dependency>
+			<groupId>org.eclipse.paho</groupId>
+			<artifactId>mqtt-client</artifactId>
+			<version>0.4.0</version>
+		</dependency>
+
     </dependencies>
 
     <build>
@@ -64,4 +80,10 @@
         </plugins>
     </build>
 
+	<repositories>
+		<repository>
+			<id>paho-mqtt-client</id>
+			<url>https://repo.eclipse.org/content/repositories/paho-releases/</url>
+		</repository>
+	</repositories>
 </project>
