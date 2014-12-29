@@ -7,10 +7,10 @@ Gem::Specification.new do |spec|
   spec.name          = "extractor"
   spec.version       = Riots::VERSION
   spec.authors       = ["riox", "Waldemar Hummer"]
-  spec.email         = ["riox@riots.io"]
-  spec.summary       = %q{Extracts IoT device data from various sources}
+  spec.email         = ["info@riots.io"]
+  spec.summary       = %q{CLI for the riots.io platform}
   spec.description   = %q{Write a longer description. Optional.}
-  spec.homepage      = ""
+  spec.homepage      = "http://riots.io"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")

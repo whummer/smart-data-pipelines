@@ -8,23 +8,24 @@ require 'fileutils'
 require 'uri'
 require 'net/http'
 require 'thread/pool'
-require 'riots/elasticsearch'
+require 'riots/riots_catalog'
 
 module Riots
 
 	class Sparkfun
-		include Riots::Elasticsearch
+		include Riots::RiotsCatalog
 
 		BASE_URL = "https://www.sparkfun.com"
 		CATEGORIES_URL = "#{BASE_URL}/categories"
 		EXCLUDE_CATEGORIES = [ "books", "serial", "swag", "educators", "retired", "lcds", "color", "monochrome" ]
 
-		def initialize(options = {})		
+		def initialize(options = {})
 			@agent = Mechanize.new
+			@agent.user_agent = 'Chrome/30.0.1599.101'
 			@category_seen = []
 			@product_seen = []
 			@options = options
-			@pool = Thread.pool(15)
+			@pool = Thread.pool(30)
 			@output_dir = !options.include?("es_host") ? options["output_dir"] : "."
 			unless File.exists?(@output_dir)
 				FileUtils::mkdir_p @output_dir
@@ -51,7 +52,7 @@ module Riots
 
 		def extract_categories(link)
 			category = link.text
-			# TODO change that back
+			# TODO change this for testing only the GPS category 
 			unless  EXCLUDE_CATEGORIES.include? category.downcase
 			#if "gps" == category.downcase # for testing
 				url = link.href
@@ -67,7 +68,7 @@ module Riots
 			page.links.uniq.each do |link|
 				if link.href =~ /\/products\// and not @product_seen.include? link.href
 					@product_seen << link.href
-
+					#extract_product(category, link) 
 					@pool.process { extract_product(category, link) }
 				end
 			end
@@ -84,31 +85,36 @@ module Riots
 
 			product = {}
 			product["name"] = page.search("//h1[@itemprop='name']").text
-			product["manufacturer"] = page.search("//*[@id='airlock']/div[2]/div/meta[1]/@content")			
-			product["mpn"] = page.search("//*[@id='airlock']/div[2]/div/meta[2]/@content")		
-			product["sku"] = page.search("//*[@id='airlock']/div[2]/div/meta[3]/@content")
+			product["manufacturer-id"] = page.search("//*[@id='airlock']/div[2]/div/meta[1]/@content")			
 			product['tags'] = [ category ]
-
-			product["properties"] = {} 
-			product["properties"]["origin_url"] = link.href
+			product['creation-date'] = DateTime.now
+			product['creator-id'] = 'dev@riox.io'
+			product["features"] = {} 
+			product["features"]["origin_url"] = link.href
+			product["features"]["mpn"] = page.search("//*[@id='airlock']/div[2]/div/meta[2]/@content")		
+			product["features"]["sku"] = page.search("//*[@id='airlock']/div[2]/div/meta[3]/@content")			
 
 			# extract images as base64
-			product['images'] = []		
+			product['image-urls'] = []		
 			nodeset = page.search("//*[@id='images-carousel']/div[1]")			
+
+			# create dir for images
+			FileUtils::mkdir_p "#{@output_dir}/img/sparkfun"
+				
 			nodeset.children.each_with_index do |n, i|
-				image_url = n.children[0]['src']
-				image = {}
-				#image['type'] = "attachment" 
-				image['content-type'] = "image/jpeg"
-				#image['name'] = "#{file_id}-image-#{i}#{File.extname(image_url)}"
-				image['content'] = Base64.encode64(open(image_url, "rb").read)
-				image['source'] = image_url
-				if n["class"] =~ /active/					
-					image['active'] = 'true'
+				image_url = n.children[1]['src']			 	
+				img_filename = "img/sparkfun/#{file_id}-image-#{i}#{File.extname(image_url)}"
+
+				unless @options[:no_image_download]
+					open(image_url, "rb") do |f|
+	   					File.open("#{@output_dir}/#{img_filename}","wb") do |file|
+	     					file.puts f.read
+	   					end
+					end
 				end
-				#image['copyright'] = "http://sparkfun.com"
-				product['images'] << image
+				product['image-urls'] << img_filename
 			end
+
 
 			# extract core text parts
 			node = page.search("//*[@id='airlock']/div[2]/div/div[1]/div[4]/div[2]").children
@@ -118,26 +124,26 @@ module Riots
 			# extract features
 			features = extract_section(node.text.strip, product, "Features")
 			unless features.nil?
-				product['properties']['features'] = features.strip.split(/\n+/)
+				product['features']['main'] = features.strip #.split(/\n+/)
 			end
 
 			#extract dimensions
 			dimensions = extract_section(node.text.strip, product, "Dimensions")
 			unless dimensions.nil?
-				product['properties']['dimensions'] = dimensions
+				product['features']['dimensions'] = dimensions
 			end
 
 			# extract includes
 			includes = extract_section(node.text.strip, product, "Includes")
 			unless includes.nil?
-				product['properties']['includes'] = includes.strip.split(/\n+/)
+				product['features']['includes'] = includes.strip #.split(/\n+/)
 			end
 
 			extract_documents(node, product)
 
-			# write document to Elasticsearch or file
-			if @options[:es_host]
-				post_to_elasticsearch(@options[:es_host], file_id, JSON.pretty_generate(product))
+			# write document to riots catalog
+			if @options[:catalog_host]
+				post_to_riots_catalog(@options[:catalog_host], file_id, JSON.pretty_generate(product))
 			else 
 				File.open(File.join(@output_dir, filename), 'w') do |file| 
 					file.write(JSON.pretty_generate(product)) 

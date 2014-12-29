@@ -5,18 +5,11 @@ define(['app'], function(app) {
 				"Manufacturer" : appConfig.services.manufacturers.url
 			};
 
-
 			AppController($scope, $http, $compile);
 
-			//$scope.semanticsAPI = appConfig.services.semanticTypes.url;
 			$scope.curSelect = {};
 
 			$scope.loadTable = function(gridConfig, category) {
-				/*var categories = ["Property", "Device", "manufacturers"];
-				if(categories.indexOf(category) < 0) {
-					console.warn("Semantic type category should be either of: " + categories);
-					return;
-				}*/
 
 				invokeGET($scope.http, appConfig.services.manufacturers.url,
 					function(data, status, headers, config) {
@@ -59,21 +52,18 @@ define(['app'], function(app) {
 				gridConfig.data = [];
 				renderUITable(gridConfig, elementID, columnsConfig,
 					function(event) {
+						$log.debug("Event: ", event);
 						if(event.type == "dgrid-select") {
-							console.log("Event: dgrid-select");
 							$scope.$apply(function(){
 								$scope.curSelect[category] = event.rows[0].data;
 							});
 				    	} else if(event.type == "dgrid-deselect") {
-							console.log("Event: dgrid-deselect");
 							$scope.$apply(function(){
 								$scope.curSelect[category] = null;
 							});
 				    	} else if(event.type == "dgrid-datachange") {
-							console.log("Event: dgrid-datachange");
-				    		var data = event.grid.row(event).data;
-							console.dir(data);
-				    		data[event.cell.column.field] = event.value;
+				    		var data = event.data;
+				    		//data[event.cell.column.field] = event.value;
 				    		$scope.updateMetaType(gridConfig, category, data);
 				    	}
 						/* adjust UI elements */
@@ -84,8 +74,10 @@ define(['app'], function(app) {
 			};
 
 			$scope.addMetaType = function(gridConfig, category) {
-				var req = { category: category, name: "unnamed" };
-				invokePOST($scope.http, $scope.semanticsAPI,
+				var url = metadataCatagoryUrls[category];
+				var req = { name: "unnamed" };
+				$log.debug("Adding metadata via url: ", url);
+				invokePOST($scope.http, url,
 					JSON.stringify(req),
 					function(data, status, headers, config) {
 						$scope.loadTable(gridConfig, category);
@@ -94,9 +86,8 @@ define(['app'], function(app) {
 			};
 
 			$scope.updateMetaType = function(gridConfig, category, instance) {
-				invokePUT($scope.http, $scope.semanticsAPI,
-					JSON.stringify(instance),
-					function(data, status, headers, config) {
+				var url = metadataCatagoryUrls[category];
+				invokePUT($scope.http, url, angular.toJson(instance), function(data, status, headers, config) {
 						$scope.loadTable(gridConfig, category);
 					}
 				);

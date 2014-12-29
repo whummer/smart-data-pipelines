@@ -14,7 +14,7 @@ require 'extractor/elasticsearch'
 module Riots
 	
 	class Wolfram
-		include Extractor::Elasticsearch
+		include Riots::Elasticsearch
 	
 		BASE_URL = "http://devices.wolfram.com"
 

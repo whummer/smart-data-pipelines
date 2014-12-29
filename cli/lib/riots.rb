@@ -32,13 +32,14 @@ module Riots
     end
 
     desc "fetch", "Fetches data from a given provider"
-    method_option :es_host, :type => :string, :required => false, :aliases => "-e",
-                  :banner => "Elasticsearch host to post data into. If not set, we output to files"
+    method_option :catalog_host, :type => :string, :required => false, :aliases => "-h",
+                  :banner => "Riots catalog host to post data into. If not set, we output to files"
     method_option :limit, :type => :numeric, :required => false, :aliases => "-l"
+    method_option :no_image_download, :type => :boolean, :required => false, :default => false
     def fetch(provider)
       begin
-        require "extractor/#{provider}"
-        extractor = Object.const_get "Extractor" # load module
+        require "riots/#{provider}"
+        extractor = Object.const_get "Riots" # load module
         clazz = extractor.const_get provider.camel_case # load class relative to module
         clazz.new(options).fetch
       rescue LoadError => e

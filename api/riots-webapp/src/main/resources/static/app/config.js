@@ -92,6 +92,14 @@ var requirejsAppConfig = {
             name: 'jsurl',
             location: '/bower_components/jsurl',
             main: 'url'
+        },{
+            name: 'typeahead',
+            location: '/bower_components/typeahead.js',
+            main: 'dist/typeahead.bundle'
+        },{
+            name: 'bootstrap3-typeahead',
+            location: '/bower_components/bootstrap3-typeahead',
+            main: 'bootstrap3-typeahead'
         }, {
             name: 'auth',
             location: '/app/scripts/modules',

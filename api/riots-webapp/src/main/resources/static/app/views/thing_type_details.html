@@ -3,6 +3,64 @@
     .bootstrap-tagsinput {
         width: 100% !important;
     }
+
+    span.twitter-typeahead .tt-dropdown-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        z-index: 1000;
+        display: none;
+        float: left;
+        min-width: 160px;
+        padding: 5px 0;
+        margin: 2px 0 0;
+        list-style: none;
+        font-size: 14px;
+        text-align: left;
+        background-color: #ffffff;
+        border: 1px solid #cccccc;
+        border: 1px solid rgba(0, 0, 0, 0.15);
+        border-radius: 4px;
+        -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+        background-clip: padding-box;
+    }
+    span.twitter-typeahead .tt-suggestion > p {
+        display: block;
+        padding: 3px 20px;
+        clear: both;
+        font-weight: normal;
+        line-height: 1.42857143;
+        color: #333333;
+        white-space: nowrap;
+    }
+    span.twitter-typeahead .tt-suggestion > p:hover,
+    span.twitter-typeahead .tt-suggestion > p:focus {
+        color: #ffffff;
+        text-decoration: none;
+        outline: 0;
+        background-color: #428bca;
+    }
+    span.twitter-typeahead .tt-suggestion.tt-cursor {
+        color: #ffffff;
+        background-color: #428bca;
+    }
+    span.twitter-typeahead {
+        width: 100%;
+    }
+    .input-group span.twitter-typeahead {
+        display: block !important;
+    }
+    .input-group span.twitter-typeahead .tt-dropdown-menu {
+        top: 32px !important;
+    }
+    .input-group.input-group-lg span.twitter-typeahead .tt-dropdown-menu {
+        top: 44px !important;
+    }
+    .input-group.input-group-sm span.twitter-typeahead .tt-dropdown-menu {
+        top: 28px !important;
+    }
+
 </style>
 
 <section ng-controller="ThingTypeDetailsController" id="devTypeDetailsSection">
@@ -69,7 +127,7 @@
                 <label for="devTypeTags" class="col-sm-2 control-label">Tags</label>
 
                 <div class="col-sm-10">
-                    <input id="devTypeTags" class="form-control input-sm" data-role="tagsinput"/>
+                    <input id="devTypeTags" class="form-control input-sm typeahead" data-role="tagsinput" autocomplete="off"/>
                 </div>
             </div>
 
@@ -118,6 +176,8 @@
 
 </section>
 
+<script src="/bower_components/typeahead.js/dist/typeahead.bundle.js"></script>
+<!--<script src="/bower_components/bootstrap3-typeahead/bootstrap3-typeahead.js"></script>-->
 <script type="text/javascript">
     var app = angular.module("app");
     app.controller('ThingTypeDetailsController', function ($scope, $http, $compile, $log, $location) {
@@ -196,7 +256,33 @@
             }
         });
 
-        $("#devTypeTags").tagsinput();
+        //
+        // typeahead stuff
+        //
+
+        var tags = ['speed', 'distance', 'temperature', 'energy', 'time', 'current', 'voltage', 'pressure',
+            'weight', 'color', 'height', 'width', 'power'];
+
+        // constructs the suggestion engine
+       var tagnames = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            local: $.map(tags, function(tag) { return { value: tag }; })
+        });
+
+        tagnames.initialize();
+
+
+        $("#devTypeTags").tagsinput({
+
+            typeaheadjs: {
+                name: 'tags',
+                displayKey: 'value',
+                source: tagnames.ttAdapter()
+            }
+
+        });
+
     });
 
 </script>

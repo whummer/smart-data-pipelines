@@ -8,7 +8,6 @@ import io.riots.services.catalog.ThingType;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,7 +31,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.cxf.jaxrs.ext.MessageContext;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
-import org.elasticsearch.search.SearchParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,7 +71,14 @@ public class ElasticCatalogService implements CatalogService {
     	}
     	// I believe putMapping can be done every time
     	searchTemplate.putMapping(ThingType.class);
-    	searchTemplate.refresh(ThingType.class, true);    	
+    	searchTemplate.refresh(ThingType.class, true); 
+    	
+    	if (!searchTemplate.indexExists(Manufacturer.class)) {
+    		searchTemplate.createIndex(Manufacturer.class);
+    	}
+    	// I believe putMapping can be done every time
+    	searchTemplate.putMapping(Manufacturer.class);
+    	searchTemplate.refresh(Manufacturer.class, true);
     }
     
 
@@ -98,21 +103,25 @@ public class ElasticCatalogService implements CatalogService {
         if (size <= 0)
             size = 100;
 
-        
+        QueryStringQueryBuilder
+        qBuilder = QueryBuilders.queryString(query).analyzeWildcard(true);
+        qBuilder.lenient(true);
         try {
-	        QueryStringQueryBuilder qBuilder = QueryBuilders.queryString(query).analyzeWildcard(true);
-	        qBuilder.lenient(true);
-	        
 	        Page<ThingType> result = thingTypeRepository.search(
 	                qBuilder, new PageRequest(page, size));
-	
 	        return result.getContent();
         } catch (Throwable t) {
         	log.info("ElasticSearch query parsing failed: {}", t.getMessage());
-        	return new ArrayList<ThingType>();
+        	
+        	// we return all results if the query fails`
+            qBuilder = QueryBuilders.queryString("*:*");
+ 	        Page<ThingType> result = thingTypeRepository.search(
+ 	                qBuilder, new PageRequest(page, size));
+ 	        return result.getContent();
         }
         
     }
+ 
 
 
     @Override
