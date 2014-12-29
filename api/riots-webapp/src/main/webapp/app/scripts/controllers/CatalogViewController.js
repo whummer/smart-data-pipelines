@@ -78,7 +78,7 @@ define(['app', 'bootstrap-tagsinput'], function(app) {
 			
 			// Entry point for key press during thing type search
 			$scope.searchKeyPress = function ()  {
-				console.log($scope.searchText)				
+				console.log($scope.searchText);				
 				invokeGET($scope.http, $scope.thingTypesAPI+"?q="+$scope.searchText,						
 					function (data, status, headers, config) {
 						var obj = data.result;
@@ -86,6 +86,11 @@ define(['app', 'bootstrap-tagsinput'], function(app) {
 						$scope.things = data.result
 					}									
 				);
+			}
+			
+			$scope.loadImageCarousel = function() {
+				console.log("loading image carousel");
+				
 			}
 
 			/*$scope.saveThingType = function (thingType) {

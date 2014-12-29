@@ -60,6 +60,7 @@ define(
                             $http.defaults.headers.common["riots-auth-token"] = token;
                             dependencies = defaultDependencies.concat(dependencies);
                         } else {
+                        	$("#authContainer").show();
                             dependencies = defaultDependencies;
                         }
 

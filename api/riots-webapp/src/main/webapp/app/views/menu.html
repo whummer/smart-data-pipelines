@@ -121,21 +121,25 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Logged
                         in as {{authInfo.name}}<span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
-                        <li><a href="#"><span style="margin-right: 10px" class="glyphicon glyphicon-cog"></span>My
+                        <li><a href="#/world"><span style="margin-right: 10px" class="glyphicon glyphicon-cog"></span>My
                             Things</a></li>
                         <li><a href="#"><span style="margin-right: 10px" class="glyphicon glyphicon-list-alt"></span>My
                             Blueprints</a></li>
                         <li><a href="#"><span style="margin-right: 10px" class="glyphicon glyphicon-wrench"></span>My
                             Profile</a></li>
                         <li class="divider"></li>
+                        <li><a href="/connect/index.html"><span style="margin-right: 10px"
+                                class="glyphicon glyphicon-transfer"></span>Connect this Device</a>
+                        </li>
+                        <li class="divider"></li>
                         <li><a href="JavaScript: void(0);" ng-click="performLogout()"><span style="margin-right: 10px"
-                                                                                            class="glyphicon glyphicon-log-out"></span>Logout</a>
+                                class="glyphicon glyphicon-log-out"></span>Logout</a>
                         </li>
                     </ul>
                 </li>
 
                 <li>
-                    <div id="userAvatar" ng-show="authInfo" style="line-height: 39px; padding-top: 5px">
+                    <div id="userAvatar" ng-show="authInfo" style="line-height: 50px; padding: 10px">
                         <img class="img-circle" id="imgAvatar" ng-src="{{authInfo.avatar}}" alt="img"
                              ng-if="authInfo.avatar" style="height: 30px;"/>
                     </div>

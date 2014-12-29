@@ -106,7 +106,6 @@ app.controller('PropsSimController', [
 			$scope.rectifyScenarioModel();
 			newEntry[PROPERTY_NAME] = $scope.shared.selectedSimProp.name;
 			newEntry[THING_ID] = $scope.shared.selectedSimThing.id;
-			console.log("newEntry", newEntry);
 			$scope.curScenario.simulationProperties.push(newEntry);
 			var url = $scope.simAPI;
 			invokePUT($scope.http, url,
@@ -177,13 +176,12 @@ app.controller('PropsSimController', [
 		}
 
 		$scope.selectCurrentProps = function() {
-			console.log("$scope.curScenario", $scope.curScenario);
 			var props = $scope.curScenario.simulationProperties;
 			if(!props || !props.length) return;
 			var dev = $scope.shared.selectedSimThing;
 			var prop = $scope.shared.selectedSimProp;
 			if(!dev || !prop) return;
-			console.log("selectedSimThing", dev, prop);
+			//console.log("selectedSimThing", dev, prop);
 			$scope.curPropSim = null;
 			$.each(props, function(idx,el) {
 				if(el[PROPERTY_NAME] == prop.name && dev.id == el[THING_ID]) {

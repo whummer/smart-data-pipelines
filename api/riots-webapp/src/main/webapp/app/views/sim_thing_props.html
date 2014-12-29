@@ -31,16 +31,35 @@ app.controller('SimThingPropsController', [
 
 		var loadThingProperties = function(thing, thingType) {
 			//console.log("loadThingProperties", thing, thingType);
-			$.each(thingType.properties, function(idx,el) {
-				var entry = {
-					thing: thing,
-					property: el
-				};
-				$scope.tableEntries.push(entry);
-			});
+			if(thingType.properties) {
+				$.each(thingType.properties, function(idx,el) {
+					var entry = {
+						thing: thing,
+						property: el
+					};
+					$scope.tableEntries.push(entry);
+				});
+			}
+			// recurse into child thing types
+			if(thingType.children) {
+				$.each(thingType.children, function(idx,el) {
+					console.log("recurse sub type", el);
+					if(el.id) {
+						loadThingProperties(thing, el);
+					} else {
+						shared.thingType(el, function(childType) {
+							console.log("childType", childType);
+							loadThingProperties(thing, childType);
+						});
+					}
+				});
+			}
 		}
 
 		var loadThingType = function(thing) {
+			if(!thing[THING_TYPE]) {
+				return;
+			}
 			if(thing[THING_TYPE].id) {
 				console.log("loadThingProperties 1", thing);
 				loadThingProperties(thing, thing[THING_TYPE]);

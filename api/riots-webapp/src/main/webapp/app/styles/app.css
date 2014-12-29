@@ -145,3 +145,11 @@ ul.nav-tabs a.ng-binding {
 .well-flat {
 	display: block; padding: 20px; margin-bottom: 20px;
 }
+
+a.right.carousel-control, a.left.carousel-control {
+	background-image: none;
+}
+
+.carousel-indicators {
+	display: none;
+}

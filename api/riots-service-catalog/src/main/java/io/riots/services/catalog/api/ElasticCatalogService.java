@@ -7,7 +7,6 @@ import io.riots.services.catalog.Manufacturer;
 import io.riots.services.catalog.ThingType;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -87,7 +86,7 @@ public class ElasticCatalogService implements CatalogService {
         if (thingTypeRepository.exists(thingTypeId)) {
             return thingTypeRepository.findOne(thingTypeId);
         } else {
-            throw new NotFoundException("No such thing: " + thingTypeId);
+            throw new NotFoundException("No such thing type: " + thingTypeId);
         }
     }
 

@@ -1,5 +1,6 @@
-<section ng-controller="ThingTypesController" id="thingTypesSection">
 
+
+<section ng-controller="ThingTypesController" id="thingTypesSection">
     <!-- search input row -->
     <div id="thingTypesSectionWrapper">
         <div class="row" id="thingTypeSearch">
@@ -28,8 +29,14 @@
 			  <div class="row">
                   <div class="col-sm-6 col-md-4" ng-if="things[$index] != undefined">
                       <div class="thumbnail">
-                          <img ng-src="{{things[$index]['image-urls'][0]}}" style="max-height: 100px"
-                               alt="{{things[$index].name}}">
+                         						        
+	                      <!-- thing type images -->
+	                      <carousel interval="-1"> 
+							<slide ng-repeat="pic in things[$index]['image-urls']"  >
+								<img ng-src="{{pic}}" class="img-responsive" style="margin: auto; max-height: 100px">
+							</slide> 
+					      </carousel> 			
+					      		      
 
                           <div class="caption">
                               <h4>{{things[$index].name}}</h4>
@@ -70,9 +77,13 @@
 
                   <div class="col-sm-6 col-md-4 " ng-if="things[$index+1] != undefined">
                       <div class="thumbnail ">
-                          <img ng-src="{{things[$index+1]['image-urls'][0]}}" style="max-height: 100px"
-                               alt="{{things[$index+1].name}}">
-
+                           <!-- thing type images -->
+	                      <carousel interval="-1"> 
+							<slide ng-repeat="pic in things[$index]['image-urls']"  >
+								<img ng-src="{{pic}}" class="img-responsive" style="margin: auto; max-height: 100px">
+							</slide> 
+					      </carousel> 			
+					      		      
                           <div class="caption">
                               <h4>{{things[$index+1].name}}</h4>
 
@@ -112,9 +123,13 @@
 
                   <div class="col-sm-6 col-md-4 " ng-if="things[$index+2] != undefined">
                       <div class="thumbnail ">
-                          <img ng-src="{{things[$index+2]['image-urls'][0]}}" style="max-height: 100px"
-                               alt="{{things[$index+2].name}}">
-
+                          <!-- thing type images -->
+	                      <carousel interval="-1"> 
+							<slide ng-repeat="pic in things[$index]['image-urls']"  >
+								<img ng-src="{{pic}}" class="img-responsive" style="margin: auto; max-height: 100px">
+							</slide> 
+					      </carousel>
+					      
                           <div class="caption">
                               <h4>{{things[$index+2].name}}</h4>
 

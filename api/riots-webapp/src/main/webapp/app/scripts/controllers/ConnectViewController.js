@@ -15,10 +15,19 @@ define(['app'], function(app) {
 				if(state.accel) {
 					document.getElementById("x").innerHTML = state.accel.x;
 					document.getElementById("y").innerHTML = state.accel.y;
-					console.log(state.accel.event);
+					document.getElementById("z").innerHTML = state.accel.z;
 				}
-		
 				/* send data to riots platform... */
+				if($scope.isTracking) {
+					var props = [
+						"propAccelX", "propAccelY", "propAccelZ",
+						"propLat", "propLng"
+					];
+					$.each(props, function(idx,el) {
+						invokePOST($http, );
+					});
+				}
+				/* timeout next loop */
 				setTimeout(updateInfoPeriodically, parseInt($scope.udateIntervalMS));
 			}
 
@@ -54,13 +63,7 @@ define(['app'], function(app) {
 						userdata: markerData
 					};
 					window.marker = L.marker(locArray,options).
-						//animateDragging().
 						bindPopup(markerData.name)
-						//on("click", function() {
-						//}).
-						//on("dragend", function(e) {
-						//	var userData = e.target.options.userdata;
-						//});
 					window.map.options.__markers.push(window.marker);
 					window.map.addLayer(window.marker);
 					console.log("adding marker layer");
@@ -75,6 +78,7 @@ define(['app'], function(app) {
 				state.accel = {
 					x: event.accelerationIncludingGravity.x,
 					y: event.accelerationIncludingGravity.y,
+					z: event.accelerationIncludingGravity.z,
 					event: event
 				}
 			}
@@ -93,10 +97,61 @@ define(['app'], function(app) {
 					maxNativeZoom: 19
 				}).addTo(map);
 			}
-		
+
+			function loadThings() {
+				shared.things(function(things) {
+					$scope.things = things;
+				});
+			}
+
+			function loadPropsForThingType(thingType) {
+				console.log("loadPropsFor", thingType);
+				if(thingType) {
+					$scope.properties = [];
+					model.properties(thingType, function(properties) {
+						if(properties) {
+							$.each(properties, function(idx,el) {
+								$scope.properties.push(el);
+							});
+						}
+					});
+				}
+			}
+
+			function loadProps() {
+				var thing = $scope.thingSelected;
+				if(!thing) return;
+				var thingType = thing[THING_TYPE];
+				console.log("loadProps", thing, thingType);
+				if(!thingType) return;
+				if(thingType.id) {
+					loadPropsForThingType(thingType);
+				} else {
+					shared.thingType(thingType, function(thingType) {
+						loadPropsForThingType(thingType);
+					});
+				}
+			}
+
+			$scope.toggleTracking = function() {
+				if($scope.isTracking) {
+					$("#btnToggleTracking").innerHTML = "Stop Tracking";
+				} else {
+					$("#btnToggleTracking").innerHTML = "Start Tracking";
+				}
+				$scope.isTracking = !$scope.isTracking;
+			}
+
+			/* initialize elements */
+			loadThings();
 			setupMap();
 			getAndStorePositionPeriodically();
 			updateInfoPeriodically();
+
+			/* register event listeners */
+			$scope.$watch("thingSelected", function() {
+				loadProps();
+			});
 
 		});
     }

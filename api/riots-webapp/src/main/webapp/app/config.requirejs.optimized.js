@@ -1,35 +1,3 @@
-/**
- * global app configurations
- */
-var appConfig = {
-
-	appRootPath: "/app",
-	services: {
-		core: { url: "http://localhost:8080/api/v1" },
-		deviceTypes: { url: "http://localhost:8080/api/v1/device-types" },
-		deviceTypeProps: { url: "http://localhost:8080/api/v1/device-types/properties" },
-		deviceDrivers: { url: "http://localhost:8080/api/v1/drivers" },
-		devices: { url: "http://localhost:8080/api/v1/devices" },
-		categories: { url: "http://localhost:8080/api/v1/categories" },
-		semanticTypes: { url: "http://localhost:8080/api/v1/semantic-types" },
-		simulations: { url: "http://localhost:8080/api/v1/simulations" },
-		ratings: { url: "http://localhost:8080/api/v1/ratings" },
-		simulationProps: { url: "http://localhost:8080/api/v1/simulations/properties" },
-		simulationDevices: { url: "http://localhost:8080/api/v1/simulations/devices" },
-		websocket: { url: "ws://localhost:8082/" }
-	},
-	auth: {
-		github: {
-			client_id: "49dfffa20fdaf8c5529d"
-		},
-		google: {
-			client_id: "1034816257353-9on087jmdlgqsh3rce5gdu1f2oouvgo0.apps.googleusercontent.com"
-		},
-		facebook: {
-			client_id: "543561462440557"
-		}
-	}
-}
 
 /**
  * global configurations for requirejs

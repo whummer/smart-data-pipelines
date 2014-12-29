@@ -158,7 +158,8 @@ app.controller('WorldMapController', [
 							&& marker.location.longitude) {
 						$scope.addMarker(marker);
 					} else {
-						console.warn("Marker has no valid location:", marker);
+						// this thing marker does not have a location -> ignore
+						//console.warn("Marker has no valid location:", marker);
 					}
 				});
 

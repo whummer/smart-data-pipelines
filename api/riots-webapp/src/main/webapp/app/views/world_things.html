@@ -112,6 +112,7 @@
 				$scope.deleteThingInDB(selection, function() {
 					//$scope.loadAllAssets();
 					eventBus.publish("addOrDel.Asset", selection);
+					$scope.shared.selectedThing = null;
 				});
 			}
 
