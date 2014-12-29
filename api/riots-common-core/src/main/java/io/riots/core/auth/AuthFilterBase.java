@@ -66,15 +66,17 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
     /* TODO: put into config file */
     private static final List<String> unprotectedResources = Arrays.asList(
             "^/app/$",
+            "^/bower_components/.*$",
             "^/app/index\\.html$",
             "^/app/views/login\\.html$",
             "^/app/views/login_result\\.html$",
             "^/app/styles/.*\\.css$",
             "^/app/config\\.js$",
+            "^/app/config\\.requirejs\\.js$",
             "^/app/img/.*\\.gif$",
             "^/app/img/.*\\.png$",
             "^/app/img/.*\\.jpeg$",
-            "^/bower_components/.*$",
+            "^/app/api/.*$",
             "^/models/.*$",
             "^/examples/.*$",
             "^/connect/.*$",

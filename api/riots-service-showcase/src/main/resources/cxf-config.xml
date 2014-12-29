@@ -15,14 +15,9 @@
 
     <jaxrs:server address="/v1" id="api-v1">
         <jaxrs:serviceBeans>
-<!--             <ref bean="deviceTypes"/> -->
-<!--             <ref bean="devices"/> -->
-<!--             <ref bean="deviceData"/> -->
             <ref bean="manufacturers"/>
             <ref bean="assetCategories"/>
-            <!--<ref bean="simulations"/>-->
             <ref bean="semanticTypes"/>
-            <!--<ref bean="deviceDrivers"/>-->
             <bean id="swaggerResourceJSON" class="com.wordnik.swagger.jaxrs.listing.ApiListingResourceJSON"/>
         </jaxrs:serviceBeans>
         <jaxrs:features>
@@ -35,14 +30,14 @@
         </jaxrs:providers>
     </jaxrs:server>
  
-    <bean id="swaggerConfig" class="com.wordnik.swagger.jaxrs.config.BeanConfig">
-        <property name="resourcePackage" value="io.riots.api.services"/>
-        <property name="version" value="0.0.1"/>
-        <property name="basePath" value="http://localhost:8080/api/v1"/>
-        <property name="title" value="riots API"/>
-        <property name="description" value="~~~ riots.io ~~~"/>
-        <property name="contact" value="info@riots.io"/>
-        <property name="scan" value="true"/>
-    </bean>
+<!--     <bean id="swaggerConfig" class="com.wordnik.swagger.jaxrs.config.BeanConfig"> -->
+<!--         <property name="resourcePackage" value="io.riots.api.services"/> -->
+<!--         <property name="version" value="0.0.1"/> -->
+<!--         <property name="basePath" value="http://TODO_HOST:8080/api/v1"/> -->
+<!--         <property name="title" value="riots API"/> -->
+<!--         <property name="description" value="~~~ riots.io ~~~"/> -->
+<!--         <property name="contact" value="info@riots.io"/> -->
+<!--         <property name="scan" value="true"/> -->
+<!--     </bean> -->
 
 </beans>

@@ -50,7 +50,7 @@ public abstract class ServiceStarter {
 //		BeanConfig swaggerConfig = new BeanConfig();
 //		swaggerConfig.setScan(true);
 //		swaggerConfig.setTitle("riots API");
-//		swaggerConfig.setBasePath("http://localhost:8080/api/v1");
+//		swaggerConfig.setBasePath("http://TODO_HOSTNAME:8080/api/v1");
 //		swaggerConfig.setVersion("0.0.1");
 //		swaggerConfig.setDescription("~~~ Let's start a riot ~~~");
 //		swaggerConfig.setResourcePackage("io.riots");
