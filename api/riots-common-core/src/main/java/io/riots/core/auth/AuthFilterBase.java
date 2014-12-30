@@ -5,7 +5,6 @@ import io.riots.services.users.Role;
 
 import java.io.IOException;
 import java.net.HttpCookie;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
@@ -23,7 +22,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.cxf.helpers.IOUtils;
 import org.apache.log4j.Logger;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,8 +30,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.AuthenticationEntryPoint;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * This filter enforces authentication and authorization.
@@ -76,7 +72,7 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
             "^(/app)?/img/.*\\.gif$",
             "^(/app)?/img/.*\\.png$",
             "^(/app)?/img/.*\\.jpeg$",
-            "^(/app)?/api/.*$",
+            "^(/app)?/api/riots-api\\.js$",
             "^(/app)?/favicon\\.ico$",
             "^/models/.*$",
             "^/examples/.*$",
@@ -109,11 +105,9 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
         userRoleMappings.add(new UserRoleMapping(".*", Role.ROLE_USER));
     }
 
+    protected static final long EXPIRY_PERIOD_MS = 1000 * 60 * 20; /* 20 minutes token timeout */
     private static final Logger LOG = Logger.getLogger(AuthFilterBase.class);
-    private static final ObjectMapper JSON = new ObjectMapper();
-
     private static final Map<String, AuthInfo> tokens = new ConcurrentHashMap<String, AuthInfo>();
-    private static final long EXPIRY_PERIOD_MS = 1000 * 60 * 20; /* 20 minutes token timeout */
 
     /**
      * Implement {@link Filter}.doFilter(...)
@@ -221,9 +215,6 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
             boolean doVerify = true;
             if (info != null) {
                 if (info.isExpired()) {
-                    //LOG.info("Invalid auth token, expired on " + info.expiry + ", now " + new Date());
-                    //response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                    //return;
                     tokens.remove(token);
                 } else {
                     doVerify = false;
@@ -234,88 +225,20 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
 				/* verify credentials */
                 System.out.println("Checking credentials: " + uri + " - " + network + " - " + token);
 
-                AuthInfo newInfo = new AuthInfo();
-                newInfo.accessToken = token;
-                if ("github".equals(network)) {
-                    try {
-						/* Example:
-						 {
-						 	"login": "user123",
-						 	"name": "Firstname Lastname"
-						 	...
-						} */
-                        String urlPattern = "https://api.github.com/<request>?access_token=" + token;
-                        String url1 = urlPattern.replace("<request>", "user");
-                        String result1 = IOUtils.readStringFromStream(new URL(url1).openStream());
-                        @SuppressWarnings("unchecked")
-                        Map<String, Object> json1 = JSON.readValue(result1, Map.class);
-                        newInfo.expiry = new Date(new Date().getTime() + EXPIRY_PERIOD_MS);
-                        newInfo.userID = (String) json1.get("login");
-                        newInfo.userName = (String) json1.get("name");
-                        String url2 = urlPattern.replace("<request>", "user/emails");
-                        String result2 = IOUtils.readStringFromStream(new URL(url2).openStream());
-                        @SuppressWarnings("unchecked")
-                        List<Map<String, Object>> json2 = JSON.readValue(result2, List.class);
-                        newInfo.email = (String) json2.get(0).get("email");
-                    } catch (Exception e) {
-                        LOG.warn("Unable to process auth headers (" + network + "): " + e);
+                AuthInfo newInfo = null;
+                try {
+					AuthNetwork authNetwork = AuthNetwork.get(network);
+					newInfo = authNetwork.verifyAccessToken(token);
+                	if(newInfo == null) {
                         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                         return false;
-                    }
-                } else if ("facebook".equals(network)) {
-                    try {
-						/* Example:
-						 {
-							"id": "12345",
-						 	"name": "Firstname Lastname",
-							"email": "test@test.com",
-						 	...
-						} */
-                        String url = "https://graph.facebook.com/me?access_token=" + token;
-                        String result = IOUtils.readStringFromStream(new URL(url).openStream());
-                        @SuppressWarnings("unchecked")
-                        Map<String, Object> json = JSON.readValue(result, Map.class);
-                        newInfo.expiry = new Date(new Date().getTime() + EXPIRY_PERIOD_MS);
-                        newInfo.userID = (String) json.get("id");
-                        newInfo.userName = (String) json.get("name");
-                        newInfo.email = (String) json.get("email");
-                    } catch (Exception e) {
-                        LOG.warn("Unable to process auth headers (" + network + "): " + e);
-                        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                        return false;
-                    }
-                } else if ("google".equals(network)) {
-                    try {
-						/* Example:
-						 {
-							"id": "12345",
-						 	"displayName": "Firstname Lastname",
-							"emails": [{
-								"value": "test@test.com",
-								"type": "account"
-							}],
-						 	...
-						} */
-                        String url = "https://www.googleapis.com/plus/v1/people/me?access_token=" + token;
-                        String result = IOUtils.readStringFromStream(new URL(url).openStream());
-                        @SuppressWarnings("unchecked")
-                        Map<String, Object> json = JSON.readValue(result, Map.class);
-                        newInfo.expiry = new Date(new Date().getTime() + EXPIRY_PERIOD_MS);
-                        newInfo.userID = (String) json.get("id");
-                        newInfo.userName = (String) json.get("displayName");
-                        @SuppressWarnings("unchecked")
-                        List<Map<String, String>> emails = (List<Map<String, String>>) json.get("emails");
-                        newInfo.email = emails.get(0).get("value");
-                    } catch (Exception e) {
-                        LOG.warn("Unable to process auth headers (" + network + "): " + e);
-                        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                        return false;
-                    }
-                } else {
-                    LOG.warn("Unknown auth network: " + network);
+                	}
+				} catch (Exception e) {
+                    LOG.warn("Unable to process auth headers (" + network + "): " + e);
                     response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                     return false;
-                }
+				}
+                newInfo.accessToken = token;
 
 				/* set user roles in AuthInfo */
                 for (UserRoleMapping m : userRoleMappings) {
@@ -392,8 +315,7 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
 
     private boolean isUnprotected(String path) {
     	boolean result = matchesAny(path, unprotectedResources);
-    	System.out.println("isUnprotected " + path + " - " + unprotectedResources + " - " + result);
-        return result;
+    	return result;
     }
 
     private boolean isProtected(String path) {

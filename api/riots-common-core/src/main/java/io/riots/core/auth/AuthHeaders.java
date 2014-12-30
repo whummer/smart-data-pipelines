@@ -53,6 +53,16 @@ public class AuthHeaders {
         boolean isExpired() {
             return expiry.before(new Date());
         }
+
+		@Override
+		public String toString() {
+			return "AuthInfo [userID=" + userID + ", userName=" + userName
+					+ ", email=" + email + ", user=" + user + ", roles="
+					+ roles + ", accessToken=" + accessToken + ", expiry="
+					+ expiry + ", rolesAsGrantedAuthorities="
+					+ rolesAsGrantedAuthorities + "]";
+		}
+        
     }
 
     /**
