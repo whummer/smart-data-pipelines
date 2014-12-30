@@ -33,16 +33,49 @@ zuul:
     webapp-service:
       path: /app/**
       stripPrefix: false
-    connect:
-      path: /connect/**
-      stripPrefix: false
-      serviceId: webapp-service
-    bower:
+    webapp-bower:
       path: /bower_components/**
       stripPrefix: false
       serviceId: webapp-service
-    favicon:
+    webapp-connect:
+      path: /connect**
+      stripPrefix: false
+      serviceId: webapp-service
+
+    webapp-index:
+      path: /index.html
+      stripPrefix: false
+      serviceId: webapp-service
+    webapp-favicon:
       path: /favicon.ico
+      stripPrefix: false
+      serviceId: webapp-service
+    webapp-api-js:
+      path: /api/riots-api.js
+      stripPrefix: false
+      serviceId: webapp-service
+    webapp-img:
+      path: /img/**
+      stripPrefix: false
+      serviceId: webapp-service
+    webapp-views:
+      path: /views/**
+      stripPrefix: false
+      serviceId: webapp-service
+    webapp-styles:
+      path: /styles/**
+      stripPrefix: false
+      serviceId: webapp-service
+    webapp-scripts:
+      path: /scripts/**
+      stripPrefix: false
+      serviceId: webapp-service
+    webapp-config:
+      path: /config**
+      stripPrefix: false
+      serviceId: webapp-service
+    webapp-root:
+      path: /
       stripPrefix: false
       serviceId: webapp-service
 

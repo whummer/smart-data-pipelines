@@ -69,6 +69,10 @@ var requirejsAppConfig = {
             name: 'auth',
             location: '/app/scripts/modules',
             main: 'auth.js'
+        }, {
+        	name: "infinite-scroll",
+        	location: "/bower_components/ngInfiniteScroll",
+        	main: "build/ng-infinite-scroll.min.js"
         }
     ],
     paths: {

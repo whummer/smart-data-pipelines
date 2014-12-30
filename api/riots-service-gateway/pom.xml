@@ -31,11 +31,6 @@
         <!-- riots dependencies (for authentication) -->
         <dependency>
         	<groupId>io.riots</groupId>
-        	<artifactId>riots-common-service-base</artifactId>
-        	<version>${project.version}</version>
-        </dependency>
-        <dependency>
-        	<groupId>io.riots</groupId>
         	<artifactId>riots-common-core</artifactId>
         	<version>${project.version}</version>
         </dependency>

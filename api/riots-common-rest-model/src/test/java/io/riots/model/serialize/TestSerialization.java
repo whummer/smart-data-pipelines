@@ -1,10 +1,10 @@
-package io.riots.example;
+package io.riots.model.serialize;
 
 import io.riots.core.services.sim.PropertySimulation;
 import io.riots.core.services.sim.Simulation;
 import io.riots.services.catalog.Property;
 
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 public class TestSerialization {
 

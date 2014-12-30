@@ -40,5 +40,4 @@ public class ThingTypeTest  {
 		log.info(targetJson.toString());
 		JSONAssert.assertEquals(targetJson.toString(), originalTree.toString(), false);				
 	}
-
 }

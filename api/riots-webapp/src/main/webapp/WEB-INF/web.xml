@@ -9,6 +9,10 @@
         <param-value>classpath*:riots-webapp.xml</param-value>
     </context-param>
 
+	<welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
+
     <listener>
         <listener-class>io.riots.api.metrics.MetricsRegistryInitializingContextLoaderListener</listener-class>
     </listener>
@@ -66,6 +70,21 @@
 		<url-pattern>/api/*</url-pattern>
 	</filter-mapping>
 	 -->
+
+	<filter>
+	    <filter-name>UrlRewriteFilter</filter-name>
+	    <filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class>
+	    <init-param>
+	        <param-name>confPath</param-name>
+	        <param-value>/WEB-INF/urlrewrite.xml</param-value>
+	    </init-param>
+	</filter>
+	<filter-mapping>
+	    <filter-name>UrlRewriteFilter</filter-name>
+	    <url-pattern>/*</url-pattern>
+	    <dispatcher>REQUEST</dispatcher>
+	</filter-mapping>
+
 
 	<filter>
 		<filter-name>auth</filter-name>

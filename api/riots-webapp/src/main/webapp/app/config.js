@@ -30,6 +30,6 @@ var appConfig = {
 		facebook: {
 			client_id: "543561462440557"
 		},
-		redirect_uri: "http://localhost:8080/app/views/login_result.html"
+		redirect_uri: "http://platform.riots.io:8080/app/views/login_result.html"
 	}
 };

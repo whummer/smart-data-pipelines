@@ -65,9 +65,6 @@ public class InsertDemoDataViaCatalog {
 	public static class TestConfiguration {
 	}
 
-//	private Map<String, SemanticType.SemanticPropertyType> propTypes = new HashMap<>();
-//	private Map<String, SemanticType.SemanticDeviceType> devTypes = new HashMap<>();
-
 	private static CatalogService catalog;
 
 	@Before
@@ -361,12 +358,15 @@ public class InsertDemoDataViaCatalog {
 	        		+ "The access points name and signal strength is determined and looked "
 	        		+ "up in a database to identify the location. The more access points are "
 	        		+ "found, the more precise the localization..");
-	        Property propLat1 = new Property("latitude");
-	        propLat1.setActuatable(false).setSensable(true);
-	        wpsSensor.getProperties().add(propLat1);
-	        Property propLon1 = new Property("longitude");
-	        propLon1.setActuatable(false).setSensable(true);
-	        wpsSensor.getProperties().add(propLon1);
+	        Property propLat = new Property("latitude");
+	        propLat.setActuatable(false).setSensable(true);
+	        Property propLon = new Property("longitude");
+	        propLon.setActuatable(false).setSensable(true);
+	        Property propLoc = new Property("location");
+	        propLoc.setActuatable(false).setSensable(true);
+	        propLoc.addChild(propLat);
+	        propLoc.addChild(propLon);
+	        wpsSensor.getProperties().add(propLoc);
 
 	        wpsSensor = getOrCreateThingType(wpsSensor, existing);
         }

@@ -200,7 +200,6 @@ define(['app'], function(app) {
 			$scope.renderSelectScenarios();
 
 			/* render elements */
-			console.log("starting to render simViewSimSelect");
 			$scope.connectToWebsocket();
         }
     ]);

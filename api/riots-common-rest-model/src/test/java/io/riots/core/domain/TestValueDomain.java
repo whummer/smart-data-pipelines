@@ -1,6 +1,6 @@
 package io.riots.core.domain;
 
-import static org.junit.Assert.assertEquals;
+import static org.testng.Assert.assertEquals;
 import io.riots.services.catalog.ValueDomain;
 import io.riots.services.catalog.ValueDomainContinuous;
 import io.riots.services.catalog.ValueDomainDiscrete;

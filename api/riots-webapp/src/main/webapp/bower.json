@@ -27,6 +27,7 @@
     "stomp-websocket": "2.3.3",
     "hello": "1.2.2",
     "raty": "2.7.0",
-    "typeahead.js": "0.10.5"
+    "typeahead.js": "0.10.5",
+    "ngInfiniteScroll" : "#"
   }
 }

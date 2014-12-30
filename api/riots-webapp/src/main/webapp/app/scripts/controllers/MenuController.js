@@ -2,16 +2,13 @@
  * Created by omoser on 18/12/14.
  */
 
-
 var app = angular.module('app');
-
-console.log("Inside MenuController.js");
 
 app.controller('ModalAddDeviceTypeController', ['$scope', '$modal', '$log', '$http', '$compile', function ($scope, $modal, $log, $http, $compile) {
 
     //AppController($scope, $http, $compile);
 
-    $log.info("entering ModalAddDeviceTypeController");
+    //$log.info("entering ModalAddDeviceTypeController");
 
     //$scope.items = ['', 'Wolfram', 'IOTDB', 'Sparkfun'];
 

@@ -1,11 +1,9 @@
 define(['app', 'bootstrap-tagsinput'], function(app) {
 
-
+	angular.module('infinite-scroll').value('THROTTLE_MILLISECONDS', 250)
 
     app.controller('CatalogViewController',
 		function($scope, $http, $compile, $log) {
-
-			$log.debug("Inside CatalogViewController");
 
 			AppController($scope, $http, $compile);
 
@@ -15,16 +13,58 @@ define(['app', 'bootstrap-tagsinput'], function(app) {
 			$scope.thingTypePropsAPI = appConfig.services.thingTypeProps.url;
 			$scope.semanticsAPI = appConfig.services.semanticTypes.url;
 			$scope.driversAPI = appConfig.services.drivers.url;
-
+			$scope.searchText = '';
 			$scope.shared.selectedThingType = null;
         }
     );
 
+    
+	// factory for infinite scrolling
+    app.factory('ThingTypes', function($http) {
+      var ThingTypes = function(thingTypesAPI, searchText) {
+        this.api = thingTypesAPI;
+        console.log("api: " + this.api)
+        this.searchText = searchText;
+        this.items = [];
+        this.busy = false;
+        this.page = 0;
+        this.size = 50;
+        this.fullyLoaded = false;
+      };
+
+      ThingTypes.prototype.nextPage = function() {
+    	console.log("nextPage() called")
+        if (this.busy || this.fullyLoaded) return;
+        this.busy = true;
+
+        invokeGET($http, this.api+"?q="+this.searchText+"&page=" + this.page + "&size=" + this.size,						
+			function (data, status, headers, config) {
+				var obj = data.result;
+				//console.log(obj.size);
+					
+				var items = data.result;
+				if (items.length == 0) {
+					this.fullyLoaded = true;
+				}
+				for (var i = 0; i < items.length; i++) {
+					this.items.push(items[i]);
+				}
+				this.page = this.page + 1;
+				console.log("page: " + this.page)
+				this.busy = false;
+			}.bind(this));        
+      };
+      return ThingTypes;
+    });
+    
 	app.controller('ThingTypesController',
 
-		function ($scope, $log) {
-
+		function ($scope, $log, ThingTypes) {			
+		
 			$log.debug("Inside ThingTypesController");
+			
+			// for infinite scrolling
+			$scope.thingTypes = new ThingTypes($scope.thingTypesAPI, $scope.searchText);			
 
 			$scope.showMore = function(thingId) {
 				$("#" + thingId + "_description").removeClass("thing-type-box");
@@ -54,27 +94,27 @@ define(['app', 'bootstrap-tagsinput'], function(app) {
 					zIndex: 100000
 				});
 			};
+									
+//			$scope.loadAllThingTypes = function () {
+//				console.log("Loading all thing types")
+//				invokeGET($scope.http, $scope.thingTypesAPI,
+//					function (data, status, headers, config) {
+//						var nodes = [];
+//						for (var i = 0; i < data.result.length; i++) {
+//							var obj = data.result[i];
+//							nodes.push(obj);
+//						}
+//
+//						$scope.things = nodes;
+//						setTimeout(function () {
+//							setupDragAndDrop();
+//						}, 100);
+//
+//					}
+//				);
+//			};
 
-			$scope.loadAllThingTypes = function () {
-				console.log("Loading all thing types")
-				invokeGET($scope.http, $scope.thingTypesAPI,
-					function (data, status, headers, config) {
-						var nodes = [];
-						for (var i = 0; i < data.result.length; i++) {
-							var obj = data.result[i];
-							nodes.push(obj);
-						}
-
-						$scope.things = nodes;
-						setTimeout(function () {
-							setupDragAndDrop();
-						}, 100);
-
-					}
-				);
-			};
-
-			$scope.loadAllThingTypes();
+			//$scope.loadAllThingTypes();
 			
 			// Entry point for key press during thing type search
 			$scope.searchKeyPress = function ()  {
@@ -87,11 +127,7 @@ define(['app', 'bootstrap-tagsinput'], function(app) {
 					}									
 				);
 			}
-			
-			$scope.loadImageCarousel = function() {
-				console.log("loading image carousel");
-				
-			}
+					
 
 			/*$scope.saveThingType = function (thingType) {
 				thingType = JSON.parse(JSON.stringify(thingType));
@@ -154,14 +190,14 @@ define(['app', 'bootstrap-tagsinput'], function(app) {
 				});
 			};
 
-			$scope.searchThingType = function () {
-				console.log("search: " + $("#inputDevTypeSearch").val());
-			};
+//			$scope.searchThingType = function () {
+//				console.log("search: " + $("#inputDevTypeSearch").val());
+//			};
 
 			/* register event handlers*/
 			//$scope.addClickHandler('btnAddThingType', $scope.addThingType);
 			//$scope.addClickHandler('btnDelThingType', $scope.deleteThingType);
-			$scope.addClickHandler('btnSearchThingType', $scope.searchThingType);
+//			$scope.addClickHandler('btnSearchThingType', $scope.searchThingType);
 
 			$scope.subscribeOnce("change.ThingTypeProps", function (event) {
 					console.log("change.ThingTypeProps", event.changedItem);

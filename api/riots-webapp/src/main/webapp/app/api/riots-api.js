@@ -8,6 +8,8 @@ var THING_ID = "thing-id";
 var PROPERTIES = "properties";
 var PROPERTY_ID = "property-id";
 var PROPERTY_NAME = "property";
+var PROPERTY_VALUE = "value";
+var TIMESTAMP = "timestamp";
 
 (function() {
 
@@ -38,12 +40,29 @@ sh.properties = function(thingType, callback) {
 		return;
 	}
 	//console.log("thingType.children", thingType.children);
+	/* recurse into sub-types */
 	if(thingType.children) {
 		$.each(thingType.children, function(idx,el) {
 			sh.properties(el, callback);
 		});
 	}
 	callback(thingType.properties);
+	/* recurse into sub-properties */
+	if(thingType.properties) {
+		var recurseProps = function(prop, callback, propNamePrefix) {
+			if(prop.children) {
+				$.each(prop.children, function(idx,subProp) {
+					subProp = clone(subProp);
+					subProp.name = propNamePrefix + subProp.name;
+					callback([subProp]);
+					recurseProps(subProp, callback, subProp.name + ".");
+				});
+			}
+		}
+		$.each(thingType.properties, function(idx,prop) {
+			recurseProps(prop, callback, prop.name + ".");
+		});
+	}
 }
 
 var object = function(url, callback) {

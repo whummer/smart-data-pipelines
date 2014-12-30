@@ -25,12 +25,10 @@ define(
     [
         'routes', 'angular', 'angular-bootstrap',
         'bootstrap-tagsinput',
-        'angular-route', 'angular-ui-grid'
+        'angular-route', 'angular-ui-grid', 'infinite-scroll'
     ],
 
     function (config) {
-
-        console.log("Entering app.js");
 
         var app = angular.module('app', [
             'ngRoute',
@@ -40,7 +38,8 @@ define(
             'ui.grid.rowEdit',
             'ui.grid.cellNav',
             'ui.grid.selection',
-            'ui.grid.autoResize'
+            'ui.grid.autoResize',
+            'infinite-scroll'
         ]);
 
         var dependencyResolverFor = function (defaultDependencies, dependencies, $http) {

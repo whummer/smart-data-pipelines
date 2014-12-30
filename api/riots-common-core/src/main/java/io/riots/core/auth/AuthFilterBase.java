@@ -65,29 +65,30 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
     );
     /* TODO: put into config file */
     private static final List<String> unprotectedResources = Arrays.asList(
-            "^/app/$",
+            "^/app/*$",
             "^/bower_components/.*$",
-            "^/app/index\\.html$",
-            "^/app/views/login\\.html$",
-            "^/app/views/login_result\\.html$",
-            "^/app/styles/.*\\.css$",
-            "^/app/config\\.js$",
-            "^/app/config\\.requirejs\\.js$",
-            "^/app/img/.*\\.gif$",
-            "^/app/img/.*\\.png$",
-            "^/app/img/.*\\.jpeg$",
-            "^/app/api/.*$",
+            "^(/app)?/index\\.html$",
+            "^(/app)?/views/login\\.html$",
+            "^(/app)?/views/login_result\\.html$",
+            "^(/app)?/styles/.*\\.css$",
+            "^(/app)?/config\\.js$",
+            "^(/app)?/config(\\.requirejs)?\\.js$",
+            "^(/app)?/img/.*\\.gif$",
+            "^(/app)?/img/.*\\.png$",
+            "^(/app)?/img/.*\\.jpeg$",
+            "^(/app)?/api/.*$",
+            "^(/app)?/favicon\\.ico$",
             "^/models/.*$",
             "^/examples/.*$",
-            "^/connect/.*$",
-            "^/app/favicon\\.ico$",
+            "^/connect/*.*$",
+            "^/$",
 
-            "^/app/scripts/app\\.js$",
-            "^/app/scripts/controllers/.*\\.js$",
-            "^/app/scripts/modules/.*\\.js$",
-            "^/app/scripts/directives/.*\\.js$",
-            "^/app/scripts/routes\\.js$",
-            "^/app/scripts/init\\.js$"
+            "^(/app)?/scripts/app\\.js$",
+            "^(/app)?/scripts/controllers/.*\\.js$",
+            "^(/app)?/scripts/modules/.*\\.js$",
+            "^(/app)?/scripts/directives/.*\\.js$",
+            "^(/app)?/scripts/routes\\.js$",
+            "^(/app)?/scripts/init\\.js$"
     );
 
     private static final List<UserRoleMapping> userRoleMappings = new LinkedList<UserRoleMapping>();
@@ -390,7 +391,9 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
     }
 
     private boolean isUnprotected(String path) {
-        return matchesAny(path, unprotectedResources);
+    	boolean result = matchesAny(path, unprotectedResources);
+    	System.out.println("isUnprotected " + path + " - " + unprotectedResources + " - " + result);
+        return result;
     }
 
     private boolean isProtected(String path) {
