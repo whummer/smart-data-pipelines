@@ -39,7 +39,6 @@ sh.properties = function(thingType, callback) {
 		});
 		return;
 	}
-	//console.log("thingType.children", thingType.children);
 	/* recurse into sub-types */
 	if(thingType.children) {
 		$.each(thingType.children, function(idx,el) {
@@ -113,8 +112,33 @@ var mem = sh.mem = function() {
 	return window.sharedMem;
 }
 
+
+/* subscribe via websocket */
+sh.subscribe = function(options, callback) {
+	var wsURL = appConfig.services.websocket.url;
+	var ws = this.websocket = new WebSocket(wsURL, 
+		authInfo.network + "~" + authInfo.access_token);
+	ws.onopen = function() {
+		var msg = {
+			type: "SUBSCRIBE",
+			thingId: options.thingId,
+			propertyName: options.propertyName
+		};
+		msg = JSON.stringify(msg);
+		ws.send(msg);
+	}
+	ws.onmessage = function(msg) {
+		var data = JSON.parse(msg.data);
+		if(callback) {
+			callback(data);
+		}
+	}
+}
+
+
 window.shared = sh;
 window.model = sh;
+window.riots = sh;
 
 return sh;
 })();

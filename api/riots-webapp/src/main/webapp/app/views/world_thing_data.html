@@ -53,7 +53,6 @@ app.controller('ThingDataController', [
 	function($scope, $http, $compile, $routeParams) {
 
 		AppController($scope, $http, $compile);
-		var wsURL = appConfig.services.websocket.url;
 
 		$scope.thingID = $routeParams.thingID;
 		$scope.propsGridConfig = {};
@@ -134,19 +133,7 @@ app.controller('ThingDataController', [
 
 		/* open websocket */
 		var connectWebsocket = function() {
-			var ws = $scope.websocket = new WebSocket(wsURL, 
-				authInfo.network + "~" + authInfo.access_token);
-			ws.onopen = function() {
-				var msg = {
-							type: "SUBSCRIBE",
-							thingId: $scope.shared.selectedThing.id,
-							propertyName: $scope.selectedProperty.name
-						};
-				msg = JSON.stringify(msg);
-				ws.send(msg);
-			}
-			ws.onmessage = function(msg) {
-				var data = JSON.parse(msg.data);
+			var callback = function(data) {
 				$scope.$apply(function() {
 					$scope.dataGridConfig.data.unshift(data);
 					var amount = parseInt($scope.dataOptions.numPoints);
@@ -159,6 +146,11 @@ app.controller('ThingDataController', [
 					renderVisualization();
 				});
 			}
+			riots.subscribe({
+					thingId: $scope.shared.selectedThing.id,
+					propertyName: $scope.selectedProperty.name
+				}, callback
+			);
 		}
 
 		$scope.displayPropertyData = function() {

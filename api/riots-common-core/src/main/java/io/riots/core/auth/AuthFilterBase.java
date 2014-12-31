@@ -73,11 +73,15 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
             "^(/app)?/img/.*\\.png$",
             "^(/app)?/img/.*\\.jpeg$",
             "^(/app)?/api/riots-api\\.js$",
-            "^(/app)?/favicon\\.ico$",
+            "^(/app)?/(riots\\.)?favicon\\.ico$",
             "^/models/.*$",
             "^/examples/.*$",
             "^/connect/*.*$",
             "^/$",
+
+            /* Demo URLS */
+            "^/demo/*.*$",
+            "^/golfcars.*$",
 
             "^(/app)?/scripts/app\\.js$",
             "^(/app)?/scripts/controllers/.*\\.js$",

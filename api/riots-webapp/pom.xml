@@ -25,7 +25,7 @@
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
-    	<!-- url rewriting -->
+    	<!-- URL rewriting -->
     	<dependency>
 		    <groupId>org.tuckey</groupId>
 		    <artifactId>urlrewritefilter</artifactId>

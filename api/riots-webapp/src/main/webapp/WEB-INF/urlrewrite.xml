@@ -33,4 +33,12 @@
         <from>^/config\.(.*\.)?js$</from>
         <to>/app/config\.$1js</to>
     </rule>
+    <rule match-type="regex">
+        <from>^/demo/golfcars$</from>
+        <to>/demo/golfcars/index.html</to>
+    </rule>
+    <rule match-type="regex">
+        <from>^/golfcars$</from>
+        <to>/demo/golfcars/index.html</to>
+    </rule>
 </urlrewrite>

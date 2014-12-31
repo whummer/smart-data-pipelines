@@ -1,0 +1,52 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html ng-app="demo">
+<head>
+    <link rel="stylesheet" href="/bower_components/jquery-ui/themes/smoothness/jquery-ui.css"/>
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap-theme.css">
+	<link rel="stylesheet" type="text/css" href="/bower_components/leaflet/dist/leaflet.css" />
+    <script type="text/javascript" src="/bower_components/jquery/dist/jquery.js"></script>
+    <script type="text/javascript" src="/bower_components/angular/angular.js"></script>
+    <script type="text/javascript" src="/bower_components/leaflet/dist/leaflet.js"></script>
+	<script type="text/javascript" src="/demo/golfcars/main.js"></script>
+
+	<!-- riots API dependencies -->
+	<script>
+	window.RIOTS_USER_ID = "hummer@infosys.tuwien.ac.at";
+	window.RIOTS_APP_ID = "demo-golfcars";
+	window.RIOTS_AUTH_TOKEN = "013117a91c852ef065d616aff5132bcfa04617a2";
+	window.RIOTS_AUTH_NETWORK = "github";
+	</script>
+	<script type="text/javascript" src="/config.js"></script>
+	<script type="text/javascript" src="/app/scripts/modules/service-calls.js"></script>
+	<script type="text/javascript" src="/api/riots-api.js"></script>
+
+</head>
+<body>
+	<div class="container" ng-controller="MainCtrl">
+		<div style="height: 200px; width: 100%; background-image: linear-gradient(to bottom, rgba(255,0,0,0), rgba(255,255,255,1)), url(/demo/golfcars/carfleet.jpg); background-size: 100%;">
+		</div>
+		<p></p>
+        <div class="panel panel-default">
+
+            <div class="panel-heading">
+                <h2 class="panel-title">
+                	<span class="glyphicon glyphicon-edit"></span>
+                	<b>Fleet Management</b>
+                </h2>
+            </div>
+            <div class="panel-body">
+				<h2>Available cars:</h2>
+				<table class="table table-bordered table-hover">
+				<thead><tr><th>Name</th><th>Position</th></tr></thead>
+				<tr ng-repeat="thing in things">
+					<td>{{thing.name}}</td>
+					<td>{{thing.properties.position}}</td>
+				</tr>
+				</table>
+				<div id="worldMap" style="height: 300px;"></div>
+            </div>
+        </div>
+   </div>
+</body>
+</html>

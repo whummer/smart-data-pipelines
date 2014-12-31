@@ -30,6 +30,7 @@ public class AuthHeaders {
     public static final String HEADER_AUTH_TOKEN = "riots-auth-token";
     public static final String HEADER_AUTH_EMAIL = "riots-auth-email";
     public static final String HEADER_AUTH_USERNAME = "riots-auth-username";
+    public static final String HEADER_AUTH_APPLICATION = "riots-auth-app-id";
     public static final String HEADER_WS_PROTOCOL = "Sec-WebSocket-Protocol";
 
     private static final Logger LOG = Logger.getLogger(AuthHeaders.class);

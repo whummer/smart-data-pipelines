@@ -78,6 +78,14 @@ zuul:
       path: /
       stripPrefix: false
       serviceId: webapp-service
+    webapp-demo:
+      path: /demo/**
+      stripPrefix: false
+      serviceId: webapp-service
+    webapp-golfcars:
+      path: /golfcar**
+      stripPrefix: false
+      serviceId: webapp-service
 
 eureka:
   client:
