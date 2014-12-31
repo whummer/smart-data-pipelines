@@ -83,6 +83,7 @@ public class SimulationServiceImpl implements SimulationService {
 
     @Override
     public Simulation create(Simulation item) {
+    	item.setCreatorId(authHeaders.getRequestingUser(req).getId());
         item = simulationCommand.create(item);
         URL location = ServiceUtil.getHref(String.format("simulations/%s", item.getId()));
         ServiceUtil.setLocationHeader(context, location);

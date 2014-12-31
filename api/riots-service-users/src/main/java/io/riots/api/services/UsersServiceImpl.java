@@ -1,9 +1,11 @@
 package io.riots.api.services;
 
 import io.riots.api.handlers.query.UserQuery;
+import io.riots.core.auth.AuthHeaders;
 import io.riots.core.service.UsersService;
 import io.riots.services.users.User;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Path;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,17 @@ public class UsersServiceImpl implements UsersService {
 
     @Autowired
     UserQuery userQuery;
+
+    @Autowired
+    HttpServletRequest req;
+    @Autowired
+    AuthHeaders authHeaders;
+
+	@Override
+	public User getInfoAboutMe() {
+		User user = authHeaders.getRequestingUser(req);
+		return user;
+	}
 
     @Override
     public User findByID(String id) {
@@ -44,4 +57,5 @@ public class UsersServiceImpl implements UsersService {
     public long getNumUsers() {
     	return userQuery.getCount();
     }
+
 }

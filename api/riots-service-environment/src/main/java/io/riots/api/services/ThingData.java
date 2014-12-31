@@ -5,9 +5,9 @@ import io.riots.api.util.JSONUtil;
 import io.riots.api.util.ServiceUtil;
 import io.riots.core.repositories.PropertyValueRepository;
 import io.riots.core.service.CatalogService;
+import io.riots.core.service.ServiceClientFactory;
 import io.riots.core.service.ThingDataService;
 import io.riots.core.service.ThingsService;
-import io.riots.core.service.ServiceClientFactory;
 import io.riots.services.catalog.Property;
 import io.riots.services.catalog.ThingType;
 import io.riots.services.scenario.PropertyValue;
@@ -18,7 +18,6 @@ import java.util.List;
 
 import javax.jms.JMSException;
 import javax.jms.TextMessage;
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 
@@ -49,8 +48,6 @@ public class ThingData implements ThingDataService {
 
     @Context
     MessageContext context;
-    @Autowired
-    HttpServletRequest req;
 	@Autowired
     JmsTemplate template;
 

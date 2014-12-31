@@ -78,12 +78,20 @@ zuul:
       path: /
       stripPrefix: false
       serviceId: webapp-service
+    webapp-demo:
+      path: /demo/**
+      stripPrefix: false
+      serviceId: webapp-service
+    webapp-golfcars:
+      path: /golfcar**
+      stripPrefix: false
+      serviceId: webapp-service
 
 eureka:
   client:
     registryFetchIntervalSeconds: 5
     serviceUrl:
-      defaultZone: http://eureka.riots.io:10000/eureka/v2/
+      defaultZone: http://localhost:10000/eureka/v2/
   instance:
     leaseRenewalIntervalInSeconds: 5
 

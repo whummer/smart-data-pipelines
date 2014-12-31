@@ -26,6 +26,15 @@ import com.wordnik.swagger.annotations.ApiOperation;
 public interface UsersService {
 
 	@GET
+    @Path("/me")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Return information about logged in user.",
+            notes = "Return information about the user that is invoking this methid.",
+            response = User.class)
+    @Timed @ExceptionMetered
+	User getInfoAboutMe();
+
+	@GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Get user by ID.",

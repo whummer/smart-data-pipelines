@@ -1,5 +1,7 @@
 package io.riots.api.websocket;
 
+import org.springframework.web.socket.WebSocketSession;
+
 import io.riots.api.websocket.WebsocketMessage.WSMessageSubscribe;
 import io.riots.api.websocket.WebsocketMessage.WSMessageUnsubscribe;
 
@@ -35,9 +37,9 @@ public class WebsocketMessage {
 			type = MessageType.SUBSCRIBE;
 		}
 		@JsonProperty
-		public String propertyName;
-		@JsonProperty
 		public String thingId;
+		@JsonProperty
+		public String propertyName;
 	}
 
 	public static class WSMessageUnsubscribe extends WebsocketMessage {
@@ -45,7 +47,21 @@ public class WebsocketMessage {
 			type = MessageType.UNSUBSCRIBE;
 		}
 		@JsonProperty
-		public String propertyID;
+		public String thingId;
+		@JsonProperty
+		public String propertyName;
+		@JsonProperty
+		public boolean unsubscribeAll = false;
+
+		public boolean matches(WSSubscription sub, WebSocketSession currentSession) {
+			if(unsubscribeAll) {
+				System.out.println("ws session ids: " + sub.session.getId() + " - " + currentSession.getId());
+				System.out.println(sub.session.getRemoteAddress() + " - " + currentSession.getRemoteAddress());
+				return sub.session.getId().equals(currentSession.getId());
+			}
+			return sub.thingId.equals(thingId) && 
+					sub.propertyName.equals(propertyName);
+		}
 	}
 
 }

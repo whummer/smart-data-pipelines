@@ -15,9 +15,7 @@
 	<description>This service provides catalog actions</description>
 
 	<properties>
-		<riots.port>8181</riots.port>
-		<riots.eureka.hostname>localhost:10000</riots.eureka.hostname>
-		<spring.application.name>${project.name}</spring.application.name>
+		<riots.port>8083</riots.port>
 	</properties>
 
 	<dependencies>

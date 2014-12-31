@@ -13,6 +13,9 @@
 
 	<div style="" ng-show="curScenario && curScenario.id != '-1'">
 
+<pre>RIOTS_USER_ID = "{{userInfo.id}}"
+RIOTS_APP_ID = "{{curScenario.id}}"</pre>
+
 		<tabset style="">
 			<tab heading="Things &amp; Properties">
 				<ng-include src="appConfig['appRootPath'] + '/views/sim_thing_props.html'"></ng-include>

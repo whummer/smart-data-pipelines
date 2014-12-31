@@ -1,11 +1,13 @@
 package io.riots.core.auth;
 
 import io.riots.core.auth.AuthHeaders.AuthInfo;
+import io.riots.core.service.ServiceClientFactory;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -17,6 +19,9 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class AuthFilterWebsocket extends AuthFilterBase {
+
+	@Autowired
+	ServiceClientFactory clientFactory;
 
 	@Override
 	protected boolean doFilter(ServletRequest req, ServletResponse res) {
@@ -34,6 +39,11 @@ public class AuthFilterWebsocket extends AuthFilterBase {
 	@Override
 	void setAuthInfoHeaders(HttpServletRequest request, AuthInfo authInfo) {
 		super.setAuthInfoHeaders(request, authInfo);
+	}
+
+	@Override
+	protected boolean authenticateRiotsApp(String userId, String appId) {
+		return authenticateRiotsApp(clientFactory, userId, appId);
 	}
 	
 }

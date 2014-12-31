@@ -15,7 +15,6 @@
 
     <properties>
         <riots.port>8086</riots.port>
-        <riots.eureka.hostname>localhost:10000</riots.eureka.hostname>
     </properties>
 
     <dependencies>

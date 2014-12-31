@@ -26,7 +26,6 @@
 
 		<module>riots-service-catalog</module>
 		<module>riots-service-environment</module>
-		<module>riots-service-showcase</module>
 		<module>riots-service-gateway</module>
 		<module>riots-service-users</module>
 		<module>riots-service-simulation</module>

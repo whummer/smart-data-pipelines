@@ -16,8 +16,6 @@
 
 	<properties>
 		<riots.port>8185</riots.port>
-		<riots.eureka.hostname>localhost:10000</riots.eureka.hostname>
-		<spring.application.name>${project.name}</spring.application.name>
 	</properties>
 
     <dependencies>

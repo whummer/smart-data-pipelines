@@ -16,8 +16,14 @@ var TIMESTAMP = "timestamp";
 var sh = {};
 var ttl = 20000;
 
-if(window.rootScope && window.rootScope.shared) {
-	sh = window.rootScope.shared;
+/* initialize authInfo */
+sh.authInfo = {};
+
+if(window.RIOTS_USER_ID) {
+	sh.authInfo.userId = window.RIOTS_USER_ID;
+}
+if(window.RIOTS_APP_ID) {
+	sh.authInfo.appId = window.RIOTS_APP_ID;
 }
 
 sh.thingType = function(id, callback) {
@@ -39,7 +45,6 @@ sh.properties = function(thingType, callback) {
 		});
 		return;
 	}
-	//console.log("thingType.children", thingType.children);
 	/* recurse into sub-types */
 	if(thingType.children) {
 		$.each(thingType.children, function(idx,el) {
@@ -113,8 +118,68 @@ var mem = sh.mem = function() {
 	return window.sharedMem;
 }
 
+var connectWebsocket = function() {
+	if(!sh.websocket) {
+		var wsURL = appConfig.services.websocket.url;
+		var authInfo = sh.authInfo;
+	
+		if(authInfo.network && authInfo.access_token) {
+			sh.websocket = this.websocket = new WebSocket(wsURL, 
+				authInfo.network + "~" + authInfo.access_token);
+		} else if(authInfo.userId && authInfo.appId) {
+			sh.websocket = this.websocket = new WebSocket(wsURL, 
+				authInfo.userId + "~" + authInfo.appId);
+		} else {
+			throw "Please provide RIOTS_USER_ID and RIOTS_APP_ID variables.";
+		}
+	}
+
+	return sh.websocket;
+}
+
+/* subscribe via websocket */
+sh.subscribe = function(options, callback) {
+	var ws = connectWebsocket();
+	ws.onopen = function() {
+		var msg = {
+			type: "SUBSCRIBE",
+			thingId: options.thingId,
+			propertyName: options.propertyName
+		};
+		ws.send(JSON.stringify(msg));
+	}
+	ws.onmessage = function(msg) {
+		var data = JSON.parse(msg.data);
+		if(callback) {
+			result = callback(data);
+			if(result === false) {
+				// unsubscribe
+				var msg = {
+					type: "UNSUBSCRIBE",
+					thingId: options.thingId,
+					propertyName: options.propertyName
+				};
+				ws.send(JSON.stringify(msg));
+			}
+		}
+	}
+}
+
+/* unsubscribe all via websocket */
+sh.unsubscribeAll = function(options, callback) {
+	var ws = connectWebsocket();
+	ws.onopen = function() {
+		var msg = {
+			type: "UNSUBSCRIBE",
+			unsubscribeAll: true
+		};
+		ws.send(JSON.stringify(msg));
+	}
+}
+
 window.shared = sh;
 window.model = sh;
+window.riots = sh;
 
 return sh;
 })();

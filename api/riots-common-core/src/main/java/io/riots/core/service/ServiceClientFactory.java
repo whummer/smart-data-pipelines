@@ -32,12 +32,15 @@ public class ServiceClientFactory {
 	private static final String SERVICE_CATALOG_ENDPOINT = "http://%s:%s/api/v1/catalog";
 	private static final String SERVICE_THINGS_EUREKA_NAME = "environment-service";
 	private static final String SERVICE_THINGS_ENDPOINT = "http://%s:%s/api/v1/things";
+	private static final String SERVICE_SIMULATION_EUREKA_NAME = "simulation-service";
+	private static final String SERVICE_SIMULATION_ENDPOINT = "http://%s:%s/api/v1/simulations";
 	private static final Map<String,String> serviceEndpoints = new HashMap<String,String>();
 
 	static {
 		serviceEndpoints.put(SERVICE_USERS_EUREKA_NAME, SERVICE_USERS_ENDPOINT);
 		serviceEndpoints.put(SERVICE_THINGS_EUREKA_NAME, SERVICE_THINGS_ENDPOINT);
 		serviceEndpoints.put(SERVICE_CATALOG_EUREKA_NAME, SERVICE_CATALOG_ENDPOINT);
+		serviceEndpoints.put(SERVICE_SIMULATION_EUREKA_NAME, SERVICE_SIMULATION_ENDPOINT);
 	}
 
 	public UsersService getUsersServiceClient() {
@@ -45,6 +48,9 @@ public class ServiceClientFactory {
 	}
 	public ThingsService getThingsServiceClient() {
 		return getServiceInstanceForName(SERVICE_THINGS_EUREKA_NAME, ThingsService.class);
+	}
+	public SimulationService getSimulationsServiceClient() {
+		return getServiceInstanceForName(SERVICE_SIMULATION_EUREKA_NAME, SimulationService.class);
 	}
 	public CatalogService getCatalogServiceClient() {
 		return getServiceInstanceForName(SERVICE_CATALOG_EUREKA_NAME, CatalogService.class);

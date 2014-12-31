@@ -1,9 +1,11 @@
 package io.riots.core.auth;
 
 import io.riots.core.auth.AuthHeaders.AuthInfo;
+import io.riots.core.service.ServiceClientFactory;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.netflix.zuul.context.RequestContext;
@@ -18,6 +20,9 @@ import com.netflix.zuul.context.RequestContext;
 @Component
 public class AuthFilterZuul extends AuthFilterBase {
 
+	@Autowired
+	ServiceClientFactory clientFactory;
+
 	@Override
 	void setAuthInfoHeaders(HttpServletRequest request, AuthInfo authInfo) {
 		super.setAuthInfoHeaders(request, authInfo);
@@ -29,5 +34,10 @@ public class AuthFilterZuul extends AuthFilterBase {
 			context.getZuulRequestHeaders().put(AuthHeaders.HEADER_AUTH_USERNAME, authInfo.userName);
 		}
 	}
-	
+
+	@Override
+	protected boolean authenticateRiotsApp(String userId, String appId) {
+		return authenticateRiotsApp(clientFactory, userId, appId);
+	}
+
 }

@@ -48,6 +48,9 @@ public class Simulation implements ObjectCreated, ObjectIdentifiable {
 	@JsonProperty
 	private List<PropertySimulation<?>> simulationProperties = new LinkedList<PropertySimulation<?>>();
 
+	public void setCreatorId(String creatorId) {
+		this.creatorId = creatorId;
+	}
 	public String getCreatorId() {
 		return creatorId;
 	}

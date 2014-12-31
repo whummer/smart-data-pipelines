@@ -3,23 +3,28 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-    <parent>
-        <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-starter-parent</artifactId>
-        <!-- <version>1.0.0.M3</version>-->
-        <version>1.0.0.BUILD-SNAPSHOT</version>
-    </parent>
+<!-- TODO remove -->
+<!--     <parent> -->
+<!--         <groupId>org.springframework.cloud</groupId> -->
+<!--         <artifactId>spring-cloud-starter-parent</artifactId> -->
+<!--         <version>1.0.0.BUILD-SNAPSHOT</version> -->
+<!--     </parent> -->
+	<parent>
+        <artifactId>riots-common-service-dependencies</artifactId>
+        <groupId>io.riots</groupId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../riots-common-service-dependencies/pom.xml</relativePath>
+	</parent>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.riots</groupId>
-    <version>0.0.1-SNAPSHOT</version>
+<!-- TODO remove -->
+<!--     <groupId>io.riots</groupId> -->
+<!--     <version>0.0.1-SNAPSHOT</version> -->
     <artifactId>riots-service-gateway</artifactId>
 
     <properties>
         <riots.port>8080</riots.port>
-        <riots.eureka.hostname>localhost:10000</riots.eureka.hostname>
-        <spring.application.name>${project.name}</spring.application.name>
     </properties>
 
     <dependencies>
@@ -45,6 +50,12 @@
 			<artifactId>spring-security-web</artifactId>
 		</dependency>
 
+    	<!-- URL rewriting -->
+    	<dependency>
+		    <groupId>org.tuckey</groupId>
+		    <artifactId>urlrewritefilter</artifactId>
+		    <version>4.0.3</version>
+		</dependency>
     </dependencies>
 
     <repositories>
@@ -71,33 +82,30 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
-                    </execution>
-                </executions>
+<!--                 <executions> -->
+<!--                     <execution> -->
+<!--                         <goals> -->
+<!--                             <goal>repackage</goal> -->
+<!--                         </goals> -->
+<!--                     </execution> -->
+<!--                 </executions> -->
             </plugin>
-
             <plugin>
                 <groupId>pl.project13.maven</groupId>
                 <artifactId>git-commit-id-plugin</artifactId>
-                <configuration>
-                    <dotGitDirectory>${project.basedir}/../../.git</dotGitDirectory>
-                    <generateGitPropertiesFilename>src/main/resources/git.properties</generateGitPropertiesFilename>
-                </configuration>
+<!--                 <configuration> -->
+<!--                     <dotGitDirectory>${project.basedir}/../../.git</dotGitDirectory> -->
+<!--                     <generateGitPropertiesFilename>src/main/resources/git.properties</generateGitPropertiesFilename> -->
+<!--                 </configuration> -->
             </plugin>
-
-
-<!--            <plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-remote-resources-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-            </plugin>-->
+            </plugin>
         </plugins>
     </build>
 </project>

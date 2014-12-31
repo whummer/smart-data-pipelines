@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
+import org.tuckey.web.filters.urlrewrite.UrlRewriteFilter;
 
 /**
  * @author whummer
@@ -19,7 +20,17 @@ import org.springframework.context.annotation.ImportResource;
 @EnableZuulProxy
 @ImportResource(value = { "classpath*:/spring-auth-filter.xml" })
 public class GatewayServiceStarter {
-	
+
+	/**
+	 * URL rewriting filter. See WEB-INF/urlrewrite.xml for configuration.
+	 * @return
+	 */
+	@Bean
+	UrlRewriteFilter getRewriteFilter() {
+		UrlRewriteFilter f = new UrlRewriteFilter();
+		return f;
+	}
+
 	@Bean
     public AuthFilterZuul filter() {
         return new AuthFilterZuul();

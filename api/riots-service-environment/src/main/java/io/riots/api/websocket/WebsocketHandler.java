@@ -7,14 +7,15 @@ import io.riots.api.websocket.WebsocketMessage.WSMessageUnsubscribe;
 import io.riots.services.catalog.Property;
 import io.riots.services.scenario.PropertyValue;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
-import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
@@ -27,41 +28,16 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 @Component
 public class WebsocketHandler extends TextWebSocketHandler {
 
-	private static List<Subscription> subscriptions = new CopyOnWriteArrayList<Subscription>();
+	private static List<WSSubscription> subscriptions = new CopyOnWriteArrayList<>();
+	private static final Logger LOG = Logger.getLogger(WebsocketHandler.class);
 
 	@Autowired
 	private JmsTemplate template;
 
-	private static class Subscription {
-		WebSocketSession session;
-		// TODO allow more complex filters
-		String thingId;
-		String propertyName;
-		
-		boolean matches(PropertyValue val) {
-			return thingId.equals(val.getThingId()) && 
-					propertyName.equals(val.getPropertyName());
-		}
-	}
-
-	@Override
-	public void afterConnectionEstablished(WebSocketSession session)
-			throws Exception {
-//		System.out.println("WebSocket connection established! "
-//				+ session.getHandshakeHeaders());
-		super.afterConnectionEstablished(session);
-	}
-
-	@Override
-	public void afterConnectionClosed(WebSocketSession session,
-			CloseStatus status) throws Exception {
-		super.afterConnectionClosed(session, status);
-	}
-
 	@JmsListener(destination = EventBroker.MQ_PROP_CHANGE_NOTIFY)
 	public void processEvent(String data) {
 		System.out.println("data: " + data);
-		for (Subscription s : subscriptions) {
+		for (WSSubscription s : subscriptions) {
 			try {
 				PropertyValue obj = JSONUtil.fromJSON(data, PropertyValue.class);
 				if(s.matches(obj)) {
@@ -80,17 +56,31 @@ public class WebsocketHandler extends TextWebSocketHandler {
 		WebsocketMessage m = JSONUtil.fromJSON(message.getPayload(), WebsocketMessage.class);
 		if(m instanceof WSMessageSubscribe) {
 			WSMessageSubscribe m1 = (WSMessageSubscribe)m;
-			Subscription s = new Subscription();
+			WSSubscription s = new WSSubscription();
 			s.session = session;
 			s.thingId = m1.thingId;
 			s.propertyName = m1.propertyName;
 			subscriptions.add(s);
 			startSim(s.thingId, m1.propertyName); // TODO temp
 		} else if(m instanceof WSMessageUnsubscribe) {
-			// TODO
-			// WSMessageUnsubscribe m1 = (WSMessageUnsubscribe)m;
+			WSMessageUnsubscribe m1 = (WSMessageUnsubscribe)m;
+			for (WSSubscription s : subscriptions) {
+				if(m1.matches(s, session)) {
+					terminate(s);
+				}
+			}
 		} else {
 			/* invalid message received */
+			LOG.info("Unexpected message received from Websocket: " + m);
+		}
+	}
+
+	private void terminate(WSSubscription sub) {
+		subscriptions.remove(sub);
+		try {
+			sub.session.close();
+		} catch (IOException e) {
+			LOG.info("Unable to terminate Web socket subscription");
 		}
 	}
 
