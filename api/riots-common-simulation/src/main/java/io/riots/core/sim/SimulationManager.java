@@ -1,8 +1,8 @@
 package io.riots.core.sim;
 
-import io.riots.core.services.sim.Simulation;
-import io.riots.core.services.sim.SimulationRun;
 import io.riots.services.scenario.PropertyValue;
+import io.riots.services.sim.Simulation;
+import io.riots.services.sim.SimulationRun;
 
 import java.util.HashMap;
 import java.util.LinkedList;

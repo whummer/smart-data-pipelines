@@ -1,7 +1,7 @@
 package io.riots.example;
 
-import io.riots.core.service.CatalogService;
-import io.riots.core.service.ThingsService;
+import io.riots.services.CatalogService;
+import io.riots.services.ThingsService;
 import io.riots.services.scenario.Thing;
 
 import java.util.List;

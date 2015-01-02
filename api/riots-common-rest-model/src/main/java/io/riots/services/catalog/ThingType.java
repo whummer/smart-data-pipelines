@@ -81,15 +81,6 @@ public class ThingType extends HierarchicalObject<String> {
 		super(name);
 	}
 
-	public Property getProperty(String name) {
-		for(Property p : properties) {
-			if(name.equals(p.getName())) {
-				return p;
-			}
-		}
-		return null;
-	}
-
 	/* GETTERS/SETTERS */
 
 	public String getId() {

@@ -1,0 +1,80 @@
+eureka:
+  image: riox/eureka
+  ports:
+    - "10000:80"
+
+mongodb:
+  image: dockerfile/mongodb
+  links:
+    - eureka
+  volumes:
+    - /data/mongodb:/data/db
+  ports:
+    - "27017:27017"
+
+elasticsearch:
+  image: dockerfile/elasticsearch
+  links:
+    - eureka
+  volumes:
+    - /data/elasticsearch:/data
+  ports: 
+    - "9200:9200"
+    - "9300:9300"
+
+catalog:
+  image: 146.148.126.222:5000/riots/service-catalog
+  ports:
+    - "8083:8083"
+  links:
+    - elasticsearch
+    - eureka
+  environment:
+    JAVA_OPTS: "-Deureka.instance.hostname=172.17.42.1 -Delasticsearch.hostname=172.17.42.1"
+
+environment:
+  image: 146.148.126.222:5000/riots/service-environment
+  ports:
+    - "8085:8085"
+  links:
+    - elasticsearch
+    - eureka
+  environment:
+    JAVA_OPTS: "-Deureka.instance.hostname=172.17.42.1 -Dmongodb.hostname=172.17.42.1"
+
+simulation:
+  image: 146.148.126.222:5000/riots/service-simulation
+  ports:
+    - "8086:8086"
+  links:
+    - mongodb 
+    - eureka
+  environment:
+    JAVA_OPTS: "-Deureka.instance.hostname=172.17.42.1 -Dmongodb.hostname=172.17.42.1"
+
+users:
+  image: 146.148.126.222:5000/riots/service-users
+  ports:
+    - "8084:8084"
+  links:
+    - mongodb 
+    - eureka
+  environment:
+    JAVA_OPTS: "-Deureka.instance.hostname=172.17.42.1 -Dmongodb.hostname=172.17.42.1"
+
+gateway:
+  image: 146.148.126.222:5000/riots/service-gateway
+  ports:
+    - "8080:8080"
+  links:
+    - eureka
+  environment:
+    JAVA_OPTS: "-Deureka.instance.hostname=172.17.42.1"
+
+webapp: 
+  image: 146.148.126.222:5000/riots/webapp
+  ports:
+    - "8081:8081"
+    - eureka
+  environment:
+    JAVA_OPTS: "-Deureka.instance.hostname=172.17.42.1"

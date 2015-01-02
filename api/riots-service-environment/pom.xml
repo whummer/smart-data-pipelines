@@ -15,7 +15,7 @@
     <description>this service provides environment actions</description>
 
 	<properties>
-		<riots.port>8185</riots.port>
+		<riots.port>8085</riots.port>
 	</properties>
 
     <dependencies>

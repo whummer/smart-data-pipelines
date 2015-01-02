@@ -18,9 +18,10 @@
     <jaxrs:server address="/v1" id="api-v1">
         <jaxrs:serviceBeans>
 <!--             <ref bean="environments"/> -->
-            <ref bean="things"/>
-            <ref bean="thingData"/>
+            <ref bean="thingsServiceImpl"/>
+            <ref bean="thingDataServiceImpl"/>
             <ref bean="driversServiceImpl"/>
+            <ref bean="utilsServiceImpl"/>
             <bean id="swaggerResourceJSON" class="com.wordnik.swagger.jaxrs.listing.ApiListingResourceJSON"/>
         </jaxrs:serviceBeans>
         <jaxrs:features>

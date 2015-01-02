@@ -2,8 +2,8 @@ package io.riots.core.domain.sim;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import io.riots.core.services.sim.LocationInTime;
 import io.riots.core.sim.ValueInterpolation;
+import io.riots.services.sim.LocationInTime;
 
 import java.util.LinkedList;
 import java.util.List;

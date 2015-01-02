@@ -42,6 +42,7 @@ app.controller('SimThingPropsController', [
 			}
 			// recurse into child thing types
 			if(thingType.children) {
+				console.log("thingType.children", thingType.children);
 				$.each(thingType.children, function(idx,el) {
 					console.log("recurse sub type", el);
 					if(el.id) {

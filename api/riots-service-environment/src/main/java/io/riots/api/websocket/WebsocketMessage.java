@@ -36,8 +36,13 @@ public class WebsocketMessage {
 		{
 			type = MessageType.SUBSCRIBE;
 		}
+		/** ID of requesting client. */
+		@JsonProperty
+		public String clientId;
+		/** thing of interest */
 		@JsonProperty
 		public String thingId;
+		/** thing property of interest */
 		@JsonProperty
 		public String propertyName;
 	}
@@ -47,17 +52,24 @@ public class WebsocketMessage {
 			type = MessageType.UNSUBSCRIBE;
 		}
 		@JsonProperty
+		public String clientId;
+		@JsonProperty
 		public String thingId;
 		@JsonProperty
 		public String propertyName;
 		@JsonProperty
 		public boolean unsubscribeAll = false;
+		@JsonProperty
+		public boolean closeConnection = false;
 
 		public boolean matches(WSSubscription sub, WebSocketSession currentSession) {
+			if(sub.clientId != null && !sub.clientId.equals(clientId)) {
+				return false;
+			}
 			if(unsubscribeAll) {
-				System.out.println("ws session ids: " + sub.session.getId() + " - " + currentSession.getId());
-				System.out.println(sub.session.getRemoteAddress() + " - " + currentSession.getRemoteAddress());
-				return sub.session.getId().equals(currentSession.getId());
+				// TODO: whu: consider multiple tenants and 
+				// make sure different users don't interfere!
+				return true;
 			}
 			return sub.thingId.equals(thingId) && 
 					sub.propertyName.equals(propertyName);

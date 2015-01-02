@@ -107,25 +107,7 @@
 			<artifactId>spring-security-web</artifactId>
 		</dependency>
 
-		<!-- API documentation via Swagger -->
-		<dependency>
-			<groupId>com.wordnik</groupId>
-			<artifactId>swagger-jaxrs_2.10</artifactId>
-			<version>${swagger.version}</version>
-
-			<!-- Tomcat 8 incompatible with JAX-RS 1.1 API -->
-			<exclusions>
-				<exclusion>
-					<artifactId>jsr311-api</artifactId>
-					<groupId>javax.ws.rs</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>com.wordnik</groupId>
-			<artifactId>swagger-core_2.10</artifactId>
-			<version>${swagger.version}</version>
-		</dependency>
+		<!-- Jackson -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.jaxrs</groupId>
 			<artifactId>jackson-jaxrs-json-provider</artifactId>

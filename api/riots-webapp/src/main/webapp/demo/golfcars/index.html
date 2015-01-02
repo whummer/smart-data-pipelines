@@ -36,22 +36,30 @@
                 </h2>
             </div>
             <div class="panel-body">
+
 				<h2>Available cars:</h2>
 				<button class="btn btn-primary" ng-click="loadThings()">Reload Things</button>
 				<table class="table table-bordered table-hover">
 				<thead><tr>
+					<th>Image</th>
 					<th>Name</th>
 					<th>Location</th>
 					<th>Battery Level</th>
 					<th>Tire Pressure</th>
 				</tr></thead>
 				<tr ng-repeat="thing in things">
+					<td><img ng-src="{{thing.img}}" style="height: 30px;"/></td>
 					<td>{{thing.name}}</td>
 					<td>{{thing.properties['location.latitude']}},{{thing.properties['location.longitude']}}</td>
 					<td>{{thing.properties.battery}}</td>
 					<td>{{thing.properties.tirePressure}}</td>
 				</tr>
 				</table>
+				
+				<h2>Geo Fence:</h2>
+				<button class="btn btn-primary" ng-click="setupGeoFence()">Setup Geo Fence</button>
+
+				<h2>Map View:</h2>
 				<div id="worldMap" style="height: 300px;"></div>
             </div>
         </div>

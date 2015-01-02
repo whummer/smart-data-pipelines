@@ -1,14 +1,14 @@
 package io.riots.core.sim;
 
-import io.riots.core.services.sim.Context;
-import io.riots.core.services.sim.PropertySimulation;
-import io.riots.core.services.sim.PropertySimulationEnumerated;
-import io.riots.core.services.sim.PropertySimulationFunctionBased;
-import io.riots.core.services.sim.PropertySimulationRandom;
-import io.riots.core.services.sim.Time;
-import io.riots.core.services.sim.TimelineValues;
-import io.riots.core.services.sim.TimelineValues.TimedValue;
 import io.riots.services.scenario.PropertyValue;
+import io.riots.services.sim.Context;
+import io.riots.services.sim.PropertySimulation;
+import io.riots.services.sim.PropertySimulationEnumerated;
+import io.riots.services.sim.PropertySimulationFunctionBased;
+import io.riots.services.sim.PropertySimulationRandom;
+import io.riots.services.sim.Time;
+import io.riots.services.sim.TimelineValues;
+import io.riots.services.sim.TimelineValues.TimedValue;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

@@ -1,7 +1,7 @@
 package io.riots.api.handlers.query;
 
 import io.riots.core.repositories.SimulationRepository;
-import io.riots.core.services.sim.Simulation;
+import io.riots.services.sim.Simulation;
 
 import java.util.List;
 

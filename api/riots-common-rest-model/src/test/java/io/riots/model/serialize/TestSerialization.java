@@ -1,8 +1,8 @@
 package io.riots.model.serialize;
 
-import io.riots.core.services.sim.PropertySimulation;
-import io.riots.core.services.sim.Simulation;
 import io.riots.services.catalog.Property;
+import io.riots.services.sim.PropertySimulation;
+import io.riots.services.sim.Simulation;
 
 import org.testng.annotations.Test;
 

@@ -3,9 +3,9 @@
 (
 cd infra
 
-echo "Restarting boot2docker"
-boot2docker restart
-sleep 2
+#echo "Restarting boot2docker"
+#boot2docker restart
+#sleep 2
 
 echo "Running MongoDB"
 docker rm mongodb

@@ -88,12 +88,14 @@ zuul:
       serviceId: webapp-service
 
 eureka:
+  instance:
+    hostname: localhost
+    leaseRenewalIntervalInSeconds: 5
   client:
     registryFetchIntervalSeconds: 5
     serviceUrl:
-      defaultZone: http://localhost:10000/eureka/v2/
-  instance:
-    leaseRenewalIntervalInSeconds: 5
+      defaultZone: http://${eureka.instance.hostname}:10000/eureka/v2/
+    
 
 ribbon:
   ServerListRefreshInterval: 5000

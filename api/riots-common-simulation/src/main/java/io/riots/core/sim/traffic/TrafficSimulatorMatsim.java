@@ -9,10 +9,10 @@ import io.hummer.osm.query.OSMContainer;
 import io.hummer.osm.query.OSMElement;
 import io.hummer.osm.query.OSMNode;
 import io.hummer.osm.util.Util;
-import io.riots.core.services.sim.LocationInTime;
-import io.riots.core.services.sim.TrafficTraces;
-import io.riots.core.services.sim.TrafficTraces.TrafficTrace;
 import io.riots.core.sim.ValueInterpolation;
+import io.riots.services.sim.LocationInTime;
+import io.riots.services.sim.TrafficTraces;
+import io.riots.services.sim.TrafficTraces.TrafficTrace;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;

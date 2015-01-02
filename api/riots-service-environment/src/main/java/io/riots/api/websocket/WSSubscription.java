@@ -10,6 +10,7 @@ import org.springframework.web.socket.WebSocketSession;
  */
 public class WSSubscription {
 	WebSocketSession session;
+	String clientId;
 
 	// TODO allow more complex filters
 	String thingId;
@@ -20,4 +21,12 @@ public class WSSubscription {
 				propertyName.equals(val.getPropertyName());
 	}
 
+	@Override
+	public String toString() {
+		return "WSSubscription [session=" + session + ", clientId=" + clientId
+				+ ", thingId=" + thingId + ", propertyName=" + propertyName
+				+ "]";
+	}
+
+	
 }

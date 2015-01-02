@@ -36,6 +36,38 @@
 			<artifactId>spring-boot-starter-data-elasticsearch</artifactId>			
 		</dependency>
 		
+		<!-- JAX-RS Client -->
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-rs-client</artifactId>
+			<version>3.0.1</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>cxf-core</artifactId>
+			        <groupId>org.apache.cxf</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
+		<!-- API documentation via Swagger -->
+		<dependency>
+			<groupId>com.wordnik</groupId>
+			<artifactId>swagger-jaxrs_2.10</artifactId>
+			<version>${swagger.version}</version>
+
+			<!-- Tomcat 8 incompatible with JAX-RS 1.1 API -->
+			<exclusions>
+				<exclusion>
+					<artifactId>jsr311-api</artifactId>
+					<groupId>javax.ws.rs</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.wordnik</groupId>
+			<artifactId>swagger-core_2.10</artifactId>
+			<version>${swagger.version}</version>
+		</dependency>
 	</dependencies>
 	
 	<build>

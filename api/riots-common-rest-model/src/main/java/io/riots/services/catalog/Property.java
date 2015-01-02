@@ -45,6 +45,12 @@ public class Property extends HierarchicalObject<Property> {
 	@JsonInclude(Include.NON_EMPTY)
 	private Boolean actuatable;
 
+	/**
+	 * Name of the measurement unit of this property, e.g., mm, kg, bar, ...
+	 */
+	@JsonInclude(Include.NON_EMPTY)
+	private String unit;
+
 	public Property() {
 	}
 
@@ -63,6 +69,10 @@ public class Property extends HierarchicalObject<Property> {
 
 	public ValueDomain<?> getValueDomain() {
 		return valueDomain;
+	}
+
+	public void setUnit(String unit) {
+		this.unit = unit;
 	}
 
 	public void setValueDomain(ValueDomain<?> valueDomain) {

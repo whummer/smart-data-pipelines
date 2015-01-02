@@ -10,8 +10,20 @@ var PROPERTY_ID = "property-id";
 var PROPERTY_NAME = "property";
 var PROPERTY_VALUE = "value";
 var TIMESTAMP = "timestamp";
+var IMAGE_URLS = "image-urls";
 
 (function() {
+
+/* CONFIGURATIONS */
+
+/**
+ * openConnectionPerRequest
+ *  	if true, open a websocket connection for each subscription,
+ *  	if false, re-use a single websocket connection (TODO implement)
+ */
+var openConnectionPerRequest = true;
+
+/* END OF CONFIGURATIONS */
 
 var sh = {};
 var ttl = 20000;
@@ -74,7 +86,9 @@ var object = function(url, callback) {
 	var m = mem();
 	if(m[url]) {
 		if(callback) {
-			callback(m[url]);
+			setTimeout(function(){
+				callback(m[url]);
+			}, 0);
 		}
 		return m[url];
 	}
@@ -118,36 +132,50 @@ var mem = sh.mem = function() {
 	return window.sharedMem;
 }
 
-var connectWebsocket = function() {
-	if(!sh.websocket) {
+var connectWebsocket = function(onOpenCallback) {
+	var ws;
+	if(openConnectionPerRequest || !sh.websocket || sh.websocket.readyState > 1) {
 		var wsURL = appConfig.services.websocket.url;
 		var authInfo = sh.authInfo;
 	
 		if(authInfo.network && authInfo.access_token) {
-			sh.websocket = this.websocket = new WebSocket(wsURL, 
+			this.websocket = ws = new WebSocket(wsURL, 
 				authInfo.network + "~" + authInfo.access_token);
 		} else if(authInfo.userId && authInfo.appId) {
-			sh.websocket = this.websocket = new WebSocket(wsURL, 
+			this.websocket = ws = new WebSocket(wsURL, 
 				authInfo.userId + "~" + authInfo.appId);
 		} else {
 			throw "Please provide RIOTS_USER_ID and RIOTS_APP_ID variables.";
 		}
 	}
 
-	return sh.websocket;
+	if(onOpenCallback) {
+		if(ws.readyState == 0) {
+			ws.onopen = function() {
+				onOpenCallback(ws);
+			};
+		} else {
+			onOpenCallback(ws);
+		}
+	}
+
+	return ws;
 }
 
 /* subscribe via websocket */
 sh.subscribe = function(options, callback) {
-	var ws = connectWebsocket();
-	ws.onopen = function() {
+	var ws = connectWebsocket(function(ws) {
 		var msg = {
 			type: "SUBSCRIBE",
 			thingId: options.thingId,
 			propertyName: options.propertyName
 		};
+		if(options.clientId) {
+			msg.clientId = options.clientId;
+		}
+		console.log("subscribing", options);
 		ws.send(JSON.stringify(msg));
-	}
+	});
 	ws.onmessage = function(msg) {
 		var data = JSON.parse(msg.data);
 		if(callback) {
@@ -166,16 +194,36 @@ sh.subscribe = function(options, callback) {
 }
 
 /* unsubscribe all via websocket */
-sh.unsubscribeAll = function(options, callback) {
-	var ws = connectWebsocket();
-	ws.onopen = function() {
+sh.unsubscribeAll = function(callback) {
+	connectWebsocket(function(ws) {
+		console.log("unsubscribeAll");
 		var msg = {
 			type: "UNSUBSCRIBE",
 			unsubscribeAll: true
 		};
 		ws.send(JSON.stringify(msg));
-	}
+		if(callback) {
+			callback(ws);
+		}
+	});
 }
+
+/* HELPER METHODS */
+
+/* http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript */
+var guid = (function() {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+               .toString(16)
+               .substring(1);
+  }
+  return function() {
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+           s4() + '-' + s4() + s4() + s4();
+  };
+})();
+
+/* expose API */
 
 window.shared = sh;
 window.model = sh;

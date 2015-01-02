@@ -3,12 +3,6 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-<!-- TODO remove -->
-<!--     <parent> -->
-<!--         <groupId>org.springframework.cloud</groupId> -->
-<!--         <artifactId>spring-cloud-starter-parent</artifactId> -->
-<!--         <version>1.0.0.BUILD-SNAPSHOT</version> -->
-<!--     </parent> -->
 	<parent>
         <artifactId>riots-common-service-dependencies</artifactId>
         <groupId>io.riots</groupId>
@@ -18,9 +12,6 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-<!-- TODO remove -->
-<!--     <groupId>io.riots</groupId> -->
-<!--     <version>0.0.1-SNAPSHOT</version> -->
     <artifactId>riots-service-gateway</artifactId>
 
     <properties>

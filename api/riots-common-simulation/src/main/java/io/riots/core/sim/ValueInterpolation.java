@@ -1,7 +1,7 @@
 package io.riots.core.sim;
 
-import io.riots.core.services.sim.LocationInTime;
-import io.riots.core.services.sim.Time;
+import io.riots.services.sim.LocationInTime;
+import io.riots.services.sim.Time;
 
 import java.util.List;
 

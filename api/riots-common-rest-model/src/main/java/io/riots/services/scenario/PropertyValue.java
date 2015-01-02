@@ -26,7 +26,8 @@ public class PropertyValue implements ObjectIdentifiable {
 	@JsonProperty
 	private Object value;
 
-	double timestamp;
+	@JsonProperty
+	private double timestamp;
 
 	public PropertyValue() {
 	}

@@ -3,8 +3,8 @@ package io.riots.api.services;
 import java.util.List;
 
 import io.riots.core.repositories.UserSettingsRepository;
-import io.riots.core.service.UserSettingsService;
 import io.riots.core.service.ServiceClientFactory;
+import io.riots.services.UserSettingsService;
 import io.riots.services.users.User;
 import io.riots.services.users.UserSettings;
 
@@ -13,6 +13,9 @@ import javax.ws.rs.Path;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.codahale.metrics.annotation.ExceptionMetered;
+import com.codahale.metrics.annotation.Timed;
 
 /**
  * Service for managing users in the systems.
@@ -32,6 +35,7 @@ public class UserSettingsServiceImpl implements UserSettingsService {
 
 
 	@Override
+	@Timed @ExceptionMetered
 	public UserSettings getConfigForUserEmail(String email) {
 		User user = serviceClientFactory.getUsersServiceClient().findByEmail(email);
 		List<UserSettings> list = settingsRepo.findByUserId(user.getId());
@@ -48,7 +52,8 @@ public class UserSettingsServiceImpl implements UserSettingsService {
 	}
 
 	@Override
-	public UserSettings setConfigForUserEmail(String email, UserSettings settings) {
+	@Timed @ExceptionMetered
+    public UserSettings setConfigForUserEmail(String email, UserSettings settings) {
 		UserSettings existing = getConfigForUserEmail(email);
 		settings.setId(existing.getId());
 		settings.setUserId(existing.getUserId());

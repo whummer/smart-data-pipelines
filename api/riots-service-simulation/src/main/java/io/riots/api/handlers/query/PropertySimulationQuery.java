@@ -1,7 +1,7 @@
 package io.riots.api.handlers.query;
 
 import io.riots.core.repositories.PropertySimulationRepository;
-import io.riots.core.services.sim.PropertySimulation;
+import io.riots.services.sim.PropertySimulation;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

@@ -1,7 +1,9 @@
 package io.riots.core.boot;
 
 import com.mongodb.MongoClient;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
@@ -20,11 +22,13 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
                 pattern = "io\\.riots\\.core\\.repositories\\.BaseObjectRepository")
 )
 public class MongoEnabledServiceStarter extends ServiceStarter {
+	
+	@Value("${mongodb.hostname}") String hostname;
 
     @Bean
     @Autowired
     public MongoDbFactory mongoDbFactory() throws Exception {
-        return new SimpleMongoDbFactory(new MongoClient(), "riots");
+        return new SimpleMongoDbFactory(new MongoClient(hostname), "riots");
     }
 
     @Bean

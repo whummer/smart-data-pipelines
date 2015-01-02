@@ -1,7 +1,7 @@
 package io.riots.core.auth;
 
-import io.riots.core.service.UsersService;
 import io.riots.core.service.ServiceClientFactory;
+import io.riots.services.UsersService;
 import io.riots.services.users.User;
 
 import java.util.Date;

@@ -35,19 +35,6 @@
 			<artifactId>junit</artifactId>
 		</dependency>
 
-		<!-- JAX-RS Client -->
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-rs-client</artifactId>
-			<version>3.0.1</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>cxf-core</artifactId>
-			        <groupId>org.apache.cxf</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
     </dependencies>
 
     <build>

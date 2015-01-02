@@ -1,5 +1,10 @@
 package io.riots.core.service;
 
+import io.riots.services.CatalogService;
+import io.riots.services.SimulationService;
+import io.riots.services.ThingsService;
+import io.riots.services.UsersService;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

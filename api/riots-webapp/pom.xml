@@ -1,57 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <groupId>io.riots</groupId>
-        <artifactId>riots-common-service-dependencies</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
-        <relativePath>../riots-common-service-dependencies/pom.xml</relativePath>
-    </parent>
-    
-    <modelVersion>4.0.0</modelVersion>
-    <artifactId>riots-webapp</artifactId>
-    <packaging>jar</packaging>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<parent>
+		<groupId>io.riots</groupId>
+		<artifactId>riots-common-service-dependencies</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../riots-common-service-dependencies/pom.xml</relativePath>
+	</parent>
 
- 	<properties>
-        <riots.port>8081</riots.port>
-        <riots.eureka.hostname>localhost:10000</riots.eureka.hostname>        
-    </properties>
-    
-    <dependencies>
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>riots-webapp</artifactId>
+	<packaging>jar</packaging>
+
+	<properties>
+		<riots.port>8081</riots.port>
+	</properties>
+
+	<dependencies>
 		<dependency>
 			<groupId>io.riots</groupId>
 			<artifactId>riots-common-core</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
-    	<!-- URL rewriting -->
-    	<dependency>
-		    <groupId>org.tuckey</groupId>
-		    <artifactId>urlrewritefilter</artifactId>
-		    <version>4.0.3</version>
+		<!-- URL rewriting -->
+		<dependency>
+			<groupId>org.tuckey</groupId>
+			<artifactId>urlrewritefilter</artifactId>
+			<version>4.0.3</version>
 		</dependency>
-    </dependencies>
+	</dependencies>
 
 	<build>
 		<plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>pl.project13.maven</groupId>
-                <artifactId>git-commit-id-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-remote-resources-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-            </plugin>
-		
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>pl.project13.maven</groupId>
+				<artifactId>git-commit-id-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-remote-resources-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+					<execution>
+					 <id>copy-resources</id>
+            <!-- here the phase you need -->
+            <phase>validate</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+						<configuration>
+							<outputDirectory>${basedir}/target/classes</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/main/webapp</directory>
+									<filtering>true</filtering>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
 			<!-- Puts all dependent jars in target/lib folder -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -70,9 +87,11 @@
 				</executions>
 			</plugin>
 
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
+
 				<configuration>
 					<archive>
 						<manifest>
@@ -84,7 +103,9 @@
 				</configuration>
 			</plugin>
 
-        </plugins>
+
+
+		</plugins>
 	</build>
 
 </project>

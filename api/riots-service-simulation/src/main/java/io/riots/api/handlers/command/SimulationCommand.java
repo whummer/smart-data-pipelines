@@ -2,7 +2,7 @@ package io.riots.api.handlers.command;
 
 import io.riots.core.logging.Markers;
 import io.riots.core.repositories.SimulationRepository;
-import io.riots.core.services.sim.Simulation;
+import io.riots.services.sim.Simulation;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,7 +1,7 @@
 package io.riots.demo;
 
-import io.riots.core.service.CatalogService;
 import io.riots.core.service.ServiceClientFactory;
+import io.riots.services.CatalogService;
 import io.riots.services.catalog.Property;
 import io.riots.services.catalog.ThingType;
 import io.riots.services.catalog.ValueDomainContinuous;
@@ -311,8 +311,8 @@ public class InsertDemoDataViaCatalog {
 	        getOrCreateThingType(gyroSensor, existing);
         }
 
+        ThingType gpsSensor = new ThingType("EM-506 GPS Receiver");
         {
-	        ThingType gpsSensor = new ThingType("EM-506 GPS Receiver");
 	        gpsSensor.setImageUrls(Arrays.asList("https://cdn.sparkfun.com//assets/parts/9/5/1/2/12751-01.jpg"));
 	        gpsSensor.setDescription("EM-506 includes on-board voltage regulation, "
 	                        + "LED status indicator, battery backed RAM, "
@@ -326,7 +326,7 @@ public class InsertDemoDataViaCatalog {
 	        propLoc.addChild(propLon);
 	        gpsSensor.getProperties().add(propLoc);
 
-	        getOrCreateThingType(gpsSensor, existing);
+	        gpsSensor = getOrCreateThingType(gpsSensor, existing);
         }
 
         ThingType appleGyroSensor = new ThingType("Kionix KXM52-1050");
@@ -379,6 +379,70 @@ public class InsertDemoDataViaCatalog {
 	        appleMacBook.addChild(wpsSensor.getId());
 
 	        getOrCreateThingType(appleMacBook, existing);
+        }
+
+        ThingType batterySensor = new ThingType("MM9Z1J638 Battery Sensor");
+        {
+        	batterySensor.setImageUrls(Arrays.asList("http://www.engineerlive.com/sites/default/files/styles/article/public/eee%20sensors%20may14%20freescale.jpg?itok=9RL_D_e4"));
+        	batterySensor.setDescription("Designed to support both conventional and "
+        			+ "emerging battery chemistries for automotive and industrial applications, "
+        			+ "the MM9Z1J638 battery sensor measures key battery parameters for monitoring "
+        			+ "state of health (SOH), state of charge (SOC) and state of function (SOF) "
+        			+ "for early failure prediction. A flexible four-cell front end architecture "
+        			+ "supports conventional 12V lead acid batteries as well as emerging battery "
+        			+ "applications, such as 14V stacked cell Li-Ion, high voltage junction boxes, "
+        			+ "and 24V truck batteries.");
+	        Property propBat = new Property("batteryPercent");
+	        propBat.setValueDomain(new ValueDomainContinuous<Double>(0.0, 100.0));
+	        propBat.setActuatable(false).setSensable(true);
+	        batterySensor.getProperties().add(propBat);
+
+	        batterySensor = getOrCreateThingType(batterySensor, existing);
+        }
+
+        ThingType pressureSensor = new ThingType("Oro-Tek™ Tire Pressure Sensor");
+        {
+        	pressureSensor.setImageUrls(Arrays.asList("http://www.carid.com/images/oro-tek/tpms-sensors/oro-tek-tpms-sensor.jpg"));
+        	pressureSensor.setDescription("Sensor for monitoring tire pressure.");
+	        Property propBat = new Property("pressure");
+	        propBat.setUnit("bar");
+	        propBat.setValueDomain(new ValueDomainContinuous<Double>(0.0, 6.0));
+	        propBat.setActuatable(false).setSensable(true);
+	        pressureSensor.getProperties().add(propBat);
+
+	        pressureSensor = getOrCreateThingType(pressureSensor, existing);
+        }
+
+        {
+            ThingType golfCart = new ThingType("Yamaha DRIVE Golf Car");
+	        golfCart.setImageUrls(Arrays.asList("http://www.franksgolfcarts.com/images/yamaha2.png"));
+	        golfCart.setDescription("Deep in the DNA of The DRIVE® is everything "
+	        		+ "we’ve learned from our motorcycles, ATV’s and watercraft, "
+	        		+ "including the ability to build with fewer parts, which leads "
+	        		+ "to lighter weight, which leads to superior hill-climbing ability, "
+	        		+ "a virtually greaseless chassis and the lowest maintenance costs in the industry.");
+	        golfCart.addChild(wpsSensor.getId());
+	        golfCart.addChild(batterySensor.getId());
+	        golfCart.addChild(pressureSensor.getId());
+	        golfCart.addChild(temperatureSensor.getId());
+
+	        golfCart = getOrCreateThingType(golfCart, existing);
+        }
+
+        {
+            ThingType clubCar = new ThingType("Club Car Precedent i2 Golf Car");
+	        clubCar.setImageUrls(Arrays.asList("http://www.jeffreyalleninc.com/userfiles/images/Prec%204%20Pass.jpg"));
+	        clubCar.setDescription("Up to 4 passengers can enjoy the unique sense of "
+	        		+ "style, quality, durability, and reliability that only "
+	        		+ "Club Car golf car can provide with the Precedent 4-Passenger. "
+	        		+ "New features make it more efficient and capable than ever — "
+	        		+ "and it’s all designed with you in mind.");
+	        clubCar.addChild(gpsSensor.getId());
+	        clubCar.addChild(batterySensor.getId());
+	        clubCar.addChild(pressureSensor.getId());
+	        clubCar.addChild(temperatureSensor.getId());
+
+	        clubCar = getOrCreateThingType(clubCar, existing);
         }
 
     }

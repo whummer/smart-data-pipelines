@@ -75,8 +75,8 @@ define(['app'], function(app) {
 					name: "Current Location"
 				}
 				var locArray = [ markerData.loc.lat, markerData.loc.lng ];
-				document.getElementById("lat").html(markerData.loc.lat);
-				document.getElementById("lon").html(markerData.loc.lng);
+				$("#lat").html(markerData.loc.lat);
+				$("#lon").html(markerData.loc.lng);
 
 				if(!window.marker) {
 					var options = {

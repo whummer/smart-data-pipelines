@@ -4,7 +4,7 @@ import io.riots.api.data.drivers.DriverUtilMQTT;
 import io.riots.api.util.ServiceUtil;
 import io.riots.core.auth.AuthHeaders;
 import io.riots.core.repositories.DeviceDriverRepository;
-import io.riots.core.service.DriversService;
+import io.riots.services.DriversService;
 import io.riots.services.drivers.DataDriver;
 import io.riots.services.drivers.DataDriver.DriverConnector;
 import io.riots.services.users.User;
@@ -20,6 +20,9 @@ import javax.ws.rs.core.UriBuilder;
 import org.apache.cxf.jaxrs.ext.MessageContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.codahale.metrics.annotation.ExceptionMetered;
+import com.codahale.metrics.annotation.Timed;
 
 /**
  * @author whummer
@@ -42,11 +45,13 @@ public class DriversServiceImpl implements DriversService {
     DriverUtilMQTT mqttUtil;
 
     @Override
+    @Timed @ExceptionMetered
     public DataDriver retrieve(String itemId) {
         return driverRepo.findOne(itemId);
     }
 
     @Override
+    @Timed @ExceptionMetered
     public DataDriver retrieveForThingType(String itemId) {
 //    	User user = authFilter.getRequestingUser(req);
 //      return driverRepo.findByThingTypeIdAndCreatorIdOrThingTypeIdAndCreatorIdIsNull(itemId, user, itemId);
@@ -60,6 +65,7 @@ public class DriversServiceImpl implements DriversService {
     }
 
     @Override
+    @Timed @ExceptionMetered
     public DataDriver retrieveForThing(String thingId, String propertyName) {
 //    	User user = authFilter.getRequestingUser(req);
 //        return driverRepo.findByThingIdAndCreatorIdOrThingIdAndCreatorIdIsNull(itemId, user, itemId);
@@ -73,6 +79,7 @@ public class DriversServiceImpl implements DriversService {
     }
 
     @Override
+    @Timed @ExceptionMetered
     public DataDriver setForThing(String thingId, String propertyName, DataDriver driver) {
     	User user = authFilter.getRequestingUser(req);
     	driver.setCreatorId(user.getId());
@@ -93,6 +100,7 @@ public class DriversServiceImpl implements DriversService {
     }
 
     @Override
+    @Timed @ExceptionMetered
     public boolean delete(String itemId) {
         driverRepo.delete(itemId);
         return true;
