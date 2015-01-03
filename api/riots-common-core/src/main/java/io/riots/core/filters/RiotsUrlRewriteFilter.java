@@ -1,12 +1,6 @@
 /*** Eclipse Class Decompiler plugin, copyright (c) 2012 Chao Chen (cnfree2000@hotmail.com) ***/
 package io.riots.core.filters;
 
-import org.tuckey.web.filters.urlrewrite.*;
-import org.tuckey.web.filters.urlrewrite.utils.*;
-
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,8 +10,24 @@ import java.net.URL;
 import java.util.Date;
 import java.util.Properties;
 
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.tuckey.web.filters.urlrewrite.*;
+import org.tuckey.web.filters.urlrewrite.utils.Log;
+import org.tuckey.web.filters.urlrewrite.utils.ModRewriteConfLoader;
+import org.tuckey.web.filters.urlrewrite.utils.NumberUtils;
+import org.tuckey.web.filters.urlrewrite.utils.ServerNameMatcher;
+import org.tuckey.web.filters.urlrewrite.utils.StringUtils;
+
 @SuppressWarnings("all")
-//@Component
 public class RiotsUrlRewriteFilter extends UrlRewriteFilter implements Filter {
 	private static Log log = Log.getLog(RiotsUrlRewriteFilter.class);
 
@@ -44,7 +54,6 @@ public class RiotsUrlRewriteFilter extends UrlRewriteFilter implements Filter {
 	private static long INITIALISED_TIME = System.currentTimeMillis();
 
 	public RiotsUrlRewriteFilter() {
-		//super();
 		this.urlRewriter = null;
 
 		this.confReloadCheckEnabled = false;

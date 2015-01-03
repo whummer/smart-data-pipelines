@@ -16,18 +16,8 @@ logging:
     com.netflix.discovery: WARN
     com.netflix.zuul: WARN
     com.netflix.servo: WARN
-    org.springframework.boot: TRACE
+    org.springframework.boot: INFO
 
 spring:
   application:
     name: webapp-service
-
-log4j:
-  category:
-    org.springframework: DEBUG
-  level:
-    com.netflix.discovery: DEBUG
-    com.netflix.zuul: WARN
-    com.netflix.servo: WARN
-    org.springframework.boot: WARN
-    
