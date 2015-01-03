@@ -8,7 +8,6 @@ ADD ${project.build.finalName}.jar /var/lib/riots/
 # set execution environment
 ENV RIOT_PORT ${riots.port}
 ENV RIOTS_LOG_DIR /var/tmp
-ENV JAVA_OPTS ''
 
 # expose port from build config (can be overriden with docker run .. -e "RIOT.PORT=1234")
 EXPOSE ${riots.port}

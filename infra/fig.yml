@@ -75,6 +75,7 @@ webapp:
   image: 146.148.126.222:5000/riots/webapp
   ports:
     - "8081:8081"
+  links:
     - eureka
   environment:
     JAVA_OPTS: "-Deureka.instance.hostname=172.17.42.1"
