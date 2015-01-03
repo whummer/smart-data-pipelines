@@ -1,0 +1,98 @@
+<section ng-controller="FuncsController" id="assetsSection" style="height: 100%">
+
+	<div style="height: 100%" data-dojo-type="dijit/layout/ContentPane">
+		<div style="padding-bottom: 15px;">
+			<button class="btn btn-default btn-sm" data-dojo-props="iconClass:'icon-plus-sign'" id="btnAddFunc">Add</button>
+			<button class="btn btn-default btn-sm" data-dojo-props="iconClass:'icon-minus-sign'" id="btnDeleteFunc">Delete</button>
+		</div>
+		<div id="funcsTable" ui-grid="tableOptions" ui-grid-selection ui-grid-edit ui-grid-row-edit class="grid" style="height: 80%"></div>
+	</div>
+
+</section>
+
+<script type="text/javascript">
+
+	var app = angular.module("app");
+	app.controller('FuncsController',[
+		'$scope', '$http', '$compile',
+		function($scope, $http, $compile) {
+
+			AppController($scope, $http, $compile);
+
+			$scope.tableOptions = {};
+
+			$scope.initTable = function() {
+				var columnsConfig = [
+					{label: "Name", field: "name", sortable: true,
+						cellTemplate: "<div class='ui-grid-cell-contents'><a href='#/world/{{row.entity.id}}'>{{row.entity.name}}</a></div>"
+					},
+					{label: "Type", field: "type"}
+				];
+				$scope.tableOptions.data = [];
+				renderUITable($scope.tableOptions, "funcsTable", columnsConfig,
+					function(event) {
+				    	if(event.type == "dgrid-select") {
+				    		$scope.$apply(function() {
+				    			$scope.shared.selectedFunc = event.rows[0].data;
+							});
+				    	} else if(event.type == "dgrid-deselect") {
+				    		$scope.$apply(function(){
+				    			$scope.shared.selectedFunc = null;
+							});
+				    	}
+					},
+					true
+				);
+			}
+			$scope.initTable();
+
+			$scope.loadAllFuncs = function() {
+				$scope.tableOptions.data = [];
+				$scope.loadGeoFences();
+			}
+
+			$scope.loadGeoFences = function() {
+				invokeGET($scope.http, $scope.utilsAPI + "/geo/fence",
+					function(data, status, headers, config) {
+						$.each(data.result, function(idx,el) {
+							el.type = "Geo Fence";
+							$scope.tableOptions.data.push(el);
+						});
+					}
+				);
+			}
+			$scope.loadAllFuncs();
+
+			$scope.saveFunc = function(item){
+				invokePUT($scope.http, $scope.thingsAPI + "/",
+					JSON.stringify(item),
+					function(data, status, headers, config) {
+						$scope.loadAllFuncs();
+					}
+				);
+			}
+			$scope.addFunc = function(){
+				item = {
+					name: "unnamed"
+				}
+				$scope.addFuncInDB(item, function(asset) {
+					$scope.loadAllFuncs();
+				});
+			}
+			$scope.deleteFunc = function(){
+				var selection = $scope.shared.selectedFunc;
+				if(!selection || !selection.id) return;
+				$scope.deleteFuncInDB(selection, function() {
+					$scope.loadAllFuncs();
+					$scope.shared.selectedFunc = null;
+				});
+			}
+
+			/* register event handlers*/
+			$scope.addClickHandler("btnAddFunc", $scope.addFunc);
+			$scope.addClickHandler("btnDeleteFunc", $scope.deleteFunc);
+
+		}]
+	);
+
+</script>

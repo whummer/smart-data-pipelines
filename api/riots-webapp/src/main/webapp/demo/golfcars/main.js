@@ -50,19 +50,43 @@ app.controller('MainCtrl', function ($scope) {
 			thingId: thing.id,
 			propertyName: propName
 		}, function(data) {
-			console.log(propName, data);
 			$scope.$apply(function() {
 				if(propName == GEO_FENCE) {
 					if(!thing.properties[propName]) {
 						thing.properties[propName] = {}
 					}
-					$.extend(thing.properties[propName], data.value);
+					var fences = thing.properties[propName]
+					$.extend(fences, data.value);
+					if($scope.geoFence && $scope.geoFence.id) {
+						if(typeof fences[$scope.geoFence.id] != "undefined") {
+							var isInFence = thing.isInCurrentGeoFence = fences[$scope.geoFence.id];
+							console.log("isInFence", isInFence);
+							if(isInFence) {
+								thing.marker.setIcon(getIcon("marker_green.png"));
+							} else {
+								thing.marker.setIcon(getIcon("marker_pink.png"));
+							}
+						}
+					} else if(thing.marker) {
+						thing.marker.setIcon(getIcon("marker_azure.png"));
+					}
 				} else {
+					console.log(propName, data);
 					thing.properties[propName] = data.value;
 					setMarker(thing);
 				}
 			});
 		});
+	}
+
+	var getIcon = function(url) {
+		url = "/img/markers/" + url;
+		var icon = L.icon({
+		    iconUrl: url,
+		    iconSize: [30, 30],
+		    iconAnchor: [15, 15]
+		});
+		return icon;
 	}
 
 	$scope.loadThings = function() {

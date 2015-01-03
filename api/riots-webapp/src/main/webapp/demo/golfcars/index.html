@@ -54,7 +54,7 @@
 					<td>{{thing.properties['location.latitude']}},{{thing.properties['location.longitude']}}</td>
 					<td>{{thing.properties.battery}}</td>
 					<td>{{thing.properties.tirePressure}}</td>
-					<td>{{thing.properties['riots.geo.fence'][geoFence.id]}}</td>
+					<td>{{thing.properties.isInCurrentGeoFence}}</td>
 				</tr>
 				</table>
 
@@ -63,12 +63,18 @@
 					<table><tr>
 						<td>Center (lat/lon):</td>
 						<td><input ng-model="geoFence.center.latitude" disabled="disabled"
-							 class="form-control" style="width: 100px; clear: none;"/>
-						<td>,
+							 class="form-control" style="width: 100px; clear: none;"/></td>
+						<td>,</td>
 						<td><input ng-model="geoFence.center.longitude" disabled="disabled"
-							 class="form-control" style="width: 100px; clear: none;"/>
-					</tr></table>
-					<p>Radius: <input ng-model="diameter" class="form-control" style="width: 100px;"/> meters</p>
+							 class="form-control" style="width: 100px; clear: none;"/></td>
+					</tr>
+					<tr>
+						<td>Radius:</td>
+						<td><input ng-model="diameter" class="form-control" style="width: 100px;"/></td>
+						<td></td>
+						<td>meters</td>
+					</tr>
+					</table>
 				</div>
 				<button class="btn btn-primary" ng-click="setupGeoFence()">Setup Geo Fence</button>
 

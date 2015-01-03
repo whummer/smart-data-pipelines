@@ -10,6 +10,7 @@ import java.net.URL;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
+
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -19,6 +20,13 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Component;
+import org.tuckey.web.filters.urlrewrite.Conf;
+import org.tuckey.web.filters.urlrewrite.Status;
+import org.tuckey.web.filters.urlrewrite.UrlRewriteFilter;
+import org.tuckey.web.filters.urlrewrite.UrlRewriteWrappedResponse;
+import org.tuckey.web.filters.urlrewrite.UrlRewriter;
 import org.tuckey.web.filters.urlrewrite.utils.Log;
 import org.tuckey.web.filters.urlrewrite.utils.ModRewriteConfLoader;
 import org.tuckey.web.filters.urlrewrite.utils.NumberUtils;
