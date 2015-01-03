@@ -18,6 +18,7 @@ var appConfig = {
 		simulationDevices: { url: "/api/v1/simulations/devices" },
 		stats: { url: "/api/v1/stats" },
 		users: { url: "/api/v1/users" },
+		utils: { url: "/api/v1/utils" },
 		websocket: { url: "ws://localhost:8085/websocket" }
 	},
 	auth: {

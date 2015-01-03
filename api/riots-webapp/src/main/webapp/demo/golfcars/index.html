@@ -46,6 +46,7 @@
 					<th>Location</th>
 					<th>Battery Level</th>
 					<th>Tire Pressure</th>
+					<th>Within Geo Fence</th>
 				</tr></thead>
 				<tr ng-repeat="thing in things">
 					<td><img ng-src="{{thing.img}}" style="height: 30px;"/></td>
@@ -53,10 +54,22 @@
 					<td>{{thing.properties['location.latitude']}},{{thing.properties['location.longitude']}}</td>
 					<td>{{thing.properties.battery}}</td>
 					<td>{{thing.properties.tirePressure}}</td>
+					<td>{{thing.properties['riots.geo.fence'][geoFence.id]}}</td>
 				</tr>
 				</table>
-				
+
 				<h2>Geo Fence:</h2>
+				<div>
+					<table><tr>
+						<td>Center (lat/lon):</td>
+						<td><input ng-model="geoFence.center.latitude" disabled="disabled"
+							 class="form-control" style="width: 100px; clear: none;"/>
+						<td>,
+						<td><input ng-model="geoFence.center.longitude" disabled="disabled"
+							 class="form-control" style="width: 100px; clear: none;"/>
+					</tr></table>
+					<p>Radius: <input ng-model="diameter" class="form-control" style="width: 100px;"/> meters</p>
+				</div>
 				<button class="btn btn-primary" ng-click="setupGeoFence()">Setup Geo Fence</button>
 
 				<h2>Map View:</h2>

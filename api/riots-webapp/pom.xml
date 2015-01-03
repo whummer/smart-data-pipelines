@@ -23,12 +23,6 @@
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
-		<!-- URL rewriting -->
-		<dependency>
-			<groupId>org.tuckey</groupId>
-			<artifactId>urlrewritefilter</artifactId>
-			<version>4.0.3</version>
-		</dependency>
 	</dependencies>
 
 	<build>
@@ -50,12 +44,12 @@
 				<artifactId>maven-resources-plugin</artifactId>
 				<executions>
 					<execution>
-					 <id>copy-resources</id>
-            <!-- here the phase you need -->
-            <phase>validate</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
+						<id>copy-resources</id>
+						<!-- here the phase you need -->
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
 						<configuration>
 							<outputDirectory>${basedir}/target/classes</outputDirectory>
 							<resources>

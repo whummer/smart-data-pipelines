@@ -4,6 +4,7 @@ import io.riots.core.auth.AuthFilterZuul;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -22,13 +23,16 @@ import org.tuckey.web.filters.urlrewrite.UrlRewriteFilter;
 public class GatewayServiceStarter {
 
 	/**
-	 * URL rewriting filter. See WEB-INF/urlrewrite.xml for configuration.
+	 * URL rewriting filter. See file urlrewrite.xml for configuration.
 	 * @return
 	 */
 	@Bean
-	UrlRewriteFilter getRewriteFilter() {
-		UrlRewriteFilter f = new UrlRewriteFilter();
-		return f;
+	public FilterRegistrationBean urlRewriteFilter(){
+	    FilterRegistrationBean filterRegBean = new FilterRegistrationBean();
+	    UrlRewriteFilter filter = new UrlRewriteFilter();
+	    filterRegBean.setFilter(filter);
+	    filterRegBean.addInitParameter("confPath", "/WEB-INF/urlrewrite.xml");
+	    return filterRegBean;
 	}
 
 	@Bean

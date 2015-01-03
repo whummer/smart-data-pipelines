@@ -208,6 +208,30 @@ sh.unsubscribeAll = function(callback) {
 	});
 }
 
+/* UTIL METHODS */
+
+sh.util = {}
+
+sh.util.addGeoFence = function(config, callback) {
+	var url = appConfig.services.utils.url + "/geo/fence";
+	invokePOST(null, url, JSON.stringify(config),
+	function(data, status, headers, config) {
+		if(callback) {
+			callback(data.result);
+		}
+	});
+}
+sh.util.removeGeoFence = function(id, callback) {
+	var url = appConfig.services.utils.url + "/geo/fence/" + id;
+	invokeDELETE(null, url,
+	function(data, status, headers, config) {
+		if(callback) {
+			callback(data.result);
+		}
+	});
+}
+ 
+
 /* HELPER METHODS */
 
 /* http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript */
