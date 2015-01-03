@@ -25,6 +25,7 @@
 		<module>riots-common-simulation</module>
 
 		<module>riots-service-catalog</module>
+		<module>riots-service-images</module>
 		<module>riots-service-environment</module>
 		<module>riots-service-gateway</module>
 		<module>riots-service-users</module>

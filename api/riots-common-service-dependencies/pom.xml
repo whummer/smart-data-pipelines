@@ -149,6 +149,13 @@
 			</exclusions>
 		</dependency>
 
+        <!-- URL rewriting -->
+        <dependency>
+            <groupId>org.tuckey</groupId>
+            <artifactId>urlrewritefilter</artifactId>
+            <version>4.0.3</version>
+        </dependency>
+
 		<!-- TEST dependencies -->
 		<dependency>
 			<groupId>com.jayway.restassured</groupId>

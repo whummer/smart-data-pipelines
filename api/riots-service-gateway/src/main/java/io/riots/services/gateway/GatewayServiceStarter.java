@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
-import org.tuckey.web.filters.urlrewrite.UrlRewriteFilter;
+import io.riots.core.filters.RiotsUrlRewriteFilter;
 
 /**
  * @author whummer
@@ -29,7 +29,7 @@ public class GatewayServiceStarter {
 	@Bean
 	public FilterRegistrationBean urlRewriteFilter(){
 	    FilterRegistrationBean filterRegBean = new FilterRegistrationBean();
-	    UrlRewriteFilter filter = new UrlRewriteFilter();
+	    RiotsUrlRewriteFilter filter = new RiotsUrlRewriteFilter();
 	    filterRegBean.setFilter(filter);
 	    filterRegBean.addInitParameter("confPath", "/WEB-INF/urlrewrite.xml");
 	    return filterRegBean;

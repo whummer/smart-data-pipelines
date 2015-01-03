@@ -19,14 +19,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-
-    	<!-- URL rewriting -->
-    	<dependency>
-		    <groupId>org.tuckey</groupId>
-		    <artifactId>urlrewritefilter</artifactId>
-		    <version>4.0.3</version>
-		</dependency>
-
 	</dependencies>
 
     <build>
