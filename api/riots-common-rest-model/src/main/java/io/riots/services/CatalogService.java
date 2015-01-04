@@ -24,8 +24,11 @@ import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
 
 @Service
-@Api(value = "Catalog Service", description = "Catalog service for SmartThings")
+@Path("/catalog")
+@Api(value = "Catalog Service", description = "Catalog service for Things")
 public interface CatalogService {
+
+	/* THING TYPES */
 
 	@GET
 	@Path("/thing-types/{id}")
@@ -68,6 +71,14 @@ public interface CatalogService {
 	@ApiOperation(value = "Delete a ThingType", notes = "Delete an existing ThingType by its ID. Upon success, HTTP 200 is returned.")
 	@ApiResponses(value = { @ApiResponse(code = 404, message = "No such ThingType") })
 	void deleteThingType(@PathParam("id") String thingTypeId);
+
+	@GET
+	@Path("/thing-types/count")
+	@Produces({ MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "Count ThingTypes", notes = "Get the number of ThingTypes stored in the catalog.")
+	long countThingTypes();
+
+	/* MANUFACTURERS */
 
 	@GET
 	@Path("/manufacturers/{id}")

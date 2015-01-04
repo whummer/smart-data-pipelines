@@ -19,8 +19,8 @@ import io.riots.services.sim.Simulation;
 import io.riots.services.sim.SimulationRun;
 import io.riots.services.sim.Time;
 import io.riots.services.sim.TimelineValues;
-import io.riots.services.sim.TrafficTraces;
 import io.riots.services.sim.TimelineValues.TimedValue;
+import io.riots.services.sim.TrafficTraces;
 import io.riots.services.sim.TrafficTraces.TrafficTrace;
 
 import java.net.URL;
@@ -28,7 +28,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 
@@ -39,14 +38,11 @@ import org.springframework.stereotype.Service;
 
 import com.codahale.metrics.annotation.ExceptionMetered;
 import com.codahale.metrics.annotation.Timed;
-import com.wordnik.swagger.annotations.Api;
 
 /**
  * @author Waldemar Hummer
  */
 @Service
-@Path("/simulations")
-@Api(value = "Simulations", description = "API for simulations")
 public class SimulationServiceImpl implements SimulationService {
 
     @Autowired

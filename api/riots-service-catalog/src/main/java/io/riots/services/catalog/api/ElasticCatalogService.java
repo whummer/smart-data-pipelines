@@ -12,7 +12,6 @@ import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 import javax.ws.rs.NotFoundException;
-import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriBuilder;
@@ -39,7 +38,6 @@ import com.codahale.metrics.annotation.Timed;
  * @author whummer
  */
 @Service
-@Path("/catalog")
 public class ElasticCatalogService implements CatalogService {
 
 	static final Logger log = LoggerFactory.getLogger(ElasticCatalogService.class);
@@ -158,6 +156,14 @@ public class ElasticCatalogService implements CatalogService {
             throw new NotFoundException("No such thing: " + thingTypeId);
         }
     }
+
+    @Override
+    @Timed @ExceptionMetered
+    public long countThingTypes() {
+    	return thingTypeRepository.count();
+    }
+
+    /* MANUFACTURERS */
 
     @Override
     @Timed @ExceptionMetered

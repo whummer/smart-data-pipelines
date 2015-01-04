@@ -13,7 +13,6 @@ import java.net.URI;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 
 import org.apache.cxf.jaxrs.ext.MessageContext;
@@ -29,7 +28,6 @@ import com.wordnik.swagger.annotations.Api;
  * @author whummer
  */
 @Service
-@Path("/things")
 @Api(value = "Things", description = "Various operations for Things. "
 		+ "Things are virtual representations of physical devices, "
 		+ "such as sensors, actuators or appliances. Each Thing has "
@@ -89,6 +87,12 @@ public class ThingsServiceImpl implements ThingsService {
     public boolean delete(String thingId) {
         thingCommand.delete(thingId);
         return true;
+    }
+
+    @Override
+    @Timed @ExceptionMetered
+    public long countThings() {
+    	return thingQuery.count();
     }
 
 }

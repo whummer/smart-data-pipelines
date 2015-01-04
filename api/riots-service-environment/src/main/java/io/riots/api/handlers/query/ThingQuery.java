@@ -28,4 +28,8 @@ public class ThingQuery {
     public List<ThingMongo> query(String query, Paged paged) {
         return thingRepository.findAll(new PageRequest(paged.getPage(), paged.getSize())).getContent();
     }
+
+	public long count() {
+		return thingRepository.count();
+	}
 }

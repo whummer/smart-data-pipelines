@@ -82,7 +82,7 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
             "^/connect/*.*$",
             "^/$",
 
-            /* Demo URLS */
+            /* Demo URLs */
             "^/demo/*.*$",
             "^/golfcars.*$",
 

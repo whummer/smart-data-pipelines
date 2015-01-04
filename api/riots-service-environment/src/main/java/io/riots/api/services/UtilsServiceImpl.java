@@ -10,7 +10,6 @@ import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,6 @@ import com.codahale.metrics.annotation.Timed;
  * @author whummer
  */
 @Service
-@Path("/utils")
 public class UtilsServiceImpl implements UtilsService {
 
 	@Autowired

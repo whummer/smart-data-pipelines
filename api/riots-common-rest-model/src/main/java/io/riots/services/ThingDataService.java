@@ -25,6 +25,7 @@ import com.wordnik.swagger.annotations.ApiResponses;
  * @author whummer
  */
 @Service
+@Path("/things")
 @Api(value = "ThingData", description = "Service for managing thing data.")
 public interface ThingDataService {
 
@@ -74,5 +75,11 @@ public interface ThingDataService {
 	public void postValue(@PathParam("thingID") String thingId,
     		@PathParam("propertyName") String propertyName,
     		PropertyValue propValue);
+
+	@GET
+	@Path("/data/count")
+	@Produces({ MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "Count data items", notes = "Get the number of thing data items stored in the database.")
+	long countDataItems();
 
 }

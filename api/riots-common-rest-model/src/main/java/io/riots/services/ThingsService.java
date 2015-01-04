@@ -28,6 +28,7 @@ import com.wordnik.swagger.annotations.ApiResponses;
  * @author whummer
  */
 @Service
+@Path("/things")
 @Api(value = "Things", description = "Service for managing things.")
 public interface ThingsService {
 
@@ -88,5 +89,11 @@ public interface ThingsService {
             @ApiResponse(code = 404, message = "No such Thing")
     })
     boolean delete(@PathParam("id") String thingId);
+
+	@GET
+	@Path("/count")
+	@Produces({ MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "Count Things", notes = "Get the number of Things stored in the database.")
+	long countThings();
 
 }
