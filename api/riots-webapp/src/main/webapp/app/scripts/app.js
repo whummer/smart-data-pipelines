@@ -23,7 +23,7 @@ if (!window.angular) {
 
 define(
     [
-        'routes', 'angular', 'angular-bootstrap',
+        'routes', 'angular', 'bootstrap', 'angular-bootstrap',
         'bootstrap-tagsinput',
         'angular-route', 'angular-ui-grid', 'infinite-scroll'
     ],

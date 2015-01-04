@@ -1,14 +1,12 @@
 package io.riots.api.services;
 
-import java.util.List;
-
 import io.riots.core.repositories.UserSettingsRepository;
 import io.riots.core.service.ServiceClientFactory;
 import io.riots.services.UserSettingsService;
 import io.riots.services.users.User;
 import io.riots.services.users.UserSettings;
 
-import javax.ws.rs.Path;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +21,6 @@ import com.codahale.metrics.annotation.Timed;
  * @author whummer
  */
 @Service
-@Path("/users")
 public class UserSettingsServiceImpl implements UserSettingsService {
 
 	private static final Logger LOG = Logger.getLogger(UserSettingsServiceImpl.class);

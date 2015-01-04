@@ -32,6 +32,7 @@ import com.wordnik.swagger.annotations.ApiResponses;
  * @author Waldemar Hummer
  */
 @Service
+@Path("/simulations")
 @Api(value = "Simulations", description = "API for simulations")
 public interface SimulationService {
 

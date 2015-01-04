@@ -9,16 +9,16 @@
 
             <table class="table table-striped">
                 <tr>
-                    <td>Device Types:</td>
-                    <td><span class="badge">{{stats.numDeviceTypes}}</span></td>
+                    <td>Thing Types:</td>
+                    <td><span class="badge">{{stats.numThingTypes}}</span></td>
                 </tr>
                 <tr>
-                    <td>Device Type Properties:</td>
-                    <td><span class="badge">{{stats.numDeviceTypeProperties}}</span></td>
+                    <td>Thing Type Properties:</td>
+                    <td><span class="badge">{{stats.numThingTypeProperties}}</span></td>
                 </tr>
                 <tr>
-                    <td>Device Instances:</td>
-                    <td><span class="badge">{{stats.numDevices}}</span></td>
+                    <td>Thing Instances:</td>
+                    <td><span class="badge">{{stats.numThings}}</span></td>
                 </tr>
                 <tr>
                     <td>Registered Users:</td>
@@ -47,10 +47,11 @@
             AppController($scope, $http, $compile);
 
             $scope.retrieveStats = function () {
+            	console.log($scope.statsAPI);
                 invokeGET($scope.http, $scope.statsAPI,
-                        function (data, status, headers, config) {
-                            $scope.stats = data.result;
-                        }
+                    function (data, status, headers, config) {
+                        $scope.stats = data.result;
+                    }
                 );
             };
 

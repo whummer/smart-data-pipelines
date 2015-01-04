@@ -6,7 +6,6 @@ import io.riots.services.UsersService;
 import io.riots.services.users.User;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Path;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +19,6 @@ import com.codahale.metrics.annotation.Timed;
  * @author whummer
  */
 @Service
-@Path("/users")
 public class UsersServiceImpl implements UsersService {
 
     @Autowired

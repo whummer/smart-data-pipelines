@@ -22,6 +22,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
  * @author whummer
  */
 @Service
+@Path("/utils")
 @Api(value = "Utils", description = "Service which provides various utility functions.")
 public interface UtilsService {
 

@@ -11,88 +11,117 @@ var requirejsAppConfig = {
             name: 'riots',
             location: appConfig['appRootPath'] + '/scripts/modules/'
         }, {
-            name: 'leaflet',
-            location: '/bower_components/leaflet/',
-            main: 'dist/leaflet-src'
+            name: 'app',
+            location: appConfig['appRootPath'] + '/scripts',
+            main: 'app',
+            excludeFromOptimize: true
         }, {
-            name: 'chartjs',
-            location: '/bower_components/chartjs/'
+            name: 'routes',
+            location: appConfig['appRootPath'] + '/scripts',
+            main: 'routes',
+            excludeFromOptimize: true
+        }, {
+            name: 'auth',
+            location: appConfig['appRootPath'] + '/scripts/modules',
+            main: 'auth.js',
+            excludeFromOptimize: true
+        },
+        
+        /* dependencies in /bower_components */
+        
+        {
+            name: 'angular-bootstrap',
+            location: appConfig['bowerRootPath'] + '/angular-bootstrap',
+            main: 'ui-bootstrap-tpls'
         }, {
             name: 'bootstrap',
-            location: '/bower_components/bootstrap',
+            location: appConfig['bowerRootPath'] + '/bootstrap',
             main: 'dist/js/bootstrap.min'
         }, {
+            name: 'leaflet',
+            location: appConfig['bowerRootPath'] + '/leaflet/',
+            main: 'dist/leaflet-src'
+        }, {
             name: 'raty',
-            location: '/bower_components/raty',
+            location: appConfig['bowerRootPath'] + '/raty',
             main: 'lib/jquery.raty'
         }, {
             name: 'hello',
-            location: '/bower_components/hello',
+            location: appConfig['bowerRootPath'] + '/hello',
             main: 'dist/hello.all'
         }, {
-            name: 'prettify',
-            location: '/bower_components/google-code-prettify',
-            main: 'src/prettify'
-        }, {
             name: 'sockjs',
-            location: '/bower_components/sockjs',
+            location: appConfig['bowerRootPath'] + '/sockjs',
             main: 'sockjs'
         }, {
             name: 'stomp-websocket',
-            location: '/bower_components/stomp-websocket',
+            location: appConfig['bowerRootPath'] + '/stomp-websocket',
             main: 'lib/stomp'
         }, {
-            name: 'angular-bootstrap',
-            location: '/bower_components/angular-bootstrap',
-            main: 'ui-bootstrap-tpls'
-        }, {
             name: 'angular-ui-grid',
-            location: '/bower_components/angular-ui-grid',
+            location: appConfig['bowerRootPath'] + '/angular-ui-grid',
             main: 'ui-grid'
         }, {
             name: 'bootstrap-tagsinput',
-            location: '/bower_components/bootstrap-tagsinput',
+            location: appConfig['bowerRootPath'] + '/bootstrap-tagsinput',
             main: 'dist/bootstrap-tagsinput'
-        },{
-            name: 'jsurl',
-            location: '/bower_components/jsurl',
-            main: 'url'
-        },{
+        }, {
             name: 'typeahead',
-            location: '/bower_components/typeahead.js',
+            location: appConfig['bowerRootPath'] + '/typeahead.js',
             main: 'dist/typeahead.bundle'
-        },{
+        }, {
+        	name: 'infinite-scroll',
+        	location: appConfig['bowerRootPath'] + '/ngInfiniteScroll',
+        	main: 'build/ng-infinite-scroll.min.js'
+        }
+
+        /* TODO old/unused/deprecated?
+        {
+            name: 'jsurl',
+            location: appConfig['bowerRootPath'] + '/jsurl',
+            main: 'url'
+        }, {
             name: 'bootstrap3-typeahead',
-            location: '/bower_components/bootstrap3-typeahead',
+            location: appConfig['bowerRootPath'] + '/bootstrap3-typeahead',
             main: 'bootstrap3-typeahead'
         }, {
-            name: 'auth',
-            location: '/app/scripts/modules',
-            main: 'auth.js'
+            name: 'prettify',
+            location: appConfig['bowerRootPath'] + '/google-code-prettify',
+            main: 'src/prettify'
         }, {
-        	name: "infinite-scroll",
-        	location: "/bower_components/ngInfiniteScroll",
-        	main: "build/ng-infinite-scroll.min.js"
+            name: 'chartjs',
+            location: appConfig['bowerRootPath'] + '/chartjs/'
         }
+        */
     ],
     paths: {
-        'app': appConfig['appRootPath'] + '/scripts/app',
-        'routes': appConfig['appRootPath'] + '/scripts/routes',
-        'angular': '/bower_components/angular/angular',
-        'bootstrap': '/bower_components/bootstrap/js',
-        'angular-route': '/bower_components/angular-route/angular-route',
-        'jquery': '/bower_components/jquery/dist/jquery',
-        'jquery-ui': '/bower_components/jquery-ui/jquery-ui'
+        'jquery': appConfig['bowerRootPath'] + '/jquery/dist/jquery',
+        'jquery-ui': appConfig['bowerRootPath'] + '/jquery-ui/jquery-ui',
+        'angular': appConfig['bowerRootPath'] + '/angular/angular',
+        'angular-route': appConfig['bowerRootPath'] + '/angular-route/angular-route'
     },
     shim: {
         'app': {
-            deps: ['angular', 'angular-route', 'jquery', 'bootstrap']
+            deps: ['angular', 'angular-route', 'jquery', 'jquery-ui', 'bootstrap']
         },
         'angular-route': {
             deps: ['angular']
         },
         'bootstrap': {
             deps: ['jquery', 'jquery-ui']
+        },
+        'jquery-ui': {
+        	exports: '$',
+            deps: ['jquery']
+        },
+        'infinite-scroll': {
+            deps: ['angular']
+        },
+        'angular-bootstrap': {
+            deps: ['angular']
+        },
+        'raty': {
+            deps: ['jquery']
         }
     }
 };

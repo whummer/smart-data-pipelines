@@ -55,13 +55,15 @@
 	    		return;
 	    	}
 			var theThingType = $scope.shared.selectedThingType;
-			$.each(theThingType.children, function(idx, el) {
-				if(el.id) {
-					$scope.childrenAll.push(el);
-				} else {
-					$scope.childrenAll.push(shared.thingType(el));
-				}
-			});
+			if(theThingType.children) {
+				$.each(theThingType.children, function(idx, el) {
+					if(el.id) {
+						$scope.childrenAll.push(el);
+					} else {
+						$scope.childrenAll.push(shared.thingType(el));
+					}
+				});
+			}
 		}
 
 		/* register event listeners */

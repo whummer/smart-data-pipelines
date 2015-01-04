@@ -1,22 +1,20 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-    <meta charset="utf-8">
+    <meta charset="utf-8" />
 
-	<link rel="stylesheet" href="/bower_components/jquery-ui/themes/smoothness/jquery-ui.css"/>
-    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap-theme.css">
-    <link rel="stylesheet" href="/bower_components/bootstrap-tagsinput/dist/bootstrap-tagsinput.css" />
-    <link rel="stylesheet" href="/bower_components/angular-ui-grid/ui-grid.css"/>
-	<!-- Use CDN version because packaging bootstrap CSS results in corrupted font files --> 
+    <link rel="stylesheet" href="scripts/ext/bootstrap-tagsinput/dist/bootstrap-tagsinput.css" />
+    <link rel="stylesheet" href="scripts/ext/angular-ui-grid/ui-grid.css"/>
+    <link rel="stylesheet" href="scripts/ext/leaflet/dist/leaflet.css"/>
+	<!-- Use CDN version because JAR packaging of bootstrap CSS files results in corrupted font files --> 
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-
-    <!-- last position to enforce overrides -->
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css"/>
+    <!-- last position for custom styles (to enforce overrides) -->
     <link rel="stylesheet" href="styles/app.css"/>
 
     <!-- scripts -->
-    <script type="text/javascript" src="/bower_components/requirejs/require.js"></script>
-    <script type="text/javascript" src="/bower_components/jquery/dist/jquery.js"></script>
-
+    <script type="text/javascript" src="scripts/ext/requirejs/require.js"></script>
     <script type="text/javascript" src="config.js"></script>
     <script type="text/javascript" src="config.requirejs.js"></script>
     <script type="text/javascript">
@@ -24,8 +22,10 @@
     </script>
 	<script type="text/javascript" src="/app/scripts/controllers/AppController.js"></script>
 
-    <!-- TODO: integrate scripts into requirejs loading mechanism -->
+    <script type="text/javascript" src="scripts/build/riots-all.js"></script>
     <script type="text/javascript" src="scripts/init.js"></script>
+
+    <!-- TODO: integrate scripts into requirejs loading mechanism -->
     <script type="text/javascript" src="scripts/modules/utils.js"></script>
     <script type="text/javascript" src="scripts/modules/auth.js"></script>
     <script type="text/javascript" src="scripts/modules/service-calls.js"></script>
@@ -112,7 +112,7 @@
 <div id="wrapperDiv" ng-controller="RootController" data-ng-init="hideSplashScreen()">
 
     <!-- include top menu -->
-    <ng-include src="'/app/views/menu.html'"></ng-include>
+    <ng-include src="'/app/views/menu.html'" ng-if="authInfo"></ng-include>
 
     <!-- Auth/Login Container -->
     <div ng-if="!authInfo" id="authContainer" style="display: none;">

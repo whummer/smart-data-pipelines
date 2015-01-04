@@ -3,6 +3,7 @@
  */
 var appConfig = {
 	appRootPath: "/app",
+	bowerRootPath: "/bower_components",
 	services: {
 		core: { url: "/api/v1" },
 		thingTypes: { url: "/api/v1/catalog/thing-types" },

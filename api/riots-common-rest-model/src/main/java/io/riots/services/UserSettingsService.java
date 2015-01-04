@@ -20,6 +20,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
  * @author whummer
  */
 @Service
+@Path("/users")
 @Api(value = "UserSettings", description = "Service for managing user-specific settings.")
 public interface UserSettingsService {
 

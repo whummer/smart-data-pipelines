@@ -4,36 +4,34 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Container class for various statistics about the system.
- * @author hummer
+ * @author whummer
  */
 public class Stats {
 
 	@JsonProperty
-	long numDeviceTypes;
+	long numThingTypes;
 	@JsonProperty
-	long numDeviceTypeProperties;
+	long numThingTypeProperties;
 	@JsonProperty
 	long numUsers;
 	@JsonProperty
 	long numUsersOnline;
 	@JsonProperty
-	long numDevices;
+	long numThings;
 	@JsonProperty
 	long numDataPoints;
-	@JsonProperty
-	long numDevProperties;
 
 	public long getNumDeviceTypes() {
-		return numDeviceTypes;
+		return numThingTypes;
 	}
-	public void setNumDeviceTypes(long numDeviceTypes) {
-		this.numDeviceTypes = numDeviceTypes;
+	public void setNumThingTypes(long num) {
+		this.numThingTypes = num;
 	}
-	public long getNumDeviceTypeProperties() {
-		return numDeviceTypeProperties;
+	public long getNumThingTypeProperties() {
+		return numThingTypeProperties;
 	}
-	public void setNumDeviceTypeProperties(long numDeviceTypeProperties) {
-		this.numDeviceTypeProperties = numDeviceTypeProperties;
+	public void setNumThingTypeProperties(long num) {
+		this.numThingTypeProperties = num;
 	}
 	public long getNumUsers() {
 		return numUsers;
@@ -47,23 +45,17 @@ public class Stats {
 	public void setNumUsersOnline(long numUsersOnline) {
 		this.numUsersOnline = numUsersOnline;
 	}
-	public long getNumDevices() {
-		return numDevices;
+	public long getNumThings() {
+		return numThings;
 	}
-	public void setNumDevices(long numDevices) {
-		this.numDevices = numDevices;
+	public void setNumThings(long num) {
+		this.numThings = num;
 	}
 	public long getNumDataPoints() {
 		return numDataPoints;
 	}
-	public void setNumDataPoints(long numDataPoints) {
-		this.numDataPoints = numDataPoints;
-	}
-	public long getNumDevProperties() {
-		return numDevProperties;
-	}
-	public void setNumDevProperties(long numDevProperties) {
-		this.numDevProperties = numDevProperties;
+	public void setNumDataPoints(long num) {
+		this.numDataPoints = num;
 	}
 	
 }

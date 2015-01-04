@@ -909,7 +909,7 @@ var requirejs, require, define, xpcUtil;
                             usingPathFallback = true;
                             stillLoading = true;
                         } else {
-                        	console.log("mod in error: ", modId, mod);
+                        	//console.log("mod in error: ", modId, mod);
                         	noLoads.push(modId);
                             removeScript(modId);
                         }
@@ -1019,13 +1019,9 @@ var requirejs, require, define, xpcUtil;
                 if (options.enabled || this.enabled) {
                     //Enable this module and dependencies.
                     //Will call this.check()
-                    //console.log("Module.prototype.enable before", depMaps); // whu
                     this.enable();
-                    //console.log("Module.prototype.enable after", depMaps); // whu
                 } else {
-                    //console.log("Module.prototype.check before", depMaps); // whu
                     this.check();
-                   	// console.log("Module.prototype.check after", depMaps); // whu
                 }
             },
 
@@ -1059,8 +1055,7 @@ var requirejs, require, define, xpcUtil;
                     }));
                 } else {
                     //Regular dependency.
-	                //console.log("this is a map.prefix:", map.prefix, this.map.id);
-                    return map.prefix ? this.callPlugin() : this.load(); // TODO whu uncomment!!
+	                return map.prefix ? this.callPlugin() : this.load();
                 }
             },
 
@@ -1079,8 +1074,7 @@ var requirejs, require, define, xpcUtil;
              * define it.
              */
             check: function () {
-            	//console.log("check status", this.map.id, "enabled", this.enabled, "enabling", this.enabling, "inited", this.inited, this.defining, this.fetched); // whu TODO
-                if (!this.enabled || this.enabling) {
+            	if (!this.enabled || this.enabling) {
                     return;
                 }
 
@@ -1114,8 +1108,7 @@ var requirejs, require, define, xpcUtil;
                                 try {
                                     exports = context.execCb(id, factory, depExports, exports);
                                 } catch (e) {
-                                	console.log("error context.execCb", e); //whu
-                                    err = e;
+                                	err = e;
                                 }
                             } else {
                                 exports = context.execCb(id, factory, depExports, exports);
@@ -1198,15 +1191,11 @@ var requirejs, require, define, xpcUtil;
                     //If current map is not normalized, wait for that
                     //normalized name to load instead of continuing.
                     if (this.map.unnormalized) {
-                    	console.log("this.map.unnormalized", id, !!plugin.normalize); // whu TODO
-                        //Normalize the ID if the plugin allows it.
+                    	//Normalize the ID if the plugin allows it.
                         if (plugin.normalize) {
                             name = plugin.normalize(name, function (name) {
                                 return normalize(name, parentName, true);
                             }) || '';
-  		                  	console.log("this.map.unnormalized name:", name, "-", this.map.name); // whu TODO
-                        } else {
-                        	// whu remove TODO
                         }
 
                         //prefix and name should already be normalized, no need
@@ -1222,8 +1211,7 @@ var requirejs, require, define, xpcUtil;
                             }));
 
                         normalizedMod = getOwn(registry, normalizedMap.id);
-  		               	console.log("this.map.unnormalized normalizedMod:", normalizedMod); // whu TODO
-                        if (normalizedMod) {
+  		               	if (normalizedMod) {
                             //Mark this as a dependency for this plugin, so it
                             //can be traced for cycles.
                             this.depMaps.push(normalizedMap);
@@ -1332,29 +1320,13 @@ var requirejs, require, define, xpcUtil;
                     plugin.load(map.name, localRequire, load, config);
                 }));
 
-				console.log("enabling pluginMap", id, pluginMap, this); // TODO whu
-                context.enable(pluginMap, this);
+				context.enable(pluginMap, this);
                 this.pluginMaps[pluginMap.id] = pluginMap;
                 
-          		// TODO whu remove start!!!
-          		if(!defined[id] && id.indexOf("env!env/") < 0) {
-                	console.log("this.map.unnormalized cleanRegistry:", id); // whu TODO
-	                //cleanRegistry(id);
-	                //this.defined = true;
-	                //console.log("--------->", id, id.indexOf("env!env/"));
-	                //defined[id] = {};
-
-	                //this.inited = true;
-	                //this.defining = false;
-	                //this.check();
-                }
-                //name = this.map.name;
-                // TODO whu remove end!!!
             },
 
             enable: function () {
-            	console.log("enabledRegistry set: ", this.map.id, this);
-                enabledRegistry[this.map.id] = this;
+            	enabledRegistry[this.map.id] = this;
                 this.enabled = true;
 
                 //Set flag mentioning that the module is enabling,
@@ -1444,22 +1416,15 @@ var requirejs, require, define, xpcUtil;
         function callGetModule(args) {
             //Skip modules already defined.
 
-			//console.log("moduleName1", args[0], args[1], args[2]); // TODO whu
-
             if (!hasProp(defined, args[0])) {
             	try {
             		var modMap = makeModuleMap(args[0], null, true);
             		var modObj = getModule(modMap);
 					modInit = modObj.init(args[1], args[2]);
-					if($.inArray("./has!host-browser?./_base/browser", args[1]) >= 0) { // TODO whu
-	            		console.log("callGetModule before", args[0], args[1], modMap, modObj, modObj.init);
-	            	}
             	} catch(e) {
             		console.log("!!!!!!", e);
             	}
-            	if($.inArray("./has!host-browser?./_base/browser", args[1]) >= 0) { // TODO whu
-            		console.log("callGetModule after", args[0]);
-            	}
+
             } else {
             	console.log("Already got this defined: ", args[0]);
             }
@@ -1654,23 +1619,6 @@ var requirejs, require, define, xpcUtil;
 
                 function localRequire(deps, callback, errback) {
                     var id, map, requireMod;
-
-					// TODO whu
-					if(deps.length !== 0)
-						console.log(deps);
-					var problematic = [
-						"dojo/has!dojo/request",
-						"./has!host-browser?./_base/browser",
-						"./selector/_loader!default",
-						"./request/default!",
-						"dojo/request"];
-					$.each(problematic, function(idx,el) {
-						if($.inArray(el, deps) >= 0) {
-							console.log("! -->" + deps);
-							//callback(null);
-							//return;
-						}
-					});
 
                     if (options.enableBuildCallback && callback && isFunction(callback)) {
                         callback.__requireJsBuild = true;
@@ -2070,8 +2018,6 @@ var requirejs, require, define, xpcUtil;
      * Export require as a global, but only if it does not already exist.
      */
     if (!require) {
-    	//console.log("---> require:", req);
-    	// TODO whu
     	require = req;
     }
 
@@ -2351,29 +2297,6 @@ var requirejs, require, define, xpcUtil;
             }
         }
 	
-		// TODO whu 
-		if(deps) {
-			if(deps.length !== 0)
-				console.log(deps);
-			$.each(deps, function(idx,el) {
-				var problematic = [
-					"dojo/has!dojo/request",
-					"./has!host-browser?./_base/browser",
-					"./selector/_loader!default",
-					"./request/default!",
-					"dojo/request",
-					"dojo/main",
-					"dojo/query"];
-				$.each(problematic, function(idx,el) {
-					if($.inArray(el, deps) >= 0) {
-						console.log("!? -->" + deps);
-						//callback(null);
-						//return;
-					}
-				});
-			});
-		}
-
         //Always save off evaluating the def call until the script onload handler.
         //This allows multiple modules to be in a file without prematurely
         //tracing dependencies, and allows for anonymous module support,
@@ -25430,7 +25353,6 @@ define('requirePatch', [ 'env!env/file', 'pragma', 'parse', 'lang', 'logger', 'c
                     }
 
 					var applied = oldEnable.apply(context, arguments);
-					console.log("context.enable", arguments[0].originalName, arguments, applied); // TODO whu
 					return applied;
                 };
 
@@ -25548,7 +25470,6 @@ define('requirePatch', [ 'env!env/file', 'pragma', 'parse', 'lang', 'logger', 'c
                             }
                         }).then(function () {
                             if (contents) {
-                            	//console.log("contents", contents); // TODO whu
                             	eval(contents);
                             }
 
@@ -25606,34 +25527,19 @@ define('requirePatch', [ 'env!env/file', 'pragma', 'parse', 'lang', 'logger', 'c
 
                 moduleProto.init = function (depMaps) {
                     if (context.needFullExec[this.map.id]) {
-                		//console.log("!context.needFullExec", this.map.id, context.needFullExec[this.map.id].originalName, context.needFullExec[this.map.id], depMaps);
-                        lang.each(depMaps, lang.bind(this, function (depMap) {
+                		lang.each(depMaps, lang.bind(this, function (depMap) {
                             if (typeof depMap === 'string') {
                                 depMap = context.makeModuleMap(depMap,
                                                (this.map.isDefine ? this.map : this.map.parentMap));
                             }
 
-                			//console.log("!context.needFullExec", this.map.id, context.needFullExec[this.map.id].originalName, context.needFullExec[this.map.id], depMap, context.fullExec[depMap.id]);
                             if (!context.fullExec[depMap.id]) {
-	                			//console.log("!context.needFullExec before", this.map.id);
-                                context.require.undef(depMap.id);
-	                			//console.log("!context.needFullExec after", this.map.id);
+	                			context.require.undef(depMap.id);
                             }
                         }));
                     }
 
-                    //console.log("context.needFullExec getresult", oldInit, arguments);
-                    console.log("context.needFullExec getresult", arguments);
                     var result = oldInit.apply(this, arguments);
-                    /*
-                     // TODO whu
-                    var result = oldInit.apply(this, [
-                    	arguments[0], arguments[1], arguments[2] ? arguments[2] : function(err) {
-                    		//console.log("context.needFullExec err", err);
-                    	}, arguments[3]
-                    ]); // TODO whu
-                    */
-                    console.log("context.needFullExec result", result);
                     return result;
                 };
 
@@ -26561,9 +26467,6 @@ define('build', function (require) {
                     }
                 }
 
-                //console.log('PLUGIN COLLECTOR: ' + JSON.stringify(pluginCollector, null, "  "));
-
-
                 //All module layers are done, write out the build.txt file.
                 file.saveUtf8File(config.dir + "build.txt", buildFileContents);
             }
@@ -26919,7 +26822,6 @@ define('build', function (require) {
             buildBaseConfig = makeBuildBaseConfig();
 
         //Make sure all paths are relative to current directory.
-        console.log("file.absPath", file); // TODO whu
         absFilePath = file.absPath('.');
         build.makeAbsConfig(cfg, absFilePath);
         build.makeAbsConfig(buildBaseConfig, absFilePath);
@@ -27336,10 +27238,6 @@ define('build', function (require) {
 
         //Reset some state set up in requirePatch.js, and clean up require's
         //current context.
-        //console.log(require._buildReset);
-        //console.log(require == window.require);
-        //if(require._buildReset) // TODO  whu
-        
         oldContext = require._buildReset();
 
         //Grab the reset layer and context after the reset, but keep the
@@ -27483,8 +27381,7 @@ define('build', function (require) {
                 //Look for plugins that did not call load()
 
                 if (idParts.length > 1) {
-                	console.log("failedPluginMap", failedPluginMap, pluginId, id); // TODO whu
-                    if (falseProp(failedPluginMap, pluginId)) {
+                	if (falseProp(failedPluginMap, pluginId)) {
                         failedPluginIds.push(pluginId);
                     }
                     pluginResources = failedPluginMap[pluginId];
@@ -27949,8 +27846,7 @@ define('build', function (require) {
                 }
 
                 function done(result) {
-                	console.log("we are done here"); // TODO whu
-                    //And clean up, in case something else triggers
+                	//And clean up, in case something else triggers
                     //a build in another pathway.
                     if (requirejs._buildReset) {
                         requirejs._buildReset();
@@ -27974,11 +27870,8 @@ define('build', function (require) {
                 };
 
                 var r1 = build(config);
-                console.log("r1:", r1); // TODO whu
                 var r2 = r1.then(done, done);
-                console.log("r2:", r2); // TODO whu
                 var r3 = r2.then(callback, errback);
-                console.log("r3:", r3); // TODO whu
             };
 
             requirejs({

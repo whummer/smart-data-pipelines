@@ -42,14 +42,14 @@ app.controller('SimThingPropsController', [
 			}
 			// recurse into child thing types
 			if(thingType.children) {
-				console.log("thingType.children", thingType.children);
+				//console.log("thingType.children", thingType.children);
 				$.each(thingType.children, function(idx,el) {
-					console.log("recurse sub type", el);
+					//console.log("recurse sub type", el);
 					if(el.id) {
 						loadThingProperties(thing, el);
 					} else {
 						shared.thingType(el, function(childType) {
-							console.log("childType", childType);
+							//console.log("childType", childType);
 							loadThingProperties(thing, childType);
 						});
 					}
@@ -62,13 +62,13 @@ app.controller('SimThingPropsController', [
 				return;
 			}
 			if(thing[THING_TYPE].id) {
-				console.log("loadThingProperties 1", thing);
+				//console.log("loadThingProperties 1", thing);
 				loadThingProperties(thing, thing[THING_TYPE]);
 			} else {
-				console.log("loadThingProperties 2", thing);
+				//console.log("loadThingProperties 2", thing);
 				thing[THING_TYPE] = shared.thingType(thing[THING_TYPE], 
 					function(thingType) {
-						console.log("loadThingProperties 2 --> ", thing, thingType);
+						//console.log("loadThingProperties 2 --> ", thing, thingType);
 						loadThingProperties(thing, thingType);
 					}
 				);

@@ -19,7 +19,6 @@ import java.util.List;
 
 import javax.jms.JMSException;
 import javax.jms.TextMessage;
-import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 
 import org.apache.cxf.jaxrs.ext.MessageContext;
@@ -39,7 +38,6 @@ import com.wordnik.swagger.annotations.Api;
  * @author whummer
  */
 @Service
-@Path("/things")
 @Api(value = "Thing Data", description = "Post and retrieve thing data.")
 public class ThingDataServiceImpl implements ThingDataService {
 
@@ -118,6 +116,12 @@ public class ThingDataServiceImpl implements ThingDataService {
     	propValue.setPropertyName(propertyName);
     	propValue.setThingId(thingId);
     	postValue(propValue);
+    }
+
+    @Override
+    @Timed @ExceptionMetered
+    public long countDataItems() {
+    	return propValueRepo.count();
     }
 
     /* HELPER METHODS */

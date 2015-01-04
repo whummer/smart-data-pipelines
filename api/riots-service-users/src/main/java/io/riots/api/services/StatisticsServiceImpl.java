@@ -1,11 +1,14 @@
 package io.riots.api.services;
 
 import io.riots.core.service.ServiceClientFactory;
+import io.riots.services.CatalogService;
+import io.riots.services.GatewayStatsService;
+import io.riots.services.GatewayStatsService.GatewayStats;
 import io.riots.services.StatisticsService;
+import io.riots.services.ThingDataService;
+import io.riots.services.ThingsService;
 import io.riots.services.UsersService;
 import io.riots.services.users.Stats;
-
-import javax.ws.rs.Path;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,7 +20,6 @@ import com.codahale.metrics.annotation.Timed;
  * @author whummer
  */
 @Service
-@Path("/stats")
 public class StatisticsServiceImpl implements StatisticsService {
 
 	@Autowired
@@ -28,13 +30,18 @@ public class StatisticsServiceImpl implements StatisticsService {
     public Stats retrieveStatistics() {
 		Stats stats = new Stats();
 		UsersService users = serviceClientFactory.getUsersServiceClient();
+		GatewayStatsService gateway = serviceClientFactory.getGatewayStatsServiceClient();
+		CatalogService catalog = serviceClientFactory.getCatalogServiceClient();
+		ThingsService things = serviceClientFactory.getThingsServiceClient();
+		ThingDataService thingData = serviceClientFactory.getThingDataServiceClient();
 		stats.setNumUsers(users.getNumUsers());
-		// TODO
-//		stats.numUsersOnline = AuthFilter.getOnlineUsersCount();
-//		stats.numDeviceTypes = devTypeRepo.count();
-//		stats.numDeviceTypeProperties = devPropsRepo.count();
-//		stats.numDevices = devRepo.count();
-//		stats.numDataPoints = 0; // TODO
+		GatewayStats gwstats = gateway.retrieveStatistics();
+		stats.setNumUsersOnline(gwstats.getUsers().getOnline());
+		stats.setNumThingTypes(catalog.countThingTypes());
+		System.out.println("num things: " + things.countThings());
+		stats.setNumThings(things.countThings());
+		System.out.println("num data points: " + thingData.countDataItems());
+		stats.setNumDataPoints(thingData.countDataItems());
 		return stats;
 	}
 

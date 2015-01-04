@@ -20,6 +20,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
  * @author whummer
  */
 @Service
+@Path("/users")
 @Api(value = "Users", description = "Service for managing users in the systems.")
 public interface UsersService {
 

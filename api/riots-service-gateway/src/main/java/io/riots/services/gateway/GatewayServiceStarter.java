@@ -35,8 +35,19 @@ public class GatewayServiceStarter {
 	    return filterRegBean;
 	}
 
+	/**
+	 * URL rewriting filter. See file urlrewrite.xml for configuration.
+	 * @return
+	 */
 	@Bean
-    public AuthFilterZuul filter() {
+	public FilterRegistrationBean statsFilter(){
+	    FilterRegistrationBean filterRegBean = new FilterRegistrationBean();
+	    filterRegBean.setFilter(new GatewayStatsFilter("/stats(/)?"));
+	    return filterRegBean;
+	}
+
+	@Bean
+    public AuthFilterZuul authFilter() {
         return new AuthFilterZuul();
     }
 

@@ -1,7 +1,9 @@
 package io.riots.core.service;
 
 import io.riots.services.CatalogService;
+import io.riots.services.GatewayStatsService;
 import io.riots.services.SimulationService;
+import io.riots.services.ThingDataService;
 import io.riots.services.ThingsService;
 import io.riots.services.UsersService;
 
@@ -31,21 +33,29 @@ public class ServiceClientFactory {
 	@Autowired
 	DiscoveryClient discoveryClient;
 
+	private static final String DEFAULT_SERVICE_ENDPOINT = "http://%s:%s/api/v1/";
+
 	private static final String SERVICE_USERS_EUREKA_NAME = "users-service";
-	private static final String SERVICE_USERS_ENDPOINT = "http://%s:%s/api/v1/users";
+	private static final String SERVICE_USERS_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
 	private static final String SERVICE_CATALOG_EUREKA_NAME = "catalog-service";
-	private static final String SERVICE_CATALOG_ENDPOINT = "http://%s:%s/api/v1/catalog";
+	private static final String SERVICE_CATALOG_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
 	private static final String SERVICE_THINGS_EUREKA_NAME = "environment-service";
-	private static final String SERVICE_THINGS_ENDPOINT = "http://%s:%s/api/v1/things";
+	private static final String SERVICE_THINGS_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
+	private static final String SERVICE_THINGDATA_EUREKA_NAME = "environment-service";
+	private static final String SERVICE_THINGDATA_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
 	private static final String SERVICE_SIMULATION_EUREKA_NAME = "simulation-service";
-	private static final String SERVICE_SIMULATION_ENDPOINT = "http://%s:%s/api/v1/simulations";
+	private static final String SERVICE_SIMULATION_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
+	private static final String SERVICE_GWSTATS_EUREKA_NAME = "gateway-service";
+	private static final String SERVICE_GWSTATS_ENDPOINT = "http://%s:%s/";
 	private static final Map<String,String> serviceEndpoints = new HashMap<String,String>();
 
 	static {
 		serviceEndpoints.put(SERVICE_USERS_EUREKA_NAME, SERVICE_USERS_ENDPOINT);
 		serviceEndpoints.put(SERVICE_THINGS_EUREKA_NAME, SERVICE_THINGS_ENDPOINT);
+		serviceEndpoints.put(SERVICE_THINGDATA_EUREKA_NAME, SERVICE_THINGDATA_ENDPOINT);
 		serviceEndpoints.put(SERVICE_CATALOG_EUREKA_NAME, SERVICE_CATALOG_ENDPOINT);
 		serviceEndpoints.put(SERVICE_SIMULATION_EUREKA_NAME, SERVICE_SIMULATION_ENDPOINT);
+		serviceEndpoints.put(SERVICE_GWSTATS_EUREKA_NAME, SERVICE_GWSTATS_ENDPOINT);
 	}
 
 	public UsersService getUsersServiceClient() {
@@ -54,11 +64,17 @@ public class ServiceClientFactory {
 	public ThingsService getThingsServiceClient() {
 		return getServiceInstanceForName(SERVICE_THINGS_EUREKA_NAME, ThingsService.class);
 	}
+	public ThingDataService getThingDataServiceClient() {
+		return getServiceInstanceForName(SERVICE_THINGDATA_EUREKA_NAME, ThingDataService.class);
+	}
 	public SimulationService getSimulationsServiceClient() {
 		return getServiceInstanceForName(SERVICE_SIMULATION_EUREKA_NAME, SimulationService.class);
 	}
 	public CatalogService getCatalogServiceClient() {
 		return getServiceInstanceForName(SERVICE_CATALOG_EUREKA_NAME, CatalogService.class);
+	}
+	public GatewayStatsService getGatewayStatsServiceClient() {
+		return getServiceInstanceForName(SERVICE_GWSTATS_EUREKA_NAME, GatewayStatsService.class);
 	}
 
 	/* PRIVATE HELPER METHODS */
@@ -69,7 +85,7 @@ public class ServiceClientFactory {
 		return getServiceInstanceForURL(addr, clazz);
 	}
 	private <T> T getServiceInstanceForURL(String endpointURL, Class<T> clazz) {
-		// TODO maybe cache rest clients for a limited amount of time
+		// TODO maybe cache REST clients for a limited amount of time
 
 		List<Object> providers = new ArrayList<>();
 		providers.add(new JacksonJaxbJsonProvider());

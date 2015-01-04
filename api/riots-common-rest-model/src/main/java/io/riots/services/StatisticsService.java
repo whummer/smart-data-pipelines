@@ -17,6 +17,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
  * @author whummer
  */
 @Service
+@Path("/stats")
 @Api(value = "Statistics", description = "Retrieve statistics about the system.")
 public interface StatisticsService {
 
@@ -25,4 +26,6 @@ public interface StatisticsService {
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "Retrieve statistics", notes = "Retrieve statistics", response = Stats.class)
 	Stats retrieveStatistics();
+	
+	
 }

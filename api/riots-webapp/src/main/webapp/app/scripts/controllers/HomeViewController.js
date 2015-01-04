@@ -18,7 +18,6 @@ define(['app'], function(app){
 					JSON.stringify($scope.userConfig),
 					function(data, status, headers, config) {
 						$scope.userConfig = data.result;
-						console.log($scope.userConfig);
 					}
 				);
 			};

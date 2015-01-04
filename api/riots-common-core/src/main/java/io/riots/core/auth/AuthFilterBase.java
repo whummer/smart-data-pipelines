@@ -82,14 +82,15 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
             "^/connect/*.*$",
             "^/$",
 
-            /* Demo URLS */
+            /* Demo URLs */
             "^/demo/*.*$",
             "^/golfcars.*$",
 
             "^(/app)?/scripts/app\\.js$",
+            "^(/app)?/scripts/build/.*$",
+            "^(/app)?/scripts/ext/.*$",
             "^(/app)?/scripts/controllers/.*\\.js$",
             "^(/app)?/scripts/modules/.*\\.js$",
-            "^(/app)?/scripts/directives/.*\\.js$",
             "^(/app)?/scripts/routes\\.js$",
             "^(/app)?/scripts/init\\.js$"
     );
