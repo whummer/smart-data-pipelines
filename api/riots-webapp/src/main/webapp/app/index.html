@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-    <meta charset="utf-8">
+    <meta charset="utf-8" />
 
     <link rel="stylesheet" href="scripts/ext/bootstrap-tagsinput/dist/bootstrap-tagsinput.css" />
     <link rel="stylesheet" href="scripts/ext/angular-ui-grid/ui-grid.css"/>
@@ -112,7 +112,7 @@
 <div id="wrapperDiv" ng-controller="RootController" data-ng-init="hideSplashScreen()">
 
     <!-- include top menu -->
-    <ng-include src="'/app/views/menu.html'"></ng-include>
+    <ng-include src="'/app/views/menu.html'" ng-if="authInfo"></ng-include>
 
     <!-- Auth/Login Container -->
     <div ng-if="!authInfo" id="authContainer" style="display: none;">
