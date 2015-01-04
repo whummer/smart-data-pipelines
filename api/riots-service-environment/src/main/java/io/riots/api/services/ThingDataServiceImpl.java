@@ -15,6 +15,7 @@ import io.riots.services.scenario.PropertyValue;
 import io.riots.services.scenario.Thing;
 
 import java.net.URI;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.jms.JMSException;
@@ -124,6 +125,17 @@ public class ThingDataServiceImpl implements ThingDataService {
     	return propValueRepo.count();
     }
 
+    @Override
+    @Timed @ExceptionMetered
+    public long countDataItemsForUser(String userId) {
+    	List<Thing> things = serviceClientFactory.getThingsServiceClient().retrieveThingsForUser(userId);
+    	List<String> thingIds = new LinkedList<String>();
+    	for(Thing t : things) {
+    		thingIds.add(t.getId());
+    	}
+    	return propValueRepo.countByThingIdIn(thingIds);
+    }
+    
     /* HELPER METHODS */
 
     private Property searchPropForThing(String thingId, String propertyName) {

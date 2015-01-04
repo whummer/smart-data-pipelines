@@ -32,4 +32,13 @@ public class ThingQuery {
 	public long count() {
 		return thingRepository.count();
 	}
+
+	public long countByCreatorId(String userId) {
+		return thingRepository.countByCreatorId(userId);
+	}
+
+	public List<Thing> queryForUser(String userId) {
+		return thingRepository.findByCreatorId(userId);
+	}
+
 }

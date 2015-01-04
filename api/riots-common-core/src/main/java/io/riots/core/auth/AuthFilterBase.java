@@ -113,7 +113,8 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
         userRoleMappings.add(new UserRoleMapping(".*", Role.ROLE_USER));
     }
 
-    protected static final long EXPIRY_PERIOD_MS = 1000 * 60 * 20; /* 20 minutes token timeout */
+    protected static final long EXPIRY_TIMEOUT_MS = 1000 * 60 * 30; /* 30 minutes token timeout */
+    protected static final long INACTIVITY_TIMEOUT_MS = 1000 * 60 * 10; /* 10 minutes inactivity timeout */
     private static final Logger LOG = Logger.getLogger(AuthFilterBase.class);
     private static final Map<String, AuthInfo> tokens = new ConcurrentHashMap<String, AuthInfo>();
 
@@ -253,6 +254,7 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
                         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                         return false;
                 	}
+		            newInfo.expiry = new Date(new Date().getTime() + AuthFilterBase.EXPIRY_TIMEOUT_MS);
 				} catch (Exception e) {
                     LOG.warn("Unable to process auth headers (" + network + "): " + e);
                     response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -275,6 +277,7 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
 
 			/* authentication done, now perform authorization */
             AuthInfo authInfo = tokens.get(token);
+            authInfo.setActiveNow();
 
 			/* append additional infos to request */
             setAuthInfoHeaders(request, authInfo);
@@ -334,8 +337,11 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
     }
 
     private static void cleanupTokens() {
+    	cleanupTokens(false);
+    }
+    private static void cleanupTokens(boolean force) {
         // only do this from time to time (TODO: better approach?)
-        if ((System.currentTimeMillis() / 1000) % 10 != 0) {
+        if (!force && Math.random() < 0.95) {
             return;
         }
         synchronized (tokens) {
@@ -368,7 +374,14 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
     }
 
     public static long getOnlineUsersCount() {
-        return tokens.size();
+    	/* TODO maybe cache this number for performance reasons */
+    	long count = 0;
+    	for(AuthInfo i : tokens.values()) {
+    		if(i.isCurrentlyActive()) {
+    			count ++;
+    		}
+    	}
+        return count;
     }
 
     public void init(FilterConfig filterConfig) {

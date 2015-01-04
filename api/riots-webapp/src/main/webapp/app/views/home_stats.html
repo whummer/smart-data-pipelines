@@ -9,18 +9,6 @@
 
             <table class="table table-striped">
                 <tr>
-                    <td>Thing Types:</td>
-                    <td><span class="badge">{{stats.numThingTypes}}</span></td>
-                </tr>
-                <tr>
-                    <td>Thing Type Properties:</td>
-                    <td><span class="badge">{{stats.numThingTypeProperties}}</span></td>
-                </tr>
-                <tr>
-                    <td>Thing Instances:</td>
-                    <td><span class="badge">{{stats.numThings}}</span></td>
-                </tr>
-                <tr>
                     <td>Registered Users:</td>
                     <td><span class="badge">{{stats.numUsers}}</span></td>
                 </tr>
@@ -28,9 +16,32 @@
                     <td>Online Users:</td>
                     <td><span class="badge">{{stats.numUsersOnline}}</span></td>
                 </tr>
+           	</table>
+            <table class="table table-striped">
                 <tr>
-                    <td>Processed data points:</td>
-                    <td><span class="badge">{{stats.numDataPoints}}</span></td>
+                    <th></th>
+                    <th>Total</th>
+                    <th>User</th>
+                </tr>
+                <tr>
+                    <td>Thing Types:</td>
+                    <td><span class="badge">{{stats.total.numThingTypes}}</span></td>
+                    <td><span class="badge">{{stats.forUser.numThingTypes}}</span></td>
+                </tr>
+                <!--<tr>
+                    <td>Thing Type Properties:</td>
+                    <td><span class="badge">{{stats.total.numThingTypeProperties}}</span></td>
+                    <td><span class="badge">{{stats.forUser.numThingTypeProperties}}</span></td>
+                </tr>-->
+                <tr>
+                    <td>Thing Instances:</td>
+                    <td><span class="badge">{{stats.total.numThings}}</span></td>
+                    <td><span class="badge">{{stats.forUser.numThings}}</span></td>
+                </tr>
+                <tr>
+                    <td>Processed Data Points:</td>
+                    <td><span class="badge">{{stats.total.numDataPoints}}</span></td>
+                    <td><span class="badge">{{stats.forUser.numDataPoints}}</span></td>
                 </tr>
             </table>
         </div>

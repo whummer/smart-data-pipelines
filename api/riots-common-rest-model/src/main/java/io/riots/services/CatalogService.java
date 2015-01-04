@@ -78,6 +78,12 @@ public interface CatalogService {
 	@ApiOperation(value = "Count ThingTypes", notes = "Get the number of ThingTypes stored in the catalog.")
 	long countThingTypes();
 
+	@GET
+	@Path("/thing-types/by/user/{userId}/count")
+	@Produces({ MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "Count ThingTypes of user", notes = "Get the number of ThingTypes belonging to a given user.")
+	long countThingTypesForUser(@PathParam("userId") String userId);
+
 	/* MANUFACTURERS */
 
 	@GET

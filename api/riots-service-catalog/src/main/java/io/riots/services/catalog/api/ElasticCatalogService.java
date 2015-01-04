@@ -163,6 +163,12 @@ public class ElasticCatalogService implements CatalogService {
     	return thingTypeRepository.count();
     }
 
+    @Override
+    @Timed @ExceptionMetered
+    public long countThingTypesForUser(String userId) {
+    	return thingTypeRepository.countByCreatorId(userId);
+    }
+
     /* MANUFACTURERS */
 
     @Override

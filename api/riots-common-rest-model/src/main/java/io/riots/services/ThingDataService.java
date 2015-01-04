@@ -79,7 +79,17 @@ public interface ThingDataService {
 	@GET
 	@Path("/data/count")
 	@Produces({ MediaType.APPLICATION_JSON })
-	@ApiOperation(value = "Count data items", notes = "Get the number of thing data items stored in the database.")
+	@ApiOperation(value = "Count data items", 
+		notes = "Get the number of thing data items stored in the database.")
 	long countDataItems();
+
+	@GET
+	@Path("/data/by/user/{userId}/count")
+	@Produces({ MediaType.APPLICATION_JSON })
+	@ApiOperation(
+		value = "Count data items", 
+		notes = "Get the number of thing data items for a given user id."
+	)
+	long countDataItemsForUser(@PathParam("userId") String userId);
 
 }
