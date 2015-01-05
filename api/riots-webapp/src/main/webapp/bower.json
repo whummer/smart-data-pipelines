@@ -28,6 +28,7 @@
     "hello": "1.2.2",
     "raty": "2.7.0",
     "typeahead.js": "0.10.5",
-    "ngInfiniteScroll" : "#"
+    "ngInfiniteScroll": "#",
+    "angular-hotkeys": "chieffancypants/angular-hotkeys#~1.4.5"
   }
 }
