@@ -4,6 +4,7 @@
 	    	<b class="ng-binding">List of Thing Types:</b>
 			<select size="10" multiple ng-multiple="true" ng-model="thingTypesSelected" 
 				ng-options="c.name for c in thingTypesAll" style="width: 100%;" class="form-control"></select>
+		    <br class="clear"/>
 	    </div>
 		<div style="float: left; width: 9%; text-align: center;">
 			<p><br/><br/><br/>
@@ -16,11 +17,11 @@
 			<b class="ng-binding">Child Thing Types:</b>
 			<select size="10" multiple ng-multiple="true" ng-model="childrenSelected" 
 				ng-options="c.name for c in childrenAll" style="width: 100%;" class="form-control"></select>
-			<div style="text-align: right">
-				<button ng-click="addChildren()" class="btn btn-default btn-sm btn-primary" style="width: 80px;">Save</button>
-			</div>
+		    <br class="clear"/>
 	    </div>
+   <br class="clear"/>
 	</div>
+   <br class="clear"/>
 </section>
 
 <script type="text/javascript">

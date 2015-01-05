@@ -90,6 +90,7 @@ public interface ThingDataService {
 		value = "Count data items", 
 		notes = "Get the number of thing data items for a given user id."
 	)
-	long countDataItemsForUser(@PathParam("userId") String userId);
+	long countDataItemsForUser(@PathParam("userId") String id, 
+			@QueryParam("from") long from, @QueryParam("to") long to);
 
 }

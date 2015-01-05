@@ -34,7 +34,7 @@
 
                     <div class="col-sm-9">
                         <select id="selBaseType" class="form-control input-sm"
-                                ng-model="selectedProperty.baseType">
+                                ng-model="selectedProperty[PROPERTY_TYPE]">
                             <option value="BOOLEAN">BOOLEAN</option>
                             <option value="STRING">STRING</option>
                             <option value="DOUBLE">DOUBLE</option>
@@ -44,151 +44,39 @@
                     </div>
                 </div>
 
-                <!-- semantic type of property -->
-                <!--<div class="form-group">
-                    <label for="selSemanticType" class="col-sm-3 control-label">Semantic Type</label>
+                <!-- parent property -->
+                <div class="form-group">
+                    <label for="selParentProp" class="col-sm-3 control-label">Parent Property</label>
 
                     <div class="col-sm-9">
-                        <select id="selSemanticType" class="form-control input-sm"
-                                ng-options="opt.name for opt in shared.semanticPropertyTypes track by opt.id"
-                                ng-model="selectedProperty.semanticType">
+                        <select id="selParentProp" class="form-control input-sm"
+                                ng-options="opt.name for opt in parentProps track by opt.id"
+                                ng-model="selectedProperty.parentProp">
                         </select>
                     </div>
-                </div>-->
-
-
-                <!--
-                                TODO do we really need this?
-                                <div class="form-group">
-                                    <label for="selParentProp" class="col-sm-3 control-label">Parent Property</label>
-
-                                    <div class="col-sm-9">
-                                        <select id="selParentProp" class="form-control input-sm"
-                                                ng-options="opt.name for opt in gridConfig.data track by opt.id"
-                                                ng-model="selectedProperty.parentProp">
-                                        </select>
-                                    </div>
-                                </div>
-                -->
-
+                </div>
 
                 <!-- value domain (e.g. discrete) for this property -->
-                <div class="form-group" ng-show="selectedProperty.baseType != 'LIST'">
+                <div class="form-group" ng-show="selectedProperty[PROPERTY_TYPE] != 'LIST'">
                     <label for="selDomainType" class="col-sm-3 control-label">Value Domain</label>
 
                     <div class="col-sm-9">
                         <select id="selDomainType" class="form-control input-sm"
                                 ng-model="selectedProperty.valueDomain.type">
-                            <option value="Continuous">Continuous (min/max)</option>
-                            <option value="Discrete">Discrete (min/max/steps)</option>
+                            <option value="">None (Default)</option>
+                            <option value="Continuous" ng-if="selectedProperty[PROPERTY_TYPE] == 'LONG' || selectedProperty[PROPERTY_TYPE] == 'DOUBLE'">Continuous (min/max)</option>
+                            <option value="Discrete" ng-if="selectedProperty[PROPERTY_TYPE] == 'LONG' || selectedProperty[PROPERTY_TYPE] == 'DOUBLE'">Discrete (min/max/steps)</option>
                             <option value="Enumerated">Enumeration (values)</option>
                         </select>
                     </div>
                 </div>
 
-                <!--
+                <!-- enumerated values -->
+                <div class="form-group" 
+                		ng-show="selectedProperty[PROPERTY_TYPE] != 'LIST' && selectedProperty.valueDomain.type == 'Enumerated'">
+                    <label for="selDomainType" class="col-sm-3 control-label">Values</label>
 
-                                <tr >
-                                    <td style="vertical-align: top">Values:</td>
-                                    <td>
-                                        <table>
-                                            <tr ng-repeat="n in range(0, selectedProperty.valueDomain.values.length - 1)">
-                                                <td><input class="domPropValue" class="form-control input-sm"
-                                                           ng-model="selectedProperty.valueDomain.values[n]"/></td>
-                                            </tr>
-                                        </table>
-                                        <button class="btn btn-default btn-sm" data-dojo-props="iconClass:'icon-plus-sign'"
-                                                id="btnThingTypePropAddValue">Add Value
-                                        </button>
-                                    </td>
-                                </tr>
-
-                                <tr ng-show="(selectedProperty.baseType == 'LONG' || selectedProperty.baseType == 'DOUBLE') && selectedProperty.valueDomain.type != 'Enumerated'">
-                                    <td>Min. / Max. Values:</td>
-                                    <td>
-                                        <input id="propMinVal" class="form-control input-sm"
-                                               ng-model="selectedProperty.valueDomain.min" style="width: 30%"/> /
-                                        <input id="propMaxVal" class="form-control input-sm"
-                                               ng-model="selectedProperty.valueDomain.max" style="width: 30%"/>
-                                    </td>
-                                </tr>
-
-                                <tr ng-show="(selectedProperty.baseType == 'LONG' || selectedProperty.baseType == 'DOUBLE') && selectedProperty.valueDomain.type == 'Discrete'">
-                                    <td>Step Increment:</td>
-                                    <td>
-                                        <input id="propStepVal" class="form-control input-sm"
-                                               data-ng-model="selectedProperty.valueDomain.step"/>
-                                    </td>
-                                </tr>
-                -->
-
-
-                <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-10 text-right">
-                        <button class="btn btn-default btn-sm btn-primary" id="btnThingTypePropSave"><span
-                                class="glyphicon glyphicon-ok"></span> Save Changes
-                        </button>
-                        <a href="#/catalog" class="btn btn-default btn-sm btn-info"><span
-                                class="glyphicon glyphicon-remove"></span> Cancel</a>
-                    </div>
-                </div>
-
-            </form>
-
-
-            <!--<table style="width: 100%;">
-                <tr>
-                    <td>Property Name:</td>
-                    <td>
-                        <input id="propName" class="form-control input-sm"
-                               ng-model="selectedProperty.name"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Base Type:</td>
-                    <td>
-                        <select id="selBaseType" class="form-control input-sm"
-                                ng-model="selectedProperty.baseType">
-                            <option value="BOOLEAN">BOOLEAN</option>
-                            <option value="STRING">STRING</option>
-                            <option value="DOUBLE">DOUBLE</option>
-                            <option value="LONG">LONG</option>
-                            <option value="LIST">LIST</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Semantic Type:</td>
-                    <td>
-                        <select id="selSemanticType" class="form-control input-sm"
-                                ng-options="opt.name for opt in shared.semanticPropertyTypes track by opt.id"
-                                ng-model="selectedProperty.semanticType">
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Parent Property:</td>
-                    <td>
-                        <select id="selParentProp" class="form-control input-sm"
-                                ng-options="opt.name for opt in gridConfig.data track by opt.id"
-                                ng-model="selectedProperty.parentProp">
-                        </select>
-                    </td>
-                </tr>
-                <tr ng-show="selectedProperty.baseType != 'LIST'">
-                    <td>Value Domain Type:</td>
-                    <td>
-                        <select id="selDomainType" class="form-control input-sm"
-                                ng-model="selectedProperty.valueDomain.type">
-                            <option value="Continuous">Continuous (min/max)</option>
-                            <option value="Discrete">Discrete (min/max/steps)</option>
-                            <option value="Enumerated">Enumeration (values)</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr ng-show="selectedProperty.baseType != 'LIST' && selectedProperty.valueDomain.type == 'Enumerated'">
-                    <td style="vertical-align: top">Values:</td>
-                    <td>
+                    <div class="col-sm-9">
                         <table>
                             <tr ng-repeat="n in range(0, selectedProperty.valueDomain.values.length - 1)">
                                 <td><input class="domPropValue" class="form-control input-sm"
@@ -198,36 +86,36 @@
                         <button class="btn btn-default btn-sm" data-dojo-props="iconClass:'icon-plus-sign'"
                                 id="btnThingTypePropAddValue">Add Value
                         </button>
-                    </td>
-                </tr>
-                <tr ng-show="(selectedProperty.baseType == 'LONG' || selectedProperty.baseType == 'DOUBLE') && selectedProperty.valueDomain.type != 'Enumerated'">
-                    <td>Min. / Max. Values:</td>
-                    <td>
+                    </div>
+                </div>
+
+                <!-- enumerated values -->
+                <div class="form-group" 
+                		ng-show="(selectedProperty[PROPERTY_TYPE] == 'LONG' || selectedProperty[PROPERTY_TYPE] == 'DOUBLE') && selectedProperty.valueDomain.type != 'Enumerated'">
+                    <label for="selDomainType" class="col-sm-3 control-label">Min. / Max. Values</label>
+
+                    <div class="col-sm-9">
                         <input id="propMinVal" class="form-control input-sm"
                                ng-model="selectedProperty.valueDomain.min" style="width: 30%"/> /
                         <input id="propMaxVal" class="form-control input-sm"
                                ng-model="selectedProperty.valueDomain.max" style="width: 30%"/>
-                    </td>
-                </tr>
-                <tr ng-show="(selectedProperty.baseType == 'LONG' || selectedProperty.baseType == 'DOUBLE') && selectedProperty.valueDomain.type == 'Discrete'">
-                    <td>Step Increment:</td>
-                    <td>
+                    </div>
+                </div>
+
+                <!-- step increment -->
+                <div class="form-group" 
+                		ng-show="(selectedProperty[PROPERTY_TYPE] == 'LONG' || selectedProperty[PROPERTY_TYPE] == 'DOUBLE') && selectedProperty.valueDomain.type == 'Discrete'">
+                    <label for="selDomainType" class="col-sm-3 control-label">Step Increment</label>
+
+                    <div class="col-sm-9">
                         <input id="propStepVal" class="form-control input-sm"
                                data-ng-model="selectedProperty.valueDomain.step"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>
-                        <button class="btn btn-default btn-sm btn-primary" data-dojo-props="iconClass:'icon-save'"
-                                id="btnThingTypePropSave">Save Changes
-                        </button>
-                    </td>
-                </tr>
-            </table>-->
+                    </div>
+                </div>
+
+            </form>
 
         </div>
-        <br class="clear"/>
     </div>
 
 </section>
@@ -240,225 +128,174 @@
 </style>
 
 <script type="text/javascript">
-    var app = angular.module("app");
-    app.controller('ThingTypePropsController', function ($scope, $http, $compile, $log) {
-                AppController($scope, $http, $compile);
+var app = angular.module("app");
+app.controller('ThingTypePropsController', 
+	function ($scope, $http, $compile, $log) {
 
-                $scope.selectedProperty = null;
-                $scope.gridConfig = {};
+        AppController($scope, $http, $compile);
 
-                $scope.initPropsTable = function () {
-                    var columnsConfig = [
-                        {label: "Name", field: "displayName", sortable: true},
-                        {label: "Data Type", field: "baseType"},
-                        {label: "Value Domain Type", field: "valueDomain.type"}
-                    ];
-                    //$scope.gridConfig.data = [{name: 1}]; // todo why this?
-                    renderUITable($scope.gridConfig, "ThingTypePropsTable", columnsConfig,
-                            function (event) {
-                                if (event.type == "dgrid-select") {
-                                    $scope.$apply(function () {
-                                        $scope.selectedProperty = event.rows[0].data;
-                                    });
+        $scope.selectedProperty = null;
+        $scope.gridConfig = {};
+        $scope.PROPERTY_TYPE = PROPERTY_TYPE;
+        $scope.parentProps = [];
 
-                                    $scope.buildParentPropsSelect();
-                                    eventBus.publish("select.ThingTypeProps", $scope.selectedProperty);
-                                } else if (event.type == "dgrid-deselect") {
-                                    $scope.$apply(function () {
-                                        $scope.selectedProperty = null;
-                                    });
-                                    eventBus.publish("select.ThingTypeProps", $scope.selectedProperty);
-                                } else if (event.type == "dgrid-datachange") {
-                                    var data = event.grid.row(event).data;
-                                    data[event.cell.column.field] = event.value;
-                                    $scope.prepareModelValues($scope.shared.selectedThingType);
-                                    $scope.saveThingTypeProp(data);
-                                }
+        $scope.initPropsTable = function () {
+            var columnsConfig = [
+                {label: "Name", field: "displayName", sortable: true},
+                {label: "Data Type", field: PROPERTY_TYPE},
+                {label: "Value Domain Type", field: "valueDomain.type"}
+            ];
+            $scope.gridConfig.data = [];
+            renderUITable($scope.gridConfig, "ThingTypePropsTable", columnsConfig,
+                    function (event) {
+                        if (event.type == "dgrid-select") {
+                            $scope.$apply(function () {
+                                $scope.selectedProperty = event.rows[0].data;
+                            });
 
-                                /* adjust UI elements */
-                                eventBus.publish("change.SelectedProperty");
-                            }
-                    );
-                };
+                            $scope.buildParentPropsSelect();
+                            eventBus.publish("select.ThingTypeProps", $scope.selectedProperty);
+                        } else if (event.type == "dgrid-deselect") {
+                            $scope.$apply(function () {
+                                $scope.selectedProperty = null;
+                            });
+                            eventBus.publish("select.ThingTypeProps", $scope.selectedProperty);
+                        } else if (event.type == "dgrid-datachange") {
+                            var data = event.grid.row(event).data;
+                            data[event.cell.column.field] = event.value;
+                            $scope.saveThingType();
+                        }
 
-                $scope.initPropsTable();
-
-                $scope.buildPropsTable = function (thingType) {
-                    if (thingType.thingProperties) {
-                        $.each(thingType.thingProperties, function (idx, el) {
-                            expandChildProps(el, null, thingType.thingProperties);
-                        });
-
-                        $scope.gridConfig.data = thingType.thingProperties;
+                        /* adjust UI elements */
+                        eventBus.publish("change.SelectedProperty");
                     }
-                };
+            );
+        };
 
-                var expandChildProps = function (prop, parent, propsList) {
-                    prop.displayName = (parent ? (parent.displayName + ".") : "") + prop.name;
-                    if (!prop.children) {
-                        return;
-                    }
+        $scope.initPropsTable();
 
-                    $.each(prop.children, function (idx, el) {
-                        propsList.push(el);
-                        el.parentProp = prop;
-                        expandChildProps(el, prop, propsList);
-                    });
+        $scope.buildPropsTable = function (thingType) {
+        	if (!thingType.properties) {
+        		thingType.properties = [];
+       		}
+            $.each(thingType.properties, function (idx, el) {
+                expandChildProps(el, null, thingType.properties);
+            });
 
-                    prop.children = [];
-                };
+            $scope.gridConfig.data = thingType.properties;
+        };
 
-                $scope.buildParentPropsSelect = function (thingType) {
-                    if (!thingType) {
-                        thingType = $scope.shared.selectedThingType;
-                    }
-
-                    if (thingType.thingProperties) {
-
-                        var propsList = [];
-                        propsList.push({id: -1, name: "ROOT"});
-                        $.each(thingType.thingProperties, function (idx, el) {
-                            if (el.baseType == "LIST") {
-                                propsList.push({id: el.id, name: el.name});
-                            }
-                        });
-
-                        renderUISelectValues("selParentProp", propsList);
-                    }
-
-
-                };
-
-                /*$scope.buildSemanticTypesSelect = function () {
-                 //console.log("semanticPropertyTypes0", $scope.shared.semanticPropertyTypes);
-                 if (!$scope.shared.semanticPropertyTypes) {
-                 var url = $scope.thingTypePropsAPI + "/semantic-types";
-                 invokeGET($scope.http, url,
-                 function (data, status, headers, config) {
-                 $scope.shared.semanticPropertyTypes = data.result;
-                 //console.log("semanticPropertyTypes1", $scope.shared.semanticPropertyTypes);
-                 }
-                 );
-                 }
-                 };*/
-
-                $scope.unselectProperty = function () {
-                    $scope.$apply(function () {
-                        $scope.selectedProperty = null;
-                    });
-                    eventBus.publish("change.SelectedProperty");
-                };
-
-                $scope.deleteThingTypeProp = function () {
-                    var selection = $scope.selectedProperty;
-                    if (!selection) return;
-
-                    arrayRemove($scope.shared.selectedThingType.thingProperties, selection);
-
-                    var url = $scope.thingTypesAPI + "/" + $scope.shared.selectedThingType.id + "/properties/" + selection.id;
-                    invokeDELETE($scope.http, url,
-                            function (data, status, headers, config) {
-                                $scope.buildPropsTable($scope.shared.selectedThingType);
-                                $scope.buildParentPropsSelect($scope.shared.selectedThingType);
-
-                                eventBus.publish("change.SelectedProperty");
-                            }
-                    );
-                    $scope.unselectProperty();
-                };
-
-                $scope.addThingTypeProp = function () {
-                    if (!$scope.shared.selectedThingType) {
-                        return;
-                    }
-
-                    var newProp = {
-                        "name": "unnamed",
-                        "baseType": "STRING"
-                    };
-
-                    var url = $scope.thingTypesAPI + "/" + $scope.shared.selectedThingType.id + "/properties";
-                    invokePOST($scope.http, url, JSON.stringify(newProp), function (data, status, headers, config) {
-                                var newEvent = {changedItem: $scope.shared.selectedThingType}
-                                eventBus.publish("reload.ThingTypeProps", newEvent);
-                                $scope.shared.selectedThingType = null;
-                                //$scope.buildPropsTable($scope.shared.selectedThingType);
-                                //$scope.buildParentPropsSelect($scope.shared.selectedThingType);
-                            }
-                    );
-
-                    $scope.unselectProperty();
-                };
-
-                $scope.saveThingTypeProp = function (devTypeProp) {
-                    if (!devTypeProp) {
-                        devTypeProp = $scope.selectedProperty;
-                    }
-                    //console.log("before prepare", devTypeProp);
-                    $scope.prepareModelValues($scope.shared.selectedThingType);
-                    invokePUT($scope.http, $scope.thingTypePropsAPI,
-                            JSON.stringify(devTypeProp),
-                            function (data, status, headers, config) {
-                                $scope.buildPropsTable($scope.shared.selectedThingType);
-                                $scope.buildParentPropsSelect($scope.shared.selectedThingType);
-                                var event = {changedItem: $scope.shared.selectedThingType}
-                                //console.log("change.ThingTypeProps", event);
-                                eventBus.publish("change.ThingTypeProps", event);
-                            }
-                    );
-
-                };
-
-                $scope.addPropDomainValue = function () {
-                    if (!$scope.selectedProperty.valueDomain.values)
-                        $scope.selectedProperty.valueDomain.values = [];
-
-                    $scope.$apply(function () {
-                        $scope.selectedProperty.valueDomain.values.push("");
-                    });
-                };
-
-                /* register event handlers*/
-                $scope.addClickHandler("btnThingTypePropAdd", $scope.addThingTypeProp);
-                $scope.addClickHandler("btnThingTypePropDelete", $scope.deleteThingTypeProp);
-                $scope.addClickHandler("btnThingTypePropSave", function () {
-                    $scope.saveThingTypeProp($scope.selectedProperty);
-                });
-
-                $scope.addClickHandler("btnThingTypePropAddValue", $scope.addPropDomainValue);
-
-                $scope.onRenderElement("selDomainType", function (el) {
-                    el.on("change", function (newValue) {
-                        $scope.$apply(function () {
-                            if (!$scope.selectedProperty.valueDomain)
-                                $scope.selectedProperty.valueDomain = {};
-
-                            $scope.selectedProperty.valueDomain.type = newValue;
-                        });
-                    });
-                });
-
-                $scope.subscribeOnce("change.SelectedProperty", function (event) {
-                            /* adjust UI elements */
-                            $("#btnThingTypePropDelete").attr("disabled",
-                                    $scope.selectedProperty == null);
-                        }, "propSelectChangeListener"
-                );
-
-                $scope.$watch("shared.selectedThingType", function () {
-                    var thingType = $scope.shared.selectedThingType;
-                    $log.debug("Watching ThingType for property changes: ", thingType);
-                    if (!thingType) {
-                        $scope.selectedProperty = null;
-                    } else {
-                        $scope.buildPropsTable(thingType);
-                        $scope.buildParentPropsSelect(thingType);
-                    }
-                    eventBus.publish("change.SelectedProperty");
-                });
-
-                /* start rendering the main container */
+        var expandChildProps = function (prop, parent, propsList) {
+            prop.displayName = (parent ? (parent.displayName + ".") : "") + prop.name;
+            if (!prop.children) {
+                return;
             }
-    );
+
+            $.each(prop.children, function (idx, el) {
+                propsList.push(el);
+                el.parentProp = prop;
+                expandChildProps(el, prop, propsList);
+            });
+
+            prop.children = [];
+        };
+
+        $scope.buildParentPropsSelect = function (thingType) {
+            if (!thingType) {
+                thingType = $scope.shared.selectedThingType;
+            }
+
+            if (thingType.properties) {
+
+                var propsList = [];
+                propsList.push({id: -1, name: "ROOT"});
+                $.each(thingType.properties, function (idx, el) {
+                    if (el[PROPERTY_TYPE] == "LIST") {
+                        propsList.push({id: el.id, name: el.name});
+                    }
+                });
+
+                renderUISelectValues("selParentProp", propsList);
+            }
+
+
+        };
+
+        $scope.unselectProperty = function () {
+            $scope.$apply(function () {
+                $scope.selectedProperty = null;
+            });
+            eventBus.publish("change.SelectedProperty");
+        };
+
+        $scope.deleteThingTypeProp = function () {
+            var selection = $scope.selectedProperty;
+            if (!selection) return;
+
+            arrayRemove($scope.shared.selectedThingType.properties, selection);
+            $scope.unselectProperty();
+        };
+
+        $scope.addThingTypeProp = function () {
+        	var thingType = $scope.shared.selectedThingType;
+            if (!thingType) {
+                return;
+            }
+
+            var newProp = {};
+            newProp[NAME] = "unnamed";
+            newProp[PROPERTY_TYPE] = "STRING";
+
+			thingType.properties.push(newProp);
+			expandChildProps(newProp, null, thingType.properties);
+            $scope.unselectProperty();
+        };
+
+        $scope.addPropDomainValue = function () {
+            if (!$scope.selectedProperty.valueDomain.values)
+                $scope.selectedProperty.valueDomain.values = [];
+
+            $scope.$apply(function () {
+                $scope.selectedProperty.valueDomain.values.push("");
+            });
+        };
+
+        /* register event handlers*/
+        $scope.addClickHandler("btnThingTypePropAdd", $scope.addThingTypeProp);
+        $scope.addClickHandler("btnThingTypePropDelete", $scope.deleteThingTypeProp);
+        $scope.addClickHandler("btnThingTypePropAddValue", $scope.addPropDomainValue);
+        $scope.$watch("selectedProperty", function() {
+        	$scope.parentProps = [];
+        	if($scope.selectedProperty) {
+        		$.each($scope.gridConfig.data, function(idx,el) {
+        			if(el != $scope.selectedProperty) {
+        				$scope.parentProps.push(el);
+        			}
+        		});
+        	}
+        	$("#btnThingTypePropDelete").attr("disabled",
+                            $scope.selectedProperty == null);
+        });
+
+        $scope.$watch("shared.selectedThingType", function () {
+            var thingType = $scope.shared.selectedThingType;
+            $log.debug("Watching ThingType for property changes: ", thingType);
+            if (!thingType) {
+                $scope.selectedProperty = null;
+            } else {
+                $scope.buildPropsTable(thingType);
+                $scope.buildParentPropsSelect(thingType);
+            }
+            eventBus.publish("change.SelectedProperty");
+        });
+
+        /* start rendering the main container */
+        var thingType = $scope.shared.selectedThingType;
+        if(thingType) {
+	        $scope.buildPropsTable(thingType);
+	        $scope.buildParentPropsSelect(thingType);
+        }
+    }
+);
 
 </script>

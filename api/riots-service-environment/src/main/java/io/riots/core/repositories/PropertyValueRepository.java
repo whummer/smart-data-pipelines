@@ -17,4 +17,6 @@ public interface PropertyValueRepository extends PagingAndSortingRepository<Prop
 
 	long countByThingIdIn(List<String> thingIds);
 
+	long countByThingIdInAndTimestampBetween(List<String> thingIds, double timeFrom, double timeTo);
+
 }

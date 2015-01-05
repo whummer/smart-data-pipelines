@@ -127,13 +127,18 @@ public class ThingDataServiceImpl implements ThingDataService {
 
     @Override
     @Timed @ExceptionMetered
-    public long countDataItemsForUser(String userId) {
+    public long countDataItemsForUser(String userId, long fromTime, long toTime) {
     	List<Thing> things = serviceClientFactory.getThingsServiceClient().retrieveThingsForUser(userId);
     	List<String> thingIds = new LinkedList<String>();
     	for(Thing t : things) {
     		thingIds.add(t.getId());
     	}
-    	return propValueRepo.countByThingIdIn(thingIds);
+    	if(fromTime <= 0 && toTime <= 0) {
+    		return propValueRepo.countByThingIdIn(thingIds);
+    	} else {
+    		return propValueRepo.countByThingIdInAndTimestampBetween(
+    				thingIds, fromTime, toTime);
+    	}
     }
     
     /* HELPER METHODS */

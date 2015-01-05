@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Container class for various statistics about the system.
  * @author whummer
  */
-public class Stats {
+public class PlatformStateStats {
 
 	@JsonProperty
 	long numUsers;

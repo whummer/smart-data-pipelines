@@ -18,6 +18,19 @@
                             <ng-include src="appConfig['appRootPath'] + '/views/thing_type_props.html'"></ng-include>
                         </tab>
                     </tabset>
+                    
+					<div class="form-group" style="display: block; float: left; width: 100%;">
+						<div class="text-right">
+						<hr />
+							<button class="btn btn-default btn-sm btn-primary"
+								id="btnDevTypeSave">
+								<span class="glyphicon glyphicon-ok"></span> Save Changes
+							</button>
+							<a href="#/catalog" class="btn btn-default btn-sm btn-info"><span
+								class="glyphicon glyphicon-remove"></span> Cancel</a>
+						</div>
+					</div>
+                    
                 </section>
             </div>
         </div>
@@ -26,26 +39,50 @@
 
 <script type="text/javascript">
 
-    var app = angular.module("app");
-    app.controller('ThingTypeController', function ($scope, $http, $compile, $routeParams, $log) {
-                AppController($scope, $http, $compile);
+var app = angular.module("app");
+app.controller('ThingTypeController', function ($scope, $http, $compile, $routeParams, $log) {
+	AppController($scope, $http, $compile);
 
-                $log.debug("Inside ThingTypeController");
+        if ($routeParams.thingTypeID) {
+            invokeGET($http, $scope.thingTypesAPI + "/" + $routeParams.thingTypeID,
+                function (data, status, headers, config) {
+                    $log.info("Loading ThingType with ID " + $routeParams.thingTypeID);
+                    $scope.shared.selectedThingType = data.result;
+                    if (!$scope.shared.selectedThingType['image-urls']) {
+                        $scope.shared.selectedThingType['image-urls'] = [];
+                    }
 
-                if ($routeParams.thingTypeID) {
-                    invokeGET($http, $scope.thingTypesAPI + "/" + $routeParams.thingTypeID,
-                        function (data, status, headers, config) {
-                            $log.info("Loading ThingType with ID " + $routeParams.thingTypeID);
-                            $scope.shared.selectedThingType = data.result;
-                            if (!$scope.shared.selectedThingType['image-urls']) {
-                                $scope.shared.selectedThingType['image-urls'] = [];
-                            }
-
-                            $log.debug("Adding Thing to shared scope: ", data.result);
-                        }
-                    );
+                    $log.debug("Adding Thing to shared scope: ", data.result);
                 }
-            }
-    );
+            );
+        }
+
+        $scope.saveThingType = function () {
+            var thingType = $scope.shared.selectedThingType;
+            $scope.applyProperties();
+            $scope.prepareModelValues($scope.shared.selectedThingType);
+            thingType = JSON.parse(JSON.stringify(thingType));
+            $scope.prepareModelValues(thingType);
+            invokePUT($scope.http, $scope.thingTypesAPI,
+                    JSON.stringify(thingType),
+                    function (data, status, headers, config) {
+                        $log.info("Invoked PUT for ThingType ", thingType);
+                        $log.debug("Scope.loadAllThingTypes: ", $scope.loadAllThingTypes);
+                        $scope.loadAllThingTypes();
+                        $log.debug("Reloaded all thing types after saveThingType(). Location: ", $location);
+                        $location.path("catalog");
+                    }
+            );
+        };
+
+        $scope.applyProperties = function () {
+            /* apply tags */
+            $scope.shared.selectedThingType.tags = $("#devTypeTags").tagsinput('items');
+        };
+
+		/* register event handlers */
+        $scope.addClickHandler("btnDevTypeSave", $scope.saveThingType);
+    }
+);
 
 </script>

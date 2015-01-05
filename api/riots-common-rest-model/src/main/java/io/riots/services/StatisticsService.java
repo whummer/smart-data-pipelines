@@ -1,10 +1,13 @@
 package io.riots.services;
 
-import io.riots.services.users.Stats;
+import io.riots.services.users.PlatformStateStats;
+import io.riots.services.users.UsageStats;
+import io.riots.services.users.UsageStats.UsagePeriod;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.springframework.stereotype.Service;
@@ -22,10 +25,22 @@ import com.wordnik.swagger.annotations.ApiOperation;
 public interface StatisticsService {
 
 	@GET
-	@Path("/")
+	@Path("/platform")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "Retrieve statistics", notes = "Retrieve statistics", response = Stats.class)
-	Stats retrieveStatistics();
-	
-	
+	@ApiOperation(value = "Retrieve system state info",
+		notes = "Retrieve 'static' info about the platform, e.g., "
+				+ "number of things stored in the database.", response = PlatformStateStats.class)
+	PlatformStateStats retrieveSystemState();
+
+	@GET
+	@Path("/usage")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "Retrieve usage statistics",
+		notes = "Retrieve 'dynamic' info about the system, e.g., "
+				+ "data transfer usage for the previous months.", response = UsageStats.class)
+	UsageStats retrieveUsageStats(
+			@QueryParam("from") long from, 
+			@QueryParam("to") long to, 
+			@QueryParam("period") UsagePeriod period);
+
 }

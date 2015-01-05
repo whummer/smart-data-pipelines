@@ -127,20 +127,6 @@ define(['app', 'bootstrap-tagsinput'], function(app) {
 					}									
 				);
 			}
-					
-
-			/*$scope.saveThingType = function (thingType) {
-				thingType = JSON.parse(JSON.stringify(thingType));
-				$scope.prepareModelValues(thingType);
-				delete thingType.drivers;
-				console.log("saving thingType", thingType);
-				invokePUT($scope.http, $scope.thingTypesAPI,
-					JSON.stringify(thingType),
-					function (data, status, headers, config) {
-						$scope.loadAllThingTypes();
-					}
-				);
-			};*/
 
 			$scope.addThingType = function () {
 				var items = [
@@ -158,7 +144,6 @@ define(['app', 'bootstrap-tagsinput'], function(app) {
 					}
 				});
 			};
-
 
 			$scope.addThingTypeManual = function (thingType) {
 				if (!thingType) {
@@ -190,21 +175,7 @@ define(['app', 'bootstrap-tagsinput'], function(app) {
 				});
 			};
 
-//			$scope.searchThingType = function () {
-//				console.log("search: " + $("#inputDevTypeSearch").val());
-//			};
-
 			/* register event handlers*/
-			//$scope.addClickHandler('btnAddThingType', $scope.addThingType);
-			//$scope.addClickHandler('btnDelThingType', $scope.deleteThingType);
-//			$scope.addClickHandler('btnSearchThingType', $scope.searchThingType);
-
-			$scope.subscribeOnce("change.ThingTypeProps", function (event) {
-					console.log("change.ThingTypeProps", event.changedItem);
-					$scope.saveThingType(event.changedItem);
-				}, "thingTypePropsChangeListener"
-			);
-
 			$scope.subscribeOnce("reload.ThingTypeProps", function (event) {
 					$scope.loadAllThingTypes();
 				}, "thingTypePropsReloadListener"
