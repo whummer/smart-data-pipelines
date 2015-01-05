@@ -26,7 +26,7 @@ public class WebappServiceStarter extends SpringBootServletInitializer {
 	    FilterRegistrationBean filterRegBean = new FilterRegistrationBean();
 	    RiotsUrlRewriteFilter filter = new RiotsUrlRewriteFilter();
 	    filterRegBean.setFilter(filter);
-	    filterRegBean.addInitParameter("confPath", "urlrewrite.xml");
+	    filterRegBean.addInitParameter("confPath", "/urlrewrite.xml");
 	    return filterRegBean;
 	}
 	public static void main(String[] args) {
