@@ -67,6 +67,7 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
             "^/app/*$",
             "^/bower_components/.*$",
             "^(/app)?/index\\.html$",
+            "^(/app)?/views/dialogs\\.html$",
             "^(/app)?/views/login\\.html$",
             "^(/app)?/views/login_result\\.html$",
             "^(/app)?/styles/.*\\.css$",

@@ -52,9 +52,9 @@ function AppController($scope, $http, $compile) {
 		$(itemId).addClass("active");
 	};
 
-	$scope.preparePropertyValues = function(deviceType, parent, propsList) {
+	$scope.preparePropertyValues = function(thingType, parent, propsList) {
 		if(!propsList) return;
-		delete deviceType["$$hashKey"];
+		delete thingType["$$hashKey"];
 		var i;
 		/* device type properties */
 		for(i = 0; i < propsList.length; i ++) {
@@ -90,11 +90,11 @@ function AppController($scope, $http, $compile) {
 			}
 			if(el.parentProp) {
 				if(el.parentProp.id == -1) {
-					deviceType.deviceProperties.push(el);
+					thingType.deviceProperties.push(el);
 					propsList.splice(i, 1);
 					i = i - 1;
 				} else {
-					var parentPropObj = byId(deviceType.deviceProperties, el.parentProp.id, "children")[0];
+					var parentPropObj = byId(thingType.deviceProperties, el.parentProp.id, "children")[0];
 					//console.log("parentPropObj " + el.parentProp.id, parentPropObj);
 					parentPropObj.children.push(el);
 					propsList.splice(i, 1);
@@ -102,27 +102,27 @@ function AppController($scope, $http, $compile) {
 				}
 				delete el.parentProp;
 			}
-			$scope.preparePropertyValues(deviceType, el, el.children);
+			$scope.preparePropertyValues(thingType, el, el.children);
 		}
 
 		/* key/value asset properties */
-		deviceType.properties = {};
-		for(var i in deviceType.propertyList) {
-			entry = deviceType.propertyList[i];
-			deviceType.properties[entry.key] = entry.value;
+		thingType.features = {};
+		for(var i in thingType.featureList) {
+			entry = thingType.featureList[i];
+			thingType.features[entry.key] = entry.value;
 		}
-		deviceType.propertyList = null;
-		delete deviceType.propertyList;
-		return deviceType;
+		thingType.featureList = null;
+		delete thingType.featureList;
+		return thingType;
 	};
 
-	$scope.prepareModelValues = function(deviceType, doClone) {
-		if(!deviceType)
-			return deviceType;
+	$scope.prepareModelValues = function(thingType, doClone) {
+		if(!thingType)
+			return thingType;
 		if(doClone) {
-			deviceType = JSON.parse(JSON.stringify(deviceType));
+			thingType = JSON.parse(JSON.stringify(thingType));
 		}
-		return $scope.preparePropertyValues(deviceType, deviceType, deviceType.deviceProperties);
+		return $scope.preparePropertyValues(thingType, thingType, thingType.properties);
 	};
 
 
@@ -169,9 +169,10 @@ function AppController($scope, $http, $compile) {
 		return result;
 	};
 
-	rootScope.formatTime = function(timestamp) {
+	$scope.dateFormat = "yyyy-MM-dd hh:mm:ss";
+	rootScope.formatTime = $scope.formatTime = function(timestamp) {
 		console.log("formatDate(timestamp)", timestamp);
-		formatDate(timestamp);
+		return formatDate(timestamp);
 	};
 
 	rootScope.formatCoords = function(loc) {

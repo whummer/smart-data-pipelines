@@ -3,12 +3,14 @@
  */
 
 /* define array index names for model properties */
+var NAME = "name";
 var THING_TYPE = "thing-type";
 var THING_ID = "thing-id";
 var PROPERTIES = "properties";
 var PROPERTY_ID = "property-id";
 var PROPERTY_NAME = "property";
 var PROPERTY_VALUE = "value";
+var PROPERTY_TYPE = "data-type";
 var TIMESTAMP = "timestamp";
 var IMAGE_URLS = "image-urls";
 

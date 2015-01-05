@@ -24,13 +24,21 @@
             AppController($scope, $http, $compile);
 
             $scope.gridConfig = {};
+            $scope.dateFormat = "yyyy-MM-dd hh:mm:ss";
 
-            $scope.initHistoryTable = function () {
+            var initHistoryTable = function () {
+            	console.log($scope.formatTime);
                 var columnsConfig = [
-                    {label: "Month", field: "month", sortable: true},
-                    {label: "Simulations", field: "simulations"},
-                    {label: "API Service Calls", field: "calls"},
-                    {label: "Data Traffic", field: "traffic"}
+                    {label: "From Date", field: "fromDate", sortable: true,
+						cellTemplate: "<div class='ui-grid-cell-contents'>{{row.entity.fromDate | date: 'yyyy-MM-dd hh:mm:ss'}}</div>"
+					},
+                    {label: "To Date", field: "toDate", sortable: true,
+						cellTemplate: "<div class='ui-grid-cell-contents'>{{row.entity.toDate | date:'yyyy-MM-dd hh:mm:ss'}}</div>"
+					},
+                    //{label: "Month", field: "month"},
+                    {label: "Data Events", field: "updateEvents", sortable: true},
+                    {label: "API Service Calls", field: "apiCalls", sortable: true},
+                    {label: "Data Traffic", field: "dataTraffic", sortable: true}
                 ];
                 $scope.gridConfig.data = [];
                 renderUITable($scope.gridConfig, "simHistoryTable", columnsConfig,
@@ -52,23 +60,23 @@
                 );
             }
 
-            $scope.buildHistoryTable = function (history) {
-                $scope.gridConfig.data = history.months;
+            var buildHistoryTable = function (history) {
+                $scope.gridConfig.data = history;
             };
 
-            /* start rendering the main container */
-
-            // TODO
-            $scope.initHistoryTable();
-            $scope.buildHistoryTable({
-                        months: [
-                            {id: "14-06", month: "June 2014", simulations: 17, calls: 1141, traffic: "16.3 MB"},
-                            {id: "14-07", month: "July 2014", simulations: 1, calls: 102, traffic: "0.9 MB"},
-                            {id: "14-08", month: "August 2014", simulations: 0, calls: 0, traffic: "0.0 MB"},
-                            {id: "14-09", month: "September 2014", simulations: 24, calls: 5132, traffic: "123.4 MB"}
-                        ]
+            var loadHistoryTable = function (history) {
+            	
+                invokeGET($scope.http, $scope.statsAPI + "/usage?from=&to=&period=month",
+                    function (data, status, headers, config) {
+                        console.log(data.result);
+                        buildHistoryTable(data.result.usage);
                     }
-            );
+                );
+            };
+
+            /* init the main elements */
+            initHistoryTable();
+            loadHistoryTable();
 
         }
     ]);
