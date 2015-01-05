@@ -1,318 +1,320 @@
 <!-- todo move to external CSS file -->
 <style>
-.bootstrap-tagsinput {
-	width: 100% !important;
-}
+  .bootstrap-tagsinput {
+    width: 100% !important;
+  }
 
-span.twitter-typeahead .tt-dropdown-menu {
-	position: absolute;
-	top: 100%;
-	left: 0;
-	z-index: 1000;
-	display: none;
-	float: left;
-	min-width: 160px;
-	padding: 5px 0;
-	margin: 2px 0 0;
-	list-style: none;
-	font-size: 14px;
-	text-align: left;
-	background-color: #ffffff;
-	border: 1px solid #cccccc;
-	border: 1px solid rgba(0, 0, 0, 0.15);
-	border-radius: 4px;
-	-webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-	box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-	background-clip: padding-box;
-}
+  span.twitter-typeahead .tt-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    display: none;
+    float: left;
+    min-width: 160px;
+    padding: 5px 0;
+    margin: 2px 0 0;
+    list-style: none;
+    font-size: 14px;
+    text-align: left;
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+    background-clip: padding-box;
+  }
 
-span.twitter-typeahead .tt-suggestion>p {
-	display: block;
-	padding: 3px 20px;
-	clear: both;
-	font-weight: normal;
-	line-height: 1.42857143;
-	color: #333333;
-	white-space: nowrap;
-}
+  span.twitter-typeahead .tt-suggestion > p {
+    display: block;
+    padding: 3px 20px;
+    clear: both;
+    font-weight: normal;
+    line-height: 1.42857143;
+    color: #333333;
+    white-space: nowrap;
+  }
 
-span.twitter-typeahead .tt-suggestion>p:hover, span.twitter-typeahead .tt-suggestion>p:focus
-	{
-	color: #ffffff;
-	text-decoration: none;
-	outline: 0;
-	background-color: #428bca;
-}
+  span.twitter-typeahead .tt-suggestion > p:hover, span.twitter-typeahead .tt-suggestion > p:focus {
+    color: #ffffff;
+    text-decoration: none;
+    outline: 0;
+    background-color: #428bca;
+  }
 
-span.twitter-typeahead .tt-suggestion.tt-cursor {
-	color: #ffffff;
-	background-color: #428bca;
-}
+  span.twitter-typeahead .tt-suggestion.tt-cursor {
+    color: #ffffff;
+    background-color: #428bca;
+  }
 
-span.twitter-typeahead {
-	width: 100%;
-}
+  span.twitter-typeahead {
+    width: 100%;
+  }
 
-.input-group span.twitter-typeahead {
-	display: block !important;
-}
+  .input-group span.twitter-typeahead {
+    display: block !important;
+  }
 
-.input-group span.twitter-typeahead .tt-dropdown-menu {
-	top: 32px !important;
-}
+  .input-group span.twitter-typeahead .tt-dropdown-menu {
+    top: 32px !important;
+  }
 
-.input-group.input-group-lg span.twitter-typeahead .tt-dropdown-menu {
-	top: 44px !important;
-}
+  .input-group.input-group-lg span.twitter-typeahead .tt-dropdown-menu {
+    top: 44px !important;
+  }
 
-.input-group.input-group-sm span.twitter-typeahead .tt-dropdown-menu {
-	top: 28px !important;
-}
+  .input-group.input-group-sm span.twitter-typeahead .tt-dropdown-menu {
+    top: 28px !important;
+  }
 </style>
 
 <section ng-controller="ThingTypeDetailsController"
-	id="devTypeDetailsSection">
+         id="devTypeDetailsSection">
 
-	<div ng-show="shared.selectedThingType" class="container-fluid">
+  <div ng-show="shared.selectedThingType" class="container-fluid">
 
-		<form class="form-horizontal" role="form" style="width: 100%">
+    <form class="form-horizontal" role="form" style="width: 100%">
 
-			<div class="row">
+      <div class="row">
 
-				<div class="col-md-4">
-					<!-- thing type images -->
-					<carousel id="devTypeImages" interval="-1">
-						<slide ng-repeat="i in range(0, shared.selectedThingType[IMAGE_URLS].length - 1)">
-							<img ng-src="{{shared.selectedThingType[IMAGE_URLS][i]}}" class="img-responsive img-thumbnail">
-						</slide>
-					</carousel>
+        <div class="col-md-4">
+          <!-- thing type images -->
+          <carousel id="devTypeImages" interval="-1">
+            <slide ng-repeat="i in range(0, shared.selectedThingType[IMAGE_URLS].length - 1)">
+              <img ng-src="{{shared.selectedThingType[IMAGE_URLS][i]}}" class="img-responsive img-thumbnail">
+            </slide>
+          </carousel>
 
-                    <div class="thumbnail">
-                        <img width="275" height="275" ng-src="img/no_image_available.jpg" ng-hide="shared.selectedThingType['image-urls']"/>
-                    </div>
-				</div>
+          <div class="thumbnail" ng-hide="shared.selectedThingType['image-urls']">
+            <img width="275" height="275" ng-src="img/no_image_available.jpg"/>
+          </div>
+        </div>
 
 
-				<div class="col-md-8">
+        <div class="col-md-8">
 
-					<!-- thing type ID -->
-					<div class="form-group">
-						<label for="devTypeId" class="col-sm-2 control-label">ID</label>
+          <!-- thing type ID -->
+          <div class="form-group">
+            <label for="devTypeId" class="col-sm-2 control-label">ID</label>
 
-						<div class="col-sm-10">
-							<input id="devTypeId" disabled="disabled"
-								class="form-control input-sm"
-								data-ng-model="shared.selectedThingType.id" />
-						</div>
-					</div>
+            <div class="col-sm-10">
+              <input id="devTypeId" disabled="disabled"
+                     class="form-control input-sm"
+                     data-ng-model="shared.selectedThingType.id"/>
+            </div>
+          </div>
 
-					<!-- thing type name -->
-					<div class="form-group">
-						<label for="devTypeName" class="col-sm-2 control-label">Name</label>
+          <!-- thing type name -->
+          <div class="form-group">
+            <label for="devTypeName" class="col-sm-2 control-label">Name</label>
 
-						<div class="col-sm-10">
-							<input id="devTypeName" class="form-control input-sm"
-								data-ng-model="shared.selectedThingType.name" />
-						</div>
-					</div>
+            <div class="col-sm-10">
+              <input id="devTypeName" class="form-control input-sm"
+                     data-ng-model="shared.selectedThingType.name"/>
+            </div>
+          </div>
 
-					<!-- thing type description -->
-					<div class="form-group">
-						<label for="devTypeDescr" class="col-sm-2 control-label">Description</label>
+          <!-- thing type description -->
+          <div class="form-group">
+            <label for="devTypeDescr" class="col-sm-2 control-label">Description</label>
 
-						<div class="col-sm-10">
+            <div class="col-sm-10">
 							<textarea id="devTypeDescr" class="form-control input-sm"
-								rows="6" data-ng-model="shared.selectedThingType.description">
+                        rows="6" data-ng-model="shared.selectedThingType.description">
                         </textarea>
-						</div>
-					</div>
+            </div>
+          </div>
 
-					<!-- thing type image URLs -->
-					<div class="form-group">
-						<label class="col-sm-2 control-label">Image URLs</label>
+          <!-- thing type image URLs -->
+          <div class="form-group">
+            <label class="col-sm-2 control-label">Image URLs</label>
 
-						<div class="col-sm-10">
-							<table>
-	                            <tr ng-repeat="n in range(0, shared.selectedThingType[IMAGE_URLS].length - 1)">
-	                                <td><input class="form-control input-sm"
-	                                           ng-model="shared.selectedThingType[IMAGE_URLS][n]"/></td>
-	                            </tr>
-	                        </table>
-	                        <button class="btn btn-default btn-sm" id="btnThingTypeAddImg">Add Image URL</button>
-	                	</div>
-                    </div>
+            <div class="col-sm-10">
+              <table>
+                <tr ng-repeat="n in range(0, shared.selectedThingType[IMAGE_URLS].length - 1)">
+                  <td><input class="form-control input-sm"
+                             style="width:100%"
+                             ng-model="shared.selectedThingType[IMAGE_URLS][n]"/></td>
+                </tr>
+              </table>
+              <button class="btn btn-info btn-sm pull-right" id="btnThingTypeAddImg">Add Image URL</button>
+            </div>
+          </div>
 
-					<!-- thing type manufactures -->
-					<div class="form-group">
-						<label for="devTypeManufacturers" class="col-sm-2 control-label">Manufacturer</label>
+          <!-- thing type manufactures -->
+          <div class="form-group">
+            <label for="devTypeManufacturers" class="col-sm-2 control-label">Manufacturer</label>
 
-						<div class="col-sm-10">
-							<select id="devTypeManufacturers" class="form-control input-sm"
-								ng-options="manufacturer.id as manufacturer.name for manufacturer in shared.manufacturers"
-								ng-model="shared.selectedThingType['manufacturer-id']">
-							</select>
-						</div>
-					</div>
+            <div class="col-sm-10">
+              <select id="devTypeManufacturers" class="form-control input-sm"
+                      ng-options="manufacturer.id as manufacturer.name for manufacturer in shared.manufacturers"
+                      ng-model="shared.selectedThingType['manufacturer-id']">
+              </select>
+            </div>
+          </div>
 
-					<!-- thing type features - key/value map-->
-					<div class="form-group">
-						<label for="devTypeFeatures" class="col-sm-2 control-label">Features</label>
+          <!-- thing type features - key/value map-->
+          <div class="form-group">
+            <label for="thingTypeFeatures" class="col-sm-2 control-label">Features</label>
 
-						<div class="col-sm-10">
-			                 <table>
-			                     <tr ng-repeat="n in range(0, getFeaturesList(shared.selectedThingType).length - 1)">
-			                         <td><input class="domPropValue form-control input-sm"
-			                                    ng-model="shared.selectedThingType.featuresList[n].key" style="width: 30%"/>
-			                             =
-			                             <input class="domPropValue form-control input-sm"
-			                                    ng-model="shared.selectedThingType.featuresList[n].value" style="width: 60%" />
-			                         </td>
-			                     </tr>
-			                 </table>
-			                 <button class="btn btn-default btn-sm" id="btnDevTypeAddFeature">Add Feature</button>
-			    		</div>
-		             </div>
+            <div class="col-sm-10">
+              <table id="thingTypeFeatures">
+                <tr ng-repeat="n in range(0, getFeaturesList(shared.selectedThingType).length - 1)">
+                  <td><input class="domPropValue form-control input-sm"
+                             ng-model="shared.selectedThingType.featuresList[n].key" style="width: 30%"/>
+                    =
+                    <input class="domPropValue form-control input-sm"
+                           ng-model="shared.selectedThingType.featuresList[n].value" style="width: 60%"/>
+                  </td>
+                </tr>
+              </table>
+              <button class="btn btn-info btn-sm pull-right" id="btnDevTypeAddFeature">Add Feature</button>
+            </div>
+          </div>
 
-					<!-- thing type tags -->
-					<div class="form-group">
-						<label for="devTypeTags" class="col-sm-2 control-label">Tags</label>
+          <!-- thing type tags -->
+          <div class="form-group">
+            <label for="devTypeTags" class="col-sm-2 control-label">Tags</label>
 
-						<div class="col-sm-10">
-							<input id="devTypeTags" class="form-control input-sm typeahead"
-								data-role="tagsinput" autocomplete="off" />
-						</div>
-					</div>
+            <div class="col-sm-10">
+              <input id="devTypeTags" class="form-control input-sm typeahead"
+                     data-role="tagsinput" autocomplete="off"/>
 
-				</div>
-		</form>
 
-	</div>
+            </div>
+          </div>
 
+      </div>
+    </form>
+  </div>
 </section>
 
 <script type="text/javascript">
-    var app = angular.module("app");
-    app.controller('ThingTypeDetailsController', function ($scope, $http, $compile, $log, $location) {
+  var app = angular.module("app");
+  app.controller('ThingTypeDetailsController', function ($scope, $http, $compile, $log, $location) {
 
-        AppController($scope, $http, $compile);
+    AppController($scope, $http, $compile);
 
-        $scope.IMAGE_URLS = IMAGE_URLS;
+    $scope.IMAGE_URLS = IMAGE_URLS;
 
-        $scope.getFeaturesList = function (devType) {
-            if (!devType)
-                return [];
-           	devType.featuresList = [];
-            for (var key in devType.features) {
-                var entry = {key: key, value: devType.features[key]};
-                devType.featuresList.push(entry);
-            }
-            return devType.featuresList;
-        };
+    $scope.getFeaturesList = function (devType) {
+      if (!devType)
+        return [];
+      devType.featuresList = [];
+      for (var key in devType.features) {
+        var entry = {key: key, value: devType.features[key]};
+        devType.featuresList.push(entry);
+      }
+      return devType.featuresList;
+    };
 
-        var addThingTypeFeature = function () {
-            $scope.applyFeatures();
-            $scope.$apply(function () {
-                $scope.shared.selectedThingType.features["__new_key__"] = "new_value";
-                $scope.getFeaturesList($scope.shared.selectedThingType);
-            });
-        };
+    var addThingTypeFeature = function () {
+      $scope.applyFeatures();
+      $scope.$apply(function () {
+        $scope.shared.selectedThingType.features["__new_key__"] = "new_value";
+        $scope.getFeaturesList($scope.shared.selectedThingType);
+      });
+    };
 
-        $scope.loadManufacturers = function () {
-            $log.info("Loading manufacturers from catalog service via URL ", appConfig.services.manufacturers.url);
-            if (!$scope.shared.manufacturers) {
-                invokeGET($http, appConfig.services.manufacturers.url,
-                        function (data, status, headers, config) {
-                            $log.debug("Successfully loaded manufacturers: ", data.result);
-                            $scope.shared.manufacturers = data.result;
-                        });
-            }
-        };
-
-		var addThingTypeImg = function() {
-			if(!$scope.shared.selectedThingType) return;
-			if(!$scope.shared.selectedThingType[IMAGE_URLS]) {
-				$scope.shared.selectedThingType[IMAGE_URLS] = [];
-			}
-			$scope.$apply(function() {
-				$scope.shared.selectedThingType[IMAGE_URLS].push("");
-			});
-		}
-
-        /*
-         * typeahead stuff
-         */
-        $scope.saveThingType = function () {
-            var thingType = $scope.shared.selectedThingType;
-            delete thingType.drivers; // todo why this
-            $scope.applyProperties();
-            $log.info("Entering save for thing: ", thingType);
-            thingType = JSON.parse(JSON.stringify(thingType));
-            $scope.prepareModelValues(thingType);
-            invokePUT($scope.http, $scope.thingTypesAPI,
-                    JSON.stringify(thingType),
-                    function (data, status, headers, config) {
-                        $log.info("Invoked PUT for ThingType ", thingType);
-                        $log.debug("Scope.loadAllThingTypes: ", $scope.loadAllThingTypes);
-                        $log.debug("Reloaded all thing types after saveThingType(). Location: ", $location);
-                        $location.path("catalog");
-                    }
-            );
-        };
-
-        /* register event handlers */
-        $scope.loadManufacturers();
-        $scope.addClickHandler("btnDevTypeSave", $scope.saveThingType);
-        $scope.$watch("shared.selectedThingType", function () {
-            $log.info("Watching selected thingtype: ", $scope.shared.selectedThingType);
-            console.dir($scope.shared.selectedThingType);
-            if ($scope.shared.selectedThingType && $scope.shared.selectedThingType.tags) {
-                $log.debug("Applying tags for ThingType: ", $scope.shared.selectedThingType);
-                $.each($scope.shared.selectedThingType.tags, function (idx, el) {
-                    $log.debug("Adding tag " + el);
-                    $("#devTypeTags").tagsinput("add", el);
+    $scope.loadManufacturers = function () {
+      $log.info("Loading manufacturers from catalog service via URL ", appConfig.services.manufacturers.url);
+      if (!$scope.shared.manufacturers) {
+        invokeGET($http, appConfig.services.manufacturers.url,
+                function (data, status, headers, config) {
+                  $log.debug("Successfully loaded manufacturers: ", data.result);
+                  $scope.shared.manufacturers = data.result;
                 });
+      }
+    };
 
-            }
+    var addThingTypeImg = function () {
+      if (!$scope.shared.selectedThingType) return;
+      if (!$scope.shared.selectedThingType[IMAGE_URLS]) {
+        $scope.shared.selectedThingType[IMAGE_URLS] = [];
+      }
+      $scope.$apply(function () {
+        $scope.shared.selectedThingType[IMAGE_URLS].push("");
+      });
+    }
+
+    /*
+     * typeahead stuff
+     */
+    $scope.saveThingType = function () {
+      var thingType = $scope.shared.selectedThingType;
+      delete thingType.drivers; // todo why this
+      $scope.applyProperties();
+      $log.info("Entering save for thing: ", thingType);
+      thingType = JSON.parse(JSON.stringify(thingType));
+      $scope.prepareModelValues(thingType);
+      invokePUT($scope.http, $scope.thingTypesAPI,
+              JSON.stringify(thingType),
+              function (data, status, headers, config) {
+                $log.info("Invoked PUT for ThingType ", thingType);
+                $log.debug("Scope.loadAllThingTypes: ", $scope.loadAllThingTypes);
+                $log.debug("Reloaded all thing types after saveThingType(). Location: ", $location);
+                $location.path("catalog");
+              }
+      );
+    };
+
+    /* register event handlers */
+    $scope.loadManufacturers();
+    $scope.addClickHandler("btnDevTypeSave", $scope.saveThingType);
+    $scope.$watch("shared.selectedThingType", function () {
+      $log.info("Watching selected thingtype: ", $scope.shared.selectedThingType);
+      console.dir($scope.shared.selectedThingType);
+      if ($scope.shared.selectedThingType && $scope.shared.selectedThingType.tags) {
+        $log.debug("Applying tags for ThingType: ", $scope.shared.selectedThingType);
+        $.each($scope.shared.selectedThingType.tags, function (idx, el) {
+          $log.debug("Adding tag " + el);
+          $("#devTypeTags").tagsinput("add", el);
         });
 
-        //
-        // typeahead stuff
-        //
-        var tags = ['speed', 'distance', 'temperature', 'energy', 'time', 'current', 'voltage', 'pressure',
-            'weight', 'color', 'height', 'width', 'power'];
-        // constructs the suggestion engine
-       	var tagnames = new Bloodhound({
-            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
-            queryTokenizer: Bloodhound.tokenizers.whitespace,
-            local: $.map(tags, function(tag) { return { value: tag }; })
-        });
-        tagnames.initialize();
-
-        $("#devTypeTags").tagsinput({
-            typeaheadjs: {
-                name: 'tags',
-                displayKey: 'value',
-                source: tagnames.ttAdapter()
-            }
-        });
-
-        /* register event handlers */
-        $scope.addClickHandler("btnThingTypeAddImg", addThingTypeImg);
-        $scope.addClickHandler("btnDevTypeAddFeature", addThingTypeFeature);
-        $scope.$watch("shared.selectedThingType", function () {
-            $log.info("Watching selected thingtype: ", $scope.shared.selectedThingType);
-            console.dir($scope.shared.selectedThingType);
-            if ($scope.shared.selectedThingType && $scope.shared.selectedThingType.tags) {
-                $log.debug("Applying tags for ThingType: ", $scope.shared.selectedThingType);
-                $.each($scope.shared.selectedThingType.tags, function (idx, el) {
-                    $log.debug("Adding tag " + el);
-                    $("#devTypeTags").tagsinput("add", el);
-                });
-            }
-        });
-
-		/* load main elements */
-        $scope.loadManufacturers();
+      }
     });
+
+    //
+    // typeahead stuff
+    //
+    var tags = ['speed', 'distance', 'temperature', 'energy', 'time', 'current', 'voltage', 'pressure',
+      'weight', 'color', 'height', 'width', 'power'];
+    // constructs the suggestion engine
+    var tagnames = new Bloodhound({
+      datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+      queryTokenizer: Bloodhound.tokenizers.whitespace,
+      local: $.map(tags, function (tag) {
+        return {value: tag};
+      })
+    });
+    tagnames.initialize();
+
+    $("#devTypeTags").tagsinput({
+      typeaheadjs: {
+        name: 'tags',
+        displayKey: 'value',
+        source: tagnames.ttAdapter()
+      }
+    });
+
+    /* register event handlers */
+    $scope.addClickHandler("btnThingTypeAddImg", addThingTypeImg);
+    $scope.addClickHandler("btnDevTypeAddFeature", addThingTypeFeature);
+    $scope.$watch("shared.selectedThingType", function () {
+      $log.info("Watching selected thingtype: ", $scope.shared.selectedThingType);
+      console.dir($scope.shared.selectedThingType);
+      if ($scope.shared.selectedThingType && $scope.shared.selectedThingType.tags) {
+        $log.debug("Applying tags for ThingType: ", $scope.shared.selectedThingType);
+        $.each($scope.shared.selectedThingType.tags, function (idx, el) {
+          $log.debug("Adding tag " + el);
+          $("#devTypeTags").tagsinput("add", el);
+        });
+      }
+    });
+
+    /* load main elements */
+    $scope.loadManufacturers();
+  });
 
 </script>
