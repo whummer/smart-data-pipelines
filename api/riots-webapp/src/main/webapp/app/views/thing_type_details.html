@@ -81,12 +81,17 @@ span.twitter-typeahead {
 
 				<div class="col-md-4">
 					<!-- thing type images -->
-					<carousel id="devTypeImages" interval="-1"> 
+					<carousel id="devTypeImages" interval="-1" ng-show="shared.selectedThingType['image-urls']">
 						<slide ng-repeat="pic in shared.selectedThingType['image-urls']" >
-							<img ng-src="{{pic}}" class="img-responsive img-thumbnail">
+							<img ng-src="{{pic}}" class="img-responsive img-thumbnail" >
 						</slide> 
-					</carousel>						
+					</carousel>
+
+                    <div class="thumbnail">
+                        <img width="275" height="275" ng-src="img/no_image_available.jpg" ng-hide="shared.selectedThingType['image-urls']"/>
+                    </div>
 				</div>
+
 
 				<div class="col-md-8">
 
@@ -145,26 +150,49 @@ span.twitter-typeahead {
 						</div>
 					</div>
 
-					<div class="form-group">
-						<label for="devTypeFeatures" class="col-sm-2 control-label">Features</label>
+					<!--<div class="row">-->
+					<!--<div class="col-xs-2">-->
+					<!--<input type="text" class="form-control" placeholder=".col-xs-2">-->
+					<!--</div>-->
+					<!--<div class="col-xs-3">-->
+					<!--<input type="text" class="form-control" placeholder=".col-xs-3">-->
+					<!--</div>-->
+					<!--<div class="col-xs-4">-->
+					<!--<input type="text" class="form-control" placeholder=".col-xs-4">-->
+					<!--</div>-->
+					<!--</div>-->
 
-						<div class="col-sm-10">
-			                 <table>
-			                     <tr ng-repeat="n in range(0, getPropertyList(shared.selectedDeviceType).length - 1)">
-			                         <td><input class="domPropValue form-control input-sm"
-			                                    ng-model="shared.selectedDeviceType.propertyList[n].key" style="width: 30%"/>
-			                             =
-			                             <input class="domPropValue form-control input-sm"
-			                                    ng-model="shared.selectedDeviceType.propertyList[n].value" style="width: 60%" />
-			                         </td>
-			                     </tr>
-			                 </table>
-			                 <button class="btn btn-default btn-sm"  id="btnDevTypeAddAttr">Add Attribute</button>
-			    		</div>
-		             </div>
+					<!-- <div class="form-group">
+                 <label for=""></label>Attributes:</td><td>
+                 <table>
+                     <tr ng-repeat="n in range(0, getPropertyList(shared.selectedDeviceType).length - 1)">
+                         <td><input class="domPropValue form-control input-sm"
+                                    ng-model="shared.selectedDeviceType.propertyList[n].key" style="width: 30%"/>
+                             =
+                             <input class="domPropValue form-control input-sm"
+                                    ng-model="shared.selectedDeviceType.propertyList[n].value" style="width: 60%" />
+                         </td>
+                     </tr>
+                 </table>
+                 <button class="btn btn-default btn-sm"  id="btnDevTypeAddAttr">Add Attribute</button>
+
+             </div>-->
+
+
+					<hr />
+
+					<div class="form-group">
+						<div class="col-sm-offset-2 col-sm-10 text-right">
+							<button class="btn btn-default btn-sm btn-primary"
+								id="btnDevTypeSave">
+								<span class="glyphicon glyphicon-ok"></span> Save Changes
+							</button>
+							<a href="#/catalog" class="btn btn-default btn-sm btn-info"><span
+								class="glyphicon glyphicon-remove"></span> Cancel</a>
+						</div>
+					</div>
 
 				</div>
-			</div>
 		</form>
 
 	</div>
@@ -226,7 +254,6 @@ span.twitter-typeahead {
                     function (data, status, headers, config) {
                         $log.info("Invoked PUT for ThingType ", thingType);
                         $log.debug("Scope.loadAllThingTypes: ", $scope.loadAllThingTypes);
-                        $scope.loadAllThingTypes();
                         $log.debug("Reloaded all thing types after saveThingType(). Location: ", $location);
                         $location.path("catalog");
                     }
