@@ -4,15 +4,12 @@
 
 var app = angular.module('app');
 
-app.controller('ModalAddDeviceTypeController', ['$scope', '$modal', '$log', '$http', '$compile', function ($scope, $modal, $log, $http, $compile) {
+app.controller('ModalAddDeviceTypeController', function ($scope, $modal, $log, $http, $compile, hotkeys) {
 
-    //AppController($scope, $http, $compile);
+    $log.debug("Hotkeys: ", hotkeys);
 
-    //$log.info("entering ModalAddDeviceTypeController");
 
-    //$scope.items = ['', 'Wolfram', 'IOTDB', 'Sparkfun'];
-
-    $scope.open = function (size) {
+    $scope.openAddThingTypeModal = function (size) {
 
         var modalInstance = $modal.open({
             templateUrl: 'modalAddDeviceType.html',
@@ -27,7 +24,7 @@ app.controller('ModalAddDeviceTypeController', ['$scope', '$modal', '$log', '$ht
         });
     };
 
-}]);
+});
 
 
 app.controller('ModalAddDeviceTypeInstanceCtrl', function ($scope, $modalInstance, $log, $http, $location, $compile) {

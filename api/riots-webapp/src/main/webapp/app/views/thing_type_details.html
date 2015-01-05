@@ -81,11 +81,15 @@ span.twitter-typeahead {
 
 				<div class="col-md-4">
 					<!-- thing type images -->
-					<carousel id="devTypeImages" interval="-1"> 
+					<carousel id="devTypeImages" interval="-1" ng-show="shared.selectedThingType['image-urls']">
 						<slide ng-repeat="pic in shared.selectedThingType['image-urls']" >
-							<img ng-src="{{pic}}" class="img-responsive img-thumbnail">
+							<img ng-src="{{pic}}" class="img-responsive img-thumbnail" >
 						</slide> 
-					</carousel>						
+					</carousel>
+
+                    <div class="thumbnail" ng-hide="shared.selectedThingType['image-urls']">
+                        <img width="275" height="275" ng-src="img/no_image_available.jpg" />
+                    </div>
 				</div>
 
 				<div class="col-md-8">
@@ -249,7 +253,6 @@ span.twitter-typeahead {
                     function (data, status, headers, config) {
                         $log.info("Invoked PUT for ThingType ", thingType);
                         $log.debug("Scope.loadAllThingTypes: ", $scope.loadAllThingTypes);
-                        $scope.loadAllThingTypes();
                         $log.debug("Reloaded all thing types after saveThingType(). Location: ", $location);
                         $location.path("catalog");
                     }
