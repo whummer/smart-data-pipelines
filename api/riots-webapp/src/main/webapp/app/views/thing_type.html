@@ -59,7 +59,7 @@ app.controller('ThingTypeController', function ($scope, $http, $compile, $routeP
 
         $scope.saveThingType = function () {
             var thingType = $scope.shared.selectedThingType;
-            $scope.applyProperties();
+            $scope.applyFeatures();
             $scope.prepareModelValues($scope.shared.selectedThingType);
             thingType = JSON.parse(JSON.stringify(thingType));
             $scope.prepareModelValues(thingType);
@@ -75,9 +75,13 @@ app.controller('ThingTypeController', function ($scope, $http, $compile, $routeP
             );
         };
 
-        $scope.applyProperties = function () {
+        $scope.applyFeatures = function () {
             /* apply tags */
             $scope.shared.selectedThingType.tags = $("#devTypeTags").tagsinput('items');
+            /* apply features */
+            if(!$scope.shared.selectedThingType.features) {
+            	$scope.shared.selectedThingType.features = {};
+            }
         };
 
 		/* register event handlers */

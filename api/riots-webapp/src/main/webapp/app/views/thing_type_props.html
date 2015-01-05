@@ -71,47 +71,49 @@
                     </div>
                 </div>
 
-                <!-- enumerated values -->
-                <div class="form-group" 
-                		ng-show="selectedProperty[PROPERTY_TYPE] != 'LIST' && selectedProperty.valueDomain.type == 'Enumerated'">
-                    <label for="selDomainType" class="col-sm-3 control-label">Values</label>
+				<div ng-show="selectedProperty[PROPERTY_TYPE]">
 
-                    <div class="col-sm-9">
-                        <table>
-                            <tr ng-repeat="n in range(0, selectedProperty.valueDomain.values.length - 1)">
-                                <td><input class="domPropValue" class="form-control input-sm"
-                                           ng-model="selectedProperty.valueDomain.values[n]"/></td>
-                            </tr>
-                        </table>
-                        <button class="btn btn-default btn-sm" data-dojo-props="iconClass:'icon-plus-sign'"
-                                id="btnThingTypePropAddValue">Add Value
-                        </button>
-                    </div>
-                </div>
-
-                <!-- enumerated values -->
-                <div class="form-group" 
-                		ng-show="(selectedProperty[PROPERTY_TYPE] == 'LONG' || selectedProperty[PROPERTY_TYPE] == 'DOUBLE') && selectedProperty.valueDomain.type != 'Enumerated'">
-                    <label for="selDomainType" class="col-sm-3 control-label">Min. / Max. Values</label>
-
-                    <div class="col-sm-9">
-                        <input id="propMinVal" class="form-control input-sm"
-                               ng-model="selectedProperty.valueDomain.min" style="width: 30%"/> /
-                        <input id="propMaxVal" class="form-control input-sm"
-                               ng-model="selectedProperty.valueDomain.max" style="width: 30%"/>
-                    </div>
-                </div>
-
-                <!-- step increment -->
-                <div class="form-group" 
-                		ng-show="(selectedProperty[PROPERTY_TYPE] == 'LONG' || selectedProperty[PROPERTY_TYPE] == 'DOUBLE') && selectedProperty.valueDomain.type == 'Discrete'">
-                    <label for="selDomainType" class="col-sm-3 control-label">Step Increment</label>
-
-                    <div class="col-sm-9">
-                        <input id="propStepVal" class="form-control input-sm"
-                               data-ng-model="selectedProperty.valueDomain.step"/>
-                    </div>
-                </div>
+	                <!-- enumerated values -->
+	                <div class="form-group" 
+	                		ng-show="selectedProperty[PROPERTY_TYPE] != 'LIST' && selectedProperty.valueDomain.type == 'Enumerated'">
+	                    <label for="selDomainType" class="col-sm-3 control-label">Values</label>
+	
+	                    <div class="col-sm-9">
+	                        <table>
+	                            <tr ng-repeat="n in range(0, selectedProperty.valueDomain.values.length - 1)">
+	                                <td><input class="domPropValue form-control input-sm"
+	                                           ng-model="selectedProperty.valueDomain.values[n]"/></td>
+	                            </tr>
+	                        </table>
+	                        <button class="btn btn-default btn-sm" id="btnThingTypePropAddValue">Add Value</button>
+	                    </div>
+	                </div>
+	
+	                <!-- enumerated values -->
+	                <div class="form-group" 
+	                		ng-show="(selectedProperty[PROPERTY_TYPE] == 'LONG' || selectedProperty[PROPERTY_TYPE] == 'DOUBLE') && selectedProperty.valueDomain.type != 'Enumerated'">
+	                    <label for="selDomainType" class="col-sm-3 control-label">Min. / Max. Values</label>
+	
+	                    <div class="col-sm-9">
+	                        <input id="propMinVal" class="form-control input-sm"
+	                               ng-model="selectedProperty.valueDomain.min" style="width: 30%"/> /
+	                        <input id="propMaxVal" class="form-control input-sm"
+	                               ng-model="selectedProperty.valueDomain.max" style="width: 30%"/>
+	                    </div>
+	                </div>
+	
+	                <!-- step increment -->
+	                <div class="form-group" 
+	                		ng-show="(selectedProperty[PROPERTY_TYPE] == 'LONG' || selectedProperty[PROPERTY_TYPE] == 'DOUBLE') && selectedProperty.valueDomain.type == 'Discrete'">
+	                    <label for="selDomainType" class="col-sm-3 control-label">Step Increment</label>
+	
+	                    <div class="col-sm-9">
+	                        <input id="propStepVal" class="form-control input-sm"
+	                               data-ng-model="selectedProperty.valueDomain.step"/>
+	                    </div>
+	                </div>
+	                
+	        	</div>
 
             </form>
 

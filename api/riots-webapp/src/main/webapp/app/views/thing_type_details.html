@@ -81,11 +81,11 @@ span.twitter-typeahead {
 
 				<div class="col-md-4">
 					<!-- thing type images -->
-					<carousel id="devTypeImages" interval="-1"> 
-						<slide ng-repeat="pic in shared.selectedThingType['image-urls']" >
-							<img ng-src="{{pic}}" class="img-responsive img-thumbnail">
-						</slide> 
-					</carousel>						
+					<carousel id="devTypeImages" interval="-1">
+						<slide ng-repeat="i in range(0, shared.selectedThingType[IMAGE_URLS].length - 1)">
+							<img ng-src="{{shared.selectedThingType[IMAGE_URLS][i]}}" class="img-responsive img-thumbnail">
+						</slide>
+					</carousel>
 				</div>
 
 				<div class="col-md-8">
@@ -111,7 +111,7 @@ span.twitter-typeahead {
 						</div>
 					</div>
 
-					<!-- thing type name -->
+					<!-- thing type description -->
 					<div class="form-group">
 						<label for="devTypeDescr" class="col-sm-2 control-label">Description</label>
 
@@ -122,6 +122,20 @@ span.twitter-typeahead {
 						</div>
 					</div>
 
+					<!-- thing type image URLs -->
+					<div class="form-group">
+						<label class="col-sm-2 control-label">Image URLs</label>
+
+						<div class="col-sm-10">
+							<table>
+	                            <tr ng-repeat="n in range(0, shared.selectedThingType[IMAGE_URLS].length - 1)">
+	                                <td><input class="form-control input-sm"
+	                                           ng-model="shared.selectedThingType[IMAGE_URLS][n]"/></td>
+	                            </tr>
+	                        </table>
+	                        <button class="btn btn-default btn-sm" id="btnThingTypeAddImg">Add Image URL</button>
+	                	</div>
+                    </div>
 
 					<!-- thing type manufactures -->
 					<div class="form-group">
@@ -135,6 +149,25 @@ span.twitter-typeahead {
 						</div>
 					</div>
 
+					<!-- thing type features - key/value map-->
+					<div class="form-group">
+						<label for="devTypeFeatures" class="col-sm-2 control-label">Features</label>
+
+						<div class="col-sm-10">
+			                 <table>
+			                     <tr ng-repeat="n in range(0, getFeaturesList(shared.selectedThingType).length - 1)">
+			                         <td><input class="domPropValue form-control input-sm"
+			                                    ng-model="shared.selectedThingType.featuresList[n].key" style="width: 30%"/>
+			                             =
+			                             <input class="domPropValue form-control input-sm"
+			                                    ng-model="shared.selectedThingType.featuresList[n].value" style="width: 60%" />
+			                         </td>
+			                     </tr>
+			                 </table>
+			                 <button class="btn btn-default btn-sm" id="btnDevTypeAddFeature">Add Feature</button>
+			    		</div>
+		             </div>
+
 					<!-- thing type tags -->
 					<div class="form-group">
 						<label for="devTypeTags" class="col-sm-2 control-label">Tags</label>
@@ -144,24 +177,6 @@ span.twitter-typeahead {
 								data-role="tagsinput" autocomplete="off" />
 						</div>
 					</div>
-
-					<div class="form-group">
-						<label for="devTypeFeatures" class="col-sm-2 control-label">Features</label>
-
-						<div class="col-sm-10">
-			                 <table>
-			                     <tr ng-repeat="n in range(0, getPropertyList(shared.selectedDeviceType).length - 1)">
-			                         <td><input class="domPropValue form-control input-sm"
-			                                    ng-model="shared.selectedDeviceType.propertyList[n].key" style="width: 30%"/>
-			                             =
-			                             <input class="domPropValue form-control input-sm"
-			                                    ng-model="shared.selectedDeviceType.propertyList[n].value" style="width: 60%" />
-			                         </td>
-			                     </tr>
-			                 </table>
-			                 <button class="btn btn-default btn-sm"  id="btnDevTypeAddAttr">Add Attribute</button>
-			    		</div>
-		             </div>
 
 				</div>
 			</div>
@@ -175,24 +190,24 @@ span.twitter-typeahead {
 
         AppController($scope, $http, $compile);
 
-        $scope.getPropertyList = function (devType) {
+        $scope.IMAGE_URLS = IMAGE_URLS;
+
+        $scope.getFeaturesList = function (devType) {
             if (!devType)
                 return [];
-            if (!devType.propertyList) {
-                devType.propertyList = [];
-                for (var key in devType.properties) {
-                    var entry = {key: key, value: devType.properties[key]};
-                    devType.propertyList.push(entry);
-                }
+           	devType.featuresList = [];
+            for (var key in devType.features) {
+                var entry = {key: key, value: devType.features[key]};
+                devType.featuresList.push(entry);
             }
-            return devType.propertyList;
+            return devType.featuresList;
         };
 
-        $scope.addProperty = function () {
-            $scope.applyProperties();
+        var addThingTypeFeature = function () {
+            $scope.applyFeatures();
             $scope.$apply(function () {
-                $scope.shared.selectedThingType.properties["__new_key__"] = "new_value";
-                $scope.getPropertyList($scope.shared.selectedThingType);
+                $scope.shared.selectedThingType.features["__new_key__"] = "new_value";
+                $scope.getFeaturesList($scope.shared.selectedThingType);
             });
         };
 
@@ -207,8 +222,40 @@ span.twitter-typeahead {
             }
         };
 
+		var addThingTypeImg = function() {
+			if(!$scope.shared.selectedThingType) return;
+			if(!$scope.shared.selectedThingType[IMAGE_URLS]) {
+				$scope.shared.selectedThingType[IMAGE_URLS] = [];
+			}
+			$scope.$apply(function() {
+				$scope.shared.selectedThingType[IMAGE_URLS].push("");
+			});
+		}
+
+        /*
+         * typeahead stuff
+         */
+        var tags = ['speed', 'distance', 'temperature', 'energy', 'time', 'current', 'voltage', 'pressure',
+            'weight', 'color', 'height', 'width', 'power'];
+        // constructs the suggestion engine
+       	var tagnames = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            local: $.map(tags, function(tag) { return { value: tag }; })
+        });
+        tagnames.initialize();
+
+        $("#devTypeTags").tagsinput({
+            typeaheadjs: {
+                name: 'tags',
+                displayKey: 'value',
+                source: tagnames.ttAdapter()
+            }
+        });
+
         /* register event handlers */
-        $scope.loadManufacturers();
+        $scope.addClickHandler("btnThingTypeAddImg", addThingTypeImg);
+        $scope.addClickHandler("btnDevTypeAddFeature", addThingTypeFeature);
         $scope.$watch("shared.selectedThingType", function () {
             $log.info("Watching selected thingtype: ", $scope.shared.selectedThingType);
             console.dir($scope.shared.selectedThingType);
@@ -221,33 +268,8 @@ span.twitter-typeahead {
             }
         });
 
-        //
-        // typeahead stuff
-        //
-
-        var tags = ['speed', 'distance', 'temperature', 'energy', 'time', 'current', 'voltage', 'pressure',
-            'weight', 'color', 'height', 'width', 'power'];
-
-        // constructs the suggestion engine
-       var tagnames = new Bloodhound({
-            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
-            queryTokenizer: Bloodhound.tokenizers.whitespace,
-            local: $.map(tags, function(tag) { return { value: tag }; })
-        });
-
-        tagnames.initialize();
-
-
-        $("#devTypeTags").tagsinput({
-
-            typeaheadjs: {
-                name: 'tags',
-                displayKey: 'value',
-                source: tagnames.ttAdapter()
-            }
-
-        });
-
+		/* load main elements */
+        $scope.loadManufacturers();
     });
 
 </script>
