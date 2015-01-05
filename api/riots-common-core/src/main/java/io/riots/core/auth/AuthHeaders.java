@@ -44,6 +44,7 @@ public class AuthHeaders {
     public static class AuthInfo {
         String accessToken;
         Date expiry;
+        long lastActiveTime;
         String userID;
         String userName;
         String email;
@@ -51,10 +52,17 @@ public class AuthHeaders {
         final List<String> roles = new LinkedList<String>();
         final List<GrantedAuthority> rolesAsGrantedAuthorities = new LinkedList<GrantedAuthority>();
 
-        boolean isExpired() {
+        public boolean isExpired() {
             return expiry.before(new Date());
         }
-
+		public void setActiveNow() {
+			lastActiveTime = System.currentTimeMillis();
+		}
+		public boolean isCurrentlyActive() {
+			return (System.currentTimeMillis() - lastActiveTime) 
+					< AuthFilterBase.INACTIVITY_TIMEOUT_MS;
+		}
+        
 		@Override
 		public String toString() {
 			return "AuthInfo [userID=" + userID + ", userName=" + userName
@@ -63,7 +71,7 @@ public class AuthHeaders {
 					+ expiry + ", rolesAsGrantedAuthorities="
 					+ rolesAsGrantedAuthorities + "]";
 		}
-        
+
     }
 
     /**
@@ -76,20 +84,10 @@ public class AuthHeaders {
         if (userEmail == null) {
             return null;
         }
-		/* TODO make find/create transactionally safe */
 		/* find existing user */
-        System.out.println(usersService);
         LOG.info("INFO: Get requesting user: " + userEmail + " - " + userName);
         User existing = usersService.findByEmail(userEmail);
-//        if (existing != null) {
-            return existing;
-//        }
-//		/* create new user */
-//        User u = new User();
-//        u.setEmail(userEmail);
-//        u.setName(userName);
-//        u = usersService.save(u);
-//        return u;
+        return existing;
     }
 
     public synchronized User getRequestingUser(HttpServletRequest req) {

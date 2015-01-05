@@ -8,8 +8,11 @@ import org.springframework.stereotype.Component;
 /**
  * Repository for persisting {@link ThingType} to ElasticSearch.
  * @author riox
- *
+ * @author whummer
  */
 @Component
 public interface ThingTypeRepository extends ElasticsearchRepository<ThingType, String> {
+
+	long countByCreatorId(String userId);
+
 }

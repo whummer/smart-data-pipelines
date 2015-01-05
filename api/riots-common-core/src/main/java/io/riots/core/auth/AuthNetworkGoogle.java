@@ -3,7 +3,6 @@ package io.riots.core.auth;
 import io.riots.core.auth.AuthHeaders.AuthInfo;
 
 import java.net.URL;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +37,6 @@ public class AuthNetworkGoogle extends AuthNetwork {
             String result = IOUtils.readStringFromStream(new URL(url).openStream());
             @SuppressWarnings("unchecked")
             Map<String, Object> json = JSON.readValue(result, Map.class);
-            newInfo.expiry = new Date(new Date().getTime() + AuthFilterBase.EXPIRY_PERIOD_MS);
             newInfo.userID = (String) json.get("id");
             newInfo.userName = (String) json.get("displayName");
             @SuppressWarnings("unchecked")

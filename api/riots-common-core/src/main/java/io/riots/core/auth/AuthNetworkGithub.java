@@ -3,7 +3,6 @@ package io.riots.core.auth;
 import io.riots.core.auth.AuthHeaders.AuthInfo;
 
 import java.net.URL;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -35,7 +34,6 @@ public class AuthNetworkGithub extends AuthNetwork {
             String result1 = IOUtils.readStringFromStream(new URL(url1).openStream());
             @SuppressWarnings("unchecked")
             Map<String, Object> json1 = JSON.readValue(result1, Map.class);
-            newInfo.expiry = new Date(new Date().getTime() + AuthFilterBase.EXPIRY_PERIOD_MS);
             newInfo.userID = (String) json1.get("login");
             newInfo.userName = (String) json1.get("name");
             String url2 = urlPattern.replace("<request>", "user/emails");

@@ -96,4 +96,16 @@ public interface ThingsService {
 	@ApiOperation(value = "Count Things", notes = "Get the number of Things stored in the database.")
 	long countThings();
 
+	@GET
+	@Path("/by/user/{userId}")
+	@Produces({ MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "Get Things of user", notes = "Get the Things belonging to a given user id.")
+	List<Thing> retrieveThingsForUser(@PathParam("userId") String userId);
+
+	@GET
+	@Path("/by/user/{userId}/count")
+	@Produces({ MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "Count Things of user", notes = "Get the number of Things belonging to a given user id.")
+	long countThingsForUser(@PathParam("userId") String userId);
+
 }

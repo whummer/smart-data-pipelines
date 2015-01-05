@@ -95,4 +95,16 @@ public class ThingsServiceImpl implements ThingsService {
     	return thingQuery.count();
     }
 
+    @Override
+    @Timed @ExceptionMetered
+    public List<Thing> retrieveThingsForUser(String userId) {
+    	return thingQuery.queryForUser(userId);
+    }
+
+    @Override
+    @Timed @ExceptionMetered
+    public long countThingsForUser(String userId) {
+    	return thingQuery.countByCreatorId(userId);
+    }
+
 }
