@@ -261,7 +261,7 @@
 					<artifactId>maven-resources-plugin</artifactId>
 					<executions>
 						<execution>
-							<id>copy-resources2</id>
+							<id>copy-resources-docker</id>
 							<phase>package</phase>
 							<goals>
 								<goal>copy-resources</goal>

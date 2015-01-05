@@ -73,6 +73,10 @@ var requirejsAppConfig = {
         	name: 'infinite-scroll',
         	location: appConfig['bowerRootPath'] + '/ngInfiniteScroll',
         	main: 'build/ng-infinite-scroll.min.js'
+        }, {
+        	name: 'angular-hotkeys',
+        	location: appConfig['bowerRootPath'] + '/angular-hotkeys',
+        	main: 'build/hotkeys.min.js'
         }
 
         /* TODO old/unused/deprecated?

@@ -86,7 +86,12 @@ span.twitter-typeahead {
 							<img ng-src="{{shared.selectedThingType[IMAGE_URLS][i]}}" class="img-responsive img-thumbnail">
 						</slide>
 					</carousel>
+
+                    <div class="thumbnail">
+                        <img width="275" height="275" ng-src="img/no_image_available.jpg" ng-hide="shared.selectedThingType['image-urls']"/>
+                    </div>
 				</div>
+
 
 				<div class="col-md-8">
 
@@ -179,9 +184,10 @@ span.twitter-typeahead {
 					</div>
 
 				</div>
-			</div>
 		</form>
+
 	</div>
+
 </section>
 
 <script type="text/javascript">
@@ -235,6 +241,43 @@ span.twitter-typeahead {
         /*
          * typeahead stuff
          */
+        $scope.saveThingType = function () {
+            var thingType = $scope.shared.selectedThingType;
+            delete thingType.drivers; // todo why this
+            $scope.applyProperties();
+            $log.info("Entering save for thing: ", thingType);
+            thingType = JSON.parse(JSON.stringify(thingType));
+            $scope.prepareModelValues(thingType);
+            invokePUT($scope.http, $scope.thingTypesAPI,
+                    JSON.stringify(thingType),
+                    function (data, status, headers, config) {
+                        $log.info("Invoked PUT for ThingType ", thingType);
+                        $log.debug("Scope.loadAllThingTypes: ", $scope.loadAllThingTypes);
+                        $log.debug("Reloaded all thing types after saveThingType(). Location: ", $location);
+                        $location.path("catalog");
+                    }
+            );
+        };
+
+        /* register event handlers */
+        $scope.loadManufacturers();
+        $scope.addClickHandler("btnDevTypeSave", $scope.saveThingType);
+        $scope.$watch("shared.selectedThingType", function () {
+            $log.info("Watching selected thingtype: ", $scope.shared.selectedThingType);
+            console.dir($scope.shared.selectedThingType);
+            if ($scope.shared.selectedThingType && $scope.shared.selectedThingType.tags) {
+                $log.debug("Applying tags for ThingType: ", $scope.shared.selectedThingType);
+                $.each($scope.shared.selectedThingType.tags, function (idx, el) {
+                    $log.debug("Adding tag " + el);
+                    $("#devTypeTags").tagsinput("add", el);
+                });
+
+            }
+        });
+
+        //
+        // typeahead stuff
+        //
         var tags = ['speed', 'distance', 'temperature', 'energy', 'time', 'current', 'voltage', 'pressure',
             'weight', 'color', 'height', 'width', 'power'];
         // constructs the suggestion engine
