@@ -3,7 +3,7 @@
 	    <div style="float: left; width: 45%;">
 	    	<b class="ng-binding">List of Thing Types:</b>
 			<select size="10" multiple ng-multiple="true" ng-model="thingTypesSelected" 
-				ng-options="c.name for c in thingTypesAll" style="width: 100%;" class="form-control"></select>
+				ng-options="c.name for c in thingTypesAll track by c.id" style="width: 100%;" class="form-control"></select>
 		    <br class="clear"/>
 	    </div>
 		<div style="float: left; width: 9%; text-align: center;">
@@ -16,7 +16,7 @@
 		<div style="float: left; width: 45%;">
 			<b class="ng-binding">Child Thing Types:</b>
 			<select size="10" multiple ng-multiple="true" ng-model="childrenSelected" 
-				ng-options="c.name for c in childrenAll" style="width: 100%;" class="form-control"></select>
+				ng-options="c.name for c in childrenAll track by c.id" style="width: 100%;" class="form-control"></select>
 		    <br class="clear"/>
 	    </div>
    <br class="clear"/>
@@ -35,17 +35,27 @@
 		$scope.childrenAll = [];
 		$scope.childrenSelected = [];
 
+		var syncStateWithModel = function() {
+			var devType = $scope.shared.selectedThingType;
+			devType.children = [];
+			$.each($scope.childrenAll, function(idx,el) {
+				devType.children.push(el.id);
+			});
+		};
+
 		$scope.addChildren = function() {
 			$.each($scope.thingTypesSelected, function(idx,el) {
 				$scope.childrenAll.push(el);
 			});
-		}
+			syncStateWithModel();
+		};
 
 		$scope.removeChildren = function() {
-			$.each($scope.thingTypesSelected, function(idx,el) {
-				arrayRemove($scope.childrenAll, el);
+			$.each($scope.childrenSelected, function(idx,el) {
+				arrayRemoveById($scope.childrenAll, el);
 			});
-		}
+			syncStateWithModel();
+		};
 
 		var loadSelects = function() {
 			var url = "";
@@ -65,7 +75,7 @@
 					}
 				});
 			}
-		}
+		};
 
 		/* register event listeners */
 		$scope.$watch("shared.selectedThingType", function() {

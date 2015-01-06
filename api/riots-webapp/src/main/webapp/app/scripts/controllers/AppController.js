@@ -52,67 +52,63 @@ function AppController($scope, $http, $compile) {
 		$(itemId).addClass("active");
 	};
 
-	$scope.preparePropertyValues = function(thingType, parent, propsList) {
-		if(!propsList) return;
+	$scope.preparePropertyValues = function(thingType, parentProperty, propsList) {
 		delete thingType["$$hashKey"];
 		var i;
 		/* device type properties */
-		for(i = 0; i < propsList.length; i ++) {
-			var el = propsList[i];
-			delete el["$$hashKey"];
-			delete el["displayName"];
-			if(el.baseType == "LIST") {
-				delete el.valueDomain;
-			}
-			if(el.semanticType && el.semanticType.id) {
-				el.semanticType = el.semanticType.id;
-			}
-			if(el.valueDomain) {
-				if(el.valueDomain.type == "Continuous") {
-					delete el.valueDomain.values;
-					delete el.valueDomain.step;
-				} else if(el.valueDomain.type == "Discrete") {
-					delete el.valueDomain.values;
-				} else if(el.valueDomain.type == "Enumerated") {
-					delete el.valueDomain.min;
-					delete el.valueDomain.max;
+		if(propsList) {
+			for(i = 0; i < propsList.length; i ++) {
+				var el = propsList[i];
+				delete el["$$hashKey"];
+				delete el["displayName"];
+				if(el.baseType == "LIST") {
+					delete el.valueDomain;
 				}
-			}
-			if(typeof el.semanticType == "string") {
-				if($scope.shared.semanticPropertyTypes) {
-					el.semanticType = byId($scope.shared.semanticPropertyTypes, el.semanticType)[0];
-				} else {
-					el.semanticType = {
-						id: el.semanticType,
-						category: "Property"
-					};
+				if(el.semanticType && el.semanticType.id) {
+					el.semanticType = el.semanticType.id;
 				}
-			}
-			if(el.parentProp) {
-				if(el.parentProp.id == -1) {
-					thingType.deviceProperties.push(el);
-					propsList.splice(i, 1);
-					i = i - 1;
-				} else {
-					var parentPropObj = byId(thingType.deviceProperties, el.parentProp.id, "children")[0];
-					//console.log("parentPropObj " + el.parentProp.id, parentPropObj);
-					parentPropObj.children.push(el);
-					propsList.splice(i, 1);
-					i = i - 1;
+				if(el.valueDomain) {
+					if(el.valueDomain.type == "Continuous") {
+						delete el.valueDomain.values;
+						delete el.valueDomain.step;
+					} else if(el.valueDomain.type == "Discrete") {
+						delete el.valueDomain.values;
+					} else if(el.valueDomain.type == "Enumerated") {
+						delete el.valueDomain.min;
+						delete el.valueDomain.max;
+					}
 				}
-				delete el.parentProp;
+				if(el.parentProp) {
+					if(el.parentProp.id == -1) {
+						thingType.properties.push(el);
+						propsList.splice(i, 1);
+						i = i - 1;
+					} else {
+						var parentPropObj = byId(thingType.properties, el.parentProp.id, "children")[0];
+						//console.log("parentPropObj " + el.parentProp.id, parentPropObj);
+						parentPropObj.children.push(el);
+						propsList.splice(i, 1);
+						i = i - 1;
+					}
+					delete el.parentProp;
+				}
+				$scope.preparePropertyValues(thingType, el, el.children);
 			}
-			$scope.preparePropertyValues(thingType, el, el.children);
 		}
 
 		/* key/value asset properties */
-		thingType.features = {};
-		for(var i in thingType.featureList) {
-			entry = thingType.featureList[i];
-			thingType.features[entry.key] = entry.value;
+		if(thingType.featureList) {
+			thingType.features = {};
+			console.log("thingType.featureList",thingType.featureList);
+			for(var i in thingType.featureList) {
+				entry = thingType.featureList[i];
+				console.log("entry", entry);
+				thingType.features[entry.key] = entry.value;
+			}
+			thingType.featureList = null;
+			delete thingType.featureList;
 		}
-		thingType.featureList = null;
-		delete thingType.featureList;
+
 		return thingType;
 	};
 
@@ -120,9 +116,9 @@ function AppController($scope, $http, $compile) {
 		if(!thingType)
 			return thingType;
 		if(doClone) {
-			thingType = JSON.parse(JSON.stringify(thingType));
+			thingType = clone(thingType);
 		}
-		return $scope.preparePropertyValues(thingType, thingType, thingType.properties);
+		return $scope.preparePropertyValues(thingType, null, thingType.properties);
 	};
 
 

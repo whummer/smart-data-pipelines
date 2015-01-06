@@ -160,12 +160,12 @@
 
             <div class="col-sm-10">
               <table id="thingTypeFeatures">
-                <tr ng-repeat="n in range(0, getFeaturesList(shared.selectedThingType).length - 1)">
+                <tr ng-repeat="n in range(0, getFeatureList(shared.selectedThingType).length - 1)">
                   <td><input class="domPropValue form-control input-sm"
-                             ng-model="shared.selectedThingType.featuresList[n].key" style="width: 30%"/>
+                             ng-model="shared.selectedThingType.featureList[n].key" style="width: 30%"/>
                     =
                     <input class="domPropValue form-control input-sm"
-                           ng-model="shared.selectedThingType.featuresList[n].value" style="width: 60%"/>
+                           ng-model="shared.selectedThingType.featureList[n].value" style="width: 60%"/>
                   </td>
                 </tr>
               </table>
@@ -198,22 +198,24 @@
 
     $scope.IMAGE_URLS = IMAGE_URLS;
 
-    $scope.getFeaturesList = function (devType) {
+    $scope.getFeatureList = function (devType, forceReset) {
       if (!devType)
         return [];
-      devType.featuresList = [];
-      for (var key in devType.features) {
-        var entry = {key: key, value: devType.features[key]};
-        devType.featuresList.push(entry);
-      }
-      return devType.featuresList;
+      if(!devType.featureList || forceReset) {
+	      devType.featureList = [];
+	      for (var key in devType.features) {
+	        var entry = {key: key, value: devType.features[key]};
+	        devType.featureList.push(entry);
+	      }
+	  }
+      return devType.featureList;
     };
 
     var addThingTypeFeature = function () {
-      $scope.applyFeatures();
+      $scope.applyProperties();
       $scope.$apply(function () {
         $scope.shared.selectedThingType.features["__new_key__"] = "new_value";
-        $scope.getFeaturesList($scope.shared.selectedThingType);
+        $scope.getFeatureList($scope.shared.selectedThingType, true);
       });
     };
 
@@ -238,12 +240,8 @@
       });
     }
 
-    /*
-     * typeahead stuff
-     */
     $scope.saveThingType = function () {
       var thingType = $scope.shared.selectedThingType;
-      delete thingType.drivers; // todo why this
       $scope.applyProperties();
       $log.info("Entering save for thing: ", thingType);
       thingType = JSON.parse(JSON.stringify(thingType));
@@ -259,25 +257,9 @@
       );
     };
 
-    /* register event handlers */
-    $scope.loadManufacturers();
-    $scope.addClickHandler("btnDevTypeSave", $scope.saveThingType);
-    $scope.$watch("shared.selectedThingType", function () {
-      $log.info("Watching selected thingtype: ", $scope.shared.selectedThingType);
-      console.dir($scope.shared.selectedThingType);
-      if ($scope.shared.selectedThingType && $scope.shared.selectedThingType.tags) {
-        $log.debug("Applying tags for ThingType: ", $scope.shared.selectedThingType);
-        $.each($scope.shared.selectedThingType.tags, function (idx, el) {
-          $log.debug("Adding tag " + el);
-          $("#devTypeTags").tagsinput("add", el);
-        });
-
-      }
-    });
-
-    //
-    // typeahead stuff
-    //
+    /*
+     * typeahead stuff
+     */
     var tags = ['speed', 'distance', 'temperature', 'energy', 'time', 'current', 'voltage', 'pressure',
       'weight', 'color', 'height', 'width', 'power'];
     // constructs the suggestion engine
@@ -301,6 +283,7 @@
     /* register event handlers */
     $scope.addClickHandler("btnThingTypeAddImg", addThingTypeImg);
     $scope.addClickHandler("btnDevTypeAddFeature", addThingTypeFeature);
+    $scope.addClickHandler("btnDevTypeSave", $scope.saveThingType);
     $scope.$watch("shared.selectedThingType", function () {
       $log.info("Watching selected thingtype: ", $scope.shared.selectedThingType);
       console.dir($scope.shared.selectedThingType);
@@ -310,9 +293,11 @@
           $log.debug("Adding tag " + el);
           $("#devTypeTags").tagsinput("add", el);
         });
+
       }
     });
 
+    
     /* load main elements */
     $scope.loadManufacturers();
   });
