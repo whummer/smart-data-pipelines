@@ -44,42 +44,34 @@
                 <artifactId>maven-resources-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>copy-resources</id>
-                        <!-- here the phase you need -->
-                        <phase>validate</phase>
+                        <id>copy-resources-webapp</id>
+                        <phase>package</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target/classes</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <targetPath>${basedir}/target/classes/static</targetPath>
+                                    <directory>src/main/webapp</directory>
+                                    <filtering>true</filtering>
+                                    <excludes>
+                                        <exclude>*.xml</exclude>
+                                        <exclude>*.properties</exclude>
+                                        <exclude>Dockerfile</exclude>
+                                        <exclude>run.sh</exclude>
+                                    </excludes>
+                                </resource>
+                                <resource>
+                                    <targetPath>${basedir}/target/classes</targetPath>
+                                    <directory>src/main/resources</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <outputDirectory>${basedir}/target/classes</outputDirectory>
-                    <resources>
-                        <resource>
-                            <targetPath>${basedir}/target/classes/static</targetPath>
-                            <directory>src/main/webapp</directory>
-                            <filtering>true</filtering>
-                            <excludes>
-                                <exclude>*.xml</exclude>
-                                <exclude>*.properties</exclude>
-                            </excludes>
-                        </resource>
-                        <resource>
-                            <targetPath>${basedir}/target/classes</targetPath>
-                            <directory>src/main/resources</directory>
-                            <filtering>true</filtering>
-                        </resource>
-                        <resource>
-                            <targetPath>${basedir}/target/classes</targetPath>
-                            <directory>target/shared-resources</directory>
-                            <filtering>true</filtering>
-                            <excludes>
-                                <exclude>Dockerfile</exclude>
-                                <exclude>run.sh</exclude>
-                            </excludes>
-                        </resource>
-                    </resources>
-                </configuration>
             </plugin>
 
             <!-- Puts all dependent jars in target/lib folder -->
