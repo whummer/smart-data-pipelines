@@ -57,11 +57,10 @@
             }
 
             $scope.saveThingType = function () {
-              var thingType = $scope.shared.selectedThingType;
-              $scope.applyFeatures();
-              $scope.prepareModelValues($scope.shared.selectedThingType);
-              thingType = JSON.parse(JSON.stringify(thingType));
+              $scope.applyProperties();
+              var thingType = clone($scope.shared.selectedThingType);
               $scope.prepareModelValues(thingType);
+              console.log("!save", thingType);
               invokePUT($scope.http, $scope.thingTypesAPI,
                       JSON.stringify(thingType),
                       function (data, status, headers, config) {
@@ -74,7 +73,7 @@
               );
             };
 
-            $scope.applyFeatures = function () {
+            $scope.applyProperties = function () {
               /* apply tags */
               $scope.shared.selectedThingType.tags = $("#devTypeTags").tagsinput('items');
               /* apply features */
