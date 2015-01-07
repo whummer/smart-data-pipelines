@@ -36,22 +36,29 @@ sh.authInfo = {};
 if(window.RIOTS_USER_ID) {
 	sh.authInfo.userId = window.RIOTS_USER_ID;
 }
-if(window.RIOTS_APP_ID) {
-	sh.authInfo.appId = window.RIOTS_APP_ID;
+if(window.RIOTS_APP_KEY) {
+	sh.authInfo.appId = window.RIOTS_APP_KEY;
 }
 
-sh.thingType = function(id, callback) {
-	return object(appConfig.services.thingTypes.url + "/" + id, callback);
+/* methods for GETting data */
+
+sh.get = {};
+
+sh.thingType = sh.get.thingType = function(id, callback, doCacheResults) {
+	return callGET(appConfig.services.thingTypes.url + "/" + id, callback, doCacheResults);
 }
-sh.thingTypes = function(callback) {
+sh.apps = sh.get.apps = function(callback, doCacheResults) {
+	return callGET(appConfig.services.apps.url, callback, doCacheResults);
+}
+sh.thingTypes = sh.get.thingTypes = function(callback, doCacheResults) {
 	var maxThings = 100;
-	return object(appConfig.services.thingTypes.url + "?page=0&size=" + maxThings, callback);
+	return callGET(appConfig.services.thingTypes.url + "?page=0&size=" + maxThings, callback, doCacheResults);
 }
-sh.things = function(callback) {
+sh.things = sh.get.things = function(callback, doCacheResults) {
 	var maxThings = 100;
-	return object(appConfig.services.things.url + "?page=0&size=" + maxThings, callback);
+	return callGET(appConfig.services.things.url + "?page=0&size=" + maxThings, callback, doCacheResults);
 }
-sh.properties = function(thingType, callback) {
+sh.properties = sh.get.properties = function(thingType, callback, doCacheResults) {
 	var maxThings = 100;
 	if(!thingType.id) {
 		sh.thingType(thingType, function(thingTypeObj) {
@@ -84,9 +91,57 @@ sh.properties = function(thingType, callback) {
 	}
 }
 
-var object = function(url, callback) {
+
+/* methods for POSTing data */
+
+sh.add = {};
+
+sh.add.thingType = function(thingType, callback) {
+	return callPOST(appConfig.services.thingTypes.url, thingType, callback);
+}
+sh.add.app = function(app, callback) {
+	return callPOST(appConfig.services.apps.url, app, callback);
+}
+sh.add.thing = function(thing, callback) {
+	return callPOST(appConfig.services.things.url, thing, callback);
+}
+
+/* methods for PUTting data */
+
+sh.save = {};
+
+sh.save.thingType = function(thingType, callback) {
+	return callPUT(appConfig.services.thingTypes.url, thingType, callback);
+}
+sh.save.app = function(app, callback) {
+	return callPUT(appConfig.services.apps.url, app, callback);
+}
+sh.save.thing = function(thing, callback) {
+	return callPUT(appConfig.services.things.url, thing, callback);
+}
+
+/* methods for DELETEing data */
+
+sh.delete = {};
+
+sh.delete.thingType = function(thingType, callback) {
+	var id = thingType.id ? thingType.id : thingType;
+	return callDELETE(appConfig.services.thingTypes.url + "/" + id, callback);
+}
+sh.delete.app = function(app, callback) {
+	var id = app.id ? app.id : app;
+	return callDELETE(appConfig.services.apps.url + "/" + id, callback);
+}
+sh.delete.thing = function(thing, callback) {
+	var id = thing.id ? thing.id : thing;
+	return callDELETE(appConfig.services.things.url + "/" + id, callback);
+}
+
+/* UTILITY METHODS */
+
+var callGET = function(url, callback, doCacheResults) {
 	var m = mem();
-	if(m[url]) {
+	if(doCacheResults && m[url]) {
 		if(callback) {
 			setTimeout(function(){
 				callback(m[url]);
@@ -103,7 +158,6 @@ var object = function(url, callback) {
 	invokeGET(null, url,
 		function(data, status, headers, config) {
 			//console.log("data.result", typeof data.result, data.result, Array.isArray(data.result), url);
-
 			if(Array.isArray(data.result)) {
 				m[url] = data.result;
 			} else if(typeof data.result == "object") {
@@ -111,8 +165,6 @@ var object = function(url, callback) {
 			} else {
 				m[url] = data.result;
 			}
-
-			//console.log("callback", data.result);
 			if(callback) {
 				callback(data.result);
 			}
@@ -120,6 +172,37 @@ var object = function(url, callback) {
 	);
 	return entry;
 }
+
+var callPOSTorPUT = function(invokeFunc, url, body, callback) {
+	if(typeof body == "object") {
+		body = JSON.stringify(body);
+	}
+	invokeFunc(null, url, body,
+		function(data, status, headers, config) {
+			if(callback) {
+				callback(data, status, headers, config);
+			}
+		}
+	);
+}
+var callPOST = function(url, body, callback) {
+	return callPOSTorPUT(invokePOST, url, body, callback);
+}
+var callPUT = function(url, body, callback) {
+	return callPOSTorPUT(invokePUT, url, body, callback);
+}
+
+var callDELETE = function(url, callback) {
+	invokeDELETE(null, url,
+		function(data, status, headers, config) {
+			if(callback) {
+				callback(data, status, headers, config);
+			}
+		}
+	);
+}
+
+/* */
 
 var mem = sh.mem = function() {
 	if(window.rootScope) {
@@ -147,7 +230,7 @@ var connectWebsocket = function(onOpenCallback) {
 			this.websocket = ws = new WebSocket(wsURL, 
 				authInfo.userId + "~" + authInfo.appId);
 		} else {
-			throw "Please provide RIOTS_USER_ID and RIOTS_APP_ID variables.";
+			throw "Please provide RIOTS_USER_ID and RIOTS_APP_KEY variables.";
 		}
 	}
 

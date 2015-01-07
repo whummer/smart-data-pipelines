@@ -29,6 +29,7 @@ public class WebappServiceStarter extends SpringBootServletInitializer {
 	    filterRegBean.addInitParameter("confPath", "/urlrewrite.xml");
 	    return filterRegBean;
 	}
+
 	public static void main(String[] args) {
 		if(System.getProperty("RIOTS_LOG_DIR") == null) {
 			System.setProperty("RIOTS_LOG_DIR", "log");
@@ -40,6 +41,5 @@ public class WebappServiceStarter extends SpringBootServletInitializer {
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
         return application.sources(WebappServiceStarter.class);
     }
-
 
 }

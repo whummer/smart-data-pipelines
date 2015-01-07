@@ -31,13 +31,12 @@ public class GatewayServiceStarter {
 	    FilterRegistrationBean filterRegBean = new FilterRegistrationBean();
 	    RiotsUrlRewriteFilter filter = new RiotsUrlRewriteFilter();
 	    filterRegBean.setFilter(filter);
-	    filterRegBean.addInitParameter("confPath", "/WEB-INF/urlrewrite.xml");
+	    filterRegBean.addInitParameter("confPath", "/urlrewrite.xml");
 	    return filterRegBean;
 	}
 
 	/**
-	 * URL rewriting filter. See file urlrewrite.xml for configuration.
-	 * @return
+	 * Simple statistics filter.
 	 */
 	@Bean
 	public FilterRegistrationBean statsFilter(){

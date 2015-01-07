@@ -18,6 +18,12 @@ define([], function() {
                     appRoot + '/scripts/controllers/HomeViewController.js',
                 ]
             },
+            '/profile': {
+                templateUrl: appRoot + '/views/profile.html',
+                dependencies: [
+                    appRoot + '/scripts/controllers/ProfileViewController.js',
+                ]
+            },
             '/meta': {
                 templateUrl: appRoot + '/views/metadata.html',
                 dependencies: [

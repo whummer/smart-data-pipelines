@@ -17,7 +17,7 @@
 
     <jaxrs:server address="/v1" id="api-v1">
         <jaxrs:serviceBeans>
-<!--             <ref bean="environments"/> -->
+            <ref bean="applicationsServiceImpl"/>
             <ref bean="thingsServiceImpl"/>
             <ref bean="thingDataServiceImpl"/>
             <ref bean="driversServiceImpl"/>

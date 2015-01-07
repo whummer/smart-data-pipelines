@@ -179,16 +179,6 @@ define(['app'], function(app) {
 					eventBus.publish("init.websocket.done", ws);
 				}, $scope.onWebsocketUpdate);
 			}
-			
-			var loadUserInfo = function() {
-				invokeGET($http, $scope.usersAPI + "/me", 
-				function(data, status, headers, config) {
-					$scope.userInfo = data.result;
-				});
-				$scope.userId = "";
-			}
-
-			loadUserInfo();
 
 			/* add event handlers */
 			$scope.addClickHandler('btnAddScenario', $scope.addScenario);

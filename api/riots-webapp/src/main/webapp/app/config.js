@@ -6,9 +6,9 @@ var appConfig = {
 	bowerRootPath: "/bower_components",
 	services: {
 		core: { url: "/api/v1" },
+		apps: { url: "/api/v1/apps" },
 		thingTypes: { url: "/api/v1/catalog/thing-types" },
 		manufacturers: { url: "/api/v1/catalog/manufacturers" },
-		thingTypeProps: { url: "/api/v1/thing-types/properties" },
 		drivers: { url: "/api/v1/drivers" },
 		things: { url: "/api/v1/things" },
 		categories: { url: "/api/v1/categories" },

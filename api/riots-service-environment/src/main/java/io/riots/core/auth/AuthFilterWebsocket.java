@@ -42,7 +42,7 @@ public class AuthFilterWebsocket extends AuthFilterBase {
 	}
 
 	@Override
-	protected boolean authenticateRiotsApp(String userId, String appId) {
+	protected AuthInfo authenticateRiotsApp(String userId, String appId) {
 		return authenticateRiotsApp(clientFactory, userId, appId);
 	}
 	
