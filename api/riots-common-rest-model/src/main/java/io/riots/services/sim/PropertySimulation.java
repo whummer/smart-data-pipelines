@@ -47,9 +47,6 @@ public abstract class PropertySimulation<T> {
 	public String getName() {
 		return name;
 	}
-//	public String getId() {
-//		return id;
-//	}
 	public double getStepInterval() {
 		return stepInterval;
 	}

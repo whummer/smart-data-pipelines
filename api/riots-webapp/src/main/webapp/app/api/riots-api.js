@@ -58,8 +58,12 @@ sh.thingTypes = sh.get.thingTypes = function(callback, doCacheResults) {
 	return callGET(appConfig.services.thingTypes.url + "?page=0&size=" + maxThings, callback, doCacheResults);
 }
 sh.things = sh.get.things = function(callback, doCacheResults) {
-	var maxThings = 100;
-	return callGET(appConfig.services.things.url + "?page=0&size=" + maxThings, callback, doCacheResults);
+	var maxResults = 100;
+	return callGET(appConfig.services.things.url + "?page=0&size=" + maxResults, callback, doCacheResults);
+}
+sh.simulationTypes = sh.get.simulationTypes = function(callback, doCacheResults) {
+	var maxResults = 100;
+	return callGET(appConfig.services.simulationTypes.url + "?page=0&size=" + maxResults, callback, doCacheResults);
 }
 sh.properties = sh.get.properties = function(thingType, callback, doCacheResults) {
 	var maxThings = 100;
@@ -108,6 +112,9 @@ sh.add.app = function(app, callback) {
 sh.add.thing = function(thing, callback) {
 	return callPOST(appConfig.services.things.url, thing, callback);
 }
+sh.add.simulationType = function(simType, callback) {
+	return callPOST(appConfig.services.simulationTypes.url, simType, callback);
+}
 
 /* methods for PUTting data */
 
@@ -121,6 +128,9 @@ sh.save.app = function(app, callback) {
 }
 sh.save.thing = function(thing, callback) {
 	return callPUT(appConfig.services.things.url, thing, callback);
+}
+sh.save.simulationType = function(simType, callback) {
+	return callPUT(appConfig.services.simulationTypes.url, simType, callback);
 }
 
 /* methods for DELETEing data */
@@ -138,6 +148,10 @@ sh.delete.app = function(app, callback) {
 sh.delete.thing = function(thing, callback) {
 	var id = thing.id ? thing.id : thing;
 	return callDELETE(appConfig.services.things.url + "/" + id, callback);
+}
+sh.delete.simulationType = function(simType, callback) {
+	var id = simType.id ? simType.id : simType;
+	return callDELETE(appConfig.services.simulationTypes.url + "/" + id, callback);
 }
 
 /* UTILITY METHODS */

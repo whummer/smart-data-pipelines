@@ -1,0 +1,332 @@
+<section ng-controller="SimsController">
+	<div>
+
+		<div style="margin-bottom: 10px;" class="text-right">
+			<button class="btn btn-primary btn-sm" id="btnAddSim">
+				<span class="glyphicon glyphicon-plus"></span> Add New Simulation
+			</button>
+			<button class="btn btn-warning btn-sm" id="btnDeleteSim">
+				<span class="glyphicon glyphicon-minus"></span> Delete Simulation
+			</button>
+		</div>
+
+		<!-- table view -->
+		<div id="simTable" ui-grid="gridConfig" ui-grid-selection ui-grid-edit
+			ui-grid-row-edit class="grid"></div>
+
+		<div ng-show="shared.selectedSim">
+
+			<form class="form-horizontal" role="form" style="text-align: left">
+
+				<!-- sim name -->
+				<div class="form-group">
+					<label for="inputSimName" class="col-sm-3 control-label">Simulation
+						Name</label>
+					<div class="col-sm-9">
+						<input id="inputSimName" class="form-control input-sm"
+							ng-model="shared.selectedSim.name" />
+					</div>
+				</div>
+
+				<!-- sim creation date -->
+				<div class="form-group">
+					<label for="inputSimDate" class="col-sm-3 control-label">Creation
+						Date</label>
+					<div class="col-sm-9">
+						<input id="inputSimDate" class="form-control input-sm"
+							ng-model="shared.selectedSim.created" disabled="disabled" />
+					</div>
+				</div>
+
+				<!-- sim parameters -->
+				<div class="form-group">
+					<label class="col-sm-3 control-label">Parameters</label>
+					<div class="col-sm-9">
+						<table>
+							<tr
+								ng-repeat="n in range(0, shared.selectedSim.parameters.length - 1)">
+								<td><input ng-model="shared.selectedSim.parameters[n].name"
+									class="propSimValueKey form-control input-sm" /></td>
+								<td><input type="checkbox"
+									ng-model="shared.selectedSim.parameters[n].required" />
+									required</td>
+							</tr>
+						</table>
+						<button class="btn btn-default btn-sm" id="btnAddSimParam">Add
+							Value</button>
+					</div>
+				</div>
+
+				<!-- sim type -->
+				<div class="form-group">
+					<label for="selSimType" class="col-sm-3 control-label">Simulation
+						Type</label>
+					<div class="col-sm-9">
+						<select id="selSimType" class="form-control input-sm"
+							ng-model="shared.selectedSim.simulation.type">
+							<option value="GPS">GPS Trace</option>
+							<option value="RANDOM">Random</option>
+							<option value="POINTS">Explicit Points</option>
+							<option value="FUNCTIONBASED">Mathematical Function</option>
+						</select>
+					</div>
+				</div>
+
+				<!-- GPS stuff -->
+				<div ng-show="shared.selectedSim.simulation.type == 'GPS'">
+
+					<!-- location -->
+					<div class="form-group">
+						<label class="col-sm-3 control-label">Location (lat,lon):</label>
+						<div class="col-sm-9">
+							<input id="latitude" placeholder="latitude"
+								ng-model="shared.selectedSim.simulation.latitude"
+								class="form-control input-sm" style="width: 70px" />, <input
+								id="longitude" placeholder="longitude"
+								ng-model="shared.selectedSim.simulation.longitude"
+								class="form-control input-sm" style="width: 70px" />
+						</div>
+					</div>
+
+					<!-- diameter -->
+					<div class="form-group">
+						<label for="inputDiameter" class="col-sm-3 control-label">Area
+							Diameter (km):</label>
+						<div class="col-sm-9">
+							<input id="inputDiameter"
+								ng-model="shared.selectedSim.simulation.diameter"
+								class="form-control input-sm" style="width: 70px" />
+						</div>
+					</div>
+
+					<!-- speed -->
+					<div class="form-group">
+						<label for="inputSpeed" class="col-sm-3 control-label">Max.
+							Speed (km/h):</label>
+						<div class="col-sm-9">
+							<input id="inputSpeed"
+								ng-model="shared.selectedSim.simulation.maxSpeed"
+								class="form-control input-sm" style="width: 70px" />
+						</div>
+					</div>
+				</div>
+
+				<!-- start/end time -->
+				<div class="form-group"
+					ng-show="shared.selectedSim.simulation.type != 'POINTS'">
+					<label class="col-sm-3 control-label">Start/End Time:</label>
+					<div class="col-sm-9">
+						<input id="propSimStart" value="0"
+							ng-model="shared.selectedSim.simulation.startTime"
+							class="form-control input-sm" style="width: 50px" /> / <input
+							id="propSimEnd" value="10"
+							ng-model="shared.selectedSim.simulation.endTime"
+							class="form-control input-sm" style="width: 50px" />
+					</div>
+				</div>
+
+				<!-- simulation steps -->
+				<div class="form-group"
+					ng-show="shared.selectedSim.simulation.type != 'POINTS'">
+					<label for="inputSimStep" class="col-sm-3 control-label">Step
+						Interval:</label>
+					<div class="col-sm-9">
+						<input id="inputSimStep"
+							ng-model="shared.selectedSim.simulation.stepInterval"
+							class="form-control input-sm" style="width: 50px" />
+					</div>
+				</div>
+
+				<!-- range -->
+				<div class="form-group"
+					ng-show="shared.selectedSim.simulation.type == 'RANDOM'">
+					<label class="col-sm-3 control-label">Value Range:</label>
+					<div class="col-sm-9">
+						<input id="propSimValMin"
+							ng-model="shared.selectedSim.simulation.minValue"
+							class="form-control input-sm" style="width: 50px" /> - <input
+							id="propSimValMax"
+							ng-model="shared.selectedSim.simulation.maxValue"
+							class="form-control input-sm" style="width: 50px" />
+					</div>
+				</div>
+
+				<!-- function -->
+				<div class="form-group"
+					ng-show="shared.selectedSim.simulation.type == 'FUNCTIONBASED'">
+					<label for="inputSimFunc" class="col-sm-3 control-label">Function
+						f(x):</label>
+					<div class="col-sm-9">
+						<input id="inputSimFunc"
+							ng-model="shared.selectedSim.simulation.function"
+							class="form-control input-sm"
+							data-dojo-props="style:'width: 300px;'" />
+					</div>
+				</div>
+
+				<!-- points -->
+				<div class="form-group"
+					ng-show="shared.selectedSim.simulation.type == 'POINTS'">
+					<label for="inputSimFunc" class="col-sm-3 control-label">Points:</label>
+					<div class="col-sm-9">
+						<table>
+							<tr
+								ng-repeat="n in range(0, shared.selectedSim.simulation.values.length - 1)">
+								<td>f(</td>
+								<td><input
+									ng-model="shared.selectedSim.simulation.values[n].time.time"
+									class="propSimValueKey form-control input-sm" /></td>
+								<td>) =</td>
+								<td><input
+									ng-model="shared.selectedSim.simulation.values[n].property.value"
+									class="propSimValueValue form-control input-sm" /></td>
+							</tr>
+						</table>
+						<button class="btn btn-default btn-sm"
+							data-dojo-props="iconClass:'icon-plus-sign'" id="btnAddSimValue">Add
+							Value</button>
+					</div>
+				</div>
+
+				<!-- save -->
+				<div class="form-group">
+					<label for="propName" class="col-sm-3 control-label"></label>
+					<div class="col-sm-9">
+						<button class="btn btn-default btn-sm" id="btnPreviewSim">Preview
+							Curve</button>
+						<button class="btn btn-primary btn-sm" id="btnSaveSim">Save
+							Changes</button>
+					</div>
+				</div>
+
+			</form>
+		</div>
+	</div>
+</section>
+<style type="text/css">
+#simTable {
+	height: 200px;
+}
+</style>
+<script type="text/javascript">
+
+var app = angular.module("app");
+app.controller('SimsController', function ($scope, $http, $compile, $routeParams, $log) {
+	AppController($scope, $http, $compile);
+
+	$scope.gridConfig = {};
+
+	var initTable = function () {
+		var columnsConfig = [
+			{label: "Name", field: "name", sortable: true},
+			{label: "Data Type", field: PROPERTY_TYPE},
+			{label: "Value Domain Type", field: "valueDomain.type"}
+		];
+		$scope.gridConfig.data = [];
+		renderUITable($scope.gridConfig, "simTable", columnsConfig,
+			function (event) {
+				if (event.type == "dgrid-select") {
+					$scope.$apply(function () {
+						$scope.shared.selectedSim = event.rows[0].data;
+					});
+				} else if (event.type == "dgrid-deselect") {
+					$scope.$apply(function () {
+						$scope.shared.selectedSim = null;
+					});
+				}
+			}
+		);
+	};
+
+	var loadTable = function() {
+		riots.simulationTypes(function(sims){
+			$scope.gridConfig.data = sims;
+		});
+	}
+
+	var addSim = function () {
+		var newItem = {name: "New Simulation"};
+		riots.add.simulationType(newItem, function(newSim) {
+			loadTable();
+		});
+	};
+	var deleteSim = function () {
+		riots.delete.simulationType($scope.shared.selectedSim, function() {
+			$scope.shared.selectedSim = null;
+			loadTable();
+		});
+	};
+
+	var saveSim = function () {
+		var sim = clone($scope.shared.selectedSim);
+		delete sim["$$hashKey"];
+		constructSimValues(sim);
+		riots.save.simulationType(sim);
+	};
+
+	var previewSim = function() {
+		var request = constructSimValues();
+		invokePOST($http, $scope.simAPI + "/curve",
+			JSON.stringify(request),
+			function(data, status, headers, config) {
+				eventBus.publish("update.chart.propSim", data.result);
+			}
+		);
+	}
+
+	var addSimParam = function() {
+		var item = $scope.shared.selectedSim;
+		if(!item.parameters) item.parameters = [];
+		$scope.$apply(function(){
+			item.parameters.push({});
+		});
+	}
+
+	var addSimValue = function() {
+		var item = $scope.shared.selectedSim.simulation;
+		if(!item.values) item.values = [];
+		$scope.$apply(function(){
+			item.values.push("");
+		});
+	}
+
+	var constructSimValues = function(sim) {
+		if(!sim) {
+			sim = $scope.shared.selectedSim;
+		}
+		var item = sim.simulation;
+		if(item.type != "GPS") {
+			delete item["latitude"];
+			delete item["longitude"];
+			delete item["diameter"];
+			delete item["maxSpeed"];
+		}
+		if(item.type != "RANDOM") {
+			delete item["minValue"];
+			delete item["maxValue"];
+		}
+		if(item.type != "FUNCTIONBASED") {
+			delete item["function"];
+		}
+		if(item.type != "POINTS") {
+			delete item["values"];
+		}
+		delete item["$$hashKey"];
+		return item;
+	}
+
+	/* add event listeners */
+	$scope.addClickHandler("btnSaveSim", saveSim);
+	$scope.addClickHandler("btnAddSim", addSim);
+	$scope.addClickHandler("btnDeleteSim", deleteSim);
+	$scope.addClickHandler("btnPreviewSim", previewSim);
+	$scope.addClickHandler("btnAddSimParam", addSimParam);
+	$scope.addClickHandler("btnAddSimValue", addSimValue);
+
+	/* render main elements */
+	initTable();
+	loadTable();
+
+});
+
+</script>

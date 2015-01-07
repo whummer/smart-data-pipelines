@@ -73,7 +73,6 @@ public class Simulation implements ObjectCreated, ObjectIdentifiable {
 	public List<String> getThings() {
 		return things;
 	}
-
 	@Override
 	public String toString() {
 		return "Simulation [simulationProperties=" + simulationProperties + "]";

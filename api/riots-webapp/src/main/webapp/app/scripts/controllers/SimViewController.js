@@ -6,6 +6,8 @@ define(['app'], function(app) {
 			AppController($scope, $http, $compile);
 			//World3DController($scope, $http, $compile);
 
+            $scope.highlightMenuItem("#menuItemBehaviors");
+
 			rootScope.menuItemActiveClass = { sim: "menuItemActive" }
 			rootScope.worldViewEditMode = false;
 			$scope.scenariosList = [];

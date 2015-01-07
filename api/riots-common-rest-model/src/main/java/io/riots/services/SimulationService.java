@@ -4,6 +4,7 @@ import io.riots.services.scenario.PropertyValue;
 import io.riots.services.sim.PropertySimulation;
 import io.riots.services.sim.Simulation;
 import io.riots.services.sim.SimulationRun;
+import io.riots.services.sim.SimulationType;
 import io.riots.services.sim.TimelineValues;
 import io.riots.services.sim.TrafficTraces;
 
@@ -93,6 +94,66 @@ public interface SimulationService {
             @ApiResponse(code = 404, message = "No such Simulation")
     })
     public boolean deleteSimulation(@PathParam("id") String itemId);
+
+    /* SIMULATIONS */
+
+    @GET
+    @Path("/types")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Retrieve all SimulationTypes",
+            notes = "Retrieve all SimulationTypes including associated details.",
+            response = SimulationType.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "No entity with given ID found"),
+            @ApiResponse(code = 400, message = "Paging parameters are malformed")
+    })
+    public List<SimulationType> listSimTypes(
+    		@QueryParam("page") int page, @QueryParam("size") int size);
+
+    @GET
+    @Path("/types/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Retrieve a SimulationType",
+            notes = "Retrieve SimulationType by its ID.",
+            response = SimulationType.class)
+    @ApiResponses(value = {@ApiResponse(code = 404, message = "No SimulationType with given ID found")})
+    public SimulationType retrieveSimType(@PathParam("id") String id);
+
+    @POST
+    @Path("/types")
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON})
+    @ApiOperation(value = "Created a new SimulationType.",
+            notes = "Create a new SimulationType."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "Malformed SimulationType provided. See error message for details")
+    })
+    public SimulationType createSimType(SimulationType item);
+
+    @PUT
+    @Path("/types")
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON})
+    @ApiOperation(value = "Update a SimulationType.",
+            notes = "Update the details of a SimulationType."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "Malformed SimulationType provided. See error message for details")
+    })
+    public boolean updateSimType(SimulationType item);
+
+    @DELETE
+    @Path("/types/{id}")
+    @Produces({MediaType.APPLICATION_JSON})
+    @ApiOperation(value = "Delete a SimulationType",
+            notes = "Delete an existing SimulationType by its ID. Upon success, HTTP 200 is returned."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "No such SimulationType")
+    })
+    public boolean deleteSimType(@PathParam("id") String itemId);
+
 
     /* DATA/CURVE GENERATORS*/
 

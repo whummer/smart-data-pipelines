@@ -2,9 +2,11 @@ package io.riots.api.services;
 
 import io.riots.api.handlers.command.PropertySimulationCommand;
 import io.riots.api.handlers.command.SimulationCommand;
+import io.riots.api.handlers.command.SimulationTypeCommand;
 import io.riots.api.handlers.query.Paged;
 import io.riots.api.handlers.query.PropertySimulationQuery;
 import io.riots.api.handlers.query.SimulationQuery;
+import io.riots.api.handlers.query.SimulationTypeQuery;
 import io.riots.api.util.ServiceUtil;
 import io.riots.core.auth.AuthHeaders;
 import io.riots.core.sim.PropertyValueGenerator;
@@ -17,6 +19,7 @@ import io.riots.services.sim.PropertySimulation;
 import io.riots.services.sim.PropertySimulationGPS;
 import io.riots.services.sim.Simulation;
 import io.riots.services.sim.SimulationRun;
+import io.riots.services.sim.SimulationType;
 import io.riots.services.sim.Time;
 import io.riots.services.sim.TimelineValues;
 import io.riots.services.sim.TimelineValues.TimedValue;
@@ -48,10 +51,14 @@ public class SimulationServiceImpl implements SimulationService {
     @Autowired
     SimulationQuery simulationQuery;
     @Autowired
+    SimulationTypeQuery simTypeQuery;
+    @Autowired
     PropertySimulationQuery propSimQuery;
 
     @Autowired
     SimulationCommand simulationCommand;
+    @Autowired
+    SimulationTypeCommand simTypeCommand;
     @Autowired
     PropertySimulationCommand propSimCommand;
 
@@ -95,7 +102,6 @@ public class SimulationServiceImpl implements SimulationService {
     @Override
     @Timed @ExceptionMetered
     public boolean update(Simulation item) {
-    	System.out.println("Updating item: " + item);
         item = simulationCommand.update(item);
 		return true;
     }
@@ -106,6 +112,46 @@ public class SimulationServiceImpl implements SimulationService {
         simulationCommand.delete(itemId);
         return true;
     }
+
+    /* SIMULATION TYPES */
+
+	@Override
+    @Timed @ExceptionMetered
+	public List<SimulationType> listSimTypes(int page, int size) {
+    	List<SimulationType> result = simTypeQuery.query(new Paged(page, size));
+        return result;
+	}
+
+	@Override
+    @Timed @ExceptionMetered
+	public SimulationType retrieveSimType(String id) {
+        return simTypeQuery.single(id);
+	}
+
+	@Override
+    @Timed @ExceptionMetered
+	public SimulationType createSimType(SimulationType item) {
+    	item.setCreatorId(authHeaders.getRequestingUser(req).getId());
+        item = simTypeCommand.create(item);
+        URL location = ServiceUtil.getHref(String.format("simulations/types/%s", item.getId()));
+        ServiceUtil.setLocationHeader(context, location);
+        ServiceUtil.setResponseStatus(context, HttpServletResponse.SC_CREATED);
+        return item;
+	}
+
+	@Override
+    @Timed @ExceptionMetered
+	public boolean updateSimType(SimulationType item) {
+        item = simTypeCommand.update(item);
+		return true;
+	}
+
+	@Override
+    @Timed @ExceptionMetered
+	public boolean deleteSimType(String itemId) {
+        simTypeCommand.delete(itemId);
+		return true;
+	}
 
     /* DATA/CURVE GENERATORS*/
 
