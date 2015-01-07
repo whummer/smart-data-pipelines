@@ -38,11 +38,15 @@ app.controller('MainCtrl', function ($scope) {
 		if(!lat || !lng) return;
 		if(!thing.marker) {
 			var options = {};
-			thing.marker = L.marker([lat, lng], options).
-				bindPopup(thing.name);
+			thing.marker = L.marker([lat, lng], options);
 			$scope.map.addLayer(thing.marker);
+			if(!$scope.map.options.__markers.length) {
+				$scope.map.panTo(new L.LatLng(lat, lng));
+			}
+			$scope.map.options.__markers.push(thing.marker);
 		}
 		thing.marker.setLatLng([lat, lng]);
+		thing.marker.bindPopup(thing.name + " (" + lat + "," + lng + ")");
 	}
 
 	var subscribeProp = function(thing, propName) {
@@ -59,12 +63,11 @@ app.controller('MainCtrl', function ($scope) {
 					$.extend(fences, data.value);
 					if($scope.geoFence && $scope.geoFence.id) {
 						if(typeof fences[$scope.geoFence.id] != "undefined") {
-							var isInFence = thing.isInCurrentGeoFence = fences[$scope.geoFence.id];
-							console.log("isInFence", isInFence);
+							var isInFence = thing.properties.isInCurrentGeoFence = fences[$scope.geoFence.id];
 							if(isInFence) {
-								thing.marker.setIcon(getIcon("marker_green.png"));
+								if(thing.marker) thing.marker.setIcon(getIcon("marker_green.png"));
 							} else {
-								thing.marker.setIcon(getIcon("marker_pink.png"));
+								if(thing.marker) thing.marker.setIcon(getIcon("marker_pink.png"));
 							}
 						}
 					} else if(thing.marker) {
@@ -80,9 +83,9 @@ app.controller('MainCtrl', function ($scope) {
 	}
 
 	var getIcon = function(url) {
-		url = "/img/markers/" + url;
+		var theURL = "/img/markers/" + url;
 		var icon = L.icon({
-		    iconUrl: url,
+		    iconUrl: theURL,
 		    iconSize: [30, 30],
 		    iconAnchor: [15, 15]
 		});
@@ -104,7 +107,6 @@ app.controller('MainCtrl', function ($scope) {
 						$scope.$apply(function() {
 							thing.img = thingType[IMAGE_URLS][0];
 						});
-						//console.log(thingType, thing.img, thing.name);
 					});
 				});
 			}
@@ -116,6 +118,12 @@ app.controller('MainCtrl', function ($scope) {
 		if($scope.geoFence && $scope.geoFence.id) {
 			riots.util.removeGeoFence($scope.geoFence.id);
 		}
+		$.each($scope.things, function(idx,el) {
+			delete el.properties.isInCurrentGeoFence;
+			if(el.marker) {
+				el.marker.setIcon(getIcon("marker_azure.png"));
+			}
+		});
 		var center = $scope.map.getCenter();
 		$scope.geoFence = {
 			center: {

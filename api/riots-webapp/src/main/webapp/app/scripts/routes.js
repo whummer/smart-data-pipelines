@@ -18,6 +18,26 @@ define([], function() {
                     appRoot + '/scripts/controllers/HomeViewController.js',
                 ]
             },
+            '/sim': {
+                templateUrl: appRoot + '/views/sim.html',
+                dependencies: [
+                    appRoot + '/scripts/controllers/SimViewController.js',
+                ]
+            },
+            '/apps': {
+                templateUrl: appRoot + '/views/apps.html',
+                dependencies: [
+                    appRoot + '/scripts/controllers/AppsViewController.js',
+                ]
+            },
+            '/apps/:appId': {
+               	templateUrl: appRoot + '/views/world.html',
+                dependencies: [
+                    //appRoot + '/scripts/controllers/World3DController.js',
+                    appRoot + '/scripts/controllers/WorldViewController.js',
+                    appRoot + '/scripts/controllers/SimViewController.js'
+                ]
+            },
             '/profile': {
                 templateUrl: appRoot + '/views/profile.html',
                 dependencies: [
@@ -50,7 +70,7 @@ define([], function() {
                     appRoot + '/scripts/controllers/SimViewController.js'
                 ]
             },
-            '/world/:thingID': {
+            '/world/:thingId': {
                 templateUrl: appRoot + '/views/world_thing.html',
                 dependencies: [
                     //appRoot + '/scripts/controllers/World3DController.js',

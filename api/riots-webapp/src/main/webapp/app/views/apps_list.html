@@ -1,6 +1,7 @@
 <section ng-controller="AppsController" id="devCatalogSection">
     <div>
     	
+    	<!--
         <div style="margin-bottom: 10px;" class="text-right">
             <button class="btn btn-primary btn-sm" id="btnAddApp">
                 <span class="glyphicon glyphicon-plus"></span> Add New Application
@@ -9,12 +10,15 @@
                     class="glyphicon glyphicon-minus"></span> Delete Application
             </button>
         </div>
+		-->
 
         <!-- table view for apps -->
+        <!-- TODO remove 
         <div id="AppsTable" ui-grid="gridConfig" ui-grid-selection ui-grid-edit ui-grid-row-edit
              class="grid"></div>
+        -->
 
-        <div ng-show="selectedApp">
+        <div ng-show="shared.selectedApplication">
 
             <form class="form-horizontal" role="form" style="text-align: left">
 
@@ -22,7 +26,15 @@
                 <div class="form-group">
                     <label for="inputAppName" class="col-sm-3 control-label">Application Name</label>
                     <div class="col-sm-9">
-                        <input id="inputAppName" class="form-control input-sm" ng-model="selectedApp.name"/>
+                        <input id="inputAppName" class="form-control input-sm" ng-model="shared.selectedApplication.name"/>
+                    </div>
+                </div>
+
+                <!-- app name -->
+                <div class="form-group">
+                    <label for="inputAppName" class="col-sm-3 control-label">Creation Date</label>
+                    <div class="col-sm-9">
+                        <input id="inputAppName" class="form-control input-sm" disabled="disabled"/>
                     </div>
                 </div>
 
@@ -30,7 +42,7 @@
                 <div class="form-group">
                     <label for="inputAppKey" class="col-sm-3 control-label">Application Key</label>
                     <div class="col-sm-9">
-                        <input id="inputAppKey" class="form-control input-sm" ng-model="selectedApp.appKey" disabled="disabled"/>
+                        <input id="inputAppKey" class="form-control input-sm" ng-model="shared.selectedApplication.appKey" disabled="disabled"/>
                     </div>
                 </div>
 
@@ -39,7 +51,7 @@
                     <label for="propName" class="col-sm-3 control-label">JavaScript Code</label>
                     <div class="col-sm-9">
 <pre>window.RIOTS_USER_ID = "{{userInfo.id}}"
-window.RIOTS_APP_KEY = "{{selectedApp.appKey}}"</pre>
+window.RIOTS_APP_KEY = "{{shared.selectedApplication.appKey}}"</pre>
                     </div>
                 </div>
 
@@ -66,67 +78,19 @@ var app = angular.module("app");
 app.controller('AppsController', function ($scope, $http, $compile, $routeParams, $log) {
     AppController($scope, $http, $compile);
 
-    $scope.selectedApp = null;
-    $scope.gridConfig = {};
-
-    var initAppTable = function () {
-        var columnsConfig = [
-            {label: "Name", field: "name", sortable: true},
-            {label: "Creation Date", field: "created"},
-            {label: "App Key", field: "appKey"}
-        ];
-        $scope.gridConfig.data = [];
-        renderUITable($scope.gridConfig, "AppsTable", columnsConfig,
-	        function (event) {
-	            if (event.type == "dgrid-select") {
-	                $scope.$apply(function () {
-	                    $scope.selectedApp = event.rows[0].data;
-	                });
-	            } else if (event.type == "dgrid-deselect") {
-	                $scope.$apply(function () {
-	                    $scope.selectedApp = null;
-	                });
-	            }
-	        }
-        );
-    };
-
-	var buildAppTable = function(apps) {
-		$scope.gridConfig.data = apps;
-	}
-
-    var loadAppTable = function () {
-    	riots.apps(function(apps) {
-    		console.log("buildAppTable", apps);
-    		buildAppTable(apps);
-    	});
-    };
-
-    var addApp = function () {
-    	var newApp = {name: "New Application"};
-    	riots.add.app(newApp, function(newApp) {
-    		loadAppTable();
-    	});
-    };
     var deleteApp = function () {
     	riots.delete.app($scope.selectedApp, function(newApp) {
     		loadAppTable();
     	});
     };
     var saveApp = function () {
-    	var app = clone($scope.selectedApp);
+    	var app = clone($scope.shared.selectedApplication);
     	delete app["$$hashKey"];
     	riots.save.app(app);
     };
 
 	/* add event listeners */
-    $scope.addClickHandler("btnAddApp", addApp);
-    $scope.addClickHandler("btnDeleteApp", deleteApp);
     $scope.addClickHandler("btnSaveApp", saveApp);
-
-	/* render main elements */
-    initAppTable();
-    loadAppTable();
 
 });
 

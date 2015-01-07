@@ -44,11 +44,14 @@ if(window.RIOTS_APP_KEY) {
 
 sh.get = {};
 
-sh.thingType = sh.get.thingType = function(id, callback, doCacheResults) {
-	return callGET(appConfig.services.thingTypes.url + "/" + id, callback, doCacheResults);
+sh.app = sh.get.app = function(id, callback, doCacheResults) {
+	return callGET(appConfig.services.apps.url + "/" + id, callback, doCacheResults);
 }
 sh.apps = sh.get.apps = function(callback, doCacheResults) {
 	return callGET(appConfig.services.apps.url, callback, doCacheResults);
+}
+sh.thingType = sh.get.thingType = function(id, callback, doCacheResults) {
+	return callGET(appConfig.services.thingTypes.url + "/" + id, callback, doCacheResults);
 }
 sh.thingTypes = sh.get.thingTypes = function(callback, doCacheResults) {
 	var maxThings = 100;
@@ -72,7 +75,7 @@ sh.properties = sh.get.properties = function(thingType, callback, doCacheResults
 			sh.properties(el, callback);
 		});
 	}
-	callback(thingType.properties);
+	callback(thingType.properties, thingType);
 	/* recurse into sub-properties */
 	if(thingType.properties) {
 		var recurseProps = function(prop, callback, propNamePrefix) {
@@ -80,7 +83,7 @@ sh.properties = sh.get.properties = function(thingType, callback, doCacheResults
 				$.each(prop.children, function(idx,subProp) {
 					subProp = clone(subProp);
 					subProp.name = propNamePrefix + subProp.name;
-					callback([subProp]);
+					callback([subProp], thingType);
 					recurseProps(subProp, callback, subProp.name + ".");
 				});
 			}

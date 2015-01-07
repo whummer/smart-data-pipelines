@@ -78,9 +78,9 @@ var requirejsAppConfig = {
         	location: appConfig['bowerRootPath'] + '/angular-hotkeys',
         	main: 'build/hotkeys.min'
         }, {
-        	name: 'angular-keyboard',
-        	location: appConfig['bowerRootPath'] + '/angular-keyboard',
-        	main: 'keyboard.min'
+            name: 'chartjs',
+            location: appConfig['bowerRootPath'] + '/chartjs/',
+        	main: 'Chart.min'
         }, {
         	name: 'd3',
         	location: appConfig['bowerRootPath'] + '/d3',

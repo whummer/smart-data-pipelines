@@ -8,6 +8,9 @@ define(['app'], function(app) {
 		require(["leaflet"],
 		function (L) {
 
+			/* leaflet initialization */
+			L.Icon.Default.imagePath = 'img/markers/';
+
 			$scope.udateIntervalMS = "1000";
 			var state = {};
 			var trackedProps = [

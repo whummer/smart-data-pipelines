@@ -67,8 +67,8 @@ public class GeoPositionListener {
 			PropertyValue propValue = new PropertyValue();
 			propValue.setPropertyName(PROPERTY_GEO_FENCE);
 			propValue.setThingId(prop.getThingId());
-			Map<String,String> value = new HashMap<String, String>();
-			value.put(gf.getId(), "" + range);
+			Map<String,Object> value = new HashMap<String,Object>();
+			value.put(gf.getId(), range);
 			propValue.setValue(value);
 			EventBroker.sendChangeNotifyMessage(template, propValue);
 		}
@@ -78,10 +78,9 @@ public class GeoPositionListener {
 		return isWithinRange(l, gf.getCenter(), gf.getDiameter());
 	}
 	private boolean isWithinRange(Location l, Location center, double rangeInMeters) {
-		double range = convertMetersToDegrees(rangeInMeters);
-		// TODO currently rectangular, make "circular"?
-		return Math.abs(l.getLatitude() - center.getLatitude()) <= range && 
-				Math.abs(l.getLongitude() - center.getLongitude()) <= range;
+//		// TODO currently circular, allow other fence patterns
+		double dist = distanceInMeters(l, center);
+		return dist <= rangeInMeters;
 	}
 
 	public GeoFence addGeoFence(GeoFence f) {

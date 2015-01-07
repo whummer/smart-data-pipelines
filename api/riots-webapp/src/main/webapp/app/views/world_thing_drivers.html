@@ -24,7 +24,8 @@
                     <div class="col-sm-9">
                         <select id="driverProtocol" class="form-control input-sm"
                                 ng-model="selectedProperty.driver.connector">
-                            <option value="GENERIC">None/Generic</option>
+                            <option value="GENERIC">None</option>
+                            <option value="SIMULATION">Simulation (Riots)</option>
                             <option value="XIVELY">Xively</option>
                             <option value="SPARK_IO">Spark.io</option>
                             <option value="MQTT">MQTT</option>
@@ -38,30 +39,44 @@
                 </div>
 
                 <!-- MQTT stuff -->
-                <div class="form-group" ng-show="selectedProperty.driver.connector == 'MQTT'">
-                    <label for="driverBrokerURL" class="col-sm-3 control-label">Broker URL</label>
-
-                    <div class="col-sm-9">
-                        <input id="driverBrokerURL" class="form-control input-sm"
-                               data-ng-model="selectedProperty.driver.brokerURL"/>
-                    </div>
+               	<div ng-show="selectedProperty.driver.connector == 'MQTT'">
+	                <div class="form-group">
+	                    <label for="driverBrokerURL" class="col-sm-3 control-label">Broker URL</label>
+	
+	                    <div class="col-sm-9">
+	                        <input id="driverBrokerURL" class="form-control input-sm"
+	                               data-ng-model="selectedProperty.driver.brokerURL"/>
+	                    </div>
+	                </div>
+	                <div class="form-group">
+	                    <label for="driverTopic" class="col-sm-3 control-label">Topic Name</label>
+	
+	                    <div class="col-sm-9">
+	                        <input id="driverTopic" class="form-control input-sm"
+	                               data-ng-model="selectedProperty.driver.topicFilter"/>
+	                    </div>
+	                </div>
+	
+	                <div class="form-group">
+	                    <label for="driverBrokerURL" class="col-sm-3 control-label">Payload Format</label>
+	
+	                    <div class="col-sm-9">
+	                        <textarea id="driverPayload" data-ng-model="selectedProperty.driver.payloadFormat"></textarea>
+	                    </div>
+	                </div>
                 </div>
-                <div class="form-group" ng-show="selectedProperty.driver.connector == 'MQTT'">
-                    <label for="driverTopic" class="col-sm-3 control-label">Topic Name</label>
 
-                    <div class="col-sm-9">
-                        <input id="driverTopic" class="form-control input-sm"
-                               data-ng-model="selectedProperty.driver.topicFilter"/>
-                    </div>
-                </div>
-
-                <div class="form-group" ng-show="selectedProperty.driver.connector == 'MQTT'">
-                    <label for="driverBrokerURL" class="col-sm-3 control-label">Payload Format</label>
-
-                    <div class="col-sm-9">
-                        <textarea id="driverPayload" data-ng-model="selectedProperty.driver.payloadFormat"></textarea>
-                    </div>
-                </div>
+                <!-- Simulation stuff -->
+                <div ng-show="selectedProperty.driver.connector == 'SIMULATION'">
+	                <div class="form-group">
+	                    <label for="driverBrokerURL" class="col-sm-3 control-label">DETAILS...</label>
+	
+	                    <div class="col-sm-9">
+	                        <input id="driverBrokerURL" class="form-control input-sm"
+	                               data-ng-model="selectedProperty.driver.foobar"/>
+	                    </div>
+	                </div>
+	           	</div>
 
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10 text-right">

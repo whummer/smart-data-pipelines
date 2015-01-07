@@ -1,15 +1,20 @@
-<section ng-controller="FuncsController" id="assetsSection" style="height: 100%">
-
-	<div style="height: 100%" data-dojo-type="dijit/layout/ContentPane">
+<section ng-controller="FuncsController">
+	<div>
 		<div style="padding-bottom: 15px;">
-			<button class="btn btn-default btn-sm" data-dojo-props="iconClass:'icon-plus-sign'" id="btnAddFunc">Add</button>
-			<button class="btn btn-default btn-sm" data-dojo-props="iconClass:'icon-minus-sign'" id="btnDeleteFunc">Delete</button>
+			<button class="btn btn-default btn-sm" id="btnAddFunc">Add</button>
+			<button class="btn btn-default btn-sm" id="btnDeleteFunc">Delete</button>
 		</div>
-		<div id="funcsTable" ui-grid="tableOptions" ui-grid-selection ui-grid-edit ui-grid-row-edit class="grid" style="height: 80%"></div>
+		<div id="funcsTable" ui-grid="tableOptions" ui-grid-selection ui-grid-edit ui-grid-row-edit class="grid"></div>
 	</div>
-
+	<div ng-show="selectedFunc">
+		<!-- TODO -->
+	</div>
 </section>
-
+<style type="text/css">
+#funcsTable {
+	height: 150px;
+}
+</style>
 <script type="text/javascript">
 
 	var app = angular.module("app");
@@ -23,25 +28,25 @@
 
 			$scope.initTable = function() {
 				var columnsConfig = [
-					{label: "Name", field: "name", sortable: true,
-						cellTemplate: "<div class='ui-grid-cell-contents'><a href='#/world/{{row.entity.id}}'>{{row.entity.name}}</a></div>"
-					},
-					{label: "Type", field: "type"}
+					{label: "ID", field: "id", sortable: true},
+					{label: "Type", field: "type", sortable: true},
+					{label: "Creation Date", field: "created", sortable: true, cellTemplate: 
+						"<div class='ui-grid-cell-contents'>{{row.entity.timeCreated()}}</div>"
+					}
 				];
 				$scope.tableOptions.data = [];
 				renderUITable($scope.tableOptions, "funcsTable", columnsConfig,
 					function(event) {
 				    	if(event.type == "dgrid-select") {
 				    		$scope.$apply(function() {
-				    			$scope.shared.selectedFunc = event.rows[0].data;
+				    			$scope.selectedFunc = event.rows[0].data;
 							});
 				    	} else if(event.type == "dgrid-deselect") {
 				    		$scope.$apply(function(){
-				    			$scope.shared.selectedFunc = null;
+				    			$scope.selectedFunc = null;
 							});
 				    	}
-					},
-					true
+					}, true
 				);
 			}
 			$scope.initTable();
@@ -56,6 +61,9 @@
 					function(data, status, headers, config) {
 						$.each(data.result, function(idx,el) {
 							el.type = "Geo Fence";
+							el.timeCreated = function() {
+								return formatDate(el.created);
+							}
 							$scope.tableOptions.data.push(el);
 						});
 					}
@@ -80,11 +88,11 @@
 				});
 			}
 			$scope.deleteFunc = function(){
-				var selection = $scope.shared.selectedFunc;
+				var selection = $scope.selectedFunc;
 				if(!selection || !selection.id) return;
 				$scope.deleteFuncInDB(selection, function() {
 					$scope.loadAllFuncs();
-					$scope.shared.selectedFunc = null;
+					$scope.selectedFunc = null;
 				});
 			}
 

@@ -15,7 +15,7 @@
 				<td>Thing Type:</td>
 				<td>
 					<select id="selThingType" class="form-control input-sm"
-						ng-options="opt.name for opt in assetTypes track by opt.id"
+						ng-options="opt.name for opt in thingTypes track by opt.id"
 						ng-model="shared.selectedThing['thing-type']">
 					</select>
 				</td>
@@ -29,7 +29,7 @@
 						<option value="person">Person</span>
 					</select>
 				</td>
-			</tr>-->
+			</tr>
 			<tr>
 				<td>Location (lat,lon,alt):</td>
 				<td>
@@ -38,6 +38,7 @@
 					<input class="form-control input-sm" style="width: 70px" ng-model="shared.selectedThing.location.altitude" />
 				</td>
 			</tr>
+			-->
 			<!--
 			<tr>
 				<td>Creator:</td>
@@ -84,7 +85,7 @@
 			$scope.loadThingTypes = function() {
 				invokeGET($scope.http, $scope.thingTypesAPI,
 					function(data, status, headers, config) {
-						$scope.assetTypes = data.result;
+						$scope.thingTypes = data.result;
 					}
 				);
 			}

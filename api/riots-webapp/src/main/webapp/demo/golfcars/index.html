@@ -51,7 +51,7 @@
 				</tr></thead>
 				<tr ng-repeat="thing in things">
 					<td><img ng-src="{{thing.img}}" style="height: 30px;"/></td>
-					<td>{{thing.name}}</td>
+					<td><a href="http://platform.riots.io:8080/#/world/{{thing.id}}">{{thing.name}}</a></td>
 					<td>{{thing.properties['location.latitude']}},{{thing.properties['location.longitude']}}</td>
 					<td>{{thing.properties.battery}}</td>
 					<td>{{thing.properties.tirePressure}}</td>
