@@ -12,8 +12,9 @@ for pid in $RIOTS_PIDS; do
 	SERVICE_NAME=`ps -eaf | grep $pid |  grep -o "io.riots.*" | egrep -o "[[:upper:]].+"`;
 	echo "Killing riots service >> $SERVICE_NAME << (PID $pid)..."; 
 	$(kill $pid);
+	sleep 4;
 	CHECK=$(ps -eaf | grep $SERVICE_NAME | grep -v "grep");
-	sleep 2;
+	echo "check: $CHECK";
 	if [ -n "$CHECK" ]; then
 		echo "$SERVICE_NAME seems to be die-hard, trying to kill it with a vengance...";
 		$(kill -9 $pid);
