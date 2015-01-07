@@ -72,15 +72,19 @@ var requirejsAppConfig = {
         }, {
         	name: 'infinite-scroll',
         	location: appConfig['bowerRootPath'] + '/ngInfiniteScroll',
-        	main: 'build/ng-infinite-scroll.min.js'
+        	main: 'build/ng-infinite-scroll.min'
         }, {
         	name: 'angular-hotkeys',
         	location: appConfig['bowerRootPath'] + '/angular-hotkeys',
-        	main: 'build/hotkeys.min.js'
+        	main: 'build/hotkeys.min'
         }, {
         	name: 'angular-keyboard',
         	location: appConfig['bowerRootPath'] + '/angular-keyboard',
-        	main: 'keyboard.min.js'
+        	main: 'keyboard.min'
+        }, {
+        	name: 'd3',
+        	location: appConfig['bowerRootPath'] + '/d3',
+        	main: 'd3.min'
         }
 
         /* TODO old/unused/deprecated?

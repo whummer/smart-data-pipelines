@@ -25,7 +25,7 @@ define(
     [
         'routes', 'angular', 'bootstrap', 'angular-bootstrap',
         'bootstrap-tagsinput',
-        'angular-route', 'angular-ui-grid', 'infinite-scroll', 'angular-hotkeys', 'angular-keyboard'
+        'angular-route', 'angular-ui-grid', 'infinite-scroll', 'angular-hotkeys', 'angular-keyboard', 'd3'
     ],
 
     function (config) {

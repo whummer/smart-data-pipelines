@@ -30,6 +30,7 @@
     "typeahead.js": "0.10.5",
     "ngInfiniteScroll": "#",
     "angular-hotkeys": "chieffancypants/angular-hotkeys#~1.4.5",
-    "angular-keyboard": "~0.3.0"
+    "angular-keyboard": "~0.3.0",
+    "d3": "~3.5.3"
   }
 }
