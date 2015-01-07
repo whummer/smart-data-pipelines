@@ -10,7 +10,6 @@ define(['app', 'bootstrap-tagsinput'], function (app) {
             $scope.highlightMenuItem("#menuItemCatalog");
 
             $scope.thingTypesAPI = appConfig.services.thingTypes.url;
-            $scope.thingTypePropsAPI = appConfig.services.thingTypeProps.url;
             $scope.semanticsAPI = appConfig.services.semanticTypes.url;
             $scope.driversAPI = appConfig.services.drivers.url;
             $scope.searchText = '';
