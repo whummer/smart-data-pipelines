@@ -56,18 +56,9 @@ define(['app', 'bootstrap-tagsinput'], function (app) {
 
     app.controller('ThingTypesController',
 
-        function ($scope, $log, ThingTypes, hotkeys) {
+        function ($scope, $log, ThingTypes, hotkeys, $location) {
 
             $log.debug("Inside ThingTypesController");
-
-            // hotkeys
-            /* hotkeys.add({
-             combo: 'a',
-             description: 'Add a new ThingType',
-             callback: function() {
-             $scope.addThingTypeManual();
-             }
-             });*/
 
             $scope.focusSearchInput = function () {
                 angular.element("#searchInput").trigger('focus');
@@ -78,14 +69,14 @@ define(['app', 'bootstrap-tagsinput'], function (app) {
 
             $scope.showMore = function (thingId) {
                 $("#" + thingId + "_description").removeClass("thing-type-box");
-                $("#" + thingId + "_expand").addClass("hidden");
-                $("#" + thingId + "_collapse").removeClass("hidden");
+                $("#" + thingId + "_expand").addClass("invisible");
+                $("#" + thingId + "_collapse").removeClass("invisible");
             };
 
             $scope.showLess = function (thingId) {
                 $("#" + thingId + "_description").addClass("thing-type-box");
-                $("#" + thingId + "_expand").removeClass("hidden");
-                $("#" + thingId + "_collapse").addClass("hidden");
+                $("#" + thingId + "_expand").removeClass("invisible");
+                $("#" + thingId + "_collapse").addClass("invisible");
             };
 
             var setupDragAndDrop = function () {
@@ -109,8 +100,6 @@ define(['app', 'bootstrap-tagsinput'], function (app) {
             // Entry point for key press during thing type search
             $scope.searchKeyPress = function () {
                 $log.debug("User enter searchterm: ", $scope.searchText);
-                //$scope.thingTypes = new ThingTypes($scope.thingTypesAPI, $scope.searchText);
-
                 invokeGET($scope.http, $scope.thingTypesAPI + "?q=" + $scope.searchText,
                     function (data, status, headers, config) {
                         $log.debug("Search Results: ", data.result);
@@ -124,8 +113,19 @@ define(['app', 'bootstrap-tagsinput'], function (app) {
                 $scope.searchKeyPress();
             };
 
+            $scope.editItem = function(itemId) {
+                $location.path("catalog/" + itemId);
+            };
+
             $scope.deleteThingType = function (thingType) {
+                var location;
+                if (!(thingType && thingType.id) && $scope.shared.selectedThingType) {
+                    thingType = $scope.shared.selectedThingType;
+                    location = "catalog";
+                }
+
                 $log.warn("About to delete ThingType: ", thingType);
+                $log.debug("Redirecting to location afterwards: ", location);
 
                 showConfirmDialog("Do you really want to delete this thing type?", function () {
                     invokeDELETE($scope.http,
@@ -133,27 +133,14 @@ define(['app', 'bootstrap-tagsinput'], function (app) {
                         function (data, status, headers, config) {
                             $scope.selectedThingType = $scope.shared.selectedThingType = null;
                             $scope.searchKeyPress();
+                            if (location) {
+                                $location.path(location);
+                            }
                         }
                     );
                 });
             };
 
-            /*$scope.subscribeOnce("change.ThingTypeProps", function (event) {
-             console.log("change.ThingTypeProps", event.changedItem);
-             $scope.saveThingType(event.changedItem);
-             }, "thingTypePropsChangeListener"
-             );
-
-             $scope.subscribeOnce("reload.ThingTypeProps", function (event) {
-             $scope.loadAllThingTypes();
-             }, "thingTypePropsReloadListener"
-             );
-
-             $scope.$watch("selectedThingType", function () {
-             $("#btnDelThingType").prop("disabled", $scope.selectedThingType == null);
-             });*/
-
-            /* render main container */
         }
     );
 });

@@ -12,11 +12,11 @@
             <input type="text" class="form-control" id="searchInput"
                    placeholder="To search for specific properties use <property:value> notation (e.g., width:100)"
                    ng-model="searchText">
-                        <span class="input-group-btn">
+              <span class="input-group-btn">
 						    <button class="btn btn-primary" type="button" id="btnSearch">
                   <span class="glyphicon glyphicon-search" style="padding-right: 10px"></span> Search
                 </button>
-					</span>
+					    </span>
           </div>
         </form>
 
@@ -43,15 +43,31 @@
 			<span ng-if="$index % 3 == 0">			
 				<div class="row">
           <div ng-repeat="i in [0,1,2]" ng-init="columnIndex = $index">
-            <div class="col-sm-6 col-md-4"
-                 ng-if="thingTypes.items[thingIndex + columnIndex] != undefined">
+            <div class="col-sm-6 col-md-4" ng-if="thingTypes.items[thingIndex + columnIndex] != undefined">
+              <div class="thumbnail" style="min-height: 250px;" ng-class="{thumbnailhalo: hover}" ng-mouseenter="hover = true"
+                   ng-mouseleave="hover = false" ng-dblclick="editItem(thingTypes.items[thingIndex + columnIndex].id)">
 
-              <div class="thumbnail">
 
-                <div class="pull-right" style="margin-bottom: 10px; margin-top: 10px;">
+                <div style="float: left; margin-right: 3px;" ng-show="hover">
+                  <a href="JavaScript:void(0)"
+                     ng-click="deleteThingType(thingTypes.items[thingIndex + columnIndex])"
+                     role="button">
+                    <span class="glyphicon glyphicon-remove"></span>
+                  </a>
+                </div>
+
+                <div style="float: left; margin-right: 3px;" ng-show="hover">
+                  <a href="#/catalog/{{thingTypes.items[thingIndex + columnIndex].id}}"
+                     role="button">
+                    <span class="glyphicon glyphicon-edit"></span>
+                  </a>
+                </div>
+
+                <!-- tags -->
+                <div class="pull-right" style="margin-bottom: 10px; margin-top: 10px; min-height: 18px;">
                   <span style="cursor: pointer;margin-right: 5px"
                         ng-repeat="tag in thingTypes.items[thingIndex + columnIndex].tags"
-                        class="badge" ng-click="selectTag(tag)">
+                        class="label label-info label-as-badge" ng-click="selectTag(tag)">
                       {{tag}}
                   </span>
                 </div>
@@ -59,19 +75,18 @@
                 <div class="clearfix"></div>
 
                 <!-- thing type images -->
-                <carousel interval="-1"
-                          ng-show="thingTypes.items[thingIndex + columnIndex]['image-urls']">
+                <carousel interval="-1" ng-show="thingTypes.items[thingIndex + columnIndex]['image-urls']">
                   <slide ng-repeat="pic in thingTypes.items[thingIndex + columnIndex]['image-urls']">
-                    <img ng-src="{{pic}}" class="img-responsive"
-                         style="margin: auto; max-height: 100px"/>
+                    <img ng-src="{{pic}}" class="img-responsive" style="margin: auto; max-height: 100px"/>
                   </slide>
                 </carousel>
 
-                <div ng-hide="thingTypes.items[thingIndex + columnIndex]['image-urls']">
-                  <img class="img-responsive text-center" ng-src="img/no_image_available.jpg"
-                       style="max-width: 150px;max-width: 150px;"/>
+                <div ng-hide="thingTypes.items[thingIndex + columnIndex]['image-urls']" class="text-center">
+                  <img ng-src="img/no_image_available.jpg"
+                       style="max-width: 125px;max-height: 125px;"/>
                 </div>
 
+                <!-- content -->
                 <div class="caption">
                   <h4>{{thingTypes.items[thingIndex + columnIndex].name}}</h4>
 
@@ -81,21 +96,8 @@
                     {{thingTypes.items[thingIndex + columnIndex].description}}
                   </div>
 
-                  <div style="margin-bottom: 10px; margin-top: 5px">
-                    <div style="float: left; margin-right: 3px;">
-                      <a href="#/catalog/{{thingTypes.items[thingIndex + columnIndex].id}}"
-                         role="button">
-                        <span class="glyphicon glyphicon-edit"></span>
-                      </a>
-                    </div>
-                    <div style="float: left; margin-right: 3px;">
-                      <a href="JavaScript:void(0)"
-                         ng-click="deleteThingType(thingTypes.items[thingIndex + columnIndex])"
-                         role="button">
-                        <span class="glyphicon glyphicon-remove"></span>
-                      </a>
-                    </div>
-
+                  <!-- collapse/expand description -->
+                  <div class="pull-right" style="margin-bottom: 10px; margin-top: 5px" ng-show="hover">
                     <div id="{{thingTypes.items[thingIndex + columnIndex].id}}_expand"
                          style="float: left">
                       <a href="JavaScript: void(0);"
@@ -104,9 +106,8 @@
                         <span class="glyphicon glyphicon-collapse-down"></span>
                       </a>
                     </div>
-
                     <div id="{{thingTypes.items[thingIndex + columnIndex].id}}_collapse"
-                         class="hidden">
+                         class="invisible">
                       <a href="JavaScript: void(0);"
                          ng-click="showLess(thingTypes.items[thingIndex + columnIndex].id)"
                          role="button">

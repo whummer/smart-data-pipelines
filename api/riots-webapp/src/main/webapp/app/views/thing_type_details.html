@@ -78,16 +78,16 @@
 
       <div class="row">
 
-        <div class="col-md-4">
+        <div class="col-md-4" style="height: 100%; vertical-align: middle">
           <!-- thing type images -->
           <carousel id="devTypeImages" interval="-1">
             <slide ng-repeat="i in range(0, shared.selectedThingType[IMAGE_URLS].length - 1)">
-              <img ng-src="{{shared.selectedThingType[IMAGE_URLS][i]}}" class="img-responsive img-thumbnail">
+              <img ng-src="{{shared.selectedThingType[IMAGE_URLS][i]}}" class="img-responsive" style="margin: auto;">
             </slide>
           </carousel>
 
-          <div class="thumbnail" ng-hide="shared.selectedThingType['image-urls']">
-            <img width="275" height="275" ng-src="img/no_image_available.jpg"/>
+          <div class="thumbnail" ng-hide="shared.selectedThingType[IMAGE_URLS][0]">
+            <img width="200" height="200" ng-src="img/no_image_available.jpg"/>
           </div>
         </div>
 
@@ -110,7 +110,7 @@
             <label for="devTypeName" class="col-sm-2 control-label">Name</label>
 
             <div class="col-sm-10">
-              <input id="devTypeName" class="form-control input-sm"
+              <input id="devTypeName" class="form-control input-sm" autofocus="autofocus"
                      data-ng-model="shared.selectedThingType.name"/>
             </div>
           </div>
@@ -131,11 +131,18 @@
             <label class="col-sm-2 control-label">Image URLs</label>
 
             <div class="col-sm-10">
-              <table>
+              <table style="width: 100%;">
                 <tr ng-repeat="n in range(0, shared.selectedThingType[IMAGE_URLS].length - 1)">
-                  <td><input class="form-control input-sm"
-                             style="width:100%"
-                             ng-model="shared.selectedThingType[IMAGE_URLS][n]"/></td>
+                  <td>
+                    <div class="input-group">
+                      <input class="form-control input-sm" style="width:100%; margin-bottom: 10px" ng-model="shared.selectedThingType[IMAGE_URLS][n]"/>
+                        <span class="input-group-btn">
+                          <button class="btn btn-sm btn-warning" style="margin-bottom: 10px" type="button" ng-click="removeImage(n)">
+                            <span class="glyphicon glyphicon-remove"></span>&nbsp;
+                          </button>
+                        </span>
+                      </div>
+                  </td>
                 </tr>
               </table>
               <button class="btn btn-info btn-sm pull-right" id="btnThingTypeAddImg">Add Image URL</button>
@@ -159,13 +166,13 @@
             <label for="thingTypeFeatures" class="col-sm-2 control-label">Features</label>
 
             <div class="col-sm-10">
-              <table id="thingTypeFeatures">
-                <tr ng-repeat="n in range(0, getFeatureList(shared.selectedThingType).length - 1)">
-                  <td><input class="domPropValue form-control input-sm"
-                             ng-model="shared.selectedThingType.featureList[n].key" style="width: 30%"/>
+              <table id="thingTypeFeatures" style="width: 100%;">
+                <tr   ng-repeat="n in range(0, getFeatureList(shared.selectedThingType).length - 1)">
+                  <td><input  class="domPropValue form-control input-sm"
+                             ng-model="shared.selectedThingType.featureList[n].key" style="width: 48%; margin-bottom: 10px"/>
                     =
                     <input class="domPropValue form-control input-sm"
-                           ng-model="shared.selectedThingType.featureList[n].value" style="width: 60%"/>
+                           ng-model="shared.selectedThingType.featureList[n].value" style="width: 49%; margin-bottom: 10px"/>
                   </td>
                 </tr>
               </table>
@@ -184,7 +191,7 @@
 
             </div>
           </div>
-
+        </div>
       </div>
     </form>
   </div>
@@ -201,18 +208,18 @@
     $scope.getFeatureList = function (devType, forceReset) {
       if (!devType)
         return [];
-      if(!devType.featureList || forceReset) {
-	      devType.featureList = [];
-	      for (var key in devType.features) {
-	        var entry = {key: key, value: devType.features[key]};
-	        devType.featureList.push(entry);
-	      }
-	  }
+      if (!devType.featureList || forceReset) {
+        devType.featureList = [];
+        for (var key in devType.features) {
+          var entry = {key: key, value: devType.features[key]};
+          devType.featureList.push(entry);
+        }
+      }
       return devType.featureList;
     };
 
     var addThingTypeFeature = function () {
-      $scope.applyProperties();
+      $scope.applyFeatures();
       $scope.$apply(function () {
         $scope.shared.selectedThingType.features["__new_key__"] = "new_value";
         $scope.getFeatureList($scope.shared.selectedThingType, true);
@@ -238,30 +245,20 @@
       $scope.$apply(function () {
         $scope.shared.selectedThingType[IMAGE_URLS].push("");
       });
-    }
-
-    $scope.saveThingType = function () {
-      var thingType = $scope.shared.selectedThingType;
-      $scope.applyProperties();
-      $log.info("Entering save for thing: ", thingType);
-      thingType = JSON.parse(JSON.stringify(thingType));
-      $scope.prepareModelValues(thingType);
-      invokePUT($scope.http, $scope.thingTypesAPI,
-              JSON.stringify(thingType),
-              function (data, status, headers, config) {
-                $log.info("Invoked PUT for ThingType ", thingType);
-                $log.debug("Scope.loadAllThingTypes: ", $scope.loadAllThingTypes);
-                $log.debug("Reloaded all thing types after saveThingType(). Location: ", $location);
-                $location.path("catalog");
-              }
-      );
     };
 
-    /*
-     * typeahead stuff
-     */
-    var tags = ['speed', 'distance', 'temperature', 'energy', 'time', 'current', 'voltage', 'pressure',
+    $scope.removeImage = function(index) {
+      $log.debug("Removing image from index " + index + ": " , $scope.shared.selectedThingType[IMAGE_URLS][index]);
+      $scope.shared.selectedThingType[IMAGE_URLS].splice(index, 1);
+    };
+
+    //
+    // typeahead stuff
+    //
+    var tags = ['speed', 'distance', 'temperature', 'energy',
+      'time', 'current', 'voltage', 'pressure',
       'weight', 'color', 'height', 'width', 'power'];
+
     // constructs the suggestion engine
     var tagnames = new Bloodhound({
       datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
@@ -270,6 +267,7 @@
         return {value: tag};
       })
     });
+
     tagnames.initialize();
 
     $("#devTypeTags").tagsinput({
@@ -280,10 +278,11 @@
       }
     });
 
-    /* register event handlers */
+    //
+    // register event handlers
+    //
     $scope.addClickHandler("btnThingTypeAddImg", addThingTypeImg);
     $scope.addClickHandler("btnDevTypeAddFeature", addThingTypeFeature);
-    $scope.addClickHandler("btnDevTypeSave", $scope.saveThingType);
     $scope.$watch("shared.selectedThingType", function () {
       $log.info("Watching selected thingtype: ", $scope.shared.selectedThingType);
       console.dir($scope.shared.selectedThingType);
@@ -293,11 +292,9 @@
           $log.debug("Adding tag " + el);
           $("#devTypeTags").tagsinput("add", el);
         });
-
       }
     });
 
-    
     /* load main elements */
     $scope.loadManufacturers();
   });

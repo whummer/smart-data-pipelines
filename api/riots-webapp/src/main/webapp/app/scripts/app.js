@@ -25,7 +25,7 @@ define(
     [
         'routes', 'angular', 'bootstrap', 'angular-bootstrap',
         'bootstrap-tagsinput',
-        'angular-route', 'angular-ui-grid', 'infinite-scroll', 'angular-hotkeys'
+        'angular-route', 'angular-ui-grid', 'infinite-scroll', 'angular-hotkeys', 'angular-keyboard'
     ],
 
     function (config) {
@@ -40,7 +40,8 @@ define(
             'ui.grid.selection',
             'ui.grid.autoResize',
             'infinite-scroll',
-            'cfp.hotkeys'
+            'cfp.hotkeys',
+            'keyboard'
         ]);
 
         var dependencyResolverFor = function (defaultDependencies, dependencies, $http) {

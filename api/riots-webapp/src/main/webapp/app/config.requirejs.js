@@ -77,6 +77,10 @@ var requirejsAppConfig = {
         	name: 'angular-hotkeys',
         	location: appConfig['bowerRootPath'] + '/angular-hotkeys',
         	main: 'build/hotkeys.min.js'
+        }, {
+        	name: 'angular-keyboard',
+        	location: appConfig['bowerRootPath'] + '/angular-keyboard',
+        	main: 'keyboard.min.js'
         }
 
         /* TODO old/unused/deprecated?

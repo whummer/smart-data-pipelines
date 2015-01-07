@@ -76,3 +76,21 @@ a.right.carousel-control, a.left.carousel-control {
 .carousel-indicators {
 	display: none;
 }
+
+.label-as-badge {
+    border-radius: 1em;
+}
+
+.thumbnailhalo {
+    display: block;
+    padding: 4px;
+    margin-bottom: 20px;
+    line-height: 1.428571429;
+    background-color: #ffffff;
+    border-radius: 4px;
+    -webkit-transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
+    border-color: rgb(102, 175, 233);
+    box-shadow: rgba(0, 0, 0, 0.0745098) 0px 1px 1px 0px inset, rgba(103, 175, 233, 0.6) 0px 0px 7.99704837799072px 0px;
+    outline: 0 none;
+}

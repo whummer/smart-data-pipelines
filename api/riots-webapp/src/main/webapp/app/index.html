@@ -1,130 +1,130 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-    <meta charset="utf-8" />
+  <meta charset="utf-8"/>
 
-    <link rel="stylesheet" href="scripts/ext/bootstrap-tagsinput/dist/bootstrap-tagsinput.css" />
-    <link rel="stylesheet" href="scripts/ext/leaflet/dist/leaflet.css"/>
-	<!-- Use CDN version because JAR packaging of some CSS files results in corrupted font files --> 
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
-	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css"/>
-	<link rel="stylesheet" href="//cdn.rawgit.com/angular-ui/bower-ui-grid/v3.0.0-RC.18/ui-grid.min.css"/>
-    <!-- last position for custom styles (to enforce overrides) -->
-    <link rel="stylesheet" href="styles/app.css"/>
+  <link rel="stylesheet" href="scripts/ext/bootstrap-tagsinput/dist/bootstrap-tagsinput.css"/>
+  <link rel="stylesheet" href="scripts/ext/leaflet/dist/leaflet.css"/>
+  <!-- Use CDN version because JAR packaging of some CSS files results in corrupted font files -->
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css"/>
+  <link rel="stylesheet" href="//cdn.rawgit.com/angular-ui/bower-ui-grid/v3.0.0-RC.18/ui-grid.min.css"/>
+  <!-- last position for custom styles (to enforce overrides) -->
+  <link rel="stylesheet" href="styles/app.css"/>
 
-    <!-- scripts -->
-    <script type="text/javascript" src="scripts/ext/requirejs/require.js"></script>
-    <script type="text/javascript" src="config.js"></script>
-    <script type="text/javascript" src="config.requirejs.js"></script>
-    <script type="text/javascript">
-        require.config(requirejsAppConfig);
-    </script>
-	<script type="text/javascript" src="/app/scripts/controllers/AppController.js"></script>
+  <!-- scripts -->
+  <script type="text/javascript" src="scripts/ext/requirejs/require.js"></script>
+  <script type="text/javascript" src="config.js"></script>
+  <script type="text/javascript" src="config.requirejs.js"></script>
+  <script type="text/javascript">
+    require.config(requirejsAppConfig);
+  </script>
+  <script type="text/javascript" src="/app/scripts/controllers/AppController.js"></script>
 
-    <script type="text/javascript" src="scripts/build/riots-all.js"></script>
-    <script type="text/javascript" src="scripts/init.js"></script>
+  <script type="text/javascript" src="scripts/build/riots-all.js"></script>
+  <script type="text/javascript" src="scripts/init.js"></script>
 
-    <!-- TODO: integrate scripts into requirejs loading mechanism -->
-    <script type="text/javascript" src="scripts/modules/utils.js"></script>
-    <script type="text/javascript" src="scripts/modules/auth.js"></script>
-    <script type="text/javascript" src="scripts/modules/service-calls.js"></script>
-    <script type="text/javascript" src="scripts/modules/widgets-angularui.js"></script>
-    <script type="text/javascript" src="scripts/modules/websockets.js"></script>
-    <script type="text/javascript" src="scripts/modules/charting.js"></script>
-    <script type="text/javascript" src="scripts/modules/imports.js"></script>
-    <script type="text/javascript" src="scripts/modules/ratings.js"></script>
-    <script type="text/javascript" src="scripts/modules/things-crud.js"></script>
-    <script type="text/javascript" src="api/riots-api.js"></script>
+  <!-- TODO: integrate scripts into requirejs loading mechanism -->
+  <script type="text/javascript" src="scripts/modules/utils.js"></script>
+  <script type="text/javascript" src="scripts/modules/auth.js"></script>
+  <script type="text/javascript" src="scripts/modules/service-calls.js"></script>
+  <script type="text/javascript" src="scripts/modules/widgets-angularui.js"></script>
+  <script type="text/javascript" src="scripts/modules/websockets.js"></script>
+  <script type="text/javascript" src="scripts/modules/charting.js"></script>
+  <script type="text/javascript" src="scripts/modules/imports.js"></script>
+  <script type="text/javascript" src="scripts/modules/ratings.js"></script>
+  <script type="text/javascript" src="scripts/modules/things-crud.js"></script>
+  <script type="text/javascript" src="api/riots-api.js"></script>
 
-    <style type="text/css">
-        html, body {
-            height: 100%;
-            margin: 0px;
-        }
+  <style type="text/css">
+    html, body {
+      height: 100%;
+      margin: 0px;
+    }
 
-        #main {
-            padding-top: 15px;
-        }
+    #main {
+      padding-top: 15px;
+    }
 
-        /* splash page */
-        #splash {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background-color: #f6f8f9;
-            z-index: 3000;
-        }
+    /* splash page */
+    #splash {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-color: #f6f8f9;
+      z-index: 3000;
+    }
 
-        #splash div {
-            position: relative;
-            height: 50px;
-            width: 100px;
-            top: 50%;
-            left: 50%;
-            margin-left: -50px;
-            margin-top: -25px;
-            text-align: center;
-        }
+    #splash div {
+      position: relative;
+      height: 50px;
+      width: 100px;
+      top: 50%;
+      left: 50%;
+      margin-left: -50px;
+      margin-top: -25px;
+      text-align: center;
+    }
 
-    </style>
+  </style>
 
-    <script type="text/javascript">
-        var appFullyLoadedOnce = false;
-        function showSplashScreen() {
-            if (!appFullyLoadedOnce)
-                $("#splash").show();
-        }
+  <script type="text/javascript">
+    var appFullyLoadedOnce = false;
+    function showSplashScreen() {
+      if (!appFullyLoadedOnce)
+        $("#splash").show();
+    }
 
-        function hideSplashScreen() {
-            appFullyLoadedOnce = true;
-			setTimeout(function () {
-				$("#splash").hide();
-			}, 500);
-        }
+    function hideSplashScreen() {
+      appFullyLoadedOnce = true;
+      setTimeout(function () {
+        $("#splash").hide();
+      }, 500);
+    }
 
-        function clickMenu(element) {
-            window.location.href = element.getAttribute("href");
-            return false;
-        }
+    function clickMenu(element) {
+      window.location.href = element.getAttribute("href");
+      return false;
+    }
 
-        setTimeout(function () {
-            if (!appFullyLoadedOnce) {
-                //alert("Connectivity problem. Please refresh the page once you are back online.");
-                console.log("Connectivity problem. Please refresh the page once you are back online.");
-            }
-        }, 10000);
+    setTimeout(function () {
+      if (!appFullyLoadedOnce) {
+        //alert("Connectivity problem. Please refresh the page once you are back online.");
+        console.log("Connectivity problem. Please refresh the page once you are back online.");
+      }
+    }, 10000);
 
-    </script>
+  </script>
 
-    <title>RIoTS - Dev&amp;Test for the Internet of Things</title>
+  <title>RIoTS - Dev&amp;Test for the Internet of Things</title>
 </head>
 <body>
 
 <!-- Splash Screen -->
 <div id="splash">
-    <div>
-        <p>loading...</p>
-        <p><img src="img/loading.gif" alt="loading"/></p>
-    </div>
+  <div>
+    <p>loading...</p>
+    <p><img src="img/loading.gif" alt="loading"/></p>
+  </div>
 </div>
 
 <div id="wrapperDiv" ng-controller="RootController" data-ng-init="hideSplashScreen()">
 
-    <!-- include top menu -->
-    <ng-include src="'/app/views/menu.html'" ng-if="authInfo"></ng-include>
+  <!-- include top menu -->
+  <ng-include src="'/app/views/menu.html'" ng-if="authInfo"></ng-include>
 
-    <!-- Auth/Login Container -->
-    <div ng-if="!authInfo" id="authContainer" style="display: none;">
-        <ng-include src="'/app/views/login.html'"></ng-include>
-    </div>
+  <!-- Auth/Login Container -->
+  <div ng-if="!authInfo" id="authContainer" style="display: none;">
+    <ng-include src="'/app/views/login.html'"></ng-include>
+  </div>
 
-    <!-- Main Content Container -->
-    <div ng-if="authInfo" id="main" class="container" style="height: 100%; width: 100% " ng-view>
-    </div>
+  <!-- Main Content Container -->
+  <div ng-if="authInfo" id="main" class="container" style="height: 100%; width: 100% " ng-view>
+  </div>
 
-    <!-- Modal Dialog Templates -->
-    <ng-include src="'/app/views/dialogs.html'"></ng-include>
+  <!-- Modal Dialog Templates -->
+  <ng-include src="'/app/views/dialogs.html'"></ng-include>
 
 </div>
 </body>

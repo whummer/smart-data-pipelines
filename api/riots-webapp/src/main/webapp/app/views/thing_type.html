@@ -20,13 +20,20 @@
           </tabset>
 
           <div class="form-group" style="display: block; float: left; width: 100%;">
-            <div class="text-right">
-              <hr/>
+
+            <hr/>
+            <div class="pull-left">
+              <button class="btn  btn-sm btn-danger" id="btnDevTypeDelete">
+                <span class="glyphicon glyphicon-remove"></span> Delete Thing
+              </button>
+            </div>
+            <div class="pull-right">
               <button class="btn  btn-sm btn-primary" id="btnDevTypeSave">
                 <span class="glyphicon glyphicon-ok"></span> Save Changes
               </button>
-              <a href="#/catalog" class="btn btn-sm btn-info"><span
-                      class="glyphicon glyphicon-remove"></span> Cancel</a>
+              <a href="#/catalog" class="btn btn-sm btn-info">
+                <span class="glyphicon glyphicon-remove"></span> Cancel
+              </a>
             </div>
           </div>
 
@@ -39,7 +46,7 @@
 <script type="text/javascript">
 
   var app = angular.module("app");
-  app.controller('ThingTypeController', function ($scope, $http, $compile, $routeParams, $log) {
+  app.controller('ThingTypeController', function ($scope, $http, $compile, $routeParams, $log, $location) {
             AppController($scope, $http, $compile);
 
             if ($routeParams.thingTypeID) {
@@ -57,23 +64,20 @@
             }
 
             $scope.saveThingType = function () {
-              $scope.applyProperties();
-              var thingType = clone($scope.shared.selectedThingType);
-              $scope.prepareModelValues(thingType);
-              console.log("!save", thingType);
-              invokePUT($scope.http, $scope.thingTypesAPI,
-                      JSON.stringify(thingType),
-                      function (data, status, headers, config) {
+              var thingType = $scope.shared.selectedThingType;
+              $scope.applyFeatures();
+              $scope.prepareModelValues($scope.shared.selectedThingType);
+              thingType = JSON.parse(JSON.stringify(thingType));
+              thingType = $scope.prepareModelValues(thingType);
+              invokePUT($scope.http, $scope.thingTypesAPI, JSON.stringify(thingType), function (data, status, headers, config) {
                         $log.info("Invoked PUT for ThingType ", thingType);
-                        $log.debug("Scope.loadAllThingTypes: ", $scope.loadAllThingTypes);
-                        $scope.loadAllThingTypes();
                         $log.debug("Reloaded all thing types after saveThingType(). Location: ", $location);
                         $location.path("catalog");
                       }
               );
             };
 
-            $scope.applyProperties = function () {
+            $scope.applyFeatures = function () {
               /* apply tags */
               $scope.shared.selectedThingType.tags = $("#devTypeTags").tagsinput('items');
               /* apply features */
@@ -82,8 +86,11 @@
               }
             };
 
+
+
             /* register event handlers */
             $scope.addClickHandler("btnDevTypeSave", $scope.saveThingType);
+            $scope.addClickHandler("btnDevTypeDelete", $scope.deleteThingType);
           }
   );
 

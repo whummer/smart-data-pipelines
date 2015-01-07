@@ -1,45 +1,43 @@
-<section ng-controller="MetaManufacturersController" id="metaPropTypesSection">
+<section ng-controller="MetaManufacturersController" id="metaPropTypesSection" hotkey="{a:addMetaType($scope.gridConfig,'Manufacturer')}">
+  <div id="metaTypesTableManufacturer" ui-grid="gridConfig" ui-grid-selection ui-grid-edit ui-grid-row-edit class="grid"></div>
 
-    <div class="text-right">
-        <button class="btn btn-primary btn-sm" id="btnAddTypeManufacturer"><span
-                class="glyphicon glyphicon-plus"></span> Add
-        </button>
-        <button class="btn btn-warning btn-sm" id="btnDelTypeManufacturer"><span
-                class="glyphicon glyphicon-minus"></span> Delete
-        </button>
-    </div>
-
-
-    <div id="metaTypesTableManufacturer" ui-grid="gridConfig" ui-grid-selection ui-grid-edit ui-grid-row-edit class="grid"></div>
+  <div class="text-right">
+    <button class="btn btn-primary btn-sm" id="btnAddTypeManufacturer"><span
+            class="glyphicon glyphicon-plus"></span> Add Another
+    </button>
+    <button class="btn btn-warning btn-sm" id="btnDelTypeManufacturer"><span
+            class="glyphicon glyphicon-minus"></span> Delete
+    </button>
+  </div>
 
 </section>
 
 <script type="text/javascript">
 
-    var app = angular.module("app");
-    app.controller('MetaManufacturersController', function ($scope, $http, $compile) {
+  var app = angular.module("app");
+  app.controller('MetaManufacturersController', function ($scope, $http, $compile) {
             AppController($scope, $http, $compile);
 
             $scope.gridConfig = {};
 
             /* register event handlers */
             $scope.addClickHandler("btnAddTypeManufacturer", function () {
-                $scope.addMetaType($scope.gridConfig, "Manufacturer");
+              $scope.addMetaType($scope.gridConfig, "Manufacturer");
             });
 
             $scope.addClickHandler("btnDelTypeManufacturer", function () {
-                $scope.deleteMetaType($scope.gridConfig, "Manufacturer");
+              $scope.deleteMetaType($scope.gridConfig, "Manufacturer");
             });
 
             /* render main elements */
             $scope.initTable($scope.gridConfig, "Manufacturer");
             $scope.loadTable($scope.gridConfig, "Manufacturer");
             $scope.onRenderElement("btnDelTypeManufacturer", function (el) {
-                el.attr("disabled", true);
+              el.attr("disabled", true);
             });
 
-        }
-    );
+          }
+  );
 
 </script>
 			

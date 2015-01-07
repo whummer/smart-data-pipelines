@@ -1,88 +1,93 @@
-<section ng-controller="HomeViewController" id="homeViewDiv">
+<script src="/bower_components/angular-keyboard/angular-keyboard.min.js"></script>
 
-    <div ng-repeat="n in range(0, userConfig.dashboardElements.length - 1)">
-        <!--<h3>{{userConfig.dashboardElements[n].widgetType}}</h3>-->
-        <ng-include
-                src="appConfig['appRootPath'] + '/views/home_' + userConfig.dashboardElements[n].widgetType + '.html'"></ng-include>
+<section ng-controller="HomeViewController" id="homeViewDiv" class="container-fluid">
+
+
+  <div ng-repeat="n in range(0, userConfig.dashboardElements.length - 1)">
+    <div class="container-fluid">
+      <div class="col-lg-10 col-md-10 col-sm-12">
+        <ng-include src="appConfig['appRootPath'] + '/views/home_' + userConfig.dashboardElements[n].widgetType + '.html'"></ng-include>
+      </div>
     </div>
+  </div>
 
-    <div class="jumbotron" ng-show="!userConfig.dashboardElements.length">
-        <div >
-            <h3>Hi {{authInfo.name.split(' ')[0]}}</h3>
-
-            <p>It looks like you have not yet configured your dashboard.
-                Eager to learn how to add elements to your dashboard?</p>
-            <a class="btn btn-primary btn-default" href="#">
-                <span class="glyphicon glyphicon-question-sign" style="margin-right: 10px"></span> Take the Tour
-            </a>
-        </div>
-    </div>
-
+  <div class="jumbotron" ng-show="!userConfig.dashboardElements.length">
     <div>
-        <p>
-            <a class="btn btn-primary " href="#" data-toggle="modal"
-               data-target="#addWidgetModal"
-               role="button">
-                <span class="glyphicon glyphicon-plus-sign" style="margin-right: 10px"></span> Add Widgets
-            </a>
+      <h3>Hi {{authInfo.name.split(' ')[0]}}</h3>
 
-            <a class="btn btn-warning " href="#"
-               ng-show="userConfig.dashboardElements.length"
-               ng-click="removeAllWidgets()" role="button">
-                <span class="glyphicon glyphicon-minus-sign" style="margin-right: 10px"></span> Remove All Widgets
-            </a>
-        </p>
+      <p>It looks like you have not yet configured your dashboard.
+        Eager to learn how to add elements to your dashboard?</p>
+      <a class="btn btn-primary" href="#">
+        <span class="glyphicon glyphicon-question-sign" style="margin-right: 10px"></span> Take the Tour
+      </a>
     </div>
+  </div>
 
-    <div class="modal fade" id="addWidgetModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"><span
-                            aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                    <h4 class="modal-title" id="myModalLabel">Add a Widget to your Dashboard</h4>
-                </div>
-                <div class="modal-body row">
-                    <div class="col-md-6">
-                        <div class="media" ng-class="selectedWidget == 'updates' ? 'well media' : 'well-flat media'">
-                            <div class="media-body" ng-click="selectedWidget = 'updates'">
-                                <h4 class="media-heading">Catalog Updates</h4>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="media" ng-class="selectedWidget == 'history' ? 'well media' : 'well-flat media'">
-                            <div class="media-body" ng-click="selectedWidget = 'history'">
-                                <h4 class="media-heading">Data Usage Overview</h4>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-body row">
-                    <div class="col-md-6">
-                        <div class="media" ng-class="selectedWidget == 'stats' ? 'well media' : 'well-flat media'">
-                            <div class="media-body" ng-click="selectedWidget = 'stats'">
-                                <h4 class="media-heading">Simulation Updates</h4>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="media" ng-class="selectedWidget == 'current' ? 'well media' : 'well-flat media'">
-                            <div class="media-body" ng-click="selectedWidget = 'current'">
-                                <h4 class="media-heading">Health Status</h4>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+  <div>
+    <p>
+      <a class="btn btn-primary " href="#" data-toggle="modal"
+         data-target="#addWidgetModal"
+         role="button">
+        <span class="glyphicon glyphicon-plus-sign" style="margin-right: 10px"></span> Add Widgets
+      </a>
 
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="addWidget()">
-                        <span class="glyphicon glyphicon-plus-sign" style="margin-right: 10px"></span>Add
-                    </button>
-                </div>
-            </div>
+      <a class="btn btn-warning " href="#"
+         ng-show="userConfig.dashboardElements.length"
+         ng-click="removeAllWidgets()" role="button">
+        <span class="glyphicon glyphicon-minus-sign" style="margin-right: 10px"></span> Remove All Widgets
+      </a>
+    </p>
+  </div>
+
+  <div class="modal fade" id="addWidgetModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span
+                  aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+          <h4 class="modal-title" id="myModalLabel">Add a Widget to your Dashboard</h4>
         </div>
+        <div class="modal-body row">
+          <div class="col-md-6">
+            <div class="media" ng-class="selectedWidget == 'updates' ? 'well media' : 'well-flat media'">
+              <div class="media-body" ng-click="selectedWidget = 'updates'">
+                <h4 class="media-heading">Catalog Updates</h4>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="media" ng-class="selectedWidget == 'history' ? 'well media' : 'well-flat media'">
+              <div class="media-body" ng-click="selectedWidget = 'history'">
+                <h4 class="media-heading">Data Usage Overview</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-body row">
+          <div class="col-md-6">
+            <div class="media" ng-class="selectedWidget == 'stats' ? 'well media' : 'well-flat media'">
+              <div class="media-body" ng-click="selectedWidget = 'stats'">
+                <h4 class="media-heading">Simulation Updates</h4>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="media" ng-class="selectedWidget == 'current' ? 'well media' : 'well-flat media'">
+              <div class="media-body" ng-click="selectedWidget = 'current'">
+                <h4 class="media-heading">Health Status</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="addWidget()">
+            <span class="glyphicon glyphicon-plus-sign" style="margin-right: 10px"></span>Add
+          </button>
+        </div>
+      </div>
     </div>
+  </div>
 
 </section>

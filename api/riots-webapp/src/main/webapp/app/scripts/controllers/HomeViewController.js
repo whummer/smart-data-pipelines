@@ -2,7 +2,7 @@ define(['app'], function(app){
 	app.controller('HomeViewController', function($scope, $http, $compile, $log) {
 			AppController($scope, $http, $compile);
 
-			$scope.statsAPI = appConfig.services.stats.url;
+            $scope.statsAPI = appConfig.services.stats.url;
 			$scope.usersAPI = appConfig.services.users.url;
 			$scope.highlightMenuItem("#menuItemDashboard");
 
