@@ -32,9 +32,9 @@ app.controller('ThingController', [
 
 		AppController($scope, $http, $compile);
 
-		if($routeParams.thingID) {
+		if($routeParams.thingId) {
 			invokeGET($scope.http, 
-				$scope.thingsAPI + "/" + $routeParams.thingID,
+				$scope.thingsAPI + "/" + $routeParams.thingId,
 				function(data, status, headers, config) {
 					var t = $scope.shared.selectedThing = data.result;
 					if(t[THING_TYPE]) {

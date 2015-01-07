@@ -44,11 +44,14 @@ if(window.RIOTS_APP_KEY) {
 
 sh.get = {};
 
-sh.thingType = sh.get.thingType = function(id, callback, doCacheResults) {
-	return callGET(appConfig.services.thingTypes.url + "/" + id, callback, doCacheResults);
+sh.app = sh.get.app = function(id, callback, doCacheResults) {
+	return callGET(appConfig.services.apps.url + "/" + id, callback, doCacheResults);
 }
 sh.apps = sh.get.apps = function(callback, doCacheResults) {
 	return callGET(appConfig.services.apps.url, callback, doCacheResults);
+}
+sh.thingType = sh.get.thingType = function(id, callback, doCacheResults) {
+	return callGET(appConfig.services.thingTypes.url + "/" + id, callback, doCacheResults);
 }
 sh.thingTypes = sh.get.thingTypes = function(callback, doCacheResults) {
 	var maxThings = 100;

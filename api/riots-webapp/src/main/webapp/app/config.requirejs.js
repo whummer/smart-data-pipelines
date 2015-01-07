@@ -81,6 +81,10 @@ var requirejsAppConfig = {
         	name: 'angular-keyboard',
         	location: appConfig['bowerRootPath'] + '/angular-keyboard',
         	main: 'keyboard.min.js'
+        }, {
+            name: 'chartjs',
+            location: appConfig['bowerRootPath'] + '/chartjs/',
+        	main: 'Chart.min'
         }
 
         /* TODO old/unused/deprecated?
@@ -96,9 +100,6 @@ var requirejsAppConfig = {
             name: 'prettify',
             location: appConfig['bowerRootPath'] + '/google-code-prettify',
             main: 'src/prettify'
-        }, {
-            name: 'chartjs',
-            location: appConfig['bowerRootPath'] + '/chartjs/'
         }
         */
     ],

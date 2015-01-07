@@ -1,0 +1,15 @@
+<section ng-controller="AppsViewController">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h2 class="panel-title"><span class="glyphicon glyphicon-edit"></span> <b>Applications</b>
+			</h2>
+		</div>
+		<div class="panel-body">
+			<tabset>
+				<tab heading="Applications">
+					<ng-include src="appConfig['appRootPath'] + '/views/apps_list.html'"></ng-include>
+				</tab>
+			</tabset>
+		</div>
+	</div>
+</section>

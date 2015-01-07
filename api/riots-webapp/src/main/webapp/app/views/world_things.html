@@ -30,10 +30,10 @@ app.controller('ThingsController',[
 				{label: "Type", field: "thing-type", 
 					cellTemplate: "<div class='ui-grid-cell-contents'>{{row.entity['thing-type'].name}}</div>"
 				},
-				{label: "Position", field: "location", 
-					cellTemplate: "<div class='ui-grid-cell-contents'>{{row.entity.formatCoords()}}</div>"
-				},
-				{label: "Tags", field: "tags"}
+				//{label: "Position", field: "location", 
+				//	cellTemplate: "<div class='ui-grid-cell-contents'>{{row.entity.formatCoords()}}</div>"
+				//},
+				//{label: "Tags", field: "tags"}
 			];
 			$scope.tableOptions.data = [];
 			renderUITable($scope.tableOptions, "assetsTable", columnsConfig,
