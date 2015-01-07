@@ -20,6 +20,7 @@
         </div>
 
         <div class="col-md-2 text-center">
+          <div class="hidden-sm" style="height: 55px"></div>
           <button style="margin-bottom: 10px; margin-top:10px;" ng-click="addChildren()" class="btn btn-sm btn-primary">Include
             <span class="glyphicon glyphicon-chevron-up hidden-md hidden-lg"></span>
             <span class="glyphicon glyphicon-chevron-right hidden-sm"></span>
@@ -111,6 +112,10 @@
       $log.debug("ChildrenAll: ", $scope.childrenAll);
       var childrenWithParentLink = [];
       angular.forEach($scope.childrenAll, function (value, key) {
+        if (!value.name || !value['image-urls']) {
+          return;
+        }
+
         $log.debug("Adding child: ", value.name);
         childrenWithParentLink.push({name: value.name, parent: $scope.shared.selectedThingType.name, thumbnail: value['image-urls'][0]});
       });
