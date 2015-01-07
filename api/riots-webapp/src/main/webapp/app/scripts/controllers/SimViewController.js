@@ -14,7 +14,6 @@ define(['app'], function(app) {
 			$scope.propSimAPI = appConfig.services.simulationProps.url;
 			$scope.thingTypesAPI = appConfig.services.thingTypes.url;
 			$scope.thingsAPI = appConfig.services.things.url;
-			$scope.thingTypePropsAPI = appConfig.services.thingTypeProps.url;
 			$scope.usersAPI = appConfig.services.users.url;
 
 			$scope.curScenario = {id: -1};
@@ -179,16 +178,6 @@ define(['app'], function(app) {
 					eventBus.publish("init.websocket.done", ws);
 				}, $scope.onWebsocketUpdate);
 			}
-			
-			var loadUserInfo = function() {
-				invokeGET($http, $scope.usersAPI + "/me", 
-				function(data, status, headers, config) {
-					$scope.userInfo = data.result;
-				});
-				$scope.userId = "";
-			}
-
-			loadUserInfo();
 
 			/* add event handlers */
 			$scope.addClickHandler('btnAddScenario', $scope.addScenario);

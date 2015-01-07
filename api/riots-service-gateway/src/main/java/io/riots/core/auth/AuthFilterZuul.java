@@ -31,12 +31,12 @@ public class AuthFilterZuul extends AuthFilterBase {
         RequestContext context = RequestContext.getCurrentContext();
 		if(context != null) {
 			context.getZuulRequestHeaders().put(AuthHeaders.HEADER_AUTH_EMAIL, authInfo.email);
-			context.getZuulRequestHeaders().put(AuthHeaders.HEADER_AUTH_USERNAME, authInfo.userName);
+			context.getZuulRequestHeaders().put(AuthHeaders.HEADER_AUTH_USER_ID, authInfo.userName);
 		}
 	}
 
 	@Override
-	protected boolean authenticateRiotsApp(String userId, String appId) {
+	protected AuthInfo authenticateRiotsApp(String userId, String appId) {
 		return authenticateRiotsApp(clientFactory, userId, appId);
 	}
 

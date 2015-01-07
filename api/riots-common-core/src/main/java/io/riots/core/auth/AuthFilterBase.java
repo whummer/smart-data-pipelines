@@ -1,8 +1,9 @@
 package io.riots.core.auth;
 
 import io.riots.core.auth.AuthHeaders.AuthInfo;
+import io.riots.core.auth.AuthHeaders.AuthRequestInfo;
 import io.riots.core.service.ServiceClientFactory;
-import io.riots.services.sim.Simulation;
+import io.riots.services.apps.Application;
 import io.riots.services.users.Role;
 import io.riots.services.users.User;
 
@@ -39,8 +40,8 @@ import org.springframework.security.web.AuthenticationEntryPoint;
  * Authentication tokens are validated, and access to protected
  * resources (both static files and services) is restricted.
  *
- * This class has no @Component annotation, on purpose. Subclasses
- * should extend this class (possibly with additional functionality
+ * This class is abstract and has no @Component annotation, on purpose. 
+ * Subclasses should extend this class (possibly with additional functionality
  * such as adding Zuul proxy forwarding headers) and use @Component there.
  *
  * @author Waldemar Hummer
@@ -179,89 +180,85 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
             return true;
         }
 
-        String network = request.getHeader(AuthHeaders.HEADER_AUTH_NETWORK);
-        String token = request.getHeader(AuthHeaders.HEADER_AUTH_TOKEN);
-        if (network == null) {
-			/* get auth info from Websocket headers (encoded in protocol string) */
-            String wsHeader = request.getHeader(AuthHeaders.HEADER_WS_PROTOCOL);
-            if (wsHeader != null) {
-                int index = wsHeader.indexOf(AUTHINFO_DELIMITER);
-                if (index >= 0) {
-                	String firstPart = wsHeader.substring(0, index).trim();
-                	String secondPart = wsHeader.substring(index + 1, wsHeader.length()).trim();
-                	if(AuthNetwork.NETWORKS.contains(firstPart)) {
-	                    network = firstPart;
-	                    if (token == null) {
-	                        token = secondPart;
-	                    }
-                	} else {
-                		/* interpret as <userId>:<appId> token */
-                		boolean auth = authenticateRiotsApp(firstPart, secondPart);
-        				/* acknowledge the protocol in response headers */
-                        response.setHeader(AuthHeaders.HEADER_WS_PROTOCOL,
-                        		request.getHeader(AuthHeaders.HEADER_WS_PROTOCOL));
-                        /* return success code */
-                		return auth;
-                	}
-                }
-				/* acknowledge the protocol in response headers */
-                response.setHeader(AuthHeaders.HEADER_WS_PROTOCOL,
-                		request.getHeader(AuthHeaders.HEADER_WS_PROTOCOL));
-            }
+        /* 
+         * Get the auth info from the incoming request, via either of: 
+         *  - Websocket protocol header
+         *  - Cookie-encoded HTTP headers
+         *  - Custom HTTP headers
+         */
+        AuthRequestInfo requestInfo = new AuthRequestInfo();
+        if (request.getHeader(AuthHeaders.HEADER_WS_PROTOCOL) != null) {
+        	requestInfo = getAuthFromWebsocket(request, response);
+        }
+        if (!requestInfo.isFilledOut()) {
+        	requestInfo = getAuthFromCookie(request, response);
+        }
+        if (!requestInfo.isFilledOut()) {
+        	requestInfo = getAuthFromCustomHeaders(request, response);
         }
 
-        String cookie = request.getHeader("cookie");
-        if (!isEmpty(cookie)) {
-            List<HttpCookie> cookies = parse(cookie);
-            for (HttpCookie c : cookies) {
-                if (c.getName().equals(AuthHeaders.HEADER_AUTH_NETWORK) && network == null) {
-                    network = c.getValue();
-                }
-                if (c.getName().equals(AuthHeaders.HEADER_AUTH_TOKEN) && token == null) {
-                    token = c.getValue();
-                }
-            }
-        }
-
+        /* 
+         * determine whether authorization is 
+         * required for this resource/request 
+         */
         String uri = request.getRequestURI();
-
         if (isProtected(uri) && !isUnprotected(uri)) {
 
-            if (isEmpty(token)) {
-                LOG.info("Invalid token header received: " + token);
+            /* 
+             * if auth info is incomplete -> deny access! 
+             */
+        	if(!requestInfo.isFilledOut()) {
+        		LOG.info("Incomplete or no authentication information received.");
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 return false;
-            }
+        	}
+        	
+        	System.out.println("Access protected resource with auth info: " + requestInfo);
 
-            AuthInfo info = tokens.get(token);
+            /*
+             * attempt to get token from cache
+             */
+        	String tokenID = requestInfo.getTokenKey();
+            AuthInfo info = tokens.get(tokenID);
             boolean doVerify = true;
             if (info != null) {
                 if (info.isExpired()) {
-                    tokens.remove(token);
+                    tokens.remove(tokenID);
                 } else {
                     doVerify = false;
                 }
             }
 
+			/* start the actual verification of the auth credentials */
             if (doVerify) {
-				/* verify credentials */
-                System.out.println("Checking credentials: " + uri + " - " + network + " - " + token);
 
                 AuthInfo newInfo = null;
+
                 try {
-					AuthNetwork authNetwork = AuthNetwork.get(network);
-					newInfo = authNetwork.verifyAccessToken(token);
-                	if(newInfo == null) {
-                        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                        return false;
-                	}
-		            newInfo.expiry = new Date(new Date().getTime() + AuthFilterBase.EXPIRY_TIMEOUT_MS);
-				} catch (Exception e) {
-                    LOG.warn("Unable to process auth headers (" + network + "): " + e);
+    				if(requestInfo.isOAuthBased()) {
+
+                    	AuthNetwork authNetwork = AuthNetwork.get(requestInfo.network);
+    					newInfo = authNetwork.verifyAccessToken(requestInfo.token);
+    		            newInfo.accessToken = requestInfo.token;
+
+	            	} else if(requestInfo.isRiotsBased()) {
+	
+	            		newInfo = authenticateRiotsApp(requestInfo.userId, requestInfo.appKey);
+	
+	            	}
+                } catch (Exception e) {
+                    LOG.warn("Unable to process auth headers (" + requestInfo.network + "): " + e);
                     response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                     return false;
 				}
-                newInfo.accessToken = token;
+
+                System.out.println("new newInfo: " + newInfo);
+            	if(newInfo == null) {
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    return false;
+            	}
+
+	            newInfo.expiry = new Date(new Date().getTime() + AuthFilterBase.EXPIRY_TIMEOUT_MS);
 
 				/* set user roles in AuthInfo */
                 for (UserRoleMapping m : userRoleMappings) {
@@ -273,11 +270,11 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
                 }
 
 				/* store the AuthInfo in a map */
-                tokens.put(token, newInfo);
+                tokens.put(tokenID, newInfo);
             }
 
 			/* authentication done, now perform authorization */
-            AuthInfo authInfo = tokens.get(token);
+            AuthInfo authInfo = tokens.get(tokenID);
             authInfo.setActiveNow();
 
 			/* append additional infos to request */
@@ -290,33 +287,107 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
             springSecToken.setDetails(authInfo);
             SecurityContextHolder.getContext().setAuthentication(springSecToken);
         }
+
 		/* all checks passed, return success */
         return true;
     }
 
-    protected abstract boolean authenticateRiotsApp(String userId, String appId);
+    private AuthRequestInfo getAuthFromCustomHeaders(
+			HttpServletRequest request, HttpServletResponse response) {
+    	final AuthRequestInfo requestInfo = new AuthRequestInfo();
+    	requestInfo.network = request.getHeader(AuthHeaders.HEADER_AUTH_NETWORK);
+    	requestInfo.token = request.getHeader(AuthHeaders.HEADER_AUTH_TOKEN);
+    	requestInfo.userId = request.getHeader(AuthHeaders.HEADER_AUTH_USER_ID);
+    	requestInfo.appKey = request.getHeader(AuthHeaders.HEADER_AUTH_APP_KEY);
+    	return requestInfo;
+	}
 
-	protected boolean authenticateRiotsApp(ServiceClientFactory clientFactory, String userId, String appId) {
+	private AuthRequestInfo getAuthFromCookie(
+    		HttpServletRequest request, HttpServletResponse response) {
+		final AuthRequestInfo info = new AuthRequestInfo();
+        String cookie = request.getHeader("cookie");
+        if (!isEmpty(cookie)) {
+            List<HttpCookie> cookies = parse(cookie);
+            for (HttpCookie c : cookies) {
+                if (c.getName().equals(AuthHeaders.HEADER_AUTH_NETWORK)) {
+                    info.network = c.getValue();
+                }
+                if (c.getName().equals(AuthHeaders.HEADER_AUTH_TOKEN)) {
+                	info.token = c.getValue();
+                }
+            }
+        }
+		return info;
+	}
+
+	private AuthRequestInfo getAuthFromWebsocket(
+    		HttpServletRequest request, HttpServletResponse response) {
+
+    	/* get auth info from Websocket headers (encoded in protocol string) */
+        String wsHeader = request.getHeader(AuthHeaders.HEADER_WS_PROTOCOL);
+        final AuthRequestInfo info = new AuthRequestInfo();
+        if (wsHeader != null) {
+            int index = wsHeader.indexOf(AUTHINFO_DELIMITER);
+            if (index >= 0) {
+            	String firstPart = wsHeader.substring(0, index).trim();
+            	String secondPart = wsHeader.substring(index + 1, wsHeader.length()).trim();
+            	if(AuthNetwork.NETWORKS.contains(firstPart)) {
+            		info.network = firstPart;
+                    if (info.token == null) {
+                    	info.token = secondPart;
+                    }
+            	} else {
+            		/* interpret as <userId>:<appKey> token */
+            		info.userId = firstPart;
+            		info.appKey = secondPart;
+            	}
+            }
+			/* acknowledge the protocol in response headers */
+            response.setHeader(AuthHeaders.HEADER_WS_PROTOCOL,
+            		request.getHeader(AuthHeaders.HEADER_WS_PROTOCOL));
+        }
+        return info;
+    }
+
+    protected abstract AuthInfo authenticateRiotsApp(String userId, String appId);
+
+    /**
+     * Returns a valid AuthInfo token for the given parameters, 
+     * or null if the authentication fails.
+     */
+	protected AuthInfo authenticateRiotsApp(ServiceClientFactory clientFactory, String userId, String appKey) {
 		try {
 			User user = clientFactory.getUsersServiceClient().findByID(userId);
+			System.out.println("user" + userId + " - " + user);
 			if(user == null || !userId.equals(user.getId())) {
-				return false;
+				return null;
 			}
-			Simulation sim = clientFactory.getSimulationsServiceClient().retrieve(appId);
-			System.out.println("sim " + appId + " - " + sim);
-			boolean same = userId.equals(sim.getCreatorId());
-			return same;
+			Application app = clientFactory.getApplicationsServiceClient().retrieveByAppKey(appKey);
+			System.out.println("app " + appKey + " - " + app);
+			if(app == null || !appKey.equals(app.getAppKey())) {
+				return null;
+			}
+			AuthInfo info = new AuthInfo();
+			if(app.isAuthorized(user)) {
+				info.user = user;
+				info.userID = userId;
+				info.email = user.getEmail();
+				return info;
+			}
 		} catch (Exception e) {
-			LOG.info("Unable to authorize user/app: " + userId + "/" + appId, e);
-			return false;
+			LOG.info("Unable to authorize user/app: " + userId + "/" + appKey, e);
 		}
+		/* deny access */
+		return null;
 	}
 
 	void setAuthInfoHeaders(HttpServletRequest request, AuthInfo authInfo) {
     	/* append additional infos to request */
         request.setAttribute(AuthHeaders.HEADER_AUTH_EMAIL, authInfo.email);
-        request.setAttribute(AuthHeaders.HEADER_AUTH_USERNAME, authInfo.userName);
+        request.setAttribute(AuthHeaders.HEADER_AUTH_USER_ID, authInfo.userID);
     }
+
+	/* HELPER METHODS */
 
     private List<HttpCookie> parse(String cookieString) {
         List<HttpCookie> result = new LinkedList<HttpCookie>();

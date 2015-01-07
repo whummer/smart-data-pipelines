@@ -1,5 +1,6 @@
 package io.riots.core.service;
 
+import io.riots.services.ApplicationsService;
 import io.riots.services.CatalogService;
 import io.riots.services.GatewayStatsService;
 import io.riots.services.SimulationService;
@@ -37,6 +38,8 @@ public class ServiceClientFactory {
 
 	private static final String SERVICE_USERS_EUREKA_NAME = "users-service";
 	private static final String SERVICE_USERS_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
+	private static final String SERVICE_APP_EUREKA_NAME = "environment-service";
+	private static final String SERVICE_APP_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
 	private static final String SERVICE_CATALOG_EUREKA_NAME = "catalog-service";
 	private static final String SERVICE_CATALOG_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
 	private static final String SERVICE_THINGS_EUREKA_NAME = "environment-service";
@@ -56,10 +59,14 @@ public class ServiceClientFactory {
 		serviceEndpoints.put(SERVICE_CATALOG_EUREKA_NAME, SERVICE_CATALOG_ENDPOINT);
 		serviceEndpoints.put(SERVICE_SIMULATION_EUREKA_NAME, SERVICE_SIMULATION_ENDPOINT);
 		serviceEndpoints.put(SERVICE_GWSTATS_EUREKA_NAME, SERVICE_GWSTATS_ENDPOINT);
+		serviceEndpoints.put(SERVICE_APP_EUREKA_NAME, SERVICE_APP_ENDPOINT);
 	}
 
 	public UsersService getUsersServiceClient() {
 		return getServiceInstanceForName(SERVICE_USERS_EUREKA_NAME, UsersService.class);
+	}
+	public ApplicationsService getApplicationsServiceClient() {
+		return getServiceInstanceForName(SERVICE_APP_EUREKA_NAME, ApplicationsService.class);
 	}
 	public ThingsService getThingsServiceClient() {
 		return getServiceInstanceForName(SERVICE_THINGS_EUREKA_NAME, ThingsService.class);

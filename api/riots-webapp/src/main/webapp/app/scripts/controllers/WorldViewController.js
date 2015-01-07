@@ -13,7 +13,6 @@ define(['app'], function(app) {
 
 			$scope.thingsAPI = appConfig.services.things.url;
 			$scope.thingTypesAPI = appConfig.services.thingTypes.url;
-			$scope.thingTypePropsAPI = appConfig.services.thingTypeProps.url;
 			$scope.propValuesAPI = appConfig.services.things.url;
 			$scope.driversAPI = appConfig.services.drivers.url;
 			$scope.usersAPI = appConfig.services.users.url;

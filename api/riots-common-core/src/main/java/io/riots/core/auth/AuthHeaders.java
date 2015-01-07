@@ -13,6 +13,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -29,14 +30,51 @@ public class AuthHeaders {
     public static final String HEADER_AUTH_NETWORK = "riots-auth-network";
     public static final String HEADER_AUTH_TOKEN = "riots-auth-token";
     public static final String HEADER_AUTH_EMAIL = "riots-auth-email";
-    public static final String HEADER_AUTH_USERNAME = "riots-auth-username";
-    public static final String HEADER_AUTH_APPLICATION = "riots-auth-app-id";
+    public static final String HEADER_AUTH_USER_ID = "riots-auth-user-id";
+    public static final String HEADER_AUTH_APP_KEY = "riots-auth-app-key";
     public static final String HEADER_WS_PROTOCOL = "Sec-WebSocket-Protocol";
 
     private static final Logger LOG = Logger.getLogger(AuthHeaders.class);
 
     @Autowired
     private ServiceClientFactory clientFactory;
+
+    /**
+     * Class which holds authentication information.
+     */
+    public static class AuthRequestInfo {
+        /* option 1: OAuth authentication based on email & access token */
+        String network;
+        String token;
+        /* option 2: authentication based on riots userId and appKey */
+        String userId;
+        String appKey;
+
+        boolean isOAuthBased() {
+        	return !StringUtils.isEmpty(network) && !StringUtils.isEmpty(token);
+        }
+        boolean isRiotsBased() {
+        	return !StringUtils.isEmpty(userId) && !StringUtils.isEmpty(appKey);
+        }
+        boolean isFilledOut() {
+        	return isOAuthBased() || isRiotsBased();
+        }
+
+        String getTokenKey() {
+        	if(isOAuthBased()) {
+        		return token + "@" + network;
+        	} else if(isRiotsBased()) {
+        		return userId + "@" + appKey;
+        	}
+        	return null;
+        }
+
+		@Override
+		public String toString() {
+			return "AuthRequestInfo [network=" + network + ", token=" + token
+					+ ", userId=" + userId + ", appKey=" + appKey + "]";
+		}
+    }
 
     /**
      * Class which holds authentication information.
@@ -78,15 +116,16 @@ public class AuthHeaders {
      * Construct requesting user from given information.
      */
     public static synchronized User getRequestingUser(String userEmail,
-                                   String userName, UsersService usersService) {
-
-        System.out.println("INFO: Get requesting user: " + userEmail + " - " + userName);
-        if (userEmail == null) {
-            return null;
-        }
+                                   String userID, UsersService usersService) {
 		/* find existing user */
-        LOG.info("INFO: Get requesting user: " + userEmail + " - " + userName);
-        User existing = usersService.findByEmail(userEmail);
+        LOG.info("INFO: Get requesting user: " + userEmail + " - " + userID);
+        User existing = null;
+        if(!StringUtils.isEmpty(userID)) {
+        	existing = usersService.findByID(userID);
+        }
+        if (!StringUtils.isEmpty(userEmail)) {
+            existing = usersService.findByEmail(userEmail);
+        }
         return existing;
     }
 
@@ -97,9 +136,8 @@ public class AuthHeaders {
     public static synchronized User getRequestingUser(
     		HttpServletRequest req, UsersService usersService) {
         String userEmail = getHeaders(req).get(HEADER_AUTH_EMAIL);
-        String userName = getHeaders(req).get(HEADER_AUTH_USERNAME);
-        System.out.println(getHeaders(req));
-        return getRequestingUser(userEmail, userName, usersService);
+        String userId = getHeaders(req).get(HEADER_AUTH_USER_ID);
+        return getRequestingUser(userEmail, userId, usersService);
     }
 
     public static Map<String, String> getHeaders(HttpServletRequest req) {

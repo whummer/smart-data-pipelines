@@ -7,6 +7,7 @@ import io.riots.services.users.User;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -55,7 +56,8 @@ public class UsersServiceImpl implements UsersService {
     public AuthToken login(GetAuthTokenRequest r) {
     	AuthToken response = new AuthToken();
     	response.network = r.network;
-    	return response;
+    	// TODO implement
+    	throw new NotImplementedException();
     }
 
     @Override
