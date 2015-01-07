@@ -72,7 +72,7 @@ sh.properties = sh.get.properties = function(thingType, callback, doCacheResults
 			sh.properties(el, callback);
 		});
 	}
-	callback(thingType.properties);
+	callback(thingType.properties, thingType);
 	/* recurse into sub-properties */
 	if(thingType.properties) {
 		var recurseProps = function(prop, callback, propNamePrefix) {
@@ -80,7 +80,7 @@ sh.properties = sh.get.properties = function(thingType, callback, doCacheResults
 				$.each(prop.children, function(idx,subProp) {
 					subProp = clone(subProp);
 					subProp.name = propNamePrefix + subProp.name;
-					callback([subProp]);
+					callback([subProp], thingType);
 					recurseProps(subProp, callback, subProp.name + ".");
 				});
 			}

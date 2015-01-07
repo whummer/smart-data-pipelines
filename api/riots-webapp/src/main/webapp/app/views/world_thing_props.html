@@ -15,7 +15,7 @@
 				<td>Thing Type:</td>
 				<td>
 					<select id="selThingType" class="form-control input-sm"
-						ng-options="opt.name for opt in assetTypes track by opt.id"
+						ng-options="opt.name for opt in thingTypes track by opt.id"
 						ng-model="shared.selectedThing['thing-type']">
 					</select>
 				</td>
@@ -84,7 +84,7 @@
 			$scope.loadThingTypes = function() {
 				invokeGET($scope.http, $scope.thingTypesAPI,
 					function(data, status, headers, config) {
-						$scope.assetTypes = data.result;
+						$scope.thingTypes = data.result;
 					}
 				);
 			}
