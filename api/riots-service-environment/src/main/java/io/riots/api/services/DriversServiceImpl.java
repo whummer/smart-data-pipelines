@@ -119,7 +119,8 @@ public class DriversServiceImpl implements DriversService {
     		mqttUtil.stop(driverId);
     	} else if(driverConnector == DriverConnector.SIMULATION) {
     		SimulationService simService = clientFactory.getSimulationsServiceClient();
-    		simService.stopSimulation(driver.getThingId(), driver.getPropertyName());
+    		// TODO
+    		//simService.stopSimulation(driver.getThingId(), driver.getPropertyName());
     	}
     }
     private void startDriver(DataDriver driver, User creator) {
