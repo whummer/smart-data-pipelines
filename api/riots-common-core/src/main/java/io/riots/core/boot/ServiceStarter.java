@@ -20,9 +20,9 @@ import org.springframework.context.annotation.ImportResource;
  * @author omoser
  * @author riox
  */
-@EnableAutoConfiguration
+
 @Configuration
-@ComponentScan(basePackages = {"io.riots"}, 
+@ComponentScan(basePackages = {"io.riots"},
 	excludeFilters = @ComponentScan.Filter(
         type = FilterType.REGEX,
         pattern = "io\\.riots\\.core\\.handlers.*"))

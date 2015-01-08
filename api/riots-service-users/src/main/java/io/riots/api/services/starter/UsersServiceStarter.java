@@ -2,9 +2,14 @@ package io.riots.api.services.starter;
 
 import io.riots.core.boot.MongoEnabledServiceStarter;
 
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchAutoConfiguration;
+import org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchDataAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @author whummer
