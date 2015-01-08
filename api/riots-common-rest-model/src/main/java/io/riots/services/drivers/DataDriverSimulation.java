@@ -1,5 +1,7 @@
 package io.riots.services.drivers;
 
+import io.riots.services.sim.SimulationParameterValue;
+
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -20,12 +22,12 @@ public class DataDriverSimulation extends DataDriver {
 	String simulationId;
 
 	@JsonProperty
-	List<Object> parameters;
+	List<SimulationParameterValue> parameters;
 
 	public String getSimulationId() {
 		return simulationId;
 	}
-	public List<Object> getParameters() {
+	public List<SimulationParameterValue> getParameters() {
 		return parameters;
 	}
 }

@@ -50,17 +50,11 @@ public class Simulation implements ObjectCreated, ObjectIdentifiable {
 	private String name;
 
 	/**
-	 * Specifications of things used in this simulation.
+	 * Simulated properties. 
 	 */
 	@JsonProperty
-	private List<String> things = new LinkedList<>();
-
-	/**
-	 * Simulated properties of the device specifications. 
-	 * List of {@link PropertySimulation} IDs.
-	 */
-	@JsonProperty
-	private List<PropertySimulation<?>> simulationProperties = new LinkedList<PropertySimulation<?>>();
+	private List<PropertySimulation<?>> simulationProperties = 
+		new LinkedList<PropertySimulation<?>>();
 
 	public void setCreatorId(String creatorId) {
 		this.creatorId = creatorId;
@@ -70,6 +64,9 @@ public class Simulation implements ObjectCreated, ObjectIdentifiable {
 	}
 	public Date getCreated() {
 		return created;
+	}
+	public void setCreated(Date created) {
+		this.created = created;
 	}
 	public String getId() {
 		return id;
@@ -83,13 +80,6 @@ public class Simulation implements ObjectCreated, ObjectIdentifiable {
 	public void setSimulationProperties(
 			List<PropertySimulation<?>> simulationProperties) {
 		this.simulationProperties = simulationProperties;
-	}
-	public List<String> getThings() {
-		return things;
-	}
-	@Override
-	public String toString() {
-		return "Simulation [simulationProperties=" + simulationProperties + "]";
 	}
 
 	public String generateSimulationCode() {

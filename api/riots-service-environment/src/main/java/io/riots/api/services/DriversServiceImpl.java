@@ -4,9 +4,15 @@ import io.riots.api.data.drivers.DriverUtilMQTT;
 import io.riots.api.util.ServiceUtil;
 import io.riots.core.auth.AuthHeaders;
 import io.riots.core.repositories.DeviceDriverRepository;
+import io.riots.core.service.ServiceClientFactory;
 import io.riots.services.DriversService;
+import io.riots.services.SimulationService;
 import io.riots.services.drivers.DataDriver;
+import io.riots.services.drivers.DataDriverSimulation;
 import io.riots.services.drivers.DataDriver.DriverConnector;
+import io.riots.services.sim.PropertySimulation;
+import io.riots.services.sim.Simulation;
+import io.riots.services.sim.SimulationType;
 import io.riots.services.users.User;
 
 import java.net.URI;
@@ -40,9 +46,11 @@ public class DriversServiceImpl implements DriversService {
     HttpServletRequest req;
     @Context
     MessageContext context;
-    
+
     @Autowired
     DriverUtilMQTT mqttUtil;
+    @Autowired
+    ServiceClientFactory clientFactory;
 
     @Override
     @Timed @ExceptionMetered
@@ -53,8 +61,6 @@ public class DriversServiceImpl implements DriversService {
     @Override
     @Timed @ExceptionMetered
     public DataDriver retrieveForThingType(String itemId) {
-//    	User user = authFilter.getRequestingUser(req);
-//      return driverRepo.findByThingTypeIdAndCreatorIdOrThingTypeIdAndCreatorIdIsNull(itemId, user, itemId);
     	List<DataDriver> list = driverRepo.findByThingTypeId(itemId);
     	if(list.isEmpty()) {
     		return null;
@@ -67,8 +73,6 @@ public class DriversServiceImpl implements DriversService {
     @Override
     @Timed @ExceptionMetered
     public DataDriver retrieveForThing(String thingId, String propertyName) {
-//    	User user = authFilter.getRequestingUser(req);
-//        return driverRepo.findByThingIdAndCreatorIdOrThingIdAndCreatorIdIsNull(itemId, user, itemId);
     	List<DataDriver> list = driverRepo.findByThingIdAndPropertyName(thingId, propertyName);
     	if(list.isEmpty()) {
     		return null;
@@ -90,10 +94,10 @@ public class DriversServiceImpl implements DriversService {
     	if(d != null) {
     		oldDriverId = d.getId();
     		driver.setId(oldDriverId);
-    		stopDriver(d.getConnector(), oldDriverId);
+    		stopDriver(d);
     	}
     	driver = driverRepo.save(driver);
-    	startDriver(driver.getConnector(), driver.getId(), driver);
+    	startDriver(driver, user);
         URI uri = UriBuilder.fromPath("/drivers/{id}").build(driver.getId());
         ServiceUtil.setLocationHeader(context, uri);
         return driver;
@@ -108,14 +112,34 @@ public class DriversServiceImpl implements DriversService {
 
     /* HELPER METHODS */
 
-    private void stopDriver(DriverConnector driverConnector, String oldDriverId) {
+    private void stopDriver(DataDriver driver) {
+    	DriverConnector driverConnector = driver.getConnector();
+    	String driverId = driver.getId();
     	if(driverConnector == DriverConnector.MQTT) {
-    		mqttUtil.stop(oldDriverId);
+    		mqttUtil.stop(driverId);
+    	} else if(driverConnector == DriverConnector.SIMULATION) {
+    		SimulationService simService = clientFactory.getSimulationsServiceClient();
+    		simService.stopSimulation(driver.getThingId(), driver.getPropertyName());
     	}
     }
-    private void startDriver(DriverConnector driverConnector, String driverId, DataDriver driver) {
+    private void startDriver(DataDriver driver, User creator) {
+    	DriverConnector driverConnector = driver.getConnector();
+    	String driverId = driver.getId();
     	if(driverConnector == DriverConnector.MQTT) {
     		mqttUtil.start(driverId, driver);
+    	} else if(driverConnector == DriverConnector.SIMULATION) {
+    		/* get reference to simulation service */
+    		SimulationService simService = clientFactory.getSimulationsServiceClient();
+    		/* construct new simulation */
+    		DataDriverSimulation driverSim = (DataDriverSimulation)driver;
+    		SimulationType simType = simService.retrieveSimType(driverSim.getSimulationId());
+    		Simulation sim = new Simulation();
+    		sim.setCreatorId(driver.getCreatorId());
+    		PropertySimulation<?> propSim = simType.getSimulation();
+    		propSim.fillInParameters(driverSim.getParameters());
+    		sim.getSimulationProperties().add(propSim);
+    		/* post new simulation to simulation service */
+    		simService.startSimulation(sim);
     	}
     }
 

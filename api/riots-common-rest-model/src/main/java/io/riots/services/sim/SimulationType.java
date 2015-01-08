@@ -59,22 +59,34 @@ public class SimulationType implements ObjectCreated, ObjectIdentifiable {
 	@JsonProperty
 	private PropertySimulation<?> simulation;
 
-	public void setCreatorId(String creatorId) {
-		this.creatorId = creatorId;
+	public String getId() {
+		return id;
 	}
 	public String getCreatorId() {
 		return creatorId;
 	}
+	public void setCreatorId(String creatorId) {
+		this.creatorId = creatorId;
+	}
 	public Date getCreated() {
 		return created;
 	}
-	public String getId() {
-		return id;
+	public void setCreated(Date created) {
+		this.created = created;
 	}
 	public String getName() {
 		return name;
 	}
+	public void setName(String name) {
+		this.name = name;
+	}
 	public List<SimulationParameter> getParameters() {
 		return parameters;
+	}
+	public PropertySimulation<?> getSimulation() {
+		return simulation;
+	}
+	public void setSimulation(PropertySimulation<?> simulation) {
+		this.simulation = simulation;
 	}
 }

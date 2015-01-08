@@ -1,18 +1,24 @@
 package io.riots.demo;
 
+import io.riots.core.auth.AuthHeaders;
 import io.riots.core.service.ServiceClientFactory;
 import io.riots.services.CatalogService;
+import io.riots.services.SimulationService;
 import io.riots.services.catalog.Property;
 import io.riots.services.catalog.ThingType;
 import io.riots.services.catalog.ValueDomainContinuous;
 import io.riots.services.catalog.ValueDomainDiscrete;
 import io.riots.services.catalog.ValueDomainEnumerated;
+import io.riots.services.sim.PropertySimulationFunctionBased;
+import io.riots.services.sim.PropertySimulationGPS;
+import io.riots.services.sim.SimulationType;
 
 import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.cxf.jaxrs.client.WebClient;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
@@ -66,28 +72,80 @@ public class InsertDemoDataViaCatalog {
 	}
 
 	private static CatalogService catalog;
+	private static SimulationService simulations;
 
 	@Before
 	public void setup() {
 		try {
 			catalog = serviceClientFactory.getCatalogServiceClient();
-			System.out.println(catalog);
+			simulations = serviceClientFactory.getSimulationsServiceClient();
+			WebClient.client(simulations).header(AuthHeaders.HEADER_AUTH_EMAIL, "test@riots.io");
 		} catch (Exception e) {
 			e.printStackTrace();
-			/* service not running, do not run this test class */
+			/* services not running, do not run this test class */
 		}
 	}
 
 	@Test
 	public void insertData() {
-		if (catalog == null) {
-			LOG.info("Catalog service not available, skipping test. Not inserting data.");
+		if (catalog == null || simulations == null) {
+			LOG.info("Services not available, skipping test. Not inserting data.");
 			return;
 		}
 		insertPropData();
 		insertDevData();
 		insertManufacturerData();
 		insertThingData();
+		insertSimulationData();
+	}
+
+	private void insertSimulationData() {
+		List<SimulationType> existing = simulations.listSimTypes(0, 1000);
+		{
+			SimulationType t = new SimulationType();
+			t.setName("Linear Decay");
+			PropertySimulationFunctionBased sim = new PropertySimulationFunctionBased();
+			sim.startTime = 1;
+			sim.endTime = 500;
+			sim.stepInterval = 1;
+			sim.setFunction("1-x/" + sim.endTime);
+			t.setSimulation(sim);
+			createSimType(existing, t);
+		}
+		{
+			SimulationType t = new SimulationType();
+			t.setName("Logarithmic Decay");
+			PropertySimulationFunctionBased sim = new PropertySimulationFunctionBased();
+			sim.startTime = 1;
+			sim.endTime = 500;
+			sim.stepInterval = 1;
+			sim.setFunction("1/(x)");
+			t.setSimulation(sim);
+			createSimType(existing, t);
+		}
+		{
+			SimulationType t = new SimulationType();
+			t.setName("GPS Trace - Vienna/Austria");
+			PropertySimulationGPS sim = new PropertySimulationGPS();
+			sim.startTime = 1;
+			sim.endTime = 500;
+			sim.stepInterval = 1;
+			sim.setLatitude(48.19742);
+			sim.setLongitude(16.37127);
+			sim.setDiameter(1000); // meters
+			sim.setMaxSpeed(50); // km/h
+			t.setSimulation(sim);
+			createSimType(existing, t);
+		}
+	}
+
+	private void createSimType(List<SimulationType> existing, SimulationType t) {
+		for(SimulationType e : existing) {
+			if(e.getName().equals(t.getName())) {
+				return;
+			}
+		}
+		simulations.createSimType(t);
 	}
 
 	private ThingType getExisting(List<ThingType> types, String name) {
