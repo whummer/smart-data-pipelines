@@ -22,6 +22,7 @@ import javax.jms.JMSException;
 import javax.jms.TextMessage;
 import javax.ws.rs.core.Context;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.cxf.jaxrs.ext.MessageContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -147,6 +148,9 @@ public class ThingDataServiceImpl implements ThingDataService {
     	ThingsService things = serviceClientFactory.getThingsServiceClient();
     	Thing thing = things.retrieve(thingId);
     	String thingTypeId = thing.getThingTypeId();
+    	if(StringUtils.isEmpty(thingTypeId)) {
+    		return null;
+    	}
     	return searchPropForThingType(thingTypeId, propertyName);
     }
     private Property searchPropForThingType(String thingTypeId, String propertyName) {

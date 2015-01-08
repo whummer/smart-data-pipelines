@@ -107,26 +107,28 @@ app.controller('ThingDataController', [
         }
 
         var buildPropsTable = function (thing) {
+        	$scope.propsGridConfig.data = [];
         	var thingType = thing[THING_TYPE];
         	if(!thingType) return;
-        	var data = thingType[PROPERTIES];
-        	if(!data) return;
-        	$.each(data, function(idx,el) {
-				var url = $scope.propValuesAPI + "/" + 
-					$scope.shared.selectedThing.id + "/" + el.name;
-				invokeGET($http, url,
-					function(data, status, headers, config) {
-						if(data.result) {
-							el.lastTime = data.result.timestamp;
+        	var list = [];
+        	riots.properties(thingType.id, function(els) {
+        		$.each(els, function(idx,el) {
+        			list.push(el);
+        			var url = $scope.propValuesAPI + "/" + 
+						$scope.shared.selectedThing.id + "/" + el.name;
+					invokeGET($http, url,
+						function(data, status, headers, config) {
+							if(data.result) {
+								el.lastTime = data.result.timestamp;
+							}
+						},
+						function(data, status, headers, config) {
+							// error callback (ignore)
 						}
-					},
-					function(data, status, headers, config) {
-						// error callback (ignore)
-					}
-				);
-			});
-			//console.log("setting propsGridConfig.data", data);
-            $scope.propsGridConfig.data = data;
+					);
+        		})
+        	});
+            $scope.propsGridConfig.data = list;
         };
 
         loadPropsTable();

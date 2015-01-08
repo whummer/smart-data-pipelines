@@ -8,39 +8,53 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
  * Encapsulates all relevant data for a simulation scenario.
  * 
  * @author Waldemar Hummer
  */
-//@Document(collection = Constants.COLL_SIMULATIONS)
 public class Simulation implements ObjectCreated, ObjectIdentifiable {
 
+	/**
+	 * Identifier.
+	 */
 	@Id
 	private String id;
-	/**
-	 * Creator
-	 */
-	@JsonProperty
-	private String creatorId;
-	/**
-	 * Creator
-	 */
-	@JsonProperty
-	private String name;
+
 	/**
 	 * Creation date.
 	 */
-	@JsonProperty
+	@JsonInclude(Include.NON_EMPTY)
+	@JsonProperty("creation-date")
+	@Field(type = FieldType.Date)
 	private Date created;
+
+	/**
+	 * Creator
+	 */
+	@JsonInclude(Include.NON_EMPTY)
+	@JsonProperty("creator-id")
+	private String creatorId;
+
+	/**
+	 * Name
+	 */
+	@JsonProperty
+	private String name;
+
 	/**
 	 * Specifications of things used in this simulation.
 	 */
 	@JsonProperty
 	private List<String> things = new LinkedList<>();
+
 	/**
 	 * Simulated properties of the device specifications. 
 	 * List of {@link PropertySimulation} IDs.

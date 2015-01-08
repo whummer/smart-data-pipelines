@@ -1,14 +1,12 @@
 package io.riots.core.model;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-
 import io.riots.core.service.ServiceClientFactory;
 import io.riots.services.CatalogService;
 import io.riots.services.catalog.HierarchicalObject;
 import io.riots.services.catalog.Property;
 import io.riots.services.catalog.ThingType;
+
+import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -54,7 +52,13 @@ public class PropertyFinder {
 		return null;
 	}
 
-
+	/**
+	 * Find a property in a ThingType 
+	 * (also recurses into child types).
+	 * @param thingType
+	 * @param name
+	 * @return
+	 */
 	public Property findPropertyForThingType(
 			ThingType thingType, String name) {
 		CatalogService catalog = clientFactory.getCatalogServiceClient();
@@ -62,8 +66,6 @@ public class PropertyFinder {
 		if(prop != null) {
 			return prop;
 		}
-		List<ThingType> list = new LinkedList<ThingType>();
-		list.add(thingType);
 		for(String childId : thingType.getChildren()) {
 			ThingType child = catalog.retrieveThingType(childId);
 			prop = findProperty(child.getProperties(), name);

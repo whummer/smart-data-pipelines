@@ -294,6 +294,9 @@ app.controller('SimsController', function ($scope, $http, $compile, $routeParams
 		if(!sim) {
 			sim = $scope.shared.selectedSim;
 		}
+		if(!sim.simulation) {
+			sim.simulation = {type: "RANDOM"};
+		}
 		var item = sim.simulation;
 		if(item.type != "GPS") {
 			delete item["latitude"];

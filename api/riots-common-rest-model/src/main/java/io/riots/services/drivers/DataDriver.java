@@ -5,7 +5,13 @@ import io.riots.services.model.interfaces.ObjectIdentifiable;
 
 import java.util.Date;
 
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
@@ -18,6 +24,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  */
 @JsonSubTypes({
 	@Type(value = DataDriver.class, name="GENERIC"),
+	@Type(value = DataDriverSimulation.class, name="SIMULATION"),
 	@Type(value = DataDriverMQTT.class, name="MQTT"),
 	@Type(value = DataDriver.DataDriverXively.class, name="XIVELY"),
 	@Type(value = DataDriver.DataDriverSpark.class, name="SPARK_IO"),
@@ -37,35 +44,54 @@ public class DataDriver implements ObjectIdentifiable, ObjectCreated {
 	/**
 	 * Identifier.
 	 */
+	@JsonProperty
 	String id;
+
 	/**
-	 * Creation date.
+	 * Creation Date.
 	 */
-	Date created;
+	@JsonInclude(Include.NON_EMPTY)
+	@JsonProperty("creation-date")
+	@Field(type = FieldType.Date)
+	private Date created;
+
 	/**
-	 * Creating user.
+	 * Creating user id.
 	 */
-	String creatorId;
+	@JsonInclude(Include.NON_EMPTY)
+	@JsonProperty("creator-id")
+	private String creatorId;
+
 	/**
 	 * Target thing type for which this driver is applicable.
 	 */
+	@JsonProperty
 	String thingTypeId;
+
 	/**
 	 * Target thing for which this driver is applicable.
 	 */
+	@JsonProperty
 	String thingId;
+
 	/**
 	 * Target thing's property name for which this driver is applicable.
 	 */
+	@JsonProperty
 	String propertyName;
+
 	/**
 	 * Connector type, e.g., a specific protocol like MQTT
 	 * or a specific platform like Xively.
 	 */
+	@JsonProperty
 	DriverConnector connector;
+
 	/**
 	 * Programming language in which the driver should be exported.
+	 * TODO: whummer: needed?
 	 */
+	@JsonProperty
 	DriverLanguage driverLanguage;
 
 	{
@@ -75,6 +101,8 @@ public class DataDriver implements ObjectIdentifiable, ObjectCreated {
 
 	public static enum DriverConnector {
 		GENERIC,
+
+		SIMULATION,
 
 		XIVELY,
 		SPARK_IO,
