@@ -17,7 +17,7 @@
 			<label for="inputName" class="col-sm-3 control-label">Name:</label>
 			<div class="col-sm-9">
 				<input id="inputName" class="form-control input-sm"
-					ng-model="shared.selectedThing.name" disabled="disabled" />
+					ng-model="shared.selectedThing.name" />
 			</div>
 		</div>
 
@@ -119,7 +119,7 @@
 				}
 
 				/* add event handlers*/
-				$scope.addClickHandler("btnSaveThingDetails",
+				$scope.addClickHandler("btnSave",
 						$scope.saveThingDetails);
 
 				/* start rendering the main container */

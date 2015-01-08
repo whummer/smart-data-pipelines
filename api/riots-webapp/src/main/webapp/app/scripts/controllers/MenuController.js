@@ -17,6 +17,7 @@ app.controller('MenuController', function ($scope, $log, $http, $location, $comp
 	}
 
 	$scope.appNumber = 1
+	//$scope.CREATION_DATE = CREATION_DATE
 	
 	$scope.addApplication = function () {		
     	var newApp = {name: "New Application " + $scope.appNumber };
@@ -24,8 +25,11 @@ app.controller('MenuController', function ($scope, $log, $http, $location, $comp
     		$scope.shared.applications.push(newApp);
     	});
     	
-    	$scope.appNumber + 1
+    	// TODO this does not work - no clue why
+    	$scope.appNumber = $scope.appNumber + 1	    	
     };
+    
+    
 
 	$scope.$watch("authInfo", function() {
 		$scope.shared.applications = [];

@@ -25,7 +25,7 @@ app.controller('ThingsController',[
 		$scope.initTable = function() {
 			var columnsConfig = [
 				{label: "Name", field: "name", sortable: true,
-					cellTemplate: "<div class='ui-grid-cell-contents'><a href='#/apps/{{row.entity.id}}'>{{row.entity.name}}</a></div>"
+					cellTemplate: "<div class='ui-grid-cell-contents'>{{row.entity.name}}</div>"
 				},
 				{label: "Type", field: "thing-type", 
 					cellTemplate: "<div class='ui-grid-cell-contents'>{{row.entity['thing-type'].name}}</div>"
