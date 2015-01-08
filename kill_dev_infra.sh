@@ -14,7 +14,7 @@ for pid in $RIOTS_PIDS; do
 	$(kill $pid);
 	sleep 4;
 	CHECK=$(ps -eaf | grep $SERVICE_NAME | grep -v "grep");
-	echo "check: $CHECK";
+	#echo "check: $CHECK";
 	if [ -n "$CHECK" ]; then
 		echo "$SERVICE_NAME seems to be die-hard, trying to kill it with a vengance...";
 		$(kill -9 $pid);
