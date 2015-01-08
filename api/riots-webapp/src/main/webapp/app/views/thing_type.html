@@ -56,10 +56,6 @@
                       function (data, status, headers, config) {
                         $log.info("Loading ThingType with ID " + $routeParams.thingTypeID);
                         $scope.shared.selectedThingType = data.result;
-                        if (!$scope.shared.selectedThingType['image-urls']) {
-                          $scope.shared.selectedThingType['image-urls'] = [];
-                        }
-
                         $log.debug("Adding Thing to shared scope: ", data.result);
                       }
               );

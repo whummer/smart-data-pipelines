@@ -12,7 +12,7 @@
           <!-- carousel -->
           <carousel id="devTypeImages" interval="-1">
             <slide ng-repeat="i in range(0, shared.selectedThingType[IMAGE_DATA].length - 1)">
-              <img ng-src="{{shared.selectedThingType[IMAGE_DATA][i]['href']}}" class="img-responsive" style="margin: auto;">
+              <img ng-src="{{shared.selectedThingType[IMAGE_DATA][i]['href']}}" class="img-responsive" style="max-width:200px; max-height: 200px; margin: auto;">
             </slide>
           </carousel>
 
@@ -67,7 +67,7 @@
                 <tr ng-repeat="n in range(0, shared.selectedThingType[IMAGE_DATA].length - 1)">
                   <td>
                     <div class="input-group">
-                      <input class="form-control input-sm" style="width:100%; margin-bottom: 10px" ng-model="shared.selectedThingType[IMAGE_DATA][n]"/>
+                      <input class="form-control input-sm" style="width:100%; margin-bottom: 10px" ng-model="shared.selectedThingType[IMAGE_DATA][n].href"/>
                         <span class="input-group-btn">
                           <button class="btn btn-sm btn-warning" style="margin-bottom: 10px" type="button" ng-click="removeImage(n)">
                             <span class="glyphicon glyphicon-remove"></span>&nbsp;

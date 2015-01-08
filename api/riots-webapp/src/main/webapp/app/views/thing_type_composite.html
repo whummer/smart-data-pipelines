@@ -1,10 +1,9 @@
 <section ng-controller="CompositeTypeController">
   <div ng-show="shared.selectedThingType">
 
-
-    <!--<div class="thumbnail">
-      <img ng-src="{{shared.selectedThingType['image-urls'][0]}}" class="img-responsive" style="margin: auto; max-height: 150px; max-width: 150px;">
-    </div>-->
+    <div ng-hide="shared.selectedThingType.children">
+      <img ng-src="{{shared.selectedThingType[IMAGE_DATA][0].href}}" class="img-responsive" style="margin: auto; max-height: 150px; max-width: 150px;">
+    </div>
 
     <div id="d3" class="text-center"></div>
 
@@ -20,14 +19,14 @@
         </div>
 
         <div class="col-md-2 text-center">
-          <div class="hidden-sm" style="height: 55px"></div>
+          <div class="hidden-sm hidden-xs" style="height: 55px"></div>
           <button style="margin-bottom: 10px; margin-top:10px;" ng-click="addChildren()" class="btn btn-sm btn-primary">Include
-            <span class="glyphicon glyphicon-chevron-up hidden-md hidden-lg"></span>
-            <span class="glyphicon glyphicon-chevron-right hidden-sm"></span>
+            <span class="glyphicon glyphicon-chevron-right hidden-xs hidden-sm"></span>
+            <span class="glyphicon glyphicon-chevron-down hidden-md hidden-lg"></span>
           </button>
           <button style="margin-bottom: 10px; margin-top:10px;" ng-click="removeChildren()" class="btn btn-sm btn-primary">
-            <span class="glyphicon glyphicon-chevron-left hidden-sm"></span>
-            <span class="glyphicon glyphicon-chevron-down hidden-md hidden-lg"></span> Remove
+            <span class="glyphicon glyphicon-chevron-up hidden-md hidden-lg"></span>
+            <span class="glyphicon glyphicon-chevron-left hidden-xs hidden-sm"></span> Remove
           </button>
         </div>
 
@@ -52,12 +51,14 @@
 
     $log.debug("Inside CompositeTypeController");
 
-
     $scope.thingTypesAll = [];
     $scope.thingTypesSelected = [];
     $scope.childrenAll = [];
     $scope.childrenSelected = [];
 
+    //
+    // prepare select inputs
+    //
     var syncStateWithModel = function () {
       var thingType = $scope.shared.selectedThingType;
       thingType.children = [];
@@ -103,26 +104,24 @@
 
     };
 
-    /* register event listeners */
-    $scope.$watch("shared.selectedThingType", function () {
-      loadSelects();
-    });
-
+    //
+    // composite thing type visualization
+    //
     var prepareTreeData = function () {
       $log.debug("ChildrenAll: ", $scope.childrenAll);
       var childrenWithParentLink = [];
       angular.forEach($scope.childrenAll, function (value, key) {
-        if (!value.name || !value['image-urls']) {
+        if (!value.name || !value[IMAGE_DATA][0]) {
           return;
         }
 
         $log.debug("Adding child: ", value.name);
-        childrenWithParentLink.push({name: value.name, parent: $scope.shared.selectedThingType.name, thumbnail: value['image-urls'][0]});
+        childrenWithParentLink.push({name: value.name, parent: $scope.shared.selectedThingType.name, thumbnail: value[IMAGE_DATA][0].href});
       });
 
       $log.debug("ChildrenWithParentLink: ", childrenWithParentLink);
       var treeData = [{
-        thumbnail: $scope.shared.selectedThingType['image-urls'][0],
+        thumbnail: $scope.shared.selectedThingType[IMAGE_DATA][0].href,
         "name": $scope.shared.selectedThingType.name,
         "children": childrenWithParentLink,
         parent: "null"
@@ -137,7 +136,14 @@
       drawCompositeThing(prepareTreeData());
     };
 
+
+    //
+    // register event listeners
+    //
     $scope.$watch("thingTypesAll", renderTree);
+    $scope.$watch("shared.selectedThingType", function () {
+      loadSelects();
+    });
 
   });
 
