@@ -20,6 +20,7 @@ define(['app'], function(app) {
 
 			$scope.listOfThings = null;
 			$scope.defaultLocation = {lat: 48.19742, lng: 16.37127};
+			$scope.tabs = {active: 'things'};
 
 			$scope.addThingInDB = function(thing, callback){
 				if(!thing)

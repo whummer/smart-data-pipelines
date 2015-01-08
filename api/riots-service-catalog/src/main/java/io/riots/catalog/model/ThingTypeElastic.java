@@ -32,12 +32,6 @@ public class ThingTypeElastic extends ThingType {
 	public List<String> getTags() {
 		return super.getTags();
 	}
-
-	@Field(type=FieldType.String, store=true)
-	@Override
-	public List<String> getImageUrls() {
-		return super.getImageUrls();
-	}
 	
 	@Field(type=FieldType.String, store=true, index=FieldIndex.analyzed)
 	@Override

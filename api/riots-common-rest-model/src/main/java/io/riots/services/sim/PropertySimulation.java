@@ -1,5 +1,7 @@
 package io.riots.services.sim;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
@@ -10,7 +12,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  * 
  * @author Waldemar Hummer
  */
-//@Document(collection = Constants.COLL_SIM_PROPERTIES)
 @JsonSubTypes({
 	@Type(value = PropertySimulationRandom.class, name=PropertySimulation.TYPE_RANDOM),
 	@Type(value = PropertySimulationEnumerated.class, name=PropertySimulation.TYPE_ENUMERATED),
@@ -40,9 +41,15 @@ public abstract class PropertySimulation<T> {
 	@JsonProperty
 	public double endTime;
 	@JsonProperty
-	protected double stepInterval;
+	public double stepInterval;
 	@JsonProperty
-	protected String type;
+	String type;
+
+	public void fillInParameters(List<SimulationParameterValue> parameters) {
+		// TODO implement!!
+	}
+	
+	/* GETTER/SETTER METHODS */
 
 	public String getName() {
 		return name;
@@ -52,6 +59,9 @@ public abstract class PropertySimulation<T> {
 	}
 	public void setStepInterval(double stepInterval) {
 		this.stepInterval = stepInterval;
+	}
+	public String getType() {
+		return type;
 	}
 
 }

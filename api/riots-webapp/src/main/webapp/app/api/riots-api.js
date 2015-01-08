@@ -4,6 +4,7 @@
 
 /* define array index names for model properties */
 var NAME = "name";
+var CREATION_DATE = "creation-date";
 var THING_TYPE = "thing-type";
 var THING_ID = "thing-id";
 var PROPERTIES = "properties";
@@ -13,6 +14,7 @@ var PROPERTY_VALUE = "value";
 var PROPERTY_TYPE = "data-type";
 var TIMESTAMP = "timestamp";
 var IMAGE_URLS = "image-urls";
+var SIMULATION_ID = "simulation-id";
 
 (function() {
 
@@ -78,6 +80,9 @@ sh.properties = sh.get.properties = function(thingType, callback, doCacheResults
 		$.each(thingType.children, function(idx,el) {
 			sh.properties(el, callback);
 		});
+	}
+	if(!thingType.properties) {
+		thingType.properties = [];
 	}
 	callback(thingType.properties, thingType);
 	/* recurse into sub-properties */

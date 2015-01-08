@@ -1,12 +1,18 @@
 package io.riots.services.catalog.api;
 
+import io.riots.api.util.ServiceUtil;
 import io.riots.catalog.repositories.ManufacturerRepository;
 import io.riots.catalog.repositories.ThingTypeRepository;
+import io.riots.core.service.ServiceClientFactory;
 import io.riots.services.CatalogService;
+import io.riots.services.FilesService;
+import io.riots.services.catalog.ImageData;
 import io.riots.services.catalog.Manufacturer;
 import io.riots.services.catalog.ThingType;
+import io.riots.services.files.FileData;
 
 import java.net.URI;
+import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
@@ -50,6 +56,10 @@ public class ElasticCatalogService implements CatalogService {
 
     @Autowired
     ElasticsearchTemplate searchTemplate;
+    
+    @Autowired
+	ServiceClientFactory serviceClientFactory;
+
 
     @Context
     MessageContext context;    
@@ -69,14 +79,14 @@ public class ElasticCatalogService implements CatalogService {
     	}
     	// I believe putMapping can be done every time
     	searchTemplate.putMapping(Manufacturer.class);
-    	searchTemplate.refresh(Manufacturer.class, true);
+    	searchTemplate.refresh(Manufacturer.class, true);    	
     }
     
 
     @Override
     @Timed @ExceptionMetered
     public ThingType retrieveThingType(String thingTypeId) {
-        if (thingTypeRepository.exists(thingTypeId)) {
+    	if (thingTypeRepository.exists(thingTypeId)) {
             return thingTypeRepository.findOne(thingTypeId);
         } else {
             throw new NotFoundException("No such thing type: " + thingTypeId);
@@ -118,10 +128,26 @@ public class ElasticCatalogService implements CatalogService {
     @Override
     @Timed @ExceptionMetered
     public ThingType createThingType(ThingType thingType) {
+    	FilesService fileService = serviceClientFactory.getFilesServiceClient();
         try {
             Long id = Math.abs(UUID.randomUUID().getMostSignificantBits());
             log.debug("Created ID for document: {}", id);
             thingType.setId(id.toString());
+            
+            // process images that are base64 by storing them in the files-service and setting the href
+            for (ImageData imgData : thingType.getImageData()) {
+            	
+            	String base64String = imgData.getBase64String();
+            	if (base64String != null) {
+            		
+            		String fileId = fileService.create(new FileData(imgData.getContentType(), 
+                    				Base64.getDecoder().decode(base64String)));
+            		imgData.setHref(ServiceUtil.API_PATH + "/files/" + fileId );
+            	}
+            	
+            }
+            
+            
             ThingType result = thingTypeRepository.index(thingType);
             URI location = UriBuilder.fromPath("/catalog/thing-types/{id}").build(result.getId());
             context.getHttpServletResponse().addHeader("Location", location.toString());

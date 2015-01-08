@@ -8,45 +8,53 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
  * Encapsulates all relevant data for a simulation scenario.
  * 
  * @author Waldemar Hummer
  */
-//@Document(collection = Constants.COLL_SIMULATIONS)
 public class Simulation implements ObjectCreated, ObjectIdentifiable {
 
+	/**
+	 * Identifier.
+	 */
 	@Id
 	private String id;
-	/**
-	 * Creator
-	 */
-	@JsonProperty
-	private String creatorId;
-	/**
-	 * Creator
-	 */
-	@JsonProperty
-	private String name;
+
 	/**
 	 * Creation date.
 	 */
-	@JsonProperty
+	@JsonInclude(Include.NON_EMPTY)
+	@JsonProperty("creation-date")
+	@Field(type = FieldType.Date)
 	private Date created;
+
 	/**
-	 * Specifications of things used in this simulation.
+	 * Creator
+	 */
+	@JsonInclude(Include.NON_EMPTY)
+	@JsonProperty("creator-id")
+	private String creatorId;
+
+	/**
+	 * Name
 	 */
 	@JsonProperty
-	private List<String> things = new LinkedList<>();
+	private String name;
+
 	/**
-	 * Simulated properties of the device specifications. 
-	 * List of {@link PropertySimulation} IDs.
+	 * Simulated properties. 
 	 */
 	@JsonProperty
-	private List<PropertySimulation<?>> simulationProperties = new LinkedList<PropertySimulation<?>>();
+	private List<PropertySimulation<?>> simulationProperties = 
+		new LinkedList<PropertySimulation<?>>();
 
 	public void setCreatorId(String creatorId) {
 		this.creatorId = creatorId;
@@ -56,6 +64,9 @@ public class Simulation implements ObjectCreated, ObjectIdentifiable {
 	}
 	public Date getCreated() {
 		return created;
+	}
+	public void setCreated(Date created) {
+		this.created = created;
 	}
 	public String getId() {
 		return id;
@@ -69,13 +80,6 @@ public class Simulation implements ObjectCreated, ObjectIdentifiable {
 	public void setSimulationProperties(
 			List<PropertySimulation<?>> simulationProperties) {
 		this.simulationProperties = simulationProperties;
-	}
-	public List<String> getThings() {
-		return things;
-	}
-	@Override
-	public String toString() {
-		return "Simulation [simulationProperties=" + simulationProperties + "]";
 	}
 
 	public String generateSimulationCode() {

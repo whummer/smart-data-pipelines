@@ -167,7 +167,9 @@ function AppController($scope, $http, $compile) {
 
 	$scope.dateFormat = "yyyy-MM-dd hh:mm:ss";
 	rootScope.formatTime = $scope.formatTime = function(timestamp) {
-		console.log("formatDate(timestamp)", timestamp);
+		if(!timestamp) {
+			return null;
+		}
 		return formatDate(timestamp);
 	};
 

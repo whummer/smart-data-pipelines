@@ -27,6 +27,7 @@ import io.riots.services.sim.TrafficTraces;
 import io.riots.services.sim.TrafficTraces.TrafficTrace;
 
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -92,6 +93,7 @@ public class SimulationServiceImpl implements SimulationService {
     @Timed @ExceptionMetered
     public Simulation create(Simulation item) {
     	item.setCreatorId(authHeaders.getRequestingUser(req).getId());
+    	item.setCreated(new Date());
         item = simulationCommand.create(item);
         URL location = ServiceUtil.getHref(String.format("simulations/%s", item.getId()));
         ServiceUtil.setLocationHeader(context, location);

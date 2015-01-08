@@ -18,7 +18,7 @@ public class Application implements ObjectCreated, ObjectIdentifiable {
 
 	@JsonProperty
 	String id;
-	@JsonProperty
+	@JsonProperty("creation-date")
 	Date created;
 	@JsonProperty
 	String creatorId;

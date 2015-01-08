@@ -12,7 +12,7 @@
           <!-- carousel -->
           <carousel id="devTypeImages" interval="-1">
             <slide ng-repeat="i in range(0, shared.selectedThingType[IMAGE_URLS].length - 1)">
-              <img ng-src="{{shared.selectedThingType[IMAGE_URLS][i]}}" class="img-responsive" style="margin: auto;">
+              <img ng-src="data:image/jpg;base64,{{shared.selectedThingType[IMAGE_URLS][i]}}" class="img-responsive" style="margin: auto;">
             </slide>
           </carousel>
 

@@ -27,7 +27,7 @@ define(['app', 'bootstrap-tagsinput'], function (app) {
             this.items = [];
             this.busy = false;
             this.page = 0;
-            this.size = 50;
+            this.size = 21;
             this.fullyLoaded = false;
         };
 

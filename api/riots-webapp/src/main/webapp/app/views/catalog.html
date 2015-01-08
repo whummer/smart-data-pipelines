@@ -1,40 +1,28 @@
+
+<style>
+#catalogViewDivWrapper {
+	position: relative;
+}
+
+.thing-type-box {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	line-height: 16px; /* fallback */
+	max-height: 32px; /* fallback */
+	-webkit-line-clamp: 2; /* number of lines to show */
+	-webkit-box-orient: vertical;
+}
+</style>
+
 <div class="container">
-    <section ng-controller="CatalogViewController" id="catalogViewDiv" style="height: 100%">
+	<section ng-controller="CatalogViewController" id="catalogViewDiv"
+		style="height: 100%">
 
-        <div id="catalogViewDivWrapper" class="container">
-
-
-            <style>
-                html, body, #map, #detailsTabs {
-                    margin: 0;
-                    height: 100%;
-                }
-
-                .leaflet-marker-icon, .leaflet-marker-shadow {
-                    -webkit-transition: margin 0.2s;
-                    -moz-transition: margin 0.2s;
-                    -o-transition: margin 0.2s;
-                    transition: margin 0.2s;
-                }
-
-                #catalogViewDivWrapper {
-                    position: relative;
-                }
-
-                .thing-type-box {
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    display: -webkit-box;
-                    line-height: 16px; /* fallback */
-                    max-height: 32px; /* fallback */
-                    -webkit-line-clamp: 2; /* number of lines to show */
-                    -webkit-box-orient: vertical;
-                }
-            </style>
-
-
-            <ng-include src="appConfig['appRootPath'] + '/views/thing_types.html'"></ng-include>
-            <br class="clear"/>
-        </div>
-    </section>
+		<div id="catalogViewDivWrapper" class="container">
+			<ng-include
+				src="appConfig['appRootPath'] + '/views/thing_types.html'"></ng-include>
+			<br class="clear" />
+		</div>
+	</section>
 </div>
