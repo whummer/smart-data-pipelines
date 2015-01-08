@@ -13,6 +13,10 @@ eureka:
     serviceUrl:
       defaultZone: http://${eureka.instance.hostname}:10000/eureka/v2/
 
+activemq:
+  hostname: localhost
+  brokerURL: tcp://${activemq.hostname}:61616
+
 ribbon:
   ServerListRefreshInterval: 5000
 

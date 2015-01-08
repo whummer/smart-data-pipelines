@@ -1,22 +1,31 @@
 package io.riots.demo;
 
+import io.riots.core.auth.AuthHeaders;
+import io.riots.core.boot.MongoEnabledServiceStarter;
 import io.riots.core.service.ServiceClientFactory;
 import io.riots.services.CatalogService;
+import io.riots.services.SimulationService;
+import io.riots.services.catalog.ImageData;
 import io.riots.services.catalog.Property;
 import io.riots.services.catalog.ThingType;
 import io.riots.services.catalog.ValueDomainContinuous;
 import io.riots.services.catalog.ValueDomainDiscrete;
 import io.riots.services.catalog.ValueDomainEnumerated;
+import io.riots.services.sim.PropertySimulationFunctionBased;
+import io.riots.services.sim.PropertySimulationGPS;
+import io.riots.services.sim.SimulationType;
 
 import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.cxf.jaxrs.client.WebClient;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import static org.junit.Assert.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -25,6 +34,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -34,7 +44,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { InsertDemoDataViaCatalog.class })
-@ComponentScan(basePackages = "io.riots.core")
+@ComponentScan(basePackages = { "io.riots.core" }, excludeFilters = {
+        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = MongoEnabledServiceStarter.class) })
 @Configuration
 @EnableAutoConfiguration
 @EnableDiscoveryClient
@@ -66,28 +77,80 @@ public class InsertDemoDataViaCatalog {
 	}
 
 	private static CatalogService catalog;
+	private static SimulationService simulations;
 
 	@Before
 	public void setup() {
 		try {
 			catalog = serviceClientFactory.getCatalogServiceClient();
-			System.out.println(catalog);
+			simulations = serviceClientFactory.getSimulationsServiceClient();
+			WebClient.client(simulations).header(AuthHeaders.HEADER_AUTH_EMAIL, "test@riots.io");
 		} catch (Exception e) {
 			e.printStackTrace();
-			/* service not running, do not run this test class */
+			/* services not running, do not run this test class */
 		}
 	}
 
 	@Test
 	public void insertData() {
-		if (catalog == null) {
-			LOG.info("Catalog service not available, skipping test. Not inserting data.");
+		if (catalog == null || simulations == null) {
+			LOG.info("Services not available, skipping test. Not inserting data.");
 			return;
 		}
 		insertPropData();
 		insertDevData();
 		insertManufacturerData();
 		insertThingData();
+		insertSimulationData();
+	}
+
+	private void insertSimulationData() {
+		List<SimulationType> existing = simulations.listSimTypes(0, 1000);
+		{
+			SimulationType t = new SimulationType();
+			t.setName("Linear Decay");
+			PropertySimulationFunctionBased sim = new PropertySimulationFunctionBased();
+			sim.startTime = 1;
+			sim.endTime = 500;
+			sim.stepInterval = 1;
+			sim.setFunction("1-x/" + sim.endTime);
+			t.setSimulation(sim);
+			createSimType(existing, t);
+		}
+		{
+			SimulationType t = new SimulationType();
+			t.setName("Logarithmic Decay");
+			PropertySimulationFunctionBased sim = new PropertySimulationFunctionBased();
+			sim.startTime = 1;
+			sim.endTime = 500;
+			sim.stepInterval = 1;
+			sim.setFunction("1/(x)");
+			t.setSimulation(sim);
+			createSimType(existing, t);
+		}
+		{
+			SimulationType t = new SimulationType();
+			t.setName("GPS Trace - Vienna/Austria");
+			PropertySimulationGPS sim = new PropertySimulationGPS();
+			sim.startTime = 1;
+			sim.endTime = 500;
+			sim.stepInterval = 1;
+			sim.setLatitude(48.19742);
+			sim.setLongitude(16.37127);
+			sim.setDiameter(1000); // meters
+			sim.setMaxSpeed(50); // km/h
+			t.setSimulation(sim);
+			createSimType(existing, t);
+		}
+	}
+
+	private void createSimType(List<SimulationType> existing, SimulationType t) {
+		for(SimulationType e : existing) {
+			if(e.getName().equals(t.getName())) {
+				return;
+			}
+		}
+		simulations.createSimType(t);
 	}
 
 	private ThingType getExisting(List<ThingType> types, String name) {
@@ -160,7 +223,11 @@ public class InsertDemoDataViaCatalog {
 
         ThingType ultraSonicSensor = new ThingType("HC-SR04");
         {
-	        ultraSonicSensor.setImageUrls(Arrays.asList("http://fritzing.org/media/fritzing-repo/projects/h/hc-sr04-project/images/HC-SR04-2.jpg"));
+        	
+        	ultraSonicSensor.withImageData(Arrays.asList(
+        		new ImageData()
+        		 .withHref("http://fritzing.org/media/fritzing-repo/projects/h/hc-sr04-project/images/HC-SR04-2.jpg")
+        		 .withContentType("image/jpg")));        	
 	        ultraSonicSensor.setDescription(
 	                        "The HC-SR04 Ultrasonic Range Sensor uses non-contact ultrasound sonar to measure the "
 	                                + "distance to an object - they're great for any obstacle avoiding systems on Raspberry Pi robots "
@@ -182,7 +249,11 @@ public class InsertDemoDataViaCatalog {
 
         ThingType motionSensor = new ThingType("HC-SR501");
         {
-	        motionSensor.setImageUrls(Arrays.asList("http://www.linkdelight.com/components/com_virtuemart/shop_image/product/PIR_Sensor_Human_51fb6871f126d.jpg"));
+	        
+	        motionSensor.withImageData(Arrays.asList(
+	        		new ImageData()
+	        		 .withHref("http://www.linkdelight.com/components/com_virtuemart/shop_image/product/PIR_Sensor_Human_51fb6871f126d.jpg")
+	        		 .withContentType("image/jpg")));
 	        motionSensor.setDescription(
 	                        "This PIR includes an adjustable delay before firing (approx 0.5 - 200 seconds), "
 	                                + "has adjustable sensitivity and two M2 mounting holes! It runs on 4.5V-20V power (or 3V by "
@@ -206,7 +277,11 @@ public class InsertDemoDataViaCatalog {
 
         ThingType temperatureSensor = new ThingType("DS18B20");
         {
-	        temperatureSensor.setImageUrls(Arrays.asList("http://www.3bm.de/wp-content/uploads/2013/09/DS18B20.jpg"));
+        	
+        	temperatureSensor.withImageData(Arrays.asList(
+ 	        		new ImageData()
+ 	        		 .withHref("http://www.3bm.de/wp-content/uploads/2013/09/DS18B20.jpg")
+ 	        		 .withContentType("image/jpg")));
 	        temperatureSensor.setDescription(
 	                        "A genuine Maxim sourced DS18B20+ One Wire Digital Temperature Sensor. The DS18B20+ "
 	                                + "is the perfect low-cost solution for a range of Raspberry Pi and Arduino temperature control "
@@ -228,7 +303,10 @@ public class InsertDemoDataViaCatalog {
 
         {
 	        ThingType raspiBPlus = new ThingType("Raspberry Pi Model B+");
-	        raspiBPlus.setImageUrls(Arrays.asList("https://cdn.sparkfun.com//assets/parts/9/9/4/4/12994-01.jpg"));
+	        raspiBPlus.withImageData(Arrays.asList(
+ 	        		new ImageData()
+ 	        		 .withHref("https://cdn.sparkfun.com//assets/parts/9/9/4/4/12994-01.jpg")
+ 	        		 .withContentType("image/jpg")));	        
 	        raspiBPlus.setDescription("512MB RAM, new GPIO, microSD");
 	        raspiBPlus.addChild(motionSensor.getId());
 	        raspiBPlus.addChild(temperatureSensor.getId());
@@ -255,7 +333,10 @@ public class InsertDemoDataViaCatalog {
 
         {
 	        ThingType ismartSensor = new ThingType("iSmart Alarm");
-	        ismartSensor.setImageUrls(Arrays.asList("https://s3.amazonaws.com/ksr/assets/000/317/258/fe73cdeb496407133781ebfc2e152b9f_large.png?1356632247"));
+	        ismartSensor.withImageData(Arrays.asList(
+ 	        		new ImageData()
+ 	        		 .withHref("https://s3.amazonaws.com/ksr/assets/000/317/258/fe73cdeb496407133781ebfc2e152b9f_large.png?1356632247")
+ 	        		 .withContentType("image/png")));
 	        ismartSensor.setDescription("Wireless motion detector");
 	        Property propMotion1 = new Property("motion");
 	        propMotion1.setActuatable(false).setSensable(true);
@@ -267,7 +348,10 @@ public class InsertDemoDataViaCatalog {
 
         {
 	        ThingType waterSensor = new ThingType("AQUAlogger 210PTdeep");
-	        waterSensor.setImageUrls(Arrays.asList("http://img.nauticexpo.com/images_ne/photo-m2/hydrophone-probe-oceanographic-survey-preamplified-hydrophone-40202-4913311.jpg"));
+	        waterSensor.withImageData(Arrays.asList(
+ 	        		new ImageData()
+ 	        		 .withHref("http://img.nauticexpo.com/images_ne/photo-m2/hydrophone-probe-oceanographic-survey-preamplified-hydrophone-40202-4913311.jpg")
+ 	        		 .withContentType("image/jpg")));
 	        waterSensor.setDescription("Deep water data logger that measures "
 	                        + "and records temperature and pressure");
 	        Property propPressure = new Property("pressure");
@@ -284,7 +368,10 @@ public class InsertDemoDataViaCatalog {
 
         {
 	        ThingType gyroSensor = new ThingType("MPU-6000 Six Axis Motion Tracker");
-	        gyroSensor.setImageUrls(Arrays.asList("http://img.auctiva.com/imgdata/1/8/7/9/0/1/5/webimg/769218226_o.jpg"));
+	        gyroSensor.withImageData(Arrays.asList(
+ 	        		new ImageData()
+ 	        		 .withHref("http://img.auctiva.com/imgdata/1/8/7/9/0/1/5/webimg/769218226_o.jpg")
+ 	        		 .withContentType("image/jpg")));	       
 	        gyroSensor.setDescription("Motion tracking device which is a combination of a "
 	                        + "3-axis gyroscope and a 3-axis accelerometer "
 	                        + "with an onboard Digital Motion Processor™, "
@@ -313,7 +400,10 @@ public class InsertDemoDataViaCatalog {
 
         ThingType gpsSensor = new ThingType("EM-506 GPS Receiver");
         {
-	        gpsSensor.setImageUrls(Arrays.asList("https://cdn.sparkfun.com//assets/parts/9/5/1/2/12751-01.jpg"));
+        	gpsSensor.withImageData(Arrays.asList(
+ 	        		new ImageData()
+ 	        		 .withHref("https://cdn.sparkfun.com//assets/parts/9/5/1/2/12751-01.jpg")
+ 	        		 .withContentType("image/jpg")));
 	        gpsSensor.setDescription("EM-506 includes on-board voltage regulation, "
 	                        + "LED status indicator, battery backed RAM, "
 	                        + "and a built-in patch antenna. 6-pin interface cable included.");
@@ -331,7 +421,10 @@ public class InsertDemoDataViaCatalog {
 
         ThingType appleGyroSensor = new ThingType("Kionix KXM52-1050");
         {
-	        appleGyroSensor.setImageUrls(Arrays.asList("http://akizukidenshi.com/img/goods/C/I-04280.jpg"));
+	        appleGyroSensor.withImageData(Arrays.asList(
+ 	        		new ImageData()
+	        		 .withHref("http://akizukidenshi.com/img/goods/C/I-04280.jpg")
+	        		 .withContentType("image/jpg")));
 	        appleGyroSensor.setDescription("The Kionix KXM52-1050 tri-axial accelerometer "
 	        		+ "is a high performance silicon micro-machined linear accelerometer "
 	        		+ "consisting of a sensing element and a CMOS signal conditioning ASIC "
@@ -352,7 +445,10 @@ public class InsertDemoDataViaCatalog {
 
         ThingType wpsSensor = new ThingType("Wireless Positioning System (WPS)");
         {
-	        wpsSensor.setImageUrls(Arrays.asList("https://www.newbrandanalytics.com/blog/wp-content/uploads/2013/12/black-wifi-icon-hi-2.png"));
+	        wpsSensor.withImageData(Arrays.asList(
+ 	        		new ImageData()
+	        		 .withHref("https://www.newbrandanalytics.com/blog/wp-content/uploads/2013/12/black-wifi-icon-hi-2.png")
+	        		 .withContentType("image/png")));	        
 	        wpsSensor.setDescription("Wi-Fi network identification for localization. "
 	        		+ "This is called a Wi-Fi Positioning System (WPS). "
 	        		+ "The access points name and signal strength is determined and looked "
@@ -372,8 +468,11 @@ public class InsertDemoDataViaCatalog {
         }
 
         {
-            ThingType appleMacBook = new ThingType("Apple Macbook Pro");
-	        appleMacBook.setImageUrls(Arrays.asList("http://www1.pcmag.com/media/images/365183-apple-macbook-pro-13-inch-retina-2014.jpg"));
+            ThingType appleMacBook = new ThingType("Apple Macbook Pro");	        
+	        appleMacBook.withImageData(Arrays.asList(
+ 	        		new ImageData()
+	        		 .withHref("http://www1.pcmag.com/media/images/365183-apple-macbook-pro-13-inch-retina-2014.jpg")
+	        		 .withContentType("image/jpg")));	        
 	        appleMacBook.setDescription("Apple's Macbook laptop with integrated sensors.");
 	        appleMacBook.addChild(appleGyroSensor.getId());
 	        appleMacBook.addChild(wpsSensor.getId());
@@ -383,7 +482,10 @@ public class InsertDemoDataViaCatalog {
 
         ThingType batterySensor = new ThingType("MM9Z1J638 Battery Sensor");
         {
-        	batterySensor.setImageUrls(Arrays.asList("http://www.engineerlive.com/sites/default/files/styles/article/public/eee%20sensors%20may14%20freescale.jpg?itok=9RL_D_e4"));
+        	batterySensor.withImageData(Arrays.asList(
+ 	        		new ImageData()
+	        		 .withHref("http://www.engineerlive.com/sites/default/files/styles/article/public/eee%20sensors%20may14%20freescale.jpg?itok=9RL_D_e4")
+	        		 .withContentType("image/jpg")));	
         	batterySensor.setDescription("Designed to support both conventional and "
         			+ "emerging battery chemistries for automotive and industrial applications, "
         			+ "the MM9Z1J638 battery sensor measures key battery parameters for monitoring "
@@ -401,8 +503,11 @@ public class InsertDemoDataViaCatalog {
         }
 
         ThingType pressureSensor = new ThingType("Oro-Tek™ Tire Pressure Sensor");
-        {
-        	pressureSensor.setImageUrls(Arrays.asList("http://www.carid.com/images/oro-tek/tpms-sensors/oro-tek-tpms-sensor.jpg"));
+        {        
+        	pressureSensor.withImageData(Arrays.asList(
+ 	        		new ImageData()
+	        		 .withHref("http://www.carid.com/images/oro-tek/tpms-sensors/oro-tek-tpms-sensor.jpg")
+	        		 .withContentType("image/jpg")));	
         	pressureSensor.setDescription("Sensor for monitoring tire pressure.");
 	        Property propBat = new Property("pressure");
 	        propBat.setUnit("bar");
@@ -415,7 +520,11 @@ public class InsertDemoDataViaCatalog {
 
         {
             ThingType golfCart = new ThingType("Yamaha DRIVE Golf Car");
-	        golfCart.setImageUrls(Arrays.asList("http://www.franksgolfcarts.com/images/yamaha2.png"));
+            
+            golfCart.withImageData(Arrays.asList(
+ 	        		new ImageData()
+	        		 .withHref("http://www.franksgolfcarts.com/images/yamaha2.png")
+	        		 .withContentType("image/png")));
 	        golfCart.setDescription("Deep in the DNA of The DRIVE® is everything "
 	        		+ "we’ve learned from our motorcycles, ATV’s and watercraft, "
 	        		+ "including the ability to build with fewer parts, which leads "
@@ -431,7 +540,10 @@ public class InsertDemoDataViaCatalog {
 
         {
             ThingType clubCar = new ThingType("Club Car Precedent i2 Golf Car");
-	        clubCar.setImageUrls(Arrays.asList("http://www.jeffreyalleninc.com/userfiles/images/Prec%204%20Pass.jpg"));
+            clubCar.withImageData(Arrays.asList(
+ 	        		new ImageData()
+	        		 .withHref("http://www.jeffreyalleninc.com/userfiles/images/Prec%204%20Pass.jpg")
+	        		 .withContentType("image/png")));            
 	        clubCar.setDescription("Up to 4 passengers can enjoy the unique sense of "
 	        		+ "style, quality, durability, and reliability that only "
 	        		+ "Club Car golf car can provide with the Precedent 4-Passenger. "

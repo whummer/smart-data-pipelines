@@ -22,6 +22,27 @@ elasticsearch:
     - "9200:9200"
     - "9300:9300"
 
+activemq:
+  image: aterreno/activemq-dockerfile
+  links:
+    - eureka
+  ports:
+    - "61612:61612"
+    - "61613:61613"
+    - "61616:61616"
+    - "8161:8161"
+
+files:
+  image: 146.148.126.222:5000/riots/service-files
+  links:
+    - eureka
+  volumes:
+    - /data/files:/data
+  ports: 
+    - "8087:8087"
+  environment:
+    JAVA_OPTS: "-Deureka.instance.hostname=172.17.42.1 -Dstorage.directory=/data"
+
 catalog:
   image: 146.148.126.222:5000/riots/service-catalog
   ports:
@@ -29,6 +50,7 @@ catalog:
   links:
     - elasticsearch
     - eureka
+    - files
   environment:
     JAVA_OPTS: "-Deureka.instance.hostname=172.17.42.1 -Delasticsearch.hostname=172.17.42.1"
 
@@ -40,7 +62,7 @@ environment:
     - elasticsearch
     - eureka
   environment:
-    JAVA_OPTS: "-Deureka.instance.hostname=172.17.42.1 -Dmongodb.hostname=172.17.42.1"
+    JAVA_OPTS: "-Deureka.instance.hostname=172.17.42.1 -Dmongodb.hostname=172.17.42.1 -Dactivemq.hostname=172.17.42.1"
 
 simulation:
   image: 146.148.126.222:5000/riots/service-simulation
@@ -50,7 +72,7 @@ simulation:
     - mongodb 
     - eureka
   environment:
-    JAVA_OPTS: "-Deureka.instance.hostname=172.17.42.1 -Dmongodb.hostname=172.17.42.1"
+    JAVA_OPTS: "-Deureka.instance.hostname=172.17.42.1 -Dmongodb.hostname=172.17.42.1 -Dactivemq.hostname=172.17.42.1"
 
 users:
   image: 146.148.126.222:5000/riots/service-users

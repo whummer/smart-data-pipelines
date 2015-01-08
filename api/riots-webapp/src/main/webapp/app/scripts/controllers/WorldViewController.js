@@ -1,8 +1,8 @@
 
 define(['app'], function(app) {
 	app.controller('WorldViewController', [
-		'$scope', '$http', '$compile',
-		function($scope, $http, $compile) {
+		'$scope', '$http', '$compile', '$routeParams',
+		function($scope, $http, $compile, $routeParams) {
 
 			AppController($scope, $http, $compile);
 			//World3DController($scope, $http, $compile);
@@ -20,6 +20,7 @@ define(['app'], function(app) {
 
 			$scope.listOfThings = null;
 			$scope.defaultLocation = {lat: 48.19742, lng: 16.37127};
+			$scope.tabs = {active: 'things'};
 
 			$scope.addThingInDB = function(thing, callback){
 				if(!thing)
@@ -74,6 +75,10 @@ define(['app'], function(app) {
 					}
 				);
 			};
+
+			if($routeParams.appId) {
+				$scope.shared.selectedApplication = riots.app($routeParams.appId);
+			}
 			
 		}
 	]);

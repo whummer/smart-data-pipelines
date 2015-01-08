@@ -1,15 +1,17 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-  <meta charset="utf-8"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
   <link rel="stylesheet" href="scripts/ext/bootstrap-tagsinput/dist/bootstrap-tagsinput.css"/>
   <link rel="stylesheet" href="scripts/ext/leaflet/dist/leaflet.css"/>
+  <link rel="stylesheet" href="scripts/ext/raty/lib/jquery.raty.css"/>
   <!-- Use CDN version because JAR packaging of some CSS files results in corrupted font files -->
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
   <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css"/>
   <link rel="stylesheet" href="//cdn.rawgit.com/angular-ui/bower-ui-grid/v3.0.0-RC.18/ui-grid.min.css"/>
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/zocial/0/zocial.css"/>
   <!-- last position for custom styles (to enforce overrides) -->
   <link rel="stylesheet" href="styles/app.css"/>
 
@@ -20,6 +22,7 @@
   <script type="text/javascript">
     require.config(requirejsAppConfig);
   </script>
+
   <script type="text/javascript" src="/app/scripts/controllers/AppController.js"></script>
 
   <script type="text/javascript" src="scripts/build/riots-all.js"></script>
@@ -36,6 +39,7 @@
   <script type="text/javascript" src="scripts/modules/ratings.js"></script>
   <script type="text/javascript" src="scripts/modules/things-crud.js"></script>
   <script type="text/javascript" src="api/riots-api.js"></script>
+
 
   <style type="text/css">
     html, body {
@@ -95,16 +99,27 @@
       }
     }, 10000);
 
+    // TODO remove (for dev. only)
+    /*
+    $(document).ready(function() {
+    	if(window.location.href.indexOf("localhost") >= 0) {
+    		var url = window.location.href;
+    		url = url.replace("localhost", "platform.riots.io");
+    		url = url.replace(":8081", ":8080");
+    		alert("redirecting to " + url);
+    		window.location.href = url;
+    	}
+    });*/
   </script>
 
-  <title>RIoTS - Dev&amp;Test for the Internet of Things</title>
+  <title>riots.io - The #1 platform for rapid IoT development</title>
 </head>
 <body>
 
 <!-- Splash Screen -->
 <div id="splash">
   <div>
-    <p>loading...</p>
+    <p>LOADING...</p>
     <p><img src="img/loading.gif" alt="loading"/></p>
   </div>
 </div>

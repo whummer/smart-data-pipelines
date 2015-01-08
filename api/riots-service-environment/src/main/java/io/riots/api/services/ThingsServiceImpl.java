@@ -10,6 +10,7 @@ import io.riots.services.ThingsService;
 import io.riots.services.scenario.Thing;
 
 import java.net.URI;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -66,6 +67,7 @@ public class ThingsServiceImpl implements ThingsService {
     @Timed @ExceptionMetered
     public Thing create(Thing thing) {
     	thing.setCreatorId(authHeaders.getRequestingUser(req).getId());
+    	thing.setCreated(new Date());
     	ThingMongo m = ThingMongo.convert(thing);
         thing = thingCommand.create(m);
         URI location = ServiceUtil.getPath(context,

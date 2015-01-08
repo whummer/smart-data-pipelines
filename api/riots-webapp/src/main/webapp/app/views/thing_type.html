@@ -49,15 +49,13 @@
   app.controller('ThingTypeController', function ($scope, $http, $compile, $routeParams, $log, $location) {
             AppController($scope, $http, $compile);
 
+            $log.debug("Inside ThingTypeController with thingID: ", $routeParams.thingTypeID);
+
             if ($routeParams.thingTypeID) {
               invokeGET($http, $scope.thingTypesAPI + "/" + $routeParams.thingTypeID,
                       function (data, status, headers, config) {
                         $log.info("Loading ThingType with ID " + $routeParams.thingTypeID);
                         $scope.shared.selectedThingType = data.result;
-                        if (!$scope.shared.selectedThingType['image-urls']) {
-                          $scope.shared.selectedThingType['image-urls'] = [];
-                        }
-
                         $log.debug("Adding Thing to shared scope: ", data.result);
                       }
               );
@@ -85,7 +83,6 @@
                 $scope.shared.selectedThingType.features = {};
               }
             };
-
 
 
             /* register event handlers */

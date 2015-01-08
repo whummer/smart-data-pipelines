@@ -1,5 +1,7 @@
 package io.riots.services.sim;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
@@ -10,7 +12,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  * 
  * @author Waldemar Hummer
  */
-//@Document(collection = Constants.COLL_SIM_PROPERTIES)
 @JsonSubTypes({
 	@Type(value = PropertySimulationRandom.class, name=PropertySimulation.TYPE_RANDOM),
 	@Type(value = PropertySimulationEnumerated.class, name=PropertySimulation.TYPE_ENUMERATED),
@@ -29,32 +30,68 @@ public abstract class PropertySimulation<T> {
 	public static final String TYPE_GPS_TRACE = "GPS";
 	public static final String TYPE_FUNCTIONBASED = "FUNCTIONBASED";
 
-	@JsonProperty
-	private String name;
-	@JsonProperty("property")
-	protected String propertyName;
+	/**
+	 * ID of the thing this simulation applies to.
+	 */
 	@JsonProperty("thing-id")
 	protected String thingId;
+
+	/**
+	 * Name of the thing property this simulation applies to.
+	 */
+	@JsonProperty("property")
+	protected String propertyName;
+
+	/**
+	 * Start time.
+	 */
 	@JsonProperty
 	public double startTime;
+
+	/**
+	 * End time.
+	 */
 	@JsonProperty
 	public double endTime;
-	@JsonProperty
-	protected double stepInterval;
-	@JsonProperty
-	protected String type;
 
-	public String getName() {
-		return name;
+	/**
+	 * Step interval, in seconds (or fractions of seconds).
+	 */
+	@JsonProperty
+	public double stepInterval;
+
+	/**
+	 * Simulation type. Determines concrete sub-classes.
+	 */
+	@JsonProperty
+	String type;
+
+	public void fillInParameters(List<SimulationParameterValue> parameters) {
+		// TODO implement!!
 	}
-//	public String getId() {
-//		return id;
-//	}
+	
+	/* GETTER/SETTER METHODS */
+
+	public String getPropertyName() {
+		return propertyName;
+	}
+	public void setPropertyName(String propertyName) {
+		this.propertyName = propertyName;
+	}
+	public String getThingId() {
+		return thingId;
+	}
+	public void setThingId(String thingId) {
+		this.thingId = thingId;
+	}
 	public double getStepInterval() {
 		return stepInterval;
 	}
 	public void setStepInterval(double stepInterval) {
 		this.stepInterval = stepInterval;
+	}
+	public String getType() {
+		return type;
 	}
 
 }

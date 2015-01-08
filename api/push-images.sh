@@ -12,6 +12,7 @@ declare -a IMAGES=("riots/service-catalog"\
 	    "riots/service-simulation"\
 	    "riots/service-users"\
 	    "riots/service-gateway"\
+	    "riots/service-files"\
         "riots/webapp")
 
 for image in "${IMAGES[@]}"

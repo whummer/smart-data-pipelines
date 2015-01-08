@@ -15,7 +15,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * 
  * @author Waldemar Hummer
  */
-//@Document(collection = Constants.COLL_SIMULATION_RUNS)
 public class SimulationRun implements ObjectIdentifiable {
 
 	@Id
@@ -44,5 +43,8 @@ public class SimulationRun implements ObjectIdentifiable {
 	}
 	public List<TimeTick> getTimeTicks() {
 		return timeTicks;
+	}
+	public Simulation getSimulation() {
+		return simulation;
 	}
 }

@@ -34,8 +34,10 @@ public class PropertySimulationFunctionBased extends PropertySimulation<Double> 
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + "[function=" + function
-				+ ", stepInterval=" + stepInterval + ", type=" + type + ", ]";
+		return "PropertySimulationFunctionBased [function=" + function
+				+ ", thingId=" + thingId + ", propertyName=" + propertyName
+				+ ", startTime=" + startTime + ", endTime=" + endTime
+				+ ", stepInterval=" + stepInterval + ", type=" + type + "]";
 	}
 
 }

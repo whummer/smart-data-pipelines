@@ -22,13 +22,13 @@ import javax.jms.JMSException;
 import javax.jms.TextMessage;
 import javax.ws.rs.core.Context;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.cxf.jaxrs.ext.MessageContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.jms.annotation.JmsListener;
-import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 
 import com.codahale.metrics.annotation.ExceptionMetered;
@@ -53,15 +53,16 @@ public class ThingDataServiceImpl implements ThingDataService {
     @Context
     MessageContext context;
 	@Autowired
-    JmsTemplate template;
+	EventBroker eventBroker;
 
 	/**
 	 * This message is called each time we retrieve a status change
 	 * generated in any of the currently running simulations.
 	 */
-	@JmsListener(destination = EventBroker.MQ_PROP_SIM_UPDATE)
+	@JmsListener(destination = EventBroker.MQ_INBOUND_PROP_UPDATE)
 	public void processSimulationUpdate(Object data) {
 		PropertyValue prop = null;
+		System.out.println("---> prop value update " + data);
 		if(data instanceof String) {
 			prop = JSONUtil.fromJSON((String)data, PropertyValue.class);
 		} else if(data instanceof TextMessage) {
@@ -147,6 +148,9 @@ public class ThingDataServiceImpl implements ThingDataService {
     	ThingsService things = serviceClientFactory.getThingsServiceClient();
     	Thing thing = things.retrieve(thingId);
     	String thingTypeId = thing.getThingTypeId();
+    	if(StringUtils.isEmpty(thingTypeId)) {
+    		return null;
+    	}
     	return searchPropForThingType(thingTypeId, propertyName);
     }
     private Property searchPropForThingType(String thingTypeId, String propertyName) {
@@ -176,7 +180,7 @@ public class ThingDataServiceImpl implements ThingDataService {
 		if(context != null && context.getHttpServletRequest() != null) {
 			uri = ServiceUtil.getPath(context, String.format("../../data/%s", propValue.getId()));
 		}
-		EventBroker.sendChangeNotifyMessage(template, propValue);
+		eventBroker.sendOutboundChangeNotifyMessage(propValue);
     	return uri;
 	}
 }

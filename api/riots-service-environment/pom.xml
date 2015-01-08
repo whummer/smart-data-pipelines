@@ -38,11 +38,7 @@
             <artifactId>spring-boot-starter-websocket</artifactId>
         </dependency>
 
-		<!-- Spring JMS messaging -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jms</artifactId>
-        </dependency>
+		<!-- Messaging Broker -->
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-broker</artifactId>

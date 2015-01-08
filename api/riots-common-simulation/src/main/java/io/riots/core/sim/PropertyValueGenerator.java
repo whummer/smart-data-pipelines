@@ -29,17 +29,19 @@ public class PropertyValueGenerator {
 
 	public static PropertyValue getValueAt(
 			PropertySimulation<?> sim, Time atTime, Context ctx) {
+		PropertyValue result = null;
 		if(sim instanceof PropertySimulationEnumerated) {
 			PropertySimulationEnumerated<?> e = (PropertySimulationEnumerated<?>)sim;
 			for(TimedValue<PropertyValue> v : (e).getValues()) {
 				if(v.time.getTime() == atTime.getTime()) {
-					return v.property;
+					result = v.property;
+					break;
 				}
 			}
 		} else if(sim instanceof PropertySimulationRandom) {
 			PropertySimulationRandom r = (PropertySimulationRandom)sim;
 			double val = r.getMinValue() + (rand.nextDouble() * (r.getMaxValue() - r.getMinValue()));
-			return new PropertyValue(val);
+			result = new PropertyValue(val);
 		} else if(sim instanceof PropertySimulationFunctionBased) {
 			PropertySimulationFunctionBased f = (PropertySimulationFunctionBased)sim;
 			JEP parser = getParser();
@@ -47,11 +49,25 @@ public class PropertyValueGenerator {
 			parser.addVariable("x", t);
 			parser.parseExpression(f.getFunction());
 			double val = parser.getValue();
-			return new PropertyValue(val);
+			result = new PropertyValue(val);
 		} else {
 			throw new IllegalArgumentException("Unknown simulation type: " + sim);
 		}
-		return null;
+		if(result == null)
+			return result;
+		if(result.getPropertyName() == null) {
+			result.setPropertyName(sim.getPropertyName());
+		}
+		if(result.getThingId() == null) {
+			result.setThingId(sim.getThingId());
+		}
+		return result;
+	}
+
+	public static TimelineValues<PropertyValue> getValues(
+			PropertySimulation<?> sim, Context ctx) {
+		return getValues(sim, new Time(sim.startTime), 
+				new Time(sim.endTime), ctx);
 	}
 
 	public static TimelineValues<PropertyValue> getValues(

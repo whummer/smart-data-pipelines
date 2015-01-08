@@ -4,6 +4,10 @@ import io.riots.core.auth.AuthFilterZuul;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchAutoConfiguration;
+import org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchDataAutoConfiguration;
+import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
+import org.springframework.boot.autoconfigure.mongo.MongoDataAutoConfiguration;
 import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 import org.springframework.context.annotation.Bean;
@@ -16,8 +20,10 @@ import io.riots.core.filters.RiotsUrlRewriteFilter;
  * @author whummer
  */
 @Configuration
-@EnableAutoConfiguration
-@ComponentScan(basePackages = "io.riots")
+@EnableAutoConfiguration(exclude = {ElasticsearchAutoConfiguration.class, ElasticsearchDataAutoConfiguration.class,
+        MongoAutoConfiguration.class, MongoDataAutoConfiguration.class})
+
+@ComponentScan(basePackages = {"io.riots.core.auth", "io.riots.core.service"})
 @EnableZuulProxy
 @ImportResource(value = { "classpath*:/spring-auth-filter.xml" })
 public class GatewayServiceStarter {

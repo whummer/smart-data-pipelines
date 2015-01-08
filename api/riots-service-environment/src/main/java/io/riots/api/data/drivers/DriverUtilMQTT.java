@@ -15,7 +15,6 @@ import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 
 /**
@@ -36,9 +35,15 @@ public class DriverUtilMQTT {
 		PropertyValue propValueTemplate;
 	}
 
+	/**
+	 * Subscriptions
+	 */
 	private final Map<String,Subscription> subs = new ConcurrentHashMap<String, Subscription>();
+	/**
+	 * Autowired JMS, used for sending messages.
+	 */
 	@Autowired
-	private JmsTemplate template;
+	private EventBroker eventBroker;
 
 	public void start(final String driverId, DataDriver driver) {
 		final Subscription s = new Subscription();
@@ -63,7 +68,7 @@ public class DriverUtilMQTT {
 					String payload = new String(msg.getPayload());
 					PropertyValue v = new PropertyValue(s.propValueTemplate, payload);
 					v.setTimestamp(System.currentTimeMillis()); // TODO set time here?
-					EventBroker.sendMessage(EventBroker.MQ_PROP_SIM_UPDATE, template, v);
+					eventBroker.sendMessage(EventBroker.MQ_INBOUND_PROP_UPDATE, v);
 				}
 				public void deliveryComplete(IMqttDeliveryToken arg0) {}
 				public void connectionLost(Throwable arg0) {

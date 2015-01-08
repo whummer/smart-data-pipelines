@@ -27,7 +27,7 @@ define(['app', 'bootstrap-tagsinput'], function (app) {
             this.items = [];
             this.busy = false;
             this.page = 0;
-            this.size = 50;
+            this.size = 21;
             this.fullyLoaded = false;
         };
 
@@ -56,6 +56,8 @@ define(['app', 'bootstrap-tagsinput'], function (app) {
     app.controller('ThingTypesController',
 
         function ($scope, $log, ThingTypes, hotkeys, $location) {
+    	
+    		$scope.IMAGE_DATA = IMAGE_DATA;
 
             $log.debug("Inside ThingTypesController");
 

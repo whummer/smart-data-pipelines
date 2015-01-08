@@ -14,9 +14,9 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
-import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 
 /**
@@ -26,6 +26,7 @@ import org.springframework.stereotype.Component;
 public class GeoPositionListener {
 
 	private static final String PROPERTY_GEO_FENCE = "riots.geo.fence";
+	private static final Logger LOG = Logger.getLogger(GeoPositionListener.class);
 
 	final Map<String,GeoFence> geoFences = new ConcurrentHashMap<>();
 
@@ -35,11 +36,16 @@ public class GeoPositionListener {
 	final Map<String,Location> thingLocations = new ConcurrentHashMap<String,Location>();
 
 	@Autowired
-    JmsTemplate template;
+    EventBroker eventBroker;
 
-	@JmsListener(destination = EventBroker.MQ_PROP_CHANGE_NOTIFY)
+	@JmsListener(destination = EventBroker.MQ_OUTBOUND_PROP_CHANGE_NOTIFY)
 	public void processEvent(String data) {
 		PropertyValue prop = JSONUtil.fromJSON(data, PropertyValue.class);
+
+		if(prop == null || prop.getPropertyName() == null) {
+			LOG.warn("Received null property: " + prop);
+			return;
+		}
 
 		// TODO: how to identify GPS properties "semantically"
 		boolean isLat = prop.getPropertyName().endsWith("latitude");
@@ -70,7 +76,7 @@ public class GeoPositionListener {
 			Map<String,Object> value = new HashMap<String,Object>();
 			value.put(gf.getId(), range);
 			propValue.setValue(value);
-			EventBroker.sendChangeNotifyMessage(template, propValue);
+			eventBroker.sendOutboundChangeNotifyMessage(propValue);
 		}
 	}
 

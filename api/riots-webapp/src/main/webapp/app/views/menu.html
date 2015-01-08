@@ -1,4 +1,4 @@
-<nav class="navbar navbar-default" role="navigation">
+<nav class="navbar navbar-default" role="navigation" ng-controller="MenuController">
   <div class="container-fluid">
 
     <!-- navigation toggle -->
@@ -117,8 +117,32 @@
             </li>
           </ul>
         </li>
-        <li id="menuItemScenario"><a href="#/world" onclick="return clickMenu(this)"><span
-                class="glyphicon glyphicon-globe"></span> Scenario</a></li>
+        <li id="menuItemCatalog" class="dropdown">
+          <a href="" class="dropdown-toggle" data-disabled="true" data-toggle="dropdown" role="button" aria-expanded="false">
+            <span class="glyphicon glyphicon-globe"></span> Applications<span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="#" ng-click="addApplication()">
+              <span style="margin-right: 10px" class="glyphicon glyphicon-plus"></span>Add New Application</a>
+            </li>
+            <li ng-repeat="app in shared.applications"><a href="#/apps/{{app.id}}" onclick="return clickMenu(this)">
+              {{app.name}}</a>
+            </li>
+          </ul>
+        </li>
+        <li id="menuItemBehaviors" class="dropdown">
+          <a href="" class="dropdown-toggle" data-disabled="true" data-toggle="dropdown" role="button" aria-expanded="false">
+            <span class="glyphicon glyphicon-globe"></span> Behaviors<span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="#/sim" onclick="return clickMenu(this)">
+              <span style="margin-right: 10px" class="glyphicon glyphicon-list"></span>Simulations</a>
+            </li>
+            <li><a href="#/func" onclick="return clickMenu(this)">
+              <span style="margin-right: 10px" class="glyphicon glyphicon-list"></span>Triggers/"Functions" (??)</a>
+            </li>
+          </ul>
+        </li>
       </ul>
 
       <!-- user profile menu -->
@@ -128,8 +152,8 @@
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Logged
             in as {{authInfo.name}}<span class="caret"></span></a>
           <ul class="dropdown-menu" role="menu">
-            <li><a href="#/world"><span style="margin-right: 10px" class="glyphicon glyphicon-cog"></span>My
-              Things</a></li>
+            <li><a href="#/apps"><span style="margin-right: 10px" class="glyphicon glyphicon-cog"></span>My
+              Apps</a></li>
             <li><a href="#"><span style="margin-right: 10px" class="glyphicon glyphicon-list-alt"></span>My
               Blueprints</a></li>
             <li><a href="#/profile"><span style="margin-right: 10px" class="glyphicon glyphicon-wrench"></span>My

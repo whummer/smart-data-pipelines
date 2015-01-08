@@ -32,7 +32,7 @@ public class WebsocketHandler extends TextWebSocketHandler {
 	@Autowired
 	private JmsTemplate template;
 
-	@JmsListener(destination = EventBroker.MQ_PROP_CHANGE_NOTIFY)
+	@JmsListener(destination = EventBroker.MQ_OUTBOUND_PROP_CHANGE_NOTIFY)
 	public void processEvent(String data) {
 		System.out.println("data: " + data);
 		PropertyValue obj = JSONUtil.fromJSON(data, PropertyValue.class);

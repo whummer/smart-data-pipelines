@@ -40,21 +40,29 @@ public class PropertySimulationGPS extends
 	public double getLatitude() {
 		return latitude;
 	}
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
+	}
 
 	public double getLongitude() {
 		return longitude;
+	}
+	public void setLongitude(double longitude) {
+		this.longitude = longitude;
 	}
 
 	public double getDiameter() {
 		return diameter;
 	}
+	public void setDiameter(double diameter) {
+		this.diameter = diameter;
+	}
 
 	public double getMaxSpeed() {
 		return maxSpeed;
 	}
-
-	public void generateValues() {
-		throw new RuntimeException("not implemented");
+	public void setMaxSpeed(double maxSpeed) {
+		this.maxSpeed = maxSpeed;
 	}
 
 	@Override

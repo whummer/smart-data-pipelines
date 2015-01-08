@@ -1,5 +1,6 @@
 package io.riots.services.catalog;
 
+import io.riots.core.boot.MongoEnabledServiceStarter;
 import io.riots.core.boot.ServiceStarter;
 
 import org.elasticsearch.client.Client;
@@ -7,6 +8,9 @@ import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
+import org.springframework.boot.autoconfigure.mongo.MongoDataAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
@@ -16,26 +20,34 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
 /**
  * @author riox
  */
-@EnableElasticsearchRepositories(basePackages = { "io.riots.catalog.repositories" },
-	excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX,
-											pattern = "io\\.riots\\.core\\.repositories\\.BaseObjectRepository"))
+@EnableElasticsearchRepositories(basePackages = {"io.riots.catalog.repositories"},
+        excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX,
+                pattern = "io\\.riots\\.core\\.repositories\\.BaseObjectRepository"))
+
+@EnableAutoConfiguration(exclude = {MongoAutoConfiguration.class, MongoDataAutoConfiguration.class})
+
+@ComponentScan(basePackages = {"io.riots"},
+        excludeFilters = @ComponentScan.Filter(
+                type = FilterType.ASSIGNABLE_TYPE,
+                value = MongoEnabledServiceStarter.class))
+
 public class ElasticSearchEnabledServiceStarter extends ServiceStarter {
-	
-	@Value("${elasticsearch.hostname}") String hostname;
 
-	@Autowired
-	public Client transportClient() {
-		// TODO read the hosts from application.yml or better Eureka
-		TransportClient client = new TransportClient();
-		client.addTransportAddress(new InetSocketTransportAddress(
-						hostname, 9300));
-		// .addTransportAddress(new InetSocketTransportAddress("host2", 9300));
-		return client;
-	}
+    @Value("${elasticsearch.hostname}")
+    String hostname;
 
-	@Bean
-	public ElasticsearchTemplate elasticsearchTemplate() throws Exception {
-		return new ElasticsearchTemplate(transportClient());
-	}
+    @Bean
+    public Client transportClient() {
+        // TODO read the hosts from application.yml or better Eureka
+        TransportClient client = new TransportClient();
+        client.addTransportAddress(new InetSocketTransportAddress(hostname, 9300));
+        return client;
+    }
+
+    @Bean
+    @Autowired
+    public ElasticsearchTemplate elasticsearchTemplate(Client transportClient) throws Exception {
+        return new ElasticsearchTemplate(transportClient);
+    }
 
 }

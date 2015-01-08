@@ -20,12 +20,9 @@ import org.springframework.context.annotation.ImportResource;
  * @author omoser
  * @author riox
  */
-@EnableAutoConfiguration
+
 @Configuration
-@ComponentScan(basePackages = {"io.riots"}, 
-	excludeFilters = @ComponentScan.Filter(
-        type = FilterType.REGEX,
-        pattern = "io\\.riots\\.core\\.handlers.*"))
+
 @ImportResource(value = { "classpath*:/cxf-config.xml" })
 //@EnableMetrics
 public abstract class ServiceStarter {

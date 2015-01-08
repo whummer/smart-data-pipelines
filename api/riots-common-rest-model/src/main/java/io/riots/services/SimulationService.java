@@ -4,6 +4,7 @@ import io.riots.services.scenario.PropertyValue;
 import io.riots.services.sim.PropertySimulation;
 import io.riots.services.sim.Simulation;
 import io.riots.services.sim.SimulationRun;
+import io.riots.services.sim.SimulationType;
 import io.riots.services.sim.TimelineValues;
 import io.riots.services.sim.TrafficTraces;
 
@@ -45,7 +46,7 @@ public interface SimulationService {
             notes = "Retrieve simulation by its ID.",
             response = Simulation.class)
     @ApiResponses(value = {@ApiResponse(code = 404, message = "No simulation with given ID found")})
-    public Simulation retrieve(@PathParam("id") String id);
+    Simulation retrieve(@PathParam("id") String id);
 
     @GET
     @Path("/")
@@ -57,7 +58,7 @@ public interface SimulationService {
             @ApiResponse(code = 404, message = "No entity with given ID found"),
             @ApiResponse(code = 400, message = "Paging parameters are malformed")
     })
-    public List<Simulation> listSimulations(@QueryParam("page") int page, @QueryParam("size") int size);
+    List<Simulation> listSimulations(@QueryParam("page") int page, @QueryParam("size") int size);
 
     @POST
     @Path("/")
@@ -69,7 +70,7 @@ public interface SimulationService {
     @ApiResponses(value = {
             @ApiResponse(code = 400, message = "Malformed Simulation provided. See error message for details")
     })
-    public Simulation create(Simulation item);
+    Simulation create(Simulation item);
 
     @PUT
     @Path("/")
@@ -81,7 +82,7 @@ public interface SimulationService {
     @ApiResponses(value = {
             @ApiResponse(code = 400, message = "Malformed Simulation provided. See error message for details")
     })
-    public boolean update(Simulation item);
+    boolean update(Simulation item);
 
     @DELETE
     @Path("/{id}")
@@ -92,7 +93,67 @@ public interface SimulationService {
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "No such Simulation")
     })
-    public boolean deleteSimulation(@PathParam("id") String itemId);
+    boolean deleteSimulation(@PathParam("id") String itemId);
+
+    /* SIMULATIONS */
+
+    @GET
+    @Path("/types")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Retrieve all SimulationTypes",
+            notes = "Retrieve all SimulationTypes including associated details.",
+            response = SimulationType.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "No entity with given ID found"),
+            @ApiResponse(code = 400, message = "Paging parameters are malformed")
+    })
+    List<SimulationType> listSimTypes(
+    		@QueryParam("page") int page, @QueryParam("size") int size);
+
+    @GET
+    @Path("/types/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Retrieve a SimulationType",
+            notes = "Retrieve SimulationType by its ID.",
+            response = SimulationType.class)
+    @ApiResponses(value = {@ApiResponse(code = 404, message = "No SimulationType with given ID found")})
+    SimulationType retrieveSimType(@PathParam("id") String id);
+
+    @POST
+    @Path("/types")
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON})
+    @ApiOperation(value = "Created a new SimulationType.",
+            notes = "Create a new SimulationType."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "Malformed SimulationType provided. See error message for details")
+    })
+    SimulationType createSimType(SimulationType item);
+
+    @PUT
+    @Path("/types")
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON})
+    @ApiOperation(value = "Update a SimulationType.",
+            notes = "Update the details of a SimulationType."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "Malformed SimulationType provided. See error message for details")
+    })
+    boolean updateSimType(SimulationType item);
+
+    @DELETE
+    @Path("/types/{id}")
+    @Produces({MediaType.APPLICATION_JSON})
+    @ApiOperation(value = "Delete a SimulationType",
+            notes = "Delete an existing SimulationType by its ID. Upon success, HTTP 200 is returned."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "No such SimulationType")
+    })
+    boolean deleteSimType(@PathParam("id") String itemId);
+
 
     /* DATA/CURVE GENERATORS*/
 
@@ -103,7 +164,7 @@ public interface SimulationService {
     @ApiOperation(value = "Generate curve",
             notes = "Generate a property simulation curve.",
             response = PropertySimulation.class)
-    public TimelineValues<PropertyValue> generateCurve(PropertySimulation<?> r);
+    TimelineValues<PropertyValue> generateCurve(PropertySimulation<?> r);
 
     @POST
     @Path("/gen/traffic")
@@ -114,7 +175,7 @@ public interface SimulationService {
             		+ "realistic traffic simulations for a given area "
             		+ "(GPS coordinates of the center location plus vicinity from the center).",
             response = TrafficTraces.class)
-    public TrafficTraces generateCurve(int numVehicles, double lat, double lon, double vicinity);
+    TrafficTraces generateCurve(int numVehicles, double lat, double lon, double vicinity);
 
     /* SIMULATION EXECUTION CONTROL */
     
@@ -126,7 +187,16 @@ public interface SimulationService {
             notes = "Start the execution of a simulation. "
             		+ "Creates and returns a corresponding SimulationRun object.",
             response = SimulationRun.class)
-    public SimulationRun startSimulation(Simulation simulation);
+    SimulationRun startSimulation(Simulation simulation);
+
+    @DELETE
+    @Path("/exec/{thingId}/{propertyName}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Stop simulating a thing property.",
+            notes = "Terminate all existing simulations of the given thing property.")
+	void stopSimulation(@PathParam("thingId") String thingId, @PathParam("propertyName") String propertyName);
+
 
     /* PROPERTY SIMULATIONS */
     
@@ -144,7 +214,7 @@ public interface SimulationService {
 //    })
 //    @Timed
 //    @ExceptionMetered
-//    public List<PropertySimulation<?>> listPropertySimulations(
+//    List<PropertySimulation<?>> listPropertySimulations(
 //    		@PathParam("simulationId") String simulationId,
 //    		@QueryParam("page") int page,
 //    		@QueryParam("size") int size);
@@ -160,7 +230,7 @@ public interface SimulationService {
 //    })
 //    @Timed
 //    @ExceptionMetered
-//    public PropertySimulation<?> getPropertySimulation(@PathParam("id") String propSimId);
+//    PropertySimulation<?> getPropertySimulation(@PathParam("id") String propSimId);
 //
 //    @POST
 //    @Path("/{simulationId}/properties")
@@ -174,7 +244,7 @@ public interface SimulationService {
 //    })
 //    @Timed
 //    @ExceptionMetered
-//    public PropertySimulation<?> create(
+//    PropertySimulation<?> create(
 //    		@PathParam("simulationId") String simulationId, 
 //    		PropertySimulation<?> item);
 //
@@ -190,7 +260,7 @@ public interface SimulationService {
 //    })
 //    @Timed
 //    @ExceptionMetered
-//    public boolean update(PropertySimulation<?> item) ;
+//    boolean update(PropertySimulation<?> item) ;
 //
 //    @DELETE
 //    @Path("/properties/{id}")
@@ -203,6 +273,6 @@ public interface SimulationService {
 //    })
 //    @Timed
 //    @ExceptionMetered
-//    public boolean deletePropertySimulation(@PathParam("id") String itemId);
+//    boolean deletePropertySimulation(@PathParam("id") String itemId);
 
 }

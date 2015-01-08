@@ -57,10 +57,10 @@ public class ThingType extends HierarchicalObject<String> {
 	@Field(type = String, store = true)
 	private List<String> tags = new LinkedList<String>();
 
-	@JsonProperty("image-urls")
+	@JsonProperty("image-data")
 	@JsonInclude(Include.NON_EMPTY)
-	@Field(type = String, store = true)	
-	private List<String> imageUrls;
+	@Field(type = FieldType.Nested, store = true)	
+	private List<ImageData> imageData;
 
 	/**
 	 * Contains the list of properties that are "actuatable" within this device.
@@ -123,12 +123,12 @@ public class ThingType extends HierarchicalObject<String> {
 		this.manufacturerId = manufacturerId;
 	}
 
-	public List<String> getImageUrls() {
-		return imageUrls;
+	public List<ImageData> getImageData() {
+		return imageData;
 	}
 
-	public void setImageUrls(List<String> imageUrls) {
-		this.imageUrls = imageUrls;
+	public void setImageData(List<ImageData> imageData) {
+		this.imageData = imageData;
 	}
 
 	public List<Property> getProperties() {
@@ -200,8 +200,8 @@ public class ThingType extends HierarchicalObject<String> {
 		return this;
 	}
 
-	public ThingType withImageUrls(final List<java.lang.String> imageUrls) {
-		this.imageUrls = imageUrls;
+	public ThingType withImageData(final List<ImageData> imageData) {
+		this.imageData = imageData;
 		return this;
 	}
 
@@ -211,7 +211,7 @@ public class ThingType extends HierarchicalObject<String> {
 		return "ThingType [id=" + id + ", description=" + description
 				+ ", created=" + created + ", creatorId=" + creatorId
 				+ ", manufacturerId=" + manufacturerId + ", features="
-				+ features + ", tags=" + tags + ", imageUrls=" + imageUrls
+				+ features + ", tags=" + tags + ", imageData=" + imageData
 				+ ", properties=" + properties + "]";
 	}
 
@@ -222,7 +222,7 @@ public class ThingType extends HierarchicalObject<String> {
 		result = prime * result
 				+ ((features == null) ? 0 : features.hashCode());
 		result = prime * result
-				+ ((imageUrls == null) ? 0 : imageUrls.hashCode());
+				+ ((imageData == null) ? 0 : imageData.hashCode());
 		result = prime * result
 				+ ((manufacturerId == null) ? 0 : manufacturerId.hashCode());
 		result = prime * result
@@ -245,10 +245,10 @@ public class ThingType extends HierarchicalObject<String> {
 				return false;
 		} else if (!features.equals(other.features))
 			return false;
-		if (imageUrls == null) {
-			if (other.imageUrls != null)
+		if (imageData == null) {
+			if (other.imageData != null)
 				return false;
-		} else if (!imageUrls.equals(other.imageUrls))
+		} else if (!imageData.equals(other.imageData))
 			return false;
 		if (manufacturerId == null) {
 			if (other.manufacturerId != null)

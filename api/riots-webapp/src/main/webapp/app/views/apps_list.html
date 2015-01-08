@@ -1,0 +1,99 @@
+<section ng-controller="AppsController">
+    <div>
+    	
+    	<!--
+        <div style="margin-bottom: 10px;" class="text-right">
+            <button class="btn btn-primary btn-sm" id="btnAddApp">
+                <span class="glyphicon glyphicon-plus"></span> Add New Application
+            </button>
+            <button class="btn btn-warning btn-sm" id="btnDeleteApp"><span
+                    class="glyphicon glyphicon-minus"></span> Delete Application
+            </button>
+        </div>
+		-->
+
+        <!-- table view for apps -->
+        <!-- TODO remove 
+        <div id="AppsTable" ui-grid="gridConfig" ui-grid-selection ui-grid-edit ui-grid-row-edit
+             class="grid"></div>
+        -->
+
+        <div ng-show="shared.selectedApplication">
+
+            <form class="form-horizontal" role="form" style="text-align: left">
+
+                <!-- app name -->
+                <div class="form-group">
+                    <label for="inputAppName" class="col-sm-3 control-label">Name</label>
+                    <div class="col-sm-9">
+                        <input id="inputAppName" class="form-control input-sm" ng-model="shared.selectedApplication.name"/>
+                    </div>
+                </div>
+
+                <!-- app name -->
+                <div class="form-group">
+                    <label for="inputAppName" class="col-sm-3 control-label">Creation Date</label>
+                    <div class="col-sm-9">
+                        <input id="inputAppName" class="form-control input-sm" disabled="disabled"/>
+                    </div>
+                </div>
+
+                <!-- app key -->
+                <div class="form-group">
+                    <label for="inputAppKey" class="col-sm-3 control-label">App Key</label>
+                    <div class="col-sm-9">
+                        <input id="inputAppKey" class="form-control input-sm" ng-model="shared.selectedApplication.appKey" disabled="disabled"/>
+                    </div>
+                </div>
+
+                <!-- JS -->
+                <div class="form-group">
+                    <label for="propName" class="col-sm-3 control-label">JavaScript Code</label>
+                    <div class="col-sm-9">
+<pre>window.RIOTS_USER_ID = "{{userInfo.id}}"
+window.RIOTS_APP_KEY = "{{shared.selectedApplication.appKey}}"</pre>
+                    </div>
+                </div>
+
+                <!-- save -->
+                <div class="form-group">
+                    <label for="propName" class="col-sm-3 control-label"></label>
+                    <div class="col-sm-9">
+			            		<button class="btn btn-primary btn-sm" id="btnSaveApp">Update</button>
+			            		<button class="btn btn-danger btn-sm" id="btnDeleteApp">Delete</button>			            		
+                    </div>
+                </div>
+
+       		</form>
+    	</div>
+    </div>
+</section>
+<style type="text/css">
+#AppsTable {
+	height: 150px;
+}
+</style>
+<script type="text/javascript">
+
+var app = angular.module("app");
+app.controller('AppsController', function ($scope, $http, $compile, $routeParams, $log) {
+    AppController($scope, $http, $compile);
+
+    var deleteApp = function () {
+    	var app = clone($scope.shared.selectedApplication);
+    	riots.delete.app(app.id, function(newApp) {
+    		//loadAppTable();
+    	});
+    };
+    var saveApp = function () {
+    	var app = clone($scope.shared.selectedApplication);
+    	delete app["$$hashKey"];
+    	riots.save.app(app);
+    };
+
+	/* add event listeners */
+    $scope.addClickHandler("btnSaveApp", saveApp);
+    $scope.addClickHandler("btnDeleteApp", deleteApp);
+});
+
+</script>

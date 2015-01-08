@@ -17,6 +17,7 @@ var appConfig = {
 		ratings: { url: "/api/v1/ratings" },
 		simulationProps: { url: "/api/v1/simulations/properties" },
 		simulationDevices: { url: "/api/v1/simulations/devices" },
+		simulationTypes: { url: "/api/v1/simulations/types" },
 		stats: { url: "/api/v1/stats" },
 		users: { url: "/api/v1/users" },
 		utils: { url: "/api/v1/utils" },

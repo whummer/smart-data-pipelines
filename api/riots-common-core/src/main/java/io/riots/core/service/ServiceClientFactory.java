@@ -2,6 +2,7 @@ package io.riots.core.service;
 
 import io.riots.services.ApplicationsService;
 import io.riots.services.CatalogService;
+import io.riots.services.FilesService;
 import io.riots.services.GatewayStatsService;
 import io.riots.services.SimulationService;
 import io.riots.services.ThingDataService;
@@ -36,6 +37,8 @@ public class ServiceClientFactory {
 
 	private static final String DEFAULT_SERVICE_ENDPOINT = "http://%s:%s/api/v1/";
 
+	private static final String SERVICE_FILES_EUREKA_NAME = "files-service";
+	private static final String SERVICE_FILES_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
 	private static final String SERVICE_USERS_EUREKA_NAME = "users-service";
 	private static final String SERVICE_USERS_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
 	private static final String SERVICE_APP_EUREKA_NAME = "environment-service";
@@ -60,8 +63,12 @@ public class ServiceClientFactory {
 		serviceEndpoints.put(SERVICE_SIMULATION_EUREKA_NAME, SERVICE_SIMULATION_ENDPOINT);
 		serviceEndpoints.put(SERVICE_GWSTATS_EUREKA_NAME, SERVICE_GWSTATS_ENDPOINT);
 		serviceEndpoints.put(SERVICE_APP_EUREKA_NAME, SERVICE_APP_ENDPOINT);
+		serviceEndpoints.put(SERVICE_FILES_EUREKA_NAME, SERVICE_FILES_ENDPOINT);
 	}
 
+	public FilesService getFilesServiceClient() {
+		return getServiceInstanceForName(SERVICE_FILES_EUREKA_NAME, FilesService.class);		
+	}
 	public UsersService getUsersServiceClient() {
 		return getServiceInstanceForName(SERVICE_USERS_EUREKA_NAME, UsersService.class);
 	}
