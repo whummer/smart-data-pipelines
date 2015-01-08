@@ -20,7 +20,17 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 /**
  * @author omoser
  */
+
+/*
+@ComponentScan(basePackages = {"io.riots"},
+        excludeFilters = @ComponentScan.Filter(
+                type = FilterType.REGEX,
+                pattern = "io\\.riots\\.core\\.handlers.*"))
+*/
+
+
 @Configuration
+@ComponentScan(basePackages = {"io.riots"})
 @EnableMongoRepositories(
         basePackages = {"io.riots.core.repositories"},
         excludeFilters = @ComponentScan.Filter(

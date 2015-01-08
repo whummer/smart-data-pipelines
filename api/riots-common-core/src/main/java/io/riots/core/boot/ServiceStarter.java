@@ -22,10 +22,7 @@ import org.springframework.context.annotation.ImportResource;
  */
 
 @Configuration
-@ComponentScan(basePackages = {"io.riots"},
-	excludeFilters = @ComponentScan.Filter(
-        type = FilterType.REGEX,
-        pattern = "io\\.riots\\.core\\.handlers.*"))
+
 @ImportResource(value = { "classpath*:/cxf-config.xml" })
 //@EnableMetrics
 public abstract class ServiceStarter {
