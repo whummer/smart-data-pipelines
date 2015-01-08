@@ -27,8 +27,7 @@
             $scope.dateFormat = "yyyy-MM-dd hh:mm:ss";
 
             var initHistoryTable = function () {
-            	console.log($scope.formatTime);
-                var columnsConfig = [
+            	var columnsConfig = [
                     {label: "From Date", field: "fromDate", sortable: true,
 						cellTemplate: "<div class='ui-grid-cell-contents'>{{row.entity.fromDate | date: 'yyyy-MM-dd hh:mm:ss'}}</div>"
 					},
@@ -65,10 +64,8 @@
             };
 
             var loadHistoryTable = function (history) {
-            	
                 invokeGET($scope.http, $scope.statsAPI + "/usage?from=&to=&period=month",
                     function (data, status, headers, config) {
-                        console.log(data.result);
                         buildHistoryTable(data.result.usage);
                     }
                 );
