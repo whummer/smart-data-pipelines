@@ -1,55 +1,56 @@
-<section ng-controller="SimViewController" id="simViewDiv" style="height: 100%">
+<section ng-controller="SimViewController" id="simViewDiv"
+	style="height: 100%">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h2 class="panel-title">
+				<span class="glyphicon glyphicon-edit"></span> <b>Simulations</b>
+			</h2>
+		</div>
+		<div class="panel-body">
+			<div id="simViewDivWrapper" style="height: 100%; position: relative;">
 
-	<div id="simViewDivWrapper" style="height: 100%; position: relative;">
+				<ng-include
+					src="appConfig['appRootPath'] + '/views/sim_list.html'"></ng-include>
 
-	<div style="margin-bottom: 15px;">
-	<select id="simViewSimSelect" class="form-control input-sm" style="width: 200px;"
-		ng-options="opt.name for opt in scenariosList track by opt.id"
-		ng-model="curScenario"></select>
-	<button class="btn btn-default btn-sm" data-dojo-props="iconClass:'icon-pencil'" id="btnEditScenario">Rename</button>
-	<button class="btn btn-default btn-sm" data-dojo-props="iconClass:'icon-plus-sign'" id="btnAddScenario">Add</button>
-	<button class="btn btn-default btn-sm" data-dojo-props="iconClass:'icon-minus-sign'" id="btnDelScenario">Delete</button>
-	</div>
+				<!-- 
+				<ng-include
+					src="appConfig['appRootPath'] + '/views/sim_thing_props.html'"></ng-include>
+				 -->
+				<!-- 
+				<ng-include
+					src="appConfig['appRootPath'] + '/views/sim_prop_values.html'"></ng-include>
+				-->
+				<ng-include
+					src="appConfig['appRootPath'] + '/views/sim_graphs.html'"></ng-include>
 
-	<div style="" ng-show="curScenario && curScenario.id != '-1'">
+							<!--
+				<tab heading="Editor &amp; Execution">
+					<bg-splitter orientation="horizontal" style="position: absolute; top: 50px;">
+						<bg-pane>
+							<ng-include src="appConfig['appRootPath'] + '/views/sim_editor_and_execution.html'" style="height: 100%;"></ng-include>
+						</bg-pane>
+						<bg-pane>
+							<bg-splitter orientation="vertical">
+								<bg-pane id="paneMapPreview">
+									<ng-include src="appConfig['appRootPath'] + '/views/sim_preview.html'" style="height: 100%;"></ng-include>
+								</bg-pane>
+								<bg-pane>
+									<ng-include src="appConfig['appRootPath'] + '/views/sim_preview_props.html'" style="height: 100%;"></ng-include>
+								</bg-pane>
+							</bg-splitter>
+						</bg-pane>
+					</bg-splitter>
+	
+				</tab>
+	
+				<tab heading="Reports and Analysis">
+					<div style="position: absolute; height: 100%; width: 100%;">
+						<ng-include src="appConfig['appRootPath'] + '/views/sim_reports.html'"></ng-include>
+					</div>
+				</tab>
+				-->
 
-		<tabset style="">
-			<tab heading="Things &amp; Properties">
-				<ng-include src="appConfig['appRootPath'] + '/views/sim_thing_props.html'"></ng-include>
-				<ng-include src="appConfig['appRootPath'] + '/views/sim_prop_values.html'"></ng-include>
-				<ng-include src="appConfig['appRootPath'] + '/views/sim_graphs.html'"></ng-include>
-			</tab>
-
-			<!--
-			<tab heading="Editor &amp; Execution">
-				<bg-splitter orientation="horizontal" style="position: absolute; top: 50px;">
-					<bg-pane>
-						<ng-include src="appConfig['appRootPath'] + '/views/sim_editor_and_execution.html'" style="height: 100%;"></ng-include>
-					</bg-pane>
-					<bg-pane>
-						<bg-splitter orientation="vertical">
-							<bg-pane id="paneMapPreview">
-								<ng-include src="appConfig['appRootPath'] + '/views/sim_preview.html'" style="height: 100%;"></ng-include>
-							</bg-pane>
-							<bg-pane>
-								<ng-include src="appConfig['appRootPath'] + '/views/sim_preview_props.html'" style="height: 100%;"></ng-include>
-							</bg-pane>
-						</bg-splitter>
-					</bg-pane>
-				</bg-splitter>
-
-			</tab>
-
-			<tab heading="Reports and Analysis">
-				<div style="position: absolute; height: 100%; width: 100%;">
-					<ng-include src="appConfig['appRootPath'] + '/views/sim_reports.html'"></ng-include>
-				</div>
-			</tab>
-			-->
-
-		</tabset>
-
-	</div>
-
+			</div>
+		</div>
 	</div>
 </section>

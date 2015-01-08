@@ -70,4 +70,9 @@ public class ServiceUtil {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	public static void setResponseContentType(MessageContext context,
+			String contentType) {
+        context.getHttpServletResponse().addHeader("Content-Type", contentType);		
+	}
 }

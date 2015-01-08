@@ -1,0 +1,27 @@
+server:
+  port: 8087
+
+storage:
+  backend: file-storage
+  directory: /tmp/files
+
+eureka:
+  instance:
+    hostname: localhost
+    leaseRenewalIntervalInSeconds: 5
+  client:
+    registryFetchIntervalSeconds: 5
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:10000/eureka/v2/
+
+ribbon:
+  ServerListRefreshInterval: 5000
+
+spring:
+  application:
+    name: files-service
+    
+logging:
+  level:
+    com.netflix.discovery: OFF
+    com.netflix.zuul: OFF

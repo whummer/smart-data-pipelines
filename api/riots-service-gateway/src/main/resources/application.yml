@@ -36,6 +36,9 @@ zuul:
       stripPrefix: false
     simulation-service:
       path: /api/v1/simulations/**
+      stripPrefix: false      
+    files-service:
+      path: /api/v1/files/**
       stripPrefix: false
 
     webapp-service:

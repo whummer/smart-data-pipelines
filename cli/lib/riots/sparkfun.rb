@@ -95,24 +95,24 @@ module Riots
 			product["features"]["sku"] = page.search("//*[@id='airlock']/div[2]/div/meta[3]/@content")			
 
 			# extract images as base64
-			product['image-urls'] = []		
-			nodeset = page.search("//*[@id='images-carousel']/div[1]")			
+			product['image-data'] = []		
+			nodeset = page.search("//*[@id='images-carousel']/div[1]")		
 
 			# create dir for images
 			FileUtils::mkdir_p "#{@output_dir}/img/sparkfun"
 				
 			nodeset.children.each_with_index do |n, i|
 				image_url = n.children[1]['src']			 	
-				img_filename = "img/sparkfun/#{file_id}-image-#{i}#{File.extname(image_url)}"
-
-				unless @options[:no_image_download]
-					open(image_url, "rb") do |f|
-	   					File.open("#{@output_dir}/#{img_filename}","wb") do |file|
-	     					file.puts f.read
-	   					end
-					end
+				#img_filename = "img/sparkfun/#{file_id}-image-#{i}#{File.extname(image_url)}"
+				image = {}
+				image['content-type'] = 'image/jpg'
+				if n["class"] =~ /active/					
+					image['active'] = 'true'
 				end
-				product['image-urls'] << img_filename
+				unless @options[:no_image_download]				
+					image['base64-string'] = Base64.encode64(open(image_url, "rb").read)					
+	   			end
+				product['image-data'] << image
 			end
 
 

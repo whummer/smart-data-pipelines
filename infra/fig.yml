@@ -22,6 +22,17 @@ elasticsearch:
     - "9200:9200"
     - "9300:9300"
 
+files:
+  image: 146.148.126.222:5000/riots/service-files
+  links:
+    - eureka
+  volumes:
+    - /data/files:/data
+  ports: 
+    - "8087:8087"
+  environment:
+    JAVA_OPTS: "-Deureka.instance.hostname=172.17.42.1 -Dstorage.directory=/data"
+
 catalog:
   image: 146.148.126.222:5000/riots/service-catalog
   ports:
@@ -29,6 +40,7 @@ catalog:
   links:
     - elasticsearch
     - eureka
+    - files
   environment:
     JAVA_OPTS: "-Deureka.instance.hostname=172.17.42.1 -Delasticsearch.hostname=172.17.42.1"
 

@@ -1,76 +1,4 @@
-<!-- todo move to external CSS file -->
-<style>
-  .bootstrap-tagsinput {
-    width: 100% !important;
-  }
-
-  span.twitter-typeahead .tt-dropdown-menu {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    z-index: 1000;
-    display: none;
-    float: left;
-    min-width: 160px;
-    padding: 5px 0;
-    margin: 2px 0 0;
-    list-style: none;
-    font-size: 14px;
-    text-align: left;
-    background-color: #ffffff;
-    border: 1px solid #cccccc;
-    border: 1px solid rgba(0, 0, 0, 0.15);
-    border-radius: 4px;
-    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-    background-clip: padding-box;
-  }
-
-  span.twitter-typeahead .tt-suggestion > p {
-    display: block;
-    padding: 3px 20px;
-    clear: both;
-    font-weight: normal;
-    line-height: 1.42857143;
-    color: #333333;
-    white-space: nowrap;
-  }
-
-  span.twitter-typeahead .tt-suggestion > p:hover, span.twitter-typeahead .tt-suggestion > p:focus {
-    color: #ffffff;
-    text-decoration: none;
-    outline: 0;
-    background-color: #428bca;
-  }
-
-  span.twitter-typeahead .tt-suggestion.tt-cursor {
-    color: #ffffff;
-    background-color: #428bca;
-  }
-
-  span.twitter-typeahead {
-    width: 100%;
-  }
-
-  .input-group span.twitter-typeahead {
-    display: block !important;
-  }
-
-  .input-group span.twitter-typeahead .tt-dropdown-menu {
-    top: 32px !important;
-  }
-
-  .input-group.input-group-lg span.twitter-typeahead .tt-dropdown-menu {
-    top: 44px !important;
-  }
-
-  .input-group.input-group-sm span.twitter-typeahead .tt-dropdown-menu {
-    top: 28px !important;
-  }
-</style>
-
-<section ng-controller="ThingTypeDetailsController"
-         id="devTypeDetailsSection">
+<section ng-controller="ThingTypeDetailsController" id="devTypeDetailsSection">
 
   <div ng-show="shared.selectedThingType" class="container-fluid">
 
@@ -78,20 +6,24 @@
 
       <div class="row">
 
-        <div class="col-md-4" style="height: 100%; vertical-align: middle">
-          <!-- thing type images -->
+        <!-- thing type images -->
+        <div class="col-md-4" style="height: 100%; vertical-align: middle; margin-bottom: 20px">
+
+          <!-- carousel -->
           <carousel id="devTypeImages" interval="-1">
-            <slide ng-repeat="i in range(0, shared.selectedThingType[IMAGE_URLS].length - 1)">
-              <img ng-src="{{shared.selectedThingType[IMAGE_URLS][i]}}" class="img-responsive" style="margin: auto;">
+            <slide ng-repeat="i in range(0, shared.selectedThingType[IMAGE_DATA].length - 1)">
+              <img ng-src="{{shared.selectedThingType[IMAGE_DATA][i]['href']}}" class="img-responsive" style="margin: auto;">
             </slide>
           </carousel>
 
-          <div class="thumbnail" ng-hide="shared.selectedThingType[IMAGE_URLS][0]">
+          <!-- placeholder -->
+          <div class="text-center" ng-hide="shared.selectedThingType[IMAGE_DATA][0]">
             <img width="200" height="200" ng-src="img/no_image_available.jpg"/>
           </div>
         </div>
 
 
+        <!-- editable content -->
         <div class="col-md-8">
 
           <!-- thing type ID -->
@@ -132,10 +64,10 @@
 
             <div class="col-sm-10">
               <table style="width: 100%;">
-                <tr ng-repeat="n in range(0, shared.selectedThingType[IMAGE_URLS].length - 1)">
+                <tr ng-repeat="n in range(0, shared.selectedThingType[IMAGE_DATA].length - 1)">
                   <td>
                     <div class="input-group">
-                      <input class="form-control input-sm" style="width:100%; margin-bottom: 10px" ng-model="shared.selectedThingType[IMAGE_URLS][n]"/>
+                      <input class="form-control input-sm" style="width:100%; margin-bottom: 10px" ng-model="shared.selectedThingType[IMAGE_DATA][n]"/>
                         <span class="input-group-btn">
                           <button class="btn btn-sm btn-warning" style="margin-bottom: 10px" type="button" ng-click="removeImage(n)">
                             <span class="glyphicon glyphicon-remove"></span>&nbsp;
@@ -201,9 +133,12 @@
   var app = angular.module("app");
   app.controller('ThingTypeDetailsController', function ($scope, $http, $compile, $log, $location) {
 
+    $log.debug("Inside ThingTypeDetailsController");
+    $log.debug("SelectedThingType: ", $scope.shared.selectedThingType);
+
     AppController($scope, $http, $compile);
 
-    $scope.IMAGE_URLS = IMAGE_URLS;
+    $scope.IMAGE_DATA = IMAGE_DATA;
 
     $scope.getFeatureList = function (devType, forceReset) {
       if (!devType)
@@ -239,17 +174,17 @@
 
     var addThingTypeImg = function () {
       if (!$scope.shared.selectedThingType) return;
-      if (!$scope.shared.selectedThingType[IMAGE_URLS]) {
-        $scope.shared.selectedThingType[IMAGE_URLS] = [];
+      if (!$scope.shared.selectedThingType[IMAGE_DATA]) {
+        $scope.shared.selectedThingType[IMAGE_DATA] = [];
       }
       $scope.$apply(function () {
-        $scope.shared.selectedThingType[IMAGE_URLS].push("");
+        $scope.shared.selectedThingType[IMAGE_DATA].push("");
       });
     };
 
     $scope.removeImage = function(index) {
-      $log.debug("Removing image from index " + index + ": " , $scope.shared.selectedThingType[IMAGE_URLS][index]);
-      $scope.shared.selectedThingType[IMAGE_URLS].splice(index, 1);
+      $log.debug("Removing image from index " + index + ": " , $scope.shared.selectedThingType[IMAGE_DATA][index]);
+      $scope.shared.selectedThingType[IMAGE_DATA].splice(index, 1);
     };
 
     //

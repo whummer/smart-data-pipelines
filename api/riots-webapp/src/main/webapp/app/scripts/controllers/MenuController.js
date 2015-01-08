@@ -1,8 +1,34 @@
 /**
  * Created by omoser on 18/12/14.
+ * @author omoser
+ * @author whummer
  */
 
 var app = angular.module('app');
+
+app.controller('MenuController', function ($scope, $log, $http, $location, $compile) {
+
+    AppController($scope, $http, $compile);
+
+	var loadApps = function() {
+		riots.apps(function(apps) {
+			$scope.shared.applications = apps;
+		});
+	}
+
+	$scope.addApplication = function () {
+    	var newApp = {name: "New Application"};
+    	riots.add.app(newApp, function(newApp) {
+    		$scope.shared.applications.push(newApp);
+    	});
+    };
+
+	$scope.$watch("authInfo", function() {
+		$scope.shared.applications = [];
+		loadApps();
+	});
+
+});
 
 app.controller('ModalAddDeviceTypeController', function ($scope, $modal, $log, $http, $compile, hotkeys) {
 

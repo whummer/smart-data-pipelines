@@ -10,4 +10,5 @@ docker build -t riots/service-environment $BASEDIR/riots-service-environment/tar
 docker build -t riots/service-simulation $BASEDIR/riots-service-simulation/target/
 docker build -t riots/service-users $BASEDIR/riots-service-users/target/
 docker build -t riots/service-gateway $BASEDIR/riots-service-gateway/target/
+docker build -t riots/service-files $BASEDIR/riots-service-files/target/
 docker build -t riots/webapp $BASEDIR/riots-webapp/target/

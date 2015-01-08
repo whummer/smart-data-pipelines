@@ -1,131 +1,138 @@
-<section ng-controller="ThingTypesController" id="thingTypesSection" hotkey="{s: focusSearchInput}">
+<section ng-controller="ThingTypesController" id="thingTypesSection"
+	hotkey="{s: focusSearchInput}">
 
-  <!-- search input row -->
-  <div id="thingTypesSectionWrapper">
-    <div class="row" id="thingTypeSearch">
-      <div class="col-lg-2"></div>
-      <div class="col-lg-8">
+	<!-- search input row -->
+	<div id="thingTypesSectionWrapper">
+		<div class="row" id="thingTypeSearch">
+			<div class="col-lg-2"></div>
+			<div class="col-lg-8">
 
-        <form ng-submit="searchKeyPress()">
-          <div class="input-group">
+				<form ng-submit="searchKeyPress()">
+					<div class="input-group">
 
-            <input type="text" class="form-control" id="searchInput"
-                   placeholder="To search for specific properties use <property:value> notation (e.g., width:100)"
-                   ng-model="searchText">
-              <span class="input-group-btn">
-						    <button class="btn btn-primary" type="button" id="btnSearch">
-                  <span class="glyphicon glyphicon-search" style="padding-right: 10px"></span> Search
-                </button>
-					    </span>
-          </div>
-        </form>
+						<input type="text" class="form-control" id="searchInput"
+							placeholder="To search for specific properties use <property:value> notation (e.g., width:100)"
+							ng-model="searchText"> <span class="input-group-btn">
+							<button class="btn btn-primary" type="button" id="btnSearch">
+								<span class="glyphicon glyphicon-search"
+									style="padding-right: 10px"></span> Search
+							</button>
+						</span>
+					</div>
+				</form>
 
-      </div>
-      <div class="col-lg-2"></div>
-    </div>
-    <br class="clear"/>
-  </div>
+			</div>
+			<div class="col-lg-2"></div>
+		</div>
+		<br class="clear" />
+	</div>
 
-  <!-- search results as grid view -->
-  <div id="searchResults" infinite-scroll='thingTypes.nextPage()'
-       infinite-scroll-disabled='thingTypes.busy'
-       infinite-scroll-immediate-check="true"
-       infinite-scroll-distance='0'>
+	<!-- search results as grid view -->
+	<div id="searchResults" infinite-scroll='thingTypes.nextPage()'
+		infinite-scroll-disabled='thingTypes.busy'
+		infinite-scroll-immediate-check="true" infinite-scroll-distance='0'>
 
-    <div class="panel panel-info" ng-hide="thingTypes.items.length">
-      <div class="panel-heading">
-        <div class="panel-title"><b>No Results</b></div>
-      </div>
-      <div class="panel-body">There are no things types matching your search criteria.</div>
-    </div>
+		<div class="panel panel-info" ng-hide="thingTypes.items.length">
+			<div class="panel-heading">
+				<div class="panel-title">
+					<b>No Results</b>
+				</div>
+			</div>
+			<div class="panel-body">There are no things types matching your
+				search criteria.</div>
+		</div>
 
-    <div ng-repeat="thing in thingTypes.items" ng-init="thingIndex = $index">
-			<span ng-if="$index % 3 == 0">			
+		<div ng-repeat="thing in thingTypes.items"
+			ng-init="thingIndex = $index">
+			<div ng-if="$index % 3 == 0">
 				<div class="row">
-          <div ng-repeat="i in [0,1,2]" ng-init="columnIndex = $index">
-            <div class="col-sm-6 col-md-4" ng-if="thingTypes.items[thingIndex + columnIndex] != undefined">
-              <div class="thumbnail" style="min-height: 250px;" ng-class="{thumbnailhalo: hover}" ng-mouseenter="hover = true"
-                   ng-mouseleave="hover = false" ng-dblclick="editItem(thingTypes.items[thingIndex + columnIndex].id)">
+					<div ng-repeat="i in [0,1,2]" ng-init="columnIndex = $index">
+						<div class="col-sm-6 col-md-4"
+							ng-if="thingTypes.items[thingIndex + columnIndex] != undefined">
+							<div class="thumbnail" style="min-height: 250px;"
+								ng-class="{thumbnailhalo: hover}" ng-mouseenter="hover = true"
+								ng-mouseleave="hover = false"
+								ng-dblclick="editItem(thingTypes.items[thingIndex + columnIndex].id)">
 
 
-                <div style="float: left; margin-right: 3px;" ng-show="hover">
-                  <a href="JavaScript:void(0)"
-                     ng-click="deleteThingType(thingTypes.items[thingIndex + columnIndex])"
-                     role="button">
-                    <span class="glyphicon glyphicon-remove"></span>
-                  </a>
-                </div>
+								<div style="float: left; margin-right: 3px;" ng-show="hover">
+									<a href="JavaScript:void(0)"
+										ng-click="deleteThingType(thingTypes.items[thingIndex + columnIndex])"
+										role="button"> <span class="glyphicon glyphicon-remove"></span>
+									</a>
+								</div>
 
-                <div style="float: left; margin-right: 3px;" ng-show="hover">
-                  <a href="#/catalog/{{thingTypes.items[thingIndex + columnIndex].id}}"
-                     role="button">
-                    <span class="glyphicon glyphicon-edit"></span>
-                  </a>
-                </div>
+								<div style="float: left; margin-right: 3px;" ng-show="hover">
+									<a
+										href="#/catalog/{{thingTypes.items[thingIndex + columnIndex].id}}"
+										role="button"> <span class="glyphicon glyphicon-edit"></span>
+									</a>
+								</div>
 
-                <!-- tags -->
-                <div class="pull-right" style="margin-bottom: 10px; margin-top: 10px; min-height: 18px;">
-                  <span style="cursor: pointer;margin-right: 5px"
-                        ng-repeat="tag in thingTypes.items[thingIndex + columnIndex].tags"
-                        class="label label-info label-as-badge" ng-click="selectTag(tag)">
-                      {{tag}}
-                  </span>
-                </div>
+								<!-- tags -->
+								<div class="pull-right"
+									style="margin-bottom: 10px; margin-top: 10px; min-height: 18px;">
+									<span style="cursor: pointer; margin-right: 5px"
+										ng-repeat="tag in thingTypes.items[thingIndex + columnIndex].tags"
+										class="label label-info label-as-badge"
+										ng-click="selectTag(tag)"> {{tag}} </span>
+								</div>
 
-                <div class="clearfix"></div>
+								<div class="clearfix"></div>
 
-                <!-- thing type images -->
-                <carousel interval="-1" ng-show="thingTypes.items[thingIndex + columnIndex]['image-urls']">
-                  <slide ng-repeat="pic in thingTypes.items[thingIndex + columnIndex]['image-urls']">
-                    <img ng-src="{{pic}}" class="img-responsive" style="margin: auto; max-height: 100px"/>
-                  </slide>
-                </carousel>
+								<!-- thing type images -->
+								<carousel interval="-1"
+									ng-show="thingTypes.items[thingIndex + columnIndex][IMAGE_DATA]">
+								<slide
+									ng-repeat="img in thingTypes.items[thingIndex + columnIndex][IMAGE_DATA]">
+								<img ng-src="{{img['href']}}" class="img-responsive"
+									style="margin: auto; max-height: 100px" /> </slide> </carousel>
 
-                <div ng-hide="thingTypes.items[thingIndex + columnIndex]['image-urls']" class="text-center">
-                  <img ng-src="img/no_image_available.jpg"
-                       style="max-width: 125px;max-height: 125px;"/>
-                </div>
+								<div
+									ng-hide="thingTypes.items[thingIndex + columnIndex][IMAGE_DATA]"
+									class="text-center">
+									<img ng-src="img/no_image_available.jpg"
+										style="max-width: 125px; max-height: 125px;" />
+								</div>
 
-                <!-- content -->
-                <div class="caption">
-                  <h4>{{thingTypes.items[thingIndex + columnIndex].name}}</h4>
+								<!-- content -->
+								<div class="caption">
+									<h4>{{thingTypes.items[thingIndex + columnIndex].name}}</h4>
 
-                  <div class="thing-type-box"
-                       style="margin-top: 10px"
-                       id="{{thingTypes.items[thingIndex + columnIndex].id}}_description">
-                    {{thingTypes.items[thingIndex + columnIndex].description}}
-                  </div>
+									<div class="thing-type-box" style="margin-top: 10px"
+										id="{{thingTypes.items[thingIndex + columnIndex].id}}_description">
+										{{thingTypes.items[thingIndex + columnIndex].description}}</div>
 
-                  <!-- collapse/expand description -->
-                  <div class="pull-right" style="margin-bottom: 10px; margin-top: 5px" ng-show="hover">
-                    <div id="{{thingTypes.items[thingIndex + columnIndex].id}}_expand"
-                         style="float: left">
-                      <a href="JavaScript: void(0);"
-                         ng-click="showMore(thingTypes.items[thingIndex + columnIndex].id)"
-                         role="button">
-                        <span class="glyphicon glyphicon-collapse-down"></span>
-                      </a>
-                    </div>
-                    <div id="{{thingTypes.items[thingIndex + columnIndex].id}}_collapse"
-                         class="invisible">
-                      <a href="JavaScript: void(0);"
-                         ng-click="showLess(thingTypes.items[thingIndex + columnIndex].id)"
-                         role="button">
-                        <span class="glyphicon glyphicon-collapse-up"></span>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div> <!-- end row -->
-			</span>
-    </div>
-    <div ng-show='thingTypes.busy'>Loading data...</div>
-  </div>
+									<!-- collapse/expand description -->
+									<div class="pull-right"
+										style="margin-bottom: 10px; margin-top: 5px" ng-show="hover">
+										<div
+											id="{{thingTypes.items[thingIndex + columnIndex].id}}_expand"
+											style="float: left">
+											<a href="JavaScript: void(0);"
+												ng-click="showMore(thingTypes.items[thingIndex + columnIndex].id)"
+												role="button"> <span
+												class="glyphicon glyphicon-collapse-down"></span>
+											</a>
+										</div>
+										<div
+											id="{{thingTypes.items[thingIndex + columnIndex].id}}_collapse"
+											class="invisible">
+											<a href="JavaScript: void(0);"
+												ng-click="showLess(thingTypes.items[thingIndex + columnIndex].id)"
+												role="button"> <span
+												class="glyphicon glyphicon-collapse-up"></span>
+											</a>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- end row -->
+			</div>
+		</div>
+		<div ng-show='thingTypes.busy'>Loading data...</div>
+	</div>
 </section>
-
-
-
-
