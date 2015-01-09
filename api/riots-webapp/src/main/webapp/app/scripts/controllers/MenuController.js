@@ -14,19 +14,23 @@ app.controller('MenuController', function ($scope, $log, $http, $location, $comp
 		riots.apps(function(apps) {
 			$scope.shared.applications = apps;
 		});
-	}
+	};
 
-	$scope.appNumber = 1
+	$scope.appNumber = 1;
 	//$scope.CREATION_DATE = CREATION_DATE
 	
 	$scope.addApplication = function () {		
     	var newApp = {name: "New Application " + $scope.appNumber };
+        $log.debug("New Application: ", newApp);
     	riots.add.app(newApp, function(newApp) {
     		$scope.shared.applications.push(newApp);
+            $log.debug("Redirecting to new app with ID: ", newApp.id);
+            $location.path("apps/" + newApp.id);
     	});
     	
     	// TODO this does not work - no clue why
-    	$scope.appNumber = $scope.appNumber + 1	    	
+    	$scope.appNumber = $scope.appNumber + 1;
+
     };
     
     

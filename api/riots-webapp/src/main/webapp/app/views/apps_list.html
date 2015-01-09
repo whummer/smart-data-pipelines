@@ -76,15 +76,24 @@ window.RIOTS_APP_KEY = "{{shared.selectedApplication.appKey}}"</pre>
 <script type="text/javascript">
 
 var app = angular.module("app");
-app.controller('AppsController', function ($scope, $http, $compile, $routeParams, $log) {
+app.controller('AppsController', function ($scope, $http, $compile, $routeParams, $log, $location) {
     AppController($scope, $http, $compile);
 
     var deleteApp = function () {
     	var app = clone($scope.shared.selectedApplication);
-    	riots.delete.app(app.id, function(newApp) {
-    		//loadAppTable();
-    	});
+
+      var location = "home";
+      $log.warn("About to delete application: ", app);
+      $log.debug("Redirecting to location afterwards: ", location);
+
+      showConfirmDialog("Do you really want to delete this application?", function () {
+        riots.delete.app(app.id, function(newApp) {
+          $log.debug("Successfully delete app ", app.name);
+          $location.path(location);
+        });
+      });
     };
+
     var saveApp = function () {
     	var app = clone($scope.shared.selectedApplication);
     	delete app["$$hashKey"];

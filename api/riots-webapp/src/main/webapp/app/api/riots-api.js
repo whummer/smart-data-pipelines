@@ -235,7 +235,7 @@ var callPOSTorPUT = function(invokeFunc, url, body, callback) {
 	invokeFunc(null, url, body,
 		function(data, status, headers, config) {
 			if(callback) {
-				callback(data, status, headers, config);
+				callback(data.result);
 			}
 		}
 	);
