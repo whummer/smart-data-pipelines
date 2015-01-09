@@ -97,7 +97,8 @@
 	
 					<!-- enumerated values -->
 					<div class="form-group" 
-							ng-show="(selectedProperty[PROPERTY_TYPE] == 'LONG' || selectedProperty[PROPERTY_TYPE] == 'DOUBLE') && selectedProperty.valueDomain.type != 'Enumerated'">
+							ng-show="(selectedProperty[PROPERTY_TYPE] == 'LONG' || selectedProperty[PROPERTY_TYPE] == 'DOUBLE') && 
+							(selectedProperty.valueDomain.type == 'Discrete' || selectedProperty.valueDomain.type == 'Continuous')">
 						<label for="selDomainType" class="col-sm-3 control-label">Min. / Max. Values</label>
 	
 						<div class="col-sm-9">

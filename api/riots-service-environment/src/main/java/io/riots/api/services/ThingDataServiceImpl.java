@@ -6,11 +6,8 @@ import io.riots.api.util.ServiceUtil;
 import io.riots.core.model.PropertyFinder;
 import io.riots.core.repositories.PropertyValueRepository;
 import io.riots.core.service.ServiceClientFactory;
-import io.riots.services.CatalogService;
 import io.riots.services.ThingDataService;
-import io.riots.services.ThingsService;
 import io.riots.services.catalog.Property;
-import io.riots.services.catalog.ThingType;
 import io.riots.services.scenario.PropertyValue;
 import io.riots.services.scenario.Thing;
 
@@ -22,7 +19,6 @@ import javax.jms.JMSException;
 import javax.jms.TextMessage;
 import javax.ws.rs.core.Context;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.cxf.jaxrs.ext.MessageContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -110,7 +106,7 @@ public class ThingDataServiceImpl implements ThingDataService {
     @Timed @ExceptionMetered
 	public void postValue(String thingId, String propertyName,
     		PropertyValue propValue) {
-    	Property property = searchPropForThing(thingId, propertyName);
+    	Property property = propertyFinder.searchPropForThing(thingId, propertyName);
     	if(property == null) {
     		throw new IllegalArgumentException("Cannot find property '" +
     				propertyName + "' for thing '" + thingId + "'");
@@ -141,27 +137,11 @@ public class ThingDataServiceImpl implements ThingDataService {
     				thingIds, fromTime, toTime);
     	}
     }
-    
+
     /* HELPER METHODS */
 
-    private Property searchPropForThing(String thingId, String propertyName) {
-    	ThingsService things = serviceClientFactory.getThingsServiceClient();
-    	Thing thing = things.retrieve(thingId);
-    	String thingTypeId = thing.getThingTypeId();
-    	if(StringUtils.isEmpty(thingTypeId)) {
-    		return null;
-    	}
-    	return searchPropForThingType(thingTypeId, propertyName);
-    }
-    private Property searchPropForThingType(String thingTypeId, String propertyName) {
-    	CatalogService catalog = serviceClientFactory.getCatalogServiceClient();
-    	ThingType tt = catalog.retrieveThingType(thingTypeId);
-    	Property property = propertyFinder.findPropertyForThingType(tt, propertyName);
-    	return property;
-    }
-
     private List<PropertyValue> retrieveValues(String thingId, String propertyName, int amount) {
-    	Property property = searchPropForThing(thingId, propertyName);
+    	Property property = propertyFinder.searchPropForThing(thingId, propertyName);
     	if(property == null) {
     		throw new IllegalArgumentException("Cannot find property '" +
     				propertyName + "' for thing '" + thingId + "'");
@@ -183,4 +163,5 @@ public class ThingDataServiceImpl implements ThingDataService {
 		eventBroker.sendOutboundChangeNotifyMessage(propValue);
     	return uri;
 	}
+
 }

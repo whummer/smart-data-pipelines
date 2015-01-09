@@ -33,13 +33,35 @@ var sh = {};
 var ttl = 20000;
 
 /* initialize authInfo */
-sh.authInfo = {};
-
-if(window.RIOTS_USER_ID) {
-	sh.authInfo.userId = window.RIOTS_USER_ID;
+sh.auth = function(options, callback, errorCallback) {
+	sh.authInfo = {};
+	sh.authInfo.userId = (options && options.RIOTS_USER_ID) ? options.RIOTS_USER_ID : window.RIOTS_USER_ID;
+	sh.authInfo.appKey = (options && options.RIOTS_APP_KEY) ? options.RIOTS_APP_KEY : window.RIOTS_APP_KEY;
+	assertAuth();
+	var __defaultHeaders = {
+		"Content-Type": "application/json",
+		"riots-auth-user-id": window.RIOTS_USER_ID,
+		"riots-auth-app-key": window.RIOTS_APP_KEY
+	}
+	$.ajaxSetup({
+	    headers: __defaultHeaders
+	});
+	sh.me(function(result) {
+		console.log("Authentication successful.", result);
+		if(callback) {
+			callback(result);
+		}
+	}, function(result) {
+		console.log("Authentication error. ", result);
+		if(errorCallback) {
+			errorCallback(result);
+		}
+	});
 }
-if(window.RIOTS_APP_KEY) {
-	sh.authInfo.appId = window.RIOTS_APP_KEY;
+var assertAuth = function() {
+	if(!sh.authInfo || !sh.authInfo.userId || !sh.authInfo.appKey) {
+		throw "Please provide valid authentication information using RIOTS_USER_ID and RIOTS_APP_KEY global variables.";
+	}
 }
 
 /* methods for GETting data */
@@ -47,12 +69,23 @@ if(window.RIOTS_APP_KEY) {
 sh.get = {};
 
 sh.app = sh.get.app = function(id, callback, doCacheResults) {
+	if(!id) {
+		if(callback) callback(null);
+		return null;
+	}
 	return callGET(appConfig.services.apps.url + "/" + id, callback, doCacheResults);
+}
+sh.me = function(callback, errorCallback) {
+	return callGET(appConfig.services.users.url + "/me", callback, false, errorCallback);
 }
 sh.apps = sh.get.apps = function(callback, doCacheResults) {
 	return callGET(appConfig.services.apps.url, callback, doCacheResults);
 }
 sh.thingType = sh.get.thingType = function(id, callback, doCacheResults) {
+	if(!id) {
+		if(callback) callback(null);
+		return null;
+	}
 	return callGET(appConfig.services.thingTypes.url + "/" + id, callback, doCacheResults);
 }
 sh.thingTypes = sh.get.thingTypes = function(callback, doCacheResults) {
@@ -161,7 +194,7 @@ sh.delete.simulationType = function(simType, callback) {
 
 /* UTILITY METHODS */
 
-var callGET = function(url, callback, doCacheResults) {
+var callGET = function(url, callback, doCacheResults, errorCallback) {
 	var m = mem();
 	if(doCacheResults && m[url]) {
 		if(callback) {
@@ -190,7 +223,7 @@ var callGET = function(url, callback, doCacheResults) {
 			if(callback) {
 				callback(data.result);
 			}
-		}
+		}, errorCallback
 	);
 	return entry;
 }
@@ -240,17 +273,18 @@ var mem = sh.mem = function() {
 }
 
 var connectWebsocket = function(onOpenCallback) {
+	assertAuth();
 	var ws;
 	if(openConnectionPerRequest || !sh.websocket || sh.websocket.readyState > 1) {
 		var wsURL = appConfig.services.websocket.url;
 		var authInfo = window.authInfo ? window.authInfo : sh.authInfo;
-	
+
 		if(authInfo.network && authInfo.access_token) {
 			this.websocket = ws = new WebSocket(wsURL, 
 				authInfo.network + "~" + authInfo.access_token);
-		} else if(authInfo.userId && authInfo.appId) {
+		} else if(authInfo.userId && authInfo.appKey) {
 			this.websocket = ws = new WebSocket(wsURL, 
-				authInfo.userId + "~" + authInfo.appId);
+				authInfo.userId + "~" + authInfo.appKey);
 		} else {
 			throw "Please provide RIOTS_USER_ID and RIOTS_APP_KEY variables.";
 		}
@@ -280,7 +314,7 @@ sh.subscribe = function(options, callback) {
 		if(options.clientId) {
 			msg.clientId = options.clientId;
 		}
-		console.log("subscribing", options);
+		console.log("subscribing", msg.thingId, msg.propertyName);
 		ws.send(JSON.stringify(msg));
 	});
 	ws.onmessage = function(msg) {
@@ -353,6 +387,12 @@ var guid = (function() {
            s4() + '-' + s4() + s4() + s4();
   };
 })();
+
+/* INIT METHODS */
+
+if(window.RIOTS_USER_ID && window.RIOTS_APP_KEY) {
+	sh.auth();
+}
 
 /* expose API */
 

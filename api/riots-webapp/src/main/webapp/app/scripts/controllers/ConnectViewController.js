@@ -41,6 +41,7 @@ define(['app'], function(app) {
 							invokePOST($http, url, JSON.stringify(data), 
 								function() {
 									// success
+									console.log("done");
 								}, function() {
 									// error
 									setTracking(false);

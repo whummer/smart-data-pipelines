@@ -3,13 +3,10 @@ package io.riots.core.boot;
 import io.riots.core.cxf.RefIdEnabledCxfServlet;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.embedded.ServletRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.ImportResource;
 // TODO fix this import com.codahale.metrics.servlets.MetricsServlet;
 //import com.google.inject.servlet.GuiceFilter;

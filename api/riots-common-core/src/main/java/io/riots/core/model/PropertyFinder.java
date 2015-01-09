@@ -2,12 +2,15 @@ package io.riots.core.model;
 
 import io.riots.core.service.ServiceClientFactory;
 import io.riots.services.CatalogService;
+import io.riots.services.ThingsService;
 import io.riots.services.catalog.HierarchicalObject;
 import io.riots.services.catalog.Property;
 import io.riots.services.catalog.ThingType;
+import io.riots.services.scenario.Thing;
 
 import java.util.Collection;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 /**
@@ -75,5 +78,43 @@ public class PropertyFinder {
 		}
 		return null;
 	}
+
+	/**
+	 * Find a property in a ThingType 
+	 * (also recurses into child types).
+	 * @param thingType
+	 * @param name
+	 * @return
+	 */
+	public Property searchPropForThingType(String thingTypeId, String propertyName) {
+    	ThingType tt = (ThingType)ModelCache.THINGTYPES.get(thingTypeId);
+    	if(tt == null) {
+        	CatalogService catalog = clientFactory.getCatalogServiceClient();
+        	tt = catalog.retrieveThingType(thingTypeId);
+        	ModelCache.THINGTYPES.put(thingTypeId, tt);
+    	}
+    	Property property = findPropertyForThingType(tt, propertyName);
+    	return property;
+    }
+
+	/**
+	 * Find a property for a Thing.
+	 * @param thingType
+	 * @param name
+	 * @return
+	 */
+    public Property searchPropForThing(String thingId, String propertyName) {
+    	Thing thing = (Thing)ModelCache.THINGS.get(thingId);
+    	if(thing == null) {
+	    	ThingsService things = clientFactory.getThingsServiceClient();
+	    	thing = things.retrieve(thingId);
+	    	ModelCache.THINGS.put(thingId, thing);
+    	}
+    	String thingTypeId = thing.getThingTypeId();
+    	if(StringUtils.isEmpty(thingTypeId)) {
+    		return null;
+    	}
+    	return searchPropForThingType(thingTypeId, propertyName);
+    }
 
 }

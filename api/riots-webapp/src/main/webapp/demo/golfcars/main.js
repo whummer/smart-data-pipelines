@@ -15,6 +15,8 @@ var app = angular.module('demo', []);
 app.controller('MainCtrl', function ($scope) {
 
 	$scope.diameter = 100;
+	$scope.RIOTS_USER_ID = window.RIOTS_USER_ID;
+	$scope.RIOTS_APP_KEY = window.RIOTS_APP_KEY;
 
 	function setupMap() {
 		var defaultLocation = [ 48.19742, 16.37127 ];
@@ -92,7 +94,7 @@ app.controller('MainCtrl', function ($scope) {
 		return icon;
 	}
 
-	$scope.loadThings = function() {
+	var doLoadThings = function() {
 		riots.things(function(things) {
 			$scope.$apply(function() {
 				$scope.things = things;
@@ -104,13 +106,28 @@ app.controller('MainCtrl', function ($scope) {
 					subscribeProp(thing, "location.longitude");
 					subscribeProp(thing, GEO_FENCE);
 					riots.thingType(thing[THING_TYPE], function(thingType) {
+						if(!thingType) return;
 						$scope.$apply(function() {
-							thing.img = thingType[IMAGE_URLS][0];
+							if(thingType[IMAGE_DATA] && thingType[IMAGE_DATA].length) {
+								thing.img = thingType[IMAGE_DATA][0].href;
+							}
 						});
 					});
 				});
 			}
 			riots.unsubscribeAll(callback);
+		});
+	}
+
+	$scope.loadThings = function() {
+		if(!window.RIOTS_USER_ID || !window.RIOTS_APP_KEY) {
+			alert("Please provide RIOTS_APP_KEY and RIOTS_USER_ID for authentication.");
+			return;
+		}
+		riots.auth(null, function() {
+			doLoadThings();
+		}, function() {
+			alert("Invalid authentication provided. Please check RIOTS_USER_ID and RIOTS_APP_KEY.");
 		});
 	};
 
@@ -147,6 +164,15 @@ app.controller('MainCtrl', function ($scope) {
 		});
 	}
 
+	/* register event listeners */
+	$scope.$watch("RIOTS_APP_KEY", function() {
+		window.RIOTS_APP_KEY = $scope.RIOTS_APP_KEY;
+	});
+	$scope.$watch("RIOTS_USER_ID", function() {
+		window.RIOTS_USER_ID = $scope.RIOTS_USER_ID;
+	});
+
+	/* load main elements */
 	$scope.loadThings();
 	setupMap();
 });
