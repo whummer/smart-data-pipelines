@@ -21,6 +21,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  * @author whummer
  */
 @JsonSubTypes({
+	@Type(value = Trigger.class, name="UNDEFINED"),
 	@Type(value = GeoFence.class, name="GEO_FENCE")
 })
 @JsonTypeInfo(
@@ -28,7 +29,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 	include = JsonTypeInfo.As.PROPERTY,
 	property = "type"
 )
-public abstract class Trigger implements ObjectCreated, ObjectIdentifiable {
+public class Trigger implements ObjectCreated, ObjectIdentifiable {
 
 	/**
 	 * Identifier.
@@ -40,7 +41,7 @@ public abstract class Trigger implements ObjectCreated, ObjectIdentifiable {
 	 * Trigger Type.
 	 */
 	@JsonProperty
-	TriggerType type;
+	TriggerType type = TriggerType.UNDEFINED;
 
 	/**
 	 * Name.
@@ -63,8 +64,11 @@ public abstract class Trigger implements ObjectCreated, ObjectIdentifiable {
 	@JsonProperty("creator-id")
 	String creatorId;
 
+	/**
+	 * Type of trigger.
+	 */
 	public static enum TriggerType {
-		GEO_FENCE
+		GEO_FENCE, UNDEFINED
 	}
 
 	public String getId() {

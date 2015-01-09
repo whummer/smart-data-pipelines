@@ -1,5 +1,4 @@
-<section ng-controller="ThingPropsController" id="assetPropsContainer"
-	style="height: 100%">
+<section ng-controller="ThingPropsController" style="height: 100%">
 
 	<div ng-show="shared.selectedThing">
 
@@ -28,7 +27,7 @@
 			<div class="col-sm-9">
 				<select id="inputType" class="form-control input-sm"
 					ng-options="opt.name for opt in thingTypes track by opt.id"
-					ng-model="shared.selectedThing['thing-type']">
+					ng-model="selectedThingType">
 				</select>
 			</div>
 		</div>
@@ -89,19 +88,20 @@
 <script type="text/javascript">
 	var app = angular.module("app");
 	app.controller('ThingPropsController', [
-			'$scope',
-			'$http',
-			'$compile',
+			'$scope', '$http', '$compile',
 			function($scope, $http, $compile) {
 
 				AppController($scope, $http, $compile);
 				$scope.CREATION_DATE = CREATION_DATE;
+				$scope.THING_TYPE = THING_TYPE;
+				$scope.selectedThingType = null;
 
-				$scope.saveThingDetails = function() {
+				var saveThingDetails = function() {
 					var thing = $scope.shared.selectedThing;
+					thing[THING_TYPE] = $scope.selectedThingType;
 					thing = clone(thing);
-					if (thing["thing-type"]) {
-						thing["thing-type"] = thing["thing-type"].id;
+					if (thing[THING_TYPE]) {
+						thing[THING_TYPE] = thing[THING_TYPE].id;
 					}
 					$scope.updateThingInDB(thing, function(thing) {
 						var event = {
@@ -111,19 +111,24 @@
 					});
 				};
 
-				$scope.loadThingTypes = function() {
+				loadThingTypes = function() {
 					invokeGET($scope.http, $scope.thingTypesAPI, function(data,
 							status, headers, config) {
 						$scope.thingTypes = data.result;
 					});
 				}
 
-				/* add event handlers*/
-				$scope.addClickHandler("btnSave",
-						$scope.saveThingDetails);
+				/* add event handlers */
+				$scope.addClickHandler("btnSave", saveThingDetails);
+				$scope.$watch("shared.selectedThing", function() {
+					var thing = $scope.shared.selectedThing;
+					if(!thing || !thing[THING_TYPE]) return;
+					var thingType = thing[THING_TYPE];
+					$scope.selectedThingType = thingType;
+				});
 
 				/* start rendering the main container */
-				$scope.loadThingTypes();
+				loadThingTypes();
 
 			} ]);
 </script>

@@ -26,7 +26,7 @@
 
 			$scope.tableOptions = {};
 
-			$scope.initTable = function() {
+			var initTable = function() {
 				var columnsConfig = [
 					{label: "ID", field: "id", sortable: true},
 					{label: "Type", field: "type", sortable: true},
@@ -49,9 +49,8 @@
 					}, true
 				);
 			}
-			$scope.initTable();
 
-			$scope.loadAllTriggers = function() {
+			var loadAllTriggers = function() {
 				$scope.tableOptions.data = [];
 				invokeGET($scope.http, $scope.triggersAPI,
 						function(data, status, headers, config) {
@@ -62,21 +61,22 @@
 					);
 			}
 
-			$scope.loadAllTriggers();
+			loadAllTriggers();
 
 			var addTrigger = function(){
 				item = {
-					name: "unnamed"
+					name: "unnamed",
+					type: "UNDEFINED"
 				}
-				$scope.addTriggerInDB(item, function(asset) {
-					$scope.loadAllTriggers();
+				riots.add.trigger(item, function(asset) {
+					loadAllTriggers();
 				});
 			}
 			var deleteTrigger = function() {
 				var selection = $scope.shared.selectedTrigger;
 				if(!selection || !selection.id) return;
-				$scope.deleteTriggerInDB(selection, function() {
-					$scope.loadAllTriggers();
+				riots.delete.trigger(selection, function() {
+					loadAllTriggers();
 					$scope.shared.selectedTrigger = null;
 				});
 			}
@@ -84,6 +84,9 @@
 			/* register event handlers*/
 			$scope.addClickHandler("btnAddTrigger", addTrigger);
 			$scope.addClickHandler("btnDeleteTrigger", deleteTrigger);
+
+			/* load the main elements */
+			initTable();
 
 		}]
 	);

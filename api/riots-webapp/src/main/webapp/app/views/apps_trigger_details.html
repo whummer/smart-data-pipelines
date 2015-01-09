@@ -1,12 +1,21 @@
 <section ng-controller="TriggerDetailsController">
-	<div ng-show="shared.selectedTrigger">
+	<div ng-show="shared.selectedTrigger" style="height: 100%">
+
+		<!-- type -->
+		<div class="form-group">
+			<label for="inputId" class="col-sm-3 control-label">ID:</label>
+			<div class="col-sm-9">
+				<input id="inputId" class="form-control input-sm" disabled="distabled"
+					ng-model="shared.selectedTrigger.id" />
+			</div>
+		</div>
 
 		<!-- created -->
 		<div class="form-group">
 			<label for="inputDate" class="col-sm-3 control-label">Creation
 				Date:</label>
 			<div class="col-sm-9">
-				{{formatTime(shared.selectedTrigger[CREATION_DATE])}}
+				<div class="input-sm">{{formatTime(shared.selectedTrigger[CREATION_DATE])}}</div>
 			</div>
 		</div>
 
@@ -17,21 +26,27 @@
 			<div class="col-sm-9">
 				<select id="inputType" class="form-control input-sm"
 					ng-model="shared.selectedTrigger.type">
+					<option value="UNDEFINED"> -- Undefined -- </option>
 					<option value="GEO_FENCE">Geo Fence</option>
 				</select>
 			</div>
 		</div>
 
 		<!-- Geo Fence Details -->
-		<div>
+		<div ng-show="shared.selectedTrigger.type == 'GEO_FENCE'">
 			<div class="form-group">
-				<label for="inputType" class="col-sm-3 control-label">Trigger
-					Type:</label>
+				<label for="inputType" class="col-sm-3 control-label">Center
+					(lat/lng):</label>
 				<div class="col-sm-9">
-					<select id="inputType" class="form-control input-sm"
-						ng-model="shared.selectedTrigger.type">
-						<option value="GEO_FENCE">Geo Fence</option>
-					</select>
+					<table>
+						<tr><td>
+					<input class="form-control input-sm" ng-model="shared.selectedTrigger.center.latitude"/>
+						</td><td>
+						,
+						</td><td>
+					<input class="form-control input-sm" ng-model="shared.selectedTrigger.center.longitude"/>
+						</td></tr>
+					</table>
 				</div>
 			</div>
 		</div>
@@ -54,7 +69,8 @@ app.controller('TriggerDetailsController', [ '$scope', '$http', '$compile',
 		AppController($scope, $http, $compile);
 
 		var saveTrigger = function() {
-			var item = $scope.shared.selectedTrigger;
+			var item = clone($scope.shared.selectedTrigger);
+			delete item["$$hashKey"];
 			riots.save.trigger(item, function() {
 				console.log("trigger saved");
 			});
