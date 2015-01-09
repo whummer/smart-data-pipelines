@@ -8,13 +8,13 @@
       <div class="panel-body">
         <section ng-controller="ThingTypeController" id="devTypeSection">
           <tabset>
-            <tab heading="General Properties">
+            <tab heading="Details">
               <ng-include src="appConfig['appRootPath'] + '/views/thing_type_details.html'"></ng-include>
             </tab>
             <tab heading="Composite Type">
               <ng-include src="appConfig['appRootPath'] + '/views/thing_type_composite.html'"></ng-include>
             </tab>
-            <tab heading="Virtualizable Properties">
+            <tab heading="Properties">
               <ng-include src="appConfig['appRootPath'] + '/views/thing_type_props.html'"></ng-include>
             </tab>
           </tabset>

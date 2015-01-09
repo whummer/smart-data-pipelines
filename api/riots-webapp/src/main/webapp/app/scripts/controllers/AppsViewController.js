@@ -87,6 +87,7 @@ define(['app'], function(app) {
 			var loadUserInfo = function() {
 				invokeGET($http, $scope.usersAPI + "/me", 
 				function(data, status, headers, config) {
+                    console.log(data.result)
 					$scope.userInfo = data.result;
 				});
 			}
