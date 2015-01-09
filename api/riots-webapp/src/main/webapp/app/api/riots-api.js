@@ -96,9 +96,15 @@ sh.things = sh.get.things = function(callback, doCacheResults) {
 	var maxResults = 100;
 	return callGET(appConfig.services.things.url + "?page=0&size=" + maxResults, callback, doCacheResults);
 }
+sh.triggers = sh.get.triggers = function(callback, doCacheResults) {
+	return callGET(appConfig.services.triggers.url + "?page=0&size=" + maxResults, callback, doCacheResults);
+}
 sh.simulationTypes = sh.get.simulationTypes = function(callback, doCacheResults) {
 	var maxResults = 100;
 	return callGET(appConfig.services.simulationTypes.url + "?page=0&size=" + maxResults, callback, doCacheResults);
+}
+sh.triggers = sh.get.triggers = function(trigger, callback) {
+	return callPOST(appConfig.services.triggers.url, trigger, callback);
 }
 sh.properties = sh.get.properties = function(thingType, callback, doCacheResults) {
 	var maxThings = 100;
@@ -153,6 +159,9 @@ sh.add.thing = function(thing, callback) {
 sh.add.simulationType = function(simType, callback) {
 	return callPOST(appConfig.services.simulationTypes.url, simType, callback);
 }
+sh.add.trigger = function(trigger, callback) {
+	return callPOST(appConfig.services.triggers.url, trigger, callback);
+}
 
 /* methods for PUTting data */
 
@@ -169,6 +178,9 @@ sh.save.thing = function(thing, callback) {
 }
 sh.save.simulationType = function(simType, callback) {
 	return callPUT(appConfig.services.simulationTypes.url, simType, callback);
+}
+sh.save.trigger = function(trigger, callback) {
+	return callPUT(appConfig.services.triggers.url, trigger, callback);
 }
 
 /* methods for DELETEing data */
@@ -190,6 +202,10 @@ sh.delete.thing = function(thing, callback) {
 sh.delete.simulationType = function(simType, callback) {
 	var id = simType.id ? simType.id : simType;
 	return callDELETE(appConfig.services.simulationTypes.url + "/" + id, callback);
+}
+sh.delete.trigger = function(trigger, callback) {
+	var id = trigger.id ? trigger.id : trigger;
+	return callDELETE(appConfig.services.triggers.url + "/" + id, callback);
 }
 
 /* UTILITY METHODS */
@@ -235,7 +251,7 @@ var callPOSTorPUT = function(invokeFunc, url, body, callback) {
 	invokeFunc(null, url, body,
 		function(data, status, headers, config) {
 			if(callback) {
-				callback(data, status, headers, config);
+				callback(data.result);
 			}
 		}
 	);
@@ -257,7 +273,7 @@ var callDELETE = function(url, callback) {
 	);
 }
 
-/* */
+/* UTIL FUNCTIONS */
 
 var mem = sh.mem = function() {
 	if(window.rootScope) {
@@ -335,6 +351,7 @@ sh.subscribe = function(options, callback) {
 }
 
 /* unsubscribe all via websocket */
+
 sh.unsubscribeAll = function(callback) {
 	connectWebsocket(function(ws) {
 		console.log("unsubscribeAll");
@@ -349,29 +366,6 @@ sh.unsubscribeAll = function(callback) {
 	});
 }
 
-/* UTIL METHODS */
-
-sh.util = {}
-
-sh.util.addGeoFence = function(config, callback) {
-	var url = appConfig.services.utils.url + "/geo/fence";
-	invokePOST(null, url, JSON.stringify(config),
-	function(data, status, headers, config) {
-		if(callback) {
-			callback(data.result);
-		}
-	});
-}
-sh.util.removeGeoFence = function(id, callback) {
-	var url = appConfig.services.utils.url + "/geo/fence/" + id;
-	invokeDELETE(null, url,
-	function(data, status, headers, config) {
-		if(callback) {
-			callback(data.result);
-		}
-	});
-}
- 
 
 /* HELPER METHODS */
 

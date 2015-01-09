@@ -1,0 +1,67 @@
+<section ng-controller="TriggerDetailsController">
+	<div ng-show="shared.selectedTrigger">
+
+		<!-- created -->
+		<div class="form-group">
+			<label for="inputDate" class="col-sm-3 control-label">Creation
+				Date:</label>
+			<div class="col-sm-9">
+				{{formatTime(shared.selectedTrigger[CREATION_DATE])}}
+			</div>
+		</div>
+
+		<!-- type -->
+		<div class="form-group">
+			<label for="inputType" class="col-sm-3 control-label">Trigger
+				Type:</label>
+			<div class="col-sm-9">
+				<select id="inputType" class="form-control input-sm"
+					ng-model="shared.selectedTrigger.type">
+					<option value="GEO_FENCE">Geo Fence</option>
+				</select>
+			</div>
+		</div>
+
+		<!-- Geo Fence Details -->
+		<div>
+			<div class="form-group">
+				<label for="inputType" class="col-sm-3 control-label">Trigger
+					Type:</label>
+				<div class="col-sm-9">
+					<select id="inputType" class="form-control input-sm"
+						ng-model="shared.selectedTrigger.type">
+						<option value="GEO_FENCE">Geo Fence</option>
+					</select>
+				</div>
+			</div>
+		</div>
+
+		<!-- save -->
+		<div class="form-group">
+			<label for="btnSave" class="col-sm-3 control-label"></label>
+			<div class="col-sm-9">
+				<button class="btn btn-default btn-sm btn-primary" id="btnSaveTrigger">Save</button>
+			</div>
+		</div>
+
+	</div>
+</section>
+<script type="text/javascript">
+var app = angular.module("app");
+app.controller('TriggerDetailsController', [ '$scope', '$http', '$compile',
+	function($scope, $http, $compile) {
+
+		AppController($scope, $http, $compile);
+
+		var saveTrigger = function() {
+			var item = $scope.shared.selectedTrigger;
+			riots.save.trigger(item, function() {
+				console.log("trigger saved");
+			});
+		}
+
+		/* register event handlers */
+        $scope.addClickHandler("btnSaveTrigger", saveTrigger);
+	}
+]);
+</script>

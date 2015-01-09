@@ -23,8 +23,8 @@ zuul:
       path: /api/v1/things/**
       stripPrefix: false
       serviceId: environment-service
-    api-utils:
-      path: /api/v1/utils/**
+    api-triggers:
+      path: /api/v1/triggers/**
       stripPrefix: false
       serviceId: environment-service
     api-drivers:
@@ -99,13 +99,13 @@ zuul:
       serviceId: webapp-service
 
 eureka:
+  hostname: localhost
   instance:
-    hostname: localhost
     leaseRenewalIntervalInSeconds: 5
   client:
     registryFetchIntervalSeconds: 5
     serviceUrl:
-      defaultZone: http://${eureka.instance.hostname}:10000/eureka/v2/
+      defaultZone: http://${eureka.hostname}:10000/eureka/v2/
     
 
 ribbon:

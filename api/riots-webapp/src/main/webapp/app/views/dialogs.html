@@ -74,7 +74,7 @@ app.controller('DialogController', [
 app.controller('DialogInstanceController', function (
 	$scope, $modalInstance, type, dialog, options) {
 
-		$scope.title = type == "error" ? "" : "Input Dialog";
+		$scope.title = type == "error" ? "" : type == "confirm" ? "Confirm" : "Input Dialog";
 		$scope.titleImg = type == "error" ? "img/alert.svg" : "";
 		$scope.type = type;
 		$scope.dialog = dialog;

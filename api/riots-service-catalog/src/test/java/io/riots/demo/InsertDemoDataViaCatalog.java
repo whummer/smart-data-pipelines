@@ -25,7 +25,6 @@ import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.junit.Assert.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -275,9 +274,8 @@ public class InsertDemoDataViaCatalog {
 	        motionSensor = getOrCreateThingType(motionSensor, existing);
         }
 
-        ThingType temperatureSensor = new ThingType("DS18B20");
+        ThingType temperatureSensor = new ThingType("DS18B20 Temperature Sensor");
         {
-        	
         	temperatureSensor.withImageData(Arrays.asList(
  	        		new ImageData()
  	        		 .withHref("http://www.3bm.de/wp-content/uploads/2013/09/DS18B20.jpg")

@@ -1,0 +1,33 @@
+eureka:
+  image: riox/eureka
+  ports:
+    - "10000:80"
+
+mongodb:
+  image: dockerfile/mongodb
+  links:
+    - eureka
+  volumes:
+    - /data/mongodb:/data/db
+  ports:
+    - "27017:27017"
+
+elasticsearch:
+  image: dockerfile/elasticsearch
+  links:
+    - eureka
+  volumes:
+    - /data/elasticsearch:/data
+  ports: 
+    - "9200:9200"
+    - "9300:9300"
+
+activemq:
+  image: aterreno/activemq-dockerfile
+  links:
+    - eureka
+  ports:
+    - "61612:61612"
+    - "61613:61613"
+    - "61616:61616"
+    - "8161:8161"

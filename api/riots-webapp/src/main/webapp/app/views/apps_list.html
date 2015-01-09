@@ -1,22 +1,5 @@
 <section ng-controller="AppsController">
     <div>
-    	
-    	<!--
-        <div style="margin-bottom: 10px;" class="text-right">
-            <button class="btn btn-primary btn-sm" id="btnAddApp">
-                <span class="glyphicon glyphicon-plus"></span> Add New Application
-            </button>
-            <button class="btn btn-warning btn-sm" id="btnDeleteApp"><span
-                    class="glyphicon glyphicon-minus"></span> Delete Application
-            </button>
-        </div>
-		-->
-
-        <!-- table view for apps -->
-        <!-- TODO remove 
-        <div id="AppsTable" ui-grid="gridConfig" ui-grid-selection ui-grid-edit ui-grid-row-edit
-             class="grid"></div>
-        -->
 
         <div ng-show="shared.selectedApplication">
 
@@ -30,11 +13,11 @@
                     </div>
                 </div>
 
-                <!-- app name -->
-                <div class="form-group">
-                    <label for="inputAppName" class="col-sm-3 control-label">Creation Date</label>
+                <!-- creation date -->
+                <div class="form-group" ng-show="shared.selectedApplication[CREATION_DATE]">
+                    <label for="inputAppName" class="col-sm-3 control-label">Created</label>
                     <div class="col-sm-9">
-                        <input id="inputAppName" class="form-control input-sm" disabled="disabled"/>
+                    	{{formatTime(shared.selectedApplication[CREATION_DATE])}}
                     </div>
                 </div>
 
@@ -76,15 +59,26 @@ window.RIOTS_APP_KEY = "{{shared.selectedApplication.appKey}}"</pre>
 <script type="text/javascript">
 
 var app = angular.module("app");
-app.controller('AppsController', function ($scope, $http, $compile, $routeParams, $log) {
+app.controller('AppsController', function ($scope, $http, $compile, $routeParams, $log, $location) {
     AppController($scope, $http, $compile);
+
+    $scope.CREATION_DATE = CREATION_DATE;
 
     var deleteApp = function () {
     	var app = clone($scope.shared.selectedApplication);
-    	riots.delete.app(app.id, function(newApp) {
-    		//loadAppTable();
-    	});
+
+      var location = "home";
+      $log.warn("About to delete application: ", app);
+      $log.debug("Redirecting to location afterwards: ", location);
+
+      showConfirmDialog("Do you really want to delete this application?", function () {
+        riots.delete.app(app.id, function(newApp) {
+          $log.debug("Successfully delete app ", app.name);
+          $location.path(location);
+        });
+      });
     };
+
     var saveApp = function () {
     	var app = clone($scope.shared.selectedApplication);
     	delete app["$$hashKey"];

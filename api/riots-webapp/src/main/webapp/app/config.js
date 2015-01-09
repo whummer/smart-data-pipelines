@@ -13,15 +13,15 @@ var appConfig = {
 		things: { url: "/api/v1/things" },
 		categories: { url: "/api/v1/categories" },
 		semanticTypes: { url: "/api/v1/semantic-types" },
+		triggers: { url: "/api/v1/triggers" },
 		simulations: { url: "/api/v1/simulations" },
-		ratings: { url: "/api/v1/ratings" },
 		simulationProps: { url: "/api/v1/simulations/properties" },
 		simulationDevices: { url: "/api/v1/simulations/devices" },
 		simulationTypes: { url: "/api/v1/simulations/types" },
+		ratings: { url: "/api/v1/ratings" },
 		stats: { url: "/api/v1/stats" },
 		users: { url: "/api/v1/users" },
-		utils: { url: "/api/v1/utils" },
-		websocket: { url: "ws://localhost:8085/websocket" }
+		websocket: { url: "ws://platform.riots.io:8085/websocket" }
 	},
 	auth: {
 		github: {

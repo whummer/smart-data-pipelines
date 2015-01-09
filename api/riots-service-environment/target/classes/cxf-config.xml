@@ -21,7 +21,7 @@
             <ref bean="thingsServiceImpl"/>
             <ref bean="thingDataServiceImpl"/>
             <ref bean="driversServiceImpl"/>
-            <ref bean="utilsServiceImpl"/>
+            <ref bean="triggersServiceImpl"/>
             <bean id="swaggerResourceJSON" class="com.wordnik.swagger.jaxrs.listing.ApiListingResourceJSON"/>
         </jaxrs:serviceBeans>
         <jaxrs:features>

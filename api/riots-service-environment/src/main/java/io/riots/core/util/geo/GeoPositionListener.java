@@ -4,8 +4,8 @@ import io.riots.api.services.jms.EventBroker;
 import io.riots.api.util.JSONUtil;
 import io.riots.services.model.Location;
 import io.riots.services.scenario.PropertyValue;
+import io.riots.services.triggers.GeoFence;
 import io.riots.services.users.User;
-import io.riots.services.utils.GeoFence;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -87,6 +87,13 @@ public class GeoPositionListener {
 //		// TODO currently circular, allow other fence patterns
 		double dist = distanceInMeters(l, center);
 		return dist <= rangeInMeters;
+	}
+
+	public GeoFence updateGeoFence(GeoFence f) {
+		if(f.getId() == null)
+			throw new IllegalArgumentException("ID cannot be null");
+		geoFences.put(f.getId(), f);
+		return f;
 	}
 
 	public GeoFence addGeoFence(GeoFence f) {
