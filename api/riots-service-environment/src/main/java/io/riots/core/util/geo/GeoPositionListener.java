@@ -4,8 +4,8 @@ import io.riots.api.services.jms.EventBroker;
 import io.riots.api.util.JSONUtil;
 import io.riots.services.model.Location;
 import io.riots.services.scenario.PropertyValue;
+import io.riots.services.triggers.GeoFence;
 import io.riots.services.users.User;
-import io.riots.services.utils.GeoFence;
 
 import java.util.HashMap;
 import java.util.LinkedList;

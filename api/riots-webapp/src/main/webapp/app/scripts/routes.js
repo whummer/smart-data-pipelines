@@ -34,7 +34,7 @@ define([], function() {
                	templateUrl: appRoot + '/views/apps_details.html',
                 dependencies: [
                     //appRoot + '/scripts/controllers/World3DController.js',
-                    appRoot + '/scripts/controllers/WorldViewController.js',
+                    appRoot + '/scripts/controllers/AppsViewController.js',
                     appRoot + '/scripts/controllers/SimViewController.js'
                 ]
             },

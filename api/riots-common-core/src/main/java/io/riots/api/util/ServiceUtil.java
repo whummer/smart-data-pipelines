@@ -1,9 +1,14 @@
 package io.riots.api.util;
 
+import io.riots.core.auth.AuthHeaders;
+import io.riots.services.users.User;
+
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.UriBuilder;
 
 import org.apache.cxf.jaxrs.ext.MessageContext;
@@ -74,5 +79,16 @@ public class ServiceUtil {
 	public static void setResponseContentType(MessageContext context,
 			String contentType) {
         context.getHttpServletResponse().addHeader("Content-Type", contentType);		
+	}
+	public static void assertValidUser(User user) {
+		if(user == null) {
+			throw new WebApplicationException("Please provide valid authentication headers.");
+		}
+	}
+	public static User assertValidUser(AuthHeaders authHeaders,
+			HttpServletRequest req) {
+		User user = authHeaders.getRequestingUser(req);
+		assertValidUser(user);
+		return user;
 	}
 }

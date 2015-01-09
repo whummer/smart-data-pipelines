@@ -5,13 +5,13 @@ mongodb:
   hostname: localhost
 
 eureka:
+  hostname: localhost
   instance:
-    hostname: localhost
     leaseRenewalIntervalInSeconds: 5
   client:
     registryFetchIntervalSeconds: 5
     serviceUrl:
-      defaultZone: http://${eureka.instance.hostname}:10000/eureka/v2/
+      defaultZone: http://${eureka.hostname}:10000/eureka/v2/
 
 activemq:
   hostname: localhost

@@ -1,6 +1,5 @@
-package io.riots.services.utils;
+package io.riots.services.triggers;
 
-import io.riots.services.model.Location;
 import io.riots.services.model.interfaces.ObjectCreated;
 import io.riots.services.model.interfaces.ObjectIdentifiable;
 
@@ -10,20 +9,44 @@ import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 /**
- * Represents a geo-fence in the platform.
+ * Abstract class for various trigger functions available 
+ * to the users (e.g., geo fences, collision detection, ...).
  * @author whummer
  */
-public class GeoFence implements ObjectCreated, ObjectIdentifiable {
+@JsonSubTypes({
+	@Type(value = GeoFence.class, name="GEO_FENCE")
+})
+@JsonTypeInfo(
+	use = JsonTypeInfo.Id.NAME,
+	include = JsonTypeInfo.As.PROPERTY,
+	property = "type"
+)
+public abstract class Trigger implements ObjectCreated, ObjectIdentifiable {
 
 	/**
 	 * Identifier.
 	 */
 	@JsonProperty
-	private String id;
+	String id;
+
+	/**
+	 * Trigger Type.
+	 */
+	@JsonProperty
+	TriggerType type;
+
+	/**
+	 * Name.
+	 */
+	@JsonProperty
+	String name;
 
 	/**
 	 * Creation date.
@@ -31,26 +54,18 @@ public class GeoFence implements ObjectCreated, ObjectIdentifiable {
 	@JsonInclude(Include.NON_EMPTY)
 	@JsonProperty("creation-date")
 	@Field(type = FieldType.Date)
-	private Date created;
+	Date created;
 
 	/**
 	 * Creator
 	 */
 	@JsonInclude(Include.NON_EMPTY)
 	@JsonProperty("creator-id")
-	private String creatorId;
+	String creatorId;
 
-	/**
-	 * Center location of the geo fence.
-	 */
-	@JsonProperty
-	private Location center;
-
-	/**
-	 * Diameter of the geo fence.
-	 */
-	@JsonProperty
-	private double diameter;
+	public static enum TriggerType {
+		GEO_FENCE
+	}
 
 	public String getId() {
 		return id;
@@ -58,11 +73,11 @@ public class GeoFence implements ObjectCreated, ObjectIdentifiable {
 	public void setId(String id) {
 		this.id = id;
 	}
-	public Location getCenter() {
-		return center;
+	public String getName() {
+		return name;
 	}
-	public double getDiameter() {
-		return diameter;
+	public void setName(String name) {
+		this.name = name;
 	}
 	public Date getCreated() {
 		return created;
@@ -75,13 +90,6 @@ public class GeoFence implements ObjectCreated, ObjectIdentifiable {
 	}
 	public void setCreatorId(String creatorId) {
 		this.creatorId = creatorId;
-	}
-
-	@Override
-	public String toString() {
-		return "GeoFence [id=" + id + ", created=" + created + ", creatorId="
-				+ creatorId + ", center=" + center + ", diameter=" + diameter
-				+ "]";
 	}
 
 }

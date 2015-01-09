@@ -1,6 +1,6 @@
 <section ng-controller="ThingDataController" style="height: 100%">
 
-	<div>
+	<div ng-show="shared.selectedThing">
 		<div id="ThingPropsTable" ui-grid="propsGridConfig" ui-grid-selection ui-grid-edit ui-grid-row-edit
              class="grid"></div>
 

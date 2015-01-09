@@ -133,7 +133,7 @@ app.controller('MainCtrl', function ($scope) {
 
 	$scope.setupGeoFence = function() {
 		if($scope.geoFence && $scope.geoFence.id) {
-			riots.util.removeGeoFence($scope.geoFence.id);
+			riots.delete.trigger($scope.geoFence.id);
 		}
 		$.each($scope.things, function(idx,el) {
 			delete el.properties.isInCurrentGeoFence;
@@ -143,13 +143,14 @@ app.controller('MainCtrl', function ($scope) {
 		});
 		var center = $scope.map.getCenter();
 		$scope.geoFence = {
+			type: "GEO_FENCE",
 			center: {
 				latitude: center.lat,
 				longitude: center.lng
 			},
 			diameter: $scope.diameter
 		};
-		riots.util.addGeoFence($scope.geoFence, function(fence) {
+		riots.add.trigger($scope.geoFence, function(fence) {
 			$scope.$apply(function() {
 				$scope.geoFence = fence;
 			});

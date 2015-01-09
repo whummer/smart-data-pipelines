@@ -14,7 +14,7 @@ import org.springframework.context.annotation.ImportResource;
 @SpringBootApplication
 @EnableAutoConfiguration
 @EnableDiscoveryClient
-@ImportResource(value = {"classpath:/spring-basicauth.xml"}) // TODO temporary (T-Systems demo)
+@ImportResource(value = {"classpath:spring-basicauth.xml"}) // TODO temporary (T-Systems demo)
 //@ImportResource(value = {"classpath:/spring-noauth.xml"})
 public class WebappServiceStarter extends SpringBootServletInitializer {
 

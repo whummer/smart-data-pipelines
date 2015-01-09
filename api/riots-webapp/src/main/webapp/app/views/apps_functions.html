@@ -1,12 +1,12 @@
-<section ng-controller="FuncsController">
+<section ng-controller="TriggersController">
 	<div>
 		<div style="padding-bottom: 15px;">
-			<button class="btn btn-default btn-sm" id="btnAddFunc">Add</button>
-			<button class="btn btn-default btn-sm" id="btnDeleteFunc">Delete</button>
+			<button class="btn btn-default btn-sm" id="btnAddTrigger">Add</button>
+			<button class="btn btn-default btn-sm" id="btnDeleteTrigger">Delete</button>
 		</div>
 		<div id="funcsTable" ui-grid="tableOptions" ui-grid-selection ui-grid-edit ui-grid-row-edit class="grid"></div>
 	</div>
-	<div ng-show="selectedFunc">
+	<div ng-show="shared.selectedTrigger">
 		<!-- TODO -->
 	</div>
 </section>
@@ -18,7 +18,7 @@
 <script type="text/javascript">
 
 	var app = angular.module("app");
-	app.controller('FuncsController',[
+	app.controller('TriggersController',[
 		'$scope', '$http', '$compile',
 		function($scope, $http, $compile) {
 
@@ -39,11 +39,11 @@
 					function(event) {
 				    	if(event.type == "dgrid-select") {
 				    		$scope.$apply(function() {
-				    			$scope.selectedFunc = event.rows[0].data;
+				    			$scope.shared.selectedTrigger = event.rows[0].data;
 							});
 				    	} else if(event.type == "dgrid-deselect") {
 				    		$scope.$apply(function(){
-				    			$scope.selectedFunc = null;
+				    			$scope.shared.selectedTrigger = null;
 							});
 				    	}
 					}, true
@@ -51,54 +51,50 @@
 			}
 			$scope.initTable();
 
-			$scope.loadAllFuncs = function() {
+			$scope.loadAllTriggers = function() {
 				$scope.tableOptions.data = [];
-				$scope.loadGeoFences();
+				invokeGET($scope.http, $scope.triggersAPI,
+						function(data, status, headers, config) {
+							$.each(data.result, function(idx,el) {
+								$scope.tableOptions.data.push(el);
+							});
+						}
+					);
 			}
 
-			$scope.loadGeoFences = function() {
-				invokeGET($scope.http, $scope.utilsAPI + "/geo/fence",
-					function(data, status, headers, config) {
-						$.each(data.result, function(idx,el) {
-							el.type = "Geo Fence";
-							el.timeCreated = function() {
-								return formatDate(el.created);
-							}
-							$scope.tableOptions.data.push(el);
-						});
-					}
-				);
-			}
-			$scope.loadAllFuncs();
+			$scope.loadAllTriggers();
 
-			$scope.saveFunc = function(item){
+			$scope.saveTrigger = function(item){
+				riots.save.trigger(item, function() {
+					
+				});
 				invokePUT($scope.http, $scope.thingsAPI + "/",
 					JSON.stringify(item),
 					function(data, status, headers, config) {
-						$scope.loadAllFuncs();
+						$scope.loadAllTriggers();
 					}
 				);
 			}
-			$scope.addFunc = function(){
+			$scope.addTrigger = function(){
 				item = {
 					name: "unnamed"
 				}
-				$scope.addFuncInDB(item, function(asset) {
-					$scope.loadAllFuncs();
+				$scope.addTriggerInDB(item, function(asset) {
+					$scope.loadAllTriggers();
 				});
 			}
-			$scope.deleteFunc = function(){
-				var selection = $scope.selectedFunc;
+			$scope.deleteTrigger = function(){
+				var selection = $scope.shared.selectedTrigger;
 				if(!selection || !selection.id) return;
-				$scope.deleteFuncInDB(selection, function() {
-					$scope.loadAllFuncs();
-					$scope.selectedFunc = null;
+				$scope.deleteTriggerInDB(selection, function() {
+					$scope.loadAllTriggers();
+					$scope.shared.selectedTrigger = null;
 				});
 			}
 
 			/* register event handlers*/
-			$scope.addClickHandler("btnAddFunc", $scope.addFunc);
-			$scope.addClickHandler("btnDeleteFunc", $scope.deleteFunc);
+			$scope.addClickHandler("btnAddTrigger", $scope.addTrigger);
+			$scope.addClickHandler("btnDeleteTrigger", $scope.deleteTrigger);
 
 		}]
 	);

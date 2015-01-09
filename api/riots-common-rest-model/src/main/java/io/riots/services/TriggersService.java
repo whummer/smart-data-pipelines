@@ -2,7 +2,8 @@ package io.riots.services;
 
 import java.util.List;
 
-import io.riots.services.utils.GeoFence;
+import io.riots.services.triggers.GeoFence;
+import io.riots.services.triggers.Trigger;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -22,9 +23,11 @@ import com.wordnik.swagger.annotations.ApiOperation;
  * @author whummer
  */
 @Service
-@Path("/utils")
-@Api(value = "Utils", description = "Service which provides various utility functions.")
-public interface UtilsService {
+@Path("/triggers")
+@Api(
+	value = "Triggers", 
+	description = "Service which provides various utility trigger functions.")
+public interface TriggersService {
 
 	@GET
     @Path("/geo/fence")
@@ -49,5 +52,31 @@ public interface UtilsService {
     @ApiOperation(value = "Retrieve aggregated rating for an ID",
             notes = "Retrieve aggregated rating for an ID")
 	void removeGeoFence(@PathParam("id") String id);
+
+	/* GENERIC FUNCTIONS FOR TRIGGERS */
+
+	@GET
+    @Path("/")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "List triggers.",
+            notes = "List currently configured triggers.",
+            response = Trigger.class)
+	List<Trigger> listTriggers();
+
+	@POST
+    @Path("/")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Create trigger.",
+            notes = "Set up a trigger.",
+            response = Trigger.class)
+	Trigger setupTrigger(Trigger t);
+
+	@DELETE
+    @Path("/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Remove trigger",
+            notes = "Remove an existing trigger")
+	void removeTrigger(@PathParam("id") String id);
 
 }
