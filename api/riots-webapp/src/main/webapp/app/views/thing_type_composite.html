@@ -108,10 +108,14 @@
     // composite thing type visualization
     //
     var prepareTreeData = function () {
+      if(!$scope.shared.selectedThingType) {
+    	  return;
+      }
       $log.debug("ChildrenAll: ", $scope.childrenAll);
       var childrenWithParentLink = [];
       var doRender = true;
       angular.forEach($scope.childrenAll, function (value, key) {
+    	  console.log("value: " + value);
         if (!value.name || !value[IMAGE_DATA] || !value[IMAGE_DATA][0]) {
         	doRender = false;
         	return;

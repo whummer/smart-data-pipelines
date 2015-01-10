@@ -117,10 +117,7 @@
             <label for="devTypeTags" class="col-sm-2 control-label">Tags</label>
 
             <div class="col-sm-10">
-              <input id="devTypeTags" class="form-control input-sm typeahead"
-                     data-role="tagsinput" autocomplete="off"/>
-
-
+              <input id="devTypeTags" class="typeahead form-control input-sm" data-role="tagsinput" autocomplete="off"/>
             </div>
           </div>
         </div>
@@ -209,6 +206,7 @@
       typeaheadjs: {
         name: 'tags',
         displayKey: 'value',
+        valueKey: 'value',        
         source: tagnames.ttAdapter()
       }
     });

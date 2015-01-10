@@ -98,7 +98,7 @@ public class ServiceClientFactory {
 		String addr = String.format(serviceEndpoints.get(name), i.getHostName(), i.getPort());
 		return getServiceInstanceForURL(addr, clazz);
 	}
-	private <T> T getServiceInstanceForURL(String endpointURL, Class<T> clazz) {
+	public <T> T getServiceInstanceForURL(String endpointURL, Class<T> clazz) {
 		// TODO maybe cache REST clients for a limited amount of time
 
 		List<Object> providers = new ArrayList<>();

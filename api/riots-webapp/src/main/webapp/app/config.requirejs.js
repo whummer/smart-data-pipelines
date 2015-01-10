@@ -25,6 +25,12 @@ var requirejsAppConfig = {
             location: appConfig['appRootPath'] + '/scripts/modules',
             main: 'auth.js',
             excludeFromOptimize: true
+        }, {
+        	/* needs to go here, otherwise the production app tries to 
+        	request image files from /bower_components */
+            name: 'raty',
+            location: appConfig['appRootPath'] + '/scripts/ext',
+            main: 'lib/jquery.raty'
         },
         
         /* dependencies in /bower_components */
@@ -41,10 +47,6 @@ var requirejsAppConfig = {
             name: 'leaflet',
             location: appConfig['bowerRootPath'] + '/leaflet/',
             main: 'dist/leaflet-src'
-        }, {
-            name: 'raty',
-            location: appConfig['bowerRootPath'] + '/raty',
-            main: 'lib/jquery.raty'
         }, {
             name: 'hello',
             location: appConfig['bowerRootPath'] + '/hello',
@@ -100,9 +102,6 @@ var requirejsAppConfig = {
             name: 'prettify',
             location: appConfig['bowerRootPath'] + '/google-code-prettify',
             main: 'src/prettify'
-        }, {
-            name: 'chartjs',
-            location: appConfig['bowerRootPath'] + '/chartjs/'
         }
         */
     ],

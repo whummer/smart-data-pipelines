@@ -19,6 +19,7 @@ define(['app'], function(app) {
 			};
 
 			var displayTable = function(gridConfig, nodes, category) {
+				if(!gridConfig) return;
 				gridConfig.data = nodes;
 				setTimeout(function() {
 
