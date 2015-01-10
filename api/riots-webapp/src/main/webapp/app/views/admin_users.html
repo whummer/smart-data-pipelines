@@ -1,0 +1,57 @@
+<section ng-controller="AdminUsersController">
+	<div>
+
+		<div id="usersTable" ui-grid="gridConfig" ui-grid-selection ui-grid-edit ui-grid-row-edit
+             class="grid"></div>
+
+	</div>
+</section>
+<style type="text/css">
+#usersTable {
+	height: 300px;
+}
+</style>
+<script type="text/javascript">
+
+var app = angular.module("app");
+app.controller('AdminUsersController',
+		function ($scope, $http, $compile, $routeParams, $log, $location) {
+    AppController($scope, $http, $compile);
+
+    $scope.gridConfig = [];
+
+    var initTable = function () {
+        var columnsConfig = [
+            {label: "User ID", field: "id", sortable: true},
+            {label: "Email", field: "email", sortable: true},
+            {label: "Registered", field: "created", sortable: true}
+        ];
+        $scope.gridConfig.data = [];
+        renderUITable($scope.gridConfig, "usersTable", columnsConfig,
+	        function (event) {
+	            if (event.type == "dgrid-select") {
+	                $scope.$apply(function () {
+	                    $scope.selectedUser = event.rows[0].data;
+	                });
+	            } else if (event.type == "dgrid-deselect") {
+	                $scope.$apply(function () {
+	                    $scope.selectedUser = null;
+	                });
+	            }
+	        }
+        );
+    }
+
+    var loadTable = function() {
+    	riots.users(function(users) {
+    		console.log(users);
+    		$scope.gridConfig.data = users;
+    	});
+    }
+
+	/* render main elements */
+    initTable();
+    loadTable();
+});
+
+</script>

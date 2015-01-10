@@ -1,6 +1,9 @@
 package io.riots.services;
 
+import io.riots.services.users.Role;
 import io.riots.services.users.User;
+
+import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -9,6 +12,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -47,6 +51,18 @@ public interface UsersService {
             notes = "Retrieve a user for a given email address.",
             response = User.class)
     User findByEmail(@PathParam("email") String email);
+
+	@GET
+    @Path("/")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Get user list.",
+            notes = "Retrieve a list of users.",
+            response = User.class)
+//	@PreAuthorize(Role.HAS_ROLE_USER + " and " 
+//            + "hasPermission(#itemId, '" + Target.DEVICE_TYPE 
+//            + "', '" + Operation.DELETE + "')")
+	@PreAuthorize(Role.HAS_ROLE_ADMIN)
+	List<User> listUsers();
 
 	public static class AuthToken {
 		/**

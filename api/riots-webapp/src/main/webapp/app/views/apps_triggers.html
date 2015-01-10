@@ -31,7 +31,7 @@
 				var columnsConfig = [
 					{label: "ID", field: "id", sortable: true},
 					{label: "Type", field: "type", sortable: true},
-					{label: "Creation Date", field: "created", sortable: true, cellTemplate: 
+					{label: "Creation Date", field: CREATION_DATE, sortable: true, cellTemplate:
 						"<div class='ui-grid-cell-contents'>{{row.entity.timeCreated()}}</div>"
 					}
 				];
@@ -56,6 +56,9 @@
 				invokeGET($scope.http, $scope.triggersAPI,
 						function(data, status, headers, config) {
 							$.each(data.result, function(idx,el) {
+								el.timeCreated = function() {
+									return formatDate(el[CREATION_DATE]);
+								};
 								$scope.tableOptions.data.push(el);
 							});
 						}

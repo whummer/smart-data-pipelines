@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.net.HttpCookie;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,11 +29,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
 /**
@@ -48,16 +47,40 @@ import org.springframework.security.web.AuthenticationEntryPoint;
  */
 public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint, AuthenticationProvider {
 
+	/* CONSTANTS */
+
+    protected static final long EXPIRY_TIMEOUT_MS = 1000 * 60 * 30; /* 30 minutes token timeout */
+    protected static final long INACTIVITY_TIMEOUT_MS = 1000 * 60 * 10; /* 10 minutes inactivity timeout */
+    private static final Logger LOG = Logger.getLogger(AuthFilterBase.class);
+    private static final Map<String, AuthInfo> tokens = new ConcurrentHashMap<String, AuthInfo>();
+
     /**
      * if auth info is encoded in Websocket header, use this delimiter
      */
     public static final String AUTHINFO_DELIMITER = "~";
-
     /**
      * use this field to disable the auth mechanism for testing.
      * Simply set to true in the setup method of your integration tests.
      */
     public static boolean DISABLE_AUTH = false;
+    /**
+     * Mapping user to roles.
+     */
+    private static final List<UserRoleMapping> userRoleMappings = new LinkedList<UserRoleMapping>();
+    /**
+     * Mapping resource to required roles.
+     */
+    private static final Map<String,String> requiredRoleForResources = new HashMap<>();
+
+    public static class UserRoleMapping {
+        String userPattern;
+        String role;
+
+        public UserRoleMapping(String userPattern, String role) {
+            this.userPattern = userPattern;
+            this.role = role;
+        }
+    }
 
     /* TODO: put into config file */
     private static final List<String> protectedResources = Arrays.asList(
@@ -96,29 +119,17 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
             "^(/app)?/scripts/routes\\.js$",
             "^(/app)?/scripts/init\\.js$"
     );
-
-    private static final List<UserRoleMapping> userRoleMappings = new LinkedList<UserRoleMapping>();
-
-    public static class UserRoleMapping {
-        String userPattern;
-        String role;
-
-        public UserRoleMapping(String userPattern, String role) {
-            this.userPattern = userPattern;
-            this.role = role;
-        }
-    }
-
     static {
         /* TODO: put into config file or database */
         userRoleMappings.add(new UserRoleMapping("hummer@infosys.tuwien.ac.at", Role.ROLE_ADMIN));
+        userRoleMappings.add(new UserRoleMapping("dev@riox.io", Role.ROLE_ADMIN));
+        userRoleMappings.add(new UserRoleMapping("olzn23@gmail.com", Role.ROLE_ADMIN));
         userRoleMappings.add(new UserRoleMapping(".*", Role.ROLE_USER));
     }
-
-    protected static final long EXPIRY_TIMEOUT_MS = 1000 * 60 * 30; /* 30 minutes token timeout */
-    protected static final long INACTIVITY_TIMEOUT_MS = 1000 * 60 * 10; /* 10 minutes inactivity timeout */
-    private static final Logger LOG = Logger.getLogger(AuthFilterBase.class);
-    private static final Map<String, AuthInfo> tokens = new ConcurrentHashMap<String, AuthInfo>();
+    static {
+        /* TODO: put into config file or database */
+    	requiredRoleForResources.put("^(/app)?/views/admin.*$", Role.ROLE_ADMIN);
+    }
 
     /**
      * Implement {@link Filter}.doFilter(...)
@@ -213,7 +224,7 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
                 return false;
         	}
         	
-        	System.out.println("Access protected resource with auth info: " + requestInfo);
+        	//System.out.println("Access protected resource with auth info: " + requestInfo);
 
             /*
              * attempt to get token from cache
@@ -252,7 +263,6 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
                     return false;
 				}
 
-                System.out.println("new newInfo: " + newInfo);
             	if(newInfo == null) {
                     response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                     return false;
@@ -261,36 +271,46 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
 	            newInfo.expiry = new Date(new Date().getTime() + AuthFilterBase.EXPIRY_TIMEOUT_MS);
 
 				/* set user roles in AuthInfo */
-                for (UserRoleMapping m : userRoleMappings) {
-                    if (newInfo.email.matches(m.userPattern)) {
-                        newInfo.roles.add(m.role);
-                        newInfo.rolesAsGrantedAuthorities.add(
-                                new SimpleGrantedAuthority(m.role));
-                    }
-                }
+	            fillInRoles(newInfo);
 
 				/* store the AuthInfo in a map */
                 tokens.put(tokenID, newInfo);
             }
 
-			/* authentication done, now perform authorization */
+			/* get auth token and set activity timestamp */
             AuthInfo authInfo = tokens.get(tokenID);
             authInfo.setActiveNow();
+
+			/* authentication done, now perform authorization */
+            boolean isAuthorized = authorize(uri, authInfo);
+            if(!isAuthorized) {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                return false;
+            }
 
 			/* append additional infos to request */
             setAuthInfoHeaders(request, authInfo);
 
-			/* set the Spring security context */
-            UsernamePasswordAuthenticationToken springSecToken =
-                    new UsernamePasswordAuthenticationToken(
-                            authInfo.userName, authInfo.accessToken, authInfo.rolesAsGrantedAuthorities);
-            springSecToken.setDetails(authInfo);
-            SecurityContextHolder.getContext().setAuthentication(springSecToken);
         }
 
 		/* all checks passed, return success */
         return true;
     }
+
+    private boolean authorize(String uriPath, AuthInfo authInfo) {
+    	for(String pattern : requiredRoleForResources.keySet()) {
+    		String role = requiredRoleForResources.get(pattern);
+    		if(uriPath.matches(pattern)) {
+    			if(!authInfo.roles.contains(role)) {
+    				LOG.info("Access denied: User '" + authInfo.email + 
+    						"' misses required role '" + role + 
+    						"' for resource: " + uriPath);
+    				return false;
+    			}
+    		}
+    	}
+		return true;
+	}
 
     private AuthRequestInfo getAuthFromCustomHeaders(
 			HttpServletRequest request, HttpServletResponse response) {
@@ -386,8 +406,25 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
         request.setAttribute(AuthHeaders.HEADER_AUTH_EMAIL, authInfo.email);
         request.setAttribute(AuthHeaders.HEADER_AUTH_USER_ID, authInfo.userID);
     }
+	static void readAuthInfoHeaders(HttpServletRequest request, AuthInfo authInfo) {
+    	/* append additional infos to request */
+		authInfo.email = request.getHeader(AuthHeaders.HEADER_AUTH_EMAIL);
+		authInfo.userID = request.getHeader(AuthHeaders.HEADER_AUTH_USER_ID);
+    }
 
 	/* HELPER METHODS */
+
+	protected static void fillInRoles(AuthInfo info) {
+    	if(info.email == null)
+    		return;
+    	for (UserRoleMapping m : userRoleMappings) {
+            if (info.email.matches(m.userPattern)) {
+            	info.roles.add(m.role);
+            	info.rolesAsGrantedAuthorities.add(
+                        new SimpleGrantedAuthority(m.role));
+            }
+        }
+    }
 
     private List<HttpCookie> parse(String cookieString) {
         List<HttpCookie> result = new LinkedList<HttpCookie>();

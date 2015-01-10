@@ -155,10 +155,12 @@ public class ThingType extends HierarchicalObject<String> {
 	public List<String> getTags() {
 		return tags;
 	}
-
 	public void setTags(List<String> tags) {
 		this.tags = tags;
-	}	
+	}
+	public void addTag(String tag) {
+		tags.add(tag);
+	}
 
 	public ThingType withProperties(final List<Property> properties) {
 		this.properties = properties;

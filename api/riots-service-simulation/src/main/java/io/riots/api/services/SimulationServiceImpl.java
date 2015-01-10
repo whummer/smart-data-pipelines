@@ -12,6 +12,7 @@ import io.riots.core.auth.AuthHeaders;
 import io.riots.core.sim.PropertyValueGenerator;
 import io.riots.core.sim.SimulationManager;
 import io.riots.core.sim.traffic.TrafficSimulatorMatsim;
+import io.riots.core.util.geo.GeoUtil;
 import io.riots.services.SimulationService;
 import io.riots.services.scenario.PropertyValue;
 import io.riots.services.sim.LocationInTime;
@@ -185,9 +186,14 @@ public class SimulationServiceImpl implements SimulationService {
 
     @Override
     @Timed @ExceptionMetered
-    public TrafficTraces generateCurve(int numVehicles, double lat, double lon, double vicinity) {
+    public TrafficTraces generateCurve(GpsTraceOptions opt) {
 		try {
-			TrafficTraces t = TrafficSimulatorMatsim.generateTraces(numVehicles, lat, lon, vicinity);
+			double vicinity = GeoUtil.convertMetersToDegrees(opt.diameter);
+			TrafficTraces t = TrafficSimulatorMatsim.generateTraces(
+					opt.numVehicles,
+					opt.lat,
+					opt.lon,
+					vicinity);
 	    	return t;
 		} catch (Exception e) {
 			LOG.warn(e);

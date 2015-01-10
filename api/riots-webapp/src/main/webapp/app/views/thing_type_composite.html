@@ -108,17 +108,26 @@
     // composite thing type visualization
     //
     var prepareTreeData = function () {
+      if(!$scope.shared.selectedThingType) {
+    	  return;
+      }
       $log.debug("ChildrenAll: ", $scope.childrenAll);
       var childrenWithParentLink = [];
+      var doRender = true;
       angular.forEach($scope.childrenAll, function (value, key) {
-        if (!value.name || !value[IMAGE_DATA][0]) {
-          return;
+    	  console.log("value: " + value);
+        if (!value.name || !value[IMAGE_DATA] || !value[IMAGE_DATA][0]) {
+        	doRender = false;
+        	return;
         }
 
         $log.debug("Adding child: ", value.name);
         childrenWithParentLink.push({name: value.name, parent: $scope.shared.selectedThingType.name, thumbnail: value[IMAGE_DATA][0].href});
       });
 
+      if(!doRender || !$scope.shared.selectedThingType[IMAGE_DATA]) {
+        return false;
+      }
       $log.debug("ChildrenWithParentLink: ", childrenWithParentLink);
       var treeData = [{
         thumbnail: $scope.shared.selectedThingType[IMAGE_DATA][0].href,
@@ -133,7 +142,11 @@
     };
 
     var renderTree = function () {
-      drawCompositeThing(prepareTreeData());
+      var prepared = prepareTreeData();
+      if(!prepared) {
+    	  return;
+      }
+      drawCompositeThing(prepared);
     };
 
 

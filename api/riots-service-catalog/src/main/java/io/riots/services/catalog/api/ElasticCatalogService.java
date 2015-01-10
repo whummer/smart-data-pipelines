@@ -60,7 +60,6 @@ public class ElasticCatalogService implements CatalogService {
     @Autowired
 	ServiceClientFactory serviceClientFactory;
 
-
     @Context
     MessageContext context;    
     
@@ -81,7 +80,6 @@ public class ElasticCatalogService implements CatalogService {
     	searchTemplate.putMapping(Manufacturer.class);
     	searchTemplate.refresh(Manufacturer.class, true);    	
     }
-    
 
     @Override
     @Timed @ExceptionMetered
@@ -92,7 +90,6 @@ public class ElasticCatalogService implements CatalogService {
             throw new NotFoundException("No such thing type: " + thingTypeId);
         }
     }
-
 
     @Override
     @Timed @ExceptionMetered
@@ -200,7 +197,7 @@ public class ElasticCatalogService implements CatalogService {
     public void deleteThingType(String thingTypeId) {
     	FilesService fileService = serviceClientFactory.getFilesServiceClient();
         if (thingTypeRepository.exists(thingTypeId)) {        	   
-        	
+
         	// TODO put this in a Hystrix command
         	ThingType tt = thingTypeRepository.findOne(thingTypeId);
         	List<ImageData> imageData = tt.getImageData();
@@ -300,4 +297,5 @@ public class ElasticCatalogService implements CatalogService {
     public void deleteManufacturer(String manufacturerId) {
         manufacturerRepository.delete(manufacturerId);
     }
+
 }
