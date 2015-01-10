@@ -107,17 +107,21 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
             "^/connect/*.*$",
             "^/$",
 
-            /* Demo URLs */
-            "^/demo/*.*$",
-            "^/golfcars.*$",
-
             "^(/app)?/scripts/app\\.js$",
             "^(/app)?/scripts/build/.*$",
             "^(/app)?/scripts/ext/.*$",
             "^(/app)?/scripts/controllers/.*\\.js$",
             "^(/app)?/scripts/modules/.*\\.js$",
             "^(/app)?/scripts/routes\\.js$",
-            "^(/app)?/scripts/init\\.js$"
+            "^(/app)?/scripts/init\\.js$",
+
+            /* Demo URLs */
+            "^/demo/*.*$",
+            "^/golfcars.*$",
+
+            /* allow access to file service */
+            "^(/api/v.)?/files.*$"
+
     );
     static {
         /* TODO: put into config file or database */

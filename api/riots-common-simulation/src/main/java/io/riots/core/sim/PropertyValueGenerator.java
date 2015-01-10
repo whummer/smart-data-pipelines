@@ -1,5 +1,7 @@
 package io.riots.core.sim;
 
+import io.riots.core.sim.jep.CustomOperators;
+import io.riots.core.sim.jep.CustomOperators.OperatorType;
 import io.riots.services.scenario.PropertyValue;
 import io.riots.services.sim.Context;
 import io.riots.services.sim.PropertySimulation;
@@ -110,6 +112,8 @@ public class PropertyValueGenerator {
 			parser = new JEP();
 			parser.addStandardConstants();
 			parser.addStandardFunctions();
+			parser.addFunction("max", new CustomOperators(OperatorType.MAX));
+			parser.addFunction("min", new CustomOperators(OperatorType.MIN));
 		}
 		return parser;
 	}

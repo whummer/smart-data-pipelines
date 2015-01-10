@@ -76,22 +76,18 @@ public class SimulationManager {
 		}
 
 		public void runNextTick() {
-			System.out.println("runNextTick " + running.get());
 			if (!running.get()) {
 				terminate();
 				return;
 			}
 			PropertyValue value = PropertyValueGenerator.getValueAt(
 					propSim, new Time(currentTick), ctx);
-			System.out.println("send value " + value);
 			try {
 				eventBroker.sendMessage(EventBroker.MQ_INBOUND_PROP_UPDATE, value);
 			} catch (Throwable e) {
 				e.printStackTrace();
 			}
-			System.out.println("----");
 			currentTick += propSim.getStepInterval();
-			System.out.println("published. " + currentTick);
 		}
 
 		void terminate() {
@@ -101,16 +97,7 @@ public class SimulationManager {
 		}
 
 		public void run() {
-			System.out.println("run");
 			runNextTick();
-//			while (running.get()) {
-//				runNextTick();
-//				try {
-//					Thread.sleep((long)(propSim.getStepInterval() * 1000));
-//				} catch (InterruptedException e) {
-//					e.printStackTrace();
-//				}
-//			}
 		}
 	}
 

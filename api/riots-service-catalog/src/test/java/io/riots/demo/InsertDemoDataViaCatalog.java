@@ -68,7 +68,6 @@ public class InsertDemoDataViaCatalog {
         if (System.getProperty(prop) == null) {
             System.setProperty(prop, "http://localhost:10000/eureka/v2/");
         }
-
     }
 
     @Bean
@@ -127,7 +126,7 @@ public class InsertDemoDataViaCatalog {
             sim.startTime = 1;
             sim.endTime = 500;
             sim.stepInterval = 1;
-            sim.setFunction("1-x/" + sim.endTime);
+            sim.setFunction("max(0,1-x/" + sim.endTime + ")");
             t.setSimulation(sim);
             createSimType(existing, t);
         }
@@ -138,7 +137,7 @@ public class InsertDemoDataViaCatalog {
             sim.startTime = 1;
             sim.endTime = 500;
             sim.stepInterval = 1;
-            sim.setFunction("1/(x)");
+            sim.setFunction("1/x");
             t.setSimulation(sim);
             createSimType(existing, t);
         }

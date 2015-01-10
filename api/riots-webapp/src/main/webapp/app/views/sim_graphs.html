@@ -1,7 +1,13 @@
 <section ng-controller="SimGraphsController" id="simGraphsSection" style="height: 100%">
 
-	<div style="height: 100%; overflow: auto;" id="chartWrapper">
+	<div style="height: 100%; overflow: auto;" id="chartWrapper"
+			ng-show="shared.selectedSim.simulation.type != 'GPS'">
 		<canvas id="chart1" width="400" height="400"></canvas>
+	</div>
+	<div style="height: 300px;" id="mapWrapper"
+			ng-show="shared.selectedSim.simulation.type == 'GPS'">
+		<ng-include
+					src="appConfig['appRootPath'] + '/views/map_view_simple.html'"></ng-include>
 	</div>
 
 </section>
@@ -33,6 +39,12 @@ app.controller('SimGraphsController', [
 		}, "update.chart_propSim.graphsView");
 		$scope.$watch("shared.selectedSimProp", function() {
 			$("#chartWrapper").hide();
+		});
+		$scope.$watch("shared.selectedSim.simulation.type", function() {
+			var sim = $scope.shared.selectedSim;
+			if(sim && sim.simulation.type == 'GPS') {
+				$scope.shared.map.render();
+			}
 		});
 	}
 ]);

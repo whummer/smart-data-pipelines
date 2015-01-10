@@ -2,11 +2,11 @@ package io.riots.services;
 
 import io.riots.services.scenario.PropertyValue;
 import io.riots.services.sim.PropertySimulation;
+import io.riots.services.sim.PropertySimulationGPS;
 import io.riots.services.sim.Simulation;
 import io.riots.services.sim.SimulationRun;
 import io.riots.services.sim.SimulationType;
 import io.riots.services.sim.TimelineValues;
-import io.riots.services.sim.TrafficTraces;
 
 import java.util.List;
 
@@ -164,7 +164,7 @@ public interface SimulationService {
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Generate curve",
             notes = "Generate a property simulation curve.",
-            response = PropertySimulation.class)
+            response = TimelineValues.class)
     TimelineValues<PropertyValue> generateCurve(PropertySimulation<?> r);
 
     public static class GpsTraceOptions {
@@ -186,8 +186,8 @@ public interface SimulationService {
             notes = "Generate traces of paths with GPS locations, based on "
             		+ "realistic traffic simulations for a given area "
             		+ "(GPS coordinates of the center location plus vicinity from the center).",
-            response = TrafficTraces.class)
-    TrafficTraces generateCurve(GpsTraceOptions options);
+            response = TimelineValues.class)
+    TimelineValues<PropertyValue> generateGpsTrace(PropertySimulationGPS opt);
 
     /* SIMULATION EXECUTION CONTROL */
     

@@ -215,15 +215,27 @@ app.controller('SimDetailsController', function ($scope, $http, $compile, $route
 		var type = sim.simulation.type;
 		if(type == "GPS") {
 			var request = {
-				numVehicles: 1,
-				lat: sim.simulation.latitude,
-				lon: sim.simulation.longitude,
+				type: "GPS",
+				latitude: sim.simulation.latitude,
+				longitude: sim.simulation.longitude,
 				diameter: sim.simulation.diameter
 			};
 			invokePOST($http, $scope.simAPI + "/gen/traffic",
 				JSON.stringify(request),
 				function(data, status, headers, config) {
 					console.log("GPS data", data.result);
+					$scope.shared.map.deleteAllMarkers();
+					$.each(data.result.values, function(idx,el) {
+						var time = el.time.time ? el.time.time : el.time.time;
+						var lat = el.property.value.latitude;
+						var lng = el.property.value.longitude;
+						var marker = {
+							name: "time: " + time,
+							latitude: lat,
+							longitude: lng
+						};
+						$scope.shared.map.addMarker(marker);
+					});
 				}
 			);
 		} else {
