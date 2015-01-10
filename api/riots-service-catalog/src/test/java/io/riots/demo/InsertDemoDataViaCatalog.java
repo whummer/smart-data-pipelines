@@ -5,13 +5,19 @@ import io.riots.core.boot.MongoEnabledServiceStarter;
 import io.riots.core.service.ServiceClientFactory;
 import io.riots.services.CatalogService;
 import io.riots.services.SimulationService;
-import io.riots.services.catalog.*;
+import io.riots.services.catalog.ImageData;
+import io.riots.services.catalog.Manufacturer;
+import io.riots.services.catalog.Property;
+import io.riots.services.catalog.PropertyType;
+import io.riots.services.catalog.ThingType;
+import io.riots.services.catalog.ValueDomainContinuous;
+import io.riots.services.catalog.ValueDomainDiscrete;
+import io.riots.services.catalog.ValueDomainEnumerated;
 import io.riots.services.sim.PropertySimulationFunctionBased;
 import io.riots.services.sim.PropertySimulationGPS;
 import io.riots.services.sim.SimulationType;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -20,7 +26,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.cxf.helpers.FileUtils;
 import org.apache.cxf.helpers.IOUtils;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.apache.log4j.Logger;
@@ -245,6 +250,7 @@ public class InsertDemoDataViaCatalog {
             ultraSonicSensor.addFeature("length", "35mm");
             ultraSonicSensor.addFeature("temperature", "-15C..70C");
             Property propDist = new Property("distance");
+            propDist.setPropertyType(PropertyType.DOUBLE);
             propDist.setActuatable(false).setSensable(true);
             propDist.setValueDomain(new ValueDomainContinuous<Double>(0.0, 200.0));
             ultraSonicSensor.getProperties().add(propDist);
@@ -274,6 +280,7 @@ public class InsertDemoDataViaCatalog {
             motionSensor.addFeature("length", "25mm");
             motionSensor.addFeature("temperature", "-15C..70C");
             Property propMotion = new Property("motion");
+            propMotion.setPropertyType(PropertyType.BOOLEAN);
             propMotion.setActuatable(false).setSensable(true);
             propMotion.setValueDomain(new ValueDomainEnumerated<Boolean>(true, false));
             motionSensor.getProperties().add(propMotion);
@@ -300,6 +307,7 @@ public class InsertDemoDataViaCatalog {
             temperatureSensor.addFeature("resolution", "9bit..12bit");
             temperatureSensor.addFeature("temperature", "-55C..125C");
             Property propTemp = new Property("temperature");
+            propTemp.setPropertyType(PropertyType.DOUBLE);
             propTemp.setValueDomain(new ValueDomainDiscrete<>(-15.0, 70.0, 0.1));
             propTemp.setActuatable(false).setSensable(true);
             temperatureSensor.getProperties().add(propTemp);
@@ -319,18 +327,22 @@ public class InsertDemoDataViaCatalog {
             raspiBPlus.addChild(temperatureSensor.getId());
             raspiBPlus.addChild(ultraSonicSensor.getId());
             Property propGPU = new Property("GPU_MEM");
+            propGPU.setPropertyType(PropertyType.LONG);
             propGPU.setValueDomain(new ValueDomainDiscrete<>(16L, 448L, 1L));
             propGPU.setActuatable(true).setSensable(true);
             raspiBPlus.getProperties().add(propGPU);
             Property propSDTV = new Property("SDTV_MODE");
+            propSDTV.setPropertyType(PropertyType.LONG);
             propSDTV.setValueDomain(new ValueDomainEnumerated<Long>(0L, 1L, 2L, 3L));
             propSDTV.setActuatable(true).setSensable(true);
             raspiBPlus.getProperties().add(propSDTV);
             Property propHDMI = new Property("HDMI_MODE");
+            propHDMI.setPropertyType(PropertyType.LONG);
             propHDMI.setValueDomain(new ValueDomainDiscrete<Long>(0L, 59L, 1L));
             propHDMI.setActuatable(true).setSensable(true);
             raspiBPlus.getProperties().add(propHDMI);
             Property propFB = new Property("FRAMEBUFFER_DEPTH");
+            propFB.setPropertyType(PropertyType.LONG);
             propFB.setValueDomain(new ValueDomainEnumerated<Long>(8L, 16L, 24L, 32L));
             propFB.setActuatable(true).setSensable(true);
             raspiBPlus.getProperties().add(propFB);
@@ -346,6 +358,7 @@ public class InsertDemoDataViaCatalog {
                             .withContentType("image/png")));
             ismartSensor.setDescription("Wireless motion detector");
             Property propMotion1 = new Property("motion");
+            propMotion1.setPropertyType(PropertyType.BOOLEAN);
             propMotion1.setActuatable(false).setSensable(true);
             propMotion1.setValueDomain(new ValueDomainEnumerated<Boolean>(true, false));
             ismartSensor.getProperties().add(propMotion1);
@@ -362,10 +375,12 @@ public class InsertDemoDataViaCatalog {
             waterSensor.setDescription("Deep water data logger that measures "
                     + "and records temperature and pressure");
             Property propPressure = new Property("pressure");
+            propPressure.setPropertyType(PropertyType.DOUBLE);
             propPressure.setValueDomain(new ValueDomainDiscrete<>(0.0, 100.0, 0.01));
             propPressure.setActuatable(true).setSensable(true);
             waterSensor.getProperties().add(propPressure);
             Property propTemp1 = new Property("temperature");
+            propTemp1.setPropertyType(PropertyType.DOUBLE);
             propTemp1.setValueDomain(new ValueDomainDiscrete<>(-2.0, 30.0, 0.05));
             propTemp1.setActuatable(true).setSensable(true);
             waterSensor.getProperties().add(propTemp1);
@@ -384,21 +399,27 @@ public class InsertDemoDataViaCatalog {
                     + "with an onboard Digital Motion Processor™, "
                     + "which can also access other external sensors");
             Property propXAccel = new Property("X_ACCEL");
+            propXAccel.setPropertyType(PropertyType.DOUBLE);
             propXAccel.setActuatable(false).setSensable(true);
             gyroSensor.getProperties().add(propXAccel);
             Property propYAccel = new Property("Y_ACCEL");
+            propYAccel.setPropertyType(PropertyType.DOUBLE);
             propYAccel.setActuatable(false).setSensable(true);
             gyroSensor.getProperties().add(propYAccel);
             Property propZAccel = new Property("Z_ACCEL");
+            propZAccel.setPropertyType(PropertyType.DOUBLE);
             propZAccel.setActuatable(false).setSensable(true);
             gyroSensor.getProperties().add(propZAccel);
             Property propXGyro = new Property("X_GYRO");
+            propXGyro.setPropertyType(PropertyType.DOUBLE);
             propXGyro.setActuatable(false).setSensable(true);
             gyroSensor.getProperties().add(propXGyro);
             Property propYGyro = new Property("Y_GYRO");
+            propYGyro.setPropertyType(PropertyType.DOUBLE);
             propYGyro.setActuatable(false).setSensable(true);
             gyroSensor.getProperties().add(propYGyro);
             Property propZGyro = new Property("Z_GYRO");
+            propZGyro.setPropertyType(PropertyType.DOUBLE);
             propZGyro.setActuatable(false).setSensable(true);
             gyroSensor.getProperties().add(propZGyro);
 
@@ -415,11 +436,11 @@ public class InsertDemoDataViaCatalog {
                     + "LED status indicator, battery backed RAM, "
                     + "and a built-in patch antenna. 6-pin interface cable included.");
             Property propLat = new Property("latitude");
-            propLat.setActuatable(false).setSensable(true);
             propLat.setPropertyType(PropertyType.LOCATION_LAT);
+            propLat.setActuatable(false).setSensable(true);
             Property propLon = new Property("longitude");
-            propLon.setActuatable(false).setSensable(true);
             propLon.setPropertyType(PropertyType.LOCATION_LON);
+            propLon.setActuatable(false).setSensable(true);
             Property propLoc = new Property("location");
             propLoc.setPropertyType(PropertyType.LOCATION);
             propLoc.addChild(propLat);
@@ -441,12 +462,15 @@ public class InsertDemoDataViaCatalog {
                     + "(Application Specific Integrated Circuit) packaged in a standard "
                     + "5×5×1.8mm DFN (DualFlat Non-lead).");
             Property propXGyro1 = new Property("X_GYRO");
+            propXGyro1.setPropertyType(PropertyType.DOUBLE);
             propXGyro1.setActuatable(false).setSensable(true);
             appleGyroSensor.getProperties().add(propXGyro1);
             Property propYGyro1 = new Property("Y_GYRO");
+            propYGyro1.setPropertyType(PropertyType.DOUBLE);
             propYGyro1.setActuatable(false).setSensable(true);
             appleGyroSensor.getProperties().add(propYGyro1);
             Property propZGyro1 = new Property("Z_GYRO");
+            propZGyro1.setPropertyType(PropertyType.DOUBLE);
             propZGyro1.setActuatable(false).setSensable(true);
             appleGyroSensor.getProperties().add(propZGyro1);
 
@@ -465,14 +489,14 @@ public class InsertDemoDataViaCatalog {
                     + "up in a database to identify the location. The more access points are "
                     + "found, the more precise the localization..");
             Property propLat = new Property("latitude");
-            propLat.setActuatable(false).setSensable(true);
             propLat.setPropertyType(PropertyType.LOCATION_LAT);
+            propLat.setActuatable(false).setSensable(true);
             Property propLon = new Property("longitude");
-            propLon.setActuatable(false).setSensable(true);
             propLon.setPropertyType(PropertyType.LOCATION_LON);
+            propLon.setActuatable(false).setSensable(true);
             Property propLoc = new Property("location");
-            propLoc.setActuatable(false).setSensable(true);
             propLon.setPropertyType(PropertyType.LOCATION);
+            propLoc.setActuatable(false).setSensable(true);
             propLoc.addChild(propLat);
             propLoc.addChild(propLon);
             wpsSensor.getProperties().add(propLoc);
@@ -508,6 +532,7 @@ public class InsertDemoDataViaCatalog {
                     + "applications, such as 14V stacked cell Li-Ion, high voltage junction boxes, "
                     + "and 24V truck batteries.");
             Property propBat = new Property("batteryPercent");
+            propBat.setPropertyType(PropertyType.DOUBLE);
             propBat.setValueDomain(new ValueDomainContinuous<Double>(0.0, 100.0));
             propBat.setActuatable(false).setSensable(true);
             batterySensor.getProperties().add(propBat);
@@ -523,6 +548,7 @@ public class InsertDemoDataViaCatalog {
                             .withContentType("image/jpg")));
             pressureSensor.setDescription("Sensor for monitoring tire pressure.");
             Property propBat = new Property("pressure");
+            propBat.setPropertyType(PropertyType.DOUBLE);
             propBat.setUnit("bar");
             propBat.setValueDomain(new ValueDomainContinuous<Double>(0.0, 6.0));
             propBat.setActuatable(false).setSensable(true);

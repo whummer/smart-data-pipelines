@@ -28,16 +28,21 @@
 
 				<!-- value type -->
 				<div class="form-group">
-					<label for="selBaseType" class="col-sm-3 control-label">Value Type</label>
+					<label for="selBaseType" class="col-sm-3 control-label">Data Type</label>
 
 					<div class="col-sm-9">
 						<select id="selBaseType" class="form-control input-sm"
 								ng-model="selectedProperty[PROPERTY_TYPE]">
 							<option value="BOOLEAN">BOOLEAN</option>
-							<option value="STRING">STRING</option>
 							<option value="DOUBLE">DOUBLE</option>
 							<option value="LONG">LONG</option>
-							<option value="LIST">LIST</option>
+							<option value="LOCATION">LOCATION</option>
+							<option value="LOCATION_LAT">LOCATION.LATITUDE</option>
+							<option value="LOCATION_LON">LOCATION.LONGITUDE</option>
+							<option value="LOCATION_ALT">LOCATION.ALTITUDE</option>
+							<option value="STRING">STRING</option>
+							<option value="SET">SET</option>
+							<option value="COMPLEX">COMPLEX</option>
 						</select>
 					</div>
 				</div>
@@ -161,7 +166,7 @@ app.controller('ThingTypePropsController',
 			var columnsConfig = [
 				{label: "Name", field: "displayName", sortable: true},
 				{label: "Data Type", field: PROPERTY_TYPE},
-				{label: "Value Domain Type", field: "valueDomain.type"}
+				{label: "Value Domain", field: "valueDomain.type"}
 			];
 			$scope.gridConfig.data = [];
 			renderUITable($scope.gridConfig, "propsTable", columnsConfig,
@@ -195,7 +200,7 @@ app.controller('ThingTypePropsController',
 				{label: "Name", field: "name", sortable: true},
 				{label: "Thing Type", field: "thingType.name"},
 				{label: "Data Type", field: PROPERTY_TYPE},
-				{label: "Value Domain Type", field: "valueDomain.type"}
+				{label: "Value Domain", field: "valueDomain.type"}
 			];
 			$scope.subGridConfig.data = [];
 			renderUITable($scope.subGridConfig, "propsInheritedTable", columnsConfig);
