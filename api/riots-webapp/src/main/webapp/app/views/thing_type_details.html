@@ -219,11 +219,13 @@
     $scope.addClickHandler("btnThingTypeAddImg", addThingTypeImg);
     $scope.addClickHandler("btnDevTypeAddFeature", addThingTypeFeature);
     $scope.$watch("shared.selectedThingType", function () {
-      $log.info("Watching selected thingtype: ", $scope.shared.selectedThingType);
-      console.dir($scope.shared.selectedThingType);
-      if ($scope.shared.selectedThingType && $scope.shared.selectedThingType.tags) {
-        $log.debug("Applying tags for ThingType: ", $scope.shared.selectedThingType);
-        $.each($scope.shared.selectedThingType.tags, function (idx, el) {
+      var thingType = $scope.shared.selectedThingType;
+      if(!thingType)
+        return;
+      console.dir(thingType);
+      if (thingType && thingType.tags) {
+        $log.debug("Applying tags for ThingType: ", thingType);
+        $.each(thingType.tags, function (idx, el) {
           $log.debug("Adding tag " + el);
           $("#devTypeTags").tagsinput("add", el);
         });

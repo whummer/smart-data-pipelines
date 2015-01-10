@@ -122,6 +122,8 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
     static {
         /* TODO: put into config file or database */
         userRoleMappings.add(new UserRoleMapping("hummer@infosys.tuwien.ac.at", Role.ROLE_ADMIN));
+        userRoleMappings.add(new UserRoleMapping("dev@riox.io", Role.ROLE_ADMIN));
+        userRoleMappings.add(new UserRoleMapping("olzn23@gmail.com", Role.ROLE_ADMIN));
         userRoleMappings.add(new UserRoleMapping(".*", Role.ROLE_USER));
     }
     static {
@@ -282,7 +284,8 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
 			/* authentication done, now perform authorization */
             boolean isAuthorized = authorize(uri, authInfo);
             if(!isAuthorized) {
-            	return false;
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                return false;
             }
 
 			/* append additional infos to request */
@@ -299,7 +302,9 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
     		String role = requiredRoleForResources.get(pattern);
     		if(uriPath.matches(pattern)) {
     			if(!authInfo.roles.contains(role)) {
-    				LOG.info("Access denied: Required role '" + role + "' not present for resource: " + uriPath);
+    				LOG.info("Access denied: User '" + authInfo.email + 
+    						"' misses required role '" + role + 
+    						"' for resource: " + uriPath);
     				return false;
     			}
     		}
