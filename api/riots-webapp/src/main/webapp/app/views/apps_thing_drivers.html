@@ -1,5 +1,10 @@
 <section ng-controller="ThingDriverController">
 
+  <div class="alert alert-warning alert-dismissible" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <b><i>Riots Drivers</i></b> enable you to connect a communication technology (e.g. MQTT) to your things. If you want to simulate the data a thing generates, chose <b><i>Simulation (Riots)</i></b> below.
+  </div>
+
   <div ng-show="shared.selectedThing">
 
     <div id="thingPropsTable" ui-grid="gridConfig" ui-grid-selection ui-grid-edit ui-grid-row-edit

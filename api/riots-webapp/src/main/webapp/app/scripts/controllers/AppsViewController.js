@@ -1,8 +1,8 @@
 
 define(['app'], function(app) {
 	app.controller('AppsViewController', [
-		'$scope', '$http', '$compile', '$routeParams',
-		function($scope, $http, $compile, $routeParams) {
+		'$scope', '$http', '$compile', '$routeParams', '$log', '$location',
+		function($scope, $http, $compile, $routeParams, $log, $location) {
 
 			AppController($scope, $http, $compile);
 			//World3DController($scope, $http, $compile);
@@ -90,7 +90,26 @@ define(['app'], function(app) {
                     console.log(data.result)
 					$scope.userInfo = data.result;
 				});
-			}
+			};
+
+            var deleteApp = function () {
+                var app = clone($scope.shared.selectedApplication);
+
+                var location = "home";
+                $log.warn("About to delete application: ", app);
+                $log.debug("Redirecting to location afterwards: ", location);
+
+                showConfirmDialog("Do you really want to delete this application?", function () {
+                    riots.delete.app(app.id, function(newApp) {
+                        $log.debug("Successfully delete app ", app.name);
+                        $location.path(location);
+                    });
+                });
+            };
+
+            $scope.addClickHandler("btnDeleteApp", deleteApp);
+
+
 			loadUserInfo();
 
 		}

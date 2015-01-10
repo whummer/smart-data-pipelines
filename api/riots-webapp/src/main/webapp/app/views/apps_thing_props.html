@@ -1,134 +1,154 @@
-<section ng-controller="ThingPropsController" style="height: 100%">
+<div class="alert alert-warning alert-dismissible" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  Below you can to edit the basic properties of your selected thing. Those properties are derived from the underlying thing type. If the table
+  on the left side is empty, start by clicking <i>Add Thing to Application</i>
+</div>
 
-	<div ng-show="shared.selectedThing">
+<div class="row" ng-show="shared.selectedThing">
+  <div class="col-sm-12">
+    <section ng-controller="ThingPropsController">
+      <form class="form-horizontal">
 
-		<!-- ID -->
-		<div class="form-group">
-			<label for="inputId" class="col-sm-3 control-label">ID:</label>
-			<div class="col-sm-9">
-				<input id="inputId" class="form-control input-sm"
-					ng-model="shared.selectedThing.id" disabled="disabled" />
-			</div>
-		</div>
+        <!-- ID -->
+        <div class="form-group">
+          <label for="inputId" class="control-label col-sm-2">ID:</label>
 
-		<!-- name -->
-		<div class="form-group">
-			<label for="inputName" class="col-sm-3 control-label">Name:</label>
-			<div class="col-sm-9">
-				<input id="inputName" class="form-control input-sm"
-					ng-model="shared.selectedThing.name" />
-			</div>
-		</div>
+          <div class="col-sm-10">
+            <input id="inputId" class="form-control input-sm col-sm-10"
+                   ng-model="shared.selectedThing.id" disabled="disabled"/>
+          </div>
+        </div>
 
-		<!-- type -->
-		<div class="form-group">
-			<label for="inputType" class="col-sm-3 control-label">Thing
-				Type:</label>
-			<div class="col-sm-9">
-				<select id="inputType" class="form-control input-sm"
-					ng-options="opt.name for opt in thingTypes track by opt.id"
-					ng-model="selectedThingType">
-				</select>
-			</div>
-		</div>
+        <!-- name -->
+        <div class="form-group">
+          <label for="inputName" class="control-label col-sm-2">Name:</label>
 
-		<!-- type -->
-		<div class="form-group" ng-show="shared.selectedThing[CREATION_DATE]">
-			<label for="inputType" class="col-sm-3 control-label">Creation
-				Date:</label>
-			<div class="col-sm-9">
-				{{formatTime(shared.selectedThing[CREATION_DATE])}}</div>
-		</div>
+          <div class="col-sm-10">
+            <input id="inputName" class="form-control input-sm"
+                   ng-model="shared.selectedThing.name"/></div>
+        </div>
 
-		<!-- save -->
-		<div class="form-group">
-			<label for="btnSave" class="col-sm-3 control-label"></label>
-			<div class="col-sm-9">
-				<button class="btn btn-default btn-sm btn-primary" id="btnSave">Save</button>
-			</div>
-		</div>
+        <!-- type -->
+        <div class="form-group">
+          <label for="inputType" class="control-label col-sm-2">Thing Type:</label>
 
-		<!--
-		<table>
-			<tr>
-				<td>Geometry:</td>
-				<td>
-					<select id="selThingGeometry" class="form-control input-sm"
-						ng-model="shared.selectedThing.geometry">
-						<option value="box">Box/Cube</span>
-						<option value="person">Person</span>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td>Location (lat,lon,alt):</td>
-				<td>
-					<input class="form-control input-sm" style="width: 70px" ng-model="shared.selectedThing.location.latitude" />,
-					<input class="form-control input-sm" style="width: 70px" ng-model="shared.selectedThing.location.longitude" />,
-					<input class="form-control input-sm" style="width: 70px" ng-model="shared.selectedThing.location.altitude" />
-				</td>
-			</tr>
-			<tr>
-				<td>Creator:</td>
-				<td>{{shared.selectedThing.creator.name}}</td>
-			</tr><tr>
-				<td>Properties:</td>
-				<td>{{shared.selectedThing.properties}}</td>
-			</tr><tr>
-				<td>Tags:</td>
-				<td>{{shared.selectedThing.tags}}</td>
-			</tr>
-		</table>
-			-->
-	</div>
+          <div class="col-sm-10">
+            <select id="inputType" class="form-control input-sm"
+                    ng-options="opt.name for opt in thingTypes track by opt.id"
+                    ng-model="selectedThingType">
 
-</section>
+            </select>
+          </div>
+        </div>
+
+        <!-- type -->
+        <div class="form-group" ng-show="shared.selectedThing[CREATION_DATE]">
+          <label for="inputType" class="control-label col-sm-2">Created:</label>
+
+          <div class="col-sm-10">
+            <input class="form-control input-sm col-sm-10" disabled="disabled" value="{{formatTime(shared.selectedThing[CREATION_DATE])}}"/>
+          </div>
+        </div>
+
+        <!-- save -->
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <button class="btn btn-sm btn-primary pull-right" id="btnSave"><span class="glyphicon glyphicon-ok"></span> Save Thing Details</button>
+          </div>
+        </div>
+      </form>
+
+      <!-- TODO display image of selected thing (type) here
+      <div ng-show="selectedThingType">
+        <img class="img-responsive" style="max-width: 200px;" ng-src="{{selectedThingType[IMAGE_DATA][0].href}}" alt="{{selectedThingType.name}}"/>
+        <code>{{selectedThingType[IMAGE_DATA][0].href}}</code>
+      </div>
+      -->
+    </section>
+  </div>
+</div>
+
+
+<!--
+        <table>
+          <tr>
+            <td>Geometry:</td>
+            <td>
+              <select id="selThingGeometry" class="form-control input-sm"
+                ng-model="shared.selectedThing.geometry">
+                <option value="box">Box/Cube</span>
+                <option value="person">Person</span>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>Location (lat,lon,alt):</td>
+            <td>
+              <input class="form-control input-sm" style="width: 70px" ng-model="shared.selectedThing.location.latitude" />,
+              <input class="form-control input-sm" style="width: 70px" ng-model="shared.selectedThing.location.longitude" />,
+              <input class="form-control input-sm" style="width: 70px" ng-model="shared.selectedThing.location.altitude" />
+            </td>
+          </tr>
+          <tr>
+            <td>Creator:</td>
+            <td>{{shared.selectedThing.creator.name}}</td>
+          </tr><tr>
+            <td>Properties:</td>
+            <td>{{shared.selectedThing.properties}}</td>
+          </tr><tr>
+            <td>Tags:</td>
+            <td>{{shared.selectedThing.tags}}</td>
+          </tr>
+        </table>
+          -->
 
 
 <script type="text/javascript">
-	var app = angular.module("app");
-	app.controller('ThingPropsController', [
-			'$scope', '$http', '$compile',
-			function($scope, $http, $compile) {
+  var app = angular.module("app");
+  app.controller('ThingPropsController', [
+    '$scope', '$http', '$compile', '$log',
 
-				AppController($scope, $http, $compile);
-				$scope.CREATION_DATE = CREATION_DATE;
-				$scope.THING_TYPE = THING_TYPE;
-				$scope.selectedThingType = null;
+    function ($scope, $http, $compile, $log) {
 
-				var saveThingDetails = function() {
-					var thing = $scope.shared.selectedThing;
-					thing[THING_TYPE] = $scope.selectedThingType;
-					thing = clone(thing);
-					if (thing[THING_TYPE]) {
-						thing[THING_TYPE] = thing[THING_TYPE].id;
-					}
-					$scope.updateThingInDB(thing, function(thing) {
-						var event = {
-							changedItem : $scope.shared.selectedThing
-						}
-						eventBus.publish("addOrDel.Asset", event);
-					});
-				};
+      AppController($scope, $http, $compile);
+      $scope.CREATION_DATE = CREATION_DATE;
+      $scope.THING_TYPE = THING_TYPE;
+      $scope.selectedThingType = null;
 
-				loadThingTypes = function() {
-					invokeGET($scope.http, $scope.thingTypesAPI, function(data,
-							status, headers, config) {
-						$scope.thingTypes = data.result;
-					});
-				}
+      var saveThingDetails = function () {
+        var thing = $scope.shared.selectedThing;
+        thing[THING_TYPE] = $scope.selectedThingType;
+        thing = clone(thing);
+        if (thing[THING_TYPE]) {
+          thing[THING_TYPE] = thing[THING_TYPE].id;
+        }
+        $scope.updateThingInDB(thing, function (thing) {
+          var event = {
+            changedItem: $scope.shared.selectedThing
+          }
+          eventBus.publish("addOrDel.Asset", event);
+        });
+      };
 
-				/* add event handlers */
-				$scope.addClickHandler("btnSave", saveThingDetails);
-				$scope.$watch("shared.selectedThing", function() {
-					var thing = $scope.shared.selectedThing;
-					if(!thing || !thing[THING_TYPE]) return;
-					var thingType = thing[THING_TYPE];
-					$scope.selectedThingType = thingType;
-				});
+      loadThingTypes = function () {
+        invokeGET($scope.http, $scope.thingTypesAPI, function (data,
+                                                               status, headers, config) {
+          $scope.thingTypes = data.result;
+        });
+      }
 
-				/* start rendering the main container */
-				loadThingTypes();
+      /* add event handlers */
+      $scope.addClickHandler("btnSave", saveThingDetails);
+      $scope.$watch("shared.selectedThing", function () {
+        var thing = $scope.shared.selectedThing;
+        if (!thing || !thing[THING_TYPE]) return;
+        var thingType = thing[THING_TYPE];
+        $scope.selectedThingType = thingType;
+        $log.debug("Selected Thing: ", $scope.selectedThingType);
+      });
 
-			} ]);
+      /* start rendering the main container */
+      loadThingTypes();
+
+    }]);
 </script>

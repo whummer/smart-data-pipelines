@@ -1,13 +1,16 @@
 
-<section ng-controller="ThingsController" style="height: 100%">
+<section ng-controller="ThingsController">
 
-	<div style="height: 100%">
-		<div style="padding-bottom: 15px;">
-			<button class="btn btn-default btn-sm" id="btnAddAsset">Add</button>
-			<button class="btn btn-default btn-sm" id="btnDeleteAsset">Delete</button>
-		</div>
-		<div id="assetsTable" ui-grid="tableOptions" ui-grid-selection ui-grid-edit ui-grid-row-edit class="grid" style="height: 80%"></div>
+  <!-- Thing Table -->
+	<div>
+		<div id="assetsTable" ui-grid="tableOptions" ui-grid-selection ui-grid-edit ui-grid-row-edit class="grid"></div>
 	</div>
+
+  <!-- Add/Delete Thing buttons -->
+  <div style="padding-bottom: 15px;">
+    <button class="btn btn-primary btn-sm" id="btnAddAsset"><span class="glyphicon glyphicon-plus"></span> Add Thing to Application</button>
+    <button class="btn btn-warning btn-sm" id="btnDeleteAsset"><span class="glyphicon glyphicon-minus"></span> Remove Thing from Application</button>
+  </div>
 
 </section>
 

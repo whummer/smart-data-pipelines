@@ -1,93 +1,91 @@
 <section ng-controller="AppsController">
-    <div>
+  <div>
 
-        <div ng-show="shared.selectedApplication">
+    <div ng-show="shared.selectedApplication">
 
-            <form class="form-horizontal" role="form" style="text-align: left">
+      <form class="form-horizontal" role="form" style="text-align: left">
 
-                <!-- app name -->
-                <div class="form-group">
-                    <label for="inputAppName" class="col-sm-3 control-label">Name</label>
-                    <div class="col-sm-9">
-                        <input id="inputAppName" class="form-control input-sm" ng-model="shared.selectedApplication.name"/>
-                    </div>
-                </div>
+        <!-- app name -->
+        <div class="form-group">
+          <label for="inputAppName" class="col-sm-3 control-label">Name</label>
 
-                <!-- creation date -->
-                <div class="form-group" ng-show="shared.selectedApplication[CREATION_DATE]">
-                    <label for="inputAppName" class="col-sm-3 control-label">Created</label>
-                    <div class="col-sm-9">
-                    	{{formatTime(shared.selectedApplication[CREATION_DATE])}}
-                    </div>
-                </div>
+          <div class="col-sm-9">
+            <input id="inputAppName" class="form-control input-sm" ng-model="shared.selectedApplication.name"/>
+          </div>
+        </div>
 
-                <!-- app key -->
-                <div class="form-group">
-                    <label for="inputAppKey" class="col-sm-3 control-label">App Key</label>
-                    <div class="col-sm-9">
-                        <input id="inputAppKey" class="form-control input-sm" ng-model="shared.selectedApplication.appKey" disabled="disabled"/>
-                    </div>
-                </div>
+        <!-- creation date -->
+        <div class="form-group" ng-show="shared.selectedApplication[CREATION_DATE]">
+          <label for="created" class="col-sm-3 control-label">Created</label>
 
-                <!-- JS -->
-                <div class="form-group">
-                    <label for="propName" class="col-sm-3 control-label">JavaScript Code</label>
-                    <div class="col-sm-9">
-<pre>window.RIOTS_USER_ID = "{{userInfo.id}}"
-window.RIOTS_APP_KEY = "{{shared.selectedApplication.appKey}}"</pre>
-                    </div>
-                </div>
+          <div class="col-sm-9">
+            <input id="created" class="form-control input-sm" type="text" disabled="disabled" value="{{formatTime(shared.selectedApplication[CREATION_DATE])}}"/>
+          </div>
+        </div>
 
-                <!-- save -->
-                <div class="form-group">
-                    <label for="propName" class="col-sm-3 control-label"></label>
-                    <div class="col-sm-9">
-			            		<button class="btn btn-primary btn-sm" id="btnSaveApp">Update</button>
-			            		<button class="btn btn-danger btn-sm" id="btnDeleteApp">Delete</button>			            		
-                    </div>
-                </div>
+        <!-- app key -->
+        <div class="form-group">
+          <label for="inputAppKey" class="col-sm-3 control-label">App Key</label>
 
-       		</form>
-    	</div>
+          <div class="col-sm-9">
+            <div class="input-group">
+            <input id="inputAppKey" class="form-control input-sm" ng-model="shared.selectedApplication.appKey" disabled="disabled"/>
+            <div class="input-group-addon">
+              <a id="copyApiKeyToClipboard" href="JavaScript:void(0)" data-container="body" data-toggle="popover" data-trigger="focus" data-placement="right"
+                 data-content="Your API key has been copied to your clipboard. Go ahead and do something with it"
+                 title="API key copied" ><span class="glyphicon glyphicon-paperclip"></span></a>
+            </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- JS -->
+       <!-- <div class="form-group">
+          <label class="col-sm-3 control-label">JavaScript Code</label>
+
+          <div class="col-sm-9">
+<pre>window.RIOTS_USER_ID =
+  "{{userInfo.id}}"
+window.RIOTS_APP_KEY =
+  "{{shared.selectedApplication.appKey}}"
+</pre>
+          </div>
+        </div>-->
+
+        <!-- save -->
+        <div class="form-group">
+          <label class="col-sm-3 control-label"></label>
+
+          <div class="col-sm-9">
+            <button class="btn btn-primary btn-sm pull-right"  id="btnSaveApp"><span class="glyphicon glyphicon-ok"></span> Update Application</button>
+          </div>
+        </div>
+      </form>
+
     </div>
+  </div>
 </section>
-<style type="text/css">
-#AppsTable {
-	height: 150px;
-}
-</style>
+
 <script type="text/javascript">
 
-var app = angular.module("app");
-app.controller('AppsController', function ($scope, $http, $compile, $routeParams, $log, $location) {
+  var app = angular.module("app");
+  app.controller('AppsController', function ($scope, $http, $compile, $routeParams, $log, $location) {
     AppController($scope, $http, $compile);
 
     $scope.CREATION_DATE = CREATION_DATE;
 
-    var deleteApp = function () {
-    	var app = clone($scope.shared.selectedApplication);
-
-      var location = "home";
-      $log.warn("About to delete application: ", app);
-      $log.debug("Redirecting to location afterwards: ", location);
-
-      showConfirmDialog("Do you really want to delete this application?", function () {
-        riots.delete.app(app.id, function(newApp) {
-          $log.debug("Successfully delete app ", app.name);
-          $location.path(location);
-        });
-      });
-    };
 
     var saveApp = function () {
-    	var app = clone($scope.shared.selectedApplication);
-    	delete app["$$hashKey"];
-    	riots.save.app(app);
+      var app = clone($scope.shared.selectedApplication);
+      delete app["$$hashKey"];
+      riots.save.app(app);
     };
 
-	/* add event listeners */
+    /* add event listeners */
     $scope.addClickHandler("btnSaveApp", saveApp);
-    $scope.addClickHandler("btnDeleteApp", deleteApp);
-});
+
+    $('#copyApiKeyToClipboard').popover()
+
+  });
 
 </script>

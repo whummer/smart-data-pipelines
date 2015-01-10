@@ -1,83 +1,100 @@
 <section ng-controller="TriggerDetailsController">
-	<div ng-show="shared.selectedTrigger" style="height: 100%">
 
-		<!-- type -->
-		<div class="form-group">
-			<label for="inputId" class="col-sm-3 control-label">ID:</label>
-			<div class="col-sm-9">
-				<input id="inputId" class="form-control input-sm" disabled="distabled"
-					ng-model="shared.selectedTrigger.id" />
-			</div>
-		</div>
+  <div class="alert alert-warning alert-dismissible" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <b><i>Riots Triggers</i></b> allow you to define rules for notifications that alert you about certain situations of interest, such as a vehicle leaving a virtual perimeter.
+  </div>
 
-		<!-- created -->
-		<div class="form-group">
-			<label for="inputDate" class="col-sm-3 control-label">Creation
-				Date:</label>
-			<div class="col-sm-9">
-				<div class="input-sm">{{formatTime(shared.selectedTrigger[CREATION_DATE])}}</div>
-			</div>
-		</div>
+  <div ng-show="shared.selectedTrigger">
 
-		<!-- type -->
-		<div class="form-group">
-			<label for="inputType" class="col-sm-3 control-label">Trigger
-				Type:</label>
-			<div class="col-sm-9">
-				<select id="inputType" class="form-control input-sm"
-					ng-model="shared.selectedTrigger.type">
-					<option value="UNDEFINED"> -- Undefined -- </option>
-					<option value="GEO_FENCE">Geo Fence</option>
-				</select>
-			</div>
-		</div>
+    <form class="form-horizontal">
 
-		<!-- Geo Fence Details -->
-		<div ng-show="shared.selectedTrigger.type == 'GEO_FENCE'">
-			<div class="form-group">
-				<label for="inputType" class="col-sm-3 control-label">Center
-					(lat/lng):</label>
-				<div class="col-sm-9">
-					<table>
-						<tr><td>
-					<input class="form-control input-sm" ng-model="shared.selectedTrigger.center.latitude"/>
-						</td><td>
-						,
-						</td><td>
-					<input class="form-control input-sm" ng-model="shared.selectedTrigger.center.longitude"/>
-						</td></tr>
-					</table>
-				</div>
-			</div>
-		</div>
+      <!-- app name -->
+      <div class="form-group">
+        <label for="inputAppName" class="col-sm-3 control-label">Name</label>
 
-		<!-- save -->
-		<div class="form-group">
-			<label for="btnSave" class="col-sm-3 control-label"></label>
-			<div class="col-sm-9">
-				<button class="btn btn-default btn-sm btn-primary" id="btnSaveTrigger">Save</button>
-			</div>
-		</div>
+        <div class="col-sm-9">
+          <input id="inputAppName" class="form-control input-sm" ng-model="shared.selectedApplication.name"/>
+        </div>
+      </div>
 
-	</div>
+
+      <!-- created -->
+      <div class="form-group">
+        <label for="created" class="col-sm-3 control-label">Created</label>
+        <div class="col-sm-9">
+          <input id="created" class="form-control input-sm" type="text" disabled="disabled" value="{{formatTime(shared.selectedTrigger[CREATION_DATE])}}"/>
+        </div>
+      </div>
+
+      <!-- type -->
+      <div class="form-group">
+        <label for="inputType" class="col-sm-3 control-label">Trigger
+          Type:</label>
+
+        <div class="col-sm-9">
+          <select id="inputType" class="form-control input-sm"
+                  ng-model="shared.selectedTrigger.type">
+            <option value="UNDEFINED"> -- Undefined --</option>
+            <option value="GEO_FENCE">Geo Fence</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Geo Fence Details -->
+      <div ng-show="shared.selectedTrigger.type == 'GEO_FENCE'">
+        <div class="form-group">
+          <label for="inputType" class="col-sm-3 control-label">Center
+            (lat/lng):</label>
+
+          <div class="col-sm-9">
+            <table >
+              <tr>
+                <td>
+                  <input class="form-control input-sm" ng-model="shared.selectedTrigger.center.latitude"/>
+                </td>
+                <td>
+                  ,
+                </td>
+                <td>
+                  <input  class="form-control input-sm" ng-model="shared.selectedTrigger.center.longitude"/>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- save -->
+      <div class="form-group">
+        <label for="btnSaveTrigger" class="col-sm-3 control-label"></label>
+
+        <div class="col-sm-9">
+          <button class="pull-right btn btn-sm btn-primary input-sm" id="btnSaveTrigger"><span class="glyphicon glyphicon-ok"></span> Save</button>
+        </div>
+      </div>
+    </form>
+
+  </div>
 </section>
+
 <script type="text/javascript">
-var app = angular.module("app");
-app.controller('TriggerDetailsController', [ '$scope', '$http', '$compile',
-	function($scope, $http, $compile) {
+  var app = angular.module("app");
+  app.controller('TriggerDetailsController', ['$scope', '$http', '$compile',
+    function ($scope, $http, $compile) {
 
-		AppController($scope, $http, $compile);
+      AppController($scope, $http, $compile);
 
-		var saveTrigger = function() {
-			var item = clone($scope.shared.selectedTrigger);
-			delete item["$$hashKey"];
-			riots.save.trigger(item, function() {
-				console.log("trigger saved");
-			});
-		}
+      var saveTrigger = function () {
+        var item = clone($scope.shared.selectedTrigger);
+        delete item["$$hashKey"];
+        riots.save.trigger(item, function () {
+          console.log("trigger saved");
+        });
+      }
 
-		/* register event handlers */
-        $scope.addClickHandler("btnSaveTrigger", saveTrigger);
-	}
-]);
+      /* register event handlers */
+      $scope.addClickHandler("btnSaveTrigger", saveTrigger);
+    }
+  ]);
 </script>

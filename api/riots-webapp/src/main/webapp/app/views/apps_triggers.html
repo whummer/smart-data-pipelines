@@ -1,20 +1,21 @@
 <section ng-controller="TriggersController">
 	<div>
-		<div style="padding-bottom: 15px;">
-			<button class="btn btn-default btn-sm" id="btnAddTrigger">Add</button>
-			<button class="btn btn-default btn-sm" id="btnDeleteTrigger">Delete</button>
-		</div>
 		<div id="funcsTable" ui-grid="tableOptions" ui-grid-selection ui-grid-edit ui-grid-row-edit class="grid"></div>
+
+    <div style="margin-top: 15px;">
+      <button class="btn btn-primary btn-sm" id="btnAddTrigger"><span class="glyphicon glyphicon-plus"></span> Add Trigger to Application</button>
+      <button class="btn btn-warning btn-sm"  id="btnDeleteTrigger"><span class="glyphicon glyphicon-minus"></span> Remove Trigger from Application</button>
+    </div>
 	</div>
 	<div ng-show="shared.selectedTrigger">
 		<!-- TODO -->
 	</div>
 </section>
-<style type="text/css">
+<!--<style type="text/css">
 #funcsTable {
 	height: 150px;
 }
-</style>
+</style>-->
 <script type="text/javascript">
 
 	var app = angular.module("app");

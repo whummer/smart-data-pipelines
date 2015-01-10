@@ -1,0 +1,33 @@
+<section ng-controller="AppsDetailsOverviewController">
+  <accordion close-others="oneAtATime">
+    <accordion-group heading="Overview for {{shared.selectedApplication.name}}" is-open="status.isFirstOpen">
+      Here are some facts about your application <code>{{shared.selectedApplication.name}}</code>:
+
+    </accordion-group>
+    <accordion-group heading="User-ID and API Keys" >
+      To integrate this application, use the following values in your JavaScript files:<br/>
+      <pre style="margin-top: 15px">
+window.RIOTS_USER_ID = "{{userInfo.id}}"
+window.RIOTS_APP_KEY = "{{shared.selectedApplication.appKey}}"</pre>
+      <button id="copyUserIdAppKeyToClipboard" class="btn btn-primary btn-sm" data-container="body" data-toggle="popover" data-trigger="focus" data-placement="right"
+         data-content="Your API key and UserID have been copied to your clipboard. Go ahead and do something with it"
+         title="API key and UserID copied" ><span class="glyphicon glyphicon-paperclip"></span> Copy to clipboard</button>
+    </accordion-group>
+    <accordion-group heading="Miscellaneous" >
+      There will be more content for sure
+    </accordion-group>
+</section>
+
+<script type="text/javascript">
+  var app = angular.module("app");
+  app.controller('AppsDetailsOverviewController', function ($scope, $http, $compile, $routeParams, $log, $location) {
+    AppController($scope, $http, $compile);
+    $scope.oneAtATime = true;
+    $scope.status = {
+      isFirstOpen: true,
+      isFirstDisabled: false
+    };
+  });
+
+  $('#copyUserIdAppKeyToClipboard').popover();
+</script>
