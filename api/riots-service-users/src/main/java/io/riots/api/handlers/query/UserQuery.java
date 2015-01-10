@@ -3,10 +3,13 @@ package io.riots.api.handlers.query;
 import io.riots.core.repositories.UserRepository;
 import io.riots.services.users.User;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.google.common.collect.Iterables;
 
 /**
  * @author whummer
@@ -41,6 +44,11 @@ public class UserQuery {
 
 	public long getCount() {
 		return repository.count();
+	}
+
+	public List<User> find() {
+		return Arrays.asList(Iterables.toArray(
+				repository.findAll(), User.class));
 	}
 
 }

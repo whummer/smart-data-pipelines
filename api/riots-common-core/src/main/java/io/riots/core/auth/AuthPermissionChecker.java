@@ -47,6 +47,7 @@ public class AuthPermissionChecker implements PermissionEvaluator {
     public boolean hasPermission(Authentication authentication,
                                  Object targetDomainObject, Object permission) {
 
+		System.out.println("pre-authorize hasPermission!!");
         AuthInfo info = (AuthInfo) authentication.getDetails();
         if (info.user == null) {
 //			info.user = AuthFilter.getRequestingUser(info.email, info.userName,

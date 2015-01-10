@@ -68,6 +68,12 @@
 			<artifactId>swagger-core_2.10</artifactId>
 			<version>${swagger.version}</version>
 		</dependency>
+		
+		<!-- Spring security -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>

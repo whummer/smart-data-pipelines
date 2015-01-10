@@ -20,5 +20,4 @@
 
     <aop:aspectj-autoproxy/>
 
-    <security:http auto-config="true" security="none"/>
 </beans>

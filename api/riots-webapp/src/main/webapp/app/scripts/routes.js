@@ -73,6 +73,12 @@ define([], function() {
                 dependencies: [
                     appRoot + '/scripts/controllers/ConnectViewController.js'
                 ]
+            },
+            '/admin': {
+                templateUrl: appRoot + '/views/admin.html',
+                dependencies: [
+                    appRoot + '/scripts/controllers/AdminViewController.js'
+                ]
             }
         }
     };

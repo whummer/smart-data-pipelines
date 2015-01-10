@@ -1,5 +1,7 @@
 package io.riots.api.services;
 
+import java.util.List;
+
 import io.riots.api.handlers.query.UserQuery;
 import io.riots.core.auth.AuthHeaders;
 import io.riots.services.UsersService;
@@ -42,6 +44,13 @@ public class UsersServiceImpl implements UsersService {
     public User findByID(String id) {
     	User u = userQuery.findById(id);
     	return u;
+    }
+
+    @Override
+    @Timed @ExceptionMetered
+    public List<User> listUsers() {
+    	List<User> users = userQuery.find();
+    	return users;
     }
 
     @Override

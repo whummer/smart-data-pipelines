@@ -1,0 +1,15 @@
+<section ng-controller="AdminViewController">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h2 class="panel-title">
+				<span class="glyphicon glyphicon-edit"></span>
+				<b>Administration</b>
+			</h2>
+		</div>
+		<div class="panel-body">
+			<tabset> <tab heading="Users"> <ng-include
+				src="appConfig['appRootPath'] + '/views/admin_users.html'"></ng-include>
+			</tab> </tabset>
+		</div>
+	</div>
+</section>
