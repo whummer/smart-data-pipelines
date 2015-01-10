@@ -31,7 +31,7 @@
 		infinite-scroll-disabled='thingTypes.busy'
 		infinite-scroll-immediate-check="true" infinite-scroll-distance='0'>
 
-		<div class="panel panel-info" ng-hide="thingTypes.items.length">
+		<div class="panel panel-info" ng-show="!thingTypes.items.length && !thingTypes.busy">
 			<div class="panel-heading">
 				<div class="panel-title">
 					<b>No Results</b>
