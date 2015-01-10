@@ -110,6 +110,8 @@ eureka:
 
 ribbon:
   ServerListRefreshInterval: 5000
+  ConnectTimeout: 10000
+  ReadTimeout: 40000
   
 spring:
   application:

@@ -45,7 +45,7 @@
 			</td></tr>
 			<tr ng-show="curPropSim.type == 'FUNCTIONBASED'"><td>Function f(x):</td><td>
 				<input id="propSimFunc" ng-model="curPropSim.function"
-					class="form-control input-sm" data-dojo-props="style:'width: 300px;'"/>
+					class="form-control input-sm"/>
 			</td></tr>
 			<tr ng-show="curPropSim.type == 'POINTS'"><td style="vertical-align: top;">Step Interval:</td><td>
 				<table>
@@ -56,11 +56,11 @@
 							class="propSimValueValue form-control input-sm"/></td>
 					</tr>
 				</table>
-				<button class="btn btn-default btn-sm" data-dojo-props="iconClass:'icon-plus-sign'" id="btnAddPropSimValue">Add Value</button>
+				<button class="btn btn-default btn-sm" id="btnAddPropSimValue">Add Value</button>
 			</td></tr>
 			<tr><td></td><td>
-				<button class="btn btn-default btn-sm" data-dojo-props="iconClass:'icon-bar-chart'" id="btnPreviewPropSim">Preview Curve</button>
-				<button class="btn btn-default btn-sm btn-primary" data-dojo-props="iconClass:'icon-save'" id="btnSavePropSim">Save</button></td>
+				<button class="btn btn-default btn-sm" id="btnPreviewPropSim">Preview Curve</button>
+				<button class="btn btn-default btn-sm btn-primary" id="btnSavePropSim">Save</button></td>
 			</tr>
 		</table>
 	</div>

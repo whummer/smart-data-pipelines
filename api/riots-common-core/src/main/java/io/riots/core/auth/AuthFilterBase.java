@@ -224,7 +224,7 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
                 return false;
         	}
         	
-        	System.out.println("Access protected resource with auth info: " + requestInfo);
+        	//System.out.println("Access protected resource with auth info: " + requestInfo);
 
             /*
              * attempt to get token from cache

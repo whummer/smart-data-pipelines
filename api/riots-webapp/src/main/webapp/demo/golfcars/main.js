@@ -104,6 +104,9 @@ app.controller('MainCtrl', function ($scope) {
 					thing.properties = {};
 					subscribeProp(thing, "location.latitude");
 					subscribeProp(thing, "location.longitude");
+					subscribeProp(thing, "pressure");
+					subscribeProp(thing, "temperature");
+					subscribeProp(thing, "batteryPercent");
 					subscribeProp(thing, GEO_FENCE);
 					riots.thingType(thing[THING_TYPE], function(thingType) {
 						if(!thingType) return;

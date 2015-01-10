@@ -64,8 +64,8 @@
 					<td><img ng-src="{{thing.img}}" style="height: 30px;"/></td>
 					<td><a href="http://platform.riots.io:8080/#/world/{{thing.id}}">{{thing.name}}</a></td>
 					<td>{{thing.properties['location.latitude']}},{{thing.properties['location.longitude']}}</td>
-					<td>{{thing.properties.battery}}</td>
-					<td>{{thing.properties.tirePressure}}</td>
+					<td>{{thing.properties.batteryPercent}} %</td>
+					<td>{{thing.properties.pressure}} %</td>
 					<td>{{thing.properties.isInCurrentGeoFence}}</td>
 				</tr>
 				</table>

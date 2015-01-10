@@ -23,6 +23,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiResponse;
@@ -166,6 +167,17 @@ public interface SimulationService {
             response = PropertySimulation.class)
     TimelineValues<PropertyValue> generateCurve(PropertySimulation<?> r);
 
+    public static class GpsTraceOptions {
+    	@JsonProperty
+    	public int numVehicles;
+    	@JsonProperty
+    	public double lat;
+    	@JsonProperty
+    	public double lon;
+    	@JsonProperty
+    	public double diameter;
+    }
+
     @POST
     @Path("/gen/traffic")
     @Produces(MediaType.APPLICATION_JSON)
@@ -175,7 +187,7 @@ public interface SimulationService {
             		+ "realistic traffic simulations for a given area "
             		+ "(GPS coordinates of the center location plus vicinity from the center).",
             response = TrafficTraces.class)
-    TrafficTraces generateCurve(int numVehicles, double lat, double lon, double vicinity);
+    TrafficTraces generateCurve(GpsTraceOptions options);
 
     /* SIMULATION EXECUTION CONTROL */
     
