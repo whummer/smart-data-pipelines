@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component;
  * 
  * @author whummer
  */
-@Component
+//@Component
 public class EventBroker {
 
 	static final Logger LOG = Logger.getLogger(EventBroker.class);

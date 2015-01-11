@@ -24,7 +24,7 @@ public class DataInserter {
     @Context
     MessageContext context;
 	@Autowired
-	EventBroker eventBroker;
+	EventBrokerComponent eventBroker;
 
 	public URI postValue(PropertyValue propValue) {
 		if(propValue.getTimestamp() <= 0) {

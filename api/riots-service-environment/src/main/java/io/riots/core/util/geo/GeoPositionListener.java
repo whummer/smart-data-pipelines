@@ -1,5 +1,6 @@
 package io.riots.core.util.geo;
 
+import io.riots.api.events.EventBrokerComponent;
 import io.riots.api.services.jms.EventBroker;
 import io.riots.api.util.JSONUtil;
 import io.riots.services.model.Location;
@@ -36,7 +37,7 @@ public class GeoPositionListener {
 	final Map<String,Location> thingLocations = new ConcurrentHashMap<String,Location>();
 
 	@Autowired
-    EventBroker eventBroker;
+    EventBrokerComponent eventBroker;
 
 	@JmsListener(containerFactory = EventBroker.CONTAINER_FACTORY_NAME, 
 			destination = EventBroker.MQ_OUTBOUND_PROP_CHANGE_NOTIFY)

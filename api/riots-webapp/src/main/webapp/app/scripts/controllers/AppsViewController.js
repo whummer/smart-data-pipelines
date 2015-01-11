@@ -97,8 +97,6 @@ define(['app'], function(app) {
                 var app = clone($scope.shared.selectedApplication);
 
                 var location = "home";
-                $log.warn("About to delete application: ", app);
-                $log.debug("Redirecting to location afterwards: ", location);
 
                 showConfirmDialog("Do you really want to delete this application?", function () {
                     riots.delete.app(app.id, function(newApp) {

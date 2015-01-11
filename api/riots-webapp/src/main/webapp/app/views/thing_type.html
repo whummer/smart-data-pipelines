@@ -68,8 +68,6 @@
               thingType = JSON.parse(JSON.stringify(thingType));
               thingType = $scope.prepareModelValues(thingType);
               invokePUT($scope.http, $scope.thingTypesAPI, JSON.stringify(thingType), function (data, status, headers, config) {
-                        $log.info("Invoked PUT for ThingType ", thingType);
-                        $log.debug("Reloaded all thing types after saveThingType(). Location: ", $location);
                         $location.path("catalog");
                       }
               );

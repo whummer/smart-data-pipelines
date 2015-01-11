@@ -92,12 +92,18 @@
         return;
       }
       var theThingType = $scope.shared.selectedThingType;
+      $scope.childrenAll = [];
       if (theThingType.children) {
         $.each(theThingType.children, function (idx, el) {
           if (el.id) {
             $scope.childrenAll.push(el);
           } else {
-            $scope.childrenAll.push(riots.thingType(el, null, API_CACHE_DEFAULT));
+            riots.thingType(el, function(thingTypeChild) {
+            	$scope.childrenAll.push(thingTypeChild);
+            	if($scope.childrenAll.length == theThingType.children.length) {
+            		renderTree();
+            	}
+            }, API_CACHE_DEFAULT);
           }
         });
       }
@@ -108,14 +114,18 @@
     // composite thing type visualization
     //
     var prepareTreeData = function () {
-      if(!$scope.shared.selectedThingType) {
+      	var thingType = $scope.shared.selectedThingType;
+    	if(!thingType) {
     	  return;
-      }
+      	}
+    	thingType.children.length != $scope.childrenAll.length
+    	if(thingType.children.length != $scope.childrenAll.length) {
+    		return;
+    	}
       $log.debug("ChildrenAll: ", $scope.childrenAll);
       var childrenWithParentLink = [];
       var doRender = true;
       angular.forEach($scope.childrenAll, function (value, key) {
-    	  console.log("value: " + value);
         if (!value.name || !value[IMAGE_DATA] || !value[IMAGE_DATA][0]) {
         	doRender = false;
         	return;
@@ -153,7 +163,12 @@
     //
     // register event listeners
     //
-    $scope.$watch("thingTypesAll", renderTree);
+    $scope.$watch("childrenAll", function() {
+    	//console.log("$scope.childrenAll", $scope.childrenAll);
+    	if($scope.childrenAll && $scope.childrenAll.length) {
+    		//renderTree();
+    	}
+    });
     $scope.$watch("shared.selectedThingType", function () {
       loadSelects();
     });

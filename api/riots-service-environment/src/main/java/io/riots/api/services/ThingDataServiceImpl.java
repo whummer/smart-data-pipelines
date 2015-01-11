@@ -1,6 +1,7 @@
 package io.riots.api.services;
 
 import io.riots.api.events.DataInserter;
+import io.riots.api.events.EventBrokerComponent;
 import io.riots.api.services.jms.EventBroker;
 import io.riots.core.model.PropertyFinder;
 import io.riots.core.repositories.PropertyValueRepository;
@@ -48,7 +49,7 @@ public class ThingDataServiceImpl implements ThingDataService {
     @Context
     MessageContext context;
 	@Autowired
-	EventBroker eventBroker;
+	EventBrokerComponent eventBroker;
 
 	@Override
     @Timed @ExceptionMetered

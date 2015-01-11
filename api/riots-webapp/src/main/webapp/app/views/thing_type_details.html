@@ -220,7 +220,6 @@
       var thingType = $scope.shared.selectedThingType;
       if(!thingType)
         return;
-      console.dir(thingType);
       if (thingType && thingType.tags) {
         $log.debug("Applying tags for ThingType: ", thingType);
         $.each(thingType.tags, function (idx, el) {

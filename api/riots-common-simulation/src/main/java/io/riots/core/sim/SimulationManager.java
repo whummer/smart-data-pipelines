@@ -36,7 +36,7 @@ public class SimulationManager {
 	 * Autowired JMS template, used for sending messages.
 	 */
 	@Autowired
-	private EventBroker eventBroker;
+	private EventBrokerComponent eventBroker;
 	/**
 	 * Simulation runners.
 	 */
