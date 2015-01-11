@@ -17,6 +17,7 @@ app.controller('MainCtrl', function ($scope) {
 	$scope.diameter = 100;
 	$scope.RIOTS_USER_ID = window.RIOTS_USER_ID;
 	$scope.RIOTS_APP_KEY = window.RIOTS_APP_KEY;
+	$scope.things = [];
 
 	function setupMap() {
 		var defaultLocation = [ 48.19742, 16.37127 ];
@@ -80,6 +81,11 @@ app.controller('MainCtrl', function ($scope) {
 					thing.properties[propName] = data.value;
 					setMarker(thing);
 				}
+				if(propName == "location") {
+					thing.properties["location.latitude"] = data.value.latitude;
+					thing.properties["location.longitude"] = data.value.longitude;
+					setMarker(thing);
+				}
 			});
 		});
 	}
@@ -94,7 +100,16 @@ app.controller('MainCtrl', function ($scope) {
 		return icon;
 	}
 
+	var removeAllMarkers = function() {
+		$.each($scope.things, function(idx,el) {
+			if(el.marker) {
+				$scope.map.removeLayer(el.marker);
+			}
+		});
+	}
+
 	var doLoadThings = function() {
+		removeAllMarkers();
 		riots.things(function(things) {
 			$scope.$apply(function() {
 				$scope.things = things;
@@ -102,6 +117,7 @@ app.controller('MainCtrl', function ($scope) {
 			var callback = function() {
 				$.each(things, function(idx,thing) {
 					thing.properties = {};
+					subscribeProp(thing, "location");
 					subscribeProp(thing, "location.latitude");
 					subscribeProp(thing, "location.longitude");
 					subscribeProp(thing, "pressure");

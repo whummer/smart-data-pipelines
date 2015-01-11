@@ -58,7 +58,6 @@ public class ThingDataServiceImpl implements ThingDataService {
 	@JmsListener(destination = EventBroker.MQ_INBOUND_PROP_UPDATE)
 	public void processSimulationUpdate(Object data) {
 		PropertyValue prop = null;
-		System.out.println("---> prop value update " + data);
 		if(data instanceof String) {
 			prop = JSONUtil.fromJSON((String)data, PropertyValue.class);
 		} else if(data instanceof TextMessage) {

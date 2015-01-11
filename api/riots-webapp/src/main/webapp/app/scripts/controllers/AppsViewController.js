@@ -81,7 +81,9 @@ define(['app'], function(app) {
 			};
 
 			if($routeParams.appId) {
-				$scope.shared.selectedApplication = riots.app($routeParams.appId);
+				riots.app($routeParams.appId, function(app) {
+					$scope.shared.selectedApplication = app;
+				});
 			}
 
 			var loadUserInfo = function() {

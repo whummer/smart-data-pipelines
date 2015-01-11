@@ -160,6 +160,7 @@ public class ElasticCatalogService implements CatalogService {
 	        							 base64String));            	
 	        		imgData.setId(fileId);
 	        		imgData.setHref(ServiceUtil.API_PATH + "files/" + fileId );
+	        		imgData.setBase64String(null); // remove the base64 string explicitly  
 	        	}            	
 	        }
     	}

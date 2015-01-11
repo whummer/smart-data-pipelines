@@ -27,7 +27,7 @@ public class ImageData {
     private String href;
 
     @JsonInclude(Include.NON_EMPTY)
-    @JsonProperty("base64-string")
+    @JsonProperty("base64-string")   
     private String base64String;
 
     @JsonInclude(Include.NON_EMPTY)

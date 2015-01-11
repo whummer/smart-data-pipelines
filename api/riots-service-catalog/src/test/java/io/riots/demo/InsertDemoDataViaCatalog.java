@@ -92,10 +92,10 @@ public class InsertDemoDataViaCatalog {
             simulations = serviceClientFactory.getSimulationsServiceClient();
 
             // TODO uncomment to insert test data into public webapp
-            catalog = serviceClientFactory.getServiceInstanceForURL(
-            		"http://platform.riots.io:8083/api/v1", CatalogService.class);
-            simulations = serviceClientFactory.getServiceInstanceForURL(
-            		"http://platform.riots.io:8086/api/v1", SimulationService.class);
+//            catalog = serviceClientFactory.getServiceInstanceForURL(
+//            		"http://platform.riots.io:8083/api/v1", CatalogService.class);
+//            simulations = serviceClientFactory.getServiceInstanceForURL(
+//            		"http://platform.riots.io:8086/api/v1", SimulationService.class);
 
             WebClient.client(simulations).header(AuthHeaders.HEADER_AUTH_EMAIL, "test@riots.io");
         } catch (Exception e) {
@@ -526,7 +526,7 @@ public class InsertDemoDataViaCatalog {
             propLon.setPropertyType(PropertyType.LOCATION_LON);
             propLon.setActuatable(false).setSensable(true);
             Property propLoc = new Property("location");
-            propLon.setPropertyType(PropertyType.LOCATION);
+            propLoc.setPropertyType(PropertyType.LOCATION);
             propLoc.setActuatable(false).setSensable(true);
             propLoc.addChild(propLat);
             propLoc.addChild(propLon);
@@ -611,7 +611,7 @@ public class InsertDemoDataViaCatalog {
             golfCart.addTag("cart");
             golfCart.addTag("vehicle");
             golfCart.addTag("traffic");
-            golfCart.addChild(wpsSensor.getId());
+            golfCart.addChild(gpsSensor.getId());
             golfCart.addChild(batterySensor.getId());
             golfCart.addChild(pressureSensor.getId());
             golfCart.addChild(temperatureSensor.getId());

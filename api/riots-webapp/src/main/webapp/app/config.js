@@ -36,3 +36,9 @@ var appConfig = {
 		redirect_uri: "http://platform.riots.io:8080/app/views/login_result.html"
 	}
 };
+
+// set websocket URL (for dev./testing):
+if(window.location && window.location.hostname) {
+	appConfig.services.websocket.url = appConfig.services.websocket.url.replace(
+		"platform.riots.io", window.location.hostname);
+}
