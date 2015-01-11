@@ -1,25 +1,19 @@
 <section ng-controller="SimsController">
 	<div>
-
-		<div style="margin-bottom: 10px;" class="text-right">
-			<button class="btn btn-primary btn-sm" id="btnAddSim">
-				<span class="glyphicon glyphicon-plus"></span> Add New Simulation
-			</button>
-			<button class="btn btn-warning btn-sm" id="btnDeleteSim">
-				<span class="glyphicon glyphicon-minus"></span> Delete Simulation
-			</button>
-		</div>
-
 		<!-- table view -->
-		<div id="simTable" ui-grid="gridConfig" ui-grid-selection ui-grid-edit
-			ui-grid-row-edit class="grid"></div>
+		<div id="simTable" style="min-height: 200px" ui-grid="gridConfig" ui-grid-selection ui-grid-edit ui-grid-row-edit class="grid"></div>
+
+    <div style="margin-bottom: 10px;" class="text-right">
+      <button class="btn btn-primary btn-sm" id="btnAddSim">
+        <span class="glyphicon glyphicon-plus"></span> Add New Simulation
+      </button>
+      <button class="btn btn-warning btn-sm" id="btnDeleteSim">
+        <span class="glyphicon glyphicon-minus"></span> Delete Simulation
+      </button>
+    </div>
 	</div>
 </section>
-<style type="text/css">
-#simTable {
-	height: 200px;
-}
-</style>
+
 <script type="text/javascript">
 
 var app = angular.module("app");
