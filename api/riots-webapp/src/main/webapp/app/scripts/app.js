@@ -1,4 +1,5 @@
 /* some shared globals */
+var API_CACHE_DEFAULT = true;
 var rootScope = null;
 var eventBus = {
     publish: function (type, data) {

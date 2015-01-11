@@ -3,7 +3,7 @@ package io.riots.services.sim;
 import io.riots.services.scenario.PropertyValue;
 import io.riots.services.sim.TimelineValues.TimedValue;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -20,7 +20,7 @@ public class PropertySimulationEnumerated<T> extends PropertySimulation<T> {
 	}
 
 	@JsonProperty
-	protected List<TimedValue<PropertyValue>> values = new LinkedList<>();
+	protected List<TimedValue<PropertyValue>> values = new ArrayList<>();
 
 	public List<TimedValue<PropertyValue>> getValues() {
 		return values;

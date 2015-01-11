@@ -120,7 +120,7 @@ define(['app'], function(app) {
 			}
 
 			function loadThings() {
-				shared.things(function(things) {
+				riots.things(function(things) {
 					$scope.things = things;
 				});
 			}
@@ -128,7 +128,7 @@ define(['app'], function(app) {
 			function loadPropsForThingType(thingType) {
 				if(thingType) {
 					$scope.properties = [];
-					model.properties(thingType, function(properties) {
+					riots.properties(thingType, function(properties) {
 						if(properties) {
 							$.each(properties, function(idx,el) {
 								$scope.properties.push(el);
@@ -146,7 +146,7 @@ define(['app'], function(app) {
 				if(thingType.id) {
 					loadPropsForThingType(thingType);
 				} else {
-					shared.thingType(thingType, function(thingType) {
+					riots.thingType(thingType, function(thingType) {
 						loadPropsForThingType(thingType);
 					});
 				}

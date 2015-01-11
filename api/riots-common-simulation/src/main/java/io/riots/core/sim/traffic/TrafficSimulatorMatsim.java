@@ -10,8 +10,12 @@ import io.hummer.osm.query.OSMElement;
 import io.hummer.osm.query.OSMNode;
 import io.hummer.osm.util.Util;
 import io.riots.core.sim.ValueInterpolation;
+import io.riots.core.util.geo.GeoUtil;
+import io.riots.services.scenario.PropertyValue;
 import io.riots.services.sim.LocationInTime;
+import io.riots.services.sim.PropertySimulationGPS;
 import io.riots.services.sim.TrafficTraces;
+import io.riots.services.sim.TimelineValues.TimedValue;
 import io.riots.services.sim.TrafficTraces.TrafficTrace;
 
 import java.io.ByteArrayInputStream;
@@ -262,15 +266,14 @@ public class TrafficSimulatorMatsim {
 	}
 
 	private Map<String, List<PathPoint>> runSimSafe(int numVehicles,
-			double lat, double lon, double vicinity, int retries)
-			throws Exception {
+			double lat, double lon, double vicinity, int retries) {
 		try {
 			return doRunSim(numVehicles, lat, lon, vicinity);
 		} catch (Exception e) {
 			if (retries > 0) {
 				return runSimSafe(numVehicles, lat, lon, vicinity, retries - 1);
 			}
-			throw e;
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -283,7 +286,7 @@ public class TrafficSimulatorMatsim {
 	}
 
 	public static TrafficTraces generateTraces(int numVehicles,
-			double lat, double lon, double vicinity) throws Exception {
+			double lat, double lon, double vicinity)  {
 		TrafficSimulatorMatsim m = new TrafficSimulatorMatsim();
 		TrafficTraces result = new TrafficTraces();
 		Map<String, List<PathPoint>> r = m.runSimSafe(numVehicles, lat, lon, vicinity, 2);
@@ -298,7 +301,7 @@ public class TrafficSimulatorMatsim {
 
 	public static TrafficTraces generateTraces(int numVehicles,
 			double lat, double lon, double vicinity, 
-			double timeDuration, double timeStepLength) throws Exception {
+			double timeDuration, double timeStepLength) {
 		if(timeStepLength < 0 || timeDuration < 0) {
 			throw new IllegalArgumentException("time units must be positive: " + timeStepLength + "," + timeDuration);
 		}
@@ -319,6 +322,18 @@ public class TrafficSimulatorMatsim {
 		return result;
 	}
 
+	public static TrafficTraces generateTraces(PropertySimulationGPS gps) {
+		double vicinity = GeoUtil.convertMetersToDegrees(gps.getDiameter());
+		TrafficTraces traces = TrafficSimulatorMatsim.generateTraces(
+				1, gps.getLatitude(), gps.getLongitude(), vicinity);
+		TrafficTrace t = traces.traces.get(0);
+		for(LocationInTime p : t.points) {
+			PropertyValue prop = new PropertyValue(p.property);
+			gps.getValues().add(new TimedValue<PropertyValue>(p.time, prop));
+		}
+		return traces;
+	}
+
 	public static void main(String[] args) throws Exception {
 
 		/* Vienna */
@@ -330,5 +345,6 @@ public class TrafficSimulatorMatsim {
 				numVehicles, lat, lon, vicinity, 100, 1);
 		System.out.println(traces.traces);
 	}
+
 }
 

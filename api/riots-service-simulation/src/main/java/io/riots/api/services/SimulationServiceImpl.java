@@ -12,10 +12,8 @@ import io.riots.core.auth.AuthHeaders;
 import io.riots.core.sim.PropertyValueGenerator;
 import io.riots.core.sim.SimulationManager;
 import io.riots.core.sim.traffic.TrafficSimulatorMatsim;
-import io.riots.core.util.geo.GeoUtil;
 import io.riots.services.SimulationService;
 import io.riots.services.scenario.PropertyValue;
-import io.riots.services.sim.LocationInTime;
 import io.riots.services.sim.PropertySimulation;
 import io.riots.services.sim.PropertySimulationGPS;
 import io.riots.services.sim.Simulation;
@@ -23,9 +21,6 @@ import io.riots.services.sim.SimulationRun;
 import io.riots.services.sim.SimulationType;
 import io.riots.services.sim.Time;
 import io.riots.services.sim.TimelineValues;
-import io.riots.services.sim.TimelineValues.TimedValue;
-import io.riots.services.sim.TrafficTraces;
-import io.riots.services.sim.TrafficTraces.TrafficTrace;
 
 import java.net.URL;
 import java.util.Date;
@@ -165,14 +160,7 @@ public class SimulationServiceImpl implements SimulationService {
     	try {
 	        if(r instanceof PropertySimulationGPS) {
     			PropertySimulationGPS gps = (PropertySimulationGPS)r;
-    			double vicinity = GeoUtil.convertMetersToDegrees(gps.getDiameter());
-    			TrafficTraces traces = TrafficSimulatorMatsim.generateTraces(
-    					1, gps.getLatitude(), gps.getLongitude(), vicinity);
-    			TrafficTrace t = traces.traces.get(0);
-    			for(LocationInTime p : t.points) {
-    				PropertyValue prop = new PropertyValue(p.property);
-    				gps.getValues().add(new TimedValue<PropertyValue>(p.time, prop));
-    			}
+    			TrafficSimulatorMatsim.generateTraces(gps);
 	    	}
 			TimelineValues<PropertyValue> o = PropertyValueGenerator.getValues(r, new Time(r.startTime), 
 	        		new Time(r.endTime), null);

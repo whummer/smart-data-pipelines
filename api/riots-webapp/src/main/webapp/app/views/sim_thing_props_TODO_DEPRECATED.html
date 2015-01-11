@@ -48,7 +48,7 @@ app.controller('SimThingPropsController', [
 					if(el.id) {
 						loadThingProperties(thing, el);
 					} else {
-						shared.thingType(el, function(childType) {
+						riots.thingType(el, function(childType) {
 							//console.log("childType", childType);
 							loadThingProperties(thing, childType);
 						});
@@ -66,7 +66,7 @@ app.controller('SimThingPropsController', [
 				loadThingProperties(thing, thing[THING_TYPE]);
 			} else {
 				//console.log("loadThingProperties 2", thing);
-				thing[THING_TYPE] = shared.thingType(thing[THING_TYPE], 
+				thing[THING_TYPE] = riots.thingType(thing[THING_TYPE], 
 					function(thingType) {
 						//console.log("loadThingProperties 2 --> ", thing, thingType);
 						loadThingProperties(thing, thingType);
@@ -76,7 +76,7 @@ app.controller('SimThingPropsController', [
 		}
 
 		var loadTable = function() {
-			shared.things(function(things) {
+			riots.things(function(things) {
 				$scope.gridConfig.data = $scope.tableEntries = [];
 				$.each(things, function(idx,el) {
 					loadThingType(el);

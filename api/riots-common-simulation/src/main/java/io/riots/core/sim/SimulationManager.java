@@ -1,9 +1,11 @@
 package io.riots.core.sim;
 
 import io.riots.api.services.jms.EventBroker;
+import io.riots.services.model.Location;
 import io.riots.services.scenario.PropertyValue;
 import io.riots.services.sim.Context;
 import io.riots.services.sim.PropertySimulation;
+import io.riots.services.sim.PropertySimulationGPS;
 import io.riots.services.sim.Simulation;
 import io.riots.services.sim.SimulationRun;
 import io.riots.services.sim.Time;
@@ -84,6 +86,24 @@ public class SimulationManager {
 					propSim, new Time(currentTick), ctx);
 			try {
 				eventBroker.sendMessage(EventBroker.MQ_INBOUND_PROP_UPDATE, value);
+				if(propSim instanceof PropertySimulationGPS) {
+					Location loc = (Location)value.getValue();
+					/* additionally, send lat/lng updates */
+					PropertyValue vLat = new PropertyValue(
+							propSim.getThingId(),
+							propSim.getPropertyName() + ".latitude", // TODO whu: hard-coded
+							loc.getLatitude(),
+							value.getTimestamp()
+							);
+					PropertyValue vLng = new PropertyValue(
+							propSim.getThingId(),
+							propSim.getPropertyName() + ".longitude", // TODO whu: hard-coded
+							loc.getLongitude(),
+							value.getTimestamp()
+							);
+					eventBroker.sendMessage(EventBroker.MQ_INBOUND_PROP_UPDATE, vLat);
+					eventBroker.sendMessage(EventBroker.MQ_INBOUND_PROP_UPDATE, vLng);
+				}
 			} catch (Throwable e) {
 				e.printStackTrace();
 			}

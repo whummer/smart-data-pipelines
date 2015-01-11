@@ -30,7 +30,7 @@ var openConnectionPerRequest = true;
 /* END OF CONFIGURATIONS */
 
 var sh = {};
-var ttl = 20000;
+var ttl = 15000;
 
 /* initialize authInfo */
 sh.auth = function(options, callback, errorCallback) {
@@ -393,8 +393,6 @@ if(window.RIOTS_USER_ID && window.RIOTS_APP_KEY) {
 
 /* expose API */
 
-window.shared = sh;
-window.model = sh;
 window.riots = sh;
 
 return sh;

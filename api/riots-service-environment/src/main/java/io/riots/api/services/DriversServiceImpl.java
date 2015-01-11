@@ -117,7 +117,7 @@ public class DriversServiceImpl implements DriversService {
     	String driverId = driver.getId();
     	if(driverConnector == DriverConnector.MQTT) {
     		mqttUtil.stop(driverId);
-    	} else if(driverConnector == DriverConnector.SIMULATION) {
+    	} else if(driverConnector == DriverConnector.RIOTS_SIMULATION) {
     		SimulationService simService = clientFactory.getSimulationsServiceClient();
     		simService.stopSimulation(driver.getThingId(), driver.getPropertyName());
     	}
@@ -127,7 +127,7 @@ public class DriversServiceImpl implements DriversService {
     	String driverId = driver.getId();
     	if(driverConnector == DriverConnector.MQTT) {
     		mqttUtil.start(driverId, driver);
-    	} else if(driverConnector == DriverConnector.SIMULATION) {
+    	} else if(driverConnector == DriverConnector.RIOTS_SIMULATION) {
     		/* get reference to simulation service */
     		SimulationService simService = clientFactory.getSimulationsServiceClient();
     		/* construct new simulation */

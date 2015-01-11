@@ -30,11 +30,11 @@
           <div class="col-sm-9">
             <select id="driverProtocol" class="form-control input-sm"
                     ng-model="selectedProperty.driver.connector">
-              <option value="GENERIC">None</option>
-              <option value="SIMULATION">Simulation (Riots)</option>
+              <option value="RIOTS_REST">REST API (Riots)</option>
+              <option value="RIOTS_SIMULATION">Simulation (Riots)</option>
+              <option value="MQTT">MQTT</option>
               <option value="XIVELY">Xively</option>
               <option value="SPARK_IO">Spark.io</option>
-              <option value="MQTT">MQTT</option>
               <option value="CoAP">CoAP</option>
               <option value="XMPP">XMPP</option>
               <option value="AMQP">AMQP</option>
@@ -88,7 +88,7 @@
         </div>
 
         <!-- Simulation stuff -->
-        <div ng-show="selectedProperty.driver.connector == 'SIMULATION'">
+        <div ng-show="selectedProperty.driver.connector == 'RIOTS_SIMULATION'">
           <div class="form-group">
             <label for="driverSimType" class="col-sm-3 control-label">Simulation Type</label>
 
@@ -120,7 +120,8 @@
                 Value
               </button>
             </div>
-          </div>-->
+            -->
+          </div>
 
           <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10 text-right">
@@ -131,10 +132,6 @@
                       class="glyphicon glyphicon-remove"></span> Cancel</a>
             </div>
           </div>
-
-        </div>
-
-
       </form>
     </div>
     <br class="clear"/>
@@ -229,10 +226,10 @@
         }
         var item = prop.driver;
         if (!item.connector)
-          item.connector = "GENERIC";
+          item.connector = "RIOTS_REST";
 
         /* rectify model */
-        if (item.connector != "SIMULATION") {
+        if (item.connector != "RIOTS_SIMULATION") {
           delete item.parameters;
           delete item[SIMULATION_ID];
         }

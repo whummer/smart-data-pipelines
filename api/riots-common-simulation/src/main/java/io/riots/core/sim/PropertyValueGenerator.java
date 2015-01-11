@@ -2,11 +2,13 @@ package io.riots.core.sim;
 
 import io.riots.core.sim.jep.CustomOperators;
 import io.riots.core.sim.jep.CustomOperators.OperatorType;
+import io.riots.core.sim.traffic.TrafficSimulatorMatsim;
 import io.riots.services.scenario.PropertyValue;
 import io.riots.services.sim.Context;
 import io.riots.services.sim.PropertySimulation;
 import io.riots.services.sim.PropertySimulationEnumerated;
 import io.riots.services.sim.PropertySimulationFunctionBased;
+import io.riots.services.sim.PropertySimulationGPS;
 import io.riots.services.sim.PropertySimulationRandom;
 import io.riots.services.sim.Time;
 import io.riots.services.sim.TimelineValues;
@@ -14,6 +16,7 @@ import io.riots.services.sim.TimelineValues.TimedValue;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 import java.util.Random;
 
 import org.nfunk.jep.JEP;
@@ -28,14 +31,29 @@ public class PropertyValueGenerator {
 
 	static double DEFAULT_INTERVAL_STEPS = 100;
 
-
 	public static PropertyValue getValueAt(
 			PropertySimulation<?> sim, Time atTime, Context ctx) {
 		PropertyValue result = null;
+
+		/* generate values if necessary */
+		if(sim instanceof PropertySimulationGPS) {
+			PropertySimulationGPS gps = (PropertySimulationGPS)sim;
+			if(gps.getValues().isEmpty()) {
+				TrafficSimulatorMatsim.generateTraces(gps);
+			}
+		}
+
+		/* get value */
 		if(sim instanceof PropertySimulationEnumerated) {
+			// TODO make more efficient enumeration, store iterator state or similar.
 			PropertySimulationEnumerated<?> e = (PropertySimulationEnumerated<?>)sim;
-			for(TimedValue<PropertyValue> v : (e).getValues()) {
-				if(v.time.getTime() == atTime.getTime()) {
+			List<TimedValue<PropertyValue>> values = e.getValues();
+			for(int i = 0; i < values.size(); i ++) {
+				TimedValue<PropertyValue> v = values.get(i);
+				double t1 = v.time.getTime();
+				double t2 = atTime.getTime();
+				if(t1 == t2 || i >= values.size() - 1 || 
+						t1 < t2 && t2 < values.get(i + 1).time.getTime()) {
 					result = v.property;
 					break;
 				}

@@ -97,6 +97,7 @@ public class PropertyFinder {
 			 * if we used the cache, the exception may have been caused by a
 			 * dirty cache state -> retry without cache
 			 */
+			e.printStackTrace(); // TODO remove
 			return searchPropForThingType(thingTypeId, propertyName, false);
 		}
 	}
@@ -118,6 +119,7 @@ public class PropertyFinder {
 			 * if we used the cache, the exception may have been caused by a
 			 * dirty cache state -> retry without cache
 			 */
+			e.printStackTrace(); // TODO remove
 			return searchPropForThing(thingId, propertyName, false);
 		}
 	}

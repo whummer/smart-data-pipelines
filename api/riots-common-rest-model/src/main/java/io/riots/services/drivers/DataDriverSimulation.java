@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class DataDriverSimulation extends DataDriver {
 
 	{
-		connector = DriverConnector.SIMULATION;
+		connector = DriverConnector.RIOTS_SIMULATION;
 	}
 
 	@JsonProperty("simulation-id")

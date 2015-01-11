@@ -32,6 +32,5 @@ public class ModelCache {
 		    .maximumSize(DEFAULT_MAX_SIZE)
 		    .expireAfterWrite(DEFAULT_TIMEOUT_MINUTES, TimeUnit.MINUTES)
 		    .build().asMap();
-	
 
 }

@@ -131,10 +131,9 @@
       };
 
       loadThingTypes = function () {
-        invokeGET($scope.http, $scope.thingTypesAPI, function (data,
-                                                               status, headers, config) {
-          $scope.thingTypes = data.result;
-        });
+    	riots.thingTypes(function(thingTypes) {
+    		$scope.thingTypes = thingTypes;
+    	}, API_CACHE_DEFAULT);
       }
 
       /* add event handlers */

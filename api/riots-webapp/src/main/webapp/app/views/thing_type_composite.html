@@ -84,9 +84,9 @@
     };
 
     var loadSelects = function () {
-      shared.thingTypes(function (thingTypes) {
+      riots.thingTypes(function (thingTypes) {
         $scope.thingTypesAll = thingTypes;
-      });
+      }, API_CACHE_DEFAULT);
 
       if (!$scope.shared.selectedThingType) {
         return;
@@ -97,7 +97,7 @@
           if (el.id) {
             $scope.childrenAll.push(el);
           } else {
-            $scope.childrenAll.push(shared.thingType(el));
+            $scope.childrenAll.push(riots.thingType(el, null, API_CACHE_DEFAULT));
           }
         });
       }

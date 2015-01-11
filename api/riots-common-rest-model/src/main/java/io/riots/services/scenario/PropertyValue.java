@@ -32,6 +32,13 @@ public class PropertyValue implements ObjectIdentifiable {
 	public PropertyValue() {
 	}
 
+	public PropertyValue(String thingId, String propertyName, Object value, double timestamp) {
+		this.thingId = thingId;
+		this.propertyName = propertyName;
+		this.value = value;
+		this.timestamp = timestamp;
+	}
+
 	public PropertyValue(Object value) {
 		this((Property)null, value);
 	}

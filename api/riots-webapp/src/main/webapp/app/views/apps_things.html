@@ -25,18 +25,14 @@ app.controller('ThingsController',[
 
 		$scope.tableOptions = {};
 
-		$scope.initTable = function() {
+		var initTable = function() {
 			var columnsConfig = [
 				{label: "Name", field: "name", sortable: true,
 					cellTemplate: "<div class='ui-grid-cell-contents'>{{row.entity.name}}</div>"
 				},
 				{label: "Type", field: "thing-type", 
 					cellTemplate: "<div class='ui-grid-cell-contents'>{{row.entity['thing-type'].name}}</div>"
-				},
-				//{label: "Position", field: "location", 
-				//	cellTemplate: "<div class='ui-grid-cell-contents'>{{row.entity.formatCoords()}}</div>"
-				//},
-				//{label: "Tags", field: "tags"}
+				}
 			];
 			$scope.tableOptions.data = [];
 			renderUITable($scope.tableOptions, "assetsTable", columnsConfig,
@@ -54,28 +50,26 @@ app.controller('ThingsController',[
 				true
 			);
 		}
-		$scope.initTable();
+		initTable();
 
-		$scope.loadAllAssets = function() {
-			invokeGET($scope.http, $scope.thingsAPI + "?page=0&size=" + 100,
-				function(data, status, headers, config) {
-					$.each(data.result, function(idx,el) {
-						el.formatCoords = function() {
-							return $scope.formatCoords(el.location);
-						}
-						if(el["thing-type"]) {
-							el["thing-type"] = shared.thingType(el["thing-type"]);
-						}
-					});
-					$scope.tableOptions.data = data.result;
-					$scope.shared.listOfThings = data.result;
-					setTimeout(function() {
-						setupDragAndDrop();
-					}, 100);
-				}
-			);
+		var loadAllThings = function() {
+			riots.things(function(things) {
+				$.each(things, function(idx,el) {
+					el.formatCoords = function() {
+						return $scope.formatCoords(el.location);
+					}
+					if(el["thing-type"]) {
+						el["thing-type"] = riots.thingType(el["thing-type"], null, API_CACHE_DEFAULT);
+					}
+				});
+				$scope.tableOptions.data = things;
+				$scope.shared.listOfThings = things;
+				setTimeout(function() {
+					setupDragAndDrop();
+				}, 100);
+			});
 		}
-		$scope.loadAllAssets();
+		loadAllThings();
 
 		var setupDragAndDrop = function() {
 			// set up drag/drop
@@ -92,38 +86,28 @@ app.controller('ThingsController',[
 			});
 		}
 
-		$scope.saveAsset = function(item){
-			invokePUT($scope.http, $scope.thingsAPI + "/",
-				JSON.stringify(item),
-				function(data, status, headers, config) {
-					$scope.loadAllAssets();
-				}
-			);
-		}
-		$scope.addThing = function(){
+		var addThing = function(){
 			item = {
 				name: "unnamed"
 			}
 			$scope.addThingInDB(item, function(asset) {
-				//$scope.loadAllAssets();
 				eventBus.publish("addOrDel.Asset", asset);
 			});
 		}
-		$scope.deleteThing = function(){
+		var deleteThing = function(){
 			var selection = $scope.shared.selectedThing;
 			if(!selection || !selection.id) return;
 			$scope.deleteThingInDB(selection, function() {
-				//$scope.loadAllAssets();
 				eventBus.publish("addOrDel.Asset", selection);
 				$scope.shared.selectedThing = null;
 			});
 		}
 
 		/* register event handlers*/
-		$scope.addClickHandler("btnAddAsset", $scope.addThing);
-		$scope.addClickHandler("btnDeleteAsset", $scope.deleteThing);
+		$scope.addClickHandler("btnAddAsset", addThing);
+		$scope.addClickHandler("btnDeleteAsset", deleteThing);
 		$scope.subscribeOnce("addOrDel.Asset", function() {
-			$scope.loadAllAssets();
+			loadAllThings();
 		}, "addOrDel.Asset.worldAssetsView");
 
 	}]

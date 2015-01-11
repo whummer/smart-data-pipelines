@@ -38,7 +38,7 @@
                 function (data, status, headers, config) {
                   var t = $scope.shared.selectedThing = data.result;
                   if (t[THING_TYPE]) {
-                    t[THING_TYPE] = shared.thingType(t[THING_TYPE]);
+                    t[THING_TYPE] = riots.thingType(t[THING_TYPE], null, API_CACHE_DEFAULT);
                   }
                 }
         );

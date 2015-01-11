@@ -23,14 +23,13 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  * @author Waldemar Hummer
  */
 @JsonSubTypes({
-	@Type(value = DataDriver.class, name="GENERIC"),
-	@Type(value = DataDriverSimulation.class, name="SIMULATION"),
+	@Type(value = DataDriver.DataDriverREST.class, name="RIOTS_REST"),
+	@Type(value = DataDriverSimulation.class, name="RIOTS_SIMULATION"),
 	@Type(value = DataDriverMQTT.class, name="MQTT"),
 	@Type(value = DataDriver.DataDriverXively.class, name="XIVELY"),
 	@Type(value = DataDriver.DataDriverSpark.class, name="SPARK_IO"),
 	@Type(value = DataDriver.DataDriverCoAP.class, name="CoAP"),
 	@Type(value = DataDriver.DataDriverXMPP.class, name="XMPP"),
-	@Type(value = DataDriver.DeviceDriverREST.class, name="REST"),
 	@Type(value = DataDriver.DataDriverAMQP.class, name="AMQP"),
 	@Type(value = DataDriver.DataDriverDDS.class, name="DDS")
 })
@@ -96,13 +95,12 @@ public class DataDriver implements ObjectIdentifiable, ObjectCreated {
 
 	{
 		/* default connector */
-		connector = DriverConnector.GENERIC;
+		connector = DriverConnector.RIOTS_REST;
 	}
 
 	public static enum DriverConnector {
-		GENERIC,
-
-		SIMULATION,
+		RIOTS_REST,
+		RIOTS_SIMULATION,
 
 		XIVELY,
 		SPARK_IO,
@@ -110,7 +108,6 @@ public class DataDriver implements ObjectIdentifiable, ObjectCreated {
 		MQTT,
 		CoAP,
 		XMPP,
-		REST,
 		AMQP,
 		DDS
 	}
@@ -139,8 +136,8 @@ public class DataDriver implements ObjectIdentifiable, ObjectCreated {
 	public static class DataDriverAMQP extends DataDriver {
 		{ connector = DriverConnector.AMQP; }
 	}
-	public static class DeviceDriverREST extends DataDriver {
-		{ connector = DriverConnector.REST; }
+	public static class DataDriverREST extends DataDriver {
+		{ connector = DriverConnector.RIOTS_REST; }
 	}
 
 	public String getId() {
