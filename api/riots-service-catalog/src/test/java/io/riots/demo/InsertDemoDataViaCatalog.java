@@ -92,10 +92,10 @@ public class InsertDemoDataViaCatalog {
             simulations = serviceClientFactory.getSimulationsServiceClient();
 
             // TODO uncomment to insert test data into public webapp
-//            catalog = serviceClientFactory.getServiceInstanceForURL(
-//            		"http://platform.riots.io:8083/api/v1", CatalogService.class);
-//            simulations = serviceClientFactory.getServiceInstanceForURL(
-//            		"http://platform.riots.io:8086/api/v1", SimulationService.class);
+            catalog = serviceClientFactory.getServiceInstanceForURL(
+            		"http://platform.riots.io:8083/api/v1", CatalogService.class);
+            simulations = serviceClientFactory.getServiceInstanceForURL(
+            		"http://platform.riots.io:8086/api/v1", SimulationService.class);
 
             WebClient.client(simulations).header(AuthHeaders.HEADER_AUTH_EMAIL, "test@riots.io");
         } catch (Exception e) {

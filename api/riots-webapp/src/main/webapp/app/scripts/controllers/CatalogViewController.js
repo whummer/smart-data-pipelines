@@ -46,7 +46,7 @@ define(['app', 'bootstrap-tagsinput'], function (app) {
                         this.items.push(items[i]);
                     }
                     this.page = this.page + 1;
-                    console.log("page: " + this.page)
+                    //console.log("page: " + this.page)
                     this.busy = false;
                 }.bind(this));
         };
