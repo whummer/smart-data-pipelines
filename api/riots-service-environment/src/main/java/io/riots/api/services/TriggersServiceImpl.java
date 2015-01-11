@@ -111,7 +111,9 @@ public class TriggersServiceImpl implements TriggersService {
 	private void doRemoveTrigger(String id, Class<? extends Trigger> triggerClass) {
 		if(triggerClass == null) {
 			Trigger t = triggerQuery.single(id);
-			triggerClass = t.getClass();
+			if(t != null) {
+				triggerClass = t.getClass();
+			}
 		}
 		if(triggerClass == GeoFence.class) {
 			geoListener.removeGeoFence(id);

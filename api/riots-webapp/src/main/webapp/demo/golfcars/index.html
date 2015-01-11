@@ -12,8 +12,8 @@
 
 	<!-- riots API dependencies -->
 	<script>
-	window.RIOTS_USER_ID = "54a27a67bee8810463174a97";
-	window.RIOTS_APP_KEY = "510dff4a-7a74-4759-bad3-b7cdfa45a6f2";
+	window.RIOTS_USER_ID = "Please insert";
+	window.RIOTS_APP_KEY = "Please insert";
 	</script>
 	<script type="text/javascript" src="/config.js"></script>
 	<script type="text/javascript" src="/scripts/modules/service-calls.js"></script>
@@ -35,7 +35,7 @@
             </div>
             <div class="panel-body">
 
-				<h2>Configuration:</h2>
+				<h2>Configuration</h2>
 				
 				<table><tr>
 					<td>RIOTS_USER_ID</td>
@@ -49,7 +49,7 @@
 				</tr>
 				</table>
 
-				<h2>Available cars:</h2>
+				<h2>Available Cars</h2>
 				<button class="btn btn-primary" ng-click="loadThings()">Reload Things</button>
 				<table class="table table-bordered table-hover">
 				<thead><tr>
@@ -62,7 +62,7 @@
 				</tr></thead>
 				<tr ng-repeat="thing in things">
 					<td><img ng-src="{{thing.img}}" style="height: 30px;"/></td>
-					<td><a href="http://platform.riots.io:8080/#/world/{{thing.id}}">{{thing.name}}</a></td>
+					<td><b>{{thing.name}}</b></td>
 					<td>{{thing.properties['location.latitude']}},{{thing.properties['location.longitude']}}</td>
 					<td>{{thing.properties.batteryPercent}} %</td>
 					<td>{{thing.properties.pressure}} %</td>
@@ -70,7 +70,7 @@
 				</tr>
 				</table>
 
-				<h2>Geo Fence:</h2>
+				<h2>Geo Fence</h2>
 				<div>
 					<table><tr>
 						<td>Center (lat/lon):</td>
@@ -90,7 +90,7 @@
 				</div>
 				<button class="btn btn-primary" ng-click="setupGeoFence()">Setup Geo Fence</button>
 
-				<h2>Map View:</h2>
+				<h2>Map View</h2>
 				<div id="worldMap" style="height: 300px;"></div>
             </div>
         </div>

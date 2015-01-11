@@ -38,7 +38,8 @@ public class GeoPositionListener {
 	@Autowired
     EventBroker eventBroker;
 
-	@JmsListener(destination = EventBroker.MQ_OUTBOUND_PROP_CHANGE_NOTIFY)
+	@JmsListener(containerFactory = EventBroker.CONTAINER_FACTORY_NAME, 
+			destination = EventBroker.MQ_OUTBOUND_PROP_CHANGE_NOTIFY)
 	public void processEvent(String data) {
 		PropertyValue prop = JSONUtil.fromJSON(data, PropertyValue.class);
 
@@ -50,10 +51,12 @@ public class GeoPositionListener {
 		// TODO: how to identify GPS properties "semantically"
 		boolean isLat = prop.getPropertyName().endsWith("latitude");
 		boolean isLng = prop.getPropertyName().endsWith("longitude");
+		boolean isLoc = prop.getPropertyName().endsWith("location");
 
-		if(!isLat && !isLng) {
+		if(!isLat && !isLng && !isLoc) {
 			return;
 		}
+		//System.out.println("GPS listener: " + data);
 
 		synchronized (thingLocations) {
 			if(!thingLocations.containsKey(prop.getThingId())) {
@@ -66,6 +69,11 @@ public class GeoPositionListener {
 		}
 		if(isLng) {
 			l.setLongitude((Double)prop.getValue());
+		}
+		if(isLoc) {
+			Map<?,?> value = (Map<?, ?>) prop.getValue();
+			l.setLatitude((Double)value.get("latitude"));
+			l.setLongitude((Double)value.get("longitude"));
 		}
 		for(GeoFence gf : geoFences.values()) {
 			boolean range = isWithinRange(l, gf);

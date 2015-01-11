@@ -58,6 +58,7 @@ app.controller('MainCtrl', function ($scope) {
 			propertyName: propName
 		}, function(data) {
 			$scope.$apply(function() {
+				console.log(propName, data);
 				if(propName == GEO_FENCE) {
 					if(!thing.properties[propName]) {
 						thing.properties[propName] = {}
@@ -77,7 +78,6 @@ app.controller('MainCtrl', function ($scope) {
 						thing.marker.setIcon(getIcon("marker_azure.png"));
 					}
 				} else {
-					console.log(propName, data);
 					thing.properties[propName] = data.value;
 					setMarker(thing);
 				}

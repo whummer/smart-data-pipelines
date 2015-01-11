@@ -228,6 +228,14 @@
         if (!item.connector)
           item.connector = "RIOTS_REST";
 
+        /* check form input */
+        if (item.connector == "RIOTS_SIMULATION") {
+        	if(!item[SIMULATION_ID]) {
+        		showConfirmDialog("Please choose a simulation type.");
+        		return;
+        	}
+        }
+
         /* rectify model */
         if (item.connector != "RIOTS_SIMULATION") {
           delete item.parameters;

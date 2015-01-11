@@ -131,11 +131,9 @@ sh.properties = sh.get.properties = function(thingType, callback, doCacheResults
 	if(thingType.properties) {
 		var recurseProps = function(prop, callback, propNamePrefix) {
 			if(prop.children) {
-				console.log(prop.children);
 				$.each(prop.children, function(idx,subProp) {
 					subProp = clone(subProp);
 					subProp.name = propNamePrefix + subProp.name;
-					console.log("subprop", subProp.name, subProp[PROPERTY_TYPE]);
 					callback([subProp], thingType);
 					recurseProps(subProp, callback, subProp.name + ".");
 				});

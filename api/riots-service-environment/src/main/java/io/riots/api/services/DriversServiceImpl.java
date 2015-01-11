@@ -132,6 +132,9 @@ public class DriversServiceImpl implements DriversService {
     		SimulationService simService = clientFactory.getSimulationsServiceClient();
     		/* construct new simulation */
     		DataDriverSimulation driverSim = (DataDriverSimulation)driver;
+    		if(driverSim.getSimulationId() == null) {
+    			throw new IllegalArgumentException("Invalid simulation ID provided: " + driverSim.getSimulationId());
+    		}
     		SimulationType simType = simService.retrieveSimType(driverSim.getSimulationId());
     		Simulation sim = new Simulation();
     		sim.setCreatorId(driver.getCreatorId());

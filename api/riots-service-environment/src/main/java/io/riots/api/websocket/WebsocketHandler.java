@@ -10,9 +10,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
-import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -29,12 +27,10 @@ public class WebsocketHandler extends TextWebSocketHandler {
 	private static Map<String,WSSubscription> subscriptions = new ConcurrentHashMap<>();
 	private static final Logger LOG = Logger.getLogger(WebsocketHandler.class);
 
-	@Autowired
-	private JmsTemplate template;
-
-	@JmsListener(destination = EventBroker.MQ_OUTBOUND_PROP_CHANGE_NOTIFY)
+	@JmsListener(containerFactory = EventBroker.CONTAINER_FACTORY_NAME, 
+			destination = EventBroker.MQ_OUTBOUND_PROP_CHANGE_NOTIFY)
 	public void processEvent(String data) {
-		//System.out.println("data: " + data);
+		System.out.println("websocket data out: " + data);
 		PropertyValue obj = JSONUtil.fromJSON(data, PropertyValue.class);
 		for (String key : subscriptions.keySet()) {
 			WSSubscription s = subscriptions.get(key);
@@ -75,8 +71,8 @@ public class WebsocketHandler extends TextWebSocketHandler {
 			if(m1.unsubscribeAll) {
 				for (String id : subscriptions.keySet()) {
 					WSSubscription s = subscriptions.get(id);
-					System.out.println("Subscription matches: " + 
-							m1.matches(s, session) + " - " + s + " - " + session);
+//					System.out.println("Subscription matches: " + 
+//							m1.matches(s, session) + " - " + s + " - " + session);
 					if(m1.matches(s, session)) {
 						terminate(s, m1.closeConnection);
 					}

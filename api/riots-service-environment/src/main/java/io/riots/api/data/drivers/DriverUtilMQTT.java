@@ -68,7 +68,7 @@ public class DriverUtilMQTT {
 					String payload = new String(msg.getPayload());
 					PropertyValue v = new PropertyValue(s.propValueTemplate, payload);
 					v.setTimestamp(System.currentTimeMillis()); // TODO set time here?
-					eventBroker.sendMessage(EventBroker.MQ_INBOUND_PROP_UPDATE, v);
+					eventBroker.sendInboundPropUpdateMessage(v);
 				}
 				public void deliveryComplete(IMqttDeliveryToken arg0) {}
 				public void connectionLost(Throwable arg0) {
