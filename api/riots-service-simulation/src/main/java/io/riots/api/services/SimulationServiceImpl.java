@@ -162,11 +162,10 @@ public class SimulationServiceImpl implements SimulationService {
     @Override
     @Timed @ExceptionMetered
     public TimelineValues<PropertyValue> generateCurve(PropertySimulation<?> r) {
-    	if(r instanceof PropertySimulationGPS) {
-    		try {
+    	try {
+	        if(r instanceof PropertySimulationGPS) {
     			PropertySimulationGPS gps = (PropertySimulationGPS)r;
-    			// 0.01 is the coordinate difference of two objects one km apart (apprx.)
-    			double vicinity = gps.getDiameter() * 0.01;
+    			double vicinity = GeoUtil.convertMetersToDegrees(gps.getDiameter());
     			TrafficTraces traces = TrafficSimulatorMatsim.generateTraces(
     					1, gps.getLatitude(), gps.getLongitude(), vicinity);
     			TrafficTrace t = traces.traces.get(0);
@@ -174,31 +173,20 @@ public class SimulationServiceImpl implements SimulationService {
     				PropertyValue prop = new PropertyValue(p.property);
     				gps.getValues().add(new TimedValue<PropertyValue>(p.time, prop));
     			}
-    		} catch (Exception e) {
-    			throw new RuntimeException(e);
-    		}
-    	}
-    	
-		TimelineValues<PropertyValue> o = PropertyValueGenerator.getValues(r, new Time(r.startTime), 
-        		new Time(r.endTime), null);
-    	return o;
-    }
-
-    @Override
-    @Timed @ExceptionMetered
-    public TrafficTraces generateCurve(GpsTraceOptions opt) {
-		try {
-			double vicinity = GeoUtil.convertMetersToDegrees(opt.diameter);
-			TrafficTraces t = TrafficSimulatorMatsim.generateTraces(
-					opt.numVehicles,
-					opt.lat,
-					opt.lon,
-					vicinity);
-	    	return t;
+	    	}
+			TimelineValues<PropertyValue> o = PropertyValueGenerator.getValues(r, new Time(r.startTime), 
+	        		new Time(r.endTime), null);
+	    	return o;
 		} catch (Exception e) {
 			LOG.warn(e);
 			throw new WebApplicationException(e);
 		}
+    }
+
+    @Override
+    @Timed @ExceptionMetered
+    public TimelineValues<PropertyValue> generateGpsTrace(PropertySimulationGPS opt) {
+		return generateCurve(opt);
     }
 
     /* SIMULATION EXECUTION CONTROL */
