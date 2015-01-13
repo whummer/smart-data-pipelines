@@ -1,13 +1,18 @@
 package io.riots.core.boot;
 
+import com.codahale.metrics.ConsoleReporter;
+import com.codahale.metrics.MetricRegistry;
+import com.ryantenney.metrics.spring.config.annotation.EnableMetrics;
+import com.wordnik.swagger.jaxrs.config.BeanConfig;
 import io.riots.core.cxf.RefIdEnabledCxfServlet;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.embedded.ServletRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
+
+import java.util.concurrent.TimeUnit;
 // TODO fix this import com.codahale.metrics.servlets.MetricsServlet;
 //import com.google.inject.servlet.GuiceFilter;
 //import com.netflix.hystrix.contrib.metrics.eventstream.HystrixMetricsStreamServlet;
@@ -19,9 +24,7 @@ import org.springframework.context.annotation.ImportResource;
  */
 
 @Configuration
-
 @ImportResource(value = { "classpath*:/cxf-config.xml" })
-//@EnableMetrics
 public abstract class ServiceStarter {
 
     @Autowired
@@ -30,25 +33,14 @@ public abstract class ServiceStarter {
 	@Bean
 	public ServletRegistrationBean cxfServletRegistrationBean() {
 		return new ServletRegistrationBean(new RefIdEnabledCxfServlet(), "/api/*");
-	}	
-	
-// TODO fix this
-//	@Bean
-//	@Autowired
-//	public ServletRegistrationBean codahaleMetricsServletRegistrationBean(MetricRegistry metricRegistry) {
-//		return new ServletRegistrationBean(new MetricsServlet(metricRegistry), "/codahale-metrics");
-//	}
+	}
 
-//	@Bean
-//	public BeanConfig swaggerConfig() {
-//		BeanConfig swaggerConfig = new BeanConfig();
-//		swaggerConfig.setScan(true);
-//		swaggerConfig.setTitle("riots API");
-//		swaggerConfig.setBasePath("http://TODO_HOSTNAME:8080/api/v1");
-//		swaggerConfig.setVersion("0.0.1");
-//		swaggerConfig.setDescription("~~~ Let's start a riot ~~~");
-//		swaggerConfig.setResourcePackage("io.riots");
-//		return swaggerConfig;
-//	}
+    @Autowired
+    public void configureReporters(MetricRegistry metricRegistry) {
+        ConsoleReporter
+                .forRegistry(metricRegistry)
+                .build()
+                .start(1, TimeUnit.MINUTES);
+    }
 
 }

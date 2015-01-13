@@ -20,14 +20,6 @@ import com.mongodb.MongoClient;
  * @author omoser
  */
 
-/*
-@ComponentScan(basePackages = {"io.riots"},
-        excludeFilters = @ComponentScan.Filter(
-                type = FilterType.REGEX,
-                pattern = "io\\.riots\\.core\\.handlers.*"))
-*/
-
-
 @Configuration
 @ComponentScan(basePackages = {"io.riots"})
 @EnableMongoRepositories(
