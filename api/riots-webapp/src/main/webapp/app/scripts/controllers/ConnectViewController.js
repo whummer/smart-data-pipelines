@@ -32,18 +32,14 @@ define(['app'], function(app) {
 						if($scope[el]) {
 							var url = $scope.thingsAPI + "/" +
 								$scope.thingSelected.id + "/" + $scope[el].name;
-							console.log("sending", el, url);
 							data = {};
 							data[THING_ID] = $scope.thingSelected.id;
 							data[PROPERTY_NAME] = $scope[el].name;
 							data[PROPERTY_VALUE] = state[el];
 							data[TIMESTAMP] = state[el];
-							invokePOST($http, url, JSON.stringify(data), 
+							riots.add.data(data, data, null, 
 								function() {
-									// success
-									console.log("done");
-								}, function() {
-									// error
+									// error callback
 									setTracking(false);
 									showErrorDialog("Cannot send thing data.", 
 									"There was an error sending your thing data (this may be a temporary problem). The data transmission has been paused.");

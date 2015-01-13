@@ -18,10 +18,16 @@ define([], function() {
                     appRoot + '/scripts/controllers/HomeViewController.js',
                 ]
             },
-            '/sim': {
-                templateUrl: appRoot + '/views/sim.html',
+            '/catalog': {
+                templateUrl: appRoot + '/views/catalog.html',
                 dependencies: [
-                    appRoot + '/scripts/controllers/SimViewController.js',
+                    appRoot + '/scripts/controllers/CatalogViewController.js',
+                ]
+            },
+            '/catalog/:thingTypeID': {
+                templateUrl: appRoot + '/views/thing_type.html',
+                dependencies: [
+                    appRoot + '/scripts/controllers/CatalogViewController.js',
                 ]
             },
             '/apps': {
@@ -38,6 +44,18 @@ define([], function() {
                     appRoot + '/scripts/controllers/SimViewController.js'
                 ]
             },
+            '/things/:thingId': {
+               	templateUrl: appRoot + '/views/apps_thing.html',
+                dependencies: [
+                    appRoot + '/scripts/controllers/AppsViewController.js'
+                ]
+            },
+            '/sim': {
+                templateUrl: appRoot + '/views/sim.html',
+                dependencies: [
+                    appRoot + '/scripts/controllers/SimViewController.js',
+                ]
+            },
             '/profile': {
                 templateUrl: appRoot + '/views/profile.html',
                 dependencies: [
@@ -50,18 +68,6 @@ define([], function() {
                     appRoot + '/scripts/controllers/MetadataViewController.js',
                 ]
             },
-            '/catalog': {
-                templateUrl: appRoot + '/views/catalog.html',
-                dependencies: [
-                    appRoot + '/scripts/controllers/CatalogViewController.js',
-                ]
-            },
-            '/catalog/:thingTypeID': {
-                templateUrl: appRoot + '/views/thing_type.html',
-                dependencies: [
-                    appRoot + '/scripts/controllers/CatalogViewController.js',
-                ]
-            },           
             '/login': {
                 templateUrl: appRoot + '/views/login.html',
                 dependencies: [

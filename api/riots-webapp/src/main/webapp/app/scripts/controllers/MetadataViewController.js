@@ -10,12 +10,9 @@ define(['app'], function(app) {
 			$scope.curSelect = {};
 
 			$scope.loadTable = function(gridConfig, category) {
-
-				invokeGET($scope.http, appConfig.services.manufacturers.url,
-					function(data, status, headers, config) {
-						displayTable(gridConfig, data.result, category);
-					}
-				);
+				riots.manufacturers(function(manufacturers) {
+					displayTable(gridConfig, manufacturers, category);
+				});
 			};
 
 			var displayTable = function(gridConfig, nodes, category) {

@@ -11,8 +11,7 @@ var appConfig = {
 		manufacturers: { url: "/api/v1/catalog/manufacturers" },
 		drivers: { url: "/api/v1/drivers" },
 		things: { url: "/api/v1/things" },
-		categories: { url: "/api/v1/categories" },
-		semanticTypes: { url: "/api/v1/semantic-types" },
+		thingData: { url: "/api/v1/things" },
 		triggers: { url: "/api/v1/triggers" },
 		simulations: { url: "/api/v1/simulations" },
 		simulationProps: { url: "/api/v1/simulations/properties" },
@@ -21,6 +20,7 @@ var appConfig = {
 		ratings: { url: "/api/v1/ratings" },
 		stats: { url: "/api/v1/stats" },
 		users: { url: "/api/v1/users" },
+		semanticTypes: { url: "/api/v1/semantic-types" },
 		websocket: { url: "ws://platform.riots.io:8085/websocket" }
 	},
 	auth: {

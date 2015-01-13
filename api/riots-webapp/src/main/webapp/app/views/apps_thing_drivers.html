@@ -189,7 +189,7 @@
         $scope.gridConfig.data = [];
         if (!thing) return;
         var thingType = thing[THING_TYPE];
-        if (!thingType) return;
+        if (!thingType || !thingType.id) return;
         var list = [];
         riots.properties(thingType.id, function (els) {
           $.each(els, function (idx, el) {
@@ -202,17 +202,18 @@
               el.driver.thingId = thing.id;
             if (!el.driver.propertyName)
               el.driver.propertyName = el.name;
-            invokeGET($scope.http, url,
-                    function (data, status, headers, config) {
-                      if (data.result) {
-                        el.driver = data.result;
-                        if (!el.driver.thingId)
-                          el.driver.thingId = thing.id;
-                        if (!el.driver.propertyName)
-                          el.driver.propertyName = el.name;
-                      }
-                    }
-            );
+            var opts = {};
+            opts[THING_ID] = thing.id;
+            opts[PROPERTY_NAME] = el.name;
+            riots.driver(opts, function(driver) {
+            	if (driver) {
+                    el.driver = driver;
+                    if (!el.driver.thingId)
+                      el.driver.thingId = thing.id;
+                    if (!el.driver.propertyName)
+                      el.driver.propertyName = el.name;
+                  }
+            });
           })
         });
         $scope.gridConfig.data = list;
@@ -243,14 +244,9 @@
         }
 
         delete item["$$hashKey"];
-        var url = $scope.driversAPI + "/forThing/" +
-                thing.id + "/" + prop.name;
-        invokePUT($scope.http, url,
-                JSON.stringify(item),
-                function (data, status, headers, config) {
-                  // successfully saved
-                }
-        );
+        riots.save.driver(item, function () {
+            // successfully saved
+        });
       }
 
       var addSimParam = function () {
@@ -272,8 +268,11 @@
       /* register event handlers*/
       $scope.addClickHandler("btnThingDriverSave", saveThingDriver);
       $scope.addClickHandler("btnAddSimParam", addSimParam);
+      $scope.$watch("shared.selectedThing", function (value) {
+    		buildPropsTable($scope.shared.selectedThing);
+      });
       $scope.$watch("shared.selectedThing['" + THING_TYPE + "'].id", function (value) {
-        buildPropsTable($scope.shared.selectedThing);
+      		buildPropsTable($scope.shared.selectedThing);
       });
       $scope.$watch("shared.selectedThing", function (value) {
         $scope.selectedProperty = null;

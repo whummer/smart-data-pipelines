@@ -64,11 +64,14 @@
             };
 
             var loadHistoryTable = function (history) {
-                invokeGET($scope.http, $scope.statsAPI + "/usage?from=&to=&period=month",
-                    function (data, status, headers, config) {
-                        buildHistoryTable(data.result.usage);
-                    }
-                );
+            	var opts = {};
+            	opts.type = "usage";
+            	opts.from = "";
+            	opts.to = "";
+            	opts.period = "month";
+            	riots.stats(opts, function(stats) {
+            		buildHistoryTable(stats.usage);
+            	});
             };
 
             /* init the main elements */
