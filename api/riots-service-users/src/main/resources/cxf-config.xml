@@ -3,13 +3,9 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:cxf="http://cxf.apache.org/core"
        xmlns:jaxrs="http://cxf.apache.org/jaxrs"
-       xmlns:aop="http://www.springframework.org/schema/aop"
-       xmlns:security="http://www.springframework.org/schema/security"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
                            http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd
-                           http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd
-                           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
-                           http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+                           http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd">
 
     <import resource="classpath:META-INF/cxf/cxf.xml"/>
     <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
@@ -21,40 +17,13 @@
             <ref bean="userSettingsServiceImpl"/>
             <ref bean="ratingsServiceImpl"/>
             <ref bean="statisticsServiceImpl"/>
-            <bean id="swaggerResourceJSON" class="com.wordnik.swagger.jaxrs.listing.ApiListingResourceJSON"/>
         </jaxrs:serviceBeans>
         <jaxrs:features>
             <cxf:logging/>
         </jaxrs:features>
         <jaxrs:providers>
             <bean id="jsonProvider" class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider"/>
-            <bean class="com.wordnik.swagger.jaxrs.listing.ResourceListingProvider"/>
-            <bean class="com.wordnik.swagger.jaxrs.listing.ApiDeclarationProvider"/>
         </jaxrs:providers>
     </jaxrs:server>
-
-    <bean id="swaggerConfig" class="com.wordnik.swagger.jaxrs.config.BeanConfig">
-        <property name="resourcePackage" value="io.riots.api.services"/>
-        <property name="version" value="0.0.1"/>
-        <property name="basePath" value="http://localhost:8080/api/v1"/>
-        <property name="title" value="riots API"/>
-        <property name="description" value="~~~ riots.io ~~~"/>
-        <property name="contact" value="info@riots.io"/>
-        <property name="scan" value="true"/>
-    </bean>
-
-
-    <!-- Spring security configurations -->
-    <bean id="authAdvice" class="io.riots.core.auth.AuthPermissionAdvice"/>
-    <bean id="expressionHandler"
-          class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
-        <property name="permissionEvaluator" ref="authPermissionChecker"/>
-    </bean>
-
-    <security:global-method-security secured-annotations="enabled" pre-post-annotations="enabled">
-        <security:expression-handler ref="expressionHandler"/>
-    </security:global-method-security>
-
-    <aop:aspectj-autoproxy/>
 
 </beans>

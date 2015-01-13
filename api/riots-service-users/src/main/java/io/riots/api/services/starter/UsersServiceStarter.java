@@ -12,13 +12,13 @@ import org.springframework.context.annotation.ImportResource;
  */
 @EnableDiscoveryClient
 @EnableCircuitBreaker
-//@ImportResource(value = { "classpath*:/spring-auth-expressions.xml" })
 public class UsersServiceStarter extends MongoEnabledServiceStarter {
+
     public static void main(String[] args) {
 		if (System.getProperty("RIOTS_LOG_DIR") == null) {
             System.setProperty("RIOTS_LOG_DIR", "log");
         }
+
         new SpringApplicationBuilder(UsersServiceStarter.class).web(true).run(args);
-        //SpringApplication.run(UsersServiceStarter.class, args);
     }
 }

@@ -22,15 +22,12 @@
             <ref bean="thingDataServiceImpl"/>
             <ref bean="driversServiceImpl"/>
             <ref bean="triggersServiceImpl"/>
-            <bean id="swaggerResourceJSON" class="com.wordnik.swagger.jaxrs.listing.ApiListingResourceJSON"/>
         </jaxrs:serviceBeans>
         <jaxrs:features>
             <cxf:logging/>
         </jaxrs:features>
         <jaxrs:providers>
             <bean id="jsonProvider" class="com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider"/>
-            <bean class="com.wordnik.swagger.jaxrs.listing.ResourceListingProvider"/>
-            <bean class="com.wordnik.swagger.jaxrs.listing.ApiDeclarationProvider"/>
         </jaxrs:providers>
     </jaxrs:server>
 

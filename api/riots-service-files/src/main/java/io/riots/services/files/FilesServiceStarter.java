@@ -20,7 +20,6 @@ import org.springframework.context.annotation.FilterType;
  * @author riox
  */
 @ComponentScan(basePackages = { "io.riots" }, excludeFilters = {
-		@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = MongoEnabledServiceStarter.class),
 		@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = MongoEnabledServiceStarter.class) })
 @EnableAutoConfiguration(exclude = { ElasticsearchAutoConfiguration.class,
 		ElasticsearchDataAutoConfiguration.class, MongoAutoConfiguration.class,

@@ -18,7 +18,6 @@
     <jaxrs:server address="/v1" id="api-v1">
         <jaxrs:serviceBeans>
             <ref bean="simulationServiceImpl"/>
-            <bean id="swaggerResourceJSON" class="com.wordnik.swagger.jaxrs.listing.ApiListingResourceJSON"/>
         </jaxrs:serviceBeans>
         <jaxrs:features>
             <cxf:logging/>
@@ -26,8 +25,6 @@
         <jaxrs:providers>
             <bean id="jsonProvider" class="com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider"/>
             <bean id="jsonProvider2" class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider"/>
-            <bean class="com.wordnik.swagger.jaxrs.listing.ResourceListingProvider"/>
-            <bean class="com.wordnik.swagger.jaxrs.listing.ApiDeclarationProvider"/>
         </jaxrs:providers>
     </jaxrs:server>
 
