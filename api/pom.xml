@@ -24,12 +24,15 @@
 		<module>riots-common-service-base</module>
 		<module>riots-common-simulation</module>
 
+        <module>riots-service-registry</module>
+        <module>riots-service-gateway</module>
+
 		<module>riots-service-catalog</module>
 		<module>riots-service-files</module>
 		<module>riots-service-environment</module>
-		<module>riots-service-gateway</module>
 		<module>riots-service-users</module>
 		<module>riots-service-simulation</module>
+
 		<module>riots-webapp</module>
 	</modules>
 
