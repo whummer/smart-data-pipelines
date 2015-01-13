@@ -11,11 +11,15 @@ eureka:
   client:
     registryFetchIntervalSeconds: 5
     serviceUrl:
-      defaultZone: http://${eureka.hostname}:10000/eureka/v2/
+      defaultZone: http://${eureka.hostname}:10000/eureka/v2
 
 spring:
   application:
     name: users-service
+
+endpoints:
+    health:
+      sensitive: false
 
 logging:
   level:
@@ -23,3 +27,12 @@ logging:
     com.netflix.zuul: WARN
     com.netflix.servo: WARN
     org.springframework.boot: WARN
+
+---
+spring:
+  profiles: eureka-embedded
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${eureka.hostname}:10000/eureka/

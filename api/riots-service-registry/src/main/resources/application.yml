@@ -10,7 +10,7 @@ eureka:
     fetchRegistry: false
     registryFetchIntervalSeconds: 5
     serviceUrl:
-      defaultZone: http://${eureka.hostname}:10000/eureka/
+      defaultZone: http://${eureka.hostname}:10000/eureka/v2
   server:
     waitTimeInMsWhenSyncEmpty: 0
 
@@ -21,3 +21,11 @@ logging:
     org.apache.http: 'TRACE'
     org.springframework: 'WARN'
 
+---
+spring:
+  profiles: eureka-embedded
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${eureka.hostname}:10000/eureka/
