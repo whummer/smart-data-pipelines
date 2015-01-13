@@ -14,8 +14,6 @@
 	<name>service-dependencies</name>
 	<packaging>pom</packaging>
 
-
-
 	<dependencies>
 
 		<!-- service base -->
@@ -23,7 +21,6 @@
 			<groupId>io.riots</groupId>
 			<artifactId>riots-common-service-base</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
-			<scope>provided</scope>
 		</dependency>
 
 		<!-- rest model -->
@@ -78,14 +75,6 @@
 					<groupId>javax.ws.rs</groupId>
 				</exclusion>
 			</exclusions>
-<!--
-			<exclusions>
-				<exclusion>
-					<artifactId>jersey-client</artifactId>
-					<groupId>com.sun.jersey</groupId>
-				</exclusion>
-			</exclusions>
--->
 		</dependency>
 
 		<dependency>
@@ -93,7 +82,13 @@
 			<artifactId>spring-cloud-starter-hystrix</artifactId>
 		</dependency>
 
-		<!-- Spring security -->
+        <!-- actuators (for /env, /health, /info...) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-actuator</artifactId>
+        </dependency>
+
+        <!-- Spring security -->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-config</artifactId>
@@ -140,7 +135,7 @@
 		<dependency>
 			<groupId>com.ryantenney.metrics</groupId>
 			<artifactId>metrics-spring</artifactId>
-			<version>3.0.1</version>
+			<version>3.0.3</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.springframework</groupId>
