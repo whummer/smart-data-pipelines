@@ -2,22 +2,22 @@ server:
   port: 10000
 
 eureka:
+  hostname: localhost
   instance:
-    hostname: localhost
     leaseRenewalIntervalInSeconds: 5
-
   client:
-    registerWithEureka: true
+    registerWithEureka: false
     fetchRegistry: false
+    registryFetchIntervalSeconds: 5
     serviceUrl:
-      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
-
+      defaultZone: http://${eureka.hostname}:10000/eureka/
   server:
     waitTimeInMsWhenSyncEmpty: 0
 
+
 logging:
   level:
-    com.netflix.discovery: TRACE
-    org.apache.http: TRACE
-    org.springframework: WARN
+    com.netflix.discovery: 'TRACE'
+    org.apache.http: 'TRACE'
+    org.springframework: 'WARN'
 
