@@ -15,6 +15,7 @@ define(['app'], function(app) {
 				});
 			};
 
+            // todo highlight the newly added element so that you can start editing right away
 			var displayTable = function(gridConfig, nodes, category) {
 				if(!gridConfig) return;
 				gridConfig.data = nodes;
@@ -31,6 +32,12 @@ define(['app'], function(app) {
 						});
 					});
 				}, 100);
+
+                $log.debug("Grid config in MetaDataViewController: ", gridConfig);
+                $log.debug("Current scope object: ", $scope);
+
+                $scope.gridApi.cellNav.scrollToFocus($scope, gridConfig.data[0])
+
 			};
 
 			$scope.initTable = function(gridConfig, category) {
@@ -66,14 +73,17 @@ define(['app'], function(app) {
 				    	}
 						/* adjust UI elements */
 						$("#btnDelType" + category).attr("disabled", false);
+
+
 					},
-					false, false
+                    false, false, $scope
 				);
 			};
 
 			$scope.addMetaType = function(gridConfig, category) {
 				var url = metadataCatagoryUrls[category];
 				var req = { name: "unnamed" };
+                $log.debug("Using gridconfig: ", gridConfig);
 				$log.debug("Adding metadata via url: ", url);
 				invokePOST($scope.http, url,
 					JSON.stringify(req),
