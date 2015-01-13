@@ -34,7 +34,8 @@
 		<module>riots-service-simulation</module>
 
 		<module>riots-webapp</module>
-	</modules>
+        <module>riots-service-docs</module>
+    </modules>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
