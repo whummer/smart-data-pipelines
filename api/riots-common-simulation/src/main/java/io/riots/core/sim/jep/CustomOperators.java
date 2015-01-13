@@ -3,7 +3,7 @@ package io.riots.core.sim.jep;
 import java.util.Stack;
 import java.util.Vector;
 
-import org.apache.commons.math.stat.StatUtils;
+import org.apache.commons.math3.stat.StatUtils;
 import org.nfunk.jep.ParseException;
 import org.nfunk.jep.function.PostfixMathCommandI;
 
