@@ -99,15 +99,48 @@ sh.things = sh.get.things = function(callback, doCacheResults) {
 	var maxResults = 100;
 	return callGET(appConfig.services.things.url + "?page=0&size=" + maxResults, callback, doCacheResults);
 }
+sh.thing = sh.get.thing = function(id, callback, doCacheResults) {
+	if(!id) {
+		if(callback) callback(null);
+		return null;
+	}
+	return callGET(appConfig.services.things.url + "/" + id, callback, doCacheResults);
+}
 sh.triggers = sh.get.triggers = function(callback, doCacheResults) {
-	return callGET(appConfig.services.triggers.url + "?page=0&size=" + maxResults, callback, doCacheResults);
+	return callGET(appConfig.services.triggers.url, callback, doCacheResults);
+}
+sh.manufacturers = sh.get.manufacturers = function(callback, doCacheResults) {
+	return callGET(appConfig.services.manufacturers.url, callback, doCacheResults);
+}
+sh.stats = sh.get.stats = function(opts, callback) {
+	var url = appConfig.services.stats.url;
+	if(opts.type) url += "/" + opts.type;
+	url += "?";
+	if(opts.from) url += "&from=" + opts.from;
+	if(opts.to) url += "&to=" + opts.to;
+	if(opts.period) url += "&period=" + opts.period;
+	return callGET(url, callback);
 }
 sh.simulationTypes = sh.get.simulationTypes = function(callback, doCacheResults) {
 	var maxResults = 100;
 	return callGET(appConfig.services.simulationTypes.url + "?page=0&size=" + maxResults, callback, doCacheResults);
 }
-sh.triggers = sh.get.triggers = function(trigger, callback) {
-	return callPOST(appConfig.services.triggers.url, trigger, callback);
+sh.data = sh.get.data = function(opts, callback, errorCallback) {
+	var url = appConfig.services.thingData.url + "/" +
+                      opts[THING_ID] + "/" + opts[PROPERTY_NAME];
+	if(opts.amount) {
+		url += "/history?amount=" + opts.amount;
+	}
+	return callGET(url, callback, false, errorCallback);
+}
+sh.config = sh.get.config = function(callback) {
+	var url = appConfig.services.users.url + "/by/email/" + authInfo.email + "/config";
+	return callGET(url, callback);
+}
+sh.driver = sh.get.driver = function(opts, callback) {
+	var url = appConfig.services.drivers.url + "/forThing/" +
+                      opts[THING_ID] + "/" + opts[PROPERTY_NAME];
+	return callGET(url, callback);
 }
 sh.properties = sh.get.properties = function(thingType, callback, doCacheResults) {
 	var maxThings = 100;
@@ -165,6 +198,12 @@ sh.add.simulationType = function(simType, callback) {
 sh.add.trigger = function(trigger, callback) {
 	return callPOST(appConfig.services.triggers.url, trigger, callback);
 }
+sh.add.data = function(opts, dataItem, callback, errorCallback) {
+	var url = appConfig.services.thingData.url + "/" +
+                      opts[THING_ID] + "/" + 
+                      opts[PROPERTY_NAME];
+	return callPOST(url, dataItem, callback, errorCallback);
+}
 
 /* methods for PUTting data */
 
@@ -184,6 +223,15 @@ sh.save.simulationType = function(simType, callback) {
 }
 sh.save.trigger = function(trigger, callback) {
 	return callPUT(appConfig.services.triggers.url, trigger, callback);
+}
+sh.save.driver = function(driver, callback) {
+	var url = appConfig.services.drivers.url + "/forThing/" +
+                      driver[THING_ID] + "/" + driver[PROPERTY_NAME];
+	return callPUT(url, driver, callback);
+}
+sh.save.config = function(config, callback) {
+	var url = appConfig.services.users.url + "/by/email/" + authInfo.email + "/config";
+	return callPUT(url, config, callback);
 }
 
 /* methods for DELETEing data */
@@ -209,6 +257,15 @@ sh.delete.simulationType = function(simType, callback) {
 sh.delete.trigger = function(trigger, callback) {
 	var id = trigger.id ? trigger.id : trigger;
 	return callDELETE(appConfig.services.triggers.url + "/" + id, callback);
+}
+
+/* methods for simulation control */
+
+sh.sim = {};
+sh.sim.gen = function(request, callback) {
+	var type = request.type == "GPS" ? "traffic" : "curve";
+	var url = appConfig.services.simulations.url + "/gen/" + type;
+	return callPOST(url, request, callback);
 }
 
 /* UTILITY METHODS */
@@ -247,7 +304,7 @@ var callGET = function(url, callback, doCacheResults, errorCallback) {
 	return entry;
 }
 
-var callPOSTorPUT = function(invokeFunc, url, body, callback) {
+var callPOSTorPUT = function(invokeFunc, url, body, callback, errorCallback) {
 	if(typeof body == "object") {
 		body = JSON.stringify(body);
 	}
@@ -256,14 +313,14 @@ var callPOSTorPUT = function(invokeFunc, url, body, callback) {
 			if(callback) {
 				callback(data.result);
 			}
-		}
+		}, errorCallback
 	);
 }
-var callPOST = function(url, body, callback) {
-	return callPOSTorPUT(invokePOST, url, body, callback);
+var callPOST = function(url, body, callback, errorCallback) {
+	return callPOSTorPUT(invokePOST, url, body, callback, errorCallback);
 }
-var callPUT = function(url, body, callback) {
-	return callPOSTorPUT(invokePUT, url, body, callback);
+var callPUT = function(url, body, callback, errorCallback) {
+	return callPOSTorPUT(invokePUT, url, body, callback, errorCallback);
 }
 
 var callDELETE = function(url, callback) {
@@ -276,7 +333,7 @@ var callDELETE = function(url, callback) {
 	);
 }
 
-/* UTIL FUNCTIONS */
+/* "shared memory", used as entity cache */
 
 var mem = sh.mem = function() {
 	if(window.rootScope) {
@@ -290,6 +347,8 @@ var mem = sh.mem = function() {
 	}
 	return window.sharedMem;
 }
+
+/* WEBSOCKET FUNCTIONS */
 
 var connectWebsocket = function(onOpenCallback) {
 	assertAuth();
@@ -392,8 +451,6 @@ if(window.RIOTS_USER_ID && window.RIOTS_APP_KEY) {
 }
 
 /* expose API */
-
 window.riots = sh;
-
 return sh;
 })();

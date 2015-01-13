@@ -217,98 +217,89 @@
 </style>
 <script type="text/javascript">
 
-  var app = angular.module("app");
-  app.controller('SimDetailsController', function ($scope, $http, $compile, $routeParams, $log) {
-    AppController($scope, $http, $compile);
+ var 
+app = angular.module("app");
+app.controller('SimDetailsController', function($scope, $http, $compile,
+		$routeParams, $log) {
 
-    $scope.CREATION_DATE = CREATION_DATE;
+	AppController($scope, $http, $compile);
 
-    var saveSim = function () {
-      var sim = clone($scope.shared.selectedSim);
-      delete sim["$$hashKey"];
-      constructSimValues(sim);
-      riots.save.simulationType(sim);
-    };
+	$scope.CREATION_DATE = CREATION_DATE;
 
-    var previewSim = function () {
-      var sim = $scope.shared.selectedSim;
-      if (!sim || !sim.simulation)
-        return;
-      var type = sim.simulation.type;
-      if (type == "GPS") {
-        var request = {
-          numVehicles: 1,
-          lat: sim.simulation.latitude,
-          lon: sim.simulation.longitude,
-          diameter: sim.simulation.diameter
-        };
-        invokePOST($http, $scope.simAPI + "/gen/traffic",
-                JSON.stringify(request),
-                function (data, status, headers, config) {
-                  console.log("GPS data", data.result);
-                }
-        );
-      } else {
-        var request = constructSimValues();
-        invokePOST($http, $scope.simAPI + "/curve",
-                JSON.stringify(request),
-                function (data, status, headers, config) {
-                  eventBus.publish("update.chart.propSim", data.result);
-                }
-        );
-      }
-    }
+	var saveSim = function() {
+		var sim = clone($scope.shared.selectedSim);
+		delete sim["$$hashKey"];
+		constructSimValues(sim);
+		riots.save.simulationType(sim);
+	};
 
-    var addSimParam = function () {
-      var item = $scope.shared.selectedSim;
-      if (!item.parameters) item.parameters = [];
-      $scope.$apply(function () {
-        item.parameters.push({});
-      });
-    }
+	var previewSim = function() {
+		var sim = $scope.shared.selectedSim;
+		if (!sim || !sim.simulation)
+			return;
+		var request = constructSimValues();
+		riots.sim.gen(request, function(data) {
+			if (request.type == "GPS") {
+				console.log("GPS data", data);
+			} else {
+				eventBus.publish("update.chart.propSim", data);
+			}
+		});
+	}
 
-    var addSimValue = function () {
-      var item = $scope.shared.selectedSim.simulation;
-      if (!item.values) item.values = [];
-      $scope.$apply(function () {
-        item.values.push("");
-      });
-    }
+	var addSimParam = function() {
+		var item = $scope.shared.selectedSim;
+		if (!item.parameters)
+			item.parameters = [];
+		$scope.$apply(function() {
+			item.parameters.push({});
+		});
+	}
 
-    var constructSimValues = function (sim) {
-      if (!sim) {
-        sim = $scope.shared.selectedSim;
-      }
-      if (!sim.simulation) {
-        sim.simulation = {type: "RANDOM"};
-      }
-      var item = sim.simulation;
-      if (item.type != "GPS") {
-        delete item["latitude"];
-        delete item["longitude"];
-        delete item["diameter"];
-        delete item["maxSpeed"];
-      }
-      if (item.type != "RANDOM") {
-        delete item["minValue"];
-        delete item["maxValue"];
-      }
-      if (item.type != "FUNCTIONBASED") {
-        delete item["function"];
-      }
-      if (item.type != "POINTS") {
-        delete item["values"];
-      }
-      delete item["$$hashKey"];
-      return item;
-    }
+	var addSimValue = function() {
+		var item = $scope.shared.selectedSim.simulation;
+		if (!item.values)
+			item.values = [];
+		$scope.$apply(function() {
+			item.values.push("");
+		});
+	}
 
-    /* add event listeners */
-    $scope.addClickHandler("btnSaveSim", saveSim);
-    $scope.addClickHandler("btnPreviewSim", previewSim);
-    $scope.addClickHandler("btnAddSimParam", addSimParam);
-    $scope.addClickHandler("btnAddSimValue", addSimValue);
+	var constructSimValues = function(sim) {
+		if (!sim) {
+			sim = $scope.shared.selectedSim;
+		}
+		if (!sim.simulation) {
+			sim.simulation = {
+				type : "RANDOM"
+			};
+		}
+		var item = sim.simulation;
+		if (item.type != "GPS") {
+			delete item["latitude"];
+			delete item["longitude"];
+			delete item["diameter"];
+			delete item["maxSpeed"];
+		}
+		if (item.type != "RANDOM") {
+			delete item["minValue"];
+			delete item["maxValue"];
+		}
+		if (item.type != "FUNCTIONBASED") {
+			delete item["function"];
+		}
+		if (item.type != "POINTS") {
+			delete item["values"];
+		}
+		delete item["$$hashKey"];
+		return item;
+	}
 
-  });
+	/* add event listeners */
+	$scope.addClickHandler("btnSaveSim", saveSim);
+	$scope.addClickHandler("btnPreviewSim", previewSim);
+	$scope.addClickHandler("btnAddSimParam", addSimParam);
+	$scope.addClickHandler("btnAddSimValue", addSimValue);
 
+});
 </script>

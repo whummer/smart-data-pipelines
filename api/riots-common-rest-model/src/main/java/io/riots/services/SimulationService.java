@@ -23,7 +23,6 @@ import javax.ws.rs.core.MediaType;
 
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiResponse;
@@ -159,24 +158,13 @@ public interface SimulationService {
     /* DATA/CURVE GENERATORS*/
 
     @POST
-    @Path("/curve")
+    @Path("/gen/curve")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Generate curve",
+    @ApiOperation(value = "Generate curve.",
             notes = "Generate a property simulation curve.",
             response = TimelineValues.class)
     TimelineValues<PropertyValue> generateCurve(PropertySimulation<?> r);
-
-    public static class GpsTraceOptions {
-    	@JsonProperty
-    	public int numVehicles;
-    	@JsonProperty
-    	public double lat;
-    	@JsonProperty
-    	public double lon;
-    	@JsonProperty
-    	public double diameter;
-    }
 
     @POST
     @Path("/gen/traffic")

@@ -29,26 +29,20 @@ define(['app'], function(app) {
 			$scope.addThingInDB = function(thing, callback){
 				if(!thing)
 					return false;
-				invokePOSTandGET($scope.http, $scope.thingsAPI + "/",
-					JSON.stringify(thing),
-					function(data, status, headers, config) {
-						if(callback) {
-							callback(data.result);
-						}
+				riots.add.thing(thing, function(newThing) {
+					if(callback) {
+						callback(newThing);
 					}
-				);
+				});
 			}
 
 			$scope.deleteThingInDB = function(thing, callback){
 				if(!thing || !thing.id) return;
-				invokeDELETE($scope.http, 
-					$scope.thingsAPI + "/" + thing.id,
-					function(data, status, headers, config) {
-						if(callback) {
-							callback(thing);
-						}
+				riots.delete.thing(thing, function() {
+					if(callback) {
+						callback(thing);
 					}
-				);
+				});
 			}
 
 			$scope.updateThingInDB = function(thing, callback) {
@@ -57,27 +51,21 @@ define(['app'], function(app) {
 				if(thingCopy[THING_TYPE] && thingCopy[THING_TYPE].id) {
 					thingCopy[THING_TYPE] = thingCopy[THING_TYPE].id;
 				}
-				invokePUT($http, $scope.thingsAPI + '/',
-					JSON.stringify(thingCopy),
-					function(data, status, headers, config) {
-						if(callback) {
-							callback(thing);
-						}
+				riots.save.thing(thingCopy, function(savedThing) {
+					if(callback) {
+						callback(savedThing);
 					}
-				);
+				});
 			};
 
 			$scope.loadThingsFromDB = function(callback) {
-				max = 1000; // TODO
-				invokeGET($http, $scope.thingsAPI + '/?page=0&size=' + max,
-					function(data, status, headers, config) {
-						if(callback) {
-							callback(data.result);
-						}
-						$scope.listOfThings = data.result;
-						eventBus.publish("loadAll.Thing", {things: data.result});
+				riots.things(function(things) {
+					if(callback) {
+						callback(things);
 					}
-				);
+					$scope.listOfThings = things;
+					eventBus.publish("loadAll.Thing", {things: things});
+				});
 			};
 
 			if($routeParams.appId) {
@@ -87,9 +75,8 @@ define(['app'], function(app) {
 			}
 
 			var loadUserInfo = function() {
-				invokeGET($http, $scope.usersAPI + "/me", 
-				function(data, status, headers, config) {
-					$scope.userInfo = data.result;
+				riots.me(function(me) {
+					$scope.userInfo = me;
 				});
 			};
 

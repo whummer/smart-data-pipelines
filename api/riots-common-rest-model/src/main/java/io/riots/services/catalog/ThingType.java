@@ -2,6 +2,7 @@ package io.riots.services.catalog;
 
 import static org.springframework.data.elasticsearch.annotations.FieldType.Object;
 import static org.springframework.data.elasticsearch.annotations.FieldType.String;
+import io.riots.services.model.Constants;
 import io.riots.services.scenario.Thing;
 
 import java.util.Date;
@@ -37,16 +38,16 @@ public class ThingType extends HierarchicalObject<String> {
 	private String description;
 
 	@JsonInclude(Include.NON_EMPTY)
-	@JsonProperty("creation-date")
+	@JsonProperty(Constants.CREATION_DATE)
 	@Field(type = FieldType.Date)
 	private Date created;
 
 	@JsonInclude(Include.NON_EMPTY)
-	@JsonProperty("creator-id")
+	@JsonProperty(Constants.CREATOR_ID)
 	private String creatorId;
 
 	@JsonInclude(Include.NON_EMPTY)
-	@JsonProperty("manufacturer-id")
+	@JsonProperty(Constants.MANUFACTURER_ID)
 	private String manufacturerId;
 
 	@JsonInclude(Include.NON_EMPTY)
@@ -57,7 +58,7 @@ public class ThingType extends HierarchicalObject<String> {
 	@Field(type = String, store = true)
 	private List<String> tags = new LinkedList<String>();
 
-	@JsonProperty("image-data")
+	@JsonProperty(Constants.IMAGE_DATA)
 	@JsonInclude(Include.NON_EMPTY)
 	@Field(type = FieldType.Nested, store = true)	
 	private List<ImageData> imageData;
@@ -69,7 +70,7 @@ public class ThingType extends HierarchicalObject<String> {
 	 * (e.g., temperature of a heater). A property can also be both sensable and
 	 * actuatable.
 	 */
-	@JsonProperty("properties")
+	@JsonProperty(Constants.PROPERTIES)
 	@JsonInclude(Include.NON_EMPTY)
 	@Field(type = Object, store = true)
 	private List<Property> properties = new LinkedList<Property>();

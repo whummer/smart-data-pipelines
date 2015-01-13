@@ -115,39 +115,30 @@
         }
         initTables();
 
-        var loadPropsTable = function () {
-          if (!$scope.shared.selectedThing) {
-            return;
-          }
-          buildPropsTable($scope.shared.selectedThing);
-        }
-
         var buildPropsTable = function (thing) {
           $scope.propsGridConfig.data = [];
+          if(!thing) return;
           var thingType = thing[THING_TYPE];
-          if (!thingType) return;
+          if (!thingType || !thingType.id) return;
           var list = [];
           riots.properties(thingType.id, function (els) {
             $.each(els, function (idx, el) {
               list.push(el);
-              var url = $scope.propValuesAPI + "/" +
-                      $scope.shared.selectedThing.id + "/" + el.name;
-              invokeGET($http, url,
-                      function (data, status, headers, config) {
-                        if (data.result) {
-                          el.lastTime = data.result.timestamp;
-                        }
-                      },
-                      function (data, status, headers, config) {
-                        // error callback (ignore)
-                      }
-              );
+              var opts = {};
+        	  opts[THING_ID] = $scope.shared.selectedThing.id;
+      		  opts[PROPERTY_NAME] = el.name;
+              riots.data(opts, function(dataItem) {
+            	  if(dataItem) {
+	            	  el.lastTime = dataItem.timestamp;
+            	  }
+              },
+              function (data, status, headers, config) {
+                // error callback (ignore)
+              });
             })
           });
           $scope.propsGridConfig.data = list;
         };
-
-        loadPropsTable();
 
         /* open websocket */
         var connectWebsocket = function () {
@@ -176,25 +167,27 @@
           if (!prop || !$scope.shared.selectedThing)
             return;
           var amount = $scope.dataOptions.numPoints;
-          var url = $scope.propValuesAPI + "/" +
-                  $scope.shared.selectedThing.id + "/" + prop.name +
-                  "/history?amount=" + amount;
-          invokeGET($http, url,
-                  function (data, status, headers, config) {
-                    $scope.dataGridConfig.data = data.result;
-                  }
-          );
+          var opts = {};
+    	  opts[THING_ID] = $scope.shared.selectedThing.id;
+  		  opts[PROPERTY_NAME] = prop.name;
+          opts.amount = amount;
+          riots.data(opts, function(items) {
+       		$scope.dataGridConfig.data = items;
+          });
         }
 
         $scope.publishData = function () {
           var propName = $scope.selectedProperty.name;
           var data = {value: 1};
-          invokePOST($http, $scope.propValuesAPI + "/" + $routeParams.thingID + "/" + propName,
-                  JSON.stringify(data),
-                  function (data, status, headers, config) {
-                    //console.log("successfully pushed data");
-                  }
-          );
+          riots.data(opts, function(items) {
+       		$scope.dataGridConfig.data = items;
+          });
+          var opts = {};
+    	  opts[THING_ID] =  $routeParams.thingID;
+  		  opts[PROPERTY_NAME] = propName;
+          riots.data(opts, data, function(items) {
+       		// success
+          });
         }
 
         var toggleLiveWatch = function () {
@@ -234,9 +227,12 @@
         }
 
         /* add event handlers*/
-        $scope.$watch("shared.selectedThing['" + THING_TYPE + "'].id", function (value) {
-          loadPropsTable();
-        });
+        $scope.$watch("shared.selectedThing", function (value) {
+        	buildPropsTable($scope.shared.selectedThing);
+	  	});
+	    $scope.$watch("shared.selectedThing['" + THING_TYPE + "'].id", function (value) {
+	    	buildPropsTable($scope.shared.selectedThing);
+	    });
         $scope.$watch("selectedProperty", function (value) {
           $scope.displayPropertyData();
         });

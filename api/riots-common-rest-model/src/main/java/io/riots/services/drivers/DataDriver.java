@@ -1,5 +1,6 @@
 package io.riots.services.drivers;
 
+import io.riots.services.model.Constants;
 import io.riots.services.model.interfaces.ObjectCreated;
 import io.riots.services.model.interfaces.ObjectIdentifiable;
 
@@ -50,7 +51,7 @@ public class DataDriver implements ObjectIdentifiable, ObjectCreated {
 	 * Creation Date.
 	 */
 	@JsonInclude(Include.NON_EMPTY)
-	@JsonProperty("creation-date")
+	@JsonProperty(Constants.CREATION_DATE)
 	@Field(type = FieldType.Date)
 	private Date created;
 
@@ -58,25 +59,25 @@ public class DataDriver implements ObjectIdentifiable, ObjectCreated {
 	 * Creating user id.
 	 */
 	@JsonInclude(Include.NON_EMPTY)
-	@JsonProperty("creator-id")
+	@JsonProperty(Constants.CREATOR_ID)
 	private String creatorId;
 
 	/**
 	 * Target thing type for which this driver is applicable.
 	 */
-	@JsonProperty
+	@JsonProperty(Constants.THING_TYPE)
 	String thingTypeId;
 
 	/**
 	 * Target thing for which this driver is applicable.
 	 */
-	@JsonProperty
+	@JsonProperty(Constants.THING_ID)
 	String thingId;
 
 	/**
 	 * Target thing's property name for which this driver is applicable.
 	 */
-	@JsonProperty
+	@JsonProperty(Constants.PROPERTY_NAME)
 	String propertyName;
 
 	/**

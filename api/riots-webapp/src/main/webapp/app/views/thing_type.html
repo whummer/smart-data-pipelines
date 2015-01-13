@@ -52,13 +52,9 @@
             $log.debug("Inside ThingTypeController with thingID: ", $routeParams.thingTypeID);
 
             if ($routeParams.thingTypeID) {
-              invokeGET($http, $scope.thingTypesAPI + "/" + $routeParams.thingTypeID,
-                      function (data, status, headers, config) {
-                        $log.info("Loading ThingType with ID " + $routeParams.thingTypeID);
-                        $scope.shared.selectedThingType = data.result;
-                        $log.debug("Adding Thing to shared scope: ", data.result);
-                      }
-              );
+            	riots.thingType($routeParams.thingTypeID, function(thingType) {
+                    $scope.shared.selectedThingType = thingType;
+            	});
             }
 
             $scope.saveThingType = function () {
@@ -67,10 +63,9 @@
               $scope.prepareModelValues($scope.shared.selectedThingType);
               thingType = JSON.parse(JSON.stringify(thingType));
               thingType = $scope.prepareModelValues(thingType);
-              invokePUT($scope.http, $scope.thingTypesAPI, JSON.stringify(thingType), function (data, status, headers, config) {
-                        $location.path("catalog");
-                      }
-              );
+              riots.save.thingType(thingType, function() {
+            	  $location.path("catalog");
+              });
             };
 
             $scope.applyFeatures = function () {

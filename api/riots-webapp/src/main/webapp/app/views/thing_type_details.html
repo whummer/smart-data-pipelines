@@ -161,11 +161,10 @@
     $scope.loadManufacturers = function () {
       $log.info("Loading manufacturers from catalog service via URL ", appConfig.services.manufacturers.url);
       if (!$scope.shared.manufacturers) {
-        invokeGET($http, appConfig.services.manufacturers.url,
-                function (data, status, headers, config) {
-                  $log.debug("Successfully loaded manufacturers: ", data.result);
-                  $scope.shared.manufacturers = data.result;
-                });
+    	  riots.manufacturers(function(manufacturers) {
+              $log.debug("Successfully loaded manufacturers: ", manufacturers);
+              $scope.shared.manufacturers = manufacturers;
+    	  });
       }
     };
 

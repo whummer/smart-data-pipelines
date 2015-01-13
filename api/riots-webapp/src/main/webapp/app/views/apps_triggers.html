@@ -52,16 +52,14 @@
 
 			var loadAllTriggers = function() {
 				$scope.tableOptions.data = [];
-				invokeGET($scope.http, $scope.triggersAPI,
-						function(data, status, headers, config) {
-							$.each(data.result, function(idx,el) {
-								el.timeCreated = function() {
-									return formatDate(el[CREATION_DATE]);
-								};
-								$scope.tableOptions.data.push(el);
-							});
-						}
-					);
+				riots.triggers(function(triggers) {
+					$.each(triggers, function(idx,el) {
+						el.timeCreated = function() {
+							return formatDate(el[CREATION_DATE]);
+						};
+						$scope.tableOptions.data.push(el);
+					});
+				});
 			}
 
 			loadAllTriggers();

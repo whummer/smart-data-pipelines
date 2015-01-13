@@ -1,72 +1,72 @@
 <section ng-controller="StatsOverviewController" id="homeHistoryDiv">
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <div class="panel-title"><span class="glyphicon glyphicon-info-sign"></span> <b>Platform Statistics</b>
-                <span ng-click="removeWidget('stats')" class="pull-right glyphicon glyphicon-remove"></span>
-            </div>
-        </div>
-        <div class="panel-body">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<div class="panel-title"><span class="glyphicon glyphicon-info-sign"></span> <b>Platform Statistics</b>
+				<span ng-click="removeWidget('stats')" class="pull-right glyphicon glyphicon-remove"></span>
+			</div>
+		</div>
+		<div class="panel-body">
 
-            <table class="table table-striped">
-                <tr>
-                    <td>Registered Users:</td>
-                    <td><span class="badge">{{stats.numUsers}}</span></td>
-                </tr>
-                <tr>
-                    <td>Online Users:</td>
-                    <td><span class="badge">{{stats.numUsersOnline}}</span></td>
-                </tr>
-           	</table>
-            <table class="table table-striped">
-                <tr>
-                    <th></th>
-                    <th>Total</th>
-                    <th>User</th>
-                </tr>
-                <tr>
-                    <td>Thing Types:</td>
-                    <td><span class="badge">{{stats.total.numThingTypes}}</span></td>
-                    <td><span class="badge">{{stats.forUser.numThingTypes}}</span></td>
-                </tr>
-                <!--<tr>
-                    <td>Thing Type Properties:</td>
-                    <td><span class="badge">{{stats.total.numThingTypeProperties}}</span></td>
-                    <td><span class="badge">{{stats.forUser.numThingTypeProperties}}</span></td>
-                </tr>-->
-                <tr>
-                    <td>Thing Instances:</td>
-                    <td><span class="badge">{{stats.total.numThings}}</span></td>
-                    <td><span class="badge">{{stats.forUser.numThings}}</span></td>
-                </tr>
-                <tr>
-                    <td>Processed Data Points:</td>
-                    <td><span class="badge">{{stats.total.numDataPoints}}</span></td>
-                    <td><span class="badge">{{stats.forUser.numDataPoints}}</span></td>
-                </tr>
-            </table>
-        </div>
-    </div>
+			<table class="table table-striped">
+				<tr>
+					<td>Registered Users:</td>
+					<td><span class="badge">{{stats.numUsers}}</span></td>
+				</tr>
+				<tr>
+					<td>Online Users:</td>
+					<td><span class="badge">{{stats.numUsersOnline}}</span></td>
+				</tr>
+		   	</table>
+			<table class="table table-striped">
+				<tr>
+					<th></th>
+					<th>Total</th>
+					<th>User</th>
+				</tr>
+				<tr>
+					<td>Thing Types:</td>
+					<td><span class="badge">{{stats.total.numThingTypes}}</span></td>
+					<td><span class="badge">{{stats.forUser.numThingTypes}}</span></td>
+				</tr>
+				<!--<tr>
+					<td>Thing Type Properties:</td>
+					<td><span class="badge">{{stats.total.numThingTypeProperties}}</span></td>
+					<td><span class="badge">{{stats.forUser.numThingTypeProperties}}</span></td>
+				</tr>-->
+				<tr>
+					<td>Thing Instances:</td>
+					<td><span class="badge">{{stats.total.numThings}}</span></td>
+					<td><span class="badge">{{stats.forUser.numThings}}</span></td>
+				</tr>
+				<tr>
+					<td>Processed Data Points:</td>
+					<td><span class="badge">{{stats.total.numDataPoints}}</span></td>
+					<td><span class="badge">{{stats.forUser.numDataPoints}}</span></td>
+				</tr>
+			</table>
+		</div>
+	</div>
 </section>
 
 <script>
 
-    var app = angular.module("app");
-    app.controller('StatsOverviewController', [
-        '$scope', '$http', '$compile',
-        function ($scope, $http, $compile) {
+var app = angular.module("app");
+app.controller('StatsOverviewController', [
+	'$scope', '$http', '$compile',
+	function ($scope, $http, $compile) {
 
-            AppController($scope, $http, $compile);
+		AppController($scope, $http, $compile);
 
-            var retrieveStats = function () {
-                invokeGET($scope.http, $scope.statsAPI + "/platform",
-                    function (data, status, headers, config) {
-                        $scope.stats = data.result;
-                    }
-                );
-            };
+		var retrieveStats = function () {
+			var opts = {};
+			opts.type = "platform";
+			riots.stats(opts, function(stats) {
+				$scope.stats = stats;
+			});
+		};
 
-            retrieveStats();
-        }
-    ]);
+		retrieveStats();
+	}
+]);
 
 </script>

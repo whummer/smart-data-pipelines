@@ -25,25 +25,23 @@
 
 <script type="text/javascript">
 
-  var app = angular.module("app");
-  app.controller('ThingController', [
-    '$scope', '$http', '$compile', '$routeParams',
-    function ($scope, $http, $compile, $routeParams) {
+ 
+var app = angular.module("app");
+app.controller('ThingController', [
+	'$scope', '$http', '$compile', '$routeParams',
+	function($scope, $http, $compile, $routeParams) {
 
-      AppController($scope, $http, $compile);
+		AppController($scope, $http, $compile);
 
-      if ($routeParams.thingId) {
-        invokeGET($scope.http,
-                $scope.thingsAPI + "/" + $routeParams.thingId,
-                function (data, status, headers, config) {
-                  var t = $scope.shared.selectedThing = data.result;
-                  if (t[THING_TYPE]) {
-                    t[THING_TYPE] = riots.thingType(t[THING_TYPE], null, API_CACHE_DEFAULT);
-                  }
-                }
-        );
-      }
-    }
-  ]);
-
+		if ($routeParams.thingId) {
+			riots.thing($routeParams.thingId, function(thing) {
+				var t = $scope.shared.selectedThing = thing;
+				if (t[THING_TYPE]) {
+					riots.thingType(t[THING_TYPE], function(thingType) {
+						t[THING_TYPE] = thingType;
+					});
+				}
+			})
+		}
+	} ]);
 </script>

@@ -129,16 +129,13 @@ define(['app', 'bootstrap-tagsinput'], function (app) {
                 $log.debug("Redirecting to location afterwards: ", location);
 
                 showConfirmDialog("Do you really want to delete this thing type?", function () {
-                    invokeDELETE($scope.http,
-                        $scope.thingTypesAPI + "/" + thingType.id,
-                        function (data, status, headers, config) {
-                            $scope.selectedThingType = $scope.shared.selectedThingType = null;
-                            $scope.searchKeyPress();
-                            if (location) {
-                                $location.path(location);
-                            }
+                	riots.delete.thingType(thingType, function() {
+                		$scope.selectedThingType = $scope.shared.selectedThingType = null;
+                        $scope.searchKeyPress();
+                        if (location) {
+                            $location.path(location);
                         }
-                    );
+                	});
                 });
             };
 
