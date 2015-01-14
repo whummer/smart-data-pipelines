@@ -1,0 +1,12 @@
+{
+  "id": "elasticsearch-service",
+  "kind" : "Service",
+  "apiVersion": "v1beta1",
+  "selector": {
+    "name": "elasticsearch"
+  },
+  "containerPort": 9300,
+  "protocol": "TCP",
+  "port": 9300,
+  "createExternalLoadBalancer": false
+}

@@ -1,0 +1,12 @@
+{
+  "id": "activemq",
+  "kind" : "Service",
+  "apiVersion": "v1beta1",
+  "selector": {
+    "name": "activemq"
+  },
+  "containerPort": 61616,
+  "protocol": "TCP",
+  "port": 61616,
+  "createExternalLoadBalancer": false
+}

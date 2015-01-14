@@ -1,0 +1,24 @@
+{
+	"id": "services-files-controller",
+	"apiVersion": "v1beta1",
+	"kind": "ReplicationController",
+	"desiredState": {
+	    "replicas": 2,
+	    "replicaSelector": { "name": "riots-services-files"},
+	    "podTemplate": {
+	  		"manifest" : {
+	 			"version": "v1beta1",
+	    		"id": "services-files-controller",
+	    		"containers": [{
+					"name": "riots-services-files",
+	    			"image": "10.131.249.127:5000/riots/service-files",
+	    			"cpu": 100,
+	            	"memory": 50000000,
+            		"ports": [{ "hostPort": 8087 }]
+	    		}]
+			},
+			"labels": { "name": "riots-services-files" }
+		}
+	},
+	"labels": {"name": "riots-services-files"}
+}

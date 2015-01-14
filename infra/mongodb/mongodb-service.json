@@ -1,0 +1,12 @@
+{
+  "id": "mongodb-service",
+  "kind" : "Service",
+  "apiVersion": "v1beta1",
+  "selector": {
+    "name": "mongodb"
+  },
+  "containerPort": 27017,
+  "protocol": "TCP",
+  "port": 27017,
+  "createExternalLoadBalancer": false
+}

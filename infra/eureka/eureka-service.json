@@ -1,0 +1,12 @@
+{
+  "id": "eureka-service",
+  "kind" : "Service",
+  "apiVersion": "v1beta1",
+  "selector": {
+    "name": "eureka"
+  },
+  "containerPort": 80,
+  "protocol": "TCP",
+  "port": 10000,
+  "createExternalLoadBalancer": false
+}
