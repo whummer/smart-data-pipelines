@@ -55,6 +55,12 @@ public class Application implements ObjectCreated, ObjectIdentifiable {
 //	@JsonProperty(Constants.USERS)
 //	List<String> users = new LinkedList<>();
 
+
+	public Application() {}
+	public Application(String name) {
+		this.name = name;
+	}
+
 	/**
 	 * Determine if the given user is authorized to access this app.
 	 * @param user

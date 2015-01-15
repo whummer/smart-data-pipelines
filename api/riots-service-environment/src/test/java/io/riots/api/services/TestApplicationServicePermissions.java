@@ -1,14 +1,17 @@
 package io.riots.api.services;
 
-import io.riots.core.auth.AuthFilterBase;
 import io.riots.core.auth.AuthHeaders;
 import io.riots.core.service.ServiceClientFactory;
-import io.riots.services.UsersService;
+import io.riots.services.ApplicationsService;
+import io.riots.services.apps.Application;
+import io.riots.services.model.interfaces.ObjectIdentifiable;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,20 +29,20 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  * @author whummer
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {TestUserPermissions.class})
+@ContextConfiguration(classes = {TestApplicationServicePermissions.class})
 @ComponentScan(basePackages = {"org.springframework.cloud.netflix.eureka"})
 @Configuration
 @EnableDiscoveryClient
 @EnableAutoConfiguration
 @EnableConfigurationProperties
-public class TestUserPermissions {
+public class TestApplicationServicePermissions {
 
-    static final Logger LOG = Logger.getLogger(TestUserPermissions.class);
+    static final Logger LOG = Logger.getLogger(TestApplicationServicePermissions.class);
 
 	private static final String TEST_USER_1 = "test1@riots.io";
-	private static final String TEST_ADMIN_1 = AuthFilterBase.ADMIN_USER_1;
+	private static final String TEST_USER_2 = "test2@riots.io";
 
-    private static UsersService users;
+    private static ApplicationsService apps;
 
     @Autowired
     ServiceClientFactory serviceClientFactory;
@@ -59,7 +62,7 @@ public class TestUserPermissions {
     @Before
     public void setup() {
         try {
-            users = serviceClientFactory.getUsersServiceClient();
+        	apps = serviceClientFactory.getApplicationsServiceClient();
         } catch (Exception e) {
             e.printStackTrace();
             /* services not running, do not run this test class */
@@ -67,36 +70,71 @@ public class TestUserPermissions {
     }
 
     @Test
-    public void testPermissions() throws IOException {
-        if (users == null) {
+    public void insertData() throws IOException {
+        if (apps == null) {
             LOG.info("Services not available, skipping test. Not inserting data.");
             return;
         }
-        listUsers();
+        insertAndDeleteWithDifferentUser();
+        insertAndListWithDifferentUser();
     }
 
-	private void listUsers() {
+	private void insertAndDeleteWithDifferentUser() {
 
-		/* permitted */
-		setTestUserHeader(TEST_ADMIN_1);
-        users.listUsers();
-
-		/* not permitted */
 		setTestUserHeader(TEST_USER_1);
-        boolean isDenied = false;
+        Application t = new Application("testApp1");
+        t = apps.create(t);
+
+        setTestUserHeader(TEST_USER_2);
+        boolean isForbidden = false;
         try {
-            users.listUsers();
+            apps.delete(t.getId());
 		} catch (Exception e) {
-			isDenied = true;
+			isForbidden = true;
 		}
-        if(!isDenied) {
+        if(!isForbidden) {
 			throw new RuntimeException("Expected 403, but permission was actually granted.");
         }
 
+        /* clean up */
+        setTestUserHeader(TEST_USER_1);
+        apps.delete(t.getId());
+
+	}
+
+	private void insertAndListWithDifferentUser() {
+
+		setTestUserHeader(TEST_USER_1);
+        Application t = new Application("testApp1");
+        t = apps.create(t);
+
+        List<Application> list1 = apps.list();
+        Assert.assertTrue(contains(list1, t));
+
+        setTestUserHeader(TEST_USER_2);
+        List<Application> list2 = apps.list();
+        Assert.assertFalse(contains(list2, t));
+
+        /* clean up */
+        setTestUserHeader(TEST_USER_1);
+        apps.delete(t.getId());
+
+	}
+
+	/* HELPER METHODS */
+	
+	private boolean contains(List<? extends ObjectIdentifiable> list, ObjectIdentifiable item) {
+		for(ObjectIdentifiable i : list) {
+			if(i.getId().equals(item.getId())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private void setTestUserHeader(String user) {
         AuthHeaders.THREAD_AUTH_INFO.get().get().setEmail(user);
-        WebClient.client(users).header(AuthHeaders.HEADER_AUTH_EMAIL, user);
+        WebClient.client(apps).reset();
+        WebClient.client(apps).header(AuthHeaders.HEADER_AUTH_EMAIL, user);
 	}
 }

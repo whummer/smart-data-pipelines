@@ -29,15 +29,15 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  * @author whummer
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {TestThingPermissions.class})
+@ContextConfiguration(classes = {TestThingServicePermissions.class})
 @ComponentScan(basePackages = {"org.springframework.cloud.netflix.eureka"})
 @Configuration
 @EnableDiscoveryClient
 @EnableAutoConfiguration
 @EnableConfigurationProperties
-public class TestThingPermissions {
+public class TestThingServicePermissions {
 
-    static final Logger LOG = Logger.getLogger(TestThingPermissions.class);
+    static final Logger LOG = Logger.getLogger(TestThingServicePermissions.class);
 
 	private static final String TEST_USER_1 = "test1@riots.io";
 	private static final String TEST_USER_2 = "test2@riots.io";
@@ -93,7 +93,7 @@ public class TestThingPermissions {
 			isForbidden = true;
 		}
         if(!isForbidden) {
-			throw new RuntimeException("Expected 403 (permission denied).");
+			throw new RuntimeException("Expected 403, but permission was actually granted.");
         }
 
         /* clean up */

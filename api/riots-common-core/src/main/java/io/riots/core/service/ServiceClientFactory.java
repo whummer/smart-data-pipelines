@@ -42,24 +42,24 @@ public class ServiceClientFactory {
 
 	private static final String DEFAULT_SERVICE_ENDPOINT = "http://%s:%s/api/v1/";
 
-	private static final String SERVICE_FILES_EUREKA_NAME = "files-service";
-	private static final String SERVICE_FILES_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
-	private static final String SERVICE_USERS_EUREKA_NAME = "users-service";
-	private static final String SERVICE_USERS_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
-	private static final String SERVICE_APP_EUREKA_NAME = "environment-service";
-	private static final String SERVICE_APP_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
-	private static final String SERVICE_CATALOG_EUREKA_NAME = "catalog-service";
-	private static final String SERVICE_CATALOG_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
-	private static final String SERVICE_THINGS_EUREKA_NAME = "environment-service";
-	private static final String SERVICE_THINGS_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
-	private static final String SERVICE_THINGDATA_EUREKA_NAME = "environment-service";
-	private static final String SERVICE_THINGDATA_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
-	private static final String SERVICE_SIMULATION_EUREKA_NAME = "simulation-service";
-	private static final String SERVICE_SIMULATION_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
-	private static final String SERVICE_GWSTATS_EUREKA_NAME = "gateway-service";
-	private static final String SERVICE_GWSTATS_ENDPOINT = "http://%s:%s/";
-	private static final Map<String,String> serviceEndpoints = new HashMap<String,String>();
+	public static final String SERVICE_FILES_EUREKA_NAME = "files-service";
+	public static final String SERVICE_FILES_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
+	public static final String SERVICE_USERS_EUREKA_NAME = "users-service";
+	public static final String SERVICE_USERS_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
+	public static final String SERVICE_APP_EUREKA_NAME = "environment-service";
+	public static final String SERVICE_APP_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
+	public static final String SERVICE_CATALOG_EUREKA_NAME = "catalog-service";
+	public static final String SERVICE_CATALOG_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
+	public static final String SERVICE_THINGS_EUREKA_NAME = "environment-service";
+	public static final String SERVICE_THINGS_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
+	public static final String SERVICE_THINGDATA_EUREKA_NAME = "environment-service";
+	public static final String SERVICE_THINGDATA_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
+	public static final String SERVICE_SIMULATION_EUREKA_NAME = "simulation-service";
+	public static final String SERVICE_SIMULATION_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
+	public static final String SERVICE_GWSTATS_EUREKA_NAME = "gateway-service";
+	public static final String SERVICE_GWSTATS_ENDPOINT = "http://%s:%s/";
 
+	private static final Map<String,String> serviceEndpoints = new HashMap<String,String>();
 	private static final Method methodGetBean;
 
 	static {
@@ -91,11 +91,12 @@ public class ServiceClientFactory {
 		Map<String,String> headersMap = merge(headers);
 		return getServiceInstanceForName(SERVICE_THINGS_EUREKA_NAME, ThingsService.class, headersMap);
 	}
+	public ApplicationsService getApplicationsServiceClient(Map<?,?> ... headers) {
+		Map<String,String> headersMap = merge(headers);
+		return getServiceInstanceForName(SERVICE_APP_EUREKA_NAME, ApplicationsService.class, headersMap);
+	}
 	public FilesService getFilesServiceClient() {
 		return getServiceInstanceForName(SERVICE_FILES_EUREKA_NAME, FilesService.class);
-	}
-	public ApplicationsService getApplicationsServiceClient() {
-		return getServiceInstanceForName(SERVICE_APP_EUREKA_NAME, ApplicationsService.class);
 	}
 	public ThingDataService getThingDataServiceClient() {
 		return getServiceInstanceForName(SERVICE_THINGDATA_EUREKA_NAME, ThingDataService.class);
@@ -110,7 +111,13 @@ public class ServiceClientFactory {
 		return getServiceInstanceForName(SERVICE_GWSTATS_EUREKA_NAME, GatewayStatsService.class);
 	}
 
-	/* PRIVATE HELPER METHODS */
+	/* HELPER METHODS */
+
+	public String getServiceUrlForName(String name) {
+		InstanceInfo i = getService(name);
+		String addr = String.format(serviceEndpoints.get(name), i.getHostName(), i.getPort());
+		return addr;
+	}
 
 	private <T> T getServiceInstanceForName(String name, Class<T> clazz) {
 		return getServiceInstanceForName(name, clazz, null);
@@ -119,7 +126,6 @@ public class ServiceClientFactory {
 		if(headers == null) {
 			headers = new HashMap<>();
 		}
-		System.out.println("getServiceInstanceForName " + headers);
 		AuthInfo info = AuthHeaders.THREAD_AUTH_INFO.get().get();
 		if(info != null) {
 			if(!headers.containsKey(AuthHeaders.HEADER_AUTH_USER_ID))
@@ -129,8 +135,7 @@ public class ServiceClientFactory {
 			if(info.isInternalCall())
 				headers.put(AuthHeaders.HEADER_INTERNAL_CALL, "true");
 		}
-		InstanceInfo i = getService(name);
-		String addr = String.format(serviceEndpoints.get(name), i.getHostName(), i.getPort());
+		String addr = getServiceUrlForName(name);
 
 		return getServiceInstanceForURL(addr, clazz, headers);
 	}

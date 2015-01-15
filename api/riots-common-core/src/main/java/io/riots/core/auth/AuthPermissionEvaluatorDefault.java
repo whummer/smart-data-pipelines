@@ -1,18 +1,17 @@
 package io.riots.core.auth;
 
 import io.riots.core.auth.AuthHeaders.AuthInfo;
-import io.riots.services.ThingsService;
+import io.riots.core.service.ServiceClientFactory;
 import io.riots.services.UsersService;
 import io.riots.services.model.interfaces.ObjectCreated;
-import io.riots.services.scenario.Thing;
 import io.riots.services.users.Permission.Operation;
 import io.riots.services.users.Role;
 
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang.NotImplementedException;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
@@ -30,17 +29,13 @@ public class AuthPermissionEvaluatorDefault {
 	static final List<String> modificationOps = Arrays.asList(
 			Operation.DELETE, Operation.UPDATE);
 
-	/**
-	 * This method is implemented by sub-types, e.g., the auth permission
-	 * handler for the {@link ThingsService} will return instances of 
-	 * {@link Thing}s in this method.
-	 */
-	protected Object getDomainObject(String targetId, String targetType) {
-		throw new NotImplementedException();
-	}
+	@Autowired
+	ServiceClientFactory clientFactory;
 
-	public static boolean hasPermission(Authentication authentication, Object targetDomainObject, 
-								 Object permission, UsersService users) {
+	public boolean hasPermission(Authentication authentication, 
+			Object targetDomainObject, Object permission) {
+
+		UsersService users = clientFactory.getUsersServiceClient(AuthHeaders.INTERNAL_CALL);
 
 		AuthInfo info = (AuthInfo) authentication.getDetails();
 

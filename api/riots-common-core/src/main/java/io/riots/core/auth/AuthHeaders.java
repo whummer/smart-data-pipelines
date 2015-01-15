@@ -165,8 +165,7 @@ public class AuthHeaders {
         User existing = null;
         if(!StringUtils.isEmpty(userID)) {
         	existing = usersService.findByID(userID);
-        }
-        if (!StringUtils.isEmpty(userEmail)) {
+        } else if (!StringUtils.isEmpty(userEmail)) {
             existing = usersService.findByEmail(userEmail);
         }
         return existing;
