@@ -1,7 +1,7 @@
 #!/bin/bash
 set -ex
 
-DOCKER_REGISTRY=10.131.252.71:5000
+DOCKER_REGISTRY=10.131.245.157:5000
 
 #
 # retag with custom registry and push
