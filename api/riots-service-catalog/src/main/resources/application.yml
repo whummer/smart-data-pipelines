@@ -24,6 +24,7 @@ logging:
   level:
     com.netflix.discovery: OFF
     com.netflix.zuul: OFF
+    org.apache.cxf.interceptor: OFF
 
 ---
 spring:

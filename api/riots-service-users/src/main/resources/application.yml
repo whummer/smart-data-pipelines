@@ -11,7 +11,7 @@ eureka:
   client:
     registryFetchIntervalSeconds: 5
     serviceUrl:
-      defaultZone: http://${eureka.hostname}:10000/eureka/v2
+      defaultZone: http://${eureka.hostname}:10000/eureka/v2/
 
 spring:
   application:

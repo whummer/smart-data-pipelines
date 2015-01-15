@@ -1,5 +1,6 @@
 package io.riots.services.apps;
 
+import io.riots.services.model.Constants;
 import io.riots.services.model.interfaces.ObjectCreated;
 import io.riots.services.model.interfaces.ObjectIdentifiable;
 import io.riots.services.users.User;
@@ -16,19 +17,43 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class Application implements ObjectCreated, ObjectIdentifiable {
 
+	/**
+	 * Identifier.
+	 */
 	@JsonProperty
 	String id;
-	@JsonProperty("creation-date")
+	/**
+	 * Creation Date.
+	 */
+	@JsonProperty(Constants.CREATION_DATE)
 	Date created;
-	@JsonProperty
+	/**
+	 * ID of creating user.
+	 */
+	@JsonProperty(Constants.CREATOR_ID)
 	String creatorId;
 
+	/**
+	 * Name of this application.
+	 */
 	@JsonProperty
 	String name;
+	/**
+	 * Unique application key (used for authentication).
+	 */
 	@JsonProperty
 	String appKey;
-	@JsonProperty
-	List<String> users = new LinkedList<>();
+	/**
+	 * List of things associated with this application.
+	 */
+	@JsonProperty(Constants.THINGS)
+	List<String> things = new LinkedList<>();
+	/**
+	 * List of users with access to this application.
+	 * // TODO
+	 */
+//	@JsonProperty(Constants.USERS)
+//	List<String> users = new LinkedList<>();
 
 	/**
 	 * Determine if the given user is authorized to access this app.
@@ -66,6 +91,9 @@ public class Application implements ObjectCreated, ObjectIdentifiable {
 	}
 	public String getName() {
 		return name;
+	}
+	public List<String> getThings() {
+		return things;
 	}
 
 }

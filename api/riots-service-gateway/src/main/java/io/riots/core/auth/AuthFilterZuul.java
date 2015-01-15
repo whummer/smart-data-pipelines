@@ -1,7 +1,9 @@
 package io.riots.core.auth;
 
 import io.riots.core.auth.AuthHeaders.AuthInfo;
+import io.riots.core.model.ModelCache;
 import io.riots.core.service.ServiceClientFactory;
+import io.riots.services.users.User;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -40,4 +42,14 @@ public class AuthFilterZuul extends AuthFilterBase {
 		return authenticateRiotsApp(clientFactory, userId, appId);
 	}
 
+	@Override
+	protected User findUserByEmail(String email) {
+		User user = (User) ModelCache.USERS.get(email);
+		if(user != null) {
+			return user;
+		}
+		user = clientFactory.getUsersServiceClient(AuthHeaders.INTERNAL_CALL).findByEmail(email);
+		ModelCache.USERS.put(email, user);
+		return user;
+	}
 }

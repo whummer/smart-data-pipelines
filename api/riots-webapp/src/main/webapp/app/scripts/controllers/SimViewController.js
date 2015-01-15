@@ -25,32 +25,6 @@ define(['app'], function(app) {
 			$scope.simulationTicks = [];
 			$scope.simExecutions = [];
 
-			$scope.loadScenarios = function(callback) {
-				invokeGET($scope.http, $scope.simAPI + "?page=0&size=100",
-					function(data, status, headers, config) {
-						$scope.scenariosMap = {};
-						scenarios = data.result;
-						$.each(scenarios, function(idx,el) {
-							$scope.scenariosMap[el.id] = el;
-						});
-						callback(scenarios);
-					}
-				);
-			}
-			$scope.renderSelectScenarios = function() {
-				$scope.loadScenarios(function(scenarios) {
-					var singleScenario = scenarios.length == 1;
-					if(!singleScenario) {
-						scenarios.unshift({id: -1, name: "Select Scenario ..."});
-					}
-					$scope.scenariosList = scenarios;
-					if(singleScenario) {
-						$scope.curScenario = scenarios[0];
-						eventBus.publish("refresh.simulation.scenario", $scope.curScenario);
-					}
-				});
-			}
-
 			$scope.rectifyScenarioModel = function(scenario) {
 				if(!scenario) {
 					scenario = $scope.curScenario;

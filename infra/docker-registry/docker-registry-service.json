@@ -1,0 +1,16 @@
+{
+  "id": "docker-registry",
+  "kind" : "Service",
+  "apiVersion": "v1beta1",
+  "selector": {
+    "name": "docker-registry"
+  },
+  "containerPort": 5000,
+  "protocol": "TCP",
+  "port": 5000,
+  "createExternalLoadBalancer": true,
+  "labels": {
+    "name": "docker-registry",
+    "env": "${RIOTS_ENV}"
+  }
+}

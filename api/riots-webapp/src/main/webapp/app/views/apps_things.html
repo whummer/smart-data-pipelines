@@ -3,13 +3,13 @@
 
   <!-- Thing Table -->
 	<div>
-		<div id="assetsTable" ui-grid="tableOptions" ui-grid-selection ui-grid-edit ui-grid-row-edit class="grid"></div>
+		<div id="thingsTable" ui-grid="tableOptions" ui-grid-selection ui-grid-edit ui-grid-row-edit class="grid"></div>
 	</div>
 
   <!-- Add/Delete Thing buttons -->
   <div style="padding-bottom: 15px;">
-    <button class="btn btn-primary btn-sm" id="btnAddAsset"><span class="glyphicon glyphicon-plus"></span> Add Thing to Application</button>
-    <button class="btn btn-warning btn-sm" id="btnDeleteAsset"><span class="glyphicon glyphicon-minus"></span> Remove Thing from Application</button>
+    <button class="btn btn-primary btn-sm" id="btnAddThing"><span class="glyphicon glyphicon-plus"></span> Add Thing to Application</button>
+    <button class="btn btn-warning btn-sm" id="btnDeleteThing"><span class="glyphicon glyphicon-minus"></span> Remove Thing from Application</button>
   </div>
 
 </section>
@@ -35,7 +35,7 @@ app.controller('ThingsController',[
 				}
 			];
 			$scope.tableOptions.data = [];
-			renderUITable($scope.tableOptions, "assetsTable", columnsConfig,
+			renderUITable($scope.tableOptions, "thingsTable", columnsConfig,
 				function(event) {
 			    	if(event.type == "dgrid-select") {
 			    		$scope.$apply(function() {
@@ -53,13 +53,13 @@ app.controller('ThingsController',[
 		initTable();
 
 		var loadAllThings = function() {
-			riots.things(function(things) {
+			var app = $scope.shared.selectedApplication;
+			if(!app) return;
+			var options = {appId: app.id};
+			riots.things(options, function(things) {
 				$.each(things, function(idx,el) {
-					el.formatCoords = function() {
-						return $scope.formatCoords(el.location);
-					}
-					if(el["thing-type"]) {
-						el["thing-type"] = riots.thingType(el["thing-type"], null, API_CACHE_DEFAULT);
+					if(el[THING_TYPE]) {
+						el[THING_TYPE] = riots.thingType(el[THING_TYPE], null, API_CACHE_DEFAULT);
 					}
 				});
 				$scope.tableOptions.data = things;
@@ -73,7 +73,7 @@ app.controller('ThingsController',[
 
 		var setupDragAndDrop = function() {
 			// set up drag/drop
-			var selector = "#assetsTable .ui-grid-row";
+			var selector = "#thingsTable .ui-grid-row";
 			$(selector).draggable({
 				helper: function() {
 					return $("<div style='z-index: 100000'>" +
@@ -86,29 +86,34 @@ app.controller('ThingsController',[
 			});
 		}
 
+		var saveAppAndLoadThings = function() {
+			var app = clone($scope.shared.selectedApplication);
+			delete app["$$hashKey"];
+			riots.save.app(app, loadAllThings);
+		}
+
 		var addThing = function(){
 			item = {
 				name: "unnamed"
 			}
-			$scope.addThingInDB(item, function(asset) {
-				eventBus.publish("addOrDel.Asset", asset);
+			$scope.addThingInDB(item, function(thing) {
+				$scope.shared.selectedApplication[THINGS].push(thing.id);
+				saveAppAndLoadThings();
 			});
 		}
 		var deleteThing = function(){
 			var selection = $scope.shared.selectedThing;
 			if(!selection || !selection.id) return;
 			$scope.deleteThingInDB(selection, function() {
-				eventBus.publish("addOrDel.Asset", selection);
 				$scope.shared.selectedThing = null;
+				arrayRemove($scope.shared.selectedApplication[THINGS], selection.id);
+				saveAppAndLoadThings();
 			});
 		}
 
 		/* register event handlers*/
-		$scope.addClickHandler("btnAddAsset", addThing);
-		$scope.addClickHandler("btnDeleteAsset", deleteThing);
-		$scope.subscribeOnce("addOrDel.Asset", function() {
-			loadAllThings();
-		}, "addOrDel.Asset.worldAssetsView");
+		$scope.addClickHandler("btnAddThing", addThing);
+		$scope.addClickHandler("btnDeleteThing", deleteThing);
 
 	}]
 );

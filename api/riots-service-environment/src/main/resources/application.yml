@@ -28,7 +28,10 @@ logging:
   level:
     com.netflix.discovery: OFF
     com.netflix.zuul: OFF
+    org.apache.cxf: OFF
     org.apache.cxf.interceptor: OFF
+    org.apache.cxf.phase: OFF
+    org.apache.cxf.jaxrs: OFF
 
 ---
 spring:

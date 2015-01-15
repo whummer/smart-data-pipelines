@@ -31,7 +31,6 @@ import org.apache.log4j.Logger;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
 /**
@@ -123,9 +122,10 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
             "^(/api/v.)?/files.*$"
 
     );
+    public static final String ADMIN_USER_1 = "hummer@infosys.tuwien.ac.at";
     static {
         /* TODO: put into config file or database */
-        userRoleMappings.add(new UserRoleMapping("hummer@infosys.tuwien.ac.at", Role.ROLE_ADMIN));
+        userRoleMappings.add(new UserRoleMapping(ADMIN_USER_1, Role.ROLE_ADMIN));
         userRoleMappings.add(new UserRoleMapping("dev@riox.io", Role.ROLE_ADMIN));
         userRoleMappings.add(new UserRoleMapping("olzn23@gmail.com", Role.ROLE_ADMIN));
         userRoleMappings.add(new UserRoleMapping(".*", Role.ROLE_USER));
@@ -143,7 +143,7 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
                          FilterChain chain) throws IOException, ServletException {
         boolean allowed = doFilter(req, res);
         if (allowed) {
-            chain.doFilter(req, res);
+        	chain.doFilter(req, res);
         }
     }
 
@@ -256,6 +256,10 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
     					newInfo = authNetwork.verifyAccessToken(requestInfo.token);
     		            newInfo.accessToken = requestInfo.token;
 
+    		            /* make sure we have a valid userId in the auth info */
+		            	User user = findUserByEmail(newInfo.email);
+		            	newInfo.userID = user.getId();
+
 	            	} else if(requestInfo.isRiotsBased()) {
 	
 	            		newInfo = authenticateRiotsApp(requestInfo.userId, requestInfo.appKey);
@@ -294,14 +298,15 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
 
 			/* append additional infos to request */
             setAuthInfoHeaders(request, authInfo);
-
         }
 
 		/* all checks passed, return success */
         return true;
     }
 
-    private boolean authorize(String uriPath, AuthInfo authInfo) {
+    protected abstract User findUserByEmail(String email);
+
+	private boolean authorize(String uriPath, AuthInfo authInfo) {
     	for(String pattern : requiredRoleForResources.keySet()) {
     		String role = requiredRoleForResources.get(pattern);
     		if(uriPath.matches(pattern)) {
@@ -381,19 +386,16 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
      */
 	protected AuthInfo authenticateRiotsApp(ServiceClientFactory clientFactory, String userId, String appKey) {
 		try {
-			User user = clientFactory.getUsersServiceClient().findByID(userId);
-			System.out.println("user" + userId + " - " + user);
+			User user = clientFactory.getUsersServiceClient(AuthHeaders.INTERNAL_CALL).findByID(userId);
 			if(user == null || !userId.equals(user.getId())) {
 				return null;
 			}
 			Application app = clientFactory.getApplicationsServiceClient().retrieveByAppKey(appKey);
-			System.out.println("app " + appKey + " - " + app);
 			if(app == null || !appKey.equals(app.getAppKey())) {
 				return null;
 			}
 			AuthInfo info = new AuthInfo();
 			if(app.isAuthorized(user)) {
-				info.user = user;
 				info.userID = userId;
 				info.email = user.getEmail();
 				return info;
@@ -419,13 +421,16 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
 	/* HELPER METHODS */
 
 	protected static void fillInRoles(AuthInfo info) {
+    	if(info.isInternalCall()) {
+    		/* add all roles if this is an internal call */
+    		info.addRoles(Role.ROLES);
+    		return;
+    	}
     	if(info.email == null)
     		return;
     	for (UserRoleMapping m : userRoleMappings) {
             if (info.email.matches(m.userPattern)) {
-            	info.roles.add(m.role);
-            	info.rolesAsGrantedAuthorities.add(
-                        new SimpleGrantedAuthority(m.role));
+            	info.addRole(m.role);
             }
         }
     }

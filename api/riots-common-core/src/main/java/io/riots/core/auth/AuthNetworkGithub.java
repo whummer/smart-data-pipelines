@@ -34,7 +34,6 @@ public class AuthNetworkGithub extends AuthNetwork {
             String result1 = IOUtils.readStringFromStream(new URL(url1).openStream());
             @SuppressWarnings("unchecked")
             Map<String, Object> json1 = JSON.readValue(result1, Map.class);
-            newInfo.userID = (String) json1.get("login");
             newInfo.userName = (String) json1.get("name");
             String url2 = urlPattern.replace("<request>", "user/emails");
             String result2 = IOUtils.readStringFromStream(new URL(url2).openStream());

@@ -9,15 +9,18 @@
 
     <!-- Spring security configurations -->
     <bean id="authAdvice" class="io.riots.core.auth.AuthPermissionAdvice"/>
-    <bean id="expressionHandler"
-          class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
-        <property name="permissionEvaluator" ref="authPermissionChecker"/>
+<!--     <bean id="expressionHandler" -->
+<!--           class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler"> -->
+<!--         <property name="permissionEvaluator" ref="authPermissionChecker"/> -->
+<!--     </bean> -->
+    <bean id="expressionHandler" class="io.riots.core.auth.AuthMethodSecurityHandler">
+<!--     	<property name="permissionEvaluator" ref="authPermissionChecker"/> -->
     </bean>
 
     <security:global-method-security secured-annotations="enabled" pre-post-annotations="enabled">
         <security:expression-handler ref="expressionHandler"/>
     </security:global-method-security>
 
-    <aop:aspectj-autoproxy/>
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
 
 </beans>

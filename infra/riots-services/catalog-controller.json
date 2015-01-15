@@ -1,0 +1,46 @@
+{
+    "id": "riots-catalog",
+    "apiVersion": "v1beta1",
+    "kind": "ReplicationController",
+    "desiredState": {
+        "replicas": 2,
+        "replicaSelector": {
+            "name": "riots-catalog"
+        },
+        "podTemplate": {
+            "desiredState": {
+                "manifest": {
+                    "version": "v1beta1",
+                    "id": "riots-catalog",
+                    "containers": [
+                        {
+                            "name": "riots-catalog",
+                            "image": "10.131.252.71:5000/riots/service-catalog",
+                            "ports": [
+                                {
+                                    "name": "riots-catalog-port",
+                                    "containerPort": 8083
+                                }
+                            ],
+                            "env" : [
+                            	{
+                            		"name": "JAVA_OPTS",
+                            		"value": "-Deureka.hostname=10.131.242.239 -Dstorage.directory=/tmp"
+                            	}
+
+                            ]
+                        }
+                    ]
+                }
+            },
+            "labels": {
+                "name": "riots-catalog",
+        		"env": "${RIOTS_ENV}"
+            }
+        }
+    },
+    "labels": {
+        "name": "riots-catalog",
+        "env": "${RIOTS_ENV}"
+    }
+}

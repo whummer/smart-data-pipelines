@@ -92,10 +92,10 @@ public class InsertDemoDataViaCatalog {
             simulations = serviceClientFactory.getSimulationsServiceClient();
 
             // TODO uncomment to insert test data into public webapp
-//            catalog = serviceClientFactory.getServiceInstanceForURL(
-//            		"http://platform.riots.io:8083/api/v1", CatalogService.class);
-//            simulations = serviceClientFactory.getServiceInstanceForURL(
-//            		"http://platform.riots.io:8086/api/v1", SimulationService.class);
+	//            catalog = serviceClientFactory.getServiceInstanceForURL(
+	//            		"http://platform.riots.io:8083/api/v1", CatalogService.class);
+	//            simulations = serviceClientFactory.getServiceInstanceForURL(
+	//            		"http://platform.riots.io:8086/api/v1", SimulationService.class);
 
             WebClient.client(simulations).header(AuthHeaders.HEADER_AUTH_EMAIL, "test@riots.io");
         } catch (Exception e) {
@@ -126,7 +126,7 @@ public class InsertDemoDataViaCatalog {
             sim.startTime = 1;
             sim.endTime = 500;
             sim.stepInterval = 1;
-            sim.setFunction("max(0,1-x/" + sim.endTime + ")");
+            sim.setFunction("max(0,1-x/" + sim.endTime + ") * 100");
             t.setSimulation(sim);
             createSimType(existing, t);
         }
@@ -137,7 +137,7 @@ public class InsertDemoDataViaCatalog {
             sim.startTime = 1;
             sim.endTime = 500;
             sim.stepInterval = 1;
-            sim.setFunction("1/x");
+            sim.setFunction("(1/x) * 100");
             t.setSimulation(sim);
             createSimType(existing, t);
         }

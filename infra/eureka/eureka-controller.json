@@ -1,0 +1,38 @@
+{
+  "id": "eureka",
+  "apiVersion": "v1beta1",
+  "kind": "ReplicationController",
+  "desiredState": {
+    "replicas": 1,
+    "replicaSelector": {
+      "name": "eureka"
+    },
+    "podTemplate": {
+      "desiredState": {
+        "manifest": {
+          "version": "v1beta1",
+          "id": "eureka",
+          "containers": [
+            {
+              "name": "eureka",
+              "image": "riox/eureka",
+              "ports": [
+                {
+                  "containerPort": 80
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "labels": {
+        "name": "eureka",
+        "env": "${RIOTS_ENV}"
+      }
+    }
+  },
+  "labels": {
+    "name": "eureka",
+    "env": "${RIOTS_ENV}"
+  }
+}
