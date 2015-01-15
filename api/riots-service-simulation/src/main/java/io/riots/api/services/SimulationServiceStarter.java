@@ -4,6 +4,7 @@ import javax.jms.Topic;
 
 import io.riots.api.services.jms.EventBroker;
 import io.riots.core.boot.MongoEnabledServiceStarter;
+import io.riots.core.boot.ServiceStarter;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.broker.BrokerFactory;
@@ -73,9 +74,7 @@ public class SimulationServiceStarter extends MongoEnabledServiceStarter {
 	}
 
 	public static void main(String[] args) {
-		if (System.getProperty("RIOTS_LOG_DIR") == null) {
-			System.setProperty("RIOTS_LOG_DIR", "log");
-		}
+    	ServiceStarter.setDefaultSystemProps();
 		BrokerFactory.setStartDefault(false);
 		SpringApplication.run(SimulationServiceStarter.class, args);
 	}

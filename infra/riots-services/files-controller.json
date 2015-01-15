@@ -1,22 +1,46 @@
 {
-	"id": "riots-files",
-	"apiVersion": "v1beta1",
-	"kind": "ReplicationController",
-	"desiredState": {
-	    "replicas": 2,
-	    "replicaSelector": { "name": "riots-files"},
-	    "podTemplate": {
-	  		"manifest" : {
-	 			"version": "v1beta1",
-	    		"id": "riots-files",
-	    		"containers": [{
-					"name": "riots-files",
-	    			"image": "10.131.249.127:5000/riots/service-files",
-            		"ports": [{ "containerPort": 8087 }]
-	    		}]
-			},
-			"labels": { "name": "riots-files" }
-		}
-	},
-	"labels": {"name": "riots-files"}
+    "id": "riots-files",
+    "apiVersion": "v1beta1",
+    "kind": "ReplicationController",
+    "desiredState": {
+        "replicas": 2,
+        "replicaSelector": {
+            "name": "riots-files"
+        },
+        "podTemplate": {
+            "desiredState": {
+                "manifest": {
+                    "version": "v1beta1",
+                    "id": "riots-files",
+                    "containers": [
+                        {
+                            "name": "riots-files",
+                            "image": "${DOCKER_REGISTRY}/riots/service-files",
+                            "ports": [
+                                {
+                                    "name": "riots-files-port",
+                                    "containerPort": 8084
+                                }
+                            ],
+                            "env" : [
+                            	{
+                            		"name": "JAVA_OPTS",
+                            		"value": "-Deureka.hostname=${EUREKA_HOSTNAME} -Dstorage.directory=/tmp"
+                            	}
+
+                            ]
+                        }
+                    ]
+                }
+            },
+            "labels": {
+                "name": "riots-files",
+        		"env": "${RIOTS_ENV}"
+            }
+        }
+    },
+    "labels": {
+        "name": "riots-files",
+        "env": "${RIOTS_ENV}"
+    }
 }

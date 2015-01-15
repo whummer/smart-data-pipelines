@@ -1,6 +1,5 @@
 package io.riots.api.events;
 
-import io.riots.api.services.jms.EventBroker;
 import io.riots.api.util.ServiceUtil;
 import io.riots.core.repositories.PropertyValueRepository;
 import io.riots.services.scenario.PropertyValue;

@@ -2,11 +2,12 @@ package io.riots.api.services;
 
 import io.riots.api.events.DataInserter;
 import io.riots.api.events.EventBrokerComponent;
-import io.riots.api.services.jms.EventBroker;
+import io.riots.core.auth.AuthHeaders;
 import io.riots.core.model.PropertyFinder;
 import io.riots.core.repositories.PropertyValueRepository;
 import io.riots.core.service.ServiceClientFactory;
 import io.riots.services.ThingDataService;
+import io.riots.services.ThingsService;
 import io.riots.services.catalog.Property;
 import io.riots.services.scenario.PropertyValue;
 import io.riots.services.scenario.Thing;
@@ -100,7 +101,8 @@ public class ThingDataServiceImpl implements ThingDataService {
     @Override
     @Timed @ExceptionMetered
     public long countDataItemsForUser(String userId, long fromTime, long toTime) {
-    	List<Thing> things = serviceClientFactory.getThingsServiceClient().retrieveThingsForUser(userId);
+    	ThingsService service = serviceClientFactory.getThingsServiceClient(AuthHeaders.INTERNAL_CALL);
+    	List<Thing> things = service.retrieveThingsForUser(userId);
     	List<String> thingIds = new LinkedList<String>();
     	for(Thing t : things) {
     		thingIds.add(t.getId());

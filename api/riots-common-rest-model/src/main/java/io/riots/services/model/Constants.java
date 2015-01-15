@@ -39,5 +39,7 @@ public class Constants {
 	public static final String IMAGE_DATA = "image-data";
 	public static final String SIMULATION_ID = "simulation-id";
 	public static final String MANUFACTURER_ID = "manufacturer-id";
+	public static final String THINGS = "things";
+	public static final String USERS = "users";
 
 }

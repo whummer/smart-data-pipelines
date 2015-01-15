@@ -1,6 +1,8 @@
 package io.riots.services;
 
 import io.riots.services.apps.Application;
+import io.riots.services.users.Permission;
+import io.riots.services.users.Role;
 
 import java.util.List;
 
@@ -14,6 +16,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.wordnik.swagger.annotations.Api;
@@ -67,13 +70,17 @@ public interface ApplicationsService {
 	@ApiOperation(value = "Update an existing Application", 
 		notes = "Update an existing Application according to the provided JSON payload. Upon success, HTTP 200 is returned.")
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "Malformed Application provided. See error message for details") })
-	Application update(Application item);
+    @PreAuthorize(Role.HAS_ROLE_USER  + " and " 
+            + Permission.CAN_UPDATE_APPLICATION)
+	Application update(Application application);
 
 	@DELETE
 	@Path("/{id}")
 	@Produces({ MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "Delete an Application", notes = "Delete an existing Application by its ID. Upon success, HTTP 200 is returned.")
 	@ApiResponses(value = { @ApiResponse(code = 404, message = "No such Application") })
+    @PreAuthorize(Role.HAS_ROLE_USER  + " and " 
+            + Permission.CAN_DELETE_APPLICATION_ID)
 	void delete(@PathParam("id") String id);
 
 }

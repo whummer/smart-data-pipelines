@@ -37,7 +37,6 @@ public class AuthNetworkGoogle extends AuthNetwork {
             String result = IOUtils.readStringFromStream(new URL(url).openStream());
             @SuppressWarnings("unchecked")
             Map<String, Object> json = JSON.readValue(result, Map.class);
-            newInfo.userID = (String) json.get("id");
             newInfo.userName = (String) json.get("displayName");
             @SuppressWarnings("unchecked")
             List<Map<String, String>> emails = (List<Map<String, String>>) json.get("emails");

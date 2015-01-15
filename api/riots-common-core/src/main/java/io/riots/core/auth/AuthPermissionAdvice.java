@@ -1,17 +1,14 @@
 package io.riots.core.auth;
 
-import java.lang.reflect.Method;
-
 import javax.ws.rs.ForbiddenException;
 
 import org.apache.log4j.Logger;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Component;
 
 /**
  * Auth permission advice for automatic weaving.
@@ -21,6 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
  * Aspect around permission checks to avoid lengthy exception outputs. Based on
  * http://stackoverflow.com/questions/4621394
  */
+@Component
 @Aspect
 @Order(value = 1)
 public class AuthPermissionAdvice {
@@ -29,19 +27,12 @@ public class AuthPermissionAdvice {
 	/* we cannot use this pointcut because the @PreAuthorize annotations
 	 * are on the service interfaces, which is not supported by AspectJ:
 
-		@Around("execution(@org.springframework.security.access.prepost.PreAuthorize * *(..))")
+		@Around("call(@org.springframework.security.access.prepost.PreAuthorize * *(..))")
 
 	 * */
-	@Around("execution(* (@org.springframework.stereotype.Service *).*(..))")
+	@Around("execution(* org.springframework.security.access.vote.AffirmativeBased.decide(..))")
 	public Object preventAccessDeniedException(ProceedingJoinPoint pjp)
 			throws Throwable {
-		MethodSignature signature = (MethodSignature) pjp.getSignature();
-	    Method method = signature.getMethod();
-	    PreAuthorize anno = method.getAnnotation(PreAuthorize.class);
-
-	    if(anno == null) {
-	    	return pjp.proceed();
-	    }
 
 	    /* make try-catch call */
 		Object retVal = null;
@@ -55,12 +46,4 @@ public class AuthPermissionAdvice {
 		return retVal;
 	}
 
-//	@Pointcut("call(@org.springframework.stereotype.Service * *.*(..)) && args() && if()")
-	public static boolean isProtectedServiceMethod(
-			//JoinPoint joinPoint
-			//, JoinPoint.EnclosingStaticPart esjp
-			) {
-		//System.out.println(" -----> " + joinPoint.getSignature());
-		return true;
-	}
 }

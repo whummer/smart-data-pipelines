@@ -30,7 +30,7 @@ public class ApplicationsServiceImpl implements ApplicationsService {
 	ApplicationCommand command;
 	@Autowired
 	ApplicationQuery query;
-	
+
 	@Autowired
 	HttpServletRequest req;
 	@Autowired

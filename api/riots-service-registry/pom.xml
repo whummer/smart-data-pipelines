@@ -14,6 +14,10 @@
         <version>1.0.0.BUILD-SNAPSHOT</version>
     </parent>
 
+    <properties>
+        <riots.port>10000</riots.port>
+    </properties>
+    
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud</groupId>

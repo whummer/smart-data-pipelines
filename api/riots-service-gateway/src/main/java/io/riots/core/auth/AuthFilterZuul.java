@@ -1,7 +1,9 @@
 package io.riots.core.auth;
 
 import io.riots.core.auth.AuthHeaders.AuthInfo;
+import io.riots.core.model.ModelCache;
 import io.riots.core.service.ServiceClientFactory;
+import io.riots.services.users.User;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -27,11 +29,16 @@ public class AuthFilterZuul extends AuthFilterBase {
 	void setAuthInfoHeaders(HttpServletRequest request, AuthInfo authInfo) {
 		super.setAuthInfoHeaders(request, authInfo);
 
+		/* make sure that we do not lets this header pass through! 
+		 * This prevents external request to pretend they are internal calls. */
+        request.setAttribute(AuthHeaders.HEADER_INTERNAL_CALL, "");
+
         /* append headers to zuul request */
         RequestContext context = RequestContext.getCurrentContext();
 		if(context != null) {
 			context.getZuulRequestHeaders().put(AuthHeaders.HEADER_AUTH_EMAIL, authInfo.email);
-			context.getZuulRequestHeaders().put(AuthHeaders.HEADER_AUTH_USER_ID, authInfo.userName);
+			context.getZuulRequestHeaders().put(AuthHeaders.HEADER_AUTH_USER_ID, authInfo.userID);
+			context.getZuulRequestHeaders().put(AuthHeaders.HEADER_INTERNAL_CALL, "");
 		}
 	}
 
@@ -40,4 +47,14 @@ public class AuthFilterZuul extends AuthFilterBase {
 		return authenticateRiotsApp(clientFactory, userId, appId);
 	}
 
+	@Override
+	protected User findUserByEmail(String email) {
+		User user = (User) ModelCache.USERS.get(email);
+		if(user != null) {
+			return user;
+		}
+		user = clientFactory.getUsersServiceClient(AuthHeaders.INTERNAL_CALL).findByEmail(email);
+		ModelCache.USERS.put(email, user);
+		return user;
+	}
 }

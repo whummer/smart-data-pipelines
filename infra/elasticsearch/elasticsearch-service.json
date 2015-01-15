@@ -1,5 +1,5 @@
 {
-  "id": "elasticsearch-service",
+  "id": "elasticsearch",
   "kind" : "Service",
   "apiVersion": "v1beta1",
   "selector": {
@@ -8,5 +8,13 @@
   "containerPort": 9300,
   "protocol": "TCP",
   "port": 9300,
-  "createExternalLoadBalancer": false
+  "createExternalLoadBalancer": false,
+  "labels": {
+    "name": "docker-registry",
+    "env": "${RIOTS_ENV}"
+  },
+  "labels": {
+    "name": "elasticsearch",
+    "env": "${RIOTS_ENV}"
+  }
 }
