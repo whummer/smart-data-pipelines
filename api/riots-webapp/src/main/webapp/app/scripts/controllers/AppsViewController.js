@@ -59,7 +59,7 @@ define(['app'], function(app) {
 			};
 
 			$scope.loadThingsFromDB = function(callback) {
-				riots.things(function(things) {
+				riots.things({}, function(things) {
 					if(callback) {
 						callback(things);
 					}

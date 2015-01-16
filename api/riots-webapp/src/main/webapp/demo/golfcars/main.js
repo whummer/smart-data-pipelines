@@ -110,7 +110,7 @@ app.controller('MainCtrl', function ($scope) {
 
 	var doLoadThings = function() {
 		removeAllMarkers();
-		riots.things(function(things) {
+		riots.things({}, function(things) {
 			$scope.$apply(function() {
 				$scope.things = things;
 			});

@@ -10,7 +10,7 @@ eureka:
     fetchRegistry: false
     registryFetchIntervalSeconds: 5
     serviceUrl:
-      defaultZone: http://${eureka.hostname}:10000/eureka/v2
+      defaultZone: http://${eureka.hostname}:10000/eureka/
   server:
     waitTimeInMsWhenSyncEmpty: 0
 
@@ -20,12 +20,3 @@ logging:
     com.netflix.discovery: 'TRACE'
     org.apache.http: 'TRACE'
     org.springframework: 'WARN'
-
----
-spring:
-  profiles: eureka-embedded
-
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://${eureka.hostname}:10000/eureka/

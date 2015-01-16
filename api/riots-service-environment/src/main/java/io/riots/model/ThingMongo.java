@@ -30,12 +30,13 @@ public class ThingMongo extends Thing {
 
 	public static void copy(Thing from, Thing to) {
 		to.setId(from.getId());
+		to.setThingTypeId(from.getThingTypeId());
 		to.setCreated(from.getCreated());
 		to.setCreatorId(from.getCreatorId());
 		to.setLocation(from.getLocation());
-		to.setThingTypeId(from.getThingTypeId());
 		to.setName(from.getName());
 		to.setChildren(from.getChildren());
+		to.setGeometry(from.getGeometry());
 	}
 
 	@Id

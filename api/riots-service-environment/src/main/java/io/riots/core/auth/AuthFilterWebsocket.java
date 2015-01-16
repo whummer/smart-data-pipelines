@@ -2,6 +2,7 @@ package io.riots.core.auth;
 
 import io.riots.core.auth.AuthHeaders.AuthInfo;
 import io.riots.core.service.ServiceClientFactory;
+import io.riots.services.users.User;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -44,6 +45,12 @@ public class AuthFilterWebsocket extends AuthFilterBase {
 	@Override
 	protected AuthInfo authenticateRiotsApp(String userId, String appId) {
 		return authenticateRiotsApp(clientFactory, userId, appId);
+	}
+
+	@Override
+	protected User findUserByEmail(String email) {
+		// TODO add caching!
+		return clientFactory.getUsersServiceClient(AuthHeaders.INTERNAL_CALL).findByEmail(email);
 	}
 	
 }

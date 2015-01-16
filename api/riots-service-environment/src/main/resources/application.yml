@@ -1,6 +1,10 @@
 server:
   port: 8085
 
+spring:
+  application:
+    name: environment-service
+
 mongodb:
   hostname: localhost
 
@@ -8,10 +12,12 @@ eureka:
   hostname: localhost
   instance:
     leaseRenewalIntervalInSeconds: 5
+    metadataMap:
+      instanceId: ${spring.application.name}:${server.port}
   client:
     registryFetchIntervalSeconds: 5
     serviceUrl:
-      defaultZone: http://${eureka.hostname}:10000/eureka/v2/
+      defaultZone: http://${eureka.hostname}:10000/eureka/
 
 activemq:
   hostname: localhost
@@ -20,21 +26,11 @@ activemq:
 ribbon:
   ServerListRefreshInterval: 5000
 
-spring:
-  application:
-    name: environment-service
-
 logging:
   level:
     com.netflix.discovery: OFF
     com.netflix.zuul: OFF
+    org.apache.cxf: OFF
     org.apache.cxf.interceptor: OFF
-
----
-spring:
-  profiles: eureka-embedded
-
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://${eureka.hostname}:10000/eureka/
+    org.apache.cxf.phase: OFF
+    org.apache.cxf.jaxrs: OFF

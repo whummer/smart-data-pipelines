@@ -15,7 +15,7 @@
     <description>Provides a centralized entry point for riots API documentation</description>
 
     <properties>
-        <riots.port>8087</riots.port>
+        <riots.port>8088</riots.port>
     </properties>
 
     <dependencies>

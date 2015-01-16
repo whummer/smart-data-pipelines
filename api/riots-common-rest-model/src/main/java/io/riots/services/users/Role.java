@@ -7,10 +7,13 @@ package io.riots.services.users;
  */
 public class Role {
 
+	public static final String ROLE_INTERNAL = "admin";
 	public static final String ROLE_ADMIN = "admin";
 	public static final String ROLE_USER = "user";
 	public static final String ROLE_GUEST = "guest";
 
+	public static final String HAS_ROLE_INTERNAL = 
+			"hasRole('" + Role.ROLE_INTERNAL + "')";
 	public static final String HAS_ROLE_ADMIN = 
 			"hasRole('" + Role.ROLE_ADMIN + "')";
 	public static final String HAS_ROLE_USER = 
@@ -18,8 +21,9 @@ public class Role {
 	public static final String HAS_ROLE_GUEST = 
 			"hasRole('" + Role.ROLE_GUEST + "')";
 
-	public static final String[] ROLES = { 
-		Role.ROLE_ADMIN, Role.ROLE_USER, Role.ROLE_GUEST };
+	public static final String[] ROLES = {
+		Role.ROLE_INTERNAL, Role.ROLE_ADMIN, 
+		Role.ROLE_USER, Role.ROLE_GUEST};
 
 	private String id;
 	private String name;

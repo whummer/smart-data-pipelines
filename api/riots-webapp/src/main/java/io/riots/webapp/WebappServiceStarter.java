@@ -1,7 +1,9 @@
 package io.riots.webapp;
 
 import io.riots.core.boot.MongoEnabledServiceStarter;
+import io.riots.core.boot.ServiceStarter;
 import io.riots.core.filters.RiotsUrlRewriteFilter;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -43,9 +45,7 @@ public class WebappServiceStarter extends SpringBootServletInitializer {
 	}
 
 	public static void main(String[] args) {
-		if(System.getProperty("RIOTS_LOG_DIR") == null) {
-			System.setProperty("RIOTS_LOG_DIR", "log");
-		}
+    	ServiceStarter.setDefaultSystemProps();
 		new SpringApplication(WebappServiceStarter.class).run(args);
 	}
 

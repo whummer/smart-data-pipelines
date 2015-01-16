@@ -1,16 +1,18 @@
 package io.riots.api.services;
 
-import java.util.List;
-
 import io.riots.api.handlers.query.UserQuery;
 import io.riots.core.auth.AuthHeaders;
 import io.riots.services.UsersService;
+import io.riots.services.users.Role;
 import io.riots.services.users.User;
+
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.codahale.metrics.annotation.ExceptionMetered;
@@ -48,6 +50,7 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     @Timed @ExceptionMetered
+    @PreAuthorize(Role.HAS_ROLE_ADMIN)
     public List<User> listUsers() {
     	List<User> users = userQuery.find();
     	return users;
@@ -55,6 +58,7 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     @Timed @ExceptionMetered
+    @PreAuthorize(Role.HAS_ROLE_ADMIN)
     public User findByEmail(String email) {
     	User r = userQuery.findOrCreateByEmail(email);
     	return r;

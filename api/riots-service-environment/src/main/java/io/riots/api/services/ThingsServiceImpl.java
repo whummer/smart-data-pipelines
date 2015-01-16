@@ -1,13 +1,15 @@
 package io.riots.api.services;
 
 import io.riots.api.handlers.command.ThingCommand;
-import io.riots.api.handlers.query.Paged;
 import io.riots.api.handlers.query.ThingQuery;
 import io.riots.api.util.ServiceUtil;
 import io.riots.core.auth.AuthHeaders;
+import io.riots.core.service.ServiceClientFactory;
 import io.riots.model.ThingMongo;
 import io.riots.services.ThingsService;
+import io.riots.services.apps.Application;
 import io.riots.services.scenario.Thing;
+import io.riots.services.users.User;
 
 import java.net.URI;
 import java.util.Date;
@@ -36,7 +38,6 @@ import com.wordnik.swagger.annotations.Api;
 		+ "Catalog service before the Thing can be created")
 public class ThingsServiceImpl implements ThingsService {
 
-
     @Autowired
     ThingCommand thingCommand;
     @Autowired
@@ -49,6 +50,9 @@ public class ThingsServiceImpl implements ThingsService {
     @Autowired
     AuthHeaders authHeaders;
 
+    @Autowired
+    ServiceClientFactory clientFactory;
+
     @Override
     @Timed @ExceptionMetered
     public Thing retrieve(String thingId) {
@@ -57,16 +61,17 @@ public class ThingsServiceImpl implements ThingsService {
 
     @Override
     @Timed @ExceptionMetered
-    public List<Thing> list(String query, int page, int size) {
-    	List<ThingMongo> list = thingQuery.query(query, new Paged(page, size));
-    	List<Thing> result = ThingMongo.convert(list);
+    public List<Thing> list() {
+    	User user = ServiceUtil.assertValidUser(authHeaders, req);
+    	List<Thing> result = thingQuery.queryForUser(user.getId());
     	return result;
     }
 
     @Override
     @Timed @ExceptionMetered
     public Thing create(Thing thing) {
-    	thing.setCreatorId(authHeaders.getRequestingUser(req).getId());
+    	User user = ServiceUtil.assertValidUser(authHeaders, req);
+    	thing.setCreatorId(user.getId());
     	thing.setCreated(new Date());
     	ThingMongo m = ThingMongo.convert(thing);
         thing = thingCommand.create(m);
@@ -86,8 +91,8 @@ public class ThingsServiceImpl implements ThingsService {
 
     @Override
     @Timed @ExceptionMetered
-    public boolean delete(String thingId) {
-        thingCommand.delete(thingId);
+    public boolean delete(String id) {
+        thingCommand.delete(id);
         return true;
     }
 
@@ -107,6 +112,14 @@ public class ThingsServiceImpl implements ThingsService {
     @Timed @ExceptionMetered
     public long countThingsForUser(String userId) {
     	return thingQuery.countByCreatorId(userId);
+    }
+    
+    @Override
+    @Timed @ExceptionMetered
+    public List<Thing> retrieveThingsForApplication(String appId) {
+    	Application app = clientFactory.getApplicationsServiceClient().retrieve(appId);
+    	List<Thing> result = thingQuery.queryByIds(app.getThings());
+    	return result;
     }
 
 }

@@ -10,6 +10,7 @@
     <import resource="classpath:META-INF/cxf/cxf.xml"/>
     <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
     <import resource="classpath:spring-noauth.xml"/>
+    <import resource="classpath:spring-auth-expressions.xml"/>
 
     <jaxrs:server address="/v1" id="api-v1">
         <jaxrs:serviceBeans>

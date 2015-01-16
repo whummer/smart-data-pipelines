@@ -7,6 +7,7 @@ var NAME = "name";
 var CREATION_DATE = "creation-date";
 var THING_TYPE = "thing-type";
 var THING_ID = "thing-id";
+var THINGS = "things";
 var PROPERTIES = "properties";
 var PROPERTY_ID = "property-id";
 var PROPERTY_NAME = "property";
@@ -95,9 +96,14 @@ sh.thingTypes = sh.get.thingTypes = function(callback, doCacheResults) {
 	var maxThings = 100;
 	return callGET(appConfig.services.thingTypes.url + "?page=0&size=" + maxThings, callback, doCacheResults);
 }
-sh.things = sh.get.things = function(callback, doCacheResults) {
-	var maxResults = 100;
-	return callGET(appConfig.services.things.url + "?page=0&size=" + maxResults, callback, doCacheResults);
+sh.things = sh.get.things = function(opts, callback, doCacheResults) {
+	if(!opts) opts = {};
+	var maxResults = opts.maxResults ? opts.maxResults : 100;
+	var suffix = "?page=0&size=" + maxResults;
+	if(opts.appId) {
+		suffix = "/by/application/" + opts.appId;
+	}
+	return callGET(appConfig.services.things.url + suffix, callback, doCacheResults);
 }
 sh.thing = sh.get.thing = function(id, callback, doCacheResults) {
 	if(!id) {

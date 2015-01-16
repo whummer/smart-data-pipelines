@@ -1,5 +1,6 @@
 package io.riots.core.repositories;
 
+import java.util.Collection;
 import java.util.List;
 
 import io.riots.model.ThingMongo;
@@ -15,5 +16,7 @@ public interface ThingRepository extends PagingAndSortingRepository<ThingMongo,S
 	long countByCreatorId(String userId);
 
 	List<Thing> findByCreatorId(String userId);
+
+	List<Thing> findByIdIn(Collection<String> ids);
 
 }

@@ -122,12 +122,7 @@
         if (thing[THING_TYPE]) {
           thing[THING_TYPE] = thing[THING_TYPE].id;
         }
-        $scope.updateThingInDB(thing, function (thing) {
-          var event = {
-            changedItem: $scope.shared.selectedThing
-          }
-          eventBus.publish("addOrDel.Asset", event);
-        });
+        $scope.updateThingInDB(thing);
       };
 
       loadThingTypes = function () {

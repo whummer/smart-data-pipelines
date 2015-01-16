@@ -1,14 +1,16 @@
 server:
-  port: 8087
+  port: 8088
 
 eureka:
   hostname: localhost
   instance:
     leaseRenewalIntervalInSeconds: 5
+    metadataMap:
+      instanceId: ${spring.application.name}:${server.port}
   client:
     registryFetchIntervalSeconds: 5
     serviceUrl:
-      defaultZone: http://${eureka.hostname}:10000/eureka/v2/
+      defaultZone: http://${eureka.hostname}:10000/eureka/
 
 spring:
   application:
@@ -18,12 +20,3 @@ logging:
   level:
     com.netflix.discovery: OFF
     org.apache.cxf.interceptor: OFF
-
----
-spring:
-  profiles: eureka-embedded
-
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://${eureka.hostname}:10000/eureka/

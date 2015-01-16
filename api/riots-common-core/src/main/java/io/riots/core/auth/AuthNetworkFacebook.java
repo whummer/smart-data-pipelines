@@ -33,7 +33,6 @@ public class AuthNetworkFacebook extends AuthNetwork {
             String result = IOUtils.readStringFromStream(new URL(url).openStream());
             @SuppressWarnings("unchecked")
             Map<String, Object> json = JSON.readValue(result, Map.class);
-            newInfo.userID = (String) json.get("id");
             newInfo.userName = (String) json.get("name");
             newInfo.email = (String) json.get("email");
         } catch (Exception e) {

@@ -58,9 +58,6 @@ public interface UsersService {
     @ApiOperation(value = "Get user list.",
             notes = "Retrieve a list of users.",
             response = User.class)
-//	@PreAuthorize(Role.HAS_ROLE_USER + " and " 
-//            + "hasPermission(#itemId, '" + Target.DEVICE_TYPE 
-//            + "', '" + Operation.DELETE + "')")
 	@PreAuthorize(Role.HAS_ROLE_ADMIN)
 	List<User> listUsers();
 
