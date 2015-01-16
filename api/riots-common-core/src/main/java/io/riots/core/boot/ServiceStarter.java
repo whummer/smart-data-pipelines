@@ -1,10 +1,14 @@
 package io.riots.core.boot;
 
-import com.codahale.metrics.ConsoleReporter;
-import com.codahale.metrics.MetricRegistry;
-import com.ryantenney.metrics.spring.config.annotation.EnableMetrics;
-import com.wordnik.swagger.jaxrs.config.BeanConfig;
 import io.riots.core.cxf.RefIdEnabledCxfServlet;
+
+import java.util.concurrent.TimeUnit;
+// TODO fix this import com.codahale.metrics.servlets.MetricsServlet;
+//import com.google.inject.servlet.GuiceFilter;
+//import com.netflix.hystrix.contrib.metrics.eventstream.HystrixMetricsStreamServlet;
+//import com.netflix.karyon.server.guice.KaryonGuiceContextListener;
+
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.embedded.ServletRegistrationBean;
 import org.springframework.context.ApplicationContext;
@@ -12,11 +16,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 
-import java.util.concurrent.TimeUnit;
-// TODO fix this import com.codahale.metrics.servlets.MetricsServlet;
-//import com.google.inject.servlet.GuiceFilter;
-//import com.netflix.hystrix.contrib.metrics.eventstream.HystrixMetricsStreamServlet;
-//import com.netflix.karyon.server.guice.KaryonGuiceContextListener;
+import com.codahale.metrics.ConsoleReporter;
+import com.codahale.metrics.MetricRegistry;
 
 /**
  * @author omoser
@@ -42,5 +43,11 @@ public abstract class ServiceStarter {
                 .build()
                 .start(1, TimeUnit.MINUTES);
     }
+
+	public static void setDefaultSystemProps() {
+		if (StringUtils.isEmpty(System.getProperty("RIOTS_LOG_DIR"))) {
+			System.setProperty("RIOTS_LOG_DIR", "log");
+		}
+	}
 
 }

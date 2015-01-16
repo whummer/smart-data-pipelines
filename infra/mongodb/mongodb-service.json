@@ -1,5 +1,5 @@
 {
-  "id": "mongodb-service",
+  "id": "mongodb",
   "kind" : "Service",
   "apiVersion": "v1beta1",
   "selector": {
@@ -8,5 +8,9 @@
   "containerPort": 27017,
   "protocol": "TCP",
   "port": 27017,
-  "createExternalLoadBalancer": false
+  "createExternalLoadBalancer": false ,
+  "labels": {
+    "name": "mongodb",
+    "env": "${RIOTS_ENV}"
+  }
 }

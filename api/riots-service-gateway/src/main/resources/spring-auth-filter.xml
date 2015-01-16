@@ -8,10 +8,9 @@
                            http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd">
 
     <!-- Spring security configurations -->
-    <bean id="authFilter" class="io.riots.core.auth.AuthFilterZuul"/>
 
     <security:authentication-manager>
-        <security:authentication-provider ref="authFilter"/>
+        <security:authentication-provider ref="authFilterZuul"/>
     </security:authentication-manager>
 
     <security:http auto-config="true" security="none"/>

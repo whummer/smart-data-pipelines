@@ -12,24 +12,24 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 /**
- * This filter enforces authentication and authorization. Authentication tokens
- * are validated, and access to protected resources (both static files and
- * services) is restricted.
+ * This filter reads the authentication headers of the
+ * incoming request and sets Spring security 
+ * ({@link Authentication}) credentials.
  *
  * @author Waldemar Hummer
  */
 @Component
-public class AuthCredentialsSetter implements Filter
-	//, AuthenticationProvider 
-{
+public class AuthCredentialsSetter implements Filter {
 
 	@Autowired
 	ServiceClientFactory clientFactory;
@@ -38,9 +38,13 @@ public class AuthCredentialsSetter implements Filter
 	public void doFilter(ServletRequest req, ServletResponse res,
 			FilterChain chain) throws IOException, ServletException {
 
+		HttpServletRequest httpReq = (HttpServletRequest)req;
+		HttpServletResponse httpRes = (HttpServletResponse)res;
+
 		/* get auth info from headers */
-		AuthInfo info = new AuthInfo();
-		AuthFilterBase.readAuthInfoHeaders((HttpServletRequest)req, info);
+		AuthInfo info = AuthHeaders.THREAD_AUTH_INFO.get().get();
+		info.internalCall = isInternalCall(httpReq);
+		AuthFilterBase.readAuthInfoHeaders(httpReq, info);
 
 		/* set user roles in AuthInfo */
 		AuthFilterBase.fillInRoles(info);
@@ -50,27 +54,22 @@ public class AuthCredentialsSetter implements Filter
 				info.userName, info.accessToken, info.rolesAsGrantedAuthorities);
 		springSecToken.setDetails(info);
 		SecurityContextHolder.getContext().setAuthentication(springSecToken);
-		
-		/* continue request */
-		chain.doFilter(req, res);
-	}
 
-	/**
-	 * Implement {@link AuthenticationProvider}.authenticate(...)
-	 */
-//	@Override
-//	public Authentication authenticate(Authentication authentication)
-//			throws AuthenticationException {
-//		return authentication;
-//	}
-//
-//	/**
-//	 * Implement {@link AuthenticationProvider}.supports(...)
-//	 */
-//	@Override
-//	public boolean supports(Class<?> authentication) {
-//		return true;
-//	}
+		/* continue request */
+		try {
+			chain.doFilter(req, res);
+		} catch (Throwable e) {
+			String msg = e.getMessage();
+			if(msg != null && msg.contains("Access is denied")) {
+				httpRes.setStatus(HttpServletResponse.SC_FORBIDDEN);
+				return;
+			}
+		}
+	}
+	
+	private boolean isInternalCall(HttpServletRequest httpReq) {
+		return !StringUtils.isEmpty(httpReq.getHeader(AuthHeaders.HEADER_INTERNAL_CALL));
+	}
 
 	@Override
 	public void destroy() {

@@ -7,9 +7,16 @@
 			</h2>
 		</div>
 		<div class="panel-body">
-			<tabset> <tab heading="Users"> <ng-include
-				src="appConfig['appRootPath'] + '/views/admin_users.html'"></ng-include>
-			</tab> </tabset>
+			<tabset>
+				<tab heading="Users"> 
+					<ng-include
+						src="appConfig['appRootPath'] + '/views/admin_users.html'"></ng-include>
+				</tab>
+				<tab heading="User Actions"> 
+					<ng-include
+						src="appConfig['appRootPath'] + '/views/admin_actions.html'"></ng-include>
+				</tab> 
+			</tabset>
 		</div>
 	</div>
 </section>

@@ -1,0 +1,61 @@
+<section ng-controller="AdminActionsController">
+	<div>
+
+		<div id="actionsTable" ui-grid="gridConfig" ui-grid-selection ui-grid-edit ui-grid-row-edit
+             class="grid"></div>
+
+	</div>
+</section>
+<style type="text/css">
+#actionsTable {
+	height: 300px;
+}
+</style>
+<script type="text/javascript">
+
+var app = angular.module("app");
+app.controller('AdminActionsController',
+		function ($scope, $http, $compile, $routeParams, $log, $location) {
+    AppController($scope, $http, $compile);
+
+    $scope.gridConfig = [];
+
+    var initTable = function () {
+        var columnsConfig = [
+            {label: "Time", field: "timestamp", sortable: true},
+            {label: "User ID", field: "userId", sortable: true},
+            {label: "Type", field: "type", sortable: true},
+            {label: "Resource Path", field: "httpPath", sortable: true},
+            {label: "Bytes IN", field: "bytesIn", sortable: true},
+            {label: "Bytes OUT", field: "bytesOut", sortable: true}
+        ];
+        $scope.gridConfig.data = [];
+        renderUITable($scope.gridConfig, "actionsTable", columnsConfig,
+	        function (event) {
+	            if (event.type == "dgrid-select") {
+	                $scope.$apply(function () {
+	                    $scope.selectedAction = event.rows[0].data;
+	                });
+	            } else if (event.type == "dgrid-deselect") {
+	                $scope.$apply(function () {
+	                    $scope.selectedAction = null;
+	                });
+	            }
+	        }
+        );
+    }
+
+    var loadTable = function() {
+    	var opts = {};
+    	riots.actions(opts, function(actions) {
+    		console.log("actions", actions);
+    		$scope.gridConfig.data = actions;
+    	});
+    }
+
+	/* render main elements */
+    initTable();
+    loadTable();
+});
+
+</script>

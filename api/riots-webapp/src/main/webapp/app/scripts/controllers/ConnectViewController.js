@@ -116,7 +116,7 @@ define(['app'], function(app) {
 			}
 
 			function loadThings() {
-				riots.things(function(things) {
+				riots.things({}, function(things) {
 					$scope.things = things;
 				});
 			}

@@ -56,24 +56,23 @@
 
 <script type="text/javascript">
 
-  var app = angular.module("app");
-  app.controller('AppsController', function ($scope, $http, $compile, $routeParams, $log, $location) {
-    AppController($scope, $http, $compile);
+var app = angular.module("app");
+app.controller('AppsController', function ($scope, $http, $compile, $routeParams, $log, $location) {
+	AppController($scope, $http, $compile);
 
-    $scope.CREATION_DATE = CREATION_DATE;
+		$scope.CREATION_DATE = CREATION_DATE;
 
+		var saveApp = function() {
+			var app = clone($scope.shared.selectedApplication);
+			delete app["$$hashKey"];
+			riots.save.app(app);
+		};
 
-    var saveApp = function () {
-      var app = clone($scope.shared.selectedApplication);
-      delete app["$$hashKey"];
-      riots.save.app(app);
-    };
+		/* add event listeners */
+		$scope.addClickHandler("btnSaveApp", saveApp);
 
-    /* add event listeners */
-    $scope.addClickHandler("btnSaveApp", saveApp);
+		$('#copyApiKeyToClipboard').popover()
 
-    $('#copyApiKeyToClipboard').popover()
-
-  });
-
+	}
+);
 </script>

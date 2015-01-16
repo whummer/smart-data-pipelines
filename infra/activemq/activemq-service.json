@@ -8,5 +8,9 @@
   "containerPort": 61616,
   "protocol": "TCP",
   "port": 61616,
-  "createExternalLoadBalancer": false
+  "createExternalLoadBalancer": false,
+  "labels": {
+    "name": "activemq",
+    "env": "${RIOTS_ENV}"
+  }
 }

@@ -30,6 +30,7 @@ public class Constants {
 	public static final String THING_TYPE = "thing-type";
 	public static final String THING_TYPE_ID = "thing-type-id";
 	public static final String THING_ID = "thing-id";
+	public static final String THINGS = "things";
 	public static final String PROPERTIES = "properties";
 	public static final String PROPERTY_ID = "property-id";
 	public static final String PROPERTY_NAME = "property";
@@ -39,5 +40,9 @@ public class Constants {
 	public static final String IMAGE_DATA = "image-data";
 	public static final String SIMULATION_ID = "simulation-id";
 	public static final String MANUFACTURER_ID = "manufacturer-id";
+	public static final String USERS = "users";
+	public static final String USER_ID = "user-id";
+	public static final String START_TIME = "start-time";
+	public static final String END_TIME = "end-time";
 
 }

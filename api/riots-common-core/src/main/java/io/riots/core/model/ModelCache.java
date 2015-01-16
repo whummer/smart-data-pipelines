@@ -33,4 +33,22 @@ public class ModelCache {
 		    .expireAfterWrite(DEFAULT_TIMEOUT_MINUTES, TimeUnit.MINUTES)
 		    .build().asMap();
 
+	/**
+	 * Cache for users.
+	 */
+	public static final ConcurrentMap<Object,Object> USERS = 
+			CacheBuilder.newBuilder()
+		    .maximumSize(DEFAULT_MAX_SIZE)
+		    .expireAfterWrite(DEFAULT_TIMEOUT_MINUTES, TimeUnit.MINUTES)
+		    .build().asMap();
+
+	/**
+	 * Cache for service clients.
+	 */
+	public static final ConcurrentMap<Object,Object> SERVICE_CLIENTS = 
+			CacheBuilder.newBuilder()
+		    .maximumSize(DEFAULT_MAX_SIZE)
+		    .expireAfterWrite(DEFAULT_TIMEOUT_MINUTES, TimeUnit.MINUTES)
+		    .build().asMap();
+
 }

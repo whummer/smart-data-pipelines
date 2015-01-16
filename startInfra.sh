@@ -20,11 +20,11 @@ VBoxManage controlvm boot2docker-vm natpf1 "elasticsearch1,tcp,127.0.0.1,9200,,9
 VBoxManage controlvm boot2docker-vm natpf1 "elasticsearch2,tcp,127.0.0.1,9300,,9300"
 sleep 2
 
-echo "Running Eureka"
-docker rm eureka
-docker run -d -p 10000:80 --name eureka riox/eureka
-VBoxManage controlvm boot2docker-vm natpf1 "eureka,tcp,127.0.0.1,10000,,10000"
-sleep 2
+#echo "Running Eureka"
+#docker rm eureka
+#docker run -d -p 10000:80 --name eureka riox/eureka
+#VBoxManage controlvm boot2docker-vm natpf1 "eureka,tcp,127.0.0.1,10000,,10000"
+#sleep 2
 
 echo "Running ActiveMQ"
 docker rm activemq

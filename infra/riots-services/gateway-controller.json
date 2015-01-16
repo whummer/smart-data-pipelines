@@ -1,0 +1,46 @@
+{
+    "id": "riots-gateway",
+    "apiVersion": "v1beta1",
+    "kind": "ReplicationController",
+    "desiredState": {
+        "replicas": 1,
+        "replicaSelector": {
+            "name": "riots-gateway"
+        },
+        "podTemplate": {
+            "desiredState": {
+                "manifest": {
+                    "version": "v1beta1",
+                    "id": "riots-gateway",
+                    "containers": [
+                        {
+                            "name": "riots-gateway",
+                            "image": "${DOCKER_REGISTRY}/riots/service-gateway",
+                            "ports": [
+                                {
+                                    "containerPort": 8080,
+                                    "hostPort": 8080
+                                }
+                            ],
+                            "env" : [
+                            	{
+                            		"name": "JAVA_OPTS",
+                            		"value": "-Deureka.hostname=${EUREKA_HOSTNAME}"
+                            	}
+
+                            ]
+                        }
+                    ]
+                }
+            },
+            "labels": {
+                "name": "riots-gateway",
+        		"env": "${RIOTS_ENV}"
+            }
+        }
+    },
+    "labels": {
+        "name": "riots-gateway",
+        "env": "${RIOTS_ENV}"
+    }
+}

@@ -31,7 +31,6 @@ import org.apache.log4j.Logger;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
 /**
@@ -123,9 +122,10 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
             "^(/api/v.)?/files.*$"
 
     );
+    public static final String ADMIN_USER_1 = "hummer@infosys.tuwien.ac.at";
     static {
         /* TODO: put into config file or database */
-        userRoleMappings.add(new UserRoleMapping("hummer@infosys.tuwien.ac.at", Role.ROLE_ADMIN));
+        userRoleMappings.add(new UserRoleMapping(ADMIN_USER_1, Role.ROLE_ADMIN));
         userRoleMappings.add(new UserRoleMapping("dev@riox.io", Role.ROLE_ADMIN));
         userRoleMappings.add(new UserRoleMapping("olzn23@gmail.com", Role.ROLE_ADMIN));
         userRoleMappings.add(new UserRoleMapping(".*", Role.ROLE_USER));
@@ -143,7 +143,7 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
                          FilterChain chain) throws IOException, ServletException {
         boolean allowed = doFilter(req, res);
         if (allowed) {
-            chain.doFilter(req, res);
+        	chain.doFilter(req, res);
         }
     }
 
@@ -239,6 +239,7 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
             if (info != null) {
                 if (info.isExpired()) {
                     tokens.remove(tokenID);
+                    info = null;
                 } else {
                     doVerify = false;
                 }
@@ -255,6 +256,10 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
                     	AuthNetwork authNetwork = AuthNetwork.get(requestInfo.network);
     					newInfo = authNetwork.verifyAccessToken(requestInfo.token);
     		            newInfo.accessToken = requestInfo.token;
+
+    		            /* make sure we have a valid userId in the auth info */
+		            	User user = findUserByEmail(newInfo.email);
+		            	newInfo.userID = user.getId();
 
 	            	} else if(requestInfo.isRiotsBased()) {
 	
@@ -282,26 +287,30 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
             }
 
 			/* get auth token and set activity timestamp */
-            AuthInfo authInfo = tokens.get(tokenID);
-            authInfo.setActiveNow();
+            if(info == null) {
+            	info = tokens.get(tokenID);
+            }
+            AuthHeaders.THREAD_AUTH_INFO.get().set(info);
+            info.setActiveNow();
 
 			/* authentication done, now perform authorization */
-            boolean isAuthorized = authorize(uri, authInfo);
+            boolean isAuthorized = authorize(uri, info);
             if(!isAuthorized) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 return false;
             }
 
 			/* append additional infos to request */
-            setAuthInfoHeaders(request, authInfo);
-
+            setAuthInfoHeaders(request, info);
         }
 
 		/* all checks passed, return success */
         return true;
     }
 
-    private boolean authorize(String uriPath, AuthInfo authInfo) {
+    protected abstract User findUserByEmail(String email);
+
+	private boolean authorize(String uriPath, AuthInfo authInfo) {
     	for(String pattern : requiredRoleForResources.keySet()) {
     		String role = requiredRoleForResources.get(pattern);
     		if(uriPath.matches(pattern)) {
@@ -381,19 +390,17 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
      */
 	protected AuthInfo authenticateRiotsApp(ServiceClientFactory clientFactory, String userId, String appKey) {
 		try {
-			User user = clientFactory.getUsersServiceClient().findByID(userId);
-			System.out.println("user" + userId + " - " + user);
+			User user = clientFactory.getUsersServiceClient(
+					AuthHeaders.INTERNAL_CALL).findByID(userId);
 			if(user == null || !userId.equals(user.getId())) {
 				return null;
 			}
 			Application app = clientFactory.getApplicationsServiceClient().retrieveByAppKey(appKey);
-			System.out.println("app " + appKey + " - " + app);
 			if(app == null || !appKey.equals(app.getAppKey())) {
 				return null;
 			}
 			AuthInfo info = new AuthInfo();
 			if(app.isAuthorized(user)) {
-				info.user = user;
 				info.userID = userId;
 				info.email = user.getEmail();
 				return info;
@@ -412,20 +419,27 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
     }
 	static void readAuthInfoHeaders(HttpServletRequest request, AuthInfo authInfo) {
     	/* append additional infos to request */
-		authInfo.email = request.getHeader(AuthHeaders.HEADER_AUTH_EMAIL);
-		authInfo.userID = request.getHeader(AuthHeaders.HEADER_AUTH_USER_ID);
+		String email = request.getHeader(AuthHeaders.HEADER_AUTH_EMAIL);
+		if(email != null) 
+			authInfo.email = email;
+		String userID = request.getHeader(AuthHeaders.HEADER_AUTH_USER_ID);
+		if(userID != null) 
+			authInfo.userID = userID;
     }
 
 	/* HELPER METHODS */
 
 	protected static void fillInRoles(AuthInfo info) {
+    	if(info.isInternalCall()) {
+    		/* add all roles if this is an internal call */
+    		info.addRoles(Role.ROLES);
+    		return;
+    	}
     	if(info.email == null)
     		return;
     	for (UserRoleMapping m : userRoleMappings) {
             if (info.email.matches(m.userPattern)) {
-            	info.roles.add(m.role);
-            	info.rolesAsGrantedAuthorities.add(
-                        new SimpleGrantedAuthority(m.role));
+            	info.addRole(m.role);
             }
         }
     }

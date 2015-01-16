@@ -29,9 +29,7 @@ import org.springframework.context.annotation.FilterType;
 public class FilesServiceStarter extends ServiceStarter {
 
 	public static void main(String[] args) {
-		if (System.getProperty("RIOTS_LOG_DIR") == null) {
-			System.setProperty("RIOTS_LOG_DIR", "log");
-		}
+    	ServiceStarter.setDefaultSystemProps();
 		new SpringApplicationBuilder(FilesServiceStarter.class).run(args);
 	}
 
