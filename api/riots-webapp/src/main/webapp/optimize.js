@@ -26,12 +26,23 @@ env("", function (errors, window) {
 	var fs = require("fs");
 	eval(fs.readFileSync(appDir + "/config.js")+"");
 	appConfig.bowerRootPath = "./bower_components/";
+	appConfig.appRootPath = "./app/";
 	eval(fs.readFileSync(appDir + "/config.requirejs.js")+"");
 
 	var cfg = JSON.parse(JSON.stringify(requirejsAppConfig));
 
-	// build config includes from requirejsAppConfig
-	cfg.include = [];
+	// build config includes
+	cfg.include = [
+		"riots/auth",
+		"riots/charting",
+		"riots/maps-markers",
+		"riots/imports",
+		"riots/ratings",
+		"riots/service-calls",
+		"riots/things-crud",
+		"riots/utils",
+		"riots/widgets-angularui"
+	];
 	function addDependency(dep) {
 		if($.inArray(dep, cfg.include) < 0) {
 			cfg.include.push(dep);
@@ -46,7 +57,7 @@ env("", function (errors, window) {
 			addDependency(el.name);
 		}
 	});
-	
+
 	$.each(cfg.include, function(idx,el) {
 		console.log("include dependency '" + el + "'");
 	});
@@ -62,7 +73,7 @@ env("", function (errors, window) {
 	cfg.optimize = "none";
 	cfg.optimize = "uglify2";
 	cfg.uglify = cfg.uglify2 = {
-		mangle : false
+		//mangle : false
 	}
 
 	requirejs.optimize(cfg, function (buildText) {

@@ -29,7 +29,7 @@ var requirejsAppConfig = {
         	/* needs to go here, otherwise the production app tries to 
         	request image files from /bower_components */
             name: 'raty',
-            location: appConfig['appRootPath'] + '/scripts/ext',
+            location: appConfig['appRootPath'] + '/scripts/ext/raty/',
             main: 'lib/jquery.raty'
         },
         
@@ -67,6 +67,10 @@ var requirejsAppConfig = {
             name: 'bootstrap-tagsinput',
             location: appConfig['bowerRootPath'] + '/bootstrap-tagsinput',
             main: 'dist/bootstrap-tagsinput'
+        }, {
+            name: 'prettify',
+            location: appConfig['bowerRootPath'] + '/google-code-prettify',
+            main: 'bin/prettify.min'
         }, {
             name: 'typeahead',
             location: appConfig['bowerRootPath'] + '/typeahead.js',
@@ -132,6 +136,9 @@ var requirejsAppConfig = {
             deps: ['angular']
         },
         'raty': {
+            deps: ['jquery']
+        },
+        'riots': {
             deps: ['jquery']
         }
     }

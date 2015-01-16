@@ -1,6 +1,12 @@
 require(['jquery', 'jquery-ui', 'angular'],
 	function(jquery) {
-		require(['app'],
+		require(
+			[	
+				'app', 
+				'riots/auth', 'riots/service-calls', 'riots/utils', 
+				'riots/widgets-angularui', 'riots/maps-markers',
+				'riots/ratings', 'riots/charting'
+			],
 			function(app) {
 				try {
 					angular.bootstrap(document, ['app']);

@@ -125,7 +125,11 @@ public interface UsersService {
     	@JsonProperty
     	String actionType;
     	@JsonProperty
-    	double sizeGreaterThan;
+    	String httpPath;
+    	@JsonProperty
+    	long sizeFrom;
+    	@JsonProperty
+    	long sizeTo;
 
     	public long getStartTime() {
 			return startTime;
@@ -139,8 +143,14 @@ public interface UsersService {
     	public String getActionType() {
 			return actionType;
 		}
-    	public double getSizeGreaterThan() {
-    		return sizeGreaterThan;
+    	public String getHttpPath() {
+			return httpPath;
+		}
+    	public long getSizeFrom() {
+			return sizeFrom;
+		}
+    	public long getSizeTo() {
+			return sizeTo;
 		}
     }
 

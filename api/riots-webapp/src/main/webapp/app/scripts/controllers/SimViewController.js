@@ -68,6 +68,7 @@ define(['app'], function(app) {
 				);
 			}
 
+			/* TODO remove!
 			$scope.editScenario = function() {
 				var item = $scope.curScenario;
 				if(!item) return;
@@ -101,6 +102,7 @@ define(['app'], function(app) {
 					}
 				);
 			}
+			*/
 
 			$scope.reloadScenario = function() {
 				if(!$scope.curScenario || !$scope.curScenario.id) {
@@ -173,10 +175,8 @@ define(['app'], function(app) {
 				*/
 				eventBus.publish("refresh.simulation.scenario", $scope.curScenario);
 			});
-			$scope.renderSelectScenarios();
 
 			/* render elements */
-			$scope.connectToWebsocket();
         }
     ]);
 });
