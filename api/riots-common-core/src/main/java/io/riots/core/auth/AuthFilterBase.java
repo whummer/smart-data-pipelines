@@ -239,6 +239,7 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
             if (info != null) {
                 if (info.isExpired()) {
                     tokens.remove(tokenID);
+                    info = null;
                 } else {
                     doVerify = false;
                 }
@@ -286,18 +287,21 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
             }
 
 			/* get auth token and set activity timestamp */
-            AuthInfo authInfo = tokens.get(tokenID);
-            authInfo.setActiveNow();
+            if(info == null) {
+            	info = tokens.get(tokenID);
+            }
+            AuthHeaders.THREAD_AUTH_INFO.get().set(info);
+            info.setActiveNow();
 
 			/* authentication done, now perform authorization */
-            boolean isAuthorized = authorize(uri, authInfo);
+            boolean isAuthorized = authorize(uri, info);
             if(!isAuthorized) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 return false;
             }
 
 			/* append additional infos to request */
-            setAuthInfoHeaders(request, authInfo);
+            setAuthInfoHeaders(request, info);
         }
 
 		/* all checks passed, return success */
@@ -386,7 +390,8 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
      */
 	protected AuthInfo authenticateRiotsApp(ServiceClientFactory clientFactory, String userId, String appKey) {
 		try {
-			User user = clientFactory.getUsersServiceClient(AuthHeaders.INTERNAL_CALL).findByID(userId);
+			User user = clientFactory.getUsersServiceClient(
+					AuthHeaders.INTERNAL_CALL).findByID(userId);
 			if(user == null || !userId.equals(user.getId())) {
 				return null;
 			}
@@ -414,8 +419,12 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
     }
 	static void readAuthInfoHeaders(HttpServletRequest request, AuthInfo authInfo) {
     	/* append additional infos to request */
-		authInfo.email = request.getHeader(AuthHeaders.HEADER_AUTH_EMAIL);
-		authInfo.userID = request.getHeader(AuthHeaders.HEADER_AUTH_USER_ID);
+		String email = request.getHeader(AuthHeaders.HEADER_AUTH_EMAIL);
+		if(email != null) 
+			authInfo.email = email;
+		String userID = request.getHeader(AuthHeaders.HEADER_AUTH_USER_ID);
+		if(userID != null) 
+			authInfo.userID = userID;
     }
 
 	/* HELPER METHODS */

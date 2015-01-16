@@ -42,10 +42,9 @@ public class AuthCredentialsSetter implements Filter {
 		HttpServletResponse httpRes = (HttpServletResponse)res;
 
 		/* get auth info from headers */
-		AuthInfo info = new AuthInfo();
+		AuthInfo info = AuthHeaders.THREAD_AUTH_INFO.get().get();
 		info.internalCall = isInternalCall(httpReq);
 		AuthFilterBase.readAuthInfoHeaders(httpReq, info);
-        AuthHeaders.THREAD_AUTH_INFO.get().set(info);
 
 		/* set user roles in AuthInfo */
 		AuthFilterBase.fillInRoles(info);

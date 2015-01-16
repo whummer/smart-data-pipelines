@@ -82,6 +82,9 @@ sh.me = function(callback, errorCallback) {
 sh.users = sh.get.users = function(callback) {
 	return callGET(appConfig.services.users.url, callback);
 }
+sh.actions = sh.get.actions = function(opts, callback) {
+	return callPOST(appConfig.services.users.url + "/actions/query", opts, callback);
+}
 sh.apps = sh.get.apps = function(callback, doCacheResults) {
 	return callGET(appConfig.services.apps.url, callback, doCacheResults);
 }

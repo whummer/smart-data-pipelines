@@ -1,10 +1,13 @@
 package io.riots.api.services;
 
+import io.riots.api.handlers.command.UserActionCommand;
+import io.riots.api.handlers.query.UserActionQuery;
 import io.riots.api.handlers.query.UserQuery;
 import io.riots.core.auth.AuthHeaders;
 import io.riots.services.UsersService;
 import io.riots.services.users.Role;
 import io.riots.services.users.User;
+import io.riots.services.users.UserAction;
 
 import java.util.List;
 
@@ -28,6 +31,10 @@ public class UsersServiceImpl implements UsersService {
 
     @Autowired
     UserQuery userQuery;
+    @Autowired
+    UserActionQuery userActionQuery;
+    @Autowired
+    UserActionCommand userActionCommand;
 
     @Autowired
     HttpServletRequest req;
@@ -77,6 +84,19 @@ public class UsersServiceImpl implements UsersService {
     @Timed @ExceptionMetered
     public long getNumUsers() {
     	return userQuery.getCount();
+    }
+
+    @Override
+    @Timed @ExceptionMetered
+    public List<UserAction> getUserActions(GetUserActionsRequest req) {
+    	return userActionQuery.find(req.getStartTime(), req.getEndTime(), 
+    			req.getUserId(), req.getActionType());
+    }
+
+    @Override
+    @Timed @ExceptionMetered
+    public void postUserAction(UserAction action) {
+    	userActionCommand.create(action);
     }
 
 }

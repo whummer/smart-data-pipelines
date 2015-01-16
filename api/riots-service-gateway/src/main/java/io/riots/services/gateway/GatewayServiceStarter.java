@@ -1,7 +1,7 @@
 package io.riots.services.gateway;
 
-import io.riots.core.auth.AuthFilterZuul;
 import io.riots.core.boot.ServiceStarter;
+import io.riots.core.filters.RiotsUrlRewriteFilter;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -15,8 +15,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
-
-import io.riots.core.filters.RiotsUrlRewriteFilter;
 
 /**
  * @author whummer
@@ -52,11 +50,6 @@ public class GatewayServiceStarter {
 	    filterRegBean.setFilter(new GatewayStatsFilter("/stats(/)?"));
 	    return filterRegBean;
 	}
-
-	@Bean
-    public AuthFilterZuul authFilter() {
-        return new AuthFilterZuul();
-    }
 
     public static void main(String[] args) {
     	ServiceStarter.setDefaultSystemProps();
