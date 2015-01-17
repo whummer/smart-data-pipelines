@@ -73,7 +73,7 @@ var requirejsAppConfig = {
             main: 'lib/stomp'
         }, {
             name: 'angular-growl',
-            location: appConfig['bowerRootPath'] + '/angular-growl',
+            location: appConfig['bowerRootPath'] + '/angular-growl-v2',
             main: 'build/angular-growl'
         }, {
             name: 'angular-ui-grid',
@@ -99,6 +99,10 @@ var requirejsAppConfig = {
         	name: 'angular-hotkeys',
         	location: appConfig['bowerRootPath'] + '/angular-hotkeys',
         	main: 'build/hotkeys.min'
+        }, {
+        	name: 'angular-animate',
+        	location: appConfig['bowerRootPath'] + '/angular-animate',
+        	main: 'angular-animate'
         }, {
             name: 'chartjs',
             location: appConfig['bowerRootPath'] + '/chartjs/',

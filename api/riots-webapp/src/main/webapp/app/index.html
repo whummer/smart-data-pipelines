@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css"/>
   <link rel="stylesheet" href="//cdn.rawgit.com/angular-ui/bower-ui-grid/v3.0.0-RC.18/ui-grid.min.css"/>
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/zocial/0/zocial.css"/>
+  <link rel="stylesheet" href="//rawgit.com/JanStevens/angular-growl-2/master/build/angular-growl.css">
   <!-- last position for custom styles (to enforce overrides) -->
   <link rel="stylesheet" href="styles/app.css"/>
 
@@ -102,7 +103,7 @@
 
 <div id="wrapperDiv" ng-controller="RootController" data-ng-init="hideSplashScreen()">
 
-  <div growl id="growl"></div>
+  <div growl id="growl" class="growl-container"></div>
 
   <!-- include top menu -->
   <ng-include src="'/app/views/menu.html'" ng-if="authInfo"></ng-include>

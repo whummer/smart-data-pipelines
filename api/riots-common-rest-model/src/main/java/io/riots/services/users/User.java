@@ -39,6 +39,11 @@ public class User implements ObjectIdentifiable {
 	 */
 	@JsonProperty
 	private Address address = new Address();
+	/**
+	 * Date of birth.
+	 */
+	@JsonProperty
+	private String birthDate;
 
 	private List<Role> roles = new LinkedList<Role>();
 
@@ -71,6 +76,9 @@ public class User implements ObjectIdentifiable {
 	}
 	public Address getAddress() {
 		return address;
+	}
+	public String getBirthDate() {
+		return birthDate;
 	}
 
 	@Override

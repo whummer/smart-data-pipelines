@@ -1,0 +1,41 @@
+<section ng-controller="ProfileDetailsController">
+	<div style="max-width: 600px;">
+		<div class="row">
+			<div class="form-group">
+				<label for="dateFrom" class="col-sm-4 control-label">Billing Method</label>
+				<div class="col-sm-8">
+					<select class="form-control input-sm" data-ng-model="billInfo.method">
+						<option value="credit">Credit Card</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+			... Details coming soon ...
+			</div>
+			<div class="col-md-12">
+			    <button class="pull-right btn btn-primary btn-sm" id="btnSaveBilling">
+			    	<span class="glyphicon glyphicon-search"></span> Save Changes</button>
+			</div>
+		</div>
+
+	</div>
+</section>
+<style type="text/css">
+#actionsTable {
+	height: 300px;
+}
+</style>
+<script type="text/javascript">
+
+var app = angular.module("app");
+app.controller('ProfileDetailsController',
+		function ($scope, $http, $compile, $routeParams, $log, $location) {
+    AppController($scope, $http, $compile);
+
+    var saveBilling = function() {
+    	//
+    }
+
+});
+
+</script>

@@ -146,11 +146,14 @@ function AppController($scope, $http, $compile, growl) {
 	}
 	$scope.growlMsg = function(message, type) {
 		var options = { ttl: 2000 };
+		var func = null
+		var g = rootScope.growl;
 		if(type == "info") {
-			rootScope.growl.addInfoMessage(message, options);
+			func = g.info ? g.info : g.addInfoMessage;
 		} else if(type == "warn") {
-			rootScope.growl.addWarnMessage(message, options);
+			func = g.warn ? g.warn : g.addWarnMessage;
 		}
+		func(message, options);
 	}
 
 	$scope.range = function(from, to, step) {

@@ -25,13 +25,16 @@ if (!window.angular) {
 define(
 	[
 		'routes', 'bootstrap', 'angular-bootstrap', 'bootstrap-tagsinput', 'angular-growl',
-		'angular-route', 'angular-ui-grid', 'infinite-scroll', 'angular-hotkeys', 'd3'
+		'angular-route', 'angular-ui-grid', 'infinite-scroll', 
+		'angular-hotkeys', 'd3', 'angular-animate'
 	],
 
 	function (config) {
 
 		var app = angular.module('app', [
+		    'ng',
 			'ngRoute',
+			'ngAnimate',
 			'ui.bootstrap',
 			'ui.grid',
 			'ui.grid.edit',
@@ -87,16 +90,18 @@ define(
 			'$compileProvider',
 			'$filterProvider',
 			'$httpProvider',
+			'$animateProvider',
 			'$provide',
 
 			function ($routeProvider, $locationProvider, $controllerProvider,
-					  $compileProvider, $filterProvider, $httpProvider, $provide) {
+					  $compileProvider, $filterProvider, $httpProvider, $animateProvider, $provide) {
 
 				app.controller = $controllerProvider.register;
 				app.directive = $compileProvider.directive;
 				app.filter = $filterProvider.register;
 				app.factory = $provide.factory;
 				app.service = $provide.service;
+				app.animate = $animateProvider.service;
 
 				//$locationProvider.html5Mode(true);
 				$locationProvider.html5Mode(false);
