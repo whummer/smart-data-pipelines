@@ -1,6 +1,7 @@
 package io.riots.services;
 
 import io.riots.services.model.Constants;
+import io.riots.services.users.Permission;
 import io.riots.services.users.Role;
 import io.riots.services.users.User;
 import io.riots.services.users.UserAction;
@@ -10,6 +11,7 @@ import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -35,10 +37,20 @@ public interface UsersService {
     @Path("/me")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Return information about logged in user.",
-            notes = "Return information about the user that is invoking this methid.",
+            notes = "Return information about the user that is invoking this method.",
             response = User.class)
 	@PreAuthorize(Role.HAS_ROLE_USER)
     User getInfoAboutMe();
+
+	@PUT
+    @Path("/me")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Update profile of the logged in user.",
+            notes = "Update the profile information of the currently logged in who is invoking this method.",
+            response = User.class)
+	@PreAuthorize(Role.HAS_ROLE_USER + " and " + Permission.CAN_UPDATE_USER)
+    User saveInfoAboutMe(User user);
 
 	@GET
     @Path("/{id}")

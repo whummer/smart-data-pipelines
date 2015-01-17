@@ -39,7 +39,7 @@ public class AuthPermissionAdvice {
 		try {
 			retVal = pjp.proceed();
 		} catch (AccessDeniedException ade) {
-			throw new ForbiddenException("Access Denied.");
+			throw new ForbiddenException("Access Denied.", ade);
 		} catch (Throwable t) {
 			throw t;
 		}

@@ -41,11 +41,12 @@ function unsubscribeOnce(id) {
 /* base controller with commonly used functionality */
 subscriptionIDs = [];
 subscriptionHandles = [];
-function AppController($scope, $http, $compile) {
+function AppController($scope, $http, $compile, growl) {
 	$scope.setLoadingStatus = setLoadingStatus;
 	$scope.http = $http;
 	$scope.compile = $compile;
 	$scope.appConfig = appConfig;
+	$scope.growl = growl;
 
 	$scope.highlightMenuItem = function(itemId) {
 		$(".nav").find(".active").removeClass("active");
@@ -99,10 +100,8 @@ function AppController($scope, $http, $compile) {
 		/* key/value asset properties */
 		if(thingType.featureList) {
 			thingType.features = {};
-			console.log("thingType.featureList",thingType.featureList);
 			for(var i in thingType.featureList) {
 				entry = thingType.featureList[i];
-				console.log("entry", entry);
 				thingType.features[entry.key] = entry.value;
 			}
 			thingType.featureList = null;
@@ -133,28 +132,26 @@ function AppController($scope, $http, $compile) {
 		}
 	};
 
-	$scope.onRenderElement = function(elementID, callback, subscrID) {
-		return; // TODO
-	};
-
 	$scope.addClickHandler = function(elementID, callback) {
 		$("#" + elementID).on("click", callback);
 	};
 
-	$scope.addChangeHandler = function(elementID, callback) {
-		$scope.addWidgetEventHandler(elementID, "change", callback);
-	};
-
-	$scope.addWidgetEventHandler = function(elementID, eventType, callback) {
-		var subscrID = "addHandler_" + eventType + "_" + elementID;
-		$scope.onRenderElement(elementID, function(el, registry) {
-			el.on(eventType, function(arg1,arg2,arg3) {
-				callback(arg1,arg2,arg3);
-			});
-		}, subscrID);
-	};
-
 	/* helper/util methods */
+
+	$scope.growlInfo = function(message) {
+		$scope.growlMsg(message, "info");
+	}
+	$scope.growlWarn = function(message) {
+		$scope.growlMsg(message, "warn");
+	}
+	$scope.growlMsg = function(message, type) {
+		var options = { ttl: 2000 };
+		if(type == "info") {
+			rootScope.growl.addInfoMessage(message, options);
+		} else if(type == "warn") {
+			rootScope.growl.addWarnMessage(message, options);
+		}
+	}
 
 	$scope.range = function(from, to, step) {
 		if(!step) step = 1;

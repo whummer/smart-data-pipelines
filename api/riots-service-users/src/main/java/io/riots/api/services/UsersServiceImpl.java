@@ -1,6 +1,7 @@
 package io.riots.api.services;
 
 import io.riots.api.handlers.command.UserActionCommand;
+import io.riots.api.handlers.command.UserCommand;
 import io.riots.api.handlers.query.UserActionQuery;
 import io.riots.api.handlers.query.UserQuery;
 import io.riots.core.auth.AuthHeaders;
@@ -32,6 +33,8 @@ public class UsersServiceImpl implements UsersService {
     @Autowired
     UserQuery userQuery;
     @Autowired
+    UserCommand userCommand;
+    @Autowired
     UserActionQuery userActionQuery;
     @Autowired
     UserActionCommand userActionCommand;
@@ -46,6 +49,12 @@ public class UsersServiceImpl implements UsersService {
     public User getInfoAboutMe() {
 		User user = authHeaders.getRequestingUser(req);
 		return user;
+	}
+
+	@Override
+	@Timed @ExceptionMetered
+	public User saveInfoAboutMe(User user) {
+		return userCommand.update(user);
 	}
 
     @Override

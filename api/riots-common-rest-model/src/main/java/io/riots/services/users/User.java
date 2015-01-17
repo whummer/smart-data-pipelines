@@ -1,20 +1,44 @@
 package io.riots.services.users;
 
+import io.riots.services.model.interfaces.ObjectIdentifiable;
+
 import java.util.LinkedList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Represents a user in the system.
  * 
  * @author Waldemar Hummer
  */
-public class User {
+public class User implements ObjectIdentifiable {
 
+	/**
+	 * Unique identifier.
+	 */
+	@JsonProperty
 	private String id;
+	/**
+	 * Email address.
+	 */
+	@JsonProperty
 	private String email;
+	/**
+	 * First name (given name).
+	 */
+	@JsonProperty
 	private String firstname;
+	/**
+	 * Last name (family name).
+	 */
+	@JsonProperty
 	private String lastname;
-	private String name;
+	/**
+	 * Address.
+	 */
+	@JsonProperty
+	private Address address = new Address();
 
 	private List<Role> roles = new LinkedList<Role>();
 
@@ -30,13 +54,9 @@ public class User {
 	public String getLastname() {
 		return lastname;
 	}
-	public String getName() {
-		return name;
-	}
 	public List<Role> getRoles() {
 		return roles;
 	}
-
 	public void setEmail(String email) {
 		this.email = email;
 	}
@@ -46,16 +66,15 @@ public class User {
 	public void setLastname(String lastname) {
 		this.lastname = lastname;
 	}
-	public void setName(String name) {
-		this.name = name;
-	}
 	public void setId(String id) {
 		this.id = id;
+	}
+	public Address getAddress() {
+		return address;
 	}
 
 	@Override
 	public String toString() {
-		return "User [name=" + name + ",email=" + email + ",roles=" + roles
-				+ "]";
+		return "User [email=" + email + ",roles=" + roles + "]";
 	}
 }

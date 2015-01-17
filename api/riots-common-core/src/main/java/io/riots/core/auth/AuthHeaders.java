@@ -2,6 +2,7 @@ package io.riots.core.auth;
 
 import io.riots.core.service.ServiceClientFactory;
 import io.riots.services.UsersService;
+import io.riots.services.users.Role;
 import io.riots.services.users.User;
 
 import java.util.Date;
@@ -142,6 +143,15 @@ public class AuthHeaders {
 		}
 		public void setEmail(String email) {
 			this.email = email;
+		}
+		public Set<String> getRoles() {
+			return roles;
+		}
+		public boolean isAdmin() {
+			return hasRole(Role.ROLE_ADMIN);
+		}
+		public boolean hasRole(String role) {
+			return roles.contains(role);
 		}
 
 		@Override

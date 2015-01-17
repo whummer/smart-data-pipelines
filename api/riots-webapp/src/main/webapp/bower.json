@@ -11,10 +11,12 @@
   ],
   "dependencies": {
     "angular": "~1.2.0",
+    "angularAMD": "marcoslin/angularAMD#",
     "angular-route": "~1.2.14",
     "angular-ui-grid": "angular-ui/bower-ui-grid#3.0.0-RC.18",
     "angular-bootstrap": "0.11.2",
     "angular-bootstrap-slider": "#",
+    "angular-bootstrap-datetimepicker": "#",
     "jquery": "~2.1.0",
     "jquery-ui": "~1.11.0",
     "requirejs": "~2.1.11",
@@ -28,10 +30,14 @@
     "stomp-websocket": "2.3.3",
     "hello": "1.2.2",
     "raty": "2.7.0",
+    "angular-growl": "#",
     "typeahead.js": "0.10.5",
     "ngInfiniteScroll": "#",
     "angular-hotkeys": "chieffancypants/angular-hotkeys#~1.4.5",
     "angular-keyboard": "~0.3.0",
     "d3": "~3.5.3"
+  },
+  "resolutions": {
+    "angular": "1.2.26"
   }
 }

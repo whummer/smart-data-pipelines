@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="scripts/ext/bootstrap-tagsinput/dist/bootstrap-tagsinput.css"/>
   <link rel="stylesheet" href="scripts/ext/leaflet/dist/leaflet.css"/>
   <link rel="stylesheet" href="scripts/ext/raty/lib/jquery.raty.css"/>
+  <link rel="stylesheet" href="scripts/ext/angular-bootstrap-datetimepicker/src/css/datetimepicker.css"/>
   <!-- Use CDN version because JAR packaging of some CSS files results in corrupted font files -->
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
@@ -25,23 +26,8 @@
   </script>
 
   <script type="text/javascript" src="/app/scripts/controllers/AppController.js"></script>
-
   <script type="text/javascript" src="scripts/build/riots-all.js"></script>
-
-  <!-- TODO: integrate scripts into requirejs loading mechanism -->
-<!--   <script type="text/javascript" src="scripts/modules/utils.js"></script> -->
-<!--   <script type="text/javascript" src="scripts/modules/auth.js"></script> -->
-<!--   <script type="text/javascript" src="scripts/modules/charting.js"></script> -->
-<!--   <script type="text/javascript" src="scripts/modules/imports.js"></script> -->
-<!--   <script type='text/javascript' src='scripts/modules/maps-markers.js'></script> -->
-<!--   <script type="text/javascript" src="scripts/modules/ratings.js"></script> -->
-<!--   <script type="text/javascript" src="scripts/modules/service-calls.js"></script> -->
-<!--   <script type="text/javascript" src="scripts/modules/things-crud.js"></script> -->
-<!--   <script type="text/javascript" src="scripts/modules/websockets.js"></script> -->
-<!--   <script type="text/javascript" src="scripts/modules/widgets-angularui.js"></script> -->
-
   <script type="text/javascript" src="api/riots-api.js"></script>
-
   <script type="text/javascript" src="scripts/init.js"></script>
 
   <style type="text/css">
@@ -49,7 +35,6 @@
       height: 100%;
       margin: 0px;
     }
-
     #main {
       padding-top: 15px;
     }
@@ -62,7 +47,6 @@
       background-color: #f6f8f9;
       z-index: 3000;
     }
-
     #splash div {
       position: relative;
       height: 50px;
@@ -117,6 +101,8 @@
 </div>
 
 <div id="wrapperDiv" ng-controller="RootController" data-ng-init="hideSplashScreen()">
+
+  <div growl id="growl"></div>
 
   <!-- include top menu -->
   <ng-include src="'/app/views/menu.html'" ng-if="authInfo"></ng-include>

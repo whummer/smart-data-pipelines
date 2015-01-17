@@ -31,22 +31,44 @@
 				<div class="form-group">
 					<label for="dateFrom" class="col-sm-4 control-label">Start Time</label>
 					<div class="col-sm-8">
-						<input class="form-control input-sm" 
-					         data-ng-model="searchOpts[START_TIME]"/>
+						<div class="dropdown">
+							<a class="dropdown-toggle" id="dropdown1" role="button" 
+								data-toggle="dropdown" data-target="#" href="#">
+								<div class="input-group">
+									<input type="text" class="form-control input-sm" data-ng-model="searchOpts[START_TIME]"/>
+									<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+								</div>
+							</a>
+							<ul class="dropdown-menu" role="menu">
+								<datetimepicker data-ng-model="searchOpts[START_TIME]" 
+									data-datetimepicker-config="{ dropdownSelector: '#dropdown1' }"/>
+							</ul>
+						</div>
 					</div>
 				</div>
 				<div class="form-group">
 					<label for="dateFrom" class="col-sm-4 control-label">End Time</label>
 					<div class="col-sm-8">
-						<input class="form-control input-sm" 
-					         data-ng-model="searchOpts[END_TIME]"/>
+						<div class="dropdown">
+							<a class="dropdown-toggle" id="dropdown2" role="button" 
+								data-toggle="dropdown" data-target="#" href="#">
+								<div class="input-group">
+									<input type="text" class="form-control input-sm" data-ng-model="searchOpts[END_TIME]"/>
+									<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+								</div>
+							</a>
+							<ul class="dropdown-menu" role="menu">
+								<datetimepicker data-ng-model="searchOpts[END_TIME]" 
+									data-datetimepicker-config="{ dropdownSelector: '#dropdown2' }"/>
+							</ul>
+						</div>
 					</div>
 				</div>
 				<div class="form-group">
-					<label for="dateFrom" class="col-sm-4 control-label">Size</label>
+					<label for="dateFrom" class="col-sm-4 control-label">Size (from/to)</label>
 					<div class="col-sm-4">
 						<input class="form-control input-sm" 
-					         data-ng-model="searchOpts.sizeFrom"/> - 
+					         data-ng-model="searchOpts.sizeFrom"/>
 					</div><div class="col-sm-4">
 						<input class="form-control input-sm" 
 					         data-ng-model="searchOpts.sizeTo"/>
@@ -56,6 +78,7 @@
 			<div class="col-md-12">
 			    <button class="pull-right btn btn-primary btn-sm" id="btnSearch">
 			    	<span class="glyphicon glyphicon-search"></span> Search</button>
+			    {{gridConfig.data.length}} entries found.
 			</div>
 		</div>
 
@@ -81,6 +104,8 @@ app.controller('AdminActionsController',
     $scope.START_TIME = START_TIME;
     $scope.END_TIME = END_TIME;
     $scope.USER_ID = USER_ID;
+    $scope.searchOpts[START_TIME] = new Date(new Date().getTime() - 1000*60*60*24);
+    $scope.searchOpts[END_TIME] = new Date();
 
     var initTable = function () {
         var columnsConfig = [
@@ -110,9 +135,12 @@ app.controller('AdminActionsController',
     }
 
     var loadTable = function() {
-    	var opts = $scope.searchOpts;
+    	var opts = clone($scope.searchOpts);
+    	opts[START_TIME] = new Date(opts[START_TIME]).getTime();
+    	opts[END_TIME] = new Date(opts[END_TIME]).getTime();
+    	opts.sizeFrom = parseInt(opts.sizeFrom);
+    	opts.sizeTo = parseInt(opts.sizeTo);
     	riots.actions(opts, function(actions) {
-    		console.log("actions", actions);
     		$scope.gridConfig.data = actions;
     		$.each(actions, function(idx,el) {
     			el.formatTime = function() {

@@ -64,20 +64,38 @@ public class UserAction {
 	public UserActionType getType() {
 		return type;
 	}
+	public void setType(UserActionType type) {
+		this.type = type;
+	}
 	public String getUserId() {
 		return userId;
+	}
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 	public long getTimestamp() {
 		return timestamp;
 	}
+	public void setTimestamp(long timestamp) {
+		this.timestamp = timestamp;
+	}
 	public double getBytesIn() {
 		return bytesIn;
+	}
+	public void setBytesIn(double bytesIn) {
+		this.bytesIn = bytesIn;
 	}
 	public double getBytesOut() {
 		return bytesOut;
 	}
+	public void setBytesOut(double bytesOut) {
+		this.bytesOut = bytesOut;
+	}
 	public String getHttpPath() {
 		return httpPath;
+	}
+	public void setHttpPath(String httpPath) {
+		this.httpPath = httpPath;
 	}
 
 	@Override

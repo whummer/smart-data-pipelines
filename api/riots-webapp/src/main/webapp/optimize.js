@@ -39,7 +39,6 @@ env("", function (errors, window) {
 		"riots/imports",
 		"riots/ratings",
 		"riots/service-calls",
-		"riots/things-crud",
 		"riots/utils",
 		"riots/widgets-angularui"
 	];

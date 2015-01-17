@@ -74,12 +74,6 @@ define(['app'], function(app) {
 				});
 			}
 
-			var loadUserInfo = function() {
-				riots.me(function(me) {
-					$scope.userInfo = me;
-				});
-			};
-
             var deleteApp = function () {
                 var app = clone($scope.shared.selectedApplication);
 
@@ -94,9 +88,6 @@ define(['app'], function(app) {
             };
 
             $scope.addClickHandler("btnDeleteApp", deleteApp);
-
-
-			loadUserInfo();
 
 		}
 	]);

@@ -221,6 +221,9 @@ sh.add.data = function(opts, dataItem, callback, errorCallback) {
 
 sh.save = {};
 
+sh.save.me = function(me, callback) {
+	return callPUT(appConfig.services.users.url + "/me", me, callback);
+}
 sh.save.thingType = function(thingType, callback) {
 	return callPUT(appConfig.services.thingTypes.url, thingType, callback);
 }

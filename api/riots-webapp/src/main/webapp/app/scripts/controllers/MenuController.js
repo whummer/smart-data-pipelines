@@ -11,6 +11,10 @@ app.controller('MenuController', function ($scope, $log, $http, $location, $comp
     AppController($scope, $http, $compile);
 
 	var loadApps = function() {
+		$scope.shared.applications = [];
+		if(!$scope.authInfo) {
+			return;
+		}
 		riots.apps(function(apps) {
 			$scope.shared.applications = apps;
 		});
@@ -20,25 +24,24 @@ app.controller('MenuController', function ($scope, $log, $http, $location, $comp
 	//$scope.CREATION_DATE = CREATION_DATE
 	
 	$scope.addApplication = function () {		
-    	var newApp = {name: "New Application " + $scope.appNumber };
-        $log.debug("New Application: ", newApp);
+    	var newApp = {name: "New Application"};
     	riots.add.app(newApp, function(newApp) {
+            if(!$scope.shared.applications) {
+            	$scope.shared.applications = [];
+            }
     		$scope.shared.applications.push(newApp);
+    		console.log("newApp", newApp);
             $log.debug("Redirecting to new app with ID: ", newApp.id);
             $location.path("apps/" + newApp.id);
     	});
-    	
-    	// TODO this does not work - no clue why
-    	$scope.appNumber = $scope.appNumber + 1;
 
     };
-    
-    
 
 	$scope.$watch("authInfo", function() {
-		$scope.shared.applications = [];
 		loadApps();
 	});
+
+	loadApps();
 
 });
 
@@ -91,6 +94,24 @@ app.controller('ModalAddDeviceTypeInstanceCtrl', function ($scope, $modalInstanc
             return "/app/img/riots.png";
         }
     };
+
+	
+	var addNewDeviceTypeManual = function($scope, $location, $log) {
+	    var deviceType = {
+	        name: "unnamed"
+	    };
+	    invokePOST($scope.http, appConfig.services.thingTypes.url + "/", 
+	    	JSON.stringify(deviceType), 
+	    	function (data, status, headers, config) {
+	            $log.info("Location: " + headers("Location"));
+	            var location = headers("Location");
+	            // Location: /catalog/things/1969990191366059219
+	            var thingId = location.split('/')[3];
+	            $log.info("ThingId: " + thingId);
+	            $location.path("catalog/" + thingId);
+	        }
+	    );
+	}
 
     $scope.ok = function () {
         $log.info("Selected item: " + $scope.selected.item);
