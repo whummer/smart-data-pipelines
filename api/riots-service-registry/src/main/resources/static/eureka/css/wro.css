@@ -3610,11 +3610,13 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .nav-tabs > li > a {
     margin-right: 2px;
     line-height: 1.428571429;
-    border: 1px solid transparent;
+    background-color: #5c5852;
+    border: 1px solid #34302D;
     border-radius: 0 0 0 0;
 }
 .nav-tabs > li > a:hover {
     border-color: #eeeeee #eeeeee #34302D;
+    background-color: #34302D;
 }
 .nav-tabs > li.active > a,
 .nav-tabs > li.active > a:hover,
@@ -6390,4 +6392,19 @@ table td.action-column {
 }
 .help-block {
     color: #f1f1f1;
+}
+
+.glyphicon-refresh-animate {
+    -animation: spin .7s infinite linear;
+    -webkit-animation: spin2 .7s infinite linear;
+}
+
+@-webkit-keyframes spin2 {
+    from { -webkit-transform: rotate(0deg);}
+    to { -webkit-transform: rotate(360deg);}
+}
+
+@keyframes spin {
+    from { transform: scale(1) rotate(0deg);}
+    to { transform: scale(1) rotate(360deg);}
 }
