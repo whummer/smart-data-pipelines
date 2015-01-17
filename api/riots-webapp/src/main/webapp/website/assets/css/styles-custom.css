@@ -1,0 +1,41 @@
+/*   
+ * Template Name: devAid - Responsive Website Template for developers
+ * Version: 1.0
+ * Author: Xiaoying Riley at 3rd Wave Media
+ * Website: http://themes.3rdwavemedia.com/
+ * Twitter: @3rdwave_themes
+*/
+/* Default */
+/* ======= Base ======= */
+h1, h2, h3, h4, h5, h6 {
+  color: #f1c633;
+}
+a {
+  color: #f1c633;
+}
+/* ======= Header ======= */
+.header {
+  background: #f1c633;
+}
+.header.navbar-fixed-top .logo a {
+  color: #f1c633;
+}
+.header .main-nav .nav .nav-item.active a {
+  color: #f1c633;
+  background: none;
+}
+.header .main-nav .nav .nav-item.active {
+  color: #f1c633;
+}
+/* ======= Promo Section ======= */
+.promo {
+  background: #f1c633;
+}
+/* ======= Features Section ======= */
+.features {
+  background: #f1c633;
+}
+/* ======= Contact Section ======= */
+.contact {
+  background: #f1c633;
+}
