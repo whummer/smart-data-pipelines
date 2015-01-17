@@ -73,7 +73,7 @@
 
         healthDivContent += '</dl>';
 
-        $(healthDivId).append(healthDivContent);
+        $(healthDivId).empty().append(healthDivContent);
       }).fail(function () {
         $(loadingDivId).addClass('hidden');
         $(errorDivId).removeClass('hidden');
@@ -168,7 +168,10 @@
                                   <dd>${instance.id}</dd>
                                   <dt><strong>InstanceId</strong></dt>
                                   <dd>${instance.instanceId}</dd>
-
+                                  <dt><strong>Hostname</strong></dt>
+                                  <dd>${instance.hostname}</dd>
+                                  <dt><strong>Port</strong></dt>
+                                  <dd>${instance.port}</dd>
                                 </dl>
                               </div>
                             </div>
