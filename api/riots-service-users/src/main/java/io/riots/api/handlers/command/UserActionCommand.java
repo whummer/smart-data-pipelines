@@ -22,7 +22,7 @@ public class UserActionCommand {
 
     public UserAction create(UserAction obj) {
         log.debug(Markers.COMMAND, "Persisting UserAction {}", obj);
-        return repository.save(obj);
+        return obj; // TODO !! repository.save(obj);
     }
 
 }

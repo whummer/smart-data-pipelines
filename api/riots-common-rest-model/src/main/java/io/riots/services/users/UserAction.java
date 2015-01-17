@@ -53,8 +53,8 @@ public class UserAction {
 		this.userId = userId;
 		this.type = type;
 		this.httpPath = httpPath;
-		this.bytesIn = bytesIn;
-		this.bytesOut = bytesOut;
+		this.bytesIn = bytesIn >= 0 ? bytesIn : 0;
+		this.bytesOut = bytesOut >= 0 ? bytesOut : 0;
 	}
 
 	static UserActionType parseType(String httpPath) {

@@ -16,6 +16,9 @@ var PROPERTY_TYPE = "data-type";
 var TIMESTAMP = "timestamp";
 var IMAGE_DATA = "image-data";
 var SIMULATION_ID = "simulation-id";
+var START_TIME = "start-time";
+var END_TIME = "end-time";
+var USER_ID = "user-id";
 
 (function() {
 

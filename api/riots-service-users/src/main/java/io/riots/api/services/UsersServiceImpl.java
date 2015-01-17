@@ -90,7 +90,8 @@ public class UsersServiceImpl implements UsersService {
     @Timed @ExceptionMetered
     public List<UserAction> getUserActions(GetUserActionsRequest req) {
     	return userActionQuery.find(req.getStartTime(), req.getEndTime(), 
-    			req.getUserId(), req.getActionType());
+    			req.getUserId(), req.getActionType(), req.getHttpPath(), 
+    			req.getSizeFrom(), req.getSizeTo());
     }
 
     @Override

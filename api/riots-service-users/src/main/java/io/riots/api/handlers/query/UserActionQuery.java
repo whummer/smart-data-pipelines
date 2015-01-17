@@ -18,13 +18,14 @@ public class UserActionQuery {
     @Autowired
     UserActionRepository repository;
 
-    public List<UserAction> find(long from, long to, String user, String type) {
+    public List<UserAction> find(long from, long to, String user, 
+    		String type, String httpPath, long sizeFrom, long sizeTo) {
     	if(to <= 0) {
     		to = new Date().getTime();
     	}
     	if(from > to) {
     		from = to;
     	}
-    	return repository.findBy(from, to, user, type);
+    	return repository.findBy(from, to, user, type, httpPath, sizeFrom, sizeTo);
     }
 }
