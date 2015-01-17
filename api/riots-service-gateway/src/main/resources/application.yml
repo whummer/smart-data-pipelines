@@ -1,6 +1,15 @@
 server:
   port: 8080
 
+spring:
+  application:
+    name: gateway-service
+
+endpoints:
+  health:
+    sensitive: false
+
+
 zuul:
   routes:
     api-users:
@@ -115,10 +124,6 @@ ribbon:
   ConnectTimeout: 10000
   ReadTimeout: 40000
   
-spring:
-  application:
-    name: gateway-service
-
 logging:
   level:
     com.netflix.discovery: OFF

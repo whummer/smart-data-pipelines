@@ -1,6 +1,14 @@
 server:
   port: 8088
 
+spring:
+  application:
+    name: docs-service
+
+endpoints:
+  health:
+    sensitive: false
+
 eureka:
   hostname: localhost
   instance:
@@ -11,10 +19,6 @@ eureka:
     registryFetchIntervalSeconds: 5
     serviceUrl:
       defaultZone: http://${eureka.hostname}:10000/eureka/
-
-spring:
-  application:
-    name: docs-service
 
 logging:
   level:

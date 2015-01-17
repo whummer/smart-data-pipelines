@@ -5,6 +5,11 @@ spring:
   application:
     name: environment-service
 
+endpoints:
+  health:
+    sensitive: false
+
+
 mongodb:
   hostname: localhost
 

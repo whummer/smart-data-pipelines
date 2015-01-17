@@ -1,6 +1,14 @@
 server:
   port: 8083
 
+spring:
+  application:
+    name: catalog-service
+
+endpoints:
+  health:
+    sensitive: false
+
 elasticsearch:
   hostname: localhost
 
@@ -18,10 +26,6 @@ eureka:
 ribbon:
   ServerListRefreshInterval: 5000
 
-spring:
-  application:
-    name: catalog-service
-    
 logging:
   level:
     com.netflix.discovery: OFF

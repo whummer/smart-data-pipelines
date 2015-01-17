@@ -1,5 +1,6 @@
 package io.riots.services;
 
+import com.wordnik.swagger.annotations.*;
 import io.riots.services.apps.Application;
 import io.riots.services.users.Permission;
 import io.riots.services.users.Role;
@@ -19,11 +20,6 @@ import javax.ws.rs.core.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
-import com.wordnik.swagger.annotations.ApiResponse;
-import com.wordnik.swagger.annotations.ApiResponses;
-
 @Service
 @Path("/apps")
 @Api(value = "Applications Service", description = "Service for user applications in the platform.")
@@ -32,7 +28,7 @@ public interface ApplicationsService {
 	@GET
 	@Path("/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "Retrieve application", 
+	@ApiOperation(value = "Retrieve application",
 		notes = "Retrieve information about an application with the given ID.", response = Application.class)
 	@ApiResponses(value = { @ApiResponse(code = 404, message = "No application with given ID found") })
 	Application retrieve(@PathParam("id") String id);

@@ -39,9 +39,22 @@
         </rollingPolicy>
     </appender>
 
-   <!-- <appender name="riots-api-stash" class="net.logstash.logback.appender.LogstashSocketAppender">
-        <syslogHost>logstash</syslogHost>
-    </appender>-->
+    <appender name="riots-metrics" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${RIOTS_LOG_DIR}/metrics.log</File>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} [%F:%L] - [%marker] [%X{REFID:-******}] - %msg%n
+            </pattern>
+        </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${RIOTS_LOG_DIR}/metrics-%d{yyyy-MM-dd}.log</fileNamePattern>
+        </rollingPolicy>
+    </appender>
+
+
+    <!-- <appender name="riots-api-stash" class="net.logstash.logback.appender.LogstashSocketAppender">
+         <syslogHost>logstash</syslogHost>
+     </appender>-->
 
 <!--
     <appender name="stash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
@@ -80,6 +93,11 @@
 
     <logger name="io.riots" level="DEBUG">
         <appender-ref ref="riots-api"/>
+        <!--<appender-ref ref="stash"/>-->
+    </logger>
+
+    <logger name="metrics-logger" level="OFF">
+        <appender-ref ref="riots-metrics"/>
         <!--<appender-ref ref="stash"/>-->
     </logger>
 

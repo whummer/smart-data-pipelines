@@ -1,6 +1,14 @@
 server:
   port: 8087
 
+spring:
+  application:
+    name: files-service
+
+endpoints:
+  health:
+    sensitive: false
+
 storage:
   backend: file-storage
   directory: /tmp/files
@@ -18,10 +26,6 @@ eureka:
 
 ribbon:
   ServerListRefreshInterval: 5000
-
-spring:
-  application:
-    name: files-service
 
 logging:
   level:

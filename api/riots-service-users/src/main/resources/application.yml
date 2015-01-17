@@ -1,6 +1,10 @@
 server:
   port: 8084
 
+spring:
+  application:
+    name: users-service
+
 mongodb:
   hostname: localhost	
 
@@ -14,10 +18,6 @@ eureka:
     registryFetchIntervalSeconds: 5
     serviceUrl:
       defaultZone: http://${eureka.hostname}:10000/eureka/
-
-spring:
-  application:
-    name: users-service
 
 endpoints:
     health:
