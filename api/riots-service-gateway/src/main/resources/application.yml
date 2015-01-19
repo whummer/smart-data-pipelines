@@ -9,7 +9,6 @@ endpoints:
   health:
     sensitive: false
 
-
 zuul:
   routes:
     api-users:
@@ -126,8 +125,7 @@ ribbon:
   
 logging:
   level:
-    com.netflix.discovery: OFF
-    com.netflix.zuul: OFF
-    com.netflix.servo: WARN
+    com.netflix.zuul: TRACE
+    com.netflix: WARN
     org.springframework: WARN
-    org.springframework.cloud.netflix.zuul: INFO
+    #org.springframework.cloud.netflix.zuul: TRACE

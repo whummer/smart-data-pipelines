@@ -3,8 +3,8 @@ package io.riots.core.repositories;
 import java.util.Collection;
 import java.util.List;
 
-import io.riots.model.ThingMongo;
-import io.riots.services.scenario.Thing;
+import io.riots.api.services.model.ThingMongo;
+import io.riots.api.services.scenarios.Thing;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
 

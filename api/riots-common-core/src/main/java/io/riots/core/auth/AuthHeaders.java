@@ -1,9 +1,9 @@
 package io.riots.core.auth;
 
-import io.riots.core.service.ServiceClientFactory;
-import io.riots.services.UsersService;
-import io.riots.services.users.Role;
-import io.riots.services.users.User;
+import io.riots.core.clients.ServiceClientFactory;
+import io.riots.api.services.users.UsersService;
+import io.riots.api.services.users.Role;
+import io.riots.api.services.users.User;
 
 import java.util.Date;
 import java.util.Enumeration;
@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.elasticsearch.common.collect.MapBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -39,13 +38,17 @@ public class AuthHeaders {
     public static final String HEADER_INTERNAL_CALL = "riots-internal";
     public static final String HEADER_WS_PROTOCOL = "Sec-WebSocket-Protocol";
 
-    public static final Map<String,String> INTERNAL_CALL = 
-			new MapBuilder<String,String>().put(AuthHeaders.HEADER_INTERNAL_CALL, "true").map();
+    public static final Map<String,String> INTERNAL_CALL = new HashMap<>();
+//			new MapBuilder<String,String>().put(AuthHeaders.HEADER_INTERNAL_CALL, "true").map();
 
     private static final Logger LOG = Logger.getLogger(AuthHeaders.class);
 
     @Autowired
     private ServiceClientFactory clientFactory;
+
+    public AuthHeaders() {
+        INTERNAL_CALL.put(AuthHeaders.HEADER_INTERNAL_CALL, "true");
+    }
 
     /**
      * Thread local variable containing the AuthInfo  

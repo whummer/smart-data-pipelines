@@ -11,12 +11,12 @@ import io.hummer.osm.query.OSMNode;
 import io.hummer.osm.util.Util;
 import io.riots.core.sim.ValueInterpolation;
 import io.riots.core.util.geo.GeoUtil;
-import io.riots.services.scenario.PropertyValue;
-import io.riots.services.sim.LocationInTime;
-import io.riots.services.sim.PropertySimulationGPS;
-import io.riots.services.sim.TrafficTraces;
-import io.riots.services.sim.TimelineValues.TimedValue;
-import io.riots.services.sim.TrafficTraces.TrafficTrace;
+import io.riots.api.services.scenarios.PropertyValue;
+import io.riots.api.services.sim.LocationInTime;
+import io.riots.api.services.sim.PropertySimulationGPS;
+import io.riots.api.services.sim.TrafficTraces;
+import io.riots.api.services.sim.TimelineValues.TimedValue;
+import io.riots.api.services.sim.TrafficTraces.TrafficTrace;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;

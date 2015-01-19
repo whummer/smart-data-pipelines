@@ -1,6 +1,6 @@
 package io.riots.core.repositories;
 
-import io.riots.services.drivers.DataDriver;
+import io.riots.api.services.drivers.DataDriver;
 
 import java.util.List;
 

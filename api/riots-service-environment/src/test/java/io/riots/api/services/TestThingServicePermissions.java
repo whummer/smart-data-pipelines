@@ -1,10 +1,10 @@
 package io.riots.api.services;
 
 import io.riots.core.auth.AuthHeaders;
-import io.riots.core.service.ServiceClientFactory;
-import io.riots.services.ThingsService;
-import io.riots.services.model.interfaces.ObjectIdentifiable;
-import io.riots.services.scenario.Thing;
+import io.riots.core.clients.ServiceClientFactory;
+import io.riots.api.services.scenarios.ThingsService;
+import io.riots.api.services.model.interfaces.ObjectIdentifiable;
+import io.riots.api.services.scenarios.Thing;
 
 import java.io.IOException;
 import java.util.List;

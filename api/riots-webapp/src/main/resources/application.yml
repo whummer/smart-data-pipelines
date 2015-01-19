@@ -14,7 +14,7 @@ eureka:
   client:
     registryFetchIntervalSeconds: 5
     serviceUrl:
-      defaultZone: http://${eureka.hostname}:10000/eureka
+      defaultZone: http://${eureka.hostname}:10000/eureka/
 
 endpoints:
     health:

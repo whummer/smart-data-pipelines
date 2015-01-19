@@ -38,6 +38,12 @@
 	        <version>${project.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>io.riots</groupId>
+            <artifactId>riots-common-mongodb</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
 		<!-- Spring websockets -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

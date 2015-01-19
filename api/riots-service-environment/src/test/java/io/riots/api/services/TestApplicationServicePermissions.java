@@ -1,10 +1,10 @@
 package io.riots.api.services;
 
 import io.riots.core.auth.AuthHeaders;
-import io.riots.core.service.ServiceClientFactory;
-import io.riots.services.ApplicationsService;
-import io.riots.services.apps.Application;
-import io.riots.services.model.interfaces.ObjectIdentifiable;
+import io.riots.core.clients.ServiceClientFactory;
+import io.riots.api.services.applications.ApplicationsService;
+import io.riots.api.services.applications.Application;
+import io.riots.api.services.model.interfaces.ObjectIdentifiable;
 
 import java.io.IOException;
 import java.util.List;

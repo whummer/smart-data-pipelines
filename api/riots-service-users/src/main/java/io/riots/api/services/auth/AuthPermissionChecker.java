@@ -1,9 +1,9 @@
 package io.riots.api.services.auth;
 
-import io.riots.api.handlers.query.UserQuery;
+import io.riots.core.handlers.query.UserQuery;
 import io.riots.core.auth.AuthHeaders.AuthInfo;
 import io.riots.core.auth.AuthPermissionEvaluatorDefault;
-import io.riots.services.users.User;
+import io.riots.api.services.users.User;
 
 import java.io.Serializable;
 

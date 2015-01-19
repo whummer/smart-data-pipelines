@@ -1,12 +1,12 @@
 package io.riots.core.model;
 
-import io.riots.core.service.ServiceClientFactory;
-import io.riots.services.CatalogService;
-import io.riots.services.ThingsService;
-import io.riots.services.catalog.HierarchicalObject;
-import io.riots.services.catalog.Property;
-import io.riots.services.catalog.ThingType;
-import io.riots.services.scenario.Thing;
+import io.riots.core.clients.ServiceClientFactory;
+import io.riots.api.services.catalog.CatalogService;
+import io.riots.api.services.scenarios.ThingsService;
+import io.riots.api.services.catalog.HierarchicalObject;
+import io.riots.api.services.catalog.Property;
+import io.riots.api.services.catalog.ThingType;
+import io.riots.api.services.scenarios.Thing;
 
 import java.util.Collection;
 

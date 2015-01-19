@@ -2,7 +2,7 @@ package io.riots.api.services;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import com.jayway.restassured.RestAssured;
-import io.riots.core.boot.ServiceStarter;
+import io.riots.boot.starters.ServiceStarter;
 import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.feature.Feature;
 import org.apache.cxf.feature.LoggingFeature;

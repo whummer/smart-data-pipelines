@@ -2,11 +2,13 @@ package io.riots.core.repositories;
 
 import java.util.List;
 
-import io.riots.services.scenario.PropertyValue;
+import io.riots.api.services.scenarios.PropertyValue;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 /**
  * @author whummer

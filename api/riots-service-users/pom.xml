@@ -33,18 +33,19 @@
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>io.riots</groupId>
-			<artifactId>riots-common-rest-model</artifactId>
-			<version>0.0.1-SNAPSHOT</version>			
-		</dependency>
+        <dependency>
+            <groupId>io.riots</groupId>
+            <artifactId>riots-common-mongodb</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
 
 		<!-- Spring Data JPA -->
-		<dependency>
+		<!--<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-jpa</artifactId>
 		</dependency>
-
+-->
     </dependencies>
 
     <build>

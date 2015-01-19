@@ -1,8 +1,8 @@
 package io.riots.core.auth;
 
 import io.riots.core.auth.AuthHeaders.AuthInfo;
-import io.riots.core.service.ServiceClientFactory;
-import io.riots.services.users.User;
+import io.riots.core.clients.ServiceClientFactory;
+import io.riots.api.services.users.User;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;

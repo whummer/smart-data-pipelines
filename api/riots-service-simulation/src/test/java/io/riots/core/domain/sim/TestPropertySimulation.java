@@ -1,11 +1,11 @@
 package io.riots.core.domain.sim;
 
 import io.riots.core.sim.PropertyValueGenerator;
-import io.riots.services.scenario.PropertyValue;
-import io.riots.services.sim.Context;
-import io.riots.services.sim.PropertySimulationFunctionBased;
-import io.riots.services.sim.Time;
-import io.riots.services.sim.TimelineValues;
+import io.riots.api.services.scenarios.PropertyValue;
+import io.riots.api.services.sim.Context;
+import io.riots.api.services.sim.PropertySimulationFunctionBased;
+import io.riots.api.services.sim.Time;
+import io.riots.api.services.sim.TimelineValues;
 
 import org.junit.Test;
 

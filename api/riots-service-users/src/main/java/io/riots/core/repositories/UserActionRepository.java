@@ -1,11 +1,12 @@
 package io.riots.core.repositories;
 
-import io.riots.services.users.UserAction;
+import io.riots.api.services.users.UserAction;
 
 import java.util.List;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
+import org.springframework.stereotype.Component;
 
 /**
  * @author Waldemar Hummer

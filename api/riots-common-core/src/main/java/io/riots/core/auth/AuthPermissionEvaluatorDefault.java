@@ -1,11 +1,11 @@
 package io.riots.core.auth;
 
 import io.riots.core.auth.AuthHeaders.AuthInfo;
-import io.riots.core.service.ServiceClientFactory;
-import io.riots.services.UsersService;
-import io.riots.services.model.interfaces.ObjectCreated;
-import io.riots.services.users.Permission.Operation;
-import io.riots.services.users.Role;
+import io.riots.core.clients.ServiceClientFactory;
+import io.riots.api.services.users.UsersService;
+import io.riots.api.services.model.interfaces.ObjectCreated;
+import io.riots.api.services.users.Permission.Operation;
+import io.riots.api.services.users.Role;
 
 import java.util.Arrays;
 import java.util.List;

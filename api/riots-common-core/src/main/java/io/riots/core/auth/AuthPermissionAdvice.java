@@ -25,7 +25,7 @@ public class AuthPermissionAdvice {
 	final Logger LOG = Logger.getLogger(AuthPermissionAdvice.class);
 
 	/* we cannot use this pointcut because the @PreAuthorize annotations
-	 * are on the service interfaces, which is not supported by AspectJ:
+	 * are on the clients interfaces, which is not supported by AspectJ:
 
 		@Around("call(@org.springframework.security.access.prepost.PreAuthorize * *(..))")
 

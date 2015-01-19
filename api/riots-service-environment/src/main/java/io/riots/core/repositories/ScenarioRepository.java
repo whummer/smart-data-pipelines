@@ -1,6 +1,6 @@
 package io.riots.core.repositories;
 
-import io.riots.services.scenario.Scenario;
+import io.riots.api.services.scenarios.Scenario;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
 

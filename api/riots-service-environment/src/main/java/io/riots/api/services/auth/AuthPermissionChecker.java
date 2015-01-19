@@ -3,7 +3,7 @@ package io.riots.api.services.auth;
 import io.riots.core.auth.AuthPermissionEvaluatorDefault;
 import io.riots.core.repositories.ApplicationRepository;
 import io.riots.core.repositories.ThingRepository;
-import io.riots.services.users.Permission.Target;
+import io.riots.api.services.users.Permission.Target;
 
 import java.io.Serializable;
 

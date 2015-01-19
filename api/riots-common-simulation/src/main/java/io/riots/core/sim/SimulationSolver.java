@@ -1,9 +1,9 @@
 //package io.riots.core.sim;
 //
 //import io.riots.core.scripting.ScriptingEngine;
-//import io.riots.services.catalog.ThingType;
-//import io.riots.services.scenario.Thing;
-//import io.riots.services.sim.Simulation;
+//import io.riots.api.services.catalog.ThingType;
+//import io.riots.api.services.scenario.Thing;
+//import io.riots.api.services.sim.Simulation;
 //
 //import java.util.HashMap;
 //import java.util.List;

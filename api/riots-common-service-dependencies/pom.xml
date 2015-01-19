@@ -16,7 +16,7 @@
 
 	<dependencies>
 
-		<!-- service base -->
+		<!-- clients base -->
 		<dependency>
 			<groupId>io.riots</groupId>
 			<artifactId>riots-common-service-base</artifactId>
@@ -36,7 +36,6 @@
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
-
 
 		<!-- Logging -->
 		<dependency>

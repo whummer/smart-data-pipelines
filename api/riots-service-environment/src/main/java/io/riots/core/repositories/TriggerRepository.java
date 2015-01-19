@@ -1,7 +1,7 @@
 package io.riots.core.repositories;
 
-import io.riots.services.triggers.Trigger;
-import io.riots.services.triggers.Trigger.TriggerType;
+import io.riots.api.services.triggers.Trigger;
+import io.riots.api.services.triggers.Trigger.TriggerType;
 
 import java.util.List;
 

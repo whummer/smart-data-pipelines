@@ -1,30 +1,12 @@
 package io.riots.demo;
 
+import io.riots.api.services.catalog.*;
+import io.riots.api.services.sim.PropertySimulationFunctionBased;
+import io.riots.api.services.sim.PropertySimulationGPS;
+import io.riots.api.services.sim.SimulationService;
+import io.riots.api.services.sim.SimulationType;
 import io.riots.core.auth.AuthHeaders;
-import io.riots.core.boot.MongoEnabledServiceStarter;
-import io.riots.core.service.ServiceClientFactory;
-import io.riots.services.CatalogService;
-import io.riots.services.SimulationService;
-import io.riots.services.catalog.ImageData;
-import io.riots.services.catalog.Manufacturer;
-import io.riots.services.catalog.Property;
-import io.riots.services.catalog.PropertyType;
-import io.riots.services.catalog.ThingType;
-import io.riots.services.catalog.ValueDomainContinuous;
-import io.riots.services.catalog.ValueDomainDiscrete;
-import io.riots.services.catalog.ValueDomainEnumerated;
-import io.riots.services.sim.PropertySimulationFunctionBased;
-import io.riots.services.sim.PropertySimulationGPS;
-import io.riots.services.sim.SimulationType;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
+import io.riots.core.clients.ServiceClientFactory;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.cxf.helpers.IOUtils;
 import org.apache.cxf.jaxrs.client.WebClient;
@@ -40,18 +22,23 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author whummer
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {InsertDemoDataViaCatalog.class})
-@ComponentScan(basePackages = {"io.riots.core"}, excludeFilters = {
-        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = MongoEnabledServiceStarter.class)})
+@ComponentScan(basePackages = {"io.riots.core"})
 @Configuration
 @EnableAutoConfiguration
 @EnableDiscoveryClient
@@ -66,7 +53,7 @@ public class InsertDemoDataViaCatalog {
     static {
         String prop = "eureka.client.serviceUrl.defaultZone";
         if (System.getProperty(prop) == null) {
-            System.setProperty(prop, "http://localhost:10000/eureka/v2/");
+            System.setProperty(prop, "http://localhost:10000/eureka/");
         }
     }
 
@@ -166,7 +153,7 @@ public class InsertDemoDataViaCatalog {
         simulations.createSimType(t);
     }
 
-    private ThingType getExisting(List<ThingType> types, String name) {
+    private ThingType getExisting(List<? extends ThingType> types, String name) {
         for (ThingType t : types) {
             if (t.getName().equals(name))
                 return t;
@@ -174,13 +161,13 @@ public class InsertDemoDataViaCatalog {
         return null;
     }
 
-    private boolean isIncluded(List<ThingType> types, String name) {
+    private boolean isIncluded(List<? extends ThingType> types, String name) {
         return getExisting(types, name) != null;
     }
 
     @SuppressWarnings("all")
     private void insertManufacturerData() {
-        List<Manufacturer> existingManufacturers = catalog.listManufacturers(null, 0, 100);
+        List<? extends Manufacturer> existingManufacturers = catalog.listManufacturers(null, 0, 100);
         for (Manufacturer manfacturer : getManufacturers()) {
             if (existingManufacturers.stream().anyMatch(m -> m.getName().equals(manfacturer.getName()))) {
                 System.out.println("Skipping existing manufacturer: " + manfacturer.getName());
@@ -222,11 +209,11 @@ public class InsertDemoDataViaCatalog {
     }
 
     private void insertThingData() throws IOException {
-        List<ThingType> types = catalog.listThingTypes("", 0, 1000);
+        List<? extends ThingType> types = catalog.listThingTypes("", 0, 1000);
         insertThingData(types);
     }
 
-    private ThingType getOrCreateThingType(ThingType type, List<ThingType> existing) {
+    private ThingType getOrCreateThingType(ThingType type, List<? extends ThingType> existing) {
         if (!isIncluded(existing, type.getName())) {
             return catalog.createThingType(type);
         }
@@ -234,7 +221,7 @@ public class InsertDemoDataViaCatalog {
         return getExisting(existing, type.getName());
     }
 
-    public void insertThingData(List<ThingType> existing) throws IOException {
+    public void insertThingData(List<? extends ThingType> existing) throws IOException {
 
         ThingType ultraSonicSensor = new ThingType("HC-SR04");
         {

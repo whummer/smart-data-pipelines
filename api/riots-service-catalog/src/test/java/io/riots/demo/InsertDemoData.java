@@ -11,7 +11,7 @@
 //import io.riots.api.services.ServicesStarter;
 //import io.riots.core.repositories.BaseObjectCategorizedRepository;
 //import io.riots.core.repositories.DeviceTypeRepository;
-//import io.riots.core.util.cascade.CascadingMongoEventListener;
+//import io.riots.core.mongodb.cascade.CascadingMongoEventListener;
 //
 //import java.net.UnknownHostException;
 //import java.util.HashMap;

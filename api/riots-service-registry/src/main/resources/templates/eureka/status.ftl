@@ -43,6 +43,8 @@
     var healthDivId = '#' + healthDiv;
     var errorDivId = '#' + healthDiv + "_error";
     var loadingDivId = '#' + healthDiv + "_loading";
+
+    $.ajaxSetup({timeout:15000});
     $('#' + collapseDiv).on('shown.bs.collapse', function () {
       $.get(url, function (data) {
         console.log(data);

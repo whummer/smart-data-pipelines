@@ -1,10 +1,10 @@
 package io.riots.core.domain;
 
 import static org.testng.Assert.assertEquals;
-import io.riots.services.catalog.ValueDomain;
-import io.riots.services.catalog.ValueDomainContinuous;
-import io.riots.services.catalog.ValueDomainDiscrete;
-import io.riots.services.catalog.ValueDomainEnumerated;
+import io.riots.api.services.catalog.ValueDomain;
+import io.riots.api.services.catalog.ValueDomainContinuous;
+import io.riots.api.services.catalog.ValueDomainDiscrete;
+import io.riots.api.services.catalog.ValueDomainEnumerated;
 
 import java.util.Iterator;
 import java.util.LinkedList;

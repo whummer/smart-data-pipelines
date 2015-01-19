@@ -2,10 +2,10 @@ package io.riots.core.auth;
 
 import io.riots.core.auth.AuthHeaders.AuthInfo;
 import io.riots.core.model.ModelCache;
-import io.riots.core.service.ServiceClientFactory;
-import io.riots.services.UsersService;
-import io.riots.services.users.User;
-import io.riots.services.users.UserAction;
+import io.riots.core.clients.ServiceClientFactory;
+import io.riots.api.services.users.UsersService;
+import io.riots.api.services.users.User;
+import io.riots.api.services.users.UserAction;
 
 import java.io.IOException;
 

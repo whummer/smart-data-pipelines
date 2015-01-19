@@ -2,10 +2,10 @@ package io.riots.core.auth;
 
 import io.riots.core.auth.AuthHeaders.AuthInfo;
 import io.riots.core.auth.AuthHeaders.AuthRequestInfo;
-import io.riots.core.service.ServiceClientFactory;
-import io.riots.services.apps.Application;
-import io.riots.services.users.Role;
-import io.riots.services.users.User;
+import io.riots.core.clients.ServiceClientFactory;
+import io.riots.api.services.applications.Application;
+import io.riots.api.services.users.Role;
+import io.riots.api.services.users.User;
 
 import java.io.IOException;
 import java.net.HttpCookie;
@@ -118,7 +118,7 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
             "^/demo/*.*$",
             "^/golfcars.*$",
 
-            /* allow access to file service */
+            /* allow access to file clients */
             "^(/api/v.)?/files.*$"
 
     );

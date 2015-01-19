@@ -20,6 +20,11 @@
             <artifactId>riots-common-core</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-mongodb</artifactId>
+        </dependency>
         
 		<!-- MatSim traffic simulation -->
 		<dependency>

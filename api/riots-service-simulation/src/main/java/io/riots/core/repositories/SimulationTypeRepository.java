@@ -1,6 +1,6 @@
 package io.riots.core.repositories;
 
-import io.riots.services.sim.SimulationType;
+import io.riots.api.services.sim.SimulationType;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
 

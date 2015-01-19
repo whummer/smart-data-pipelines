@@ -43,7 +43,7 @@ public class ModelCache {
 		    .build().asMap();
 
 	/**
-	 * Cache for service clients.
+	 * Cache for clients clients.
 	 */
 	public static final ConcurrentMap<Object,Object> SERVICE_CLIENTS = 
 			CacheBuilder.newBuilder()

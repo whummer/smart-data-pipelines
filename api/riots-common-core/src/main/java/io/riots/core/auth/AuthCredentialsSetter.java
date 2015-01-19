@@ -1,7 +1,7 @@
 package io.riots.core.auth;
 
 import io.riots.core.auth.AuthHeaders.AuthInfo;
-import io.riots.core.service.ServiceClientFactory;
+import io.riots.core.clients.ServiceClientFactory;
 
 import java.io.IOException;
 

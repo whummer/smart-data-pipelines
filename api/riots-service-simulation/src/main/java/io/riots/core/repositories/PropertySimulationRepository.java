@@ -2,7 +2,7 @@ package io.riots.core.repositories;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-import io.riots.services.sim.PropertySimulation;
+import io.riots.api.services.sim.PropertySimulation;
 
 /**
  * @author whummer

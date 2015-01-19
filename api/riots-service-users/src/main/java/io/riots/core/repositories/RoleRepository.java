@@ -2,7 +2,8 @@ package io.riots.core.repositories;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-import io.riots.services.users.Role;
+import io.riots.api.services.users.Role;
+import org.springframework.stereotype.Component;
 
 /**
  * @author Waldemar Hummer

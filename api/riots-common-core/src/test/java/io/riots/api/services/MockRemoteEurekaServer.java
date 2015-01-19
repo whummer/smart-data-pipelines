@@ -133,48 +133,48 @@
 //                pathInfo = pathInfo.substring(EUREKA_API_BASE_PATH.length());
 //                boolean includeRemote = isRemoteRequest(request);
 //
-//                if (pathInfo.startsWith("apps/delta")) {
+//                if (pathInfo.startsWith("applications/delta")) {
 //                    getDeltaCount.getAndIncrement();
 //
-//                    Applications apps = new Applications();
-//                    apps.setVersion(100L);
+//                    Applications applications = new Applications();
+//                    applications.setVersion(100L);
 //                    if (sentDelta.compareAndSet(false, true)) {
-//                        addDeltaApps(includeRemote, apps);
+//                        addDeltaApps(includeRemote, applications);
 //                    } else {
 //                        System.out.println("Eureka port: " +  port + ". " + System.currentTimeMillis() +". Not including delta as it has already been sent.");
 //                    }
-//                    apps.setAppsHashCode(getDeltaAppsHashCode(includeRemote));
-//                    sendOkResponseWithContent((Request) request, response, apps);
+//                    applications.setAppsHashCode(getDeltaAppsHashCode(includeRemote));
+//                    sendOkResponseWithContent((Request) request, response, applications);
 //                    handled = true;
-//                } else if(pathInfo.equals("apps/")) {
+//                } else if(pathInfo.equals("applications/")) {
 //                    getFullRegistryCount.getAndIncrement();
 //
-//                    Applications apps = new Applications();
-//                    apps.setVersion(100L);
+//                    Applications applications = new Applications();
+//                    applications.setVersion(100L);
 //                    for (Application application : applicationMap.values()) {
-//                        apps.addApplication(application);
+//                        applications.addApplication(application);
 //                    }
 //                    if (includeRemote) {
 //                        for (Application application : remoteRegionApps.values()) {
-//                            apps.addApplication(application);
+//                            applications.addApplication(application);
 //                        }
 //                    }
 //
 //                    if (sentDelta.get()) {
-//                        addDeltaApps(includeRemote, apps);
+//                        addDeltaApps(includeRemote, applications);
 //                    } else {
-//                        System.out.println("Eureka port: " + port + ". " + System.currentTimeMillis() +". Not including delta apps in /apps response, as delta has not been sent.");
+//                        System.out.println("Eureka port: " + port + ". " + System.currentTimeMillis() +". Not including delta applications in /applications response, as delta has not been sent.");
 //                    }
-//                    apps.setAppsHashCode(apps.getReconcileHashCode());
-//                    sendOkResponseWithContent((Request) request, response, apps);
+//                    applications.setAppsHashCode(applications.getReconcileHashCode());
+//                    sendOkResponseWithContent((Request) request, response, applications);
 //                    sentRegistry.set(true);
 //                    handled = true;
 //                } else if (pathInfo.startsWith("vips/")) {
 //                    getSingleVipCount.getAndIncrement();
 //
 //                    String vipAddress = pathInfo.substring("vips/".length());
-//                    Applications apps = new Applications();
-//                    apps.setVersion(-1l);
+//                    Applications applications = new Applications();
+//                    applications.setVersion(-1l);
 //                    for (Application application : applicationMap.values()) {
 //                        Application retApp = new Application(application.getName());
 //                        for (InstanceInfo instance : application.getInstances()) {
@@ -184,14 +184,14 @@
 //                        }
 //
 //                        if (retApp.getInstances().size() > 0) {
-//                            apps.addApplication(retApp);
+//                            applications.addApplication(retApp);
 //                        }
 //                    }
 //
-//                    apps.setAppsHashCode(apps.getReconcileHashCode());
-//                    sendOkResponseWithContent((Request) request, response, apps);
+//                    applications.setAppsHashCode(applications.getReconcileHashCode());
+//                    sendOkResponseWithContent((Request) request, response, applications);
 //                    handled = true;
-//                } else if (pathInfo.startsWith("apps")) {  // assume this is the renewal heartbeat
+//                } else if (pathInfo.startsWith("applications")) {  // assume this is the renewal heartbeat
 //                    heartbeatCount.getAndIncrement();
 //
 //                    sendOkResponseWithContent((Request) request, response, new Applications());
@@ -206,13 +206,13 @@
 //            }
 //        }
 //
-//        protected void addDeltaApps(boolean includeRemote, Applications apps) {
+//        protected void addDeltaApps(boolean includeRemote, Applications applications) {
 //            for (Application application : applicationDeltaMap.values()) {
-//                apps.addApplication(application);
+//                applications.addApplication(application);
 //            }
 //            if (includeRemote) {
 //                for (Application application : remoteRegionAppsDelta.values()) {
-//                    apps.addApplication(application);
+//                    applications.addApplication(application);
 //                }
 //            }
 //        }
@@ -240,9 +240,9 @@
 //            return queryString.contains("regions=");
 //        }
 //
-//        protected void sendOkResponseWithContent(Request request, HttpServletResponse response, Applications apps)
+//        protected void sendOkResponseWithContent(Request request, HttpServletResponse response, Applications applications)
 //                throws IOException {
-//            String content = XmlXStream.getInstance().toXML(apps);
+//            String content = XmlXStream.getInstance().toXML(applications);
 //            response.setContentType("application/xml");
 //            response.setStatus(HttpServletResponse.SC_OK);
 //            response.getWriter().println(content);
@@ -250,7 +250,7 @@
 //            request.setHandled(true);
 //            System.out.println("Eureka port: " + port + ". " + System.currentTimeMillis() +
 //                    ". Eureka resource mock, sent response for request path: " + request.getPathInfo() +
-//                    ", apps count: " + apps.getRegisteredApplications().size());
+//                    ", applications count: " + applications.getRegisteredApplications().size());
 //        }
 //
 //        protected void sleep(int seconds) {

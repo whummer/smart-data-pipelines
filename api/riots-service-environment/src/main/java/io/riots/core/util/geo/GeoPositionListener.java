@@ -1,12 +1,12 @@
 package io.riots.core.util.geo;
 
-import io.riots.api.events.EventBrokerComponent;
-import io.riots.api.services.jms.EventBroker;
-import io.riots.api.util.JSONUtil;
-import io.riots.services.model.Location;
-import io.riots.services.scenario.PropertyValue;
-import io.riots.services.triggers.GeoFence;
-import io.riots.services.users.User;
+import io.riots.core.jms.EventBrokerComponent;
+import io.riots.core.jms.EventBroker;
+import io.riots.core.util.JSONUtil;
+import io.riots.api.services.model.Location;
+import io.riots.api.services.scenarios.PropertyValue;
+import io.riots.api.services.triggers.GeoFence;
+import io.riots.api.services.users.User;
 
 import java.util.HashMap;
 import java.util.LinkedList;

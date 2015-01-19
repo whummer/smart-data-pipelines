@@ -101,7 +101,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>io.riots.webapp.WebappServiceStarter</mainClass>
+                            <mainClass>io.riots.boot.starters.WebappServiceStarter</mainClass>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
                         </manifest>

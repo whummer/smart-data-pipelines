@@ -1,6 +1,6 @@
 package io.riots.core.util.geo;
 
-import io.riots.services.model.Location;
+import io.riots.api.services.model.Location;
 
 public class GeoUtil {
 

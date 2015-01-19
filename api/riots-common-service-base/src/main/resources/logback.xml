@@ -96,7 +96,7 @@
         <!--<appender-ref ref="stash"/>-->
     </logger>
 
-    <logger name="metrics-logger" level="OFF">
+    <logger name="riots-metrics-logger" level="OFF">
         <appender-ref ref="riots-metrics"/>
         <!--<appender-ref ref="stash"/>-->
     </logger>
