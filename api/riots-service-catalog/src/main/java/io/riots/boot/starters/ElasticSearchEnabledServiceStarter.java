@@ -17,7 +17,7 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
  * @author riox
  */
 @EnableElasticsearchRepositories(elasticsearchTemplateRef = "elasticsearchTemplate", basePackages = {"io.riots.core.repositories"})
-@EnableAutoConfiguration(exclude = {MongoAutoConfiguration.class, MongoDataAutoConfiguration.class})
+@EnableAutoConfiguration
 @ComponentScan(basePackages = {"io.riots.core", "io.riots.api"})
 public class ElasticSearchEnabledServiceStarter extends ServiceStarter {
 
@@ -37,10 +37,5 @@ public class ElasticSearchEnabledServiceStarter extends ServiceStarter {
     public ElasticsearchTemplate elasticsearchTemplate(Client transportClient) {
         return new ElasticsearchTemplate(transportClient);
     }
-
-   /* @Bean
-    public ElasticsearchTemplateInterceptor elasticsearchTemplateInterceptor() {
-        return new ElasticsearchTemplateInterceptor();
-    }*/
 
 }

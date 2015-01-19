@@ -24,13 +24,10 @@ import io.riots.core.filters.RiotsUrlRewriteFilter;
  * @author whummer
  */
 @Configuration
-@EnableAutoConfiguration(exclude = {
-		ElasticsearchAutoConfiguration.class, ElasticsearchDataAutoConfiguration.class,
-        MongoAutoConfiguration.class, MongoDataAutoConfiguration.class
-})
+@EnableAutoConfiguration
 @ComponentScan(basePackages = {"io.riots.api", "io.riots.core"})
 @EnableZuulProxy
-@ImportResource(value = { "classpath*:/spring-auth-filter.xml" })
+@ImportResource(value = { "classpath*:/spring-auth-filter.xml" }) // todo try to move this to JavaConfig
 public class GatewayServiceStarter {
 
 	/**

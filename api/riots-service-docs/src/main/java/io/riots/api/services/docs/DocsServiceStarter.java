@@ -2,6 +2,7 @@ package io.riots.api.services.docs;
 
 import com.wordnik.swagger.jaxrs.config.BeanConfig;
 import io.riots.boot.starters.ServiceStarter;
+import io.riots.core.auth.CORSFilter;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchAutoConfiguration;
 import org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchDataAutoConfiguration;
@@ -17,26 +18,27 @@ import org.springframework.context.annotation.ComponentScan;
  */
 @EnableDiscoveryClient
 @ComponentScan(basePackages = { "io.riots.core", "io.riots.api" })
-@EnableAutoConfiguration(exclude = {
-        ElasticsearchAutoConfiguration.class, ElasticsearchDataAutoConfiguration.class,
-        MongoAutoConfiguration.class, MongoDataAutoConfiguration.class
-})
+@EnableAutoConfiguration
 public class DocsServiceStarter extends ServiceStarter {
 
-    public static void main(String[] args) {
-    	ServiceStarter.setDefaultSystemProps();
-        new SpringApplicationBuilder(DocsServiceStarter.class).web(true).run(args);
-    }
+	@Bean
+	public CORSFilter corsFilter() {
+		return new CORSFilter();
+	}
 
   	@Bean
 	public BeanConfig swaggerConfig() {
 		BeanConfig swaggerConfig = new BeanConfig();
 		swaggerConfig.setScan(true);
 		swaggerConfig.setTitle("riots API");
-		//swaggerConfig.setBasePath("http://TODO_HOSTNAME:8080/api/v1");
 		swaggerConfig.setVersion("0.0.1");
-		swaggerConfig.setDescription("~~~ Let's start a riot ~~~");
+		swaggerConfig.setDescription("riots.io - IoT at its best.");
 		swaggerConfig.setResourcePackage("io.riots.api.services");
 		return swaggerConfig;
+	}
+
+	public static void main(String[] args) {
+		ServiceStarter.setDefaultSystemProps();
+		new SpringApplicationBuilder(DocsServiceStarter.class).web(true).run(args);
 	}
 }

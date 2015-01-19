@@ -12,6 +12,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>riots-service-docs</artifactId>
+    <name>docs-service</name>
     <description>Provides a centralized entry point for riots API documentation</description>
 
     <properties>

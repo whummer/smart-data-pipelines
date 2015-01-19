@@ -12,6 +12,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>riots-service-gateway</artifactId>
+	<name>gateway-service</name>
 
 	<properties>
 		<riots.port>8080</riots.port>

@@ -125,7 +125,7 @@ ribbon:
   
 logging:
   level:
-    com.netflix.zuul: TRACE
+    com.netflix.zuul: INFO
     com.netflix: WARN
     org.springframework: WARN
     #org.springframework.cloud.netflix.zuul: TRACE

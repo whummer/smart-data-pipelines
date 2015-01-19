@@ -1,5 +1,6 @@
 package io.riots.boot.starters;
 
+import io.riots.core.auth.CORSFilter;
 import io.riots.core.jms.EventBroker;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.broker.BrokerFactory;
@@ -25,6 +26,11 @@ public class SimulationServiceStarter extends MongoEnabledServiceStarter {
 
     @Value("${activemq.brokerURL}")
     String messagingBrokerURL;
+
+	@Bean
+	public CORSFilter corsFilter() {
+		return new CORSFilter();
+	}
 
 	@Bean
 	public BrokerService broker() throws Exception {

@@ -12,6 +12,7 @@
     
     <modelVersion>4.0.0</modelVersion>
     <artifactId>riots-service-simulation</artifactId>
+    <name>simulation-service</name>
 
     <properties>
         <riots.port>8086</riots.port>

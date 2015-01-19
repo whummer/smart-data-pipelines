@@ -15,12 +15,7 @@ import org.springframework.context.annotation.Configuration;
  * @author omoser
  */
 @Configuration
-@EnableAutoConfiguration(exclude = {
-        ElasticsearchAutoConfiguration.class,
-        ElasticsearchDataAutoConfiguration.class,
-        MongoAutoConfiguration.class,
-        MongoDataAutoConfiguration.class
-})
+@EnableAutoConfiguration
 @EnableRiotsServiceRegistry
 public class RiotsServiceRegistryStarter {
 

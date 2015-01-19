@@ -1,5 +1,6 @@
 package io.riots.boot.starters;
 
+import io.riots.core.auth.CORSFilter;
 import io.riots.core.filters.RiotsUrlRewriteFilter;
 
 import org.springframework.boot.SpringApplication;
@@ -20,9 +21,7 @@ import org.springframework.context.annotation.ImportResource;
 
 @SpringBootApplication
 @ComponentScan(basePackages = { "io.riots.core", "io.riots.api" })
-@EnableAutoConfiguration(exclude = { ElasticsearchAutoConfiguration.class,
-        ElasticsearchDataAutoConfiguration.class, MongoAutoConfiguration.class,
-        MongoDataAutoConfiguration.class })
+@EnableAutoConfiguration
 @EnableDiscoveryClient
 @ImportResource(value = {"classpath:spring-basicauth.xml"}) // TODO temporary (T-Systems demo)
 //@ImportResource(value = {"classpath:/spring-noauth.xml"})
@@ -39,6 +38,11 @@ public class WebappServiceStarter extends SpringBootServletInitializer {
 	    filterRegBean.setFilter(filter);
 	    filterRegBean.addInitParameter("confPath", "/urlrewrite.xml");
 	    return filterRegBean;
+	}
+
+	@Bean
+	public CORSFilter corsFilter() {
+		return new CORSFilter();
 	}
 
 	public static void main(String[] args) {

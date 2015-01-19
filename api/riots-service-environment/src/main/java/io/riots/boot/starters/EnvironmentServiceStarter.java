@@ -36,7 +36,7 @@ import javax.jms.Topic;
 @EnableJms
 @Configuration
 @EnableMongoRepositories(basePackages = {"io.riots.core.repositories"})
-@EnableAutoConfiguration(exclude = {ElasticsearchAutoConfiguration.class, ElasticsearchDataAutoConfiguration.class})
+@EnableAutoConfiguration
 @ComponentScan(basePackages = {"io.riots.core", "io.riots.api"})
 public class EnvironmentServiceStarter extends MongoEnabledServiceStarter {
 

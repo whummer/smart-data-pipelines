@@ -12,6 +12,7 @@
 	</parent>
 
 	<artifactId>riots-service-files</artifactId>
+	<name>files-service</name>
 	<description>Provides a simple file service</description>
 
 	<properties>
