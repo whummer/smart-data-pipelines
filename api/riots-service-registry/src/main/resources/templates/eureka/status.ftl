@@ -29,6 +29,24 @@
   });
 </script>
 
+<style>
+  .popover{
+    max-width: 100%;
+  }
+
+  .popover-title {
+    margin: 0;
+    padding: 8px 14px;
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 18px;
+    background-color: #f7f7f7;
+    border-bottom: 1px solid #ebebeb;
+    border-radius: -1 -1 0 0;
+  }
+
+</style>
+
 <script type="application/javascript">
   function toggleAll(appName, toggleId) {
     $("[id^=collapse_" + appName + "]").each(function () {
@@ -38,44 +56,83 @@
     $("#" + toggleId).toggleClass("glyphicon-resize-small");
   }
 
+  function syntaxHighlight(json) {
+    json = json.replace(/\\n/g, '').replace(/\\/g, '');
+
+
+    if (typeof json != 'string') {
+      json = JSON.stringify(json, undefined, 2);
+    }
+    json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+      var cls = 'number';
+      if (/^"/.test(match)) {
+        if (/:$/.test(match)) {
+          cls = 'key';
+        } else {
+          cls = 'string';
+        }
+      } else if (/true|false/.test(match)) {
+        cls = 'boolean';
+      } else if (/null/.test(match)) {
+        cls = 'null';
+      }
+      return '<span class="' + cls + '">' + match + '</span>';
+    });
+  }
 
   function registerHealthLoadCallback(url, collapseDiv, healthDiv) {
     var healthDivId = '#' + healthDiv;
     var errorDivId = '#' + healthDiv + "_error";
     var loadingDivId = '#' + healthDiv + "_loading";
 
-    $.ajaxSetup({timeout:15000});
+    $.ajaxSetup({timeout: 15000});
     $('#' + collapseDiv).on('shown.bs.collapse', function () {
       $.get(url, function (data) {
         console.log(data);
         $(loadingDivId).addClass('hidden'); // todo fix labels (green. red...)
         var healthDivContent = '<dl class="dl-horizontal">' +
                 '<dt><strong>Overall Health</strong></dt>' +
-                "<dd><span class='label label-success'>" + data.status + "</dd>";
+                "<dd><span class='label label-success'>" + data.status + "</span></dd>";
 
         if (data.diskSpace) {
             healthDivContent += '<dt><strong>Diskspace</strong></dt>' +
-            "<dd><span class='label label-success'>" + data.diskSpace.status + "</dd>";
+            "<dd><span class='label label-success'>" + data.diskSpace.status + "</span>" +
+            "<a style='margin-left: 10px' tabindex='0' data-toggle='popover' data-trigger='focus' " +
+            "title='DiskSpace Details' data-content='Free space (bytes): " + data.diskSpace.free + "'>" +
+            "<span  class='label label-info'>Show Details</a>" +
+            "</dd>";
         }
 
         if (data.hystrix) {
           healthDivContent += '<dt><strong>Hystrix</strong></dt>' +
-          "<dd><span class='label label-success'>" + data.hystrix.status + "</dd>";
+          "<dd><span class='label label-success'>" + data.hystrix.status + "</span></dd>";
         }
 
         if (data.discovery) {
           healthDivContent += '<dt><strong>Discovery</strong></dt>' +
-          "<dd><span class='label label-success'>" + data.discovery.status + "</dd>";
+          "<dd><span class='label label-success'>" + data.discovery.status + "</span></dd>";
         }
 
         if (data.mongo) {
           healthDivContent += '<dt><strong>Mongo</strong></dt>' +
-          "<dd><span class='label label-success'>" + data.mongo.status + "</dd>";
+          "<dd><span class='label label-success'>" + data.mongo.status + "</span></dd>";
+        }
+        if (data.elasticsearch) {
+          healthDivContent += '<dt><strong>Elasticsearch</strong></dt>' +
+          "<dd><span class='label label-success'>" + data.elasticsearch.status +
+          "</span>" +
+          "<a style='margin-left: 10px' tabindex='0' data-toggle='popover' data-trigger='focus' " +
+          "title='Elasticsearch ClusterState Details' data-content='" + data.elasticsearch.clusterstatus + "'>" +
+          "<span  class='label label-info'>Show Details</a>" +
+          "</dd>";
         }
 
         healthDivContent += '</dl>';
 
         $(healthDivId).empty().append(healthDivContent);
+        var popoverTemplate = '<div class="popover" role="tooltip"><div class="arrow"></div><h2 class="popover-title"></h2><pre><div class="popover-content"></div></pre></div>';
+        $('[data-toggle="popover"]').popover({"template" : popoverTemplate})
       }).fail(function () {
         $(loadingDivId).addClass('hidden');
         $(errorDivId).removeClass('hidden');
@@ -161,7 +218,7 @@
                             <div class="panel panel-default">
                               <div class="panel-heading">
                                 <div class="panel-title">
-                                  <span class="glyphicon glyphicon-info-sign" style="margin-right: 5px"></span><strong>Overview</strong>
+                                  <span class="glyphicon glyphicon-info-sign" style="margin-right: 5px;"></span><strong>Overview</strong>
                                 </div>
                               </div>
                               <div class="panel-body">
@@ -184,7 +241,7 @@
                             <div class="panel panel-default">
                               <div class="panel-heading">
                                 <div class="panel-title">
-                                  <span class="glyphicon glyphicon-dashboard" style="margin-right: 5px"></span><strong>Health</strong>
+                                  <span class="glyphicon glyphicon-dashboard" style="margin-right: 5px;"></span><strong>Health</strong>
                                 </div>
                               </div>
                               <div class="panel-body" id="health_${app.name}_${instance_index}">
@@ -269,7 +326,6 @@
     </#if>
     </div>
     </div>
-
     <h1>General Info</h1>
 
     <table id='generalInfo' class="table table-striped table-hover">
@@ -295,8 +351,5 @@
       </tbody>
     </table>
   </div>
-  <!-- Latest compiled and minified JavaScript -->
-
-
 </body>
 </html>
