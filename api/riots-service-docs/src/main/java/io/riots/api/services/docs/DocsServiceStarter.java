@@ -17,7 +17,6 @@ import org.springframework.context.annotation.ComponentScan;
  * @author omoser
  */
 @EnableDiscoveryClient
-@ComponentScan(basePackages = { "io.riots.core", "io.riots.api" })
 @EnableAutoConfiguration
 public class DocsServiceStarter extends ServiceStarter {
 

@@ -1,10 +1,12 @@
 package io.riots.boot.starters;
 
+import io.riots.boot.health.ElasticsearchHealthIndicator;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.boot.autoconfigure.mongo.MongoDataAutoConfiguration;
@@ -18,7 +20,6 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
  */
 @EnableElasticsearchRepositories(elasticsearchTemplateRef = "elasticsearchTemplate", basePackages = {"io.riots.core.repositories"})
 @EnableAutoConfiguration
-@ComponentScan(basePackages = {"io.riots.core", "io.riots.api"})
 public class ElasticSearchEnabledServiceStarter extends ServiceStarter {
 
     @Value("${elasticsearch.hostname}")
@@ -30,6 +31,11 @@ public class ElasticSearchEnabledServiceStarter extends ServiceStarter {
         TransportClient client = new TransportClient();
         client.addTransportAddress(new InetSocketTransportAddress(hostname, 9300));
         return client;
+    }
+
+    @Bean
+    public HealthIndicator elasticsearchHealthIndicator() {
+        return new ElasticsearchHealthIndicator();
     }
 
     @Bean

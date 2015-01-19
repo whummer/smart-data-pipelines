@@ -14,10 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.embedded.ServletRegistrationBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
+import org.springframework.context.annotation.*;
 
 import java.util.concurrent.TimeUnit;
 
@@ -26,12 +23,17 @@ import java.util.concurrent.TimeUnit;
  * @author riox
  */
 
+// do not import Configuration classes!
+// todo omoser still not really happy with this. Not sure if we should introduce a module that only contains @Configuration classes
+@ComponentScan(
+        basePackages = {"io.riots.core", "io.riots.api"},
+        excludeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, value = Configuration.class)
+)
 @Configuration
 @ImportResource(value = { "classpath*:/cxf-config.xml" })
 public abstract class ServiceStarter {
 
     static final Logger metricsLogger = LoggerFactory.getLogger("riots-metrics-logger");
-
 
 	@Bean
 	public ServletRegistrationBean cxfServletRegistrationBean() {

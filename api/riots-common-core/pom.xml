@@ -35,6 +35,12 @@
             <artifactId>activemq-client</artifactId>
         </dependency>
 
+        <!-- Messaging Broker -->
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-broker</artifactId>
+        </dependency>
+
         <!-- JUnit testing -->
         <dependency>
 			<groupId>junit</groupId>

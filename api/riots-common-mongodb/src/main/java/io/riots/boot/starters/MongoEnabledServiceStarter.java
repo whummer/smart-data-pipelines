@@ -21,7 +21,6 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
  */
 @EnableMongoRepositories(basePackages = {"io.riots.core.repositories"})
 @EnableAutoConfiguration(exclude = {ElasticsearchAutoConfiguration.class, ElasticsearchDataAutoConfiguration.class})
-@ComponentScan(basePackages = {"io.riots.core", "io.riots.api"})
 public class MongoEnabledServiceStarter extends ServiceStarter {
 
     @Value("${mongodb.hostname}")

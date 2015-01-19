@@ -14,15 +14,16 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.boot.context.web.SpringBootServletInitializer;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
-import org.springframework.context.annotation.ImportResource;
+import org.springframework.context.annotation.*;
 
 @SpringBootApplication
-@ComponentScan(basePackages = { "io.riots.core", "io.riots.api" })
+
 @EnableAutoConfiguration
 @EnableDiscoveryClient
+@ComponentScan(
+		basePackages = { "io.riots.core", "io.riots.api" },
+		excludeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, value = Configuration.class)
+)
 @ImportResource(value = {"classpath:spring-basicauth.xml"}) // TODO temporary (T-Systems demo)
 //@ImportResource(value = {"classpath:/spring-noauth.xml"})
 public class WebappServiceStarter extends SpringBootServletInitializer {

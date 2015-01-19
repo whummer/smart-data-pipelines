@@ -18,7 +18,6 @@ import org.springframework.context.annotation.ComponentScan;
  *
  * @author riox
  */
-@ComponentScan(basePackages = {"io.riots.core", "io.riots.api"})
 @EnableAutoConfiguration
 @EnableDiscoveryClient
 @EnableCircuitBreaker
