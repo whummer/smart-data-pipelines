@@ -17,6 +17,8 @@ import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
 
+import java.io.InputStream;
+
 /**
  * Implements the simple file clients with a file-based backend
  *
@@ -31,7 +33,7 @@ public interface FilesService {
 	@Path("/{id}")
 	@ApiOperation(value = "Retrieve single file from the file store", notes = "", response = byte[].class)
 	@ApiResponses(value = { @ApiResponse(code = 404, message = "No file found with given id found") })	
-	public byte[] retrieve(@PathParam("id") String id);
+	public InputStream retrieve(@PathParam("id") String id);
 
 	@POST
 	@Path("/upload")
