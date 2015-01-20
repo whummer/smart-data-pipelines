@@ -21,7 +21,7 @@ public class CatalogServiceStarter extends ElasticSearchEnabledServiceStarter {
 	public CORSFilter corsFilter() {
 		return new CORSFilter();
 	}
-	
+
 	public static void main(String[] args) {
 		ServiceStarter.setDefaultSystemProps();
         new SpringApplicationBuilder(CatalogServiceStarter.class).web(true).run(args);

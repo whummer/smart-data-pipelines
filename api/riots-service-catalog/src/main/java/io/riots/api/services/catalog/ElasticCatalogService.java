@@ -121,13 +121,12 @@ public class ElasticCatalogService implements CatalogService {
     @Override
     @Timed @ExceptionMetered
     public ThingType createThingType(ThingType thingType) {
-    	FilesService fileService = serviceClientFactory.getFilesServiceClient();
         try {
             Long id = Math.abs(UUID.randomUUID().getMostSignificantBits());
             log.debug("Created ID for document: {}", id);
             thingType.setId(id.toString());
             
-            processBase64Images(fileService, thingType);
+            processBase64Images(thingType);
             
             ThingType result = thingTypeRepository.index(new ThingTypeElastic(thingType));
             URI location = UriBuilder.fromPath("/catalog/thing-types/{id}").build(result.getId());
@@ -145,16 +144,15 @@ public class ElasticCatalogService implements CatalogService {
      * file clients and returning an HREF that is stored in ElasticSearch.
      */
     @HystrixCommand(fallbackMethod = "setDefaultImages")
-    protected void processBase64Images(FilesService fileService, ThingType thingType) {
+    protected void processBase64Images(ThingType thingType) {
+        FilesService fileService = serviceClientFactory.getFilesServiceClient();
     	List<ImageData> images = thingType.getImageData();
     	if (images != null) {
 	        for (ImageData imgData : images) {            	
 	        	String base64String = imgData.getBase64String();
 	        	if (base64String != null) {
-	        		String fileId = fileService.create(
-	        				new FileData(imgData.getContentType(), 
-	        							 base64String));            	
-	        		imgData.setId(fileId);
+	        		String fileId = fileService.create(new FileData(imgData.getContentType(), base64String));
+                    imgData.setId(fileId);
 	        		imgData.setHref(ServiceUtil.API_PATH + "files/" + fileId );
 	        		imgData.setBase64String(null); // remove the base64 string explicitly  
 	        	}            	
@@ -162,25 +160,23 @@ public class ElasticCatalogService implements CatalogService {
     	}
     }
     
-    /*protected void setDefaultImages(FilesService fileService, ThingType thingType) {
+    protected void setDefaultImages(FilesService fileService, ThingType thingType) {
     	List<ImageData> images = thingType.getImageData();
     	if (images != null) {
     		for (ImageData imgData : thingType.getImageData()) {
     			imgData.setHref("img/no_image_available.jpg");      	            	
     		}
     	}
-    }*/
+    }
 
     @Override
     @Timed @ExceptionMetered
     public ThingType updateThingType(ThingType thingType) {
-    	FilesService fileService = serviceClientFactory.getFilesServiceClient();
-
         try {
             if (StringUtils.isEmpty(thingType.getId())) {
                 throw new IllegalArgumentException("id not present");
             }            
-            processBase64Images(fileService, thingType);            
+            processBase64Images(thingType);
             thingType = thingTypeRepository.index(new ThingTypeElastic(thingType));
             return thingType;
         } catch (Exception e) {
