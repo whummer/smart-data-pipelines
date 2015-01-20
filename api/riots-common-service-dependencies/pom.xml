@@ -169,13 +169,6 @@
 			<version>${rest-assured.version}</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-transports-http-jetty</artifactId>
-			<version>${cxf.version}</version>
-			<scope>test</scope>
-		</dependency>
-
 	</dependencies>
 
 	<build>
@@ -232,7 +225,7 @@
 									<resourceBundle>io.riots:riots-common-service-base:${project.version}
 									</resourceBundle>
 								</resourceBundles>
-								<!-- om: we need to put the shared resources into another dir and 
+								<!-- om: we need to put the shared resources into another dir and
 									filter them later -->
 								<attached>false</attached>
 								<outputDirectory>${project.build.directory}/shared-resources</outputDirectory>

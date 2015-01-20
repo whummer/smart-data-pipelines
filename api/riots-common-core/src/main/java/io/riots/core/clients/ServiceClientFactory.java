@@ -71,7 +71,7 @@ public class ServiceClientFactory {
 		serviceEndpoints.put(SERVICE_GWSTATS_EUREKA_NAME, SERVICE_GWSTATS_ENDPOINT);
 		serviceEndpoints.put(SERVICE_APP_EUREKA_NAME, SERVICE_APP_ENDPOINT);
 		serviceEndpoints.put(SERVICE_FILES_EUREKA_NAME, SERVICE_FILES_ENDPOINT);
-		
+
 		/* reflection for client creation (add custom headers later) */
 		try {
 			methodGetBean = JAXRSClientFactory.class.getDeclaredMethod(
@@ -115,8 +115,7 @@ public class ServiceClientFactory {
 
 	public String getServiceUrlForName(String name) {
 		InstanceInfo i = getService(name);
-		String addr = String.format(serviceEndpoints.get(name), i.getHostName(), i.getPort());
-		return addr;
+		return String.format(serviceEndpoints.get(name), i.getHostName(), i.getPort());
 	}
 
 	private <T> T getServiceInstanceForName(String name, Class<T> clazz) {
@@ -142,6 +141,8 @@ public class ServiceClientFactory {
 	public <T> T getServiceInstanceForURL(String endpointURL, Class<T> clazz) {
 		return getServiceInstanceForURL(endpointURL, clazz, null);
 	}
+
+	// todo om: check whether this is a performance hitter (seems to me likely)
 	public <T> T getServiceInstanceForURL(String endpointURL, Class<T> clazz, Map<String,String> headers) {
 		// TODO maybe cache REST clients for a limited amount of time
 
@@ -151,7 +152,7 @@ public class ServiceClientFactory {
 
 		if(headers != null && !headers.isEmpty()) {
 			try {
-				JAXRSClientFactoryBean bean = (JAXRSClientFactoryBean) 
+				JAXRSClientFactoryBean bean = (JAXRSClientFactoryBean)
 						methodGetBean.invoke(null, endpointURL, clazz, null);
 				for(String s : new HashSet<>(headers.keySet())) {
 					if(headers.get(s) == null) {
@@ -173,14 +174,11 @@ public class ServiceClientFactory {
 	}
 
 	private InstanceInfo getService(String name) {
-		//DiscoveryClient d = DiscoveryManager.getInstance().getDiscoveryClient();
-		DiscoveryClient d = discoveryClient;
-		//System.out.println("client " + d);
-		Application app = d.getApplication(name);
-		//System.out.println(app);
+		Application app = discoveryClient.getApplication(name);
 		List<InstanceInfo> list = app.getInstances();
 		if(list.isEmpty())
 			throw new RuntimeException("Service '" + name + "' is not available.");
+
 		// TODO: integrate Ribbon for load balancing
 		return list.get(new Random().nextInt(list.size()));
 	}

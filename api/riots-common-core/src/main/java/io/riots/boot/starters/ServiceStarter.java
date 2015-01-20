@@ -41,6 +41,7 @@ public abstract class ServiceStarter {
 	}
 
     @Autowired
+    @Profile("metrics-logger")
     public void configureReporters(MetricRegistry metricRegistry) {
         Slf4jReporter
                 .forRegistry(metricRegistry)
