@@ -4,20 +4,25 @@ import io.riots.core.util.ServiceUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.xml.ws.WebServiceException;
 
 import org.apache.commons.codec.binary.Base64InputStream;
+import org.apache.cxf.helpers.IOUtils;
 import org.apache.cxf.jaxrs.ext.MessageContext;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,25 +30,25 @@ public class FilesServiceImpl implements FilesService {
 
 	static final Logger log = LoggerFactory.getLogger(FilesServiceImpl.class);
 
-	// FIXME I don't want a qualifier, I want to load it based on the qualifier name in application.yml
-	@Autowired
-	@Qualifier("file-storage") 
-	IStorageBackend storageBackend;
+	@Value("#{${storage.backend}}")
+	StorageBackend storageBackend;
 
     @Context
     MessageContext context; 
     
 	@Override
-	public byte[] retrieve(String id) {		
+	public InputStream retrieve(String id) {
 		try {
+			CacheControl cacheControl = new CacheControl();
+			cacheControl.setMaxAge(600);
+
 			FileData data = storageBackend.retrieve(id);
-			ServiceUtil.setResponseStatus(context, HttpServletResponse.SC_OK);
-			ServiceUtil.setResponseContentType(context, data.getContentType());
-			return data.getData();
+			context.getHttpServletResponse().setContentType(data.getContentType());
+			context.getHttpServletResponse().addIntHeader("Max-Age", cacheControl.getMaxAge());
+			return new ByteArrayInputStream(data.getData());
 		} catch (IOException e) {
 			log.error("Error in GET request: ", e);
-			ServiceUtil.setResponseStatus(context, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			return null;
+			throw new WebServiceException("Cannot retrieve image with ID '" + id + "'", e);
 		}
 	}
 

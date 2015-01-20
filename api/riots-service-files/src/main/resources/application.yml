@@ -10,7 +10,7 @@ endpoints:
     sensitive: false
 
 storage:
-  backend: file-storage
+  backend: fileStorage
   directory: /tmp/files
 
 eureka:
@@ -29,5 +29,6 @@ ribbon:
 
 logging:
   level:
+    org.apache.cxf: OFF
     com.netflix.discovery: OFF
     com.netflix.zuul: OFF

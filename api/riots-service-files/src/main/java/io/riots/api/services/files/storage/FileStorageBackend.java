@@ -1,7 +1,7 @@
 package io.riots.api.services.files.storage;
 
 import io.riots.api.services.files.FileData;
-import io.riots.api.services.files.IStorageBackend;
+import io.riots.api.services.files.StorageBackend;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,8 +14,8 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-@Component("file-storage")
-public class FileStorageBackend implements IStorageBackend {
+@Component("fileStorage")
+public class FileStorageBackend implements StorageBackend {
 	
 	private static final String METADATA_EXT = ".metadata";
 	

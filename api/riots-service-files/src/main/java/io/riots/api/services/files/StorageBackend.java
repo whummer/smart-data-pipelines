@@ -5,7 +5,7 @@ import java.io.InputStream;
 
 import javax.ws.rs.core.MediaType;
 
-public interface IStorageBackend {
+public interface StorageBackend {
 	
 	FileData retrieve(String id) throws IOException;
 	

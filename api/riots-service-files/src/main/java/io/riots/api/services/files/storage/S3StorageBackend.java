@@ -1,7 +1,7 @@
 package io.riots.api.services.files.storage;
 
 import io.riots.api.services.files.FileData;
-import io.riots.api.services.files.IStorageBackend;
+import io.riots.api.services.files.StorageBackend;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,8 +10,8 @@ import javax.ws.rs.core.MediaType;
 
 import org.springframework.stereotype.Component;
 
-@Component("s3-storage")
-public class S3StorageBackend implements IStorageBackend {
+@Component("s3Storage")
+public class S3StorageBackend implements StorageBackend {
 
 	@Override
 	public void store(String id, MediaType mediaType, InputStream in)
