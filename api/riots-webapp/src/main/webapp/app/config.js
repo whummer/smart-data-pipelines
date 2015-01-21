@@ -20,6 +20,7 @@ var appConfig = {
 		ratings: { url: "/api/v1/ratings" },
 		stats: { url: "/api/v1/stats" },
 		users: { url: "/api/v1/users" },
+		billing: { url: "/api/v1/billing" },
 		semanticTypes: { url: "/api/v1/semantic-types" },
 		websocket: { url: "ws://platform.riots.io:8085/websocket" }
 	},
@@ -28,7 +29,7 @@ var appConfig = {
 			client_id: "49dfffa20fdaf8c5529d"
 		},
 		google: {
-			client_id: "1034816257353-9on087jmdlgqsh3rce5gdu1f2oouvgo0.apps.googleusercontent.com"
+			client_id: "1050661890767-kbb3fu29ss0d6rpj37doi4tca1opvc38.apps.googleusercontent.com"
 		},
 		facebook: {
 			client_id: "543561462440557"

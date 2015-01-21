@@ -1,5 +1,6 @@
 package io.riots.api.services.users;
 
+import io.riots.api.services.billing.UserUsageStatus;
 import io.riots.api.services.model.Constants;
 
 import java.util.List;
@@ -28,6 +29,8 @@ import com.wordnik.swagger.annotations.ApiOperation;
 @Path("/users")
 @Api(value = "Users", description = "Service for managing users in the systems.")
 public interface UsersService {
+
+    public static final String DEFAULT_BILLING_PLAN = "trial";
 
 	@GET
     @Path("/me")
@@ -176,9 +179,29 @@ public interface UsersService {
     @Path("/actions")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Save a user actions.",
-            notes = "Post and persist a user action.")
+    @ApiOperation(value = "Save a user action.",
+            notes = "Post and persist a single user action.")
     @PreAuthorize(Role.HAS_ROLE_ADMIN)
     void postUserAction(UserAction action);
+
+    /* USER ACCOUNT USAGE STATUS */
+
+    @GET
+    @Path("/{userId}/usage")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Get usage status.",
+            notes = "Retrieve the current usage status of a user with the given ID.",
+            response = AuthToken.class)
+	@PreAuthorize(Role.HAS_ROLE_ADMIN)
+    UserUsageStatus getUsageStatus(@PathParam("userId") String userId);
+
+    @GET
+    @Path("/me/usage")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Get usage status.",
+            notes = "Retrieve the current usage status of the invoking user, 'me'.",
+            response = AuthToken.class)
+	@PreAuthorize(Role.HAS_ROLE_USER)
+    UserUsageStatus getUsageStatusForThisUser();
 
 }

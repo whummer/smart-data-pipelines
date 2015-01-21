@@ -1,5 +1,7 @@
 package io.riots.api.services.catalog;
 
+import io.riots.api.services.model.interfaces.ObjectNamed;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -10,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  * @author omoser
  * @author whummer
  */
-public abstract class HierarchicalObject<T> {
+public abstract class HierarchicalObject<T> implements ObjectNamed {
 
 	@JsonInclude(Include.NON_EMPTY)
 	protected String name;

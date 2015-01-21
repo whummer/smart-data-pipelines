@@ -23,6 +23,10 @@ endpoints:
     health:
       sensitive: false
 
+activemq:
+  hostname: localhost
+  brokerURL: tcp://${activemq.hostname}:61616
+
 logging:
   level:
     com.netflix.discovery: INFO

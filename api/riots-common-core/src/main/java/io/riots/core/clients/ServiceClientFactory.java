@@ -1,15 +1,16 @@
 package io.riots.core.clients;
 
-import io.riots.core.auth.AuthHeaders;
-import io.riots.core.auth.AuthHeaders.AuthInfo;
 import io.riots.api.services.applications.ApplicationsService;
+import io.riots.api.services.billing.BillingService;
 import io.riots.api.services.catalog.CatalogService;
 import io.riots.api.services.files.FilesService;
-import io.riots.api.services.statistics.GatewayStatsService;
-import io.riots.api.services.sim.SimulationService;
 import io.riots.api.services.scenarios.ThingDataService;
 import io.riots.api.services.scenarios.ThingsService;
+import io.riots.api.services.sim.SimulationService;
+import io.riots.api.services.statistics.GatewayStatsService;
 import io.riots.api.services.users.UsersService;
+import io.riots.core.auth.AuthHeaders;
+import io.riots.core.auth.AuthHeaders.AuthInfo;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -56,6 +57,8 @@ public class ServiceClientFactory {
 	public static final String SERVICE_THINGDATA_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
 	public static final String SERVICE_SIMULATION_EUREKA_NAME = "simulation-service";
 	public static final String SERVICE_SIMULATION_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
+	public static final String SERVICE_BILLING_EUREKA_NAME = "users-service";
+	public static final String SERVICE_BILLING_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
 	public static final String SERVICE_GWSTATS_EUREKA_NAME = "gateway-service";
 	public static final String SERVICE_GWSTATS_ENDPOINT = "http://%s:%s/";
 
@@ -71,6 +74,7 @@ public class ServiceClientFactory {
 		serviceEndpoints.put(SERVICE_GWSTATS_EUREKA_NAME, SERVICE_GWSTATS_ENDPOINT);
 		serviceEndpoints.put(SERVICE_APP_EUREKA_NAME, SERVICE_APP_ENDPOINT);
 		serviceEndpoints.put(SERVICE_FILES_EUREKA_NAME, SERVICE_FILES_ENDPOINT);
+		serviceEndpoints.put(SERVICE_BILLING_EUREKA_NAME, SERVICE_BILLING_ENDPOINT);
 
 		/* reflection for client creation (add custom headers later) */
 		try {
@@ -95,6 +99,10 @@ public class ServiceClientFactory {
 		Map<String,String> headersMap = merge(headers);
 		return getServiceInstanceForName(SERVICE_APP_EUREKA_NAME, ApplicationsService.class, headersMap);
 	}
+	public BillingService getBillingServiceClient(Map<?,?> ... headers) {
+		Map<String,String> headersMap = merge(headers);
+		return getServiceInstanceForName(SERVICE_BILLING_EUREKA_NAME, BillingService.class, headersMap);
+	}
 	public FilesService getFilesServiceClient() {
 		return getServiceInstanceForName(SERVICE_FILES_EUREKA_NAME, FilesService.class);
 	}
@@ -115,7 +123,7 @@ public class ServiceClientFactory {
 
 	public String getServiceUrlForName(String name) {
 		InstanceInfo i = getService(name);
-		return String.format(serviceEndpoints.get(name), i.getHostName(), i.getPort());
+		return String.format(serviceEndpoints.get(name), i.getIPAddr(), i.getPort());
 	}
 
 	private <T> T getServiceInstanceForName(String name, Class<T> clazz) {
@@ -159,7 +167,7 @@ public class ServiceClientFactory {
 						headers.put(s, "");
 					}
 				}
-				System.out.println("--> headers " + headers);
+				//System.out.println("--> headers " + headers);
 				bean.setHeaders(headers);
 				bean.setProviders(providers);
 				service = bean.create(clazz, new Object[0]);

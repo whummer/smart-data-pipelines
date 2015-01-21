@@ -85,6 +85,9 @@ define([], function() {
                 dependencies: [
                     appRoot + '/scripts/controllers/AdminViewController.js'
                 ]
+            },
+            '/terms': {
+                templateUrl: appRoot + '/views/terms_of_service.html'
             }
         }
     };

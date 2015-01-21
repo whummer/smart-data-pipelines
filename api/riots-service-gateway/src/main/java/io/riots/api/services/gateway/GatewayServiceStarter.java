@@ -1,22 +1,19 @@
 package io.riots.api.services.gateway;
 
-import io.riots.boot.starters.ServiceStarter;
 import io.riots.core.auth.AuthFilterZuul;
-
 import io.riots.core.auth.CORSFilter;
-import jdk.nashorn.internal.runtime.regexp.joni.Config;
+import io.riots.core.filters.RiotsUrlRewriteFilter;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchAutoConfiguration;
-import org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchDataAutoConfiguration;
-import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
-import org.springframework.boot.autoconfigure.mongo.MongoDataAutoConfiguration;
 import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
-import org.springframework.context.annotation.*;
-
-import io.riots.core.filters.RiotsUrlRewriteFilter;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.ImportResource;
 
 /**
  * @author whummer

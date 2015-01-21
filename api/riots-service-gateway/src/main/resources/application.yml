@@ -15,6 +15,10 @@ zuul:
       path: /api/v1/users/**
       stripPrefix: false
       serviceId: users-service
+    api-billing:
+      path: /api/v1/billing/**
+      stripPrefix: false
+      serviceId: users-service
     api-ratings:
       path: /api/v1/ratings/**
       stripPrefix: false
@@ -71,6 +75,10 @@ zuul:
       serviceId: webapp-service
     webapp-api-js:
       path: /api/riots-api.js
+      stripPrefix: false
+      serviceId: webapp-service
+    webapp-api-admin-js:
+      path: /api/riots-api-admin.js
       stripPrefix: false
       serviceId: webapp-service
     webapp-img:

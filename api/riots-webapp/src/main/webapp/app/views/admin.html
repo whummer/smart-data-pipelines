@@ -1,4 +1,5 @@
 <section ng-controller="AdminViewController">
+	<script type="text/javascript" src="api/riots-api-admin.js"></script>
 	<div class="panel panel-default">
 		<div class="panel-heading">
 			<h2 class="panel-title">
@@ -16,6 +17,10 @@
 					<ng-include
 						src="appConfig['appRootPath'] + '/views/admin_actions.html'"></ng-include>
 				</tab> 
+				<tab heading="Plans"> 
+					<ng-include
+						src="appConfig['appRootPath'] + '/views/admin_plans.html'"></ng-include>
+				</tab>
 			</tabset>
 		</div>
 	</div>

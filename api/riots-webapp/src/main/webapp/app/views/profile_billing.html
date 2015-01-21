@@ -1,4 +1,4 @@
-<section ng-controller="ProfileDetailsController">
+<section ng-controller="ProfileBillingController">
 	<div style="max-width: 600px;">
 		<div class="row">
 			<div class="form-group">
@@ -10,31 +10,46 @@
 				</div>
 			</div>
 			<div class="form-group">
+				<label for="dateFrom" class="col-sm-4 control-label">Select Plan</label>
+				<div class="col-sm-8">
+					<select class="form-control input-sm" data-ng-model="billInfo.plan"
+					ng-options="plan.name as plan.displayName for plan in plans">
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
 			... Details coming soon ...
 			</div>
 			<div class="col-md-12">
-			    <button class="pull-right btn btn-primary btn-sm" id="btnSaveBilling">
-			    	<span class="glyphicon glyphicon-search"></span> Save Changes</button>
+				<button class="pull-right btn btn-primary btn-sm" id="btnSaveBilling">
+					<span class="glyphicon glyphicon-search"></span> Save Changes</button>
 			</div>
 		</div>
 
 	</div>
 </section>
-<style type="text/css">
-#actionsTable {
-	height: 300px;
-}
-</style>
 <script type="text/javascript">
 
 var app = angular.module("app");
-app.controller('ProfileDetailsController',
+app.controller('ProfileBillingController',
 		function ($scope, $http, $compile, $routeParams, $log, $location) {
-    AppController($scope, $http, $compile);
+	AppController($scope, $http, $compile);
 
-    var saveBilling = function() {
-    	//
-    }
+	var saveBilling = function() {
+		// TODO
+		console.log("saveBilling");
+	};
+	var getPlans = function() {
+		riots.plans(function(plans) {
+			$scope.plans = plans;
+		});
+	};
+
+	/* register event listeners */
+	$scope.addClickHandler("btnSaveBilling", saveBilling);
+
+	/* load the main elements */
+	getPlans();
 
 });
 

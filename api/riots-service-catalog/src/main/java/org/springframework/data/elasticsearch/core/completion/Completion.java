@@ -15,7 +15,8 @@ public class Completion {
     private Integer weight;
     private Object payload;
 
-    private Completion() {
+    @SuppressWarnings("unused")
+	private Completion() {
 	//required by mapper to instantiate object
     }
 

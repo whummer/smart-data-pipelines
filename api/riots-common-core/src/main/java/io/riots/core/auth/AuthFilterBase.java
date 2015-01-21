@@ -93,6 +93,7 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
             "^(/app)?/views/dialogs\\.html$",
             "^(/app)?/views/login\\.html$",
             "^(/app)?/views/login_result\\.html$",
+            "^(/app)?/views/terms_of_service\\.html$",
             "^(/app)?/styles/.*\\.css$",
             "^(/app)?/config\\.js$",
             "^(/app)?/config(\\.requirejs)?\\.js$",
@@ -104,6 +105,7 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
             "^/models/.*$",
             "^/examples/.*$",
             "^/connect/*.*$",
+            "^/img/*.*$",
             "^/$",
 
             "^(/app)?/scripts/app\\.js$",
@@ -119,8 +121,14 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
             "^/golfcars.*$",
 
             /* allow access to file clients */
-            "^(/api/v.)?/files.*$"
+            "^(/api/v.)?/files.*$",
 
+            /* Eureka URLs for gateway */
+            "^/health$",
+            "^/metrics$",
+            "^/info$",
+            "^/env$",
+            "^/autoconf$"
     );
     public static final String ADMIN_USER_1 = "hummer@infosys.tuwien.ac.at";
     static {
@@ -227,8 +235,8 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 return false;
         	}
-        	
-        	//System.out.println("Access protected resource with auth info: " + requestInfo);
+
+        	//System.out.println(uri + " - Access protected resource with auth info: " + requestInfo);
 
             /*
              * attempt to get token from cache
@@ -254,8 +262,8 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
     				if(requestInfo.isOAuthBased()) {
 
                     	AuthNetwork authNetwork = AuthNetwork.get(requestInfo.network);
-    					newInfo = authNetwork.verifyAccessToken(requestInfo.token);
-    		            newInfo.accessToken = requestInfo.token;
+    	            	newInfo = authNetwork.verifyAccessToken(requestInfo.token);
+		            	newInfo.accessToken = requestInfo.token;
 
     		            /* make sure we have a valid userId in the auth info */
 		            	User user = findUserByEmail(newInfo.email);

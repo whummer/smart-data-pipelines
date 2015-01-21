@@ -8,17 +8,6 @@ package io.riots.api.services.users;
  */
 public class UserAction {
 
-	private static enum UserActionType {
-		LOGIN,
-		LOGOUT,
-
-		DATA_IN,
-		DATA_OUT,
-
-		API_ACCESS,
-		DB_ACCESS;
-	}
-
 	/**
 	 * Type of the user action.
 	 */
@@ -97,12 +86,13 @@ public class UserAction {
 	public void setHttpPath(String httpPath) {
 		this.httpPath = httpPath;
 	}
-
 	@Override
 	public String toString() {
 		return "UserAction [type=" + type + ", userId=" + userId
-				+ ", timestamp=" + timestamp + ", bytesIn=" + bytesIn
-				+ ", bytesOut=" + bytesOut + "]";
+				+ ", httpPath=" + httpPath + ", timestamp=" + timestamp
+				+ ", bytesIn=" + bytesIn + ", bytesOut=" + bytesOut + "]";
 	}
+
+	
 
 }

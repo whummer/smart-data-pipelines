@@ -44,6 +44,7 @@ public class CORSFilter implements Filter {
 		}
 
 		chain.doFilter(req, res);
+//		System.out.println("done. " + response.getStatus() + " - " + request.getMethod() + " - " + request.getRequestURI() + " - " + AuthHeaders.getHeaders(request));
 
 	}
 

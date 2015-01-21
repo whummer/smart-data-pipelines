@@ -1,24 +1,28 @@
-/* Default */
-/* ======= Base ======= */
-h1, h2, h3, h4, h5, h6 {
+
+h1, h2, h3, h4, h5, h6,
+a,
+.header.navbar-fixed-top .logo a,
+.header .main-nav .nav .nav-item.active a,
+.header .main-nav .nav .nav-item.active
+{
   color: #f1c633;
 }
-a {
-  color: #f1c633;
-}
-/* ======= Header ======= */
-.header {
+.header,
+.promo,
+.features,
+.contact
+{
   background: #f1c633;
 }
-.header.navbar-fixed-top .logo a {
-  color: #f1c633;
-}
 .header .main-nav .nav .nav-item.active a {
-  color: #f1c633;
   background: none;
 }
-.header .main-nav .nav .nav-item.active {
-  color: #f1c633;
+
+
+.contact .author-message .speech-bubble {
+  margin-left: 0px;
+  max-width: 400px;
+  margin: auto;
 }
 .header .logo img {
   opacity: 0;
@@ -36,28 +40,12 @@ a {
   -ms-transition: background 0.2s ease-in-out;
   -o-transition: background 0.2s ease-in-out;
 }
-/* ======= Promo Section ======= */
-.promo {
-  background: #f1c633;
-}
 .promo .intro {
   margin-top: 30px;
   height: 100px;
 }
-/* ======= Features Section ======= */
-.features {
-  background: #f1c633;
-  color: #000;
-}
-/* ======= Contact Section ======= */
-.contact {
-  background: #f1c633;
-}
-.contact .author-message .speech-bubble {
-  margin-left: 0px;
-  max-width: 400px;
-  margin: auto;
-}
+
+
 /* ======= Docs Section ======= */
 .docs .docs-inner {
 	max-width: 1000px;

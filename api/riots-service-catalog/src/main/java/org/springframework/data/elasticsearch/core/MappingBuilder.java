@@ -16,12 +16,11 @@ package org.springframework.data.elasticsearch.core;
  */
 
 
-import static org.apache.commons.lang.StringUtils.*;
-import static org.elasticsearch.common.xcontent.XContentFactory.*;
-import static org.springframework.util.StringUtils.*;
+import static org.apache.commons.lang.StringUtils.EMPTY;
+import static org.apache.commons.lang.StringUtils.isNotBlank;
+import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
+import static org.springframework.util.StringUtils.hasText;
 
-import java.beans.BeanInfo;
-import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.lang.reflect.AccessibleObject;
@@ -31,21 +30,24 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.elasticsearch.common.mvel2.util.ReflectionUtil;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.GenericCollectionTypeResolver;
 import org.springframework.data.annotation.Transient;
-import org.springframework.data.elasticsearch.annotations.*;
+import org.springframework.data.elasticsearch.annotations.CompletionField;
+import org.springframework.data.elasticsearch.annotations.DateFormat;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldIndex;
+import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.GeoPointField;
+import org.springframework.data.elasticsearch.annotations.MultiField;
+import org.springframework.data.elasticsearch.annotations.NestedField;
 import org.springframework.data.elasticsearch.core.completion.Completion;
 import org.springframework.data.elasticsearch.core.facet.FacetRequest;
 import org.springframework.data.elasticsearch.core.geo.GeoPoint;
 import org.springframework.data.mapping.model.SimpleTypeHolder;
 import org.springframework.data.util.ClassTypeInformation;
-import org.springframework.data.util.ReflectionUtils;
 import org.springframework.data.util.TypeInformation;
-
-import com.fasterxml.jackson.databind.annotation.JsonSerialize.Typing;
 
 /**
  * @author Rizwan Idrees
@@ -53,7 +55,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize.Typing;
  * @author Artur Konczak
  * @author Kevin Leturc
  */
-
+@SuppressWarnings("all")
 class MappingBuilder {
 
 	public static final String FIELD_STORE = "store";

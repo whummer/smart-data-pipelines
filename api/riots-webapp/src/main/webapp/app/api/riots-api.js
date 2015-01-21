@@ -154,6 +154,14 @@ sh.driver = sh.get.driver = function(opts, callback) {
                       opts[THING_ID] + "/" + opts[PROPERTY_NAME];
 	return callGET(url, callback);
 }
+sh.plans = sh.get.plans = function(callback) {
+	var url = appConfig.services.billing.url + "/plans";
+	return callGET(url, callback);
+}
+sh.usage = sh.get.usage = function(callback, errorCallback) {
+	var url = appConfig.services.users.url + "/me/usage";
+	return callGET(url, callback, false, errorCallback);
+}
 sh.properties = sh.get.properties = function(thingType, callback, doCacheResults) {
 	var maxThings = 100;
 	if(!thingType.id) {
@@ -285,7 +293,7 @@ sh.sim.gen = function(request, callback) {
 
 /* UTILITY METHODS */
 
-var callGET = function(url, callback, doCacheResults, errorCallback) {
+var callGET = sh.callGET = function(url, callback, doCacheResults, errorCallback) {
 	var m = mem();
 	if(doCacheResults && m[url]) {
 		if(callback) {
@@ -331,14 +339,14 @@ var callPOSTorPUT = function(invokeFunc, url, body, callback, errorCallback) {
 		}, errorCallback
 	);
 }
-var callPOST = function(url, body, callback, errorCallback) {
+var callPOST = sh.callPOST = function(url, body, callback, errorCallback) {
 	return callPOSTorPUT(invokePOST, url, body, callback, errorCallback);
 }
-var callPUT = function(url, body, callback, errorCallback) {
+var callPUT = sh.callPUT = function(url, body, callback, errorCallback) {
 	return callPOSTorPUT(invokePUT, url, body, callback, errorCallback);
 }
 
-var callDELETE = function(url, callback) {
+var callDELETE = sh.callDELETE = function(url, callback) {
 	invokeDELETE(null, url,
 		function(data, status, headers, config) {
 			if(callback) {

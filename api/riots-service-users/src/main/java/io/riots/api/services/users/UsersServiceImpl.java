@@ -4,7 +4,15 @@ import io.riots.core.handlers.command.UserActionCommand;
 import io.riots.core.handlers.command.UserCommand;
 import io.riots.core.handlers.query.UserActionQuery;
 import io.riots.core.handlers.query.UserQuery;
+import io.riots.core.util.ServiceUtil;
 import io.riots.core.auth.AuthHeaders;
+import io.riots.core.clients.ServiceClientFactory;
+import io.riots.api.services.billing.BillingService;
+import io.riots.api.services.billing.PricingPlan;
+import io.riots.api.services.billing.PricingPlanAssignment;
+import io.riots.api.services.billing.UserActionLimit;
+import io.riots.api.services.billing.UserActionLimitStatus;
+import io.riots.api.services.billing.UserUsageStatus;
 import io.riots.api.services.users.UsersService;
 import io.riots.api.services.users.Role;
 import io.riots.api.services.users.User;
@@ -43,6 +51,8 @@ public class UsersServiceImpl implements UsersService {
     HttpServletRequest req;
     @Autowired
     AuthHeaders authHeaders;
+    @Autowired
+    ServiceClientFactory clientFactory;
 
 	@Override
 	@Timed @ExceptionMetered
@@ -76,7 +86,9 @@ public class UsersServiceImpl implements UsersService {
     @Timed @ExceptionMetered
     @PreAuthorize(Role.HAS_ROLE_ADMIN)
     public User findByEmail(String email) {
+    	System.out.println("findByEmail " + email);
     	User r = userQuery.findOrCreateByEmail(email);
+    	System.out.println("found: " +email + " - " + r);
     	return r;
     }
 
@@ -95,6 +107,8 @@ public class UsersServiceImpl implements UsersService {
     	return userQuery.getCount();
     }
 
+    /* METHODS FOR USER ACTIONS */
+
     @Override
     @Timed @ExceptionMetered
     public List<UserAction> getUserActions(GetUserActionsRequest req) {
@@ -109,4 +123,44 @@ public class UsersServiceImpl implements UsersService {
     	userActionCommand.create(action);
     }
 
+    /* METHODS FOR USER LIMITS */
+
+    @Override
+    @Timed @ExceptionMetered
+    public UserUsageStatus getUsageStatus(String userId) {
+    	//User u = authHeaders.getRequestingUser(req);
+    	BillingService billings = clientFactory.getBillingServiceClient();
+    	PricingPlan plan = billings.getPlanForUser(userId);
+    	if(plan == null) {
+    		for(PricingPlan p : billings.getPlans()) {
+    			if(UsersService.DEFAULT_BILLING_PLAN.equals(p.getName())) {
+    				plan = p;
+    				PricingPlanAssignment assign = new PricingPlanAssignment();
+    				assign.setUserId(userId);
+    				assign.setPlanId(plan.getId());
+    		    	billings.assignPlanForUser(userId, assign);
+    				break;
+    			}
+    		}
+    	}
+    	UserUsageStatus stat = new UserUsageStatus();
+    	stat.setUserId(userId);
+    	if(plan != null) {
+    		for(UserActionLimit l : plan.getLimits()) {
+    			UserActionLimitStatus s = new UserActionLimitStatus();
+    			s.setUserId(userId);
+    			s.setType(l.getType());
+    			s.setStatus("TODO"); // TODO
+    			stat.getLimitStatuses().add(s);
+    		}
+    	}
+    	return stat;
+    }
+
+    @Override
+    @Timed @ExceptionMetered
+    public UserUsageStatus getUsageStatusForThisUser() {
+    	User u = ServiceUtil.assertValidUser(authHeaders, req);
+    	return getUsageStatus(u.getId());
+    }
 }

@@ -1,17 +1,14 @@
 package io.riots.api.services.docs;
 
-import com.wordnik.swagger.jaxrs.config.BeanConfig;
 import io.riots.boot.starters.ServiceStarter;
 import io.riots.core.auth.CORSFilter;
+
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchAutoConfiguration;
-import org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchDataAutoConfiguration;
-import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
-import org.springframework.boot.autoconfigure.mongo.MongoDataAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
+
+import com.wordnik.swagger.jaxrs.config.BeanConfig;
 
 /**
  * @author omoser

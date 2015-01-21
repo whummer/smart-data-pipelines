@@ -1,0 +1,141 @@
+<section ng-controller="AdminPlansController">
+	<div>
+		<div id="plansTable" ui-grid="gridConfig" ui-grid-selection ui-grid-edit ui-grid-row-edit
+             class="grid"></div>
+		<div class="container" ng-show="selectedPlan">
+			<div class="row">
+				<div class="form-group">
+					<label for="driverName" class="col-sm-4 control-label">Key</label>
+					<div class="col-sm-8">
+						<input class="form-control input-sm" 
+					         data-ng-model="selectedPlan.name"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="driverName" class="col-sm-4 control-label">Name</label>
+					<div class="col-sm-8">
+						<input class="form-control input-sm" 
+					         data-ng-model="selectedPlan.displayName"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="dateFrom" class="col-sm-4 control-label">Fee</label>
+					<div class="col-sm-8">
+						<input class="form-control input-sm" 
+					         data-ng-model="selectedPlan.fee.fee"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="dateFrom" class="col-sm-4 control-label">Currency</label>
+					<div class="col-sm-8">
+						<select class="form-control input-sm" data-ng-model="selectedPlan.fee.currency">
+							<option value="EUR">€</option>
+							<option value="USD">$</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="dateFrom" class="col-sm-4 control-label">Fee Period</label>
+					<div class="col-sm-8">
+						<select class="form-control input-sm" data-ng-model="selectedPlan.fee.period">
+							<option value="MONTHLY">Monthly</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="dateFrom" class="col-sm-4 control-label">Limits</label>
+					<div class="col-sm-8">
+						<div class="form-group" ng-repeat="limit in selectedPlan.limits">
+							<div class="col-sm-4">
+								<input class="form-control input-sm" data-ng-model="limit.limit"/>
+							</div>
+							<div class="col-sm-4">
+								<select class="form-control input-sm" data-ng-model="limit.type">
+									<option value="API_ACCESS">API Accesses</option>
+									<option value="DB_ACCESS">DB Accesses</option>
+								</select>
+							</div>
+							<div class="col-sm-4">
+								<select class="form-control input-sm" data-ng-model="limit.time">
+									<option value="MONTHLY">Per Month</option>
+									<option value="WEEKLY">Per Week</option>
+									<option value="DAILY">Per Day</option>
+									<option value="HOURLY">Per Hour</option>
+									<option value="PER_SECOND">Per Second</option>
+									<option value="BILLING_PERIOD">Per Billing Period</option>
+									<option value="OVERALL">In Total</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="dateFrom" class="col-sm-4 control-label"></label>
+					<div class="col-sm-8">
+						<button id="btnSavePlan" class="form-control input-sm">Save Changes</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<style type="text/css">
+#plansTable {
+	height: 300px;
+}
+</style>
+<script type="text/javascript">
+
+var app = angular.module("app");
+app.controller('AdminPlansController',
+		function ($scope, $http, $compile, $routeParams, $log, $location) {
+    AppController($scope, $http, $compile);
+
+    $scope.gridConfig = [];
+
+    var initTable = function () {
+        var columnsConfig = [
+            {label: "Key", field: "name", sortable: true},
+            {label: "Name", field: "displayName", sortable: true},
+            {label: "Fee", field: "fee", sortable: true}
+        ];
+        $scope.gridConfig.data = [];
+        renderUITable($scope.gridConfig, "plansTable", columnsConfig,
+	        function (event) {
+	            if (event.type == "dgrid-select") {
+	                $scope.$apply(function () {
+	                    $scope.selectedPlan = event.rows[0].data;
+	                });
+	            } else if (event.type == "dgrid-deselect") {
+	                $scope.$apply(function () {
+	                    $scope.selectedPlan = null;
+	                });
+	            }
+	        }
+        );
+    }
+
+    var loadTable = function() {
+    	riots.plans(function(plans) {
+    		$scope.gridConfig.data = plans;
+    	});
+    }
+
+    var savePlan = function() {
+    	var plan = clone($scope.selectedPlan);
+    	delete plan["$$hashKey"];
+    	$.each(plan.limits, function(idx,el) {
+    		delete el["$$hashKey"];
+    	});
+    	riots.save.plan(plan);
+    }
+
+    /* */
+    $scope.addClickHandler("btnSavePlan", savePlan);
+
+	/* render main elements */
+    initTable();
+    loadTable();
+});
+
+</script>

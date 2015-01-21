@@ -106,11 +106,11 @@
   <div growl id="growl" class="growl-container"></div>
 
   <!-- include top menu -->
-  <ng-include src="'/app/views/menu.html'" ng-if="authInfo"></ng-include>
+  <ng-include src="appConfig['appRootPath'] + '/views/menu.html'" ng-if="authInfo"></ng-include>
 
   <!-- Auth/Login Container -->
   <div ng-if="!authInfo" id="authContainer" style="display: none;">
-    <ng-include src="'/app/views/login.html'"></ng-include>
+    <ng-include src="appConfig['appRootPath'] + '/views/login.html'"></ng-include>
   </div>
 
   <!-- Main Content Container -->

@@ -159,7 +159,7 @@ public class AuthHeaders {
 
 		@Override
 		public String toString() {
-			return "AuthInfo [internalCall " + internalCall + ", userID=" + userID + 
+			return "AuthInfo [internalCall=" + internalCall + ", userID=" + userID + 
 					", userName=" + userName + ", email=" + email + ", roles="
 					+ roles + ", accessToken=" + accessToken + ", expiry="
 					+ expiry + ", rolesAsGrantedAuthorities="

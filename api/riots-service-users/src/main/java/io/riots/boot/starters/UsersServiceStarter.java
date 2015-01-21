@@ -1,6 +1,7 @@
 package io.riots.boot.starters;
 
 import io.riots.core.auth.CORSFilter;
+
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;

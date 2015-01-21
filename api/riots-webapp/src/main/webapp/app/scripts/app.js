@@ -132,6 +132,7 @@ define(
 					rootScope = $scope;
 					rootScope.http = $http;
 					rootScope.growl = growl;
+					rootScope.appConfig = appConfig;
 					/* use this as "shared memory" between
 					 controllers of different views. */
 					$scope.shared = {};

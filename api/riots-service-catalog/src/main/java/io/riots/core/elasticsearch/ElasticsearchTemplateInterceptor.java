@@ -4,6 +4,7 @@ import io.riots.api.services.catalog.Manufacturer;
 import io.riots.api.services.catalog.ThingType;
 import io.riots.api.services.catalog.model.ManufacturerElastic;
 import io.riots.api.services.catalog.model.ThingTypeElastic;
+
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -14,6 +15,7 @@ import org.aspectj.lang.annotation.Aspect;
  * @author omoser
  */
 @Aspect
+@SuppressWarnings("all")
 public class ElasticsearchTemplateInterceptor {
 
 

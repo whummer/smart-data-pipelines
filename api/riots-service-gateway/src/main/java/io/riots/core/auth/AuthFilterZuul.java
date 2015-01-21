@@ -41,19 +41,28 @@ public class AuthFilterZuul extends AuthFilterBase {
 			FilterChain chain) throws IOException, ServletException {
 		super.doFilter(req, res, chain);
 
+		UserAction action = null;
 		try {
-			/* log user action */
-			UsersService s = getCachedUsersServiceClient();
-			AuthInfo info = AuthHeaders.THREAD_AUTH_INFO.get().get();
+			/* check if we want to log this user action */
 			String path = ((HttpServletRequest)req).getRequestURI();
-			long outLength = 0; // TODO set out length
-			if(path != null && path.matches("^/api/v[0-9]+.*")) {
-				UserAction action = new UserAction(info.userID, path,
+			boolean doLogRequest = path != null 
+					&& path.matches("^/api/v[0-9]+.*") /* log all API accesses */
+					&& !path.matches("^/api/v[0-9]+/files/.*") /* don't log files API accesses */
+					&& !path.matches("^/api/v[0-9]+/users/me/usage.*"); /* don't log usage API accesses */
+
+			/* do log action*/
+			if(doLogRequest) {
+				UsersService s = getCachedUsersServiceClient();
+				System.out.println(AuthHeaders.THREAD_AUTH_INFO.get());
+				System.out.println(AuthHeaders.THREAD_AUTH_INFO.get().get());
+				AuthInfo info = AuthHeaders.THREAD_AUTH_INFO.get().get();
+				long outLength = 0; // TODO set out length
+				action = new UserAction(info.userID, path,
 						req.getContentLengthLong(), outLength);
 				s.postUserAction(action);
 			}
 		} catch (Exception e) {
-			LOG.warn("Unable to persist user action.", e);
+			LOG.warn("Unable to persist user action: " + action, e);
 		}
 
 	}
@@ -82,12 +91,17 @@ public class AuthFilterZuul extends AuthFilterBase {
 
 	@Override
 	protected User findUserByEmail(String email) {
+		System.out.println("findUserByEmail " + email);
 		User user = (User) ModelCache.USERS.get(email);
+		System.out.println("user " + user);
 		if(user != null) {
 			return user;
 		}
-		user = clientFactory.getUsersServiceClient(AuthHeaders.INTERNAL_CALL).findByEmail(email);
+		UsersService users = clientFactory.getUsersServiceClient(AuthHeaders.INTERNAL_CALL);
+		user = users.findByEmail(email);
+		System.out.println("user1 " + user);
 		ModelCache.USERS.put(email, user);
+		System.out.println("return user " + user);
 		return user;
 	}
 	

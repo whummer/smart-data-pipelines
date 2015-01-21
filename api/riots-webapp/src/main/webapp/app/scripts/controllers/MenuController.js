@@ -41,7 +41,21 @@ app.controller('MenuController', function ($scope, $log, $http, $location, $comp
 		loadApps();
 	});
 
+	var pollingInterval = 1000 * 5;
+	var loadUsagePeriodically = function() {
+		riots.usage(function(usage) {
+			$scope.authInfo.usage = usage;
+			/* repeat after timeout */
+			setTimeout(function() {
+				loadUsagePeriodically();
+			}, pollingInterval);
+		}, function() {
+			/* error, stop polling */
+		});
+	}
+
 	loadApps();
+	loadUsagePeriodically();
 
 });
 
