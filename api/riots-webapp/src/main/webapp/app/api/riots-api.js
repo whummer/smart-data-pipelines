@@ -56,7 +56,7 @@ sh.auth = function(options, callback, errorCallback) {
 			callback(result);
 		}
 	}, function(result) {
-		console.log("Authentication error. ", result);
+		console.log("Authentication error.");
 		if(errorCallback) {
 			errorCallback(result);
 		}

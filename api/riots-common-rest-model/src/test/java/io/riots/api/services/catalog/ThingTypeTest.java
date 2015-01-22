@@ -16,8 +16,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Tests the JSON round-triping of the SmartObjects API. 
- * 
+ * Tests the JSON round-triping of the SmartObjects API.
+ *
  * @author riox
  */
 public class ThingTypeTest  {
@@ -35,9 +35,8 @@ public class ThingTypeTest  {
 		// Write ThingType into JSON string in-memory
 		StringWriter targetJson = new StringWriter();
 		mapper.writeValue(targetJson, t);
-		
+
 		JsonNode originalTree = mapper.readTree(getClass().getResource("/thing-type-sample.json").openStream());
-		log.info(targetJson.toString());
-		JSONAssert.assertEquals(targetJson.toString(), originalTree.toString(), false);				
+		JSONAssert.assertEquals(originalTree.toString(), targetJson.toString(), false);
 	}
 }

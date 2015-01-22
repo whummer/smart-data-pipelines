@@ -193,6 +193,6 @@ app.controller('MainCtrl', function ($scope) {
 	});
 
 	/* load main elements */
-	$scope.loadThings();
+	//$scope.loadThings();
 	setupMap();
 });

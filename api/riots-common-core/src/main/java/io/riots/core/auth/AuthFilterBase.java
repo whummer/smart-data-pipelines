@@ -107,6 +107,8 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
             "^/connect/*.*$",
             "^/img/*.*$",
             "^/$",
+            "^/error$", /* default error page, e.g., when riots-webapp service is down */
+            "^/error/.*$", /* custom error pages */
 
             "^(/app)?/scripts/app\\.js$",
             "^(/app)?/scripts/build/.*$",
@@ -231,12 +233,12 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
              * if auth info is incomplete -> deny access! 
              */
         	if(!requestInfo.isFilledOut()) {
-        		LOG.info("Incomplete or no authentication information received.");
+        		LOG.info("Incomplete or no authentication received, for URI: " + uri);
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 return false;
         	}
 
-        	//System.out.println(uri + " - Access protected resource with auth info: " + requestInfo);
+        	System.out.println(uri + " - Access protected resource with auth info: " + requestInfo);
 
             /*
              * attempt to get token from cache
@@ -267,17 +269,23 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
 
     		            /* make sure we have a valid userId in the auth info */
 		            	User user = findUserByEmail(newInfo.email);
+		            	if(user == null) {
+		                    response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		            		return false;
+		            	}
 		            	newInfo.userID = user.getId();
 
 	            	} else if(requestInfo.isRiotsBased()) {
-	
+
 	            		newInfo = authenticateRiotsApp(requestInfo.userId, requestInfo.appKey);
-	
+
 	            	}
                 } catch (Exception e) {
-                    LOG.warn("Unable to process auth headers (" + requestInfo.network + "): " + e);
+                	String msg = "Authentication error: Unable to process auth headers (" + requestInfo.network + ")";
+                    LOG.warn(msg + ": " + e);
                     response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                    return false;
+                    throw new RuntimeException(msg, e);
+//                    return false;
 				}
 
             	if(newInfo == null) {

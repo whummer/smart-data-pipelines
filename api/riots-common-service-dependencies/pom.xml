@@ -52,7 +52,7 @@
 		<!-- CXF dependencies -->
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-frontend-jaxrs</artifactId>
+			<artifactId>cxf-core</artifactId>
 			<version>${cxf.version}</version>
 			<exclusions>
 				<exclusion>
@@ -61,13 +61,13 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		
 
 		<!-- Spring and Spring Boot dependencies -->
 
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-eureka</artifactId>
-
 			<exclusions>
 				<exclusion>
 					<artifactId>jsr311-api</artifactId>
@@ -129,6 +129,11 @@
 		<dependency>
 			<groupId>com.codahale.metrics</groupId>
 			<artifactId>metrics-servlets</artifactId>
+			<version>${codahale-metrics.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.codahale.metrics</groupId>
+			<artifactId>metrics-servlet</artifactId>
 			<version>${codahale-metrics.version}</version>
 		</dependency>
 		<dependency>

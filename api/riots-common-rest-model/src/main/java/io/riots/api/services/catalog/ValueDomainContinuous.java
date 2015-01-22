@@ -45,4 +45,24 @@ public class ValueDomainContinuous<T> extends ValueDomain<T> {
 	public void setMax(T max) {
 		this.max = max;
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		ValueDomainContinuous<?> that = (ValueDomainContinuous<?>) o;
+
+		if (max != null ? !max.equals(that.max) : that.max != null) return false;
+		if (min != null ? !min.equals(that.min) : that.min != null) return false;
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = min != null ? min.hashCode() : 0;
+		result = 31 * result + (max != null ? max.hashCode() : 0);
+		return result;
+	}
 }

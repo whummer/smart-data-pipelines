@@ -18,7 +18,7 @@ public class ThingTypeElastic extends ThingType {
         setCreated(thingType.getCreated());
         setCreatorId(thingType.getCreatorId());
         setDescription(thingType.getDescription());
-        setDeviceProperties(thingType.getProperties());
+        setProperties(thingType.getProperties());
         setFeatures(thingType.getFeatures());
         setImageData(thingType.getImageData());
         setTags(thingType.getTags());

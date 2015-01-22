@@ -2,6 +2,7 @@ package io.riots.api.services.applications;
 
 import io.riots.core.handlers.command.ApplicationCommand;
 import io.riots.core.handlers.query.ApplicationQuery;
+import io.riots.core.util.ServiceUtil;
 import io.riots.core.auth.AuthHeaders;
 import io.riots.api.services.applications.ApplicationsService;
 import io.riots.api.services.applications.Application;
@@ -53,7 +54,7 @@ public class ApplicationsServiceImpl implements ApplicationsService {
 	@Override
 	@Timed @ExceptionMetered
 	public List<Application> list() {
-		User user = authHeaders.getRequestingUser(req);
+		User user = ServiceUtil.assertValidUser(authHeaders, req);
 		return query.findForUser(user.getId());
 	}
 

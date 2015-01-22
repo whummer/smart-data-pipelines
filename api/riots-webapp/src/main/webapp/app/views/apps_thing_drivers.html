@@ -19,7 +19,7 @@
 
           <div class="col-sm-9">
             <input id="driverName" class="form-control input-sm" disabled="disabled"
-                   data-ng-model="selectedProperty.driver.propertyName"/>
+                   data-ng-model="selectedProperty.driver[PROPERTY_NAME]"/>
           </div>
         </div>
 
@@ -157,6 +157,7 @@
       $scope.selectedProperty = null;
       $scope.gridConfig = {};
       $scope.SIMULATION_ID = SIMULATION_ID;
+      $scope.PROPERTY_NAME = PROPERTY_NAME;
       $scope.simulationTypes = [];
 
       var initPropsTable = function () {
@@ -198,20 +199,20 @@
                     thing.id + "/" + el.name;
             if (!el.driver)
               el.driver = {};
-            if (!el.driver.thingId)
-              el.driver.thingId = thing.id;
-            if (!el.driver.propertyName)
-              el.driver.propertyName = el.name;
+            if (!el.driver[THING_ID])
+              el.driver[THING_ID] = thing.id;
+            if (!el.driver[PROPERTY_NAME])
+              el.driver[PROPERTY_NAME] = el.name;
             var opts = {};
             opts[THING_ID] = thing.id;
             opts[PROPERTY_NAME] = el.name;
             riots.driver(opts, function(driver) {
             	if (driver) {
                     el.driver = driver;
-                    if (!el.driver.thingId)
-                      el.driver.thingId = thing.id;
-                    if (!el.driver.propertyName)
-                      el.driver.propertyName = el.name;
+                    if (!el.driver[THING_ID])
+                      el.driver[THING_ID] = thing.id;
+                    if (!el.driver[PROPERTY_NAME])
+                      el.driver[PROPERTY_NAME] = el.name;
                   }
             });
           })
@@ -220,7 +221,7 @@
       };
 
       var saveThingDriver = function () {
-        var prop = $scope.selectedProperty;
+    	var prop = $scope.selectedProperty;
         var thing = $scope.shared.selectedThing;
         if (!thing || !prop || !prop.driver) {
           return;
@@ -242,6 +243,7 @@
           delete item.parameters;
           delete item[SIMULATION_ID];
         }
+        console.log("saving driver", item);
 
         delete item["$$hashKey"];
         riots.save.driver(item, function () {

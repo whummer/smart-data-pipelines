@@ -1,5 +1,5 @@
 {
-    "id": "riots-environment",
+    "id": "riots-environment-${IMAGE_TAG}",
     "apiVersion": "v1beta1",
     "kind": "ReplicationController",
     "desiredState": {
@@ -15,7 +15,7 @@
                     "containers": [
                         {
                             "name": "riots-environment",
-                            "image": "${DOCKER_REGISTRY}/riots/service-environment",
+                            "image": "${DOCKER_REGISTRY}/riots/service-environment:${IMAGE_TAG}",
                             "ports": [
                                 {
                                     "name": "riots-environment-port",
@@ -25,7 +25,7 @@
                             "env" : [
                             	{
                             		"name": "JAVA_OPTS",
-                            		"value": "-Deureka.hostname=${EUREKA_HOSTNAME}"
+                            		"value": "-Deureka.hostname=${EUREKA_HOSTNAME} -Dmongodb.hostname=${MONGODB_HOSTNAME} -Dactivemq.hostname=${ACTIVEMQ_HOSTNAME}"
                             	}
 
                             ]

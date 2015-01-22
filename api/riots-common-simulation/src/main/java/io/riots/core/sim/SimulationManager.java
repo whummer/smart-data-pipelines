@@ -82,7 +82,6 @@ public class SimulationManager {
 			PropertyValue value = PropertyValueGenerator.getValueAt(
 					propSim, new Time(currentTick), ctx);
 			try {
-				System.out.println("SimulationManager sendInboundPropUpdateMessage");
 				eventBroker.sendInboundPropUpdateMessage(value);
 			} catch (Throwable e) {
 				e.printStackTrace();

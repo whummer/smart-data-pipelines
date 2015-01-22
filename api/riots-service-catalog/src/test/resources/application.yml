@@ -1,9 +1,6 @@
 spring:
   application:
-    name: catalog-service
-
-elasticsearch:
-  hostname: localhost
+    name: catalog-service-test
 
 logging:
   level:

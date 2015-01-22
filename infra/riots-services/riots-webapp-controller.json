@@ -1,24 +1,24 @@
 {
-    "id": "riots-docs",
+    "id": "riots-webapp-${IMAGE_TAG}",
     "apiVersion": "v1beta1",
     "kind": "ReplicationController",
     "desiredState": {
         "replicas": 1,
         "replicaSelector": {
-            "name": "riots-docs"
+            "name": "riots-webapp"
         },
         "podTemplate": {
             "desiredState": {
                 "manifest": {
                     "version": "v1beta1",
-                    "id": "riots-docs",
+                    "id": "riots-webapp",
                     "containers": [
                         {
-                            "name": "riots-docs",
-                            "image": "${DOCKER_REGISTRY}/riots/service-docs",
+                            "name": "riots-webapp",
+                            "image": "${DOCKER_REGISTRY}/riots/webapp:${IMAGE_TAG}",
                             "ports": [
                                 {
-                                    "containerPort": 8088
+                                    "containerPort": 8081
                                 }
                             ],
                             "env" : [
@@ -33,13 +33,13 @@
                 }
             },
             "labels": {
-                "name": "riots-docs",
+                "name": "riots-webapp",
         		"env": "${RIOTS_ENV}"
             }
         }
     },
     "labels": {
-        "name": "riots-docs",
+        "name": "riots-webapp",
         "env": "${RIOTS_ENV}"
     }
 }

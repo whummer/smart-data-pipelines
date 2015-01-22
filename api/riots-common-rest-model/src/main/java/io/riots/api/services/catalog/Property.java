@@ -130,10 +130,39 @@ public class Property extends HierarchicalObject<Property> {
 		return this;
 	}
 
-
 	@Override
 	public String toString() {
 		return "Property['" + getName() + "']";
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		Property property = (Property) o;
+
+		if (name != null ? !name.equals(property.name) : property.name != null) return false;
+		if (actuatable != null ? !actuatable.equals(property.actuatable) : property.actuatable != null) return false;
+		if (constraints != null ? !constraints.equals(property.constraints) : property.constraints != null)
+			return false;
+		if (propertyType != property.propertyType) return false;
+		if (sensable != null ? !sensable.equals(property.sensable) : property.sensable != null) return false;
+		if (unit != null ? !unit.equals(property.unit) : property.unit != null) return false;
+		if (valueDomain != null ? !valueDomain.equals(property.valueDomain) : property.valueDomain != null)
+			return false;
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = constraints != null ? constraints.hashCode() : 0;
+		result = 31 * result + (valueDomain != null ? valueDomain.hashCode() : 0);
+		result = 31 * result + (propertyType != null ? propertyType.hashCode() : 0);
+		result = 31 * result + (sensable != null ? sensable.hashCode() : 0);
+		result = 31 * result + (actuatable != null ? actuatable.hashCode() : 0);
+		result = 31 * result + (unit != null ? unit.hashCode() : 0);
+		return result;
+	}
 }

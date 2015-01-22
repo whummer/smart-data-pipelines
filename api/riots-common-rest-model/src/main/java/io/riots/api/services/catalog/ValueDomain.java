@@ -55,6 +55,7 @@ public abstract class ValueDomain<BaseType> {
 	public void setType(ValueDomainType type) {
 		this.type = type;
 	}
-	
+
+
 	
 }

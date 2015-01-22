@@ -31,7 +31,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.cxf.helpers.IOUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.apache.log4j.Logger;
 import org.junit.Before;
@@ -684,7 +684,7 @@ public class InsertDemoDataViaCatalog {
 
     private String getBase64ImageFromUrl(String urlHref) throws IOException {
         URL imageUrl = new URL(urlHref);
-        byte[] imageBytes = IOUtils.readBytesFromStream(imageUrl.openStream());
+        byte[] imageBytes = IOUtils.toByteArray(imageUrl.openStream());
         return new String(Base64.encodeBase64(imageBytes));
     }
 }

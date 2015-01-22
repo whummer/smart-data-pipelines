@@ -30,7 +30,7 @@ DEVICES.each { dev ->
 	}
 	devWrapper.type = devTypeWrapper
 
-	dev.assetType.deviceProperties.each() { prop ->
+	dev.assetType.setProperties.each() { prop ->
 
 		times.each() { i ->
 

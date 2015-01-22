@@ -16,7 +16,10 @@
             <ref bean="elasticCatalogService"/>
         </jaxrs:serviceBeans>
         <jaxrs:features>
-            <cxf:logging/>
+            <bean class="org.apache.cxf.feature.LoggingFeature">
+                <property name="prettyLogging" value="true" />
+            </bean>
+            <!--<cxf:logging/>-->
         </jaxrs:features>
         <jaxrs:providers>
             <bean id="jsonProvider" class="com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider"/>

@@ -1,31 +1,30 @@
 {
-    "id": "riots-catalog",
+    "id": "riots-users-${IMAGE_TAG}",
     "apiVersion": "v1beta1",
     "kind": "ReplicationController",
     "desiredState": {
-        "replicas": 2,
+        "replicas": 1,
         "replicaSelector": {
-            "name": "riots-catalog"
+            "name": "riots-users"
         },
         "podTemplate": {
             "desiredState": {
                 "manifest": {
                     "version": "v1beta1",
-                    "id": "riots-catalog",
+                    "id": "riots-users",
                     "containers": [
                         {
-                            "name": "riots-catalog",
-                            "image": "${DOCKER_REGISTRY}/riots/service-catalog",
+                            "name": "riots-users",
+                            "image": "${DOCKER_REGISTRY}/riots/service-users:${IMAGE_TAG}",
                             "ports": [
                                 {
-                                    "name": "riots-catalog-port",
-                                    "containerPort": 8083
+                                    "containerPort": 8084
                                 }
                             ],
                             "env" : [
                             	{
                             		"name": "JAVA_OPTS",
-                            		"value": "-Deureka.hostname=${EUREKA_HOSTNAME} -Dstorage.directory=/tmp"
+                            		"value": "-Deureka.hostname=${EUREKA_HOSTNAME} -Dmongodb.hostname=${MONGODB_HOSTNAME}"
                             	}
 
                             ]
@@ -34,13 +33,13 @@
                 }
             },
             "labels": {
-                "name": "riots-catalog",
+                "name": "riots-users",
         		"env": "${RIOTS_ENV}"
             }
         }
     },
     "labels": {
-        "name": "riots-catalog",
+        "name": "riots-users",
         "env": "${RIOTS_ENV}"
     }
 }

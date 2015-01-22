@@ -31,7 +31,7 @@
 			<artifactId>jackson-databind</artifactId>
 		</dependency>
 
-		<!-- JAX-RS Client -->
+		<!-- JAX-RS Client (CXF) -->
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-rs-client</artifactId>

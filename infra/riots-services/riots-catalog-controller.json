@@ -1,31 +1,31 @@
 {
-    "id": "riots-gateway",
+    "id": "riots-catalog-${IMAGE_TAG}",
     "apiVersion": "v1beta1",
     "kind": "ReplicationController",
     "desiredState": {
         "replicas": 1,
         "replicaSelector": {
-            "name": "riots-gateway"
+            "name": "riots-catalog"
         },
         "podTemplate": {
             "desiredState": {
                 "manifest": {
                     "version": "v1beta1",
-                    "id": "riots-gateway",
+                    "id": "riots-catalog",
                     "containers": [
                         {
-                            "name": "riots-gateway",
-                            "image": "${DOCKER_REGISTRY}/riots/service-gateway",
+                            "name": "riots-catalog",
+                            "image": "${DOCKER_REGISTRY}/riots/service-catalog:${IMAGE_TAG}",
                             "ports": [
                                 {
-                                    "containerPort": 8080,
-                                    "hostPort": 8080
+                                    "name": "riots-catalog-port",
+                                    "containerPort": 8083
                                 }
                             ],
                             "env" : [
                             	{
                             		"name": "JAVA_OPTS",
-                            		"value": "-Deureka.hostname=${EUREKA_HOSTNAME}"
+                            		"value": "-Deureka.hostname=${EUREKA_HOSTNAME} -Delasticsearch.hostname=${ELASTICSEARCH_HOSTNAME}"
                             	}
 
                             ]
@@ -34,13 +34,13 @@
                 }
             },
             "labels": {
-                "name": "riots-gateway",
+                "name": "riots-catalog",
         		"env": "${RIOTS_ENV}"
             }
         }
     },
     "labels": {
-        "name": "riots-gateway",
+        "name": "riots-catalog",
         "env": "${RIOTS_ENV}"
     }
 }

@@ -1,24 +1,25 @@
 {
-    "id": "riots-simulation",
+    "id": "riots-gateway-${IMAGE_TAG}",
     "apiVersion": "v1beta1",
     "kind": "ReplicationController",
     "desiredState": {
         "replicas": 1,
         "replicaSelector": {
-            "name": "riots-simulation"
+            "name": "riots-gateway"
         },
         "podTemplate": {
             "desiredState": {
                 "manifest": {
                     "version": "v1beta1",
-                    "id": "riots-simulation",
+                    "id": "riots-gateway",
                     "containers": [
                         {
-                            "name": "riots-simulation",
-                            "image": "${DOCKER_REGISTRY}/riots/service-simulation",
+                            "name": "riots-gateway",
+                            "image": "${DOCKER_REGISTRY}/riots/service-gateway:${IMAGE_TAG}",
                             "ports": [
                                 {
-                                    "containerPort": 8086
+                                    "containerPort": 8080,
+                                    "hostPort": 8080
                                 }
                             ],
                             "env" : [
@@ -33,13 +34,13 @@
                 }
             },
             "labels": {
-                "name": "riots-simulation",
+                "name": "riots-gateway",
         		"env": "${RIOTS_ENV}"
             }
         }
     },
     "labels": {
-        "name": "riots-simulation",
+        "name": "riots-gateway",
         "env": "${RIOTS_ENV}"
     }
 }

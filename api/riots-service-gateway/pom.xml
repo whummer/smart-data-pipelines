@@ -3,10 +3,9 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<parent>
-		<artifactId>riots-common-service-dependencies</artifactId>
+		<artifactId>riots-parent</artifactId>
 		<groupId>io.riots</groupId>
 		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>../riots-common-service-dependencies/pom.xml</relativePath>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -19,18 +18,12 @@
 	</properties>
 
 	<dependencies>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-zuul</artifactId>
-		</dependency>
-
 		<!-- TODO figure out why not having this dependency blows up with MvcEndpointException 
 			on the google docker cloud -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-actuator</artifactId>
 		</dependency>
-
 
 		<!-- riots dependencies (for authentication) -->
 		<dependency>
@@ -55,6 +48,16 @@
 			<artifactId>urlrewritefilter</artifactId>
 			<version>4.0.3</version>
 		</dependency>
+		
+		<!-- Zuul -->
+		<!-- Note: Zuul pulls in ribbon, which pulls in jersey. 
+		Jersey and CXF are incompatible (both define JAX-RS core classes) . 
+		Make sure that Zuul dependency goes last and hence CXF is defined first. -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-zuul</artifactId>
+		</dependency>
+		
 	</dependencies>
 
 	<repositories>
@@ -95,6 +98,20 @@
 				<artifactId>maven-resources-plugin</artifactId>
 			</plugin>
 		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<!-- need to define this here because we do not inherit
+					from riots-common-service-dependencies (anymore) -->
+					<groupId>pl.project13.maven</groupId>
+					<artifactId>git-commit-id-plugin</artifactId>
+					<configuration>
+						<dotGitDirectory>${project.basedir}/../../.git</dotGitDirectory>
+						<generateGitPropertiesFilename>src/main/resources/git.properties</generateGitPropertiesFilename>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 
 </project>
