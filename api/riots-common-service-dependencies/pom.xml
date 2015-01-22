@@ -132,6 +132,11 @@
 			<version>${codahale-metrics.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>com.codahale.metrics</groupId>
+			<artifactId>metrics-servlet</artifactId>
+			<version>${codahale-metrics.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>com.ryantenney.metrics</groupId>
 			<artifactId>metrics-spring</artifactId>
 			<version>3.0.3</version>

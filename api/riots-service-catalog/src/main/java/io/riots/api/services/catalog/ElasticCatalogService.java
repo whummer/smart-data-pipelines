@@ -8,11 +8,18 @@ import io.riots.api.services.catalog.model.ThingTypeElastic;
 import io.riots.api.services.files.FileData;
 import io.riots.api.services.files.FilesService;
 import io.riots.core.clients.ServiceClientFactory;
+import io.riots.core.cxf.MessageContextUtil;
 import io.riots.core.repositories.ManufacturerRepository;
 import io.riots.core.repositories.ThingTypeRepository;
 import io.riots.core.util.ServiceUtil;
 import org.apache.commons.lang.StringUtils;
+import org.apache.cxf.headers.Header;
+import org.apache.cxf.helpers.CastUtils;
 import org.apache.cxf.jaxrs.ext.MessageContext;
+import org.apache.cxf.jaxrs.ext.MessageContextImpl;
+import org.apache.cxf.message.Message;
+import org.apache.cxf.phase.PhaseInterceptorChain;
+import org.apache.cxf.transport.http.Headers;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.slf4j.Logger;
@@ -24,13 +31,13 @@ import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Implements the Catalog REST API edge clients.
@@ -56,9 +63,9 @@ public class ElasticCatalogService implements CatalogService {
     @Autowired
 	ServiceClientFactory serviceClientFactory;
 
-    @Context
-    MessageContext context;    
-    
+    @Autowired
+    MessageContextUtil messageContextUtil;
+
     @PostConstruct
     private void init() {    	
     	// creating initial index and mapping
@@ -99,20 +106,17 @@ public class ElasticCatalogService implements CatalogService {
         if (size <= 0)
             size = 100;
 
-        QueryStringQueryBuilder
-        qBuilder = QueryBuilders.queryString(query).analyzeWildcard(true);
+        QueryStringQueryBuilder qBuilder = QueryBuilders.queryString(query).analyzeWildcard(true);
         qBuilder.lenient(true);
         try {
-	        Page<ThingTypeElastic> result = thingTypeRepository.search(
-	                qBuilder, new PageRequest(page, size));
+	        Page<ThingTypeElastic> result = thingTypeRepository.search(qBuilder, new PageRequest(page, size));
 	        return result.getContent();
         } catch (Throwable t) {
         	log.info("ElasticSearch query parsing failed: {}", t.getMessage());
         	
         	// we return all results if the query fails`
             qBuilder = QueryBuilders.queryString("*:*");
- 	        Page<ThingTypeElastic> result = thingTypeRepository.search(
- 	                qBuilder, new PageRequest(page, size));
+ 	        Page<ThingTypeElastic> result = thingTypeRepository.search(qBuilder, new PageRequest(page, size));
  	        return result.getContent();
         }
         
@@ -130,7 +134,7 @@ public class ElasticCatalogService implements CatalogService {
             
             ThingType result = thingTypeRepository.index(new ThingTypeElastic(thingType));
             URI location = UriBuilder.fromPath("/catalog/thing-types/{id}").build(result.getId());
-            context.getHttpServletResponse().addHeader("Location", location.toString());
+            messageContextUtil.addLocationHeader(location.toString());
             return result;
         } catch (Exception e) {
             log.error(e.getMessage(), e);
@@ -261,7 +265,7 @@ public class ElasticCatalogService implements CatalogService {
             manufacturer.setId(id.toString());
             Manufacturer result = manufacturerRepository.index(new ManufacturerElastic(manufacturer));
             URI location = UriBuilder.fromPath("/catalog/manufacturers/{id}").build(result.getId());
-            context.getHttpServletResponse().addHeader("Location", location.toString());
+            messageContextUtil.addLocationHeader(location.toString());
             return result;
         } catch (Exception e) {
             log.error(e.getMessage(), e);

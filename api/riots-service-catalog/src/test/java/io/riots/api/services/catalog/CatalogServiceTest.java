@@ -148,15 +148,13 @@ public class CatalogServiceTest extends AbstractTestNGSpringContextTests {
 
 	@Test
 	public void checkSingleItemUsingServiceClient() {
-//		TODO: FIXME does not work in my case (number of thing types 
-//		keeps increasing when running test multiple times)
 		CatalogService client = clientFactory.getCatalogServiceClient();
 		List<? extends ThingType> thingTypes = client.listThingTypes(null, 0, 100);
 		assertThat("contains single ThingType HC-SR04", thingTypes.size(), equalTo(1));
 		ThingType expected = createSampleThingType();
 		ThingType actual = thingTypes.get(0);
 		expected.setId(actual.getId());
-		assertThat("ThingType from ES is equal to expected thingtype", actual, samePropertyValuesAs(expected));
+		assertThat(actual, samePropertyValuesAs(expected));
 	}
 
 }
