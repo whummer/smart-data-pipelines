@@ -18,15 +18,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * Tests the JSON round-triping of the SmartObjects API.
  *
- * todo: i believe this class is obsolete?
- * 
  * @author riox
  */
 public class ThingTypeTest  {
 
 	static final Logger log = LoggerFactory.getLogger(ThingTypeTest.class);
 
-	//@Test
+	@Test
 	public void testThingRoundtrip() throws IOException, URISyntaxException, JSONException {
 		log.info("Executing testThingRoundtrip() ...");
 		
@@ -37,9 +35,8 @@ public class ThingTypeTest  {
 		// Write ThingType into JSON string in-memory
 		StringWriter targetJson = new StringWriter();
 		mapper.writeValue(targetJson, t);
-		
+
 		JsonNode originalTree = mapper.readTree(getClass().getResource("/thing-type-sample.json").openStream());
-		log.info(targetJson.toString());
-		JSONAssert.assertEquals(targetJson.toString(), originalTree.toString(), false);				
+		JSONAssert.assertEquals(originalTree.toString(), targetJson.toString(), false);
 	}
 }

@@ -142,6 +142,7 @@ public class Property extends HierarchicalObject<Property> {
 
 		Property property = (Property) o;
 
+		if (name != null ? !name.equals(property.name) : property.name != null) return false;
 		if (actuatable != null ? !actuatable.equals(property.actuatable) : property.actuatable != null) return false;
 		if (constraints != null ? !constraints.equals(property.constraints) : property.constraints != null)
 			return false;
