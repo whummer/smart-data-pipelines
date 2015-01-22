@@ -10,7 +10,7 @@ import java.util.*;
 
 /**
  * Represents the "type" of a {@link Thing}
- * 
+ *
  * @author Waldemar Hummer
  * @author riox
  */
@@ -72,12 +72,12 @@ public class ThingType extends HierarchicalObject<String> {
 		this.id = id;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
 	public String getDescription() {
 		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public Date getCreated() {
@@ -136,15 +136,23 @@ public class ThingType extends HierarchicalObject<String> {
 	public List<String> getTags() {
 		return tags;
 	}
+
 	public void setTags(List<String> tags) {
 		this.tags = tags;
 	}
-	public void addTag(String tag) {
+
+	public ThingType addTag(String tag) {
 		tags.add(tag);
+		return this;
 	}
 
 	public ThingType withProperties(final List<Property> properties) {
 		this.properties = properties;
+		return this;
+	}
+
+	public ThingType addProperty(Property property) {
+		this.properties.add(property);
 		return this;
 	}
 
@@ -199,56 +207,38 @@ public class ThingType extends HierarchicalObject<String> {
 	}
 
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result
-				+ ((features == null) ? 0 : features.hashCode());
-		result = prime * result
-				+ ((imageData == null) ? 0 : imageData.hashCode());
-		result = prime * result
-				+ ((manufacturerId == null) ? 0 : manufacturerId.hashCode());
-		result = prime * result
-				+ ((properties == null) ? 0 : properties.hashCode());
-		result = prime * result + ((tags == null) ? 0 : tags.hashCode());
-		return result;
-	}
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof ThingType)) return false;
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
+		ThingType thingType = (ThingType) o;
+
+		if (created != null ? !created.equals(thingType.created) : thingType.created != null) return false;
+		if (creatorId != null ? !creatorId.equals(thingType.creatorId) : thingType.creatorId != null) return false;
+		if (description != null ? !description.equals(thingType.description) : thingType.description != null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (features != null ? !features.equals(thingType.features) : thingType.features != null) return false;
+		if (id != null ? !id.equals(thingType.id) : thingType.id != null) return false;
+		if (imageData != null ? !imageData.equals(thingType.imageData) : thingType.imageData != null) return false;
+		if (manufacturerId != null ? !manufacturerId.equals(thingType.manufacturerId) : thingType.manufacturerId != null)
 			return false;
-		ThingType other = (ThingType) obj;
-		if (features == null) {
-			if (other.features != null)
-				return false;
-		} else if (!features.equals(other.features))
-			return false;
-		if (imageData == null) {
-			if (other.imageData != null)
-				return false;
-		} else if (!imageData.equals(other.imageData))
-			return false;
-		if (manufacturerId == null) {
-			if (other.manufacturerId != null)
-				return false;
-		} else if (!manufacturerId.equals(other.manufacturerId))
-			return false;
-		if (properties == null) {
-			if (other.properties != null)
-				return false;
-		} else if (!properties.equals(other.properties))
-			return false;
-		if (tags == null) {
-			if (other.tags != null)
-				return false;
-		} else if (!tags.equals(other.tags))
-			return false;
+		if (properties != null ? !properties.equals(thingType.properties) : thingType.properties != null) return false;
+		if (tags != null ? !tags.equals(thingType.tags) : thingType.tags != null) return false;
+
 		return true;
 	}
 
+	@Override
+	public int hashCode() {
+		int result = id != null ? id.hashCode() : 0;
+		result = 31 * result + (description != null ? description.hashCode() : 0);
+		result = 31 * result + (created != null ? created.hashCode() : 0);
+		result = 31 * result + (creatorId != null ? creatorId.hashCode() : 0);
+		result = 31 * result + (manufacturerId != null ? manufacturerId.hashCode() : 0);
+		result = 31 * result + (features != null ? features.hashCode() : 0);
+		result = 31 * result + (tags != null ? tags.hashCode() : 0);
+		result = 31 * result + (imageData != null ? imageData.hashCode() : 0);
+		result = 31 * result + (properties != null ? properties.hashCode() : 0);
+		return result;
+	}
 }

@@ -38,6 +38,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Implements the Catalog REST API edge clients.
@@ -96,7 +97,7 @@ public class ElasticCatalogService implements CatalogService {
 
     @Override
     @Timed @ExceptionMetered
-    public List<ThingTypeElastic> listThingTypes(String query, int page, int size) {
+    public List<ThingType> listThingTypes(String query, int page, int size) {
 
         // set reasonable defaults
         if (StringUtils.isEmpty(query))
@@ -110,14 +111,14 @@ public class ElasticCatalogService implements CatalogService {
         qBuilder.lenient(true);
         try {
 	        Page<ThingTypeElastic> result = thingTypeRepository.search(qBuilder, new PageRequest(page, size));
-	        return result.getContent();
+	        return result.getContent().stream().map(ThingType.class::cast).collect(Collectors.toList());
         } catch (Throwable t) {
         	log.info("ElasticSearch query parsing failed: {}", t.getMessage());
         	
         	// we return all results if the query fails`
             qBuilder = QueryBuilders.queryString("*:*");
  	        Page<ThingTypeElastic> result = thingTypeRepository.search(qBuilder, new PageRequest(page, size));
- 	        return result.getContent();
+            return result.getContent().stream().map(ThingType.class::cast).collect(Collectors.toList());
         }
         
     }
@@ -241,7 +242,7 @@ public class ElasticCatalogService implements CatalogService {
 
     @Override
     @Timed @ExceptionMetered
-    public List<? extends Manufacturer> listManufacturers(String query, int page, int size) {
+    public List<Manufacturer> listManufacturers(String query, int page, int size) {
 
         // todo remove duplication and handle the param validation in an aspect
         if (StringUtils.isEmpty(query))
@@ -252,7 +253,7 @@ public class ElasticCatalogService implements CatalogService {
             size = 100;
 
         Page<ManufacturerElastic> result = manufacturerRepository.search(QueryBuilders.queryString(query), new PageRequest(page, size));
-        return result.getContent();
+        return result.getContent().stream().map(Manufacturer.class::cast).collect(Collectors.toList());
     }
 
     @Override

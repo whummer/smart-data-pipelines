@@ -41,7 +41,7 @@ public interface CatalogService {
 	@ApiResponses(value = {
 			@ApiResponse(code = 404, message = "No ThingType with given ID found"),
 			@ApiResponse(code = 400, message = "Either the query string or the paging parameters are malformed") })
-	List<? extends ThingType> listThingTypes(@QueryParam("q") String query,
+	List<ThingType> listThingTypes(@QueryParam("q") String query,
 			@QueryParam("page") int page, @QueryParam("size") int size);
 
 	@POST
@@ -97,7 +97,7 @@ public interface CatalogService {
 	@ApiResponses(value = {
 			@ApiResponse(code = 404, message = "No Manufacturer with given ID found"),
 			@ApiResponse(code = 400, message = "Either the query string or the paging parameters are malformed") })
-	public List<? extends Manufacturer> listManufacturers(@QueryParam("q") String query,
+	public List<Manufacturer> listManufacturers(@QueryParam("q") String query,
 			@QueryParam("page") int page, @QueryParam("size") int size);
 
 	@POST
