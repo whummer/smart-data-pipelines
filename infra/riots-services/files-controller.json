@@ -15,7 +15,7 @@
                     "containers": [
                         {
                             "name": "riots-files",
-                            "image": "${DOCKER_REGISTRY}/riots/service-files",
+                            "image": "${DOCKER_REGISTRY}/riots/service-files:${IMAGE_TAG}",
                             "ports": [
                                 {
                                     "name": "riots-files-port",

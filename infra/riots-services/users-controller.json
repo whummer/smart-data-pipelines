@@ -15,7 +15,7 @@
                     "containers": [
                         {
                             "name": "riots-users",
-                            "image": "${DOCKER_REGISTRY}/riots/service-users",
+                            "image": "${DOCKER_REGISTRY}/riots/service-users:${IMAGE_TAG}",
                             "ports": [
                                 {
                                     "containerPort": 8084
@@ -24,7 +24,7 @@
                             "env" : [
                             	{
                             		"name": "JAVA_OPTS",
-                            		"value": "-Deureka.hostname=${EUREKA_HOSTNAME}"
+                            		"value": "-Deureka.hostname=${EUREKA_HOSTNAME} -Dmongodb.hostname=${MONGODB_HOSTNAME}"
                             	}
 
                             ]

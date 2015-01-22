@@ -1,0 +1,16 @@
+{
+  "id": "riots-gateway",
+  "kind": "Service",
+  "apiVersion": "v1beta1",
+  "selector": {
+    "name": "riots-gateway"
+  },
+  "containerPort": 80,
+  "protocol": "TCP",
+  "port": 80,
+  "createExternalLoadBalancer": true,
+  "labels": {
+    "name": "riots-gateway",
+    "env": "${RIOTS_ENV}"
+  }
+}

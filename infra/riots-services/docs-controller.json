@@ -15,7 +15,7 @@
                     "containers": [
                         {
                             "name": "riots-docs",
-                            "image": "${DOCKER_REGISTRY}/riots/service-docs",
+                            "image": "${DOCKER_REGISTRY}/riots/service-docs:${IMAGE_TAG}",
                             "ports": [
                                 {
                                     "containerPort": 8088

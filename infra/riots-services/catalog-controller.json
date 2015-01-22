@@ -3,7 +3,7 @@
     "apiVersion": "v1beta1",
     "kind": "ReplicationController",
     "desiredState": {
-        "replicas": 2,
+        "replicas": 1,
         "replicaSelector": {
             "name": "riots-catalog"
         },
@@ -15,7 +15,7 @@
                     "containers": [
                         {
                             "name": "riots-catalog",
-                            "image": "${DOCKER_REGISTRY}/riots/service-catalog",
+                            "image": "${DOCKER_REGISTRY}/riots/service-catalog:${IMAGE_TAG}",
                             "ports": [
                                 {
                                     "name": "riots-catalog-port",
@@ -25,7 +25,7 @@
                             "env" : [
                             	{
                             		"name": "JAVA_OPTS",
-                            		"value": "-Deureka.hostname=${EUREKA_HOSTNAME} -Dstorage.directory=/tmp"
+                            		"value": "-Deureka.hostname=${EUREKA_HOSTNAME} -Delasticsearch.hostname=${ELASTICSEARCH_HOSTNAME}"
                             	}
 
                             ]
