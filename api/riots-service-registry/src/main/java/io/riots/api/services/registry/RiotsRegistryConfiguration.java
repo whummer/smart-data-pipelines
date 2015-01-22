@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Bean;
 
 /**
  * Created by omoser on 16/01/15.
+ *
+ * @author omoser
  */
 public class RiotsRegistryConfiguration extends EurekaServerConfiguration {
 
