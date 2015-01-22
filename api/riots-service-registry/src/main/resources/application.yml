@@ -29,4 +29,4 @@ logging:
   level:
     com.netflix.discovery: WARN
     org.apache.http: WARN
-    org.springframework: WARNfixed
+    org.springframework: WARN
