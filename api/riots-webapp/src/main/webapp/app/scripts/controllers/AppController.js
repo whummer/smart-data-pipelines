@@ -180,4 +180,11 @@ function AppController($scope, $http, $compile, growl) {
 			"," + loc.longitude.toFixed(4);
 		return result;
 	}
+
+	rootScope.formatNumber = function(number, numDecimals) {
+		if(typeof numDecimals == "undefined") {
+			numDecimals = 2;
+		}
+		return number.toFixed(numDecimals);
+	}
 }

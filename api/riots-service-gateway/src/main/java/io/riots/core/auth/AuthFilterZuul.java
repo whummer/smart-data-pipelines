@@ -91,17 +91,13 @@ public class AuthFilterZuul extends AuthFilterBase {
 
 	@Override
 	protected User findUserByEmail(String email) {
-		System.out.println("findUserByEmail " + email);
 		User user = (User) ModelCache.USERS.get(email);
-		System.out.println("user " + user);
 		if(user != null) {
 			return user;
 		}
 		UsersService users = clientFactory.getUsersServiceClient(AuthHeaders.INTERNAL_CALL);
 		user = users.findByEmail(email);
-		System.out.println("user1 " + user);
 		ModelCache.USERS.put(email, user);
-		System.out.println("return user " + user);
 		return user;
 	}
 	

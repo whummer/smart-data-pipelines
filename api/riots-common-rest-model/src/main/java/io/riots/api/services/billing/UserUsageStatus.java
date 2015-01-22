@@ -15,6 +15,10 @@ public class UserUsageStatus {
 	 */
 	private String userId;
 	/**
+	 * Pricing plan of this user.
+	 */
+	private PricingPlan plan;
+	/**
 	 * Limits associated with this pricing plan.
 	 */
 	private List<UserActionLimitStatus> limitStatuses = 
@@ -28,6 +32,12 @@ public class UserUsageStatus {
 	}
 	public List<UserActionLimitStatus> getLimitStatuses() {
 		return limitStatuses;
+	}
+	public PricingPlan getPlan() {
+		return plan;
+	}
+	public void setPlan(PricingPlan plan) {
+		this.plan = plan;
 	}
 
 }

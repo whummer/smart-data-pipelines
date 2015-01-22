@@ -19,7 +19,19 @@ public class UserActionQuery {
     @Autowired
     UserActionRepository repository;
 
-    public List<UserAction> find(long from, long to, String user, 
+    @SuppressWarnings("unchecked")
+	public List<UserAction> find(long from, long to, String user, 
+    		String type, String httpPath, long sizeFrom, long sizeTo) {
+    	return (List<UserAction>)makeQuery(true, from, to, user, type, httpPath, sizeFrom, sizeTo);
+    }
+
+    public long count(long from, long to, String user, 
+    		String type, String httpPath, long sizeFrom, long sizeTo) {
+    	return (long)makeQuery(true, from, to, user, type, httpPath, sizeFrom, sizeTo);
+    }
+    
+    private Object makeQuery(boolean returnCount, 
+    		long from, long to, String user, 
     		String type, String httpPath, long sizeFrom, long sizeTo) {
     	if(to <= 0)
     		to = new Date().getTime();
@@ -35,6 +47,8 @@ public class UserActionQuery {
     		sizeTo = Long.MAX_VALUE;
     	if(sizeFrom > sizeTo)
     		sizeFrom = 0;
+    	if(returnCount)
+    		return repository.count(from, to, user, type, httpPath, sizeFrom, sizeTo);
     	return repository.findBy(from, to, user, type, httpPath, sizeFrom, sizeTo);
     }
 }
