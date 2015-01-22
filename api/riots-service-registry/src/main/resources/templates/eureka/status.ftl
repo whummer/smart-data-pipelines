@@ -277,6 +277,8 @@
                                   <dd><a href="${instance.homePageUrl}info">${instance.homePageUrl}info</a></dd>
                                   <dt><strong>Metrics</strong></dt>
                                   <dd><a href="${instance.homePageUrl}metrics">${instance.homePageUrl}metrics</a></dd>
+                                  <dt><strong>Trace</strong></dt>
+                                  <dd><a href="${instance.homePageUrl}trace">${instance.homePageUrl}trace</a></dd>
                                   <dt><strong>Environment</strong></dt>
                                   <dd><a href="${instance.homePageUrl}env">${instance.homePageUrl}env</a></dd>
                                   <dt><strong>Autoconfig</strong></dt>
