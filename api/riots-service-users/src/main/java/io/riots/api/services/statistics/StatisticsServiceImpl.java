@@ -15,6 +15,7 @@ import io.riots.api.services.users.UsageStats.Usage;
 import io.riots.api.services.users.UsageStats.UsagePeriod;
 import io.riots.api.services.users.User;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
@@ -86,9 +87,12 @@ public class StatisticsServiceImpl implements StatisticsService {
 
 		UsageStats result = new UsageStats();
 		Date d1 = new Date(from);
+		if(period == UsagePeriod.month) {
+			d1 = DateUtils.truncate(d1, Calendar.MONTH);
+		}
 		Date d2 = new Date(to);
 		int count = 0;
-		while(d1.before(d2)) {
+		do {
 			Date d3 = rollDate(d1, period, 1);
 			Usage u = new Usage();
 			u.setFromDate(d1);
@@ -100,10 +104,12 @@ public class StatisticsServiceImpl implements StatisticsService {
 			if(count++ > 20) {
 				throw new IllegalArgumentException("Too many data points. Please use smaller time range.");
 			}
-		}
+		} while(d1.before(d2));
 		return result;
 	}
 	
+	/* HELPER METHODS */
+
 	private Date rollDate(Date d, UsagePeriod period, int amount) {
 		if(period == UsagePeriod.hour) {
 			return DateUtils.addHours(d, amount);

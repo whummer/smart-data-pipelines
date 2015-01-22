@@ -162,9 +162,13 @@
               Device</a>
             </li>
             <li class="divider"></li>
-            <li><a href="#/connect">
-               Usage Overview</a>
-               TODO
+            <li><a href="#/profile">
+				Usage Overview</a>
+				<div style="margin: auto; padding-left: 20px;">
+					<div ng-repeat="status in authInfo.usage.limitStatuses" ng-show="status.display">
+						<b>{{status.type}}</b>: {{formatNumber(status.percentage)}} %
+					</div>
+				</div>
             </li>
             <li class="divider"></li>
             <li><a href="JavaScript: void(0);" ng-click="performLogout()"><span style="margin-right: 10px"
