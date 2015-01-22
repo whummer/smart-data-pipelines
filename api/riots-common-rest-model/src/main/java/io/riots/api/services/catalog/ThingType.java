@@ -116,7 +116,7 @@ public class ThingType extends HierarchicalObject<String> {
 		return properties;
 	}
 
-	public void setDeviceProperties(List<Property> properties) {
+	public void setProperties(List<Property> properties) {
 		this.properties = properties;
 	}
 

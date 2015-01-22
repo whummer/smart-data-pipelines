@@ -86,4 +86,24 @@ public class ValueDomainDiscrete<T> extends ValueDomainContinuous<T> {
 			}
 		};
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+
+		ValueDomainDiscrete that = (ValueDomainDiscrete) o;
+
+		if (step != null ? !step.equals(that.step) : that.step != null) return false;
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + (step != null ? step.hashCode() : 0);
+		return result;
+	}
 }

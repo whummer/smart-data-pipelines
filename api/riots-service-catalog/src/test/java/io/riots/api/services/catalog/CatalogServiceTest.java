@@ -20,7 +20,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.embedded.EmbeddedWebApplicationContext;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.WebIntegrationTest;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -31,7 +30,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import static com.jayway.restassured.RestAssured.given;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -158,7 +156,7 @@ public class CatalogServiceTest extends AbstractTestNGSpringContextTests {
 		ThingType expected = createSampleThingType();
 		ThingType actual = thingTypes.get(0);
 		expected.setId(actual.getId());
-		//assertThat("ThingType from ES is equal to expected thingtype", actual, samePropertyValuesAs(expected));
+		assertThat("ThingType from ES is equal to expected thingtype", actual, samePropertyValuesAs(expected));
 	}
 
 }

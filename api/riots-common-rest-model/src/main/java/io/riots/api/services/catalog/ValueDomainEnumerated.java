@@ -40,4 +40,21 @@ public class ValueDomainEnumerated<T> extends ValueDomain<T> {
 	public void setValues(T[] values) {
 		this.values = values;
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		ValueDomainEnumerated that = (ValueDomainEnumerated) o;
+
+		if (!Arrays.equals(values, that.values)) return false;
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		return values != null ? Arrays.hashCode(values) : 0;
+	}
 }
