@@ -1,3 +1,6 @@
+/* OLD: 
+ *	- yellow color: f1c633 
+ */
 
 h1, h2, h3, h4, h5, h6,
 a,
@@ -5,17 +8,24 @@ a,
 .header .main-nav .nav .nav-item.active a,
 .header .main-nav .nav .nav-item.active
 {
-  color: #f1c633;
+  color: #7a1e1e;
 }
 .header,
 .promo,
 .features,
 .contact
 {
-  background: #f1c633;
+  background: #f5f5f5;
+  color: #000;
+}
+.about {
+  background: #fff;
 }
 .header .main-nav .nav .nav-item.active a {
   background: none;
+}
+.footer a {
+  color: #fff;
 }
 
 
@@ -43,8 +53,8 @@ a,
 .promo .intro {
   margin-top: 30px;
   height: 100px;
+  color: #7a1e1e;
 }
-
 
 /* ======= Docs Section ======= */
 .docs .docs-inner {
@@ -77,7 +87,7 @@ a,
 .pricing .item .heading {
   margin-top: 0;
   padding: 30px 15px;
-  background: #f1c633;
+  background: #f8f8f8;
   position: relative;
   -webkit-border-top-right-radius: 4px;
   -webkit-border-bottom-right-radius: 0;

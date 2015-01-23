@@ -33,7 +33,7 @@ EOF
 
 deploy_controller() {
 	echo "Deploying replication controller $1"
-	render_template $1 > /tmp/$(basename $1)
+	render_template $BASEDIR/$1 > /tmp/$(basename $1)
 	$GKE replicationcontrollers create --config-file /tmp/$(basename $1)
 }
 

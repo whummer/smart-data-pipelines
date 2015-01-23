@@ -67,38 +67,63 @@
 						<h4 class="modal-title" id="myModalLabel"><span class="glyphicon glyphicon-log-in"></span> Secure Sign-in</h4>
 					</div>
 					<div class="modal-body">
-						<div>Please sign in using an existing account:</div>
-						<div class="text-center">
-							<p style="margin-top: 10px">
-								<button onclick="$(this).scope().login('github')" title="Signin to Github"
-										class="zocial icon github"></button>
-								<button onclick="$(this).scope().login('google')" title="Signin to Google"
-										class="zocial icon google"></button>
-								<button onclick="$(this).scope().login('facebook')" title="Signin to Facebook"
-										class="zocial icon facebook"></button>
-							</p>
-						</div>
-						<div>
-						   	<h4>Information</h4>
-						   	<ul>
-						   	<li>Authentication is performed using the secure <a href="http://oauth.net/">OAuth protocol</a>,  
-						   	which means that <b>NO passwords</b> are stored on our servers.
-						   	By selecting one of the OAuth providers listed above, you are redirected to
-						   	the login page of the respective provider.
-						   	</li><li>riots only requires to retrieve your valid <b>email address</b> from 
-						   	the OAuth provider. If present, riots may also attempt to read your name, and 
-						   	profile image. riots will not utilize any other information from your profile.
-						   	</li>
-						   	<li>By continuing the sign-in (i.e., selecting on one of the OAuth providers above), 
-						   	you agree to the riots <b>Terms of Service</b> (see below).</li>
-						   	</ul>
-						</div>
+						<accordion close-others="oneAtATime">
+						    <accordion-group heading="riots Credentials" is-open="loginType.riots">
+								<div>
+						 			<div class="form-group">
+										<label for="devTypeDescr" class="col-sm-4 control-label">Username:</label>
+							            <div class="col-sm-8">
+											<input ng-model="loginInfo.username"/>
+							            </div>
+									</div>
+						 			<div class="form-group">
+										<label for="devTypeDescr" class="col-sm-4 control-label">Password:</label>
+							            <div class="col-sm-8">
+											<input ng-model="loginInfo.password"/>
+							            </div>
+									</div>
+						 			<div class="form-group">
+										<label for="devTypeDescr" class="col-sm-4 control-label"></label>
+							            <div class="col-sm-8">
+											<button ng-click="loginUserPass()">Sign In</button>
+							            </div>
+									</div>
+								</div>
+						    </accordion-group>
+						    <accordion-group heading="OAuth Login" is-open="loginType.oauth">
+								<div>Alternatively, you may also sign in using an existing account:</div>
+							    <div class="text-center">
+									<p style="margin-top: 10px">
+										<button onclick="$(this).scope().login('github')" title="Signin to Github"
+												class="zocial icon github"></button>
+										<button onclick="$(this).scope().login('google')" title="Signin to Google"
+												class="zocial icon google"></button>
+										<button onclick="$(this).scope().login('facebook')" title="Signin to Facebook"
+												class="zocial icon facebook"></button>
+									</p>
+								</div>
+								<div>
+								   	<h4>Information</h4>
+								   	<ul>
+								   	<li>Authentication is performed using the secure <a href="http://oauth.net/">OAuth protocol</a>,  
+								   	which ensures that <b>NO passwords</b> are stored on our servers.
+								   	By selecting an OAuth provider above, your request is forwarded to
+								   	the login page of the respective provider.
+								   	</li><li>riots only requires to retrieve your valid <b>email address</b> from 
+								   	the OAuth provider. If available, riots may also read your name, and profile 
+								   	image. riots will not utilize any other information from your external profile.
+								   	</li>
+								   	</ul>
+								</div>
+							</accordion-group>
+						</accordion>
+						<div>By signing in, you agree to the riots <b>Terms of Service</b> (see below).</div>
 						<div class="well" style="max-height: 200px; overflow: auto;">
 							<ng-include src="appConfig['appRootPath'] + '/views/terms_of_service.html'"></ng-include>
 						</div>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-primary" data-dismiss="modal">Cancel Sign-In</button>
+						<button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
 					</div>
 				</div>
 			</div>

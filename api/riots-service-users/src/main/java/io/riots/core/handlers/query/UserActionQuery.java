@@ -22,7 +22,7 @@ public class UserActionQuery {
     @SuppressWarnings("unchecked")
 	public List<UserAction> find(long from, long to, String user, 
     		String type, String httpPath, long sizeFrom, long sizeTo) {
-    	return (List<UserAction>)makeQuery(true, from, to, user, type, httpPath, sizeFrom, sizeTo);
+    	return (List<UserAction>)makeQuery(false, from, to, user, type, httpPath, sizeFrom, sizeTo);
     }
 
     public long count(long from, long to, String user, 
