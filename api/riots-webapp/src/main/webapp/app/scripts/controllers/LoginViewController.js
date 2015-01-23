@@ -3,6 +3,8 @@ app.controller('LoginViewController', [
     '$scope', '$http', '$compile',
     function ($scope, $http, $compile) {
 
+    	$scope.loginType = { riots: true };
+
         $scope.login = function (network) {
             //console.log(network, hello, hello(network));
 
@@ -21,5 +23,13 @@ app.controller('LoginViewController', [
 
         }
 
+        $scope.$watch("loginType.riots", function() {
+        	if(!$scope.loginType) return;
+        	$scope.loginType.oauth = !$scope.loginType.riots;
+        });
+        $scope.$watch("loginType.oauth", function() {
+        	if(!$scope.loginType) return;
+        	$scope.loginType.riots = !$scope.loginType.oauth;
+        });
     }
 ]);
