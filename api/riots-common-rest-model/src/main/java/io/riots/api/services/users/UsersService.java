@@ -1,7 +1,6 @@
 package io.riots.api.services.users;
 
 import io.riots.api.services.billing.UserUsageStatus;
-import io.riots.api.services.model.Constants;
 
 import java.util.List;
 
@@ -17,7 +16,6 @@ import javax.ws.rs.core.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 
@@ -78,43 +76,6 @@ public interface UsersService {
 	@PreAuthorize(Role.HAS_ROLE_ADMIN)
 	List<User> listUsers();
 
-	public static class AuthToken {
-		/**
-		 * third-party OAuth network,
-		 * e.g., "github", "google", "facebook"
-		 */
-		@JsonProperty
-		public String network;
-		@JsonProperty
-		public String username;
-		@JsonProperty
-		public String token;
-	}
-
-	public class GetAuthTokenRequest {
-		/**
-		 * third-party OAuth network,
-		 * e.g., "github", "google", "facebook"
-		 */
-		@JsonProperty
-		public String network;
-		@JsonProperty
-		public String username;
-		@JsonProperty
-		public String password;
-	}
-
-    @GET
-    @Path("/login")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Login and receive an authentication token.",
-            notes = "Authenticate via username/password at some third-party "
-            		+ "OAuth provider, e.g., facebook, google, or github. "
-            		+ "No passwords are ever stored at the platform.",
-            response = AuthToken.class)
-    public AuthToken login(GetAuthTokenRequest r);
-
     @GET
     @Path("/count")
     @Produces(MediaType.APPLICATION_JSON)
@@ -124,46 +85,29 @@ public interface UsersService {
 	@PreAuthorize(Role.HAS_ROLE_USER)
     long getNumUsers();
 
+    /* METHODS FOR AUTH TOKENS */
+
+    @POST
+    @Path("/login")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Login and receive an authentication token.",
+            notes = "Authenticate via username/password at some third-party "
+            		+ "OAuth provider, e.g., facebook, google, or github. "
+            		+ "No passwords are ever stored at the platform.",
+            response = AuthToken.class)
+    public AuthToken login(RequestGetAuthToken r);
+
+    @POST
+    @Path("/auth")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Verify an authentication token.",
+            notes = "Verifies the provided authentication token.",
+            response = AuthToken.class)
+    public AuthToken verifyAuthToken(AuthToken r);
+
     /* USER ACTION METHODS */
-
-    public static class GetUserActionsRequest {
-    	@JsonProperty(Constants.START_TIME)
-    	long startTime;
-    	@JsonProperty(Constants.END_TIME)
-    	long endTime;
-    	@JsonProperty(Constants.USER_ID)
-    	String userId;
-    	@JsonProperty
-    	String actionType;
-    	@JsonProperty
-    	String httpPath;
-    	@JsonProperty
-    	long sizeFrom;
-    	@JsonProperty
-    	long sizeTo;
-
-    	public long getStartTime() {
-			return startTime;
-		}
-    	public long getEndTime() {
-			return endTime;
-		}
-    	public String getUserId() {
-			return userId;
-		}
-    	public String getActionType() {
-			return actionType;
-		}
-    	public String getHttpPath() {
-			return httpPath;
-		}
-    	public long getSizeFrom() {
-			return sizeFrom;
-		}
-    	public long getSizeTo() {
-			return sizeTo;
-		}
-    }
 
     @POST
     @Path("/actions/query")
@@ -173,7 +117,7 @@ public interface UsersService {
             notes = "Retrieve a list of actions performed by the users in the past.",
             response = UserAction.class)
     @PreAuthorize(Role.HAS_ROLE_ADMIN)
-    List<UserAction> getUserActions(GetUserActionsRequest req);
+    List<UserAction> getUserActions(RequestGetUserActions req);
 
     @POST
     @Path("/actions")

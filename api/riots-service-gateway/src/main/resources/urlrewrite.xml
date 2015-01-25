@@ -5,4 +5,8 @@
         <from>^/favicon\.ico$</from>
         <to>/app/riots.favicon.ico</to>
     </rule>
+    <rule match-type="regex">
+        <from>^/terms_of_service\.html$</from>
+        <to>/app/views/terms_of_service.html</to>
+    </rule>
 </urlrewrite>

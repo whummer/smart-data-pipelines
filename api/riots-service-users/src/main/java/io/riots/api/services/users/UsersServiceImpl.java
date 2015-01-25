@@ -8,21 +8,31 @@ import io.riots.api.services.billing.UserActionLimit;
 import io.riots.api.services.billing.UserActionLimitStatus;
 import io.riots.api.services.billing.UserUsageStatus;
 import io.riots.core.auth.AuthHeaders;
+import io.riots.core.auth.AuthNetwork;
 import io.riots.core.clients.ServiceClientFactory;
 import io.riots.core.handlers.command.UserActionCommand;
 import io.riots.core.handlers.command.UserCommand;
 import io.riots.core.handlers.query.UserActionQuery;
 import io.riots.core.handlers.query.UserQuery;
+import io.riots.core.repositories.AuthTokenRepository;
 import io.riots.core.util.ServiceUtil;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.ForbiddenException;
+import javax.ws.rs.core.Context;
 
 import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
+import org.apache.cxf.jaxrs.ext.MessageContext;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,6 +40,7 @@ import org.springframework.stereotype.Service;
 
 import com.codahale.metrics.annotation.ExceptionMetered;
 import com.codahale.metrics.annotation.Timed;
+import com.google.common.cache.CacheBuilder;
 
 /**
  * Service for managing users in the systems.
@@ -41,6 +52,17 @@ public class UsersServiceImpl implements UsersService {
 
 	static final Logger LOG = Logger.getLogger(UsersServiceImpl.class);
 
+	private static final int TOKEN_EXPIRY_MS = 1000 * 60 * 60;
+
+	/**
+	 * Cache for auth tokens.
+	 */
+	private static final ConcurrentMap<Object,Object> AUTH_TOKENS_CACHE = 
+			CacheBuilder.newBuilder()
+		    .maximumSize(500)
+		    .expireAfterWrite(5, TimeUnit.MINUTES)
+		    .build().asMap();
+
     @Autowired
     UserQuery userQuery;
     @Autowired
@@ -49,11 +71,15 @@ public class UsersServiceImpl implements UsersService {
     UserActionQuery userActionQuery;
     @Autowired
     UserActionCommand userActionCommand;
+    @Autowired
+    AuthTokenRepository authTokenRepo;
 
     @Autowired
     HttpServletRequest req;
     @Autowired
     AuthHeaders authHeaders;
+    @Context
+    MessageContext context;
     @Autowired
     ServiceClientFactory clientFactory;
 
@@ -97,11 +123,58 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     @Timed @ExceptionMetered
-    public AuthToken login(GetAuthTokenRequest r) {
+    public AuthToken login(RequestGetAuthToken r) {
     	AuthToken response = new AuthToken();
+    	r.network = StringUtils.isEmpty(r.network) ? AuthNetwork.RIOTS : r.network;
     	response.network = r.network;
-    	// TODO implement
+    	if(AuthNetwork.RIOTS.equals(r.network)) {
+    		/* in riots, we assume that the user is identified via email. */
+    		String emailIdenfifier = r.username;
+    		User user = userQuery.findByEmail(emailIdenfifier);
+    		if(user == null) {
+    			ServiceUtil.setResponseStatus(context, HttpServletResponse.SC_FORBIDDEN);
+    			LOG.info("Login error: User email unknown: '" + emailIdenfifier + "'");
+    	    	throw new ForbiddenException();
+    		}
+    		if(!user.getPassword().equals(r.password)) {
+    			ServiceUtil.setResponseStatus(context, HttpServletResponse.SC_FORBIDDEN);
+    			LOG.info("Login error: Invalid password: '" + r.password + "' vs. expected '" + user.getPassword() + "'");
+    	    	throw new ForbiddenException();
+    		}
+    		response.token = UUID.randomUUID().toString();
+    		response.expiry = System.currentTimeMillis() + TOKEN_EXPIRY_MS;
+    		response = authTokenRepo.save(response);
+    		AUTH_TOKENS_CACHE.put(response.token, response);
+    		return response;
+    	}
+    	// TODO implement for other auth networks
     	throw new NotImplementedException();
+    }
+
+    @Override
+    @Timed @ExceptionMetered
+    public AuthToken verifyAuthToken(AuthToken r) {
+    	/* get tokens from cache */
+    	AuthToken token = (AuthToken)AUTH_TOKENS_CACHE.get(r.token);
+    	if(token != null) {
+    		return token;
+    	}
+    	/* get tokens from DB */
+    	List<AuthToken> tokens = authTokenRepo.findByToken(r.token);
+    	if(tokens.size() == 1) {
+	    	token = tokens.get(0);
+	    	/* update expiry date */
+    		token.expiry = System.currentTimeMillis() + TOKEN_EXPIRY_MS;
+    		token = authTokenRepo.save(token);
+    		/* put token to cache */
+    		AUTH_TOKENS_CACHE.put(token.token, token);
+	    	/* return valid token */
+    		return token;
+    	} else if(tokens.size() > 1) {
+    		LOG.warn("Multiple AuthToken objects found for token string: " + r.token);
+    	}
+    	ServiceUtil.setResponseStatus(context, HttpServletResponse.SC_FORBIDDEN);
+    	throw new ForbiddenException();
     }
 
     @Override
@@ -114,7 +187,7 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     @Timed @ExceptionMetered
-    public List<UserAction> getUserActions(GetUserActionsRequest req) {
+    public List<UserAction> getUserActions(RequestGetUserActions req) {
     	return userActionQuery.find(req.getStartTime(), req.getEndTime(), 
     			req.getUserId(), req.getActionType(), req.getHttpPath(), 
     			req.getSizeFrom(), req.getSizeTo());

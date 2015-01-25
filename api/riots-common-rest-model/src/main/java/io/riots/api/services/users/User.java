@@ -20,6 +20,15 @@ public class User implements ObjectIdentifiable {
 	@JsonProperty
 	private String id;
 	/**
+	 * Password of this user, if available. The password
+	 * is not stored here if this user is authenticated via OAuth.
+	 * Otherwise, if the user is registered with riots, the 
+	 * password is stored here in hashed form, e.g., SHA-256. 
+	 * See {@link PasswordHasher} class.
+	 */
+	@JsonProperty
+	private Object password;
+	/**
 	 * Email address.
 	 */
 	@JsonProperty
@@ -58,6 +67,9 @@ public class User implements ObjectIdentifiable {
 	}
 	public String getLastname() {
 		return lastname;
+	}
+	public Object getPassword() {
+		return password;
 	}
 	public List<Role> getRoles() {
 		return roles;

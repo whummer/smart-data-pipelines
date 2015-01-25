@@ -15,6 +15,7 @@ public abstract class AuthNetwork {
 	public static final String GITHUB = "github";
 	public static final String GOOGLE = "google";
 	public static final String FACEBOOK = "facebook";
+	public static final String RIOTS = "riots";
 
 	public static final List<String> NETWORKS = 
 			Arrays.asList(GITHUB, GOOGLE, FACEBOOK);
