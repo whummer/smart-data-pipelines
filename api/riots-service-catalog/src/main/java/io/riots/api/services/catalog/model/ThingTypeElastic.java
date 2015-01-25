@@ -15,6 +15,10 @@ public class ThingTypeElastic extends ThingType {
     }
 
     public ThingTypeElastic(ThingType thingType) {
+        if (thingType.getId() != null) {
+            setId(thingType.getId());
+        }
+
         setCreated(thingType.getCreated());
         setCreatorId(thingType.getCreatorId());
         setDescription(thingType.getDescription());

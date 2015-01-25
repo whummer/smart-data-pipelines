@@ -18,18 +18,9 @@ import org.springframework.context.annotation.Bean;
  */
 @EnableDiscoveryClient
 @EnableCircuitBreaker
-// todo @EnableMetrics clashes with @Context MessageContext injection in the clients impl classes
 @EnableMetrics(proxyTargetClass = true, exposeProxy = true)
 public class CatalogServiceStarter extends ElasticSearchEnabledServiceStarter {
 
-	/*@Bean
-	@Autowired
-	public InstrumentedFilter metricsServlet(MetricRegistry registry) {
-		return new InstrumentedFilter();
-	}
-
-
-*/
 	@Bean
 	public CORSFilter corsFilter() {
 		return new CORSFilter();

@@ -47,7 +47,6 @@ import java.util.stream.Collectors;
  * @author whummer
  */
 @Service
-//@DependsOn("elasticsearchTemplateInterceptor")
 public class ElasticCatalogService implements CatalogService {
 
 	static final Logger log = LoggerFactory.getLogger(ElasticCatalogService.class);

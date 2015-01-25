@@ -3,15 +3,7 @@ package io.riots.demo;
 import io.riots.api.services.billing.BillingService;
 import io.riots.api.services.billing.PricingPlan;
 import io.riots.api.services.billing.TimePeriod;
-import io.riots.api.services.catalog.CatalogService;
-import io.riots.api.services.catalog.ImageData;
-import io.riots.api.services.catalog.Manufacturer;
-import io.riots.api.services.catalog.Property;
-import io.riots.api.services.catalog.PropertyType;
-import io.riots.api.services.catalog.ThingType;
-import io.riots.api.services.catalog.ValueDomainContinuous;
-import io.riots.api.services.catalog.ValueDomainDiscrete;
-import io.riots.api.services.catalog.ValueDomainEnumerated;
+import io.riots.api.services.catalog.*;
 import io.riots.api.services.model.interfaces.ObjectNamed;
 import io.riots.api.services.sim.PropertySimulationFunctionBased;
 import io.riots.api.services.sim.PropertySimulationGPS;
@@ -21,15 +13,6 @@ import io.riots.api.services.users.UserActionType;
 import io.riots.api.services.users.UsersService;
 import io.riots.core.auth.AuthHeaders;
 import io.riots.core.clients.ServiceClientFactory;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.cxf.jaxrs.client.WebClient;
@@ -49,6 +32,13 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author whummer

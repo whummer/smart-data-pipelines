@@ -9,6 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.jms.activemq.ActiveMQAutoConfiguration;
+import org.springframework.boot.autoconfigure.jmx.JmxAutoConfiguration;
+import org.springframework.cloud.netflix.archaius.ArchaiusAutoConfiguration;
+import org.springframework.cloud.netflix.ribbon.RibbonAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
@@ -17,7 +21,10 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
  * @author riox
  */
 @EnableElasticsearchRepositories(elasticsearchTemplateRef = "elasticsearchTemplate", basePackages = {"io.riots.core.repositories"})
-@EnableAutoConfiguration
+@EnableAutoConfiguration(exclude = {
+        JmxAutoConfiguration.class, ArchaiusAutoConfiguration.class,
+        RibbonAutoConfiguration.class, ActiveMQAutoConfiguration.class
+})
 public class ElasticSearchEnabledServiceStarter extends ServiceStarter {
 
     @Value("${elasticsearch.hostname}")
