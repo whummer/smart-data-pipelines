@@ -30,7 +30,7 @@ public class SendEmail {
 		}
 	}
 
-	public static void main(String[] args) {
-		send("w@hummer.io", "subject", "message");
-	}
+//	public static void main(String[] args) {
+//		send("w@hummer.io", "subject", "message");
+//	}
 }
