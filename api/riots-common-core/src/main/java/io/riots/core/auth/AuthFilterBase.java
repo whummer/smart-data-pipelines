@@ -141,6 +141,7 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
         userRoleMappings.add(new UserRoleMapping(ADMIN_USER_1, Role.ROLE_ADMIN));
         userRoleMappings.add(new UserRoleMapping("dev@riox.io", Role.ROLE_ADMIN));
         userRoleMappings.add(new UserRoleMapping("olzn23@gmail.com", Role.ROLE_ADMIN));
+        userRoleMappings.add(new UserRoleMapping("o@omoser.com", Role.ROLE_ADMIN));
         userRoleMappings.add(new UserRoleMapping(".*", Role.ROLE_USER));
     }
     static {
