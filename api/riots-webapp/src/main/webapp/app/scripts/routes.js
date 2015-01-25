@@ -68,7 +68,7 @@ define([], function() {
                     appRoot + '/scripts/controllers/MetadataViewController.js',
                 ]
             },
-            '/login': {
+            '/login/:loginAction': {
                 templateUrl: appRoot + '/views/login.html',
                 dependencies: [
                     //appRoot + '/scripts/controllers/LoginViewController.js'

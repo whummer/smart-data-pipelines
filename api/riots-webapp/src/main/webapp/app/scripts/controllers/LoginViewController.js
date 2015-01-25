@@ -1,13 +1,15 @@
 var app = angular.module("app");
 app.controller('LoginViewController', [
-    '$scope', '$http', '$compile',
-    function ($scope, $http, $compile) {
+    '$scope', '$http', '$compile', '$routeParams',
+    function ($scope, $http, $compile, $routeParams) {
 
     	$scope.loginType = { riots: true };
     	$scope.loginInfo = {
     			username: "",
-    			password: ""
+    			password: "",
+    			loginAction: $routeParams.loginAction
     	};
+    	$scope.regInfo = {};
 
         $scope.login = function (network) {
             //console.log(network, hello, hello(network));
@@ -28,6 +30,8 @@ app.controller('LoginViewController', [
         }
 
         $scope.loginUserPass = function() {
+        	$scope.loginInfo.errorMsg = "";
+        	$scope.loginInfo.successMsg = "";
         	var opts = {
         			username: $scope.loginInfo.username,
         			password: $scope.loginInfo.password
@@ -38,6 +42,32 @@ app.controller('LoginViewController', [
         	}, function() {
         		console.log("login error.");
         		$scope.loginInfo.errorMsg = "Login failed. Please try again.";
+        	});
+        }
+
+        $scope.loginSignup = function() {
+        	$scope.regInfo.errorMsg = "";
+        	$scope.regInfo.successMsg = "";
+        	if(!$scope.regInfo.password1 || !$scope.regInfo.password2 
+        			|| !$scope.regInfo.email || !$scope.regInfo.firstname
+        			 || !$scope.regInfo.lastname) {
+        		$scope.regInfo.errorMsg = "Please fill out all fields.";
+        		return;
+			}
+        	if($scope.regInfo.password1 != $scope.regInfo.password2) {
+        		$scope.regInfo.errorMsg = "Passwords do not match.";
+        		return;
+			}
+        	var signupInfo = {
+            		email: $scope.regInfo.email,
+            		password: $scope.regInfo.password1,
+            		firstname: $scope.regInfo.firstname,
+            		lastname: $scope.regInfo.lastname,
+        	};
+        	riots.signup(signupInfo, function() {
+        		$scope.regInfo.successMsg = "Sign-up successful. Please check your email for details.";
+        	}, function(error) {
+        		$scope.regInfo.errorMsg = error.result.message;
         	});
         }
 

@@ -93,6 +93,7 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
             "^(/app)?/views/dialogs\\.html$",
             "^(/app)?/views/login\\.html$",
             "^(/app)?/views/login_form\\.html$",
+            "^(/app)?/views/login_register\\.html$",
             "^(/app)?/views/login_result\\.html$",
             "^(/app)?/views/terms_of_service\\.html$",
             "^(/app)?/views/menu\\.html$",
@@ -129,6 +130,7 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
             "^(/api/v.)?/files.*$",
             /* allow access to login/auth API */
             "^/api/v./users/login/?$",
+            "^/api/v./users/signup/?$",
 
             /* Eureka URLs for gateway */
             "^/health$",

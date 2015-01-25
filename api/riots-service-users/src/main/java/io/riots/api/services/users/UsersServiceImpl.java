@@ -9,17 +9,21 @@ import io.riots.api.services.billing.UserActionLimitStatus;
 import io.riots.api.services.billing.UserUsageStatus;
 import io.riots.core.auth.AuthHeaders;
 import io.riots.core.auth.AuthNetwork;
+import io.riots.core.auth.PasswordUtils;
 import io.riots.core.clients.ServiceClientFactory;
 import io.riots.core.handlers.command.UserActionCommand;
 import io.riots.core.handlers.command.UserCommand;
 import io.riots.core.handlers.query.UserActionQuery;
 import io.riots.core.handlers.query.UserQuery;
 import io.riots.core.repositories.AuthTokenRepository;
+import io.riots.core.repositories.UserPasswordRepository;
 import io.riots.core.util.ServiceUtil;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
@@ -27,11 +31,15 @@ import java.util.concurrent.TimeUnit;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.ForbiddenException;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.apache.cxf.jaxrs.ext.MessageContext;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,6 +81,8 @@ public class UsersServiceImpl implements UsersService {
     UserActionCommand userActionCommand;
     @Autowired
     AuthTokenRepository authTokenRepo;
+    @Autowired
+    UserPasswordRepository userPassRepo;
 
     @Autowired
     HttpServletRequest req;
@@ -93,7 +103,7 @@ public class UsersServiceImpl implements UsersService {
 	@Override
 	@Timed @ExceptionMetered
 	public User saveInfoAboutMe(User user) {
-		return userCommand.update(user);
+		return userCommand.createOrUpdate(user);
 	}
 
     @Override
@@ -121,6 +131,41 @@ public class UsersServiceImpl implements UsersService {
     	return r;
     }
 
+    /* LOGIN/AUTHENTICATION METHODS */
+
+    @Override
+    @Timed @ExceptionMetered
+    public User signup(RequestSignupUser r) {
+    	if(!EmailValidator.getInstance(false).isValid(r.getEmail())) {
+	    	throw forbidden("Illegal email address.");
+    	}
+    	if(!PasswordUtils.isValid(r.password)) {
+	    	throw forbidden("Invalid password (Must be longer than 6 characters).");
+    	}
+    	User existing = userQuery.findByEmail(r.getEmail());
+    	if(existing != null) {
+	    	throw forbidden("User with this email adress is already registered.");
+    	}
+    	User u = userCommand.createOrUpdate(r);
+    	String passHash = PasswordUtils.createHash(r.password);
+    	UserPassword pass = new UserPassword(u.getId(), passHash);
+    	userPassRepo.save(pass);
+    	return u;
+    }
+
+    private WebApplicationException webappError(int status, String msg) {
+    	Map<String,Object> response = new HashMap<>();
+    	response.put("status", status);
+    	response.put("message", msg);
+    	return new WebApplicationException(Response.status(status)
+    			.entity(response)
+    			.header("Content-Type", MediaType.APPLICATION_JSON)
+    			.build());
+    }
+    private WebApplicationException forbidden(String msg) {
+    	return webappError(HttpServletResponse.SC_FORBIDDEN, msg);
+    }
+
     @Override
     @Timed @ExceptionMetered
     public AuthToken login(RequestGetAuthToken r) {
@@ -136,9 +181,17 @@ public class UsersServiceImpl implements UsersService {
     			LOG.info("Login error: User email unknown: '" + emailIdenfifier + "'");
     	    	throw new ForbiddenException();
     		}
-    		if(!user.getPassword().equals(r.password)) {
+    		List<UserPassword> userPasswords = userPassRepo.findByUserId(user.getId());
+    		if(userPasswords.isEmpty() || userPasswords.size() > 1) {
     			ServiceUtil.setResponseStatus(context, HttpServletResponse.SC_FORBIDDEN);
-    			LOG.info("Login error: Invalid password: '" + r.password + "' vs. expected '" + user.getPassword() + "'");
+    			LOG.info("Login error: Unexpected array of passwords in DB for user id '" + 
+    					user.getId() + "': " + userPasswords);
+    	    	throw new ForbiddenException();
+    		}
+    		String expectedPassword = userPasswords.get(0).getPassword();
+    		if(!expectedPassword.equals(r.password)) {
+    			ServiceUtil.setResponseStatus(context, HttpServletResponse.SC_FORBIDDEN);
+    			LOG.info("Login error: Invalid password: '" + r.password + "' vs. expected '" + expectedPassword + "'");
     	    	throw new ForbiddenException();
     		}
     		response.token = UUID.randomUUID().toString();

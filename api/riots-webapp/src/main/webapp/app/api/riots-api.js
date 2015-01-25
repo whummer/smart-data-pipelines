@@ -42,6 +42,17 @@ sh.login = function(options, callback, errorCallback) {
 	options.password = shaObj.getHash("SHA-256", "HEX");
 	callPOST(appConfig.services.users.url + "/login", options, callback, errorCallback);
 }
+var assertAuth = function() {
+	if(!sh.authInfo || !sh.authInfo.userId || !sh.authInfo.appKey) {
+		throw "Please provide valid authentication information using RIOTS_USER_ID and RIOTS_APP_KEY global variables.";
+	}
+}
+
+/* register/authenticate user */
+
+sh.signup = function(userInfo, callback, errorCallback) {
+	return riots.callPOST(appConfig.services.users.url + "/signup", userInfo, callback, errorCallback);
+}
 sh.auth = function(options, callback, errorCallback) {
 	sh.authInfo = {};
 	sh.authInfo.userId = (options && options.RIOTS_USER_ID) ? options.RIOTS_USER_ID : window.RIOTS_USER_ID;
@@ -66,11 +77,6 @@ sh.auth = function(options, callback, errorCallback) {
 			errorCallback(result);
 		}
 	});
-}
-var assertAuth = function() {
-	if(!sh.authInfo || !sh.authInfo.userId || !sh.authInfo.appKey) {
-		throw "Please provide valid authentication information using RIOTS_USER_ID and RIOTS_APP_KEY global variables.";
-	}
 }
 
 /* methods for GETting data */

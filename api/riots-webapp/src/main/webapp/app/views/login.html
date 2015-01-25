@@ -82,8 +82,12 @@
 			<div style="margin-bottom: 20px">
 				<img src="http://www.omoser.com/riots.png" style="max-height: 50px;"/>
 			</div>
-
-			<ng-include src="appConfig['appRootPath'] + '/views/login_form.html'"></ng-include>
+			<div ng-show="loginInfo.action != 'register'">
+				<ng-include src="appConfig['appRootPath'] + '/views/login_form.html'"></ng-include>
+			</div>
+			<div ng-show="loginInfo.action == 'register'">
+				<ng-include src="appConfig['appRootPath'] + '/views/login_register.html'"></ng-include>
+			</div>
 		</div>
 	</div>
 </section>
