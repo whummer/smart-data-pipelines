@@ -49,7 +49,7 @@ public class CORSFilter implements Filter {
 	}
 
 	private boolean isGatewayForwarded(HttpServletRequest request) {
-		return request.getHeader(AuthHeaders.HEADER_INTERNAL_CALL) != null;
+		return request.getHeader("x-forwarded-host") != null;
 	}
 
 	public void init(FilterConfig filterConfig) {}
