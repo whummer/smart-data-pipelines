@@ -2,7 +2,7 @@
 
   <div ng-show="shared.selectedThingType" class="container-fluid">
 
-    <form class="form-horizontal" role="form" style="width: 100%">
+    <form ng-submit="saveThingType()" class="form-horizontal" role="form" style="width: 100%">
 
       <div class="row">
 
@@ -137,17 +137,18 @@
 
     $scope.IMAGE_DATA = IMAGE_DATA;
 
-    $scope.getFeatureList = function (devType, forceReset) {
-      if (!devType)
+    $scope.getFeatureList = function (thingType, forceReset) {
+      if (!thingType)
         return [];
-      if (!devType.featureList || forceReset) {
-        devType.featureList = [];
-        for (var key in devType.features) {
-          var entry = {key: key, value: devType.features[key]};
-          devType.featureList.push(entry);
+
+      if (!thingType.featureList || forceReset) {
+        thingType.featureList = [];
+        for (var key in thingType.features) {
+          var entry = {key: key, value: thingType.features[key]};
+          thingType.featureList.push(entry);
         }
       }
-      return devType.featureList;
+      return thingType.featureList;
     };
 
     var addThingTypeFeature = function () {
