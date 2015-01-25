@@ -88,6 +88,15 @@ public interface UsersService {
     /* METHODS FOR AUTH TOKENS */
 
     @POST
+    @Path("/signup")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Sign up a new user.",
+            notes = "Create a new user account corresponding to the payload information.",
+            response = User.class)
+    public User signup(RequestSignupUser r);
+
+    @POST
     @Path("/login")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)

@@ -12,6 +12,8 @@
 /* Note: riots-api.js needs to be included first for this to work. */
 var sh = window.riots;
 
+/* manage pricing plans */
+
 sh.delete.plan = function(plan, callback) {
 	var id = plan.id ? plan.id : plan;
 	return riots.callDELETE(appConfig.services.billing.url + "/plans/" + id, callback);

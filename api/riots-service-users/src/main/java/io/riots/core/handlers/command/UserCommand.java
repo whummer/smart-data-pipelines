@@ -20,8 +20,8 @@ public class UserCommand {
     @Autowired
     UserRepository repository;
 
-    public User update(User obj) {
-        log.debug(Markers.COMMAND, "Persisting User {}", obj);
+    public User createOrUpdate(User obj) {
+        log.debug(Markers.COMMAND, "Updating User {}", obj);
         return repository.save(obj);
     }
 

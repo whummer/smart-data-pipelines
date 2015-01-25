@@ -1,125 +1,125 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
-  <link rel="stylesheet" href="scripts/ext/bootstrap-tagsinput/dist/bootstrap-tagsinput.css"/>
-  <link rel="stylesheet" href="scripts/ext/leaflet/dist/leaflet.css"/>
-  <link rel="stylesheet" href="scripts/ext/raty/lib/jquery.raty.css"/>
-  <link rel="stylesheet" href="scripts/ext/angular-bootstrap-datetimepicker/src/css/datetimepicker.css"/>
-  <!-- Use CDN version because JAR packaging of some CSS files results in corrupted font files -->
-  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
-  <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css"/>
-  <link rel="stylesheet" href="//cdn.rawgit.com/angular-ui/bower-ui-grid/v3.0.0-RC.18/ui-grid.min.css"/>
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/zocial/0/zocial.css"/>
-  <link rel="stylesheet" href="//rawgit.com/JanStevens/angular-growl-2/master/build/angular-growl.css">
-  <!-- last position for custom styles (to enforce overrides) -->
-  <link rel="stylesheet" href="styles/app.css"/>
+	<link rel="stylesheet" href="scripts/ext/bootstrap-tagsinput/dist/bootstrap-tagsinput.css"/>
+	<link rel="stylesheet" href="scripts/ext/leaflet/dist/leaflet.css"/>
+	<link rel="stylesheet" href="scripts/ext/raty/lib/jquery.raty.css"/>
+	<link rel="stylesheet" href="scripts/ext/angular-bootstrap-datetimepicker/src/css/datetimepicker.css"/>
+	<!-- Use CDN version because JAR packaging of some CSS files results in corrupted font files -->
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css"/>
+	<link rel="stylesheet" href="//cdn.rawgit.com/angular-ui/bower-ui-grid/v3.0.0-RC.18/ui-grid.min.css"/>
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/zocial/0/zocial.css"/>
+	<link rel="stylesheet" href="//rawgit.com/JanStevens/angular-growl-2/master/build/angular-growl.css">
+	<!-- last position for custom styles (to enforce overrides) -->
+	<link rel="stylesheet" href="styles/app.css"/>
 
-  <!-- scripts -->
-  <script type="text/javascript" src="scripts/ext/requirejs/require.js"></script>
-  <script type="text/javascript" src="config.js"></script>
-  <script type="text/javascript" src="config.requirejs.js"></script>
-  <script type="text/javascript">
-    require.config(requirejsAppConfig);
-  </script>
+	<!-- scripts -->
+	<script type="text/javascript" src="scripts/ext/requirejs/require.js"></script>
+	<script type="text/javascript" src="config.js"></script>
+	<script type="text/javascript" src="config.requirejs.js"></script>
+	<script type="text/javascript">
+		require.config(requirejsAppConfig);
+	</script>
 
-  <script type="text/javascript" src="/app/scripts/controllers/AppController.js"></script>
-  <script type="text/javascript" src="scripts/build/riots-all.js"></script>
-  <script type="text/javascript" src="api/riots-api.js"></script>
-  <script type="text/javascript" src="scripts/init.js"></script>
+	<script type="text/javascript" src="/app/scripts/controllers/AppController.js"></script>
+	<script type="text/javascript" src="scripts/build/riots-all.js"></script>
+	<script type="text/javascript" src="api/riots-api.js"></script>
+	<script type="text/javascript" src="scripts/init.js"></script>
 
-  <style type="text/css">
-    html, body {
-      height: 100%;
-      margin: 0px;
-    }
-    #main {
-      padding-top: 15px;
-    }
+	<style type="text/css">
+		html, body {
+			height: 100%;
+			margin: 0px;
+		}
+		#main {
+			padding-top: 15px;
+		}
 
-    /* splash page */
-    #splash {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      background-color: #f6f8f9;
-      z-index: 3000;
-    }
-    #splash div {
-      position: relative;
-      height: 50px;
-      width: 100px;
-      top: 50%;
-      left: 50%;
-      margin-left: -50px;
-      margin-top: -25px;
-      text-align: center;
-    }
+		/* splash page */
+		#splash {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			background-color: #f6f8f9;
+			z-index: 3000;
+		}
+		#splash div {
+			position: relative;
+			height: 50px;
+			width: 100px;
+			top: 50%;
+			left: 50%;
+			margin-left: -50px;
+			margin-top: -25px;
+			text-align: center;
+		}
 
-  </style>
+	</style>
 
-  <script type="text/javascript">
-    var appFullyLoadedOnce = false;
-    function showSplashScreen() {
-      if (!appFullyLoadedOnce)
-        $("#splash").show();
-    }
+	<script type="text/javascript">
+		var appFullyLoadedOnce = false;
+		function showSplashScreen() {
+			if (!appFullyLoadedOnce)
+				$("#splash").show();
+		}
 
-    function hideSplashScreen() {
-      appFullyLoadedOnce = true;
-      setTimeout(function () {
-        $("#splash").hide();
-      }, 500);
-    }
+		function hideSplashScreen() {
+			appFullyLoadedOnce = true;
+			setTimeout(function () {
+				$("#splash").hide();
+			}, 500);
+		}
 
-    function clickMenu(element) {
-      window.location.href = element.getAttribute("href");
-      return false;
-    }
+		function clickMenu(element) {
+			window.location.href = element.getAttribute("href");
+			return false;
+		}
 
-    setTimeout(function () {
-      if (!appFullyLoadedOnce) {
-        //alert("Connectivity problem. Please refresh the page once you are back online.");
-        console.log("Connectivity problem. Please refresh the page once you are back online.");
-      }
-    }, 10000);
+		setTimeout(function () {
+			if (!appFullyLoadedOnce) {
+				//alert("Connectivity problem. Please refresh the page once you are back online.");
+				console.log("Connectivity problem. Please refresh the page once you are back online.");
+			}
+		}, 10000);
 
-  </script>
+	</script>
 
-  <title>riots.io - The #1 platform for rapid IoT development</title>
+	<title>riots.io - The #1 platform for rapid IoT development</title>
 </head>
 <body>
 
 <!-- Splash Screen -->
 <div id="splash">
-  <div>
-    <p>LOADING...</p>
-    <p><img src="img/loading.gif" alt="loading"/></p>
-  </div>
+	<div>
+		<p>LOADING...</p>
+		<p><img src="img/loading.gif" alt="loading"/></p>
+	</div>
 </div>
 
 <div id="wrapperDiv" ng-controller="RootController" data-ng-init="hideSplashScreen()">
 
-  <!-- container for growl messages -->
-  <div growl id="growl" class="growl-container"></div>
+	<!-- container for growl messages -->
+	<div growl id="growl" class="growl-container"></div>
 
-  <!-- include top menu -->
-  <ng-include src="appConfig['appRootPath'] + '/views/menu.html'" ng-if="authInfo"></ng-include>
+	<!-- include top menu -->
+	<ng-include src="appConfig['appRootPath'] + '/views/menu.html'" ng-if="authInfo"></ng-include>
 
-  <!-- Auth/Login Container -->
-  <div ng-if="!authInfo" id="authContainer" style="display: none;">
-    <ng-include src="appConfig['appRootPath'] + '/views/login.html'"></ng-include>
-  </div>
+	<!-- Auth/Login Container -->
+	<div ng-if="!authInfo" id="authContainer" style="display: none;">
+		<ng-include src="appConfig['appRootPath'] + '/views/login.html'"></ng-include>
+	</div>
 
-  <!-- Main Content Container -->
-  <div ng-if="authInfo" id="main" class="container" style="height: 100%; width: 100% " ng-view>
-  </div>
+	<!-- Main Content Container -->
+	<div ng-if="authInfo" id="main" class="container" style="height: 100%; width: 100% " ng-view>
+	</div>
 
-  <!-- Modal Dialog Templates -->
-  <ng-include src="'/app/views/dialogs.html'"></ng-include>
+	<!-- Modal Dialog Templates -->
+		<ng-include src="'/app/views/dialogs.html'"></ng-include>
 
 </div>
 </body>
