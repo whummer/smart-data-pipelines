@@ -1,5 +1,6 @@
-package io.riots.api.services.gateway;
+package io.riots.boot.starters;
 
+import io.riots.api.services.gateway.GatewayStatsFilter;
 import io.riots.core.auth.AuthFilterZuul;
 import io.riots.core.auth.CORSFilter;
 import io.riots.core.filters.RiotsUrlRewriteFilter;
