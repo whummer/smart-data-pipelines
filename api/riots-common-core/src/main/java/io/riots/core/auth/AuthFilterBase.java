@@ -92,8 +92,10 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
             "^(/app)?/index\\.html$",
             "^(/app)?/views/dialogs\\.html$",
             "^(/app)?/views/login\\.html$",
+            "^(/app)?/views/login_form\\.html$",
             "^(/app)?/views/login_result\\.html$",
             "^(/app)?/views/terms_of_service\\.html$",
+            "^(/app)?/views/menu\\.html$",
             "^(/app)?/styles/.*\\.css$",
             "^(/app)?/config\\.js$",
             "^(/app)?/config(\\.requirejs)?\\.js$",
@@ -121,6 +123,7 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
             /* Demo URLs */
             "^/demo/*.*$",
             "^/golfcars.*$",
+            "^/website/.*$",
 
             /* allow access to file clients */
             "^(/api/v.)?/files.*$",

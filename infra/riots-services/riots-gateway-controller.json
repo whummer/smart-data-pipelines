@@ -18,8 +18,7 @@
                             "image": "${DOCKER_REGISTRY}/riots/service-gateway:${IMAGE_TAG}",
                             "ports": [
                                 {
-                                    "containerPort": 8080,
-                                    "hostPort": 8080
+                                    "containerPort": 8080
                                 }
                             ],
                             "env" : [

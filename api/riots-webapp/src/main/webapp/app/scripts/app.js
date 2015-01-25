@@ -146,6 +146,9 @@ define(
 						$scope.userInfo = null;
 						riots.me(function(me) {
 							$scope.userInfo = me;
+						}, function(error) {
+							console.log(error);
+							//$scope.growlInfo("Cannot load user profile.");
 						});
 					};
 					loadUserInfo();

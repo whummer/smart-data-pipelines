@@ -24,8 +24,8 @@ import org.springframework.context.annotation.ImportResource;
 		basePackages = { "io.riots.core", "io.riots.api" },
 		excludeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, value = Configuration.class)
 )
-@ImportResource(value = {"classpath:spring-basicauth.xml"}) // TODO temporary (T-Systems demo)
-//@ImportResource(value = {"classpath:/spring-noauth.xml"})
+//@ImportResource(value = {"classpath:spring-basicauth.xml"}) // TODO temporary (T-Systems demo)
+@ImportResource(value = {"classpath:/spring-noauth.xml"})
 public class WebappServiceStarter extends SpringBootServletInitializer {
 
 	/**

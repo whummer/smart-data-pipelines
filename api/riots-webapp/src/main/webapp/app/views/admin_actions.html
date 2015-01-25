@@ -141,6 +141,10 @@ app.controller('AdminActionsController',
     	opts.sizeTo = parseInt(opts.sizeTo);
     	riots.actions(opts, function(actions) {
     		$scope.gridConfig.data = actions;
+    		if(!actions) {
+    			console.warn("No user actions received.", actions);
+    			return;
+    		}
     		$.each(actions, function(idx,el) {
     			el.formatTime = function() {
     				if(!el.timestamp) return "";

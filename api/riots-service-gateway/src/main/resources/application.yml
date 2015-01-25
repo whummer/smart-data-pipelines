@@ -60,6 +60,10 @@ zuul:
       path: /bower_components/**
       stripPrefix: false
       serviceId: webapp-service
+    webapp-website:
+      path: /website/**
+      stripPrefix: false
+      serviceId: webapp-service
     webapp-connect:
       path: /connect**
       stripPrefix: false
