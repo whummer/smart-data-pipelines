@@ -1,7 +1,7 @@
 package io.riots.core.handlers.query;
 
-import io.riots.core.repositories.UserRepository;
 import io.riots.api.services.users.User;
+import io.riots.core.repositories.UserRepository;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,10 +32,12 @@ public class UserQuery {
     }
 
     public User findByEmail(String email) {
-        List<User> res = repository.findByEmail(email);
-        if(res.isEmpty())
+        List<User> users = repository.findByEmail(email);
+        if(users.isEmpty())
         	return null;
-        return res.get(0);
+		if(users.size() > 1)
+			throw new RuntimeException("Found multiple users with email '" + email + "'");
+        return users.get(0);
     }
 
     public User findById(String id) {

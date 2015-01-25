@@ -4,6 +4,10 @@ app.controller('LoginViewController', [
     function ($scope, $http, $compile) {
 
     	$scope.loginType = { riots: true };
+    	$scope.loginInfo = {
+    			username: "",
+    			password: ""
+    	};
 
         $scope.login = function (network) {
             //console.log(network, hello, hello(network));
@@ -21,6 +25,20 @@ app.controller('LoginViewController', [
                 }
             });
 
+        }
+
+        $scope.loginUserPass = function() {
+        	var opts = {
+        			username: $scope.loginInfo.username,
+        			password: $scope.loginInfo.password
+        	};
+        	riots.login(opts, function(authInfo) {
+        		console.log("login success", authInfo);
+        		$scope.loginInfo.successMsg = "Login successful";
+        	}, function() {
+        		console.log("login error.");
+        		$scope.loginInfo.errorMsg = "Login failed. Please try again.";
+        	});
         }
 
         $scope.$watch("loginType.riots", function() {

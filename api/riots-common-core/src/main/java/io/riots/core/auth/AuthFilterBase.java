@@ -127,6 +127,8 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
 
             /* allow access to file clients */
             "^(/api/v.)?/files.*$",
+            /* allow access to login/auth API */
+            "^/api/v./users/login/?$",
 
             /* Eureka URLs for gateway */
             "^/health$",
