@@ -8,9 +8,9 @@ import io.riots.api.services.scenarios.ThingDataService;
 import io.riots.api.services.scenarios.ThingsService;
 import io.riots.api.services.sim.SimulationService;
 import io.riots.api.services.statistics.GatewayStatsService;
+import io.riots.api.services.users.AuthInfo;
 import io.riots.api.services.users.UsersService;
 import io.riots.core.auth.AuthHeaders;
-import io.riots.core.auth.AuthHeaders.AuthInfo;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;

@@ -1,8 +1,8 @@
 package io.riots.core.handlers.command;
 
+import io.riots.api.services.model.UserMongo;
 import io.riots.core.logging.Markers;
 import io.riots.core.repositories.UserRepository;
-import io.riots.api.services.users.User;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +20,7 @@ public class UserCommand {
     @Autowired
     UserRepository repository;
 
-    public User createOrUpdate(User obj) {
+    public UserMongo createOrUpdate(UserMongo obj) {
         log.debug(Markers.COMMAND, "Updating User {}", obj);
         return repository.save(obj);
     }

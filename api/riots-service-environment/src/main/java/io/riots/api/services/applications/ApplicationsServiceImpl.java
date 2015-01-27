@@ -60,20 +60,20 @@ public class ApplicationsServiceImpl implements ApplicationsService {
 
 	@Override
 	@Timed @ExceptionMetered
-	public Application create(Application item) {
+	public Application create(Application application) {
 		User user = authHeaders.getRequestingUser(req);
-		item.setCreated(new Date());
-		item.setCreatorId(user.getId());
-		if(StringUtils.isEmpty(item.getAppKey())) {
-			item.setAppKey(UUID.randomUUID().toString());
+		application.setCreated(new Date());
+		application.setCreatorId(user.getId());
+		if(StringUtils.isEmpty(application.getAppKey())) {
+			application.setAppKey(UUID.randomUUID().toString());
 		}
-		return command.create(item);
+		return command.create(application);
 	}
 
 	@Override
 	@Timed @ExceptionMetered
-	public Application update(Application item) {
-		return command.update(item);
+	public Application update(Application application) {
+		return command.update(application);
 	}
 
 	@Override

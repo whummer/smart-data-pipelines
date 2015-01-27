@@ -1,6 +1,6 @@
 package io.riots.core.repositories;
 
-import io.riots.api.services.users.User;
+import io.riots.api.services.model.UserMongo;
 
 import java.util.List;
 
@@ -9,8 +9,8 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 /**
  * @author Waldemar Hummer
  */
-public interface UserRepository extends PagingAndSortingRepository<User,String> {
+public interface UserRepository extends PagingAndSortingRepository<UserMongo,String> {
 
-	List<User> findByEmail(String email);
+	List<UserMongo> findByEmail(String email);
 
 }

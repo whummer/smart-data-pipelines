@@ -97,6 +97,14 @@ public interface UsersService {
     public User signup(RequestSignupUser r);
 
     @POST
+    @Path("/activate")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Activate a user account.",
+            notes = "Receives an activation key and activates a user account.")
+    public boolean activate(RequestActivateAccount r);
+
+    @POST
     @Path("/login")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
@@ -104,8 +112,8 @@ public interface UsersService {
             notes = "Authenticate via username/password at some third-party "
             		+ "OAuth provider, e.g., facebook, google, or github. "
             		+ "No passwords are ever stored at the platform.",
-            response = AuthToken.class)
-    public AuthToken login(RequestGetAuthToken r);
+            response = AuthInfoExternal.class)
+    public AuthInfoExternal login(RequestGetAuthToken r);
 
     @POST
     @Path("/auth")
@@ -114,7 +122,7 @@ public interface UsersService {
     @ApiOperation(value = "Verify an authentication token.",
             notes = "Verifies the provided authentication token.",
             response = AuthToken.class)
-    public AuthToken verifyAuthToken(AuthToken r);
+    public AuthInfoExternal getInfoForAuthToken(AuthToken r);
 
     /* USER ACTION METHODS */
 

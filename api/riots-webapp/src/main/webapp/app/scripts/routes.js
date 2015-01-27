@@ -4,12 +4,14 @@ define([], function() {
         defaultRoutePath: '/',
         defaultDependencies: [
 			//appRoot + '/scripts/controllers/AppController.js',
+            appRoot + '/scripts/controllers/LoginViewController.js'
 		],
         routes: {
             '/': {
                 templateUrl: appRoot + '/views/home.html',
                 dependencies: [
                     appRoot + '/scripts/controllers/HomeViewController.js',
+                    appRoot + '/scripts/controllers/LoginViewController.js'
                 ]
             },
             '/home': {
@@ -68,12 +70,6 @@ define([], function() {
                     appRoot + '/scripts/controllers/MetadataViewController.js',
                 ]
             },
-            '/login/:loginAction': {
-                templateUrl: appRoot + '/views/login.html',
-                dependencies: [
-                    //appRoot + '/scripts/controllers/LoginViewController.js'
-                ]
-            },
             '/connect': {
                 templateUrl: appRoot + '/views/connect.html',
                 dependencies: [
@@ -85,6 +81,24 @@ define([], function() {
                 dependencies: [
                     appRoot + '/scripts/controllers/AdminViewController.js'
                 ]
+            },
+            '/login': {
+                templateUrl: appRoot + '/views/login.html',
+                dependencies: [
+                    appRoot + '/scripts/controllers/LoginViewController.js'
+				]
+            },
+            '/signup': {
+                templateUrl: appRoot + '/views/login.html',
+                dependencies: [
+                    appRoot + '/scripts/controllers/LoginViewController.js'
+				]
+            },
+            '/activate/:activationKey': {
+                templateUrl: appRoot + '/views/login.html',
+                dependencies: [
+                    appRoot + '/scripts/controllers/LoginViewController.js'
+				]
             },
             '/terms': {
                 templateUrl: appRoot + '/views/terms_of_service.html'

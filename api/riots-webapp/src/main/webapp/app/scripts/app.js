@@ -54,12 +54,15 @@ define(
 				resolver: ['$q', '$rootScope', function ($q, $rootScope) {
 					var deferred = $q.defer();
 
+					console.log("$scope.isUnprotectedPage", rootScope.isUnprotectedPage);
+					
 					performLogin(function (authInfo) {
-						//console.log("Login done. Start rendering.", authInfo);
+						console.log("Login done. Start rendering.", authInfo);
 
 						if (authInfo) {
 							window.authInfo = authInfo;
 							rootScope.authInfo = authInfo;
+							rootScope.loadUserInfo();
 							var network = authInfo.network;
 							var token = authInfo.access_token;
 							$http.defaults.headers.common["riots-auth-network"] = network;
@@ -68,6 +71,14 @@ define(
 						} else {
 							$("#authContainer").show();
 							dependencies = defaultDependencies;
+
+							if(!rootScope.isUnprotectedPage) {
+								if(window.location.href.indexOf("/#/login") < 0) {
+						    		window.location.href = "/#/login";
+						    		window.location.reload(true);
+						    		return;
+						    	}
+							}
 						}
 
 						require(dependencies, function () {
@@ -126,8 +137,8 @@ define(
 		]);
 
 		app.controller('RootController', [
-			'$scope', '$http', '$compile', 'growl',
-			function ($scope, $http, $compile, growl) {
+			'$scope', '$http', '$compile', '$location', 'growl',
+			function ($scope, $http, $compile, $location, growl) {
 				if (rootScope == null) {
 					rootScope = $scope;
 					rootScope.http = $http;
@@ -142,16 +153,25 @@ define(
 					$scope.hideSplashScreen = function () {
 						hideSplashScreen();
 					}
-					var loadUserInfo = function() {
+					$scope.loadUserInfo = function() {
 						$scope.userInfo = null;
-						riots.me(function(me) {
-							$scope.userInfo = me;
-						}, function(error) {
-							console.log(error);
-							//$scope.growlInfo("Cannot load user profile.");
-						});
+						console.log("Loading user profile.", $scope.authInfo);
+						if($scope.authInfo) {
+							riots.me(function(me) {
+								$scope.userInfo = me;
+							}, function(error) {
+								console.log(error);
+								//$scope.growlInfo("Cannot load user profile.");
+							});
+						}
 					};
-					loadUserInfo();
+
+					$scope.isUnprotectedPage = false;
+					if($location.$$path.indexOf("/activate") == 0 ||
+							$location.$$path.indexOf("/signup") == 0 ||
+							$location.$$path.indexOf("/login") == 0) {
+						$scope.isUnprotectedPage = true;
+					}
 				}
 			}
 		]);

@@ -36,59 +36,89 @@ var openConnectionPerRequest = true;
 var sh = {};
 var ttl = 15000;
 
-/* initialize authInfo */
+/* initialize authentication info */
 sh.login = function(options, callback, errorCallback) {
 	var shaObj = new jsSHA(options.password, "TEXT");
 	options.password = shaObj.getHash("SHA-256", "HEX");
 	callPOST(appConfig.services.users.url + "/login", options, callback, errorCallback);
 }
 var assertAuth = function() {
-	if(!sh.authInfo || !sh.authInfo.userId || !sh.authInfo.appKey) {
+	var ok = sh.authToken &&
+			((sh.authToken.userId && sh.authToken.appKey) ||
+			(sh.authToken.network && sh.authToken.access_token));
+	if(!ok) {
+		console.log(sh.authToken);
+		console.trace();
 		throw "Please provide valid authentication information using RIOTS_USER_ID and RIOTS_APP_KEY global variables.";
 	}
 }
 
 /* register/authenticate user */
 
+sh.activate = function(actKey, callback, errorCallback) {
+	var req = {activationKey: actKey};
+	return riots.callPOST(appConfig.services.users.url + "/activate", req, callback, errorCallback);
+}
 sh.signup = function(userInfo, callback, errorCallback) {
 	return riots.callPOST(appConfig.services.users.url + "/signup", userInfo, callback, errorCallback);
 }
 sh.auth = function(options, callback, errorCallback) {
-	sh.authInfo = {};
-	sh.authInfo.userId = (options && options.RIOTS_USER_ID) ? options.RIOTS_USER_ID : window.RIOTS_USER_ID;
-	sh.authInfo.appKey = (options && options.RIOTS_APP_KEY) ? options.RIOTS_APP_KEY : window.RIOTS_APP_KEY;
+	var authToken = sh.authToken = {};
+	authToken.userId = (options && options.RIOTS_USER_ID) ? options.RIOTS_USER_ID : window.RIOTS_USER_ID;
+	authToken.appKey = (options && options.RIOTS_APP_KEY) ? options.RIOTS_APP_KEY : window.RIOTS_APP_KEY;
+	authToken.network = (options && options.RIOTS_AUTH_NETWORK) ? options.RIOTS_AUTH_NETWORK : window.RIOTS_AUTH_NETWORK;
+	authToken.access_token = (options && options.RIOTS_AUTH_TOKEN) ? options.RIOTS_AUTH_TOKEN : window.RIOTS_AUTH_TOKEN;
+	console.log(sh.authToken);
 	assertAuth();
 	var __defaultHeaders = {
 		"Content-Type": "application/json",
-		"riots-auth-user-id": window.RIOTS_USER_ID,
-		"riots-auth-app-key": window.RIOTS_APP_KEY
+		"riots-auth-user-id": authToken.userId,
+		"riots-auth-app-key": authToken.appKey,
+		"riots-auth-network": authToken.network,
+		"riots-auth-token": authToken.access_token
 	}
 	$.ajaxSetup({
 	    headers: __defaultHeaders
 	});
-	sh.me(function(result) {
+	var funcSuccess = function(result) {
 		console.log("Authentication successful.", result);
 		if(callback) {
 			callback(result);
 		}
-	}, function(result) {
+	};
+	var funcError = function(result) {
 		console.log("Authentication error.");
 		if(errorCallback) {
 			errorCallback(result);
 		}
-	});
+	};
+	if(authToken.appKey) {
+		riots.app({
+			appKey: authToken.appKey
+		}, funcSuccess, funcError);
+	} else {
+		var authToken = {
+				network: authToken.network,
+				token: authToken.access_token
+		};
+		callPOST(appConfig.services.users.url + "/auth", authToken, funcSuccess, funcError);
+	}
 }
 
 /* methods for GETting data */
 
 sh.get = {};
 
-sh.app = sh.get.app = function(id, callback, doCacheResults) {
-	if(!id) {
+sh.app = sh.get.app = function(opts, callback, doCacheResults) {
+	if(!opts) {
 		if(callback) callback(null);
 		return null;
 	}
-	return callGET(appConfig.services.apps.url + "/" + id, callback, doCacheResults);
+	var path = "/" + opts;
+	if(opts.appKey) {
+		path = "/by/appKey/" + opts.appKey;
+	}
+	return callGET(appConfig.services.apps.url + path, callback, doCacheResults);
 }
 sh.me = function(callback, errorCallback) {
 	return callGET(appConfig.services.users.url + "/me", callback, false, errorCallback);
@@ -157,6 +187,7 @@ sh.data = sh.get.data = function(opts, callback, errorCallback) {
 	return callGET(url, callback, false, errorCallback);
 }
 sh.config = sh.get.config = function(callback) {
+	assertAuth();
 	var url = appConfig.services.users.url + "/by/email/" + authInfo.email + "/config";
 	return callGET(url, callback);
 }
@@ -389,14 +420,14 @@ var connectWebsocket = function(onOpenCallback) {
 	var ws;
 	if(openConnectionPerRequest || !sh.websocket || sh.websocket.readyState > 1) {
 		var wsURL = appConfig.services.websocket.url;
-		var authInfo = window.authInfo ? window.authInfo : sh.authInfo;
+		var authToken = window.authToken ? window.authToken : sh.authToken;
 
-		if(authInfo.network && authInfo.access_token) {
+		if(authToken.network && authToken.access_token) {
 			this.websocket = ws = new WebSocket(wsURL, 
-				authInfo.network + "~" + authInfo.access_token);
-		} else if(authInfo.userId && authInfo.appKey) {
+					authToken.network + "~" + authToken.access_token);
+		} else if(authToken.userId && authToken.appKey) {
 			this.websocket = ws = new WebSocket(wsURL, 
-				authInfo.userId + "~" + authInfo.appKey);
+					authToken.userId + "~" + authToken.appKey);
 		} else {
 			throw "Please provide RIOTS_USER_ID and RIOTS_APP_KEY variables.";
 		}
@@ -478,14 +509,15 @@ var guid = (function() {
   };
 })();
 
-/* INIT METHODS */
+/* expose API */
+window.riots = sh;
 
+
+/* INIT METHODS (must go last) */
 if(window.RIOTS_USER_ID && window.RIOTS_APP_KEY) {
 	sh.auth();
 }
 
-/* expose API */
-window.riots = sh;
 return sh;
 })();
 

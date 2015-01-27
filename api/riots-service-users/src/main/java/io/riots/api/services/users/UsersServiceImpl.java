@@ -7,17 +7,21 @@ import io.riots.api.services.billing.TimePeriod;
 import io.riots.api.services.billing.UserActionLimit;
 import io.riots.api.services.billing.UserActionLimitStatus;
 import io.riots.api.services.billing.UserUsageStatus;
+import io.riots.api.services.model.UserMongo;
 import io.riots.core.auth.AuthHeaders;
 import io.riots.core.auth.AuthNetwork;
 import io.riots.core.auth.PasswordUtils;
 import io.riots.core.clients.ServiceClientFactory;
+import io.riots.core.errors.ErrorCodes;
 import io.riots.core.handlers.command.UserActionCommand;
 import io.riots.core.handlers.command.UserCommand;
 import io.riots.core.handlers.query.UserActionQuery;
 import io.riots.core.handlers.query.UserQuery;
-import io.riots.core.repositories.AuthTokenRepository;
+import io.riots.core.repositories.AuthInfoRepository;
+import io.riots.core.repositories.UserActivationRepository;
 import io.riots.core.repositories.UserPasswordRepository;
 import io.riots.core.util.ServiceUtil;
+import io.riots.core.util.mail.EmailSender;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -30,7 +34,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -80,9 +83,11 @@ public class UsersServiceImpl implements UsersService {
     @Autowired
     UserActionCommand userActionCommand;
     @Autowired
-    AuthTokenRepository authTokenRepo;
+    AuthInfoRepository authInfoRepo;
     @Autowired
     UserPasswordRepository userPassRepo;
+    @Autowired
+    UserActivationRepository userActivationRepo;
 
     @Autowired
     HttpServletRequest req;
@@ -103,7 +108,8 @@ public class UsersServiceImpl implements UsersService {
 	@Override
 	@Timed @ExceptionMetered
 	public User saveInfoAboutMe(User user) {
-		return userCommand.createOrUpdate(user);
+		UserMongo userMongo = new UserMongo(user);
+		return userCommand.createOrUpdate(userMongo);
 	}
 
     @Override
@@ -125,9 +131,7 @@ public class UsersServiceImpl implements UsersService {
     @Timed @ExceptionMetered
     @PreAuthorize(Role.HAS_ROLE_ADMIN)
     public User findByEmail(String email) {
-    	System.out.println("findByEmail " + email);
     	User r = userQuery.findOrCreateByEmail(email);
-    	System.out.println("found: " +email + " - " + r);
     	return r;
     }
 
@@ -146,58 +150,68 @@ public class UsersServiceImpl implements UsersService {
     	if(existing != null) {
 	    	throw forbidden("User with this email adress is already registered.");
     	}
-    	User u = userCommand.createOrUpdate(r);
-    	String passHash = PasswordUtils.createHash(r.password);
-    	UserPassword pass = new UserPassword(u.getId(), passHash);
-    	userPassRepo.save(pass);
-    	return u;
-    }
+    	UserMongo user = new UserMongo(r);
+    	user = userCommand.createOrUpdate(user);
 
-    private WebApplicationException webappError(int status, String msg) {
-    	Map<String,Object> response = new HashMap<>();
-    	response.put("status", status);
-    	response.put("message", msg);
-    	return new WebApplicationException(Response.status(status)
-    			.entity(response)
-    			.header("Content-Type", MediaType.APPLICATION_JSON)
-    			.build());
-    }
-    private WebApplicationException forbidden(String msg) {
-    	return webappError(HttpServletResponse.SC_FORBIDDEN, msg);
+    	/* store user password entity */
+    	String passHash = PasswordUtils.createHash(r.password);
+    	UserPassword pass = new UserPassword(user.getId(), passHash);
+    	pass = userPassRepo.save(pass);
+
+    	/* set email activation code */
+    	UserActivation act = new UserActivation(user.getId(), UUID.randomUUID().toString());
+    	userActivationRepo.save(act);
+
+    	/* send activation email */
+    	EmailSender.sendActivationMessage(user, act.getActivationKey());
+
+    	return user;
     }
 
     @Override
     @Timed @ExceptionMetered
-    public AuthToken login(RequestGetAuthToken r) {
-    	AuthToken response = new AuthToken();
+    public AuthInfoExternal login(RequestGetAuthToken r) {
+    	AuthInfoExternal response = new AuthInfoExternal();
     	r.network = StringUtils.isEmpty(r.network) ? AuthNetwork.RIOTS : r.network;
-    	response.network = r.network;
+    	response.setNetwork(r.network);
     	if(AuthNetwork.RIOTS.equals(r.network)) {
     		/* in riots, we assume that the user is identified via email. */
     		String emailIdenfifier = r.username;
+    		/* check user existence */
     		User user = userQuery.findByEmail(emailIdenfifier);
     		if(user == null) {
     			ServiceUtil.setResponseStatus(context, HttpServletResponse.SC_FORBIDDEN);
     			LOG.info("Login error: User email unknown: '" + emailIdenfifier + "'");
-    	    	throw new ForbiddenException();
+    	    	throw forbidden("Login failed. Please try again.");
     		}
+    		/* check activation */
+    		List<UserActivation> actList = userActivationRepo.findByUserId(user.getId());
+    		if(actList.size() > 1) {
+    			ServiceUtil.setResponseStatus(context, HttpServletResponse.SC_FORBIDDEN);
+    			LOG.info("Login error: Unexpected array of activations in DB for user id '" + 
+    					user.getId() + "': " + actList);
+    	    	throw forbidden("An error occured. Error code: " + ErrorCodes.ERR_DUPLICATE_ACTIVATION);
+    		} else if(actList.size() == 1) {
+    			UserActivation act = actList.get(0);
+    			if(act.getActivationDate() <= 0) {
+    				throw forbidden("Login error, this account is currently in state 'inactive'.");
+    			}
+    		}
+    		/* check password */
     		List<UserPassword> userPasswords = userPassRepo.findByUserId(user.getId());
     		if(userPasswords.isEmpty() || userPasswords.size() > 1) {
     			ServiceUtil.setResponseStatus(context, HttpServletResponse.SC_FORBIDDEN);
     			LOG.info("Login error: Unexpected array of passwords in DB for user id '" + 
     					user.getId() + "': " + userPasswords);
-    	    	throw new ForbiddenException();
+    	    	throw forbidden("An error occured. Error code: " + ErrorCodes.ERR_DUPLICATE_PASSWORD);
     		}
     		String expectedPassword = userPasswords.get(0).getPassword();
     		if(!expectedPassword.equals(r.password)) {
     			ServiceUtil.setResponseStatus(context, HttpServletResponse.SC_FORBIDDEN);
     			LOG.info("Login error: Invalid password: '" + r.password + "' vs. expected '" + expectedPassword + "'");
-    	    	throw new ForbiddenException();
+    	    	throw forbidden("Login failed. Please try again.");
     		}
-    		response.token = UUID.randomUUID().toString();
-    		response.expiry = System.currentTimeMillis() + TOKEN_EXPIRY_MS;
-    		response = authTokenRepo.save(response);
-    		AUTH_TOKENS_CACHE.put(response.token, response);
+    		response = fillInAndSaveAuthInfo(response, user);
     		return response;
     	}
     	// TODO implement for other auth networks
@@ -206,28 +220,73 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     @Timed @ExceptionMetered
-    public AuthToken verifyAuthToken(AuthToken r) {
+    public boolean activate(RequestActivateAccount r) {
+    	List<UserActivation> actList = userActivationRepo.findByActivationKey(r.activationKey);
+    	if(actList.size() > 1) {
+			ServiceUtil.setResponseStatus(context, HttpServletResponse.SC_FORBIDDEN);
+			LOG.info("Login error: Unexpected array of activations in DB for activation key '" + 
+					r.activationKey + "': " + actList);
+	    	throw forbidden("An error occured. Error code: " + ErrorCodes.ERR_DUPLICATE_ACTIVATION);
+		} else if(actList.isEmpty()) {
+    		throw forbidden("Invalid activation key.");
+		}
+		UserActivation act = actList.get(0);
+		act.setActivationDate(System.currentTimeMillis());
+		userActivationRepo.save(act);
+    	return true;
+    }
+
+    @Override
+    @Timed @ExceptionMetered
+    public AuthInfoExternal getInfoForAuthToken(AuthToken r) {
+
     	/* get tokens from cache */
-    	AuthToken token = (AuthToken)AUTH_TOKENS_CACHE.get(r.token);
-    	if(token != null) {
-    		return token;
+    	AuthInfoExternal authInfo = (AuthInfoExternal)AUTH_TOKENS_CACHE.get(r.token);
+    	if(authInfo != null) {
+	    	/* update info and return token */
+    		authInfo = updateAndSaveAuthInfo(authInfo);
+    		return authInfo;
     	}
+
     	/* get tokens from DB */
-    	List<AuthToken> tokens = authTokenRepo.findByToken(r.token);
-    	if(tokens.size() == 1) {
-	    	token = tokens.get(0);
-	    	/* update expiry date */
-    		token.expiry = System.currentTimeMillis() + TOKEN_EXPIRY_MS;
-    		token = authTokenRepo.save(token);
-    		/* put token to cache */
-    		AUTH_TOKENS_CACHE.put(token.token, token);
-	    	/* return valid token */
-    		return token;
-    	} else if(tokens.size() > 1) {
-    		LOG.warn("Multiple AuthToken objects found for token string: " + r.token);
+    	List<AuthInfoExternal> list = authInfoRepo.findByAccessToken(r.token);
+    	if(list.size() == 1) {
+	    	authInfo = list.get(0);
+	    	/* update info and return token */
+	    	authInfo = updateAndSaveAuthInfo(authInfo);
+    		return authInfo;
+    	} else if(list.size() > 1) {
+    		LOG.warn("Multiple AuthInfo (" + list.size() + ") objects found for token string: " + r.token + " - " + list);
+        	ServiceUtil.setResponseStatus(context, HttpServletResponse.SC_FORBIDDEN);
+        	throw forbidden("Error when trying to verify auth token");
     	}
+
+    	if(!AuthNetwork.RIOTS.equals(r.network)) {
+        	/* get tokens from external OAuth network */
+
+    		AuthNetwork authNetwork = AuthNetwork.get(r.network);
+        	AuthInfo newInfo = authNetwork.verifyAccessToken(r.token);
+        	if(newInfo == null) {
+        		throw forbidden("Unable to verify auth token with network '" + 
+        				r.network  + "': '" + r.token + "'");
+        	}
+        	AuthInfoExternal newInfoToSave = new AuthInfoExternal(newInfo);
+        	newInfoToSave.setAccessToken(r.token);
+        	newInfoToSave.setNetwork(r.network);
+            /* make sure we have a valid userId in the auth info */
+        	if(StringUtils.isEmpty(newInfoToSave.getEmail())) {
+        		String msg = "Unable to determine valid email address for auth token";
+        		LOG.warn(msg + " " + r + " - " + newInfoToSave);
+        		throw forbidden(msg);
+        	}
+        	User user = userQuery.findOrCreateByEmail(newInfoToSave.getEmail());
+        	/* update info and return token */
+    		newInfoToSave = fillInAndSaveAuthInfo(newInfoToSave, user);
+        	return newInfoToSave;
+    	}
+
     	ServiceUtil.setResponseStatus(context, HttpServletResponse.SC_FORBIDDEN);
-    	throw new ForbiddenException();
+    	throw forbidden("Unable to verify auth token");
     }
 
     @Override
@@ -258,7 +317,7 @@ public class UsersServiceImpl implements UsersService {
     @Timed @ExceptionMetered
     public UserUsageStatus getUsageStatus(String userId) {
     	//User u = authHeaders.getRequestingUser(req);
-    	BillingService billings = clientFactory.getBillingServiceClient();
+    	BillingService billings = clientFactory.getBillingServiceClient(AuthHeaders.INTERNAL_CALL);
     	PricingPlan plan = billings.getPlanForUser(userId);
     	if(plan == null) {
     		for(PricingPlan p : billings.getPlans()) {
@@ -307,8 +366,29 @@ public class UsersServiceImpl implements UsersService {
     	User u = ServiceUtil.assertValidUser(authHeaders, req);
     	return getUsageStatus(u.getId());
     }
-    
+
     /* PRIVATE HELPER METHODS */
+
+    private AuthInfoExternal fillInAndSaveAuthInfo(AuthInfoExternal info, User user) {
+		info.setEmail(user.getEmail());
+		info.setUserID(user.getId());
+		String name = user.getDisplayName();
+		if(!StringUtils.isEmpty(name)) {
+			info.setName(name);
+		}
+		if(StringUtils.isEmpty(info.getAccessToken())) {
+			info.setAccessToken(UUID.randomUUID().toString());
+		}
+		return updateAndSaveAuthInfo(info);
+    }
+
+    private AuthInfoExternal updateAndSaveAuthInfo(AuthInfoExternal info) {
+    	info.setExpiry(new Date(System.currentTimeMillis() + TOKEN_EXPIRY_MS));
+		info = authInfoRepo.save(info);
+		/* put token to cache */
+		AUTH_TOKENS_CACHE.put(info.getAccessToken(), info);
+		return info;
+    }
 
     private Object getUserActionUsage(String userId, UserActionType type, TimePeriod period) {
     	Date from = null; 
@@ -341,5 +421,18 @@ public class UsersServiceImpl implements UsersService {
 		Date end = DateUtils.addMonths(start, 1);
 		return end;
 	}
+
+    private WebApplicationException webappError(int status, String msg) {
+    	Map<String,Object> response = new HashMap<>();
+    	response.put("status", status);
+    	response.put("message", msg);
+    	return new WebApplicationException(Response.status(status)
+    			.entity(response)
+    			.header("Content-Type", MediaType.APPLICATION_JSON)
+    			.build());
+    }
+    private WebApplicationException forbidden(String msg) {
+    	return webappError(HttpServletResponse.SC_FORBIDDEN, msg);
+    }
 
 }

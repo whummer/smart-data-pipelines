@@ -43,11 +43,14 @@ define(['app'], function(app){
 			};
 
 			var loadWidgets = function() {
-				riots.config(function(cfg) {
-					$scope.userConfig = cfg;
-				});
+				try {
+					riots.config(function(cfg) {
+						$scope.userConfig = cfg;
+					});
+				} catch (e) {
+					console.log("Unable to load widgets");
+				}
 			};
-
 			loadWidgets();
 
         }

@@ -1,11 +1,10 @@
 package io.riots.core.auth;
 
-import io.riots.core.auth.AuthHeaders.AuthInfo;
-import io.riots.core.model.ModelCache;
-import io.riots.core.clients.ServiceClientFactory;
-import io.riots.api.services.users.UsersService;
-import io.riots.api.services.users.User;
+import io.riots.api.services.users.AuthInfo;
 import io.riots.api.services.users.UserAction;
+import io.riots.api.services.users.UsersService;
+import io.riots.core.clients.ServiceClientFactory;
+import io.riots.core.model.ModelCache;
 
 import java.io.IOException;
 
@@ -57,7 +56,7 @@ public class AuthFilterZuul extends AuthFilterBase {
 				System.out.println(AuthHeaders.THREAD_AUTH_INFO.get().get());
 				AuthInfo info = AuthHeaders.THREAD_AUTH_INFO.get().get();
 				long outLength = 0; // TODO set out length
-				action = new UserAction(info.userID, path,
+				action = new UserAction(info.getUserID(), path,
 						req.getContentLengthLong(), outLength);
 				s.postUserAction(action);
 			}
@@ -78,8 +77,8 @@ public class AuthFilterZuul extends AuthFilterBase {
         /* append headers to zuul request */
         RequestContext context = RequestContext.getCurrentContext();
 		if(context != null) {
-			context.getZuulRequestHeaders().put(AuthHeaders.HEADER_AUTH_EMAIL, authInfo.email);
-			context.getZuulRequestHeaders().put(AuthHeaders.HEADER_AUTH_USER_ID, authInfo.userID);
+			context.getZuulRequestHeaders().put(AuthHeaders.HEADER_AUTH_EMAIL, authInfo.getEmail());
+			context.getZuulRequestHeaders().put(AuthHeaders.HEADER_AUTH_USER_ID, authInfo.getUserID());
 			context.getZuulRequestHeaders().put(AuthHeaders.HEADER_INTERNAL_CALL, "");
 		}
 	}
@@ -90,17 +89,10 @@ public class AuthFilterZuul extends AuthFilterBase {
 	}
 
 	@Override
-	protected User findUserByEmail(String email) {
-		User user = (User) ModelCache.USERS.get(email);
-		if(user != null) {
-			return user;
-		}
-		UsersService users = clientFactory.getUsersServiceClient(AuthHeaders.INTERNAL_CALL);
-		user = users.findByEmail(email);
-		ModelCache.USERS.put(email, user);
-		return user;
+	protected ServiceClientFactory getClientFactory() {
+		return clientFactory;
 	}
-	
+
 	/* HELPER METHODS */
 
 	private synchronized UsersService getCachedUsersServiceClient() {

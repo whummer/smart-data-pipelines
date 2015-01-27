@@ -33,7 +33,7 @@ env("", function (errors, window) {
 
 	// build config includes
 	cfg.include = [
-		"riots/auth",
+		//"riots/auth", // TODO uncomment!
 		"riots/charting",
 		"riots/maps-markers",
 		"riots/imports",

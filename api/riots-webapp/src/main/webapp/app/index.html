@@ -26,10 +26,14 @@
 		require.config(requirejsAppConfig);
 	</script>
 
+	<script type="text/javascript" src="scripts/modules/messages.js"></script>
 	<script type="text/javascript" src="/app/scripts/controllers/AppController.js"></script>
 	<script type="text/javascript" src="scripts/build/riots-all.js"></script>
 	<script type="text/javascript" src="api/riots-api.js"></script>
 	<script type="text/javascript" src="scripts/init.js"></script>
+
+	<!-- TODO remove -->
+	<script type="text/javascript" src="/app/scripts/modules/auth.js"></script>
 
 	<style type="text/css">
 		html, body {
@@ -107,15 +111,16 @@
 	<div growl id="growl" class="growl-container"></div>
 
 	<!-- include top menu -->
-	<ng-include src="appConfig['appRootPath'] + '/views/menu.html'" ng-if="authInfo"></ng-include>
+	<ng-include src="appConfig['appRootPath'] + '/views/menu.html'" 
+		ng-if="authInfo && !isUnprotectedPage"></ng-include>
 
 	<!-- Auth/Login Container -->
-	<div ng-if="!authInfo" id="authContainer" style="display: none;">
+	<div ng-if="!authInfo && !isUnprotectedPage" id="authContainer" style="display: none;">
 		<ng-include src="appConfig['appRootPath'] + '/views/login.html'"></ng-include>
 	</div>
 
 	<!-- Main Content Container -->
-	<div ng-if="authInfo" id="main" class="container" style="height: 100%; width: 100% " ng-view>
+	<div ng-if="authInfo || isUnprotectedPage" id="main" class="container" style="height: 100%; width: 100% " ng-view>
 	</div>
 
 	<!-- Modal Dialog Templates -->
