@@ -8,13 +8,6 @@ function setLoadingStatus(status, text) {
 	}
 }
 
-var globalRenderStack = [];
-function reduceRenderStack() {
-	globalRenderStack.splice(0,1);
-	if(globalRenderStack.length <= 0) {
-		hideSplashScreen();
-	}
-}
 
 function watchOnce($scope, evtType, callback, id) {
 	if(!id || $.inArray(id, subscriptionIDs) < 0) {
@@ -48,10 +41,10 @@ function AppController($scope, $http, $compile, growl) {
 	$scope.appConfig = appConfig;
 	$scope.growl = growl;
 
-	$scope.highlightMenuItem = function(itemId) {
+	/*$scope.highlightMenuItem = function(itemId) {
 		$(".nav").find(".active").removeClass("active");
 		$(itemId).addClass("active");
-	};
+	};*/
 
 	$scope.preparePropertyValues = function(thingType, parentProperty, propsList) {
 		delete thingType["$$hashKey"];

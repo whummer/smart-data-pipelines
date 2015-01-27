@@ -1,125 +1,170 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
-  <link rel="stylesheet" href="scripts/ext/bootstrap-tagsinput/dist/bootstrap-tagsinput.css"/>
-  <link rel="stylesheet" href="scripts/ext/leaflet/dist/leaflet.css"/>
-  <link rel="stylesheet" href="scripts/ext/raty/lib/jquery.raty.css"/>
-  <link rel="stylesheet" href="scripts/ext/angular-bootstrap-datetimepicker/src/css/datetimepicker.css"/>
-  <!-- Use CDN version because JAR packaging of some CSS files results in corrupted font files -->
-  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
-  <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css"/>
-  <link rel="stylesheet" href="//cdn.rawgit.com/angular-ui/bower-ui-grid/v3.0.0-RC.18/ui-grid.min.css"/>
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/zocial/0/zocial.css"/>
-  <link rel="stylesheet" href="//rawgit.com/JanStevens/angular-growl-2/master/build/angular-growl.css">
-  <!-- last position for custom styles (to enforce overrides) -->
-  <link rel="stylesheet" href="styles/app.css"/>
+	<!-- don't load pace via require.js -->
+	<script src="scripts/ext/inspinia/plugins/pace/pace.min.js"></script>
 
-  <!-- scripts -->
-  <script type="text/javascript" src="scripts/ext/requirejs/require.js"></script>
-  <script type="text/javascript" src="config.js"></script>
-  <script type="text/javascript" src="config.requirejs.js"></script>
-  <script type="text/javascript">
-    require.config(requirejsAppConfig);
-  </script>
 
-  <script type="text/javascript" src="/app/scripts/controllers/AppController.js"></script>
-  <script type="text/javascript" src="scripts/build/riots-all.js"></script>
-  <script type="text/javascript" src="api/riots-api.js"></script>
-  <script type="text/javascript" src="scripts/init.js"></script>
+	<!--
+		-
+		- STYLES
+		-
+		-->
+	<link rel="stylesheet" href="scripts/ext/bootstrap-tagsinput/dist/bootstrap-tagsinput.css"/>
+	<link rel="stylesheet" href="scripts/ext/leaflet/dist/leaflet.css"/>
+	<link rel="stylesheet" href="scripts/ext/raty/lib/jquery.raty.css"/>
+	<link rel="stylesheet" href="scripts/ext/angular-bootstrap-datetimepicker/src/css/datetimepicker.css"/>
 
-  <style type="text/css">
-    html, body {
-      height: 100%;
-      margin: 0px;
-    }
-    #main {
-      padding-top: 15px;
-    }
+	<!-- Use CDN version because JAR packaging of some CSS files results in corrupted font files -->
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css"/>
+	<link rel="stylesheet" href="//cdn.rawgit.com/angular-ui/bower-ui-grid/v3.0.0-RC.18/ui-grid.min.css"/>
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/zocial/0/zocial.css"/>
+	<link rel="stylesheet" href="//rawgit.com/JanStevens/angular-growl-2/master/build/angular-growl.css">
 
-    /* splash page */
-    #splash {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      background-color: #f6f8f9;
-      z-index: 3000;
-    }
-    #splash div {
-      position: relative;
-      height: 50px;
-      width: 100px;
-      top: 50%;
-      left: 50%;
-      margin-left: -50px;
-      margin-top: -25px;
-      text-align: center;
-    }
+	<!-- INSPINIA STUFF HERE WE GO -->
 
-  </style>
+	<!-- Angular notify -->
+	<link href="styles/ext/plugins/angular-notify/angular-notify.min.css" rel="stylesheet">
 
-  <script type="text/javascript">
-    var appFullyLoadedOnce = false;
-    function showSplashScreen() {
-      if (!appFullyLoadedOnce)
-        $("#splash").show();
-    }
+	<!-- Font awesome -->
+	<link href="styles/ext/font-awesome/css/font-awesome.css" rel="stylesheet">
 
-    function hideSplashScreen() {
-      appFullyLoadedOnce = true;
-      setTimeout(function () {
-        $("#splash").hide();
-      }, 500);
-    }
+	<!-- Bootstrap and Fonts -->
+	<!--<link href="styles/ext/bootstrap.min.css" rel="stylesheet">-->
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+	<!--<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">-->
 
-    function clickMenu(element) {
-      window.location.href = element.getAttribute("href");
-      return false;
-    }
+	<!-- Full Calendar -->
+	<link href="styles/ext/plugins/fullcalendar/fullcalendar.css" rel="stylesheet">
 
-    setTimeout(function () {
-      if (!appFullyLoadedOnce) {
-        //alert("Connectivity problem. Please refresh the page once you are back online.");
-        console.log("Connectivity problem. Please refresh the page once you are back online.");
-      }
-    }, 10000);
+	<!-- FancyBox -->
+	<link href="styles/ext/plugins/fancybox/jquery.fancybox.css" rel="stylesheet">
 
-  </script>
+	<!-- Chosen Plugin -->
+	<link href="styles/ext/plugins/chosen/chosen.css" rel="stylesheet">
 
-  <title>riots.io - The #1 platform for rapid IoT development</title>
+	<!-- Dropzone style -->
+	<link href="styles/ext/plugins/dropzone/basic.css" rel="stylesheet">
+	<link href="styles/ext/plugins/dropzone/dropzone.css" rel="stylesheet">
+
+	<!-- noUiSlider for Range Slider-->
+	<link href="styles/ext/plugins/nouslider/jquery.nouislider.css" rel="stylesheet">
+
+	<!-- DataPicker -->
+	<link href="styles/ext/plugins/datapicker/angular-datapicker.css" rel="stylesheet">
+
+	<!-- Ion Range Slider -->
+	<link href="styles/ext/plugins/ionRangeSlider/ion.rangeSlider.css" rel="stylesheet">
+	<link href="styles/ext/plugins/ionRangeSlider/ion.rangeSlider.skinFlat.css" rel="stylesheet">
+
+	<!-- ui Tree -->
+	<link href="styles/ext/plugins/uiTree/angular-ui-tree.min.css" rel="stylesheet">
+
+	<!-- iCheck -->
+	<link href="styles/ext/plugins/iCheck/custom.css" rel="stylesheet">
+
+	<!-- Main Inspinia CSS files -->
+	<link href="styles/ext/animate.css" rel="stylesheet">
+	<link href="styles/ext/style.css" rel="stylesheet">
+
+	<!-- currently not used -->
+	<!-- Morris -->
+	<!--<link href="styles/ext/plugins/morris/morris-0.4.3.min.css" rel="stylesheet">-->
+
+	<!-- Colorpicker -->
+	<!--<link href="styles/ext/plugins/colorpicker/colorpicker.css" rel="stylesheet">-->
+
+	<!-- Style for wizard - based on Steps plugin-->
+	<!--<link href="styles/ext/plugins/steps/jquery.steps.css" rel="stylesheet">-->
+
+	<!-- Summernote -->
+	<!-- <link href="styles/ext/plugins/summernote/summernote.css" rel="stylesheet">
+	 <link href="styles/ext/plugins/summernote/summernote-bs3.css" rel="stylesheet">-->
+
+	<!-- Ng-Grid -->
+	<!--<link href="js/plugins/nggrid/ng-grid.css" rel="stylesheet">-->
+
+	<!-- Code Mirror -->
+	<!--<link href="styles/ext/plugins/codemirror/codemirror.css" rel="stylesheet">-->
+	<!--<link href="styles/ext/plugins/codemirror/ambiance.css" rel="stylesheet">-->
+
+	<!-- Data Tables -->
+	<!--<link href="styles/ext/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet">-->
+
+	<!-- Switchery iOS style -->
+	<!--<link href="styles/ext/plugins/switchery/switchery.css" rel="stylesheet">-->
+
+	<!--
+	- last position for custom styles (to enforce overrides)
+	-->
+	<!--<link rel="stylesheet" href="styles/app.css"/>-->
+
+	<!--
+		-
+		- SCRIPTS
+		-
+		-->
+
+	<script type="text/javascript" src="scripts/ext/requirejs/require.js"></script>
+	<script type="text/javascript" src="config.js"></script>
+	<script type="text/javascript" src="config.requirejs.js"></script>
+	<script type="text/javascript">
+		require.config(requirejsAppConfig);
+	</script>
+
+	<script type="text/javascript" src="/app/scripts/controllers/AppController.js"></script>
+	<script type="text/javascript" src="scripts/build/riots-all.js"></script>
+	<script type="text/javascript" src="api/riots-api.js"></script>
+	<script type="text/javascript" src="scripts/init.js"></script>
+
+	<title page-title>riots.io - The #1 platform for rapid IoT development</title>
 </head>
 <body>
 
-<!-- Splash Screen -->
-<div id="splash">
-  <div>
-    <p>LOADING...</p>
-    <p><img src="img/loading.gif" alt="loading"/></p>
-  </div>
+<div id="wrapper" ng-controller="RootController">
+
+	<!-- Auth/Login Container -->
+	<div ng-if="!authInfo" id="authContainer" style="display: none;">
+		<ng-include src="appConfig['appRootPath'] + '/views/login.html'"></ng-include>
+	</div>
+
+	<!-- Navigation -->
+	<div ng-if="authInfo">
+		<ng-include src="appConfig['appRootPath'] + '/views/common/navigation.html'"></ng-include>
+	</div>
+
+	<!-- Page wraper -->
+	<!-- ng-class with current state name give you the ability to extended customization your view -->
+	<div id="page-wrapper" class="gray-bg {{$state.current.name}}" ng-if="authInfo">
+
+		<!-- Page wrapper -->
+		<ng-include src="appConfig['appRootPath'] + '/views/common/topnavbar.html'"></ng-include>
+
+		<!-- Main Content Container -->
+		<div ng-if="authInfo" id="main" class="container" style="height: 100%; width: 100% " ng-view></div>
+
+		<!-- Footer -->
+		<ng-include src="appConfig['appRootPath'] + '/views/common/footer.html'"></ng-include>
+
+		<!-- Modal Dialog Templates -->
+		<div ng-include="'/app/views/dialogs.html'"></div>
+
+	</div>
+	<!-- End page wrapper-->
+
 </div>
 
-<div id="wrapperDiv" ng-controller="RootController" data-ng-init="hideSplashScreen()">
+<!-- Custom and plugin javascript -->
+<script src="scripts/ext/inspinia/inspinia.js"></script>
 
-  <div growl id="growl" class="growl-container"></div>
+<!-- Angular Dependiences -->
+<script src="scripts/ext/inspinia/plugins/uievents/event.js"></script>
 
-  <!-- include top menu -->
-  <ng-include src="appConfig['appRootPath'] + '/views/menu.html'" ng-if="authInfo"></ng-include>
 
-  <!-- Auth/Login Container -->
-  <div ng-if="!authInfo" id="authContainer" style="display: none;">
-    <ng-include src="appConfig['appRootPath'] + '/views/login.html'"></ng-include>
-  </div>
-
-  <!-- Main Content Container -->
-  <div ng-if="authInfo" id="main" class="container" style="height: 100%; width: 100% " ng-view>
-  </div>
-
-  <!-- Modal Dialog Templates -->
-  <ng-include src="'/app/views/dialogs.html'"></ng-include>
-
-</div>
 </body>
 </html>

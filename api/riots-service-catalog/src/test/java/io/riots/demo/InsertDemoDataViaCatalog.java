@@ -269,7 +269,7 @@ public class InsertDemoDataViaCatalog {
             ultraSonicSensor.withImageData(Arrays.asList(
                     new ImageData()
                             .withBase64String(getBase64ImageFromUrl("http://fritzing.org/media/fritzing-repo/projects/h/hc-sr04-project/images/HC-SR04-2.jpg"))
-                            .withContentType("image/jpg")));
+                            .withContentType("image/jpeg")));
 
             ultraSonicSensor.setDescription(
                     "The HC-SR04 Ultrasonic Range Sensor uses non-contact ultrasound sonar to measure the "
@@ -300,7 +300,7 @@ public class InsertDemoDataViaCatalog {
                     new ImageData()
                             .withBase64String(getBase64ImageFromUrl("http://www.linkdelight.com/components/com_virtuemart/shop_image/product/PIR_Sensor_Human_51fb6871f126d.jpg"))
                                     //.withBase64String(getBase64ImageFromUrl("http://www.linkdelight.com/components/com_virtuemart/shop_image/product/PIR_Sensor_Human_51fb6871f126d.jpg")
-                            .withContentType("image/jpg")));
+                            .withContentType("image/jpeg")));
             motionSensor.setDescription(
                     "This PIR includes an adjustable delay before firing (approx 0.5 - 200 seconds), "
                             + "has adjustable sensitivity and two M2 mounting holes! It runs on 4.5V-20V power (or 3V by "
@@ -330,7 +330,7 @@ public class InsertDemoDataViaCatalog {
                     new ImageData()
                             .withBase64String(getBase64ImageFromUrl("http://www.3bm.de/wp-content/uploads/2013/09/DS18B20.jpg"))
                                     //.withHref("http://www.3bm.de/wp-content/uploads/2013/09/DS18B20.jpg")
-                            .withContentType("image/jpg")));
+                            .withContentType("image/jpeg")));
             temperatureSensor.setDescription(
                     "A genuine Maxim sourced DS18B20+ One Wire Digital Temperature Sensor. The DS18B20+ "
                             + "is the perfect low-cost solution for a range of Raspberry Pi and Arduino temperature control "
@@ -358,7 +358,7 @@ public class InsertDemoDataViaCatalog {
                     new ImageData()
                             .withBase64String(getBase64ImageFromUrl("https://cdn.sparkfun.com//assets/parts/9/9/4/4/12994-01.jpg"))
                                     //.withHref("https://cdn.sparkfun.com//assets/parts/9/9/4/4/12994-01.jpg")
-                            .withContentType("image/jpg")));
+                            .withContentType("image/jpeg")));
             raspiBPlus.setDescription("512MB RAM, new GPIO, microSD");
             raspiBPlus.addChild(motionSensor.getId());
             raspiBPlus.addChild(temperatureSensor.getId());
@@ -414,7 +414,7 @@ public class InsertDemoDataViaCatalog {
             waterSensor.withImageData(Arrays.asList(
                     new ImageData()
                             .withBase64String(getBase64ImageFromUrl("http://img.nauticexpo.com/images_ne/photo-m2/hydrophone-probe-oceanographic-survey-preamplified-hydrophone-40202-4913311.jpg"))
-                            .withContentType("image/jpg")));
+                            .withContentType("image/jpeg")));
             waterSensor.setDescription("Deep water data logger that measures "
                     + "and records temperature and pressure");
             waterSensor.addTag("water");
@@ -440,7 +440,7 @@ public class InsertDemoDataViaCatalog {
             gyroSensor.withImageData(Arrays.asList(
                     new ImageData()
                             .withBase64String(getBase64ImageFromUrl("http://img.auctiva.com/imgdata/1/8/7/9/0/1/5/webimg/769218226_o.jpg"))
-                            .withContentType("image/jpg")));
+                            .withContentType("image/jpeg")));
             gyroSensor.setDescription("Motion tracking device which is a combination of a "
                     + "3-axis gyroscope and a 3-axis accelerometer "
                     + "with an onboard Digital Motion Processor™, "
@@ -481,7 +481,7 @@ public class InsertDemoDataViaCatalog {
             gpsSensor.withImageData(Arrays.asList(
                     new ImageData()
                             .withBase64String(getBase64ImageFromUrl("https://cdn.sparkfun.com//assets/parts/9/5/1/2/12751-01.jpg"))
-                            .withContentType("image/jpg")));
+                            .withContentType("image/jpeg")));
             gpsSensor.setDescription("EM-506 includes on-board voltage regulation, "
                     + "LED status indicator, battery backed RAM, "
                     + "and a built-in patch antenna. 6-pin interface cable included.");
@@ -508,7 +508,7 @@ public class InsertDemoDataViaCatalog {
             appleGyroSensor.withImageData(Arrays.asList(
                     new ImageData()
                             .withBase64String(getBase64ImageFromUrl("http://akizukidenshi.com/img/goods/C/I-04280.jpg"))
-                            .withContentType("image/jpg")));
+                            .withContentType("image/jpeg")));
             appleGyroSensor.setDescription("The Kionix KXM52-1050 tri-axial accelerometer "
                     + "is a high performance silicon micro-machined linear accelerometer "
                     + "consisting of a sensing element and a CMOS signal conditioning ASIC "
@@ -567,7 +567,7 @@ public class InsertDemoDataViaCatalog {
             appleMacBook.withImageData(Arrays.asList(
                     new ImageData()
                             .withBase64String(getBase64ImageFromUrl("http://www1.pcmag.com/media/images/365183-apple-macbook-pro-13-inch-retina-2014.jpg"))
-                            .withContentType("image/jpg")));
+                            .withContentType("image/jpeg")));
             appleMacBook.setDescription("Apple's Macbook laptop with integrated sensors.");
             appleMacBook.addTag("computer");
             appleMacBook.addTag("laptop");
@@ -582,7 +582,7 @@ public class InsertDemoDataViaCatalog {
             batterySensor.withImageData(Arrays.asList(
                     new ImageData()
                             .withBase64String(getBase64ImageFromUrl("http://www.engineerlive.com/sites/default/files/styles/article/public/eee%20sensors%20may14%20freescale.jpg?itok=9RL_D_e4"))
-                            .withContentType("image/jpg")));
+                            .withContentType("image/jpeg")));
             batterySensor.setDescription("Designed to support both conventional and "
                     + "emerging battery chemistries for automotive and industrial applications, "
                     + "the MM9Z1J638 battery sensor measures key battery parameters for monitoring "
@@ -607,7 +607,7 @@ public class InsertDemoDataViaCatalog {
             pressureSensor.withImageData(Arrays.asList(
                     new ImageData()
                             .withBase64String(getBase64ImageFromUrl("http://www.carid.com/images/oro-tek/tpms-sensors/oro-tek-tpms-sensor.jpg"))
-                            .withContentType("image/jpg")));
+                            .withContentType("image/jpeg")));
             pressureSensor.setDescription("Sensor for monitoring tire pressure.");
             pressureSensor.addTag("pressure");
             pressureSensor.addTag("bar");

@@ -1,4 +1,6 @@
+
 var app = angular.module("app");
+
 app.controller('LoginViewController', [
     '$scope', '$http', '$compile',
     function ($scope, $http, $compile) {
@@ -20,8 +22,7 @@ app.controller('LoginViewController', [
                     console.log("Login error.");
                 }
             });
-
-        }
+        };
 
         $scope.$watch("loginType.riots", function() {
         	if(!$scope.loginType) return;
