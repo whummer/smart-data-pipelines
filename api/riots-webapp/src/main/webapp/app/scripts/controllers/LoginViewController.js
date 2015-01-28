@@ -40,6 +40,8 @@ app.controller('LoginViewController', [
         	btn.attr("disabled", "disabled");
         	$scope.loginInfo.errorMsg = "";
         	$scope.loginInfo.successMsg = "";
+        	$scope.loginInfo.warningMsg = "";
+
         	var opts = {
         			username: $scope.loginInfo.username,
         			password: $scope.loginInfo.password

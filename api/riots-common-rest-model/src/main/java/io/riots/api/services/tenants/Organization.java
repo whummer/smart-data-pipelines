@@ -1,14 +1,15 @@
 package io.riots.api.services.tenants;
 
-import java.util.Date;
-import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import io.riots.api.services.model.Constants;
 import io.riots.api.services.model.interfaces.ObjectCreated;
 import io.riots.api.services.model.interfaces.ObjectIdentifiable;
 import io.riots.api.services.model.interfaces.ObjectNamed;
+
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Class to represent organizations. By default, each 
@@ -44,10 +45,13 @@ public class Organization implements ObjectIdentifiable, ObjectNamed, ObjectCrea
 	 * member of this organization.
 	 */
 	@JsonProperty
-	private List<String> members;
+	private Set<String> members = new HashSet<String>();
 
 	public String getId() {
 		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
 	}
 	public String getName() {
 		return name;
@@ -55,7 +59,7 @@ public class Organization implements ObjectIdentifiable, ObjectNamed, ObjectCrea
 	public void setName(String name) {
 		this.name = name;
 	}
-	public List<String> getMembers() {
+	public Set<String> getMembers() {
 		return members;
 	}
 	public Date getCreated() {

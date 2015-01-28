@@ -1,6 +1,7 @@
 package io.riots.api.services.users;
 
 import io.riots.api.model.UserMongo;
+import io.riots.api.model.UserPasswordMongo;
 import io.riots.api.services.billing.BillingService;
 import io.riots.api.services.billing.PricingPlan;
 import io.riots.api.services.billing.PricingPlanAssignment;
@@ -141,16 +142,27 @@ public class UsersServiceImpl implements UsersService {
     	if(!PasswordUtils.isValid(r.password)) {
 	    	throw ServiceUtil.forbidden("Invalid password (Must be longer than 6 characters).");
     	}
-    	User existing = userQuery.findByEmail(r.getEmail());
-    	if(existing != null) {
-	    	throw ServiceUtil.forbidden("User with this email adress is already registered.");
+    	User user = userQuery.findByEmail(r.getEmail());
+    	if(user != null) {
+    		/* check if we already have a password entry for this user. */
+    		List<UserPasswordMongo> existingPwd = userPassRepo.findByUserId(user.getId());
+    		if(!existingPwd.isEmpty()) {
+    			throw ServiceUtil.forbidden("User with this email adress is already registered.");
+    		}
+    		/* all good, now store the updated user info */
+    		UserMongo tmp = new UserMongo(user);
+    		String userId = user.getId();
+    		tmp.copyFrom(r);
+    		tmp.setId(userId);
+    		user = userCommand.createOrUpdate(tmp);
+    	} else {
+    		UserMongo tmp = new UserMongo(r);
+    		user = userCommand.createOrUpdate(tmp);
     	}
-    	UserMongo user = new UserMongo(r);
-    	user = userCommand.createOrUpdate(user);
 
     	/* store user password entity */
     	String passHash = PasswordUtils.createHash(r.password);
-    	UserPassword pass = new UserPassword(user.getId(), passHash);
+    	UserPasswordMongo pass = new UserPasswordMongo(user.getId(), passHash);
     	pass = userPassRepo.save(pass);
 
     	/* set email activation code */
@@ -195,12 +207,15 @@ public class UsersServiceImpl implements UsersService {
     			}
     		}
     		/* check password */
-    		List<UserPassword> userPasswords = userPassRepo.findByUserId(user.getId());
-    		if(userPasswords.isEmpty() || userPasswords.size() > 1) {
+    		List<UserPasswordMongo> userPasswords = userPassRepo.findByUserId(user.getId());
+    		if(userPasswords.size() > 1) {
     			ServiceUtil.setResponseStatus(context, HttpServletResponse.SC_FORBIDDEN);
     			LOG.info("Login error: Unexpected array of passwords in DB for user id '" + 
     					user.getId() + "': " + userPasswords);
     	    	throw ServiceUtil.forbidden("An error occured. Error code: " + ErrorCodes.ERR_DUPLICATE_PASSWORD);
+    		}
+    		if(userPasswords.isEmpty()) {
+    	    	throw ServiceUtil.forbidden("Unknown account. Please sign up using your email address.");
     		}
     		String expectedPassword = userPasswords.get(0).getPassword();
     		if(!expectedPassword.equals(r.password)) {

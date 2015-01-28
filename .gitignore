@@ -12,9 +12,10 @@ tmp/
 *.so
 *.o
 *.a
-mkmf.log
+*.log
 .project
 .classpath
+*.classpath
 .settings
 target/
 log/

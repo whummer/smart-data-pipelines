@@ -54,7 +54,7 @@ public interface OrganizationsService {
             notes = "Return a list of organizations of the given user.",
             response = Organization.class)
 	@PreAuthorize(Role.HAS_ROLE_USER)
-    List<Organization> getOrganizationsOfUser();
+    List<OrganizationMembership> getOrganizationsOfUser();
 
 	@GET
     @Path("/default")

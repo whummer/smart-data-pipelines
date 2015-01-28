@@ -13,4 +13,6 @@ public interface OrganizationRepository extends PagingAndSortingRepository<Organ
 
 	List<Organization> findByCreatorIdOrMembers(String userId1, String userId2);
 
+	List<Organization> findByCreatorIdOrMembersOrMembers(String id, String id2, String id3);
+
 }

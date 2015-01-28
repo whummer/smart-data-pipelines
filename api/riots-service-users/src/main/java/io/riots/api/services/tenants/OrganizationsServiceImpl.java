@@ -5,6 +5,7 @@ import io.riots.api.services.users.User;
 import io.riots.api.services.users.UsersService;
 import io.riots.core.auth.AuthHeaders;
 import io.riots.core.clients.ServiceClientFactory;
+import io.riots.core.model.ModelCache;
 import io.riots.core.repositories.InvitationRepository;
 import io.riots.core.repositories.OrganizationRepository;
 import io.riots.core.util.ServiceUtil;
@@ -69,12 +70,31 @@ public class OrganizationsServiceImpl implements OrganizationsService {
 
 	@Override
 	@Timed @ExceptionMetered
-	public List<Organization> getOrganizationsOfUser() {
+	public List<OrganizationMembership> getOrganizationsOfUser() {
 		User user = ServiceUtil.assertValidUser(authHeaders, req);
+		
 		/* make sure we have a default organization */
 		getOrInsertDefaultOrganization(user);
+		/* construct result */
+		UsersService users = clientFactory.getUsersServiceClient(AuthHeaders.INTERNAL_CALL);
+		List<OrganizationMembership> result = new LinkedList<OrganizationMembership>();
+		List<Organization> list = orgRepo.findByCreatorIdOrMembersOrMembers(
+				user.getId(), user.getId(), user.getEmail());
+		for(Organization org : list) {
+			OrganizationMembership mem = new OrganizationMembership(org);
+			List<Invitation> inv = invRepo.findByCreatorIdAndInviteeAndInvitedFor(
+					org.getCreatorId(), user.getId(), org.getId());
+			if(inv.isEmpty()) {
+				mem.setStatus(InvitationStatus.UNKNOWN);
+			} else if(inv.size() == 1) {
+				mem.setStatus(inv.get(0).getStatus());
+			}
+			User creator = ModelCache.getUser(org.getCreatorId(), users);
+			mem.setCreatorDisplayName(creator.getDisplayName());
+			result.add(mem);
+		}
 		/* find and return organizations */
-		return orgRepo.findByCreatorIdOrMembers(user.getId(), user.getId());
+		return result;
 	}
 
 	@Override

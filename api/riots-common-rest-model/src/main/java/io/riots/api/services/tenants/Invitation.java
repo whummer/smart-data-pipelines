@@ -22,7 +22,8 @@ public class Invitation implements ObjectIdentifiable, ObjectCreated {
 	public static enum InvitationStatus {
 		PENDING,
 		CONFIRMED,
-		REJECTED
+		REJECTED,
+		UNKNOWN
 	}
 
 	/**

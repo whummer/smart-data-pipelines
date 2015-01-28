@@ -1,6 +1,6 @@
 package io.riots.core.repositories;
 
-import io.riots.api.services.users.UserPassword;
+import io.riots.api.model.UserPasswordMongo;
 
 import java.util.List;
 
@@ -9,10 +9,10 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 /**
  * @author Waldemar Hummer
  */
-public interface UserPasswordRepository extends PagingAndSortingRepository<UserPassword,String> {
+public interface UserPasswordRepository extends PagingAndSortingRepository<UserPasswordMongo,String> {
 
-	List<UserPassword> findByUserId(String userId);
+	List<UserPasswordMongo> findByUserId(String userId);
 
-	List<UserPassword> findByUserIdAndPassword(String userId, String password);
+	List<UserPasswordMongo> findByUserIdAndPassword(String userId, String password);
 
 }

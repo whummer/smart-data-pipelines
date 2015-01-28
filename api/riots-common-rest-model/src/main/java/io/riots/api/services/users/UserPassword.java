@@ -17,7 +17,7 @@ public class UserPassword implements ObjectIdentifiable {
 	@JsonProperty
 	private String id;
 	/**
-	 * User identifier.
+	 * Identifier of the user this password item belongs to.
 	 */
 	@JsonProperty
 	private String userId;
@@ -41,11 +41,25 @@ public class UserPassword implements ObjectIdentifiable {
 	public String getId() {
 		return id;
 	}
+	public void setId(String id) {
+		this.id = id;
+	}
 	public String getPassword() {
 		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 	public String getUserId() {
 		return userId;
 	}
-	
+	public void copyFrom(UserPassword other) {
+		this.setId(other.getId());
+		this.setUserId(other.getUserId());
+		this.setPassword(other.getPassword());
+	}
+
 }
