@@ -5,6 +5,7 @@
 /* define array index names for model properties */
 var NAME = "name";
 var CREATION_DATE = "creation-date";
+var CREATOR_ID = "creator-id";
 var THING_TYPE = "thing-type";
 var THING_ID = "thing-id";
 var THINGS = "things";
@@ -200,6 +201,10 @@ sh.plans = sh.get.plans = function(callback) {
 	var url = appConfig.services.billing.url + "/plans";
 	return callGET(url, callback);
 }
+sh.organizations = sh.get.organizations = function(callback) {
+	var url = appConfig.services.organizations.url;
+	return callGET(url, callback);
+}
 sh.usage = sh.get.usage = function(callback, errorCallback) {
 	var url = appConfig.services.users.url + "/me/usage";
 	return callGET(url, callback, false, errorCallback);
@@ -279,6 +284,9 @@ sh.save.thingType = function(thingType, callback) {
 }
 sh.save.app = function(app, callback) {
 	return callPUT(appConfig.services.apps.url, app, callback);
+}
+sh.save.organization = function(organization, callback) {
+	return callPUT(appConfig.services.organizations.url, organization, callback);
 }
 sh.save.thing = function(thing, callback) {
 	return callPUT(appConfig.services.things.url, thing, callback);

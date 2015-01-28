@@ -1,6 +1,6 @@
 package io.riots.core.handlers.command;
 
-import io.riots.api.services.model.UserMongo;
+import io.riots.api.model.UserMongo;
 import io.riots.core.logging.Markers;
 import io.riots.core.repositories.UserRepository;
 

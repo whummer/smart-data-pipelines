@@ -54,10 +54,8 @@ define(
 				resolver: ['$q', '$rootScope', function ($q, $rootScope) {
 					var deferred = $q.defer();
 
-					console.log("$scope.isUnprotectedPage", rootScope.isUnprotectedPage);
-					
 					performLogin(function (authInfo) {
-						console.log("Login done. Start rendering.", authInfo);
+						//console.log("Login done. Start rendering.", authInfo);
 
 						if (authInfo) {
 							window.authInfo = authInfo;

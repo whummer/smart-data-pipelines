@@ -1,6 +1,6 @@
 package io.riots.core.repositories;
 
-import io.riots.api.services.model.UserMongo;
+import io.riots.api.model.UserMongo;
 
 import java.util.List;
 

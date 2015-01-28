@@ -19,6 +19,7 @@
             <ref bean="ratingsServiceImpl"/>
             <ref bean="statisticsServiceImpl"/>
             <ref bean="billingServiceImpl"/>
+            <ref bean="organizationsServiceImpl"/>
         </jaxrs:serviceBeans>
         <jaxrs:features>
             <cxf:logging/>

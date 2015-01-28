@@ -3,6 +3,8 @@ app.controller('LoginViewController', [
     '$scope', '$http', '$compile', '$routeParams', '$location',
     function ($scope, $http, $compile, $routeParams, $location) {
 
+    	console.log("LoginViewController");
+
     	$scope.loginType = { riots: true };
     	$scope.loginInfo = {
     			username: "",

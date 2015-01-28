@@ -8,6 +8,7 @@ import io.riots.api.services.scenarios.ThingDataService;
 import io.riots.api.services.scenarios.ThingsService;
 import io.riots.api.services.sim.SimulationService;
 import io.riots.api.services.statistics.GatewayStatsService;
+import io.riots.api.services.tenants.OrganizationsService;
 import io.riots.api.services.users.AuthInfo;
 import io.riots.api.services.users.UsersService;
 import io.riots.core.auth.AuthHeaders;
@@ -43,38 +44,59 @@ public class ServiceClientFactory {
 
 	private static final String DEFAULT_SERVICE_ENDPOINT = "http://%s:%s/api/v1/";
 
-	public static final String SERVICE_FILES_EUREKA_NAME = "files-service";
-	public static final String SERVICE_FILES_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
-	public static final String SERVICE_USERS_EUREKA_NAME = "users-service";
-	public static final String SERVICE_USERS_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
-	public static final String SERVICE_APP_EUREKA_NAME = "environment-service";
-	public static final String SERVICE_APP_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
-	public static final String SERVICE_CATALOG_EUREKA_NAME = "catalog-service";
-	public static final String SERVICE_CATALOG_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
-	public static final String SERVICE_THINGS_EUREKA_NAME = "environment-service";
-	public static final String SERVICE_THINGS_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
-	public static final String SERVICE_THINGDATA_EUREKA_NAME = "environment-service";
-	public static final String SERVICE_THINGDATA_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
-	public static final String SERVICE_SIMULATION_EUREKA_NAME = "simulation-service";
-	public static final String SERVICE_SIMULATION_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
-	public static final String SERVICE_BILLING_EUREKA_NAME = "users-service";
-	public static final String SERVICE_BILLING_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
-	public static final String SERVICE_GWSTATS_EUREKA_NAME = "gateway-service";
-	public static final String SERVICE_GWSTATS_ENDPOINT = "http://%s:%s/";
+	private static final String SERVICE_FILES_EUREKA_NAME = "files-service";
+	private static final String SERVICE_FILES_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
+	private static final String SERVICE_USERS_EUREKA_NAME = "users-service";
+	private static final String SERVICE_USERS_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
+	private static final String SERVICE_ORGANIZATIONS_EUREKA_NAME = "users-service";
+	private static final String SERVICE_ORGANIZATIONS_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
+	private static final String SERVICE_APP_EUREKA_NAME = "environment-service";
+	private static final String SERVICE_APP_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
+	private static final String SERVICE_CATALOG_EUREKA_NAME = "catalog-service";
+	private static final String SERVICE_CATALOG_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
+	private static final String SERVICE_THINGS_EUREKA_NAME = "environment-service";
+	private static final String SERVICE_THINGS_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
+	private static final String SERVICE_THINGDATA_EUREKA_NAME = "environment-service";
+	private static final String SERVICE_THINGDATA_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
+	private static final String SERVICE_SIMULATION_EUREKA_NAME = "simulation-service";
+	private static final String SERVICE_SIMULATION_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
+	private static final String SERVICE_BILLING_EUREKA_NAME = "users-service";
+	private static final String SERVICE_BILLING_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
+	private static final String SERVICE_GWSTATS_EUREKA_NAME = "gateway-service";
+	private static final String SERVICE_GWSTATS_ENDPOINT = "http://%s:%s/";
 
-	private static final Map<String,String> serviceEndpoints = new HashMap<String,String>();
+	private static final Map<Class<?>,ServiceInfo> serviceEndpointsByInterface = new HashMap<>();
+	private static final Map<String,ServiceInfo> serviceEndpointsByEurekaName = new HashMap<>();
 	private static final Method methodGetBean;
 
+	private static class ServiceInfo {
+//		Class<?> serviceInterface;
+		String eurekaName;
+		String endpoint;
+		public ServiceInfo(Class<?> serviceInterface, String eurekaName, String endpoint) {
+//			this.serviceInterface = serviceInterface;
+			this.eurekaName = eurekaName;
+			this.endpoint = endpoint;
+		}
+	}
+	private static void addMapping(Class<?> clazz, String eurekaName, String endpoint) {
+		ServiceInfo info = new ServiceInfo(clazz, eurekaName, endpoint);
+		serviceEndpointsByInterface.put(clazz, info);
+		serviceEndpointsByEurekaName.put(eurekaName, info);
+	}
+
 	static {
-		serviceEndpoints.put(SERVICE_USERS_EUREKA_NAME, SERVICE_USERS_ENDPOINT);
-		serviceEndpoints.put(SERVICE_THINGS_EUREKA_NAME, SERVICE_THINGS_ENDPOINT);
-		serviceEndpoints.put(SERVICE_THINGDATA_EUREKA_NAME, SERVICE_THINGDATA_ENDPOINT);
-		serviceEndpoints.put(SERVICE_CATALOG_EUREKA_NAME, SERVICE_CATALOG_ENDPOINT);
-		serviceEndpoints.put(SERVICE_SIMULATION_EUREKA_NAME, SERVICE_SIMULATION_ENDPOINT);
-		serviceEndpoints.put(SERVICE_GWSTATS_EUREKA_NAME, SERVICE_GWSTATS_ENDPOINT);
-		serviceEndpoints.put(SERVICE_APP_EUREKA_NAME, SERVICE_APP_ENDPOINT);
-		serviceEndpoints.put(SERVICE_FILES_EUREKA_NAME, SERVICE_FILES_ENDPOINT);
-		serviceEndpoints.put(SERVICE_BILLING_EUREKA_NAME, SERVICE_BILLING_ENDPOINT);
+
+		addMapping(UsersService.class, SERVICE_USERS_EUREKA_NAME, SERVICE_USERS_ENDPOINT);
+		addMapping(ThingsService.class, SERVICE_THINGS_EUREKA_NAME, SERVICE_THINGS_ENDPOINT);
+		addMapping(ThingDataService.class, SERVICE_THINGDATA_EUREKA_NAME, SERVICE_THINGDATA_ENDPOINT);
+		addMapping(CatalogService.class, SERVICE_CATALOG_EUREKA_NAME, SERVICE_CATALOG_ENDPOINT);
+		addMapping(SimulationService.class, SERVICE_SIMULATION_EUREKA_NAME, SERVICE_SIMULATION_ENDPOINT);
+		addMapping(GatewayStatsService.class, SERVICE_GWSTATS_EUREKA_NAME, SERVICE_GWSTATS_ENDPOINT);
+		addMapping(ApplicationsService.class, SERVICE_APP_EUREKA_NAME, SERVICE_APP_ENDPOINT);
+		addMapping(FilesService.class, SERVICE_FILES_EUREKA_NAME, SERVICE_FILES_ENDPOINT);
+		addMapping(BillingService.class, SERVICE_BILLING_EUREKA_NAME, SERVICE_BILLING_ENDPOINT);
+		addMapping(OrganizationsService.class, SERVICE_ORGANIZATIONS_EUREKA_NAME, SERVICE_ORGANIZATIONS_ENDPOINT);
 
 		/* reflection for client creation (add custom headers later) */
 		try {
@@ -89,43 +111,60 @@ public class ServiceClientFactory {
 
 	public UsersService getUsersServiceClient(Map<?,?> ... headers) {
 		Map<String,String> headersMap = merge(headers);
-		return getServiceInstanceForName(SERVICE_USERS_EUREKA_NAME, UsersService.class, headersMap);
+		return getServiceInstanceForInterface(UsersService.class, headersMap);
+	}
+	public OrganizationsService getOrganizationsServiceClient(Map<?,?> ... headers) {
+		Map<String,String> headersMap = merge(headers);
+		return getServiceInstanceForInterface(OrganizationsService.class, headersMap);
 	}
 	public ThingsService getThingsServiceClient(Map<?,?> ... headers) {
 		Map<String,String> headersMap = merge(headers);
-		return getServiceInstanceForName(SERVICE_THINGS_EUREKA_NAME, ThingsService.class, headersMap);
+		return getServiceInstanceForInterface(ThingsService.class, headersMap);
 	}
 	public ApplicationsService getApplicationsServiceClient(Map<?,?> ... headers) {
 		Map<String,String> headersMap = merge(headers);
-		return getServiceInstanceForName(SERVICE_APP_EUREKA_NAME, ApplicationsService.class, headersMap);
+		return getServiceInstanceForInterface(ApplicationsService.class, headersMap);
 	}
 	public BillingService getBillingServiceClient(Map<?,?> ... headers) {
 		Map<String,String> headersMap = merge(headers);
-		return getServiceInstanceForName(SERVICE_BILLING_EUREKA_NAME, BillingService.class, headersMap);
+		return getServiceInstanceForInterface(BillingService.class, headersMap);
 	}
 	public FilesService getFilesServiceClient() {
-		return getServiceInstanceForName(SERVICE_FILES_EUREKA_NAME, FilesService.class);
+		return getServiceInstanceForInterface(FilesService.class);
 	}
 	public ThingDataService getThingDataServiceClient() {
-		return getServiceInstanceForName(SERVICE_THINGDATA_EUREKA_NAME, ThingDataService.class);
+		return getServiceInstanceForInterface(ThingDataService.class);
 	}
 	public SimulationService getSimulationsServiceClient() {
-		return getServiceInstanceForName(SERVICE_SIMULATION_EUREKA_NAME, SimulationService.class);
+		return getServiceInstanceForInterface(SimulationService.class);
 	}
 	public CatalogService getCatalogServiceClient() {
-		return getServiceInstanceForName(SERVICE_CATALOG_EUREKA_NAME, CatalogService.class);
+		return getServiceInstanceForInterface(CatalogService.class);
 	}
 	public GatewayStatsService getGatewayStatsServiceClient() {
-		return getServiceInstanceForName(SERVICE_GWSTATS_EUREKA_NAME, GatewayStatsService.class);
+		return getServiceInstanceForInterface(GatewayStatsService.class);
 	}
 
 	/* HELPER METHODS */
 
-	public String getServiceUrlForName(String name) {
+	public String getServiceUrlForInterface(Class<?> service) {
+		String name = serviceEndpointsByInterface.get(service).eurekaName;
+		return getServiceUrlForName(name);
+	}
+	private String getServiceUrlForName(String name) {
 		InstanceInfo i = getService(name);
-		return String.format(serviceEndpoints.get(name), i.getIPAddr(), i.getPort());
+		String endpoint = serviceEndpointsByEurekaName.get(name).endpoint;
+		return String.format(endpoint, i.getIPAddr(), i.getPort());
 	}
 
+	private <T> T getServiceInstanceForInterface(Class<T> serviceInterface) {
+		String serviceName = serviceEndpointsByInterface.get(serviceInterface).eurekaName;
+		return getServiceInstanceForName(serviceName, serviceInterface);
+	}
+	private <T> T getServiceInstanceForInterface(Class<T> serviceInterface, Map<String, String> headersMap) {
+		String serviceName = serviceEndpointsByInterface.get(serviceInterface).eurekaName;
+		return getServiceInstanceForName(serviceName, serviceInterface, headersMap);
+	}
 	private <T> T getServiceInstanceForName(String name, Class<T> clazz) {
 		return getServiceInstanceForName(name, clazz, null);
 	}

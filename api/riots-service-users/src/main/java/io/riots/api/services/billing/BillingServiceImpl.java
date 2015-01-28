@@ -1,4 +1,4 @@
-package io.riots.api.services.users;
+package io.riots.api.services.billing;
 
 import io.riots.api.services.billing.BillingService;
 import io.riots.api.services.billing.PricingPlan;

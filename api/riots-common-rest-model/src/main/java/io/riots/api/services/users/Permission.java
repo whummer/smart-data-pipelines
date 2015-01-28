@@ -17,6 +17,8 @@ public class Permission {
 			"hasPermission(#application, '" + Operation.UPDATE + "')";
 	public static final String CAN_UPDATE_USER = 
 			"hasPermission(#user, '" + Operation.UPDATE + "')";
+	public static final String CAN_UPDATE_ORGANIZATION = 
+			"hasPermission(#organization, '" + Operation.UPDATE + "')";
 
 	public static enum Operation {
 		;

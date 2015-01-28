@@ -250,6 +250,7 @@ public class InsertDemoDataViaCatalog {
 
     private void insertThingData() throws IOException {
         List<? extends ThingType> types = catalog.listThingTypes("", 0, 1000);
+        System.out.println("existing: " + types);
         insertThingData(types);
     }
 
@@ -670,6 +671,33 @@ public class InsertDemoDataViaCatalog {
             clubCar = getOrCreateThingType(clubCar, existing);
         }
 
+        {
+            ThingType emissionTester = new ThingType("BrainBee TechMobil 800+ Emission Tester");
+            emissionTester.withImageData(Arrays.asList(
+                    new ImageData()
+                            .withBase64String(getBase64ImageFromUrl(
+                            		"http://www.werkzeugeonline.eu/media/catalog/product/cache/1/image/1f5f7cd1de397160c99ff8bb04c50d3e/b/r/brainbee_techmobil_800.jpg"))
+                            .withContentType("image/png")));
+            emissionTester.setDescription("Motor vehicle emissions "
+            		+ "and performance tester for petrol and diesel vehicles.");
+            emissionTester.addTag("tester");
+            emissionTester.addTag("temperature");
+            emissionTester.addTag("emission");
+            emissionTester.addTag("rotation");
+
+            Property propTemp = new Property("temperature");
+            propTemp.setPropertyType(PropertyType.DOUBLE);
+            propTemp.setUnit("Celsius");
+            propTemp.setActuatable(false).setSensable(true);
+            emissionTester.getProperties().add(propTemp);
+            Property propRot = new Property("rotation");
+            propRot.setPropertyType(PropertyType.DOUBLE);
+            propRot.setUnit("rotations/s");
+            propRot.setActuatable(false).setSensable(true);
+            emissionTester.getProperties().add(propRot);
+
+            emissionTester = getOrCreateThingType(emissionTester, existing);
+        }
     }
 
     private String getBase64ImageFromUrl(String urlHref) throws IOException {
