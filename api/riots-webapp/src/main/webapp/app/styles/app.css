@@ -93,8 +93,8 @@ a.right.carousel-control, a.left.carousel-control {
     border-radius: 4px;
     -webkit-transition: all 0.2s ease-in-out;
     transition: all 0.2s ease-in-out;
-    border-color: rgb(102, 175, 233);
-    box-shadow: rgba(0, 0, 0, 0.0745098) 0px 1px 1px 0px inset, rgba(103, 175, 233, 0.6) 0px 0px 7.99704837799072px 0px;
+    border-color: rgb(125, 25, 53);
+    box-shadow: rgba(74, 150, 173, 0.07) 0px 1px 1px 0px inset, rgba(125, 25, 53, 0.60) 0px 0px 7.99704837799072px 0px;
     outline: 0 none;
 }
 

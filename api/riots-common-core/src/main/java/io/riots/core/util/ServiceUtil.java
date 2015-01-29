@@ -109,8 +109,13 @@ public class ServiceUtil {
 	}
 	public static User assertValidUser(AuthHeaders authHeaders,
 			HttpServletRequest req) {
-		User user = authHeaders.getRequestingUser(req);
-		assertValidUser(user);
-		return user;
+		try {
+			User user = authHeaders.getRequestingUser(req);
+			assertValidUser(user);
+			return user;
+		} catch (RuntimeException e) {
+			LOG.warn("Unable to get user for auth headers " + AuthHeaders.getHeaders(req));
+			throw e;
+		}
 	}
 }

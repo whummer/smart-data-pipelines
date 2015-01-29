@@ -1,33 +1,32 @@
-<nav class="navbar-default navbar-static-side" style="background: #2f4050" role="navigation" ng-controller="MenuController">
+<nav class="navbar-default navbar-static-side" style="background: #4A96AD" role="navigation"
+		 ng-controller="MenuController">
+
 	<div class="sidebar-collapse">
 		<ul side-navigation class="nav" id="side-menu">
 
 			<!-- Navigation Header -->
 			<li class="nav-header">
-				<div class="dropdown profile-element">
-					<img alt="image" class="img-circle" style="height: 50px;" ng-src="{{authInfo.avatar}}"
-							 ng-if="authInfo.avatar"/>
-					<a class="dropdown-toggle" href>
-						<span class="clear">
-							<span class="block m-t-xs"><strong class="font-bold">{{authInfo.name}}</strong></span>
-							<span class="text-muted text-xs block">Hacker <b class="caret"></b></span>
-						</span>
-					</a>
-					<ul class="dropdown-menu animated fadeInRight m-t-xs">
-						<li><a href="#/profile">Profile</a></li>
-						<li><a href="#/connect">Connect-Me</a></li>
-						<li class="divider"></li>
-						<li><a href="JavaScript: void(0);" ng-click="performLogout()">Logout</a></li>
-					</ul>
+				<div id="riots-logo-lg">
+					<img class="src" src="img/riots_turkis_white_transparent_md.png" style="max-height: 40px" alt=""/>
 				</div>
-				<!--<div class="logo-element">
-					IN+
-				</div>-->
+
+				<div class="profile-element">
+					<img class="img-circle pull-right block" style="max-height: 40px; margin-top: 15px"
+							 ng-src="{{authInfo.avatar}}"
+							 ng-if="authInfo.avatar"/>
+					<!--<span class="block text-muted m-t-xs pull-right clear">-->
+					<!--<strong class="font-bold">{{authInfo.name}}</strong>-->
+					<!--</span>-->
+				</div>
+
+				<div class="logo-element">
+					<img src="/img/riots_turkis_white_transparent_mdpwd.png" width="50"/>
+				</div>
 			</li>
 
 			<!-- Dashboards -->
-			<li ng-class="{active: $state.includes('dashboards')}">
-				<a ui-sref="dashboards.dashboard_1" href="#/home">
+			<li ng-class="{active: $state.includes('dashboards')}" style="margin-top: 20px">
+				<a ui-sref="dashboards" href="#/home">
 					<i class="fa fa-th-large"></i>
 					<span class="nav-label">Dashboard</span> <span class="fa arrow"></span>
 				</a>
@@ -41,20 +40,32 @@
 			<!-- Catalog -->
 			<li ng-class="{active: $state.includes('catalog')}" ng-controller="ModalAddDeviceTypeController"
 					hotkey="{a: openAddThingTypeModal}">
-				<a href="">
+				<a ui-sref="catalog" href="">
 					<i class="fa fa-book"></i>
 					<span class="nav-label">Catalog</span> <span class="fa arrow"></span>
 				</a>
 				<ul class="nav nav-second-level" ng-class="{in: $state.includes('catalog')}">
-					<li ui-sref-active="active"><a href="#/catalog" ui-sref="catalog.browse">Browse Catalog</a></li>
-					<li ui-sref-active="active"><a ng-click="openAddThingTypeModal()" ui-sref="catalog.thingtype.add">Add Thing Type</a></li>
-					<li ui-sref-active="active"><a href="#/meta" ui-sref="catalog.metadata.edit">Edit Metadata</a></li>
+					<li ui-sref-active="active">
+						<a href="#/catalog" ui-sref="catalog.browse">
+							<i class="fa fa-list"></i> Browse Catalog
+						</a>
+					</li>
+					<li ui-sref-active="active">
+						<a ng-click="openAddThingTypeModal()" ui-sref="catalog.thingtype.add">
+							<i class="fa fa-plus"></i> Add Thing Type
+						</a>
+					</li>
+					<li ui-sref-active="active">
+						<a href="#/meta" ui-sref="catalog.metadata.edit">
+							<i class="fa fa-edit"></i> Edit Metadata
+						</a>
+					</li>
 				</ul>
 			</li>
 
 			<!-- Applications -->
 			<li ng-class="{active: $state.includes('applications')}">
-				<a ui-sref="inbox">
+				<a ui-sref="applications">
 					<i class="fa fa-cogs"></i>
 					<span class="nav-label">Applications </span><span class="fa arrow"></span>
 				</a>
@@ -65,7 +76,29 @@
 						</a>
 					</li>
 					<li ng-repeat="app in shared.applications">
-						<a href="#/apps/{{app.id}}"><i class="fa fa-cog"></i>  {{app.name}}</a>
+						<a ui-sref-active="active" ui-sref="applications.{{app.id}}" href="#/apps/{{app.id}}">
+							<i class="fa fa-cog"></i> {{app.name}}
+						</a>
+					</li>
+				</ul>
+			</li>
+
+			<!-- Behaviors -->
+			<li ng-class="{active: $state.includes('behaviors')}">
+				<a ui-sref="behaviors">
+					<i class="fa fa-eye"></i>
+					<span class="nav-label">Behaviors </span><span class="fa arrow"></span>
+				</a>
+				<ul class="nav nav-second-level" ng-class="{in: $state.includes('behaviors')}">
+					<li ui-sref-active="active">
+						<a href="#/sim" ui-sref="behaviors.simulations">
+							<i class="fa fa-random"></i> Simulations
+						</a>
+					</li>
+					<li ui-sref-active="active">
+						<a href="#/func" ui-sref="behaviors.triggers">
+							<i class="fa fa-bullseye"></i> Triggers
+						</a>
 					</li>
 				</ul>
 			</li>

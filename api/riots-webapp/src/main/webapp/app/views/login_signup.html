@@ -1,0 +1,65 @@
+<section>
+	<div ng-show="!regInfo.activationKey">
+		<form class="form-horizontal">
+			<div class="row">
+				<div class="col-md-6 well">
+					<div class="alert alert-danger" ng-show="regInfo.errorMsg">
+						{{regInfo.errorMsg}}
+					</div>
+					<div class="alert alert-success" ng-show="regInfo.successMsg">
+						{{regInfo.successMsg}}
+					</div>
+					<div class="form-group">
+						<label for="firstName" class="col-sm-4 control-label">First Name:</label>
+						<div class="col-sm-8">
+							<input id="firstName" class="form-control" ng-model="regInfo.firstname"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="lastName" class="col-sm-4 control-label">Last Name:</label>
+						<div class="col-sm-8">
+							<input id="lastName" class="form-control" ng-model="regInfo.lastname"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="emailAddress" class="col-sm-4 control-label">Email Address:</label>
+						<div class="col-sm-8">
+							<input id="emailAddress" class="form-control" ng-model="regInfo.email"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="password1" class="col-sm-4 control-label">Choose Password:</label>
+						<div class="col-sm-8">
+							<input id="password1" class="form-control" type="password" ng-model="regInfo.password1"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="password2" class="col-sm-4 control-label">Repeat Password:</label>
+						<div class="col-sm-8">
+							<input id="password2" class="form-control" type="password" ng-model="regInfo.password2"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="btnSignUp" class="col-sm-4 control-label"> </label>
+						<div class="col-sm-8">
+							<button id="btnSignUp" class="form-control btn btn-primary" ng-click="loginSignup()">Sign Up</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+		<div class="row">
+			<div class="col-md-12" style="font-weight: bold">By completing the sign-up, you agree to the riots <a
+					href="/terms_of_service.html">Terms of Service</a>.
+			</div>
+		</div>
+	</div>
+	<div ng-show="regInfo.activationKey">
+		<div ng-show="!regInfo.activationMsg">
+			Activating your account, please wait ...
+		</div>
+		<div ng-show="regInfo.activationMsg">
+			<b>Activation Result</b>: {{regInfo.activationMsg}}
+		</div>
+	</div>
+</section>

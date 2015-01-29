@@ -1,6 +1,6 @@
 package io.riots.core.auth;
 
-import io.riots.core.auth.AuthHeaders.AuthInfo;
+import io.riots.api.services.users.AuthInfo;
 import io.riots.core.clients.ServiceClientFactory;
 
 import java.io.IOException;
@@ -43,7 +43,7 @@ public class AuthCredentialsSetter implements Filter {
 
 		/* get auth info from headers */
 		AuthInfo info = AuthHeaders.THREAD_AUTH_INFO.get().get();
-		info.internalCall = isInternalCall(httpReq);
+		info.setInternalCall(isInternalCall(httpReq));
 		AuthFilterBase.readAuthInfoHeaders(httpReq, info);
 
 		/* set user roles in AuthInfo */
@@ -51,7 +51,7 @@ public class AuthCredentialsSetter implements Filter {
 
 		/* set the Spring security context */
 		UsernamePasswordAuthenticationToken springSecToken = new UsernamePasswordAuthenticationToken(
-				info.userName, info.accessToken, info.rolesAsGrantedAuthorities);
+				info.getName(), info.getAccessToken(), info.getRolesAsGrantedAuthorities());
 		springSecToken.setDetails(info);
 		SecurityContextHolder.getContext().setAuthentication(springSecToken);
 

@@ -5,6 +5,9 @@ import io.riots.api.services.model.interfaces.ObjectIdentifiable;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.springframework.util.StringUtils;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -47,17 +50,38 @@ public class User implements ObjectIdentifiable {
 
 	private List<Role> roles = new LinkedList<Role>();
 
+	public User() {}
+	public User(RequestSignupUser r) {
+		this.copyFrom(r);
+	}
+
+	protected void copyFrom(User user) {
+		this.setId(user.getId());
+		this.setAddress(user.getAddress());
+		this.setBirthDate(user.getBirthDate());
+		this.setEmail(user.getEmail());
+		this.setFirstname(user.getFirstname());
+		this.setLastname(user.getLastname());
+		this.getRoles().addAll(user.getRoles());
+	}
+
+	@JsonIgnore
+	public String getDisplayName() {
+		if(!StringUtils.isEmpty(getFirstname()) && !StringUtils.isEmpty(getLastname())) {
+			return getFirstname() + " " + getLastname();
+		} else if(StringUtils.isEmpty(getFirstname())) {
+			return getFirstname();
+		} else if(StringUtils.isEmpty(getLastname())) {
+			return getLastname();
+		}
+		return null;
+	}
+
 	public String getEmail() {
 		return email;
 	}
 	public String getId() {
 		return id;
-	}
-	public String getFirstname() {
-		return firstname;
-	}
-	public String getLastname() {
-		return lastname;
 	}
 	public List<Role> getRoles() {
 		return roles;
@@ -65,8 +89,14 @@ public class User implements ObjectIdentifiable {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+	public String getFirstname() {
+		return firstname;
+	}
 	public void setFirstname(String firstname) {
 		this.firstname = firstname;
+	}
+	public String getLastname() {
+		return lastname;
 	}
 	public void setLastname(String lastname) {
 		this.lastname = lastname;
@@ -77,8 +107,14 @@ public class User implements ObjectIdentifiable {
 	public Address getAddress() {
 		return address;
 	}
+	public void setAddress(Address address) {
+		this.address = address;
+	}
 	public String getBirthDate() {
 		return birthDate;
+	}
+	public void setBirthDate(String birthDate) {
+		this.birthDate = birthDate;
 	}
 
 	@Override

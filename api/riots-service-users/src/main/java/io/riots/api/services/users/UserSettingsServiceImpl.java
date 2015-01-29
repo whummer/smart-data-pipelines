@@ -1,6 +1,7 @@
 package io.riots.api.services.users;
 
 import io.riots.core.repositories.UserSettingsRepository;
+import io.riots.core.auth.AuthHeaders;
 import io.riots.core.clients.ServiceClientFactory;
 
 import java.util.List;
@@ -31,7 +32,8 @@ public class UserSettingsServiceImpl implements UserSettingsService {
 	@Override
 	@Timed @ExceptionMetered
 	public UserSettings getConfigForUserEmail(String email) {
-		User user = serviceClientFactory.getUsersServiceClient().findByEmail(email);
+		UsersService users = serviceClientFactory.getUsersServiceClient(AuthHeaders.INTERNAL_CALL);
+		User user = users.findByEmail(email);
 		List<UserSettings> list = settingsRepo.findByUserId(user.getId());
 		if(list.isEmpty()) {
 			UserSettings s = new UserSettings();

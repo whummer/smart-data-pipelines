@@ -1,12 +1,21 @@
-<section ng-controller="LoginViewController">
-	<div class="container">
 
+<section ng-controller="LoginViewController">
+	<div class="container" style="padding: 20px;">
 		<div class="jumbotron">
 			<div style="margin-bottom: 20px">
+				<a href="#/login">
 				<img src="http://www.omoser.com/riots.png" style="max-height: 50px;"/>
+				</a>
 			</div>
-
-			<ng-include src="appConfig['appRootPath'] + '/views/login_form.html'"></ng-include>
+			<div ng-show="loginInfo.action == 'login'">
+				<ng-include src="appConfig['appRootPath'] + '/views/login_form.html'"></ng-include>
+			</div>
+			<div ng-show="loginInfo.action == 'signup'">
+				<ng-include src="appConfig['appRootPath'] + '/views/login_signup.html'"></ng-include>
+			</div>
+			<div ng-show="loginInfo.action == 'activate'">
+				<ng-include src="appConfig['appRootPath'] + '/views/login_signup.html'"></ng-include>
+			</div>
 		</div>
 	</div>
 </section>

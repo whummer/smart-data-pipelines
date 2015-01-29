@@ -14,9 +14,7 @@ define(['app'], function (app) {
 				}
 
 				$scope.addWidget = function () {
-					$scope.userConfig.dashboardElements.push(
-							{widgetType: $scope.selectedWidget}
-					);
+					$scope.userConfig.dashboardElements.push({widgetType: $scope.selectedWidget});
 					saveConfig();
 				};
 

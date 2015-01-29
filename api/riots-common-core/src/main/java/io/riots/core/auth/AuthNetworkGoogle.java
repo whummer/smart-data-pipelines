@@ -1,6 +1,6 @@
 package io.riots.core.auth;
 
-import io.riots.core.auth.AuthHeaders.AuthInfo;
+import io.riots.api.services.users.AuthInfo;
 
 import java.net.URL;
 import java.util.List;
@@ -37,10 +37,10 @@ public class AuthNetworkGoogle extends AuthNetwork {
             String result = IOUtils.readStringFromStream(new URL(url).openStream());
             @SuppressWarnings("unchecked")
             Map<String, Object> json = JSON.readValue(result, Map.class);
-            newInfo.userName = (String) json.get("displayName");
+            newInfo.setName((String) json.get("displayName"));
             @SuppressWarnings("unchecked")
             List<Map<String, String>> emails = (List<Map<String, String>>) json.get("emails");
-            newInfo.email = emails.get(0).get("value");
+            newInfo.setEmail(emails.get(0).get("value"));
         } catch (Exception e) {
             LOG.warn("Unable to process auth headers: " + e);
             return null;

@@ -246,9 +246,9 @@
         console.log("saving driver", item);
 
         delete item["$$hashKey"];
-        riots.save.driver(item, function () {
-            // successfully saved
-        });
+        riots.save.driver(item, function() {
+			$scope.growlInfo(M.SUC_THING_SAVED);
+		});
       }
 
       var addSimParam = function () {

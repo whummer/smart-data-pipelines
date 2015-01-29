@@ -1,11 +1,12 @@
 package io.riots.core.auth;
 
-import io.riots.core.auth.AuthHeaders.AuthInfo;
+import io.riots.api.services.users.AuthInfo;
 
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.cxf.helpers.IOUtils;
 import org.apache.log4j.Logger;
 
@@ -34,7 +35,11 @@ public class AuthNetworkGithub extends AuthNetwork {
             String result1 = IOUtils.readStringFromStream(new URL(url1).openStream());
             @SuppressWarnings("unchecked")
             Map<String, Object> json1 = JSON.readValue(result1, Map.class);
-            newInfo.userName = (String) json1.get("name");
+            newInfo.setName((String) json1.get("name"));
+            if(StringUtils.isEmpty(newInfo.getName())) {
+                newInfo.setName((String) json1.get("login"));
+            }
+            newInfo.setAvatar((String) json1.get("avatar_url"));
             String url2 = urlPattern.replace("<request>", "user/emails");
             String result2 = IOUtils.readStringFromStream(new URL(url2).openStream());
             @SuppressWarnings("unchecked")
@@ -42,10 +47,10 @@ public class AuthNetworkGithub extends AuthNetwork {
             for(Map<String, Object> entry : json2) {
             	Object primary = entry.get("primary");
             	if(primary != null && primary instanceof Boolean && (Boolean)primary) {
-                    newInfo.email = (String) entry.get("email");
+                    newInfo.setEmail((String) entry.get("email"));
             	}
             }
-            if(newInfo.email == null || newInfo.email.trim().isEmpty()) {
+            if(newInfo.getEmail() == null || newInfo.getEmail().trim().isEmpty()) {
             	throw new RuntimeException("Unable to determine user email from JSON: " + result2);
             }
         } catch (Exception e) {

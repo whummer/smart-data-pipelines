@@ -43,7 +43,7 @@
 
         <!-- type -->
         <div class="form-group" ng-show="shared.selectedThing[CREATION_DATE]">
-          <label for="inputType" class="control-label col-sm-2">Created:</label>
+          <label class="control-label col-sm-2">Created:</label>
 
           <div class="col-sm-10">
             <input class="form-control input-sm col-sm-10" disabled="disabled" value="{{formatTime(shared.selectedThing[CREATION_DATE])}}"/>
@@ -122,7 +122,9 @@
         if (thing[THING_TYPE]) {
           thing[THING_TYPE] = thing[THING_TYPE].id;
         }
-        $scope.updateThingInDB(thing);
+        $scope.updateThingInDB(thing, function() {
+			$scope.growlInfo(M.SUC_THING_SAVED);
+		});
       };
 
       loadThingTypes = function () {

@@ -30,14 +30,6 @@ var requirejsAppConfig = {
 			name: 'raty',
 			location: appConfig['appRootPath'] + '/scripts/ext/raty/',
 			main: 'lib/jquery.raty'
-		}, {
-			/* needs to go here, because we need to apply a dirty hack to make this
-			 work. Reason: code tries to require("angular", ...) but fails if loaded
-			 within the minified riots-all.js file. */
-			name: 'bootstrap-datetimepicker',
-			location: appConfig['appRootPath'] + '/scripts/ext/angular-bootstrap-datetimepicker/',
-			main: 'src/js/datetimepicker',
-			excludeFromOptimize: true
 		},
 
 		/* dependencies in /bower_components */
@@ -138,6 +130,10 @@ var requirejsAppConfig = {
 			name: 'fancybox',
 			location: appConfig['bowerRootPath'] + '/fancybox',
 			main: 'source/jquery.fancybox.pack'
+		}, {
+			name: 'jvectormap',
+			location: appConfig['bowerRootPath'] + '/jvectormap',
+			main: 'jquery-jvectormap-1.2.2.min'
 		}, {
 			name: 'd3',
 			location: appConfig['bowerRootPath'] + '/d3',

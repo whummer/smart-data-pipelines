@@ -27,7 +27,7 @@ define(
 		'routes', 'bootstrap', 'angular-bootstrap', 'bootstrap-tagsinput', 'angular-growl',
 		'angular-route', 'angular-ui-grid', 'infinite-scroll',
 		'angular-hotkeys', 'd3', 'angular-animate', 'angular-bootstrap-checkbox', 'metisMenu', 'iCheck',
-		'slimscroll', 'jasny-bootstrap', 'angular-ui-tree', 'angular-notify', 'fancybox'
+		'slimscroll', 'jasny-bootstrap', 'angular-ui-tree', 'angular-notify', 'fancybox', 'riots/auth', 'jvectormap'
 	],
 
 	function (config) {
@@ -71,20 +71,33 @@ define(
 				resolver: ['$q', '$rootScope', function ($q, $rootScope) {
 					var deferred = $q.defer();
 
+					console.log("$scope.isUnprotectedPage", rootScope.isUnprotectedPage);
+
 					performLogin(function (authInfo) {
-						//console.log("Login done. Start rendering.", authInfo);
+						console.log("Login done. Start rendering.", authInfo);
 
 						if (authInfo) {
 							window.authInfo = authInfo;
 							rootScope.authInfo = authInfo;
+							rootScope.loadUserInfo();
 							var network = authInfo.network;
 							var token = authInfo.access_token;
 							$http.defaults.headers.common["riots-auth-network"] = network;
 							$http.defaults.headers.common["riots-auth-token"] = token;
-							dependencies = defaultDependencies.concat(dependencies);
+							if (defaultDependencies) {
+								dependencies = defaultDependencies.concat(dependencies);
+							}
 						} else {
 							$("#authContainer").show();
 							dependencies = defaultDependencies;
+
+							if(!rootScope.isUnprotectedPage) {
+								if(window.location.href.indexOf("/#/login") < 0) {
+						    		window.location.href = "/#/login";
+						    		window.location.reload(true);
+						    		return;
+						    	}
+							}
 						}
 
 						require(dependencies, function () {
@@ -143,8 +156,8 @@ define(
 		]);
 
 		app.controller('RootController', [
-			'$scope', '$http', '$compile', 'growl',
-			function ($scope, $http, $compile, growl) {
+			'$scope', '$http', '$compile', 'growl', '$location',
+			function ($scope, $http, $compile, growl, $location) {
 				if (rootScope == null) {
 					rootScope = $scope;
 					rootScope.http = $http;
@@ -157,16 +170,26 @@ define(
 						performLogout();
 					};
 
-					var loadUserInfo = function() {
+
+					$scope.loadUserInfo = function() {
 						$scope.userInfo = null;
-						riots.me(function(me) {
-							$scope.userInfo = me;
-						}, function(error) {
-							console.log(error);
-							//$scope.growlInfo("Cannot load user profile.");
-						});
+						console.log("Loading user profile.", $scope.authInfo);
+						if($scope.authInfo) {
+							riots.me(function(me) {
+								$scope.userInfo = me;
+							}, function(error) {
+								console.log(error);
+								//$scope.growlInfo("Cannot load user profile.");
+							});
+						}
 					};
-					loadUserInfo();
+
+					$scope.isUnprotectedPage = false;
+					if($location.$$path.indexOf("/activate") == 0 ||
+							$location.$$path.indexOf("/signup") == 0 ||
+							$location.$$path.indexOf("/login") == 0) {
+						$scope.isUnprotectedPage = true;
+					}
 				}
 			}
 		]);
@@ -284,6 +307,7 @@ define(
 				template: '<a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="" ng-click="minimalize()"><i class="fa fa-bars"></i></a>',
 				controller: function ($scope, $element) {
 					$scope.minimalize = function () {
+						$("#riots-logo-lg").toggleClass("hidden");
 						$("body").toggleClass("mini-navbar");
 						if (!$('body').hasClass('mini-navbar') || $('body').hasClass('body-small')) {
 							// Hide menu in order to smoothly turn on when maximize menu
@@ -308,41 +332,41 @@ define(
 			};
 		};
 
-		///**
-		// * vectorMap - Directive for Vector map plugin
-		// */
-		//function vectorMap() {
-		//	return {
-		//		restrict: 'A',
-		//		scope: {
-		//			myMapData: '=',
-		//		},
-		//		link: function (scope, element, attrs) {
-		//			element.vectorMap({
-		//				map: 'world_mill_en',
-		//				backgroundColor: "transparent",
-		//				regionStyle: {
-		//					initial: {
-		//						fill: '#e4e4e4',
-		//						"fill-opacity": 0.9,
-		//						stroke: 'none',
-		//						"stroke-width": 0,
-		//						"stroke-opacity": 0
-		//					}
-		//				},
-		//				series: {
-		//					regions: [
-		//						{
-		//							values: scope.myMapData,
-		//							scale: ["#1ab394", "#22d6b1"],
-		//							normalizeFunction: 'polynomial'
-		//						}
-		//					]
-		//				},
-		//			});
-		//		}
-		//	}
-		//}
+		/*
+		* vectorMap - Directive for Vector map plugin
+		*/
+		function vectorMap() {
+			return {
+				restrict: 'A',
+				scope: {
+					myMapData: '='
+				},
+				link: function (scope, element, attrs) {
+					element.vectorMap({
+						map: 'world_mill_en',
+						backgroundColor: "transparent",
+						regionStyle: {
+							initial: {
+								fill: '#e4e4e4',
+								"fill-opacity": 0.9,
+								stroke: 'none',
+								"stroke-width": 0,
+								"stroke-opacity": 0
+							}
+						},
+						series: {
+							regions: [
+								{
+									values: scope.myMapData,
+									scale: ["#4a96ad", "#952c51"],
+									normalizeFunction: 'polynomial'
+								}
+							]
+						}
+					});
+				}
+			}
+		}
 		//
 		//
 		///**
@@ -549,6 +573,7 @@ define(
 				.directive('iboxTools', iboxTools)
 				.directive('minimalizaSidebar', minimalizaSidebar)
 				.directive('icheck', icheck)
+				.directive('vectorMap', vectorMap)
 				.directive('fancyBox', fancyBox);
 
 
@@ -556,3 +581,36 @@ define(
 		return app;
 	}
 );
+
+// inspinia stuff todo move me somewhere else
+/*$(document).ready(function () {
+
+	// Append config box / Only for demo purpose
+	$.get(appConfig['appRootPath'] + '/views/skin-config.html', function (data) {
+		$('body').append(data);
+	});
+
+	// Full height of sidebar
+	function fix_height() {
+		var heightWithoutNavbar = $("body > #wrapper").height() - 61;
+		$(".sidebard-panel").css("min-height", heightWithoutNavbar + "px");
+	}
+	$(window).bind("load resize click scroll", function() {
+		if(!$("body").hasClass('body-small')) {
+			fix_height();
+		}
+	})
+	fix_height();
+
+});*/
+
+// Minimalize menu when screen is less than 768px
+$(function() {
+	$(window).bind("load resize", function() {
+		if ($(this).width() < 769) {
+			$('body').addClass('body-small')
+		} else {
+			$('body').removeClass('body-small')
+		}
+	})
+})
