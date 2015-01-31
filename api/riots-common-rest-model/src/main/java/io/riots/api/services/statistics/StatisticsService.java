@@ -1,6 +1,8 @@
 package io.riots.api.services.statistics;
 
+import io.riots.api.services.users.AuthToken;
 import io.riots.api.services.users.PlatformStateStats;
+import io.riots.api.services.users.Role;
 import io.riots.api.services.users.UsageStats;
 import io.riots.api.services.users.UsageStats.UsagePeriod;
 
@@ -10,6 +12,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.wordnik.swagger.annotations.Api;
@@ -42,5 +45,14 @@ public interface StatisticsService {
 			@QueryParam("from") long from, 
 			@QueryParam("to") long to, 
 			@QueryParam("period") UsagePeriod period);
+
+    @GET
+    @Path("/count/users")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Get number of users.",
+            notes = "Retrieve the number of users registered in the system.",
+            response = AuthToken.class)
+	@PreAuthorize(Role.HAS_ROLE_USER)
+    long getNumUsers();
 
 }

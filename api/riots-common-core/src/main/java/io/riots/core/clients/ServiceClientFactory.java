@@ -44,25 +44,25 @@ public class ServiceClientFactory {
 
 	private static final String DEFAULT_SERVICE_ENDPOINT = "http://%s:%s/api/v1/";
 
-	private static final String SERVICE_FILES_EUREKA_NAME = "files-service";
+	public static final String SERVICE_FILES_EUREKA_NAME = "files-service";
 	private static final String SERVICE_FILES_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
-	private static final String SERVICE_USERS_EUREKA_NAME = "users-service";
+	public static final String SERVICE_USERS_EUREKA_NAME = "users-service";
 	private static final String SERVICE_USERS_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
-	private static final String SERVICE_ORGANIZATIONS_EUREKA_NAME = "users-service";
+	public static final String SERVICE_ORGANIZATIONS_EUREKA_NAME = "users-service";
 	private static final String SERVICE_ORGANIZATIONS_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
-	private static final String SERVICE_APP_EUREKA_NAME = "environment-service";
+	public static final String SERVICE_APP_EUREKA_NAME = "environment-service";
 	private static final String SERVICE_APP_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
-	private static final String SERVICE_CATALOG_EUREKA_NAME = "catalog-service";
+	public static final String SERVICE_CATALOG_EUREKA_NAME = "catalog-service";
 	private static final String SERVICE_CATALOG_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
-	private static final String SERVICE_THINGS_EUREKA_NAME = "environment-service";
+	public static final String SERVICE_THINGS_EUREKA_NAME = "environment-service";
 	private static final String SERVICE_THINGS_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
-	private static final String SERVICE_THINGDATA_EUREKA_NAME = "environment-service";
+	public static final String SERVICE_THINGDATA_EUREKA_NAME = "environment-service";
 	private static final String SERVICE_THINGDATA_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
-	private static final String SERVICE_SIMULATION_EUREKA_NAME = "simulation-service";
+	public static final String SERVICE_SIMULATION_EUREKA_NAME = "simulation-service";
 	private static final String SERVICE_SIMULATION_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
-	private static final String SERVICE_BILLING_EUREKA_NAME = "users-service";
+	public static final String SERVICE_BILLING_EUREKA_NAME = "users-service";
 	private static final String SERVICE_BILLING_ENDPOINT = DEFAULT_SERVICE_ENDPOINT;
-	private static final String SERVICE_GWSTATS_EUREKA_NAME = "gateway-service";
+	public static final String SERVICE_GWSTATS_EUREKA_NAME = "gateway-service";
 	private static final String SERVICE_GWSTATS_ENDPOINT = "http://%s:%s/";
 
 	private static final Map<Class<?>,ServiceInfo> serviceEndpointsByInterface = new HashMap<>();

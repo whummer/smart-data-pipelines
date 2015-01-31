@@ -131,6 +131,20 @@ public class UsersServiceImpl implements UsersService {
     	return r;
     }
 
+    @Override
+    @Timed @ExceptionMetered
+    public boolean deleteUser(String id) {
+    	if(EmailValidator.getInstance().isValid(id)) {
+    		User u = userQuery.findByEmail(id);
+    		if(u == null) {
+    			return false;
+    		}
+    		id = u.getId();
+    	}
+    	userCommand.delete(id);
+    	return true;
+    }
+
     /* LOGIN/AUTHENTICATION METHODS */
 
     @Override
@@ -141,6 +155,10 @@ public class UsersServiceImpl implements UsersService {
     	}
     	if(!PasswordUtils.isValid(r.password)) {
 	    	throw ServiceUtil.forbidden("Invalid password (Must be longer than 6 characters).");
+    	}
+    	if(StringUtils.isEmpty(r.getFirstname()) ||
+    			StringUtils.isEmpty(r.getLastname())) {
+	    	throw ServiceUtil.forbidden("Please provide a valid name.");
     	}
     	User user = userQuery.findByEmail(r.getEmail());
     	if(user != null) {
@@ -299,12 +317,6 @@ public class UsersServiceImpl implements UsersService {
 
     	ServiceUtil.setResponseStatus(context, HttpServletResponse.SC_FORBIDDEN);
     	throw ServiceUtil.forbidden("Unable to verify auth token");
-    }
-
-    @Override
-    @Timed @ExceptionMetered
-    public long getNumUsers() {
-    	return userQuery.getCount();
     }
 
     /* METHODS FOR USER ACTIONS */

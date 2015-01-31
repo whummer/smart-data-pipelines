@@ -5,6 +5,7 @@ import io.riots.api.services.billing.UserUsageStatus;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -67,6 +68,14 @@ public interface UsersService {
 	@PreAuthorize(Role.HAS_ROLE_ADMIN)
     User findByEmail(@PathParam("email") String email);
 
+	@DELETE
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Delete a given user.",
+            notes = "Delete the user with the given id or email.")
+	@PreAuthorize(Role.HAS_ROLE_ADMIN)
+	boolean deleteUser(@PathParam("id") String id);
+
 	@GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
@@ -75,15 +84,6 @@ public interface UsersService {
             response = User.class)
 	@PreAuthorize(Role.HAS_ROLE_ADMIN)
 	List<User> listUsers();
-
-    @GET
-    @Path("/count")
-    @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Get number of users.",
-            notes = "Retrieve the number of users registered in the system.",
-            response = AuthToken.class)
-	@PreAuthorize(Role.HAS_ROLE_USER)
-    long getNumUsers();
 
     /* METHODS FOR AUTH TOKENS */
 

@@ -25,4 +25,9 @@ public class UserCommand {
         return repository.save(obj);
     }
 
+	public void delete(String id) {
+        log.debug(Markers.COMMAND, "Deleting User {}", id);
+        repository.delete(id);
+	}
+
 }
