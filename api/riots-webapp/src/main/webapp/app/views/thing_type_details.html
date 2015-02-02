@@ -1,236 +1,242 @@
-<section ng-controller="ThingTypeDetailsController" id="devTypeDetailsSection">
+<section ng-controller="ThingTypeDetailsController" id="devTypeDetailsSection" class="tabbed-content">
 
-  <div ng-show="shared.selectedThingType" class="container-fluid">
+	<div ng-show="shared.selectedThingType">
 
-    <form ng-submit="saveThingType()" class="form-horizontal" role="form" style="width: 100%">
+		<form ng-submit="saveThingType()" class="form-horizontal" role="form" style="width: 100%">
 
-      <div class="row">
+			<div class="row">
 
-        <!-- thing type images -->
-        <div class="col-md-4" style="height: 100%; vertical-align: middle; margin-bottom: 20px">
+				<!-- thing type images -->
+				<div class="col-md-4" style="height: 100%; vertical-align: middle; margin-bottom: 20px">
 
-          <!-- carousel -->
-          <carousel id="devTypeImages" interval="-1">
-            <slide ng-repeat="i in range(0, shared.selectedThingType[IMAGE_DATA].length - 1)">
-              <img ng-src="{{shared.selectedThingType[IMAGE_DATA][i]['href']}}" class="img-responsive" style="max-width:200px; max-height: 200px; margin: auto;">
-            </slide>
-          </carousel>
+					<!-- carousel -->
+					<carousel id="devTypeImages" interval="-1">
+						<slide ng-repeat="i in range(0, shared.selectedThingType[IMAGE_DATA].length - 1)">
+							<img ng-src="{{shared.selectedThingType[IMAGE_DATA][i]['href']}}" class="img-responsive"
+									 style="max-width:200px; max-height: 200px; margin: auto;">
+						</slide>
+					</carousel>
 
-          <!-- placeholder -->
-          <div class="text-center" ng-hide="shared.selectedThingType[IMAGE_DATA][0]">
-            <img width="200" height="200" ng-src="img/no_image_available.jpg"/>
-          </div>
-        </div>
+					<!-- placeholder -->
+					<div class="text-center" ng-hide="shared.selectedThingType[IMAGE_DATA][0]">
+						<img width="200" height="200" ng-src="img/no_image_available.jpg"/>
+					</div>
+				</div>
 
 
-        <!-- editable content -->
-        <div class="col-md-8">
+				<!-- editable content -->
+				<div class="col-md-8">
 
-          <!-- thing type ID -->
-          <div class="form-group">
-            <label for="devTypeId" class="col-sm-2 control-label">ID</label>
+					<!-- thing type ID -->
+					<div class="form-group">
+						<label for="devTypeId" class="col-sm-2 control-label">ID</label>
 
-            <div class="col-sm-10">
-              <input id="devTypeId" disabled="disabled"
-                     class="form-control input-sm"
-                     data-ng-model="shared.selectedThingType.id"/>
-            </div>
-          </div>
+						<div class="col-sm-10">
+							<input id="devTypeId" disabled="disabled"
+										 class="form-control input-sm"
+										 data-ng-model="shared.selectedThingType.id"/>
+						</div>
+					</div>
 
-          <!-- thing type name -->
-          <div class="form-group">
-            <label for="devTypeName" class="col-sm-2 control-label">Name</label>
+					<!-- thing type name -->
+					<div class="form-group">
+						<label for="devTypeName" class="col-sm-2 control-label">Name</label>
 
-            <div class="col-sm-10">
-              <input id="devTypeName" class="form-control input-sm" autofocus="autofocus"
-                     data-ng-model="shared.selectedThingType.name"/>
-            </div>
-          </div>
+						<div class="col-sm-10">
+							<input id="devTypeName" class="form-control input-sm" autofocus="autofocus"
+										 data-ng-model="shared.selectedThingType.name"/>
+						</div>
+					</div>
 
-          <!-- thing type description -->
-          <div class="form-group">
-            <label for="devTypeDescr" class="col-sm-2 control-label">Description</label>
+					<!-- thing type description -->
+					<div class="form-group">
+						<label for="devTypeDescr" class="col-sm-2 control-label">Description</label>
 
-            <div class="col-sm-10">
+						<div class="col-sm-10">
 							<textarea id="devTypeDescr" class="form-control input-sm"
-                        rows="6" data-ng-model="shared.selectedThingType.description">
+												rows="6" data-ng-model="shared.selectedThingType.description">
                         </textarea>
-            </div>
-          </div>
+						</div>
+					</div>
 
-          <!-- thing type image URLs -->
-          <div class="form-group">
-            <label class="col-sm-2 control-label">Image URLs</label>
+					<!-- thing type image URLs -->
+					<div class="form-group">
+						<label class="col-sm-2 control-label">Image URLs</label>
 
-            <div class="col-sm-10">
-              <table style="width: 100%;">
-                <tr ng-repeat="n in range(0, shared.selectedThingType[IMAGE_DATA].length - 1)">
-                  <td>
-                    <div class="input-group">
-                      <input class="form-control input-sm" style="width:100%; margin-bottom: 10px" ng-model="shared.selectedThingType[IMAGE_DATA][n].href"/>
+						<div class="col-sm-10">
+							<table style="width: 100%;">
+								<tr ng-repeat="n in range(0, shared.selectedThingType[IMAGE_DATA].length - 1)">
+									<td>
+										<div class="input-group">
+											<input class="form-control input-sm" style="width:100%; margin-bottom: 10px"
+														 ng-model="shared.selectedThingType[IMAGE_DATA][n].href"/>
                         <span class="input-group-btn">
-                          <button class="btn btn-sm btn-warning" style="margin-bottom: 10px" type="button" ng-click="removeImage(n)">
-                            <span class="glyphicon glyphicon-remove"></span>&nbsp;
-                          </button>
+                          <button class="btn btn-sm btn-warning" style="margin-bottom: 10px" type="button"
+																	ng-click="removeImage(n)">
+														<span class="glyphicon glyphicon-remove"></span>&nbsp;
+													</button>
                         </span>
-                      </div>
-                  </td>
-                </tr>
-              </table>
-              <button class="btn btn-info btn-sm pull-right" id="btnThingTypeAddImg">Add Image URL</button>
-            </div>
-          </div>
+										</div>
+									</td>
+								</tr>
+							</table>
+							<button class="btn btn-info btn-sm pull-right" id="btnThingTypeAddImg">Add Image URL</button>
+						</div>
+					</div>
 
-          <!-- thing type manufactures -->
-          <div class="form-group">
-            <label for="devTypeManufacturers" class="col-sm-2 control-label">Manufacturer</label>
+					<!-- thing type manufactures -->
+					<div class="form-group">
+						<label for="devTypeManufacturers" class="col-sm-2 control-label">Manufacturer</label>
 
-            <div class="col-sm-10">
-              <select id="devTypeManufacturers" class="form-control input-sm"
-                      ng-options="manufacturer.id as manufacturer.name for manufacturer in shared.manufacturers"
-                      ng-model="shared.selectedThingType['manufacturer-id']">
-              </select>
-            </div>
-          </div>
+						<div class="col-sm-10">
+							<select id="devTypeManufacturers" class="form-control input-sm"
+											ng-options="manufacturer.id as manufacturer.name for manufacturer in shared.manufacturers"
+											ng-model="shared.selectedThingType['manufacturer-id']">
+							</select>
+						</div>
+					</div>
 
-          <!-- thing type features - key/value map-->
-          <div class="form-group">
-            <label for="thingTypeFeatures" class="col-sm-2 control-label">Features</label>
+					<!-- thing type features - key/value map-->
+					<div class="form-group">
+						<label for="thingTypeFeatures" class="col-sm-2 control-label">Features</label>
 
-            <div class="col-sm-10">
-              <table id="thingTypeFeatures" style="width: 100%;">
-                <tr   ng-repeat="n in range(0, getFeatureList(shared.selectedThingType).length - 1)">
-                  <td><input  class="domPropValue form-control input-sm"
-                             ng-model="shared.selectedThingType.featureList[n].key" style="width: 48%; margin-bottom: 10px"/>
-                    =
-                    <input class="domPropValue form-control input-sm"
-                           ng-model="shared.selectedThingType.featureList[n].value" style="width: 49%; margin-bottom: 10px"/>
-                  </td>
-                </tr>
-              </table>
-              <button class="btn btn-info btn-sm pull-right" id="btnDevTypeAddFeature">Add Feature</button>
-            </div>
-          </div>
+						<div class="col-sm-10" id="thingTypeFeatures">
+							<div class="row" ng-repeat="n in range(0, getFeatureList(shared.selectedThingType).length - 1)">
+								<div class="col-sm-6">
+									<input class="domPropValue form-control input-sm"
+												 ng-model="shared.selectedThingType.featureList[n].key"
+												 style="width: 100%; margin-bottom: 10px"/>
+								</div>
 
-          <!-- thing type tags -->
-          <div class="form-group">
-            <label for="devTypeTags" class="col-sm-2 control-label">Tags</label>
+								<div class="col-sm-6">
+									<input class="domPropValue form-control input-sm"
+												 ng-model="shared.selectedThingType.featureList[n].value"
+												 style="width: 100%; margin-bottom: 10px"/>
+								</div>
+							</div>
+							<button class="btn btn-info btn-sm pull-right" id="btnDevTypeAddFeature">Add Feature</button>
+						</div>
+					</div>
 
-            <div class="col-sm-10">
-              <input id="devTypeTags" class="typeahead form-control input-sm" data-role="tagsinput" autocomplete="off"/>
-            </div>
-          </div>
-        </div>
-      </div>
-    </form>
-  </div>
+					<!-- thing type tags -->
+					<div class="form-group">
+						<label for="devTypeTags" class="col-sm-2 control-label">Tags</label>
+
+						<div class="col-sm-10">
+							<input id="devTypeTags" class="typeahead form-control input-sm" data-role="tagsinput" autocomplete="off"/>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
 </section>
 
 <script type="text/javascript">
-  var app = angular.module("app");
-  app.controller('ThingTypeDetailsController', function ($scope, $http, $compile, $log, $location) {
+	var app = angular.module("app");
+	app.controller('ThingTypeDetailsController', function ($scope, $http, $compile, $log, $location) {
 
-    $log.debug("Inside ThingTypeDetailsController");
-    $log.debug("SelectedThingType: ", $scope.shared.selectedThingType);
+		$log.debug("Inside ThingTypeDetailsController");
+		$log.debug("SelectedThingType: ", $scope.shared.selectedThingType);
 
-    AppController($scope, $http, $compile);
+		AppController($scope, $http, $compile);
 
-    $scope.IMAGE_DATA = IMAGE_DATA;
+		$scope.IMAGE_DATA = IMAGE_DATA;
 
-    $scope.getFeatureList = function (thingType, forceReset) {
-      if (!thingType)
-        return [];
+		$scope.getFeatureList = function (thingType, forceReset) {
+			if (!thingType)
+				return [];
 
-      if (!thingType.featureList || forceReset) {
-        thingType.featureList = [];
-        for (var key in thingType.features) {
-          var entry = {key: key, value: thingType.features[key]};
-          thingType.featureList.push(entry);
-        }
-      }
-      return thingType.featureList;
-    };
+			if (!thingType.featureList || forceReset) {
+				thingType.featureList = [];
+				for (var key in thingType.features) {
+					var entry = {key: key, value: thingType.features[key]};
+					thingType.featureList.push(entry);
+				}
+			}
+			return thingType.featureList;
+		};
 
-    var addThingTypeFeature = function () {
-      $scope.applyFeatures();
-      $scope.$apply(function () {
-        $scope.shared.selectedThingType.features["__new_key__"] = "new_value";
-        $scope.getFeatureList($scope.shared.selectedThingType, true);
-      });
-    };
+		var addThingTypeFeature = function () {
+			$scope.applyFeatures();
+			$scope.$apply(function () {
+				$scope.shared.selectedThingType.features["__new_key__"] = "new_value";
+				$scope.getFeatureList($scope.shared.selectedThingType, true);
+			});
+		};
 
-    $scope.loadManufacturers = function () {
-      $log.info("Loading manufacturers from catalog service via URL ", appConfig.services.manufacturers.url);
-      if (!$scope.shared.manufacturers) {
-    	  riots.manufacturers(function(manufacturers) {
-              $log.debug("Successfully loaded manufacturers: ", manufacturers);
-              $scope.shared.manufacturers = manufacturers;
-    	  });
-      }
-    };
+		$scope.loadManufacturers = function () {
+			$log.info("Loading manufacturers from catalog service via URL ", appConfig.services.manufacturers.url);
+			if (!$scope.shared.manufacturers) {
+				riots.manufacturers(function (manufacturers) {
+					$log.debug("Successfully loaded manufacturers: ", manufacturers);
+					$scope.shared.manufacturers = manufacturers;
+				});
+			}
+		};
 
-    var addThingTypeImg = function () {
-      if (!$scope.shared.selectedThingType) return;
-      if (!$scope.shared.selectedThingType[IMAGE_DATA]) {
-        $scope.shared.selectedThingType[IMAGE_DATA] = [];
-      }
-      $scope.$apply(function () {
-        $scope.shared.selectedThingType[IMAGE_DATA].push("");
-      });
-    };
+		var addThingTypeImg = function () {
+			if (!$scope.shared.selectedThingType) return;
+			if (!$scope.shared.selectedThingType[IMAGE_DATA]) {
+				$scope.shared.selectedThingType[IMAGE_DATA] = [];
+			}
+			$scope.$apply(function () {
+				$scope.shared.selectedThingType[IMAGE_DATA].push("");
+			});
+		};
 
-    $scope.removeImage = function(index) {
-      $log.debug("Removing image from index " + index + ": " , $scope.shared.selectedThingType[IMAGE_DATA][index]);
-      $scope.shared.selectedThingType[IMAGE_DATA].splice(index, 1);
-    };
+		$scope.removeImage = function (index) {
+			$log.debug("Removing image from index " + index + ": ", $scope.shared.selectedThingType[IMAGE_DATA][index]);
+			$scope.shared.selectedThingType[IMAGE_DATA].splice(index, 1);
+		};
 
-    //
-    // typeahead stuff
-    //
-    var tags = ['speed', 'distance', 'temperature', 'energy',
-      'time', 'current', 'voltage', 'pressure',
-      'weight', 'color', 'height', 'width', 'power'];
+		//
+		// typeahead stuff
+		//
+		var tags = ['speed', 'distance', 'temperature', 'energy',
+			'time', 'current', 'voltage', 'pressure',
+			'weight', 'color', 'height', 'width', 'power'];
 
-    // constructs the suggestion engine
-    var tagnames = new Bloodhound({
-      datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
-      queryTokenizer: Bloodhound.tokenizers.whitespace,
-      local: $.map(tags, function (tag) {
-        return {value: tag};
-      })
-    });
+		// constructs the suggestion engine
+		var tagnames = new Bloodhound({
+			datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+			queryTokenizer: Bloodhound.tokenizers.whitespace,
+			local: $.map(tags, function (tag) {
+				return {value: tag};
+			})
+		});
 
-    tagnames.initialize();
+		tagnames.initialize();
 
-    $("#devTypeTags").tagsinput({
-      typeaheadjs: {
-        name: 'tags',
-        displayKey: 'value',
-        valueKey: 'value',        
-        source: tagnames.ttAdapter()
-      }
-    });
+		$("#devTypeTags").tagsinput({
+			typeaheadjs: {
+				name: 'tags',
+				displayKey: 'value',
+				valueKey: 'value',
+				source: tagnames.ttAdapter()
+			}
+		});
 
-    //
-    // register event handlers
-    //
-    $scope.addClickHandler("btnThingTypeAddImg", addThingTypeImg);
-    $scope.addClickHandler("btnDevTypeAddFeature", addThingTypeFeature);
-    $scope.$watch("shared.selectedThingType", function () {
-      var thingType = $scope.shared.selectedThingType;
-      if(!thingType)
-        return;
-      if (thingType && thingType.tags) {
-        $log.debug("Applying tags for ThingType: ", thingType);
-        $.each(thingType.tags, function (idx, el) {
-          $log.debug("Adding tag " + el);
-          $("#devTypeTags").tagsinput("add", el);
-        });
-      }
-    });
+		//
+		// register event handlers
+		//
+		$scope.addClickHandler("btnThingTypeAddImg", addThingTypeImg);
+		$scope.addClickHandler("btnDevTypeAddFeature", addThingTypeFeature);
+		$scope.$watch("shared.selectedThingType", function () {
+			var thingType = $scope.shared.selectedThingType;
+			if (!thingType)
+				return;
+			if (thingType && thingType.tags) {
+				$log.debug("Applying tags for ThingType: ", thingType);
+				$.each(thingType.tags, function (idx, el) {
+					$log.debug("Adding tag " + el);
+					$("#devTypeTags").tagsinput("add", el);
+				});
+			}
+		});
 
-    /* load main elements */
-    $scope.loadManufacturers();
-  });
+		/* load main elements */
+		$scope.loadManufacturers();
+	});
 
 </script>

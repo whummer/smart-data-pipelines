@@ -42,98 +42,81 @@
 			</div>
 		</div>
 
-		<div ng-repeat="thing in thingTypes.items" ng-init="thingIndex = $index">
-			<div ng-if="$index % 3 == 0">
-				<div class="row animated fadeIn">
-					<div ng-repeat="i in [0,1,2]" ng-init="columnIndex = $index">
-						<div class="col-sm-6 col-md-4"
-								 ng-if="thingTypes.items[thingIndex + columnIndex] != undefined">
-							<div class="thumbnail" style="min-height: 250px;"
-									 ng-class="{thumbnailhalo: hover}" ng-mouseenter="hover = true"
-									 ng-mouseleave="hover = false"
-									 ng-dblclick="editItem(thingTypes.items[thingIndex + columnIndex].id)">
+		<div ng-repeat="thing in thingTypes.items" ng-init="thingIndex = $index" class="animated fadeIn">
+			<div class="col-sm-6 col-md-4 col-lg-3" ng-if="thingTypes.items[thingIndex + columnIndex] != undefined">
+				<div class="thumbnail-riots animated" style="min-height: 250px;;"
+						 ng-class="{thumbnailhalo: hover}"
+						 ng-mouseenter="hover = true"
+						 ng-mouseleave="hover = false"
+						 ng-dblclick="editItem(thingTypes.items[thingIndex + columnIndex].id)">
 
+					<div style="float:left; margin-left: 5px; margin-top: 5px" ng-show="hover">
+						<div>
+							<a href="#/catalog/{{thingTypes.items[thingIndex + columnIndex].id}}" role="button">
+								<span class="fa fa-lg fa-edit"></span>
+							</a>
+						</div>
+						<div style="padding-top: 5px">
+							<a ng-click="deleteThingType(thingTypes.items[thingIndex + columnIndex])" role="button">
+								<span class="fa fa-lg fa-remove"></span>
+							</a>
+						</div>
+					</div>
 
-								<div style="float:left; margin-left: 5px; margin-top: 5px" ng-show="hover">
-
-									<div>
-										<a href="#/catalog/{{thingTypes.items[thingIndex + columnIndex].id}}" role="button">
-											<span class="fa fa-lg fa-edit"></span>
-										</a>
-									</div>
-
-									<div style="padding-top: 5px">
-										<a ng-click="deleteThingType(thingTypes.items[thingIndex + columnIndex])" role="button">
-											<span class="fa fa-lg fa-remove"></span>
-										</a>
-									</div>
-
-								</div>
-
-								<!--<div style="float: left; margin-right: 3px;" ng-show="hover">-->
-								<!--<a href="#/catalog/{{thingTypes.items[thingIndex + columnIndex].id}}" role="button">-->
-								<!--&lt;!&ndash;<span class="glyphicon glyphicon-edit"></span>&ndash;&gt;-->
-								<!--<span class="fa fa-2x fa-edit"></span>-->
-								<!--</a>-->
-								<!--</div>-->
-
-								<!-- tags -->
-								<div class="pull-right"
-										 style="margin-bottom: 10px; margin-top: 10px; min-height: 18px;">
+					<!-- tags -->
+					<div class="pull-right"
+							 style="margin-bottom: 10px; margin-top: 10px; min-height: 18px;">
 									<span style="cursor: pointer; margin-right: 5px"
 												ng-repeat="tag in thingTypes.items[thingIndex + columnIndex].tags"
 												class="label label-info label-as-badge"
 												ng-click="selectTag(tag)"> {{tag}} </span>
-								</div>
+					</div>
 
-								<div class="clearfix"></div>
+					<div class="clearfix"></div>
 
-								<!-- thing type images -->
-								<carousel interval="-1"
-													ng-show="thingTypes.items[thingIndex + columnIndex][IMAGE_DATA]">
-									<slide
-											ng-repeat="img in thingTypes.items[thingIndex + columnIndex][IMAGE_DATA]">
-										<img ng-src="{{img['href']}}" class="img-responsive"
-												 style="margin: auto; max-height: 100px"/></slide>
-								</carousel>
+					<!-- thing type images -->
+					<carousel interval="-1"
+										ng-show="thingTypes.items[thingIndex + columnIndex][IMAGE_DATA]">
+						<slide
+								ng-repeat="img in thingTypes.items[thingIndex + columnIndex][IMAGE_DATA]">
+							<img ng-src="{{img['href']}}" class="img-responsive"
+									 style="margin: auto; max-height: 100px"/></slide>
+					</carousel>
 
-								<div
-										ng-hide="thingTypes.items[thingIndex + columnIndex][IMAGE_DATA]"
-										class="text-center">
-									<img ng-src="img/no_image_available.jpg"
-											 style="max-width: 125px; max-height: 125px;"/>
-								</div>
+					<div
+							ng-hide="thingTypes.items[thingIndex + columnIndex][IMAGE_DATA]"
+							class="text-center">
+						<img ng-src="img/no_image_available.jpg"
+								 style="max-width: 125px; max-height: 125px;"/>
+					</div>
 
-								<!-- content -->
-								<div class="caption">
-									<h4>{{thingTypes.items[thingIndex + columnIndex].name}}</h4>
+					<!-- content -->
+					<div class="caption">
+						<h4>{{thingTypes.items[thingIndex + columnIndex].name}}</h4>
 
-									<div class="thing-type-box" style="margin-top: 10px"
-											 id="{{thingTypes.items[thingIndex + columnIndex].id}}_description">
-										{{thingTypes.items[thingIndex + columnIndex].description}}
-									</div>
+						<div class="thing-type-box" style="margin-top: 10px"
+								 id="{{thingTypes.items[thingIndex + columnIndex].id}}_description">
+							{{thingTypes.items[thingIndex + columnIndex].description}}
+						</div>
 
-									<!-- collapse/expand description -->
-									<div class="pull-right" style="margin-bottom: 10px; margin-top: 5px" ng-show="hover">
-										<div id="{{thingTypes.items[thingIndex + columnIndex].id}}_expand" style="float: left">
-											<a ng-click="showMore(thingTypes.items[thingIndex + columnIndex].id)" role="button">
-												<span class="fa fa-lg fa-angle-double-down"></span>
-											</a>
-										</div>
-										<div id="{{thingTypes.items[thingIndex + columnIndex].id}}_collapse" class="invisible">
-											<a ng-click="showLess(thingTypes.items[thingIndex + columnIndex].id)" role="button">
-												<span class="fa fa-lg fa-angle-double-up"></span>
-											</a>
-										</div>
-									</div>
-								</div>
+						<!-- collapse/expand description -->
+						<div class="pull-right" style="margin-bottom: 10px; margin-top: 5px" ng-show="hover">
+							<div id="{{thingTypes.items[thingIndex + columnIndex].id}}_expand" style="float: left">
+								<a ng-click="showMore(thingTypes.items[thingIndex + columnIndex].id)" role="button">
+									<span class="fa fa-lg fa-angle-double-down"></span>
+								</a>
+							</div>
+							<div id="{{thingTypes.items[thingIndex + columnIndex].id}}_collapse" class="invisible">
+								<a ng-click="showLess(thingTypes.items[thingIndex + columnIndex].id)" role="button">
+									<span class="fa fa-lg fa-angle-double-up"></span>
+								</a>
 							</div>
 						</div>
 					</div>
 				</div>
-				<!-- end row -->
 			</div>
 		</div>
-		<div ng-show='thingTypes.busy'>Loading data...</div>
+	</div>
+	<div ng-show='thingTypes.busy'>Loading data...</div>
 	</div>
 </section>

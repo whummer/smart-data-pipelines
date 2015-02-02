@@ -4208,3 +4208,23 @@ dd.project-people {
     display: none;
   }
 }
+.tabbed-content {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.nav-pills > li > a {
+  border-radius: 0;
+  vertical-align: middle;
+  color: #676a6c;
+}
+.nav-pills > li.active > a,
+.nav-pills > li.active > a:hover,
+.nav-pills > li.active > a:focus {
+  color: #4a96ad;
+  background: white;
+  border-top: 2px solid #861b39;
+}
+.nav-pills > li.active {
+  border-left: 0 solid transparent;
+  background: white;
+}
