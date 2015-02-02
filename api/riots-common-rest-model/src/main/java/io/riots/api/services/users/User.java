@@ -76,6 +76,14 @@ public class User implements ObjectIdentifiable {
 		}
 		return null;
 	}
+	@JsonIgnore
+	public String getDisplayName(String defaultName) {
+		String name = getDisplayName();
+		if(StringUtils.isEmpty(name)) {
+			return defaultName;
+		}
+		return name;
+	}
 
 	public String getEmail() {
 		return email;

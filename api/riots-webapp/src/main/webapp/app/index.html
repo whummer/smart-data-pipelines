@@ -1,8 +1,8 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
 	<!-- don't load pace via require.js -->
 	<script type="text/javascript" src="scripts/ext/pace/pace.min.js"></script>
@@ -117,12 +117,11 @@
 		require.config(requirejsAppConfig);
 	</script>
 
+	<script type="text/javascript" src="scripts/modules/messages.js"></script>
 	<script type="text/javascript" src="/app/scripts/controllers/AppController.js"></script>
 	<script type="text/javascript" src="scripts/build/riots-all.js"></script>
 	<script type="text/javascript" src="api/riots-api.js"></script>
 	<script type="text/javascript" src="scripts/init.js"></script>
-
-
 
 	<title page-title>riots.io - The #1 platform for rapid IoT development</title>
 </head>
@@ -131,27 +130,27 @@
 <div id="wrapper" ng-controller="RootController">
 
 	<!-- Auth/Login Container -->
-	<div ng-if="!authInfo" id="authContainer" style="display: none;">
+	<div ng-if="!authInfo && !isUnprotectedPage" id="authContainer" style="display: none;">
 		<ng-include src="appConfig['appRootPath'] + '/views/login.html'"></ng-include>
 	</div>
 
 	<!-- Navigation -->
-	<div ng-if="authInfo">
+	<div ng-if="authInfo && !isUnprotectedPage">
 		<ng-include src="appConfig['appRootPath'] + '/views/common/navigation.html'"></ng-include>
 	</div>
 
 	<!-- Page wraper -->
 	<!-- ng-class with current state name give you the ability to extended customization your view -->
-	<div id="page-wrapper" class="gray-bg {{$state.current.name}}" ng-if="authInfo">
+	<div id="page-wrapper" class="gray-bg {{$state.current.name}}" ng-if="authInfo || isUnprotectedPage">
 
 		<!-- Page wrapper -->
 		<ng-include src="appConfig['appRootPath'] + '/views/common/topnavbar.html'"></ng-include>
 
 		<!-- Main Content Container -->
-		<div ng-if="authInfo" id="main" class="container" style="height: 100%; width: 100% " ng-view></div>
+		<div ng-if="authInfo || isUnprotectedPage" id="main" class="container" style="height: 100%; width: 100% " ng-view></div>
 
 		<!-- Footer -->
-		<ng-include src="appConfig['appRootPath'] + '/views/common/footer.html'"></ng-include>
+		<ng-include ng-if="authInfo || isUnprotectedPage" src="appConfig['appRootPath'] + '/views/common/footer.html'"></ng-include>
 
 		<!-- Modal Dialog Templates -->
 		<div ng-include="'/app/views/dialogs.html'"></div>

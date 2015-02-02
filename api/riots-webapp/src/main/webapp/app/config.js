@@ -20,6 +20,7 @@ var appConfig = {
 		ratings: { url: "/api/v1/ratings" },
 		stats: { url: "/api/v1/stats" },
 		users: { url: "/api/v1/users" },
+		organizations: { url: "/api/v1/organizations" },
 		billing: { url: "/api/v1/billing" },
 		semanticTypes: { url: "/api/v1/semantic-types" },
 		websocket: { url: "ws://platform.riots.io:8085/websocket" }

@@ -1,4 +1,4 @@
-package io.riots.api.services.model;
+package io.riots.api.model;
 
 import io.riots.api.services.users.User;
 

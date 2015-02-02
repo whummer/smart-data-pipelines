@@ -1,5 +1,8 @@
 package io.riots.api.services.users;
 
+import java.util.Date;
+
+import io.riots.api.services.model.interfaces.ObjectCreated;
 import io.riots.api.services.model.interfaces.ObjectIdentifiable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -9,13 +12,23 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * 
  * @author whummer
  */
-public class UserActivation implements ObjectIdentifiable {
+public class UserActivation implements ObjectIdentifiable, ObjectCreated {
 
 	/**
 	 * Unique identifier.
 	 */
 	@JsonProperty
 	private String id;
+	/**
+	 * Creating user id.
+	 */
+	@JsonProperty
+	private String creatorId;
+	/**
+	 * Creation date.
+	 */
+	@JsonProperty
+	private Date created;
 	/**
 	 * User identifier.
 	 */
@@ -54,6 +67,18 @@ public class UserActivation implements ObjectIdentifiable {
 	}
 	public void setActivationDate(long activationDate) {
 		this.activationDate = activationDate;
+	}
+	public Date getCreated() {
+		return created;
+	}
+	public void setCreated(Date created) {
+		this.created = created;
+	}
+	public String getCreatorId() {
+		return creatorId;
+	}
+	public void setCreatorId(String creatorId) {
+		this.creatorId = creatorId;
 	}
 
 }

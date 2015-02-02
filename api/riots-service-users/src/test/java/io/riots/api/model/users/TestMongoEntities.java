@@ -1,7 +1,8 @@
-package io.riots.api.services.model;
+package io.riots.api.model.users;
 
 import java.util.List;
 
+import io.riots.api.model.UserMongo;
 import io.riots.core.repositories.UserRepository;
 
 import org.junit.Test;

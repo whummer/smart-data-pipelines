@@ -137,6 +137,9 @@ function AppController($scope, $http, $compile, growl) {
 	$scope.growlWarn = function(message) {
 		$scope.growlMsg(message, "warn");
 	}
+	$scope.growlError = function(message) {
+		$scope.growlMsg(message, "error");
+	}
 	$scope.growlMsg = function(message, type) {
 		var options = { ttl: 2000 };
 		var func = null
@@ -145,6 +148,8 @@ function AppController($scope, $http, $compile, growl) {
 			func = g.info ? g.info : g.addInfoMessage;
 		} else if(type == "warn") {
 			func = g.warn ? g.warn : g.addWarnMessage;
+		} else if(type == "error") {
+			func = g.warn ? g.warn : g.addErrorMessage;
 		}
 		func(message, options);
 	}

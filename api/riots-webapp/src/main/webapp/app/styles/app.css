@@ -69,7 +69,19 @@ ul.nav-tabs a.ng-binding {
 }
 */
 
-/* custom styles */
+/* general styles */
+
+.heading-ruler {
+	border-bottom: 1px solid #ddd;
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif; /* copied from bootstrap.css */
+	font-size: 16px;
+	font-weight: 700;
+	padding-bottom: 7px;
+	margin-bottom: 20px;
+}
+
+/* customized styles */
+
 .well-flat {
 	display: block; padding: 20px; margin-bottom: 20px;
 }

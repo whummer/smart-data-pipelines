@@ -1,6 +1,6 @@
 package io.riots.core.handlers.query;
 
-import io.riots.api.services.model.UserMongo;
+import io.riots.api.model.UserMongo;
 import io.riots.api.services.users.User;
 import io.riots.core.repositories.UserRepository;
 

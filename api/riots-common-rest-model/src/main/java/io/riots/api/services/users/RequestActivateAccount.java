@@ -14,4 +14,9 @@ public class RequestActivateAccount {
 	@JsonProperty
 	public String activationKey;
 
+	public RequestActivateAccount() {}
+	public RequestActivateAccount(String activationKey) {
+		this.activationKey = activationKey;
+	}
+
 }

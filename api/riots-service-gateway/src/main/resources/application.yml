@@ -19,6 +19,10 @@ zuul:
       path: /api/v1/billing/**
       stripPrefix: false
       serviceId: users-service
+    api-organizations:
+      path: /api/v1/organizations/**
+      stripPrefix: false
+      serviceId: users-service
     api-ratings:
       path: /api/v1/ratings/**
       stripPrefix: false

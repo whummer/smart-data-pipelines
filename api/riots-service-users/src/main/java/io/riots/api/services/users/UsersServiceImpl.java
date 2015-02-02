@@ -1,5 +1,7 @@
 package io.riots.api.services.users;
 
+import io.riots.api.model.UserMongo;
+import io.riots.api.model.UserPasswordMongo;
 import io.riots.api.services.billing.BillingService;
 import io.riots.api.services.billing.PricingPlan;
 import io.riots.api.services.billing.PricingPlanAssignment;
@@ -7,7 +9,6 @@ import io.riots.api.services.billing.TimePeriod;
 import io.riots.api.services.billing.UserActionLimit;
 import io.riots.api.services.billing.UserActionLimitStatus;
 import io.riots.api.services.billing.UserUsageStatus;
-import io.riots.api.services.model.UserMongo;
 import io.riots.core.auth.AuthHeaders;
 import io.riots.core.auth.AuthNetwork;
 import io.riots.core.auth.PasswordUtils;
@@ -25,19 +26,14 @@ import io.riots.core.util.mail.EmailSender;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
@@ -135,31 +131,62 @@ public class UsersServiceImpl implements UsersService {
     	return r;
     }
 
+    @Override
+    @Timed @ExceptionMetered
+    public boolean deleteUser(String id) {
+    	if(EmailValidator.getInstance().isValid(id)) {
+    		User u = userQuery.findByEmail(id);
+    		if(u == null) {
+    			return false;
+    		}
+    		id = u.getId();
+    	}
+    	userCommand.delete(id);
+    	return true;
+    }
+
     /* LOGIN/AUTHENTICATION METHODS */
 
     @Override
     @Timed @ExceptionMetered
     public User signup(RequestSignupUser r) {
     	if(!EmailValidator.getInstance(false).isValid(r.getEmail())) {
-	    	throw forbidden("Illegal email address.");
+	    	throw ServiceUtil.forbidden("Illegal email address.");
     	}
     	if(!PasswordUtils.isValid(r.password)) {
-	    	throw forbidden("Invalid password (Must be longer than 6 characters).");
+	    	throw ServiceUtil.forbidden("Invalid password (Must be longer than 6 characters).");
     	}
-    	User existing = userQuery.findByEmail(r.getEmail());
-    	if(existing != null) {
-	    	throw forbidden("User with this email adress is already registered.");
+    	if(StringUtils.isEmpty(r.getFirstname()) ||
+    			StringUtils.isEmpty(r.getLastname())) {
+	    	throw ServiceUtil.forbidden("Please provide a valid name.");
     	}
-    	UserMongo user = new UserMongo(r);
-    	user = userCommand.createOrUpdate(user);
+    	User user = userQuery.findByEmail(r.getEmail());
+    	if(user != null) {
+    		/* check if we already have a password entry for this user. */
+    		List<UserPasswordMongo> existingPwd = userPassRepo.findByUserId(user.getId());
+    		if(!existingPwd.isEmpty()) {
+    			throw ServiceUtil.forbidden("User with this email adress is already registered.");
+    		}
+    		/* all good, now store the updated user info */
+    		UserMongo tmp = new UserMongo(user);
+    		String userId = user.getId();
+    		tmp.copyFrom(r);
+    		tmp.setId(userId);
+    		user = userCommand.createOrUpdate(tmp);
+    	} else {
+    		UserMongo tmp = new UserMongo(r);
+    		user = userCommand.createOrUpdate(tmp);
+    	}
 
     	/* store user password entity */
     	String passHash = PasswordUtils.createHash(r.password);
-    	UserPassword pass = new UserPassword(user.getId(), passHash);
+    	UserPasswordMongo pass = new UserPasswordMongo(user.getId(), passHash);
     	pass = userPassRepo.save(pass);
 
     	/* set email activation code */
     	UserActivation act = new UserActivation(user.getId(), UUID.randomUUID().toString());
+    	act.setCreated(new Date());
+    	act.setCreatorId(user.getId());
     	userActivationRepo.save(act);
 
     	/* send activation email */
@@ -182,7 +209,7 @@ public class UsersServiceImpl implements UsersService {
     		if(user == null) {
     			ServiceUtil.setResponseStatus(context, HttpServletResponse.SC_FORBIDDEN);
     			LOG.info("Login error: User email unknown: '" + emailIdenfifier + "'");
-    	    	throw forbidden("Login failed. Please try again.");
+    	    	throw ServiceUtil.forbidden("Login failed. Please try again.");
     		}
     		/* check activation */
     		List<UserActivation> actList = userActivationRepo.findByUserId(user.getId());
@@ -190,26 +217,29 @@ public class UsersServiceImpl implements UsersService {
     			ServiceUtil.setResponseStatus(context, HttpServletResponse.SC_FORBIDDEN);
     			LOG.info("Login error: Unexpected array of activations in DB for user id '" + 
     					user.getId() + "': " + actList);
-    	    	throw forbidden("An error occured. Error code: " + ErrorCodes.ERR_DUPLICATE_ACTIVATION);
+    	    	throw ServiceUtil.forbidden("An error occured. Error code: " + ErrorCodes.ERR_DUPLICATE_ACTIVATION);
     		} else if(actList.size() == 1) {
     			UserActivation act = actList.get(0);
     			if(act.getActivationDate() <= 0) {
-    				throw forbidden("Login error, this account is currently in state 'inactive'.");
+    				throw ServiceUtil.forbidden("Login error, this account is currently in state 'inactive'.");
     			}
     		}
     		/* check password */
-    		List<UserPassword> userPasswords = userPassRepo.findByUserId(user.getId());
-    		if(userPasswords.isEmpty() || userPasswords.size() > 1) {
+    		List<UserPasswordMongo> userPasswords = userPassRepo.findByUserId(user.getId());
+    		if(userPasswords.size() > 1) {
     			ServiceUtil.setResponseStatus(context, HttpServletResponse.SC_FORBIDDEN);
     			LOG.info("Login error: Unexpected array of passwords in DB for user id '" + 
     					user.getId() + "': " + userPasswords);
-    	    	throw forbidden("An error occured. Error code: " + ErrorCodes.ERR_DUPLICATE_PASSWORD);
+    	    	throw ServiceUtil.forbidden("An error occured. Error code: " + ErrorCodes.ERR_DUPLICATE_PASSWORD);
+    		}
+    		if(userPasswords.isEmpty()) {
+    	    	throw ServiceUtil.forbidden("Unknown account. Please sign up using your email address.");
     		}
     		String expectedPassword = userPasswords.get(0).getPassword();
     		if(!expectedPassword.equals(r.password)) {
     			ServiceUtil.setResponseStatus(context, HttpServletResponse.SC_FORBIDDEN);
     			LOG.info("Login error: Invalid password: '" + r.password + "' vs. expected '" + expectedPassword + "'");
-    	    	throw forbidden("Login failed. Please try again.");
+    	    	throw ServiceUtil.forbidden("Login failed. Please try again.");
     		}
     		response = fillInAndSaveAuthInfo(response, user);
     		return response;
@@ -226,9 +256,9 @@ public class UsersServiceImpl implements UsersService {
 			ServiceUtil.setResponseStatus(context, HttpServletResponse.SC_FORBIDDEN);
 			LOG.info("Login error: Unexpected array of activations in DB for activation key '" + 
 					r.activationKey + "': " + actList);
-	    	throw forbidden("An error occured. Error code: " + ErrorCodes.ERR_DUPLICATE_ACTIVATION);
+	    	throw ServiceUtil.forbidden("An error occured. Error code: " + ErrorCodes.ERR_DUPLICATE_ACTIVATION);
 		} else if(actList.isEmpty()) {
-    		throw forbidden("Invalid activation key.");
+    		throw ServiceUtil.forbidden("Invalid activation key.");
 		}
 		UserActivation act = actList.get(0);
 		act.setActivationDate(System.currentTimeMillis());
@@ -258,7 +288,7 @@ public class UsersServiceImpl implements UsersService {
     	} else if(list.size() > 1) {
     		LOG.warn("Multiple AuthInfo (" + list.size() + ") objects found for token string: " + r.token + " - " + list);
         	ServiceUtil.setResponseStatus(context, HttpServletResponse.SC_FORBIDDEN);
-        	throw forbidden("Error when trying to verify auth token");
+        	throw ServiceUtil.forbidden("Error when trying to verify auth token");
     	}
 
     	if(!AuthNetwork.RIOTS.equals(r.network)) {
@@ -267,7 +297,7 @@ public class UsersServiceImpl implements UsersService {
     		AuthNetwork authNetwork = AuthNetwork.get(r.network);
         	AuthInfo newInfo = authNetwork.verifyAccessToken(r.token);
         	if(newInfo == null) {
-        		throw forbidden("Unable to verify auth token with network '" + 
+        		throw ServiceUtil.forbidden("Unable to verify auth token with network '" + 
         				r.network  + "': '" + r.token + "'");
         	}
         	AuthInfoExternal newInfoToSave = new AuthInfoExternal(newInfo);
@@ -277,7 +307,7 @@ public class UsersServiceImpl implements UsersService {
         	if(StringUtils.isEmpty(newInfoToSave.getEmail())) {
         		String msg = "Unable to determine valid email address for auth token";
         		LOG.warn(msg + " " + r + " - " + newInfoToSave);
-        		throw forbidden(msg);
+        		throw ServiceUtil.forbidden(msg);
         	}
         	User user = userQuery.findOrCreateByEmail(newInfoToSave.getEmail());
         	/* update info and return token */
@@ -286,13 +316,7 @@ public class UsersServiceImpl implements UsersService {
     	}
 
     	ServiceUtil.setResponseStatus(context, HttpServletResponse.SC_FORBIDDEN);
-    	throw forbidden("Unable to verify auth token");
-    }
-
-    @Override
-    @Timed @ExceptionMetered
-    public long getNumUsers() {
-    	return userQuery.getCount();
+    	throw ServiceUtil.forbidden("Unable to verify auth token");
     }
 
     /* METHODS FOR USER ACTIONS */
@@ -421,18 +445,5 @@ public class UsersServiceImpl implements UsersService {
 		Date end = DateUtils.addMonths(start, 1);
 		return end;
 	}
-
-    private WebApplicationException webappError(int status, String msg) {
-    	Map<String,Object> response = new HashMap<>();
-    	response.put("status", status);
-    	response.put("message", msg);
-    	return new WebApplicationException(Response.status(status)
-    			.entity(response)
-    			.header("Content-Type", MediaType.APPLICATION_JSON)
-    			.build());
-    }
-    private WebApplicationException forbidden(String msg) {
-    	return webappError(HttpServletResponse.SC_FORBIDDEN, msg);
-    }
 
 }
