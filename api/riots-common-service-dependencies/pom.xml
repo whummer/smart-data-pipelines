@@ -61,10 +61,8 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		
 
 		<!-- Spring and Spring Boot dependencies -->
-
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-eureka</artifactId>

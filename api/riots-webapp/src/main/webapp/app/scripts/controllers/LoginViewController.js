@@ -97,7 +97,7 @@ app.controller('LoginViewController', [
         if($routeParams.activationKey) {
         	$scope.regInfo.activationKey = $routeParams.activationKey;
         	riots.activate($routeParams.activationKey, function() {
-        		$scope.regInfo.activationMsg = "Your account has been successfully activated.";
+        		$scope.regInfo.activationMsg = "Your account email has been successfully activated.";
         	}, function() {
         		$scope.regInfo.activationMsg = "An error has occurred, possibly this account has already been activated. " +
         			"Please try to log in using your account credentials.";

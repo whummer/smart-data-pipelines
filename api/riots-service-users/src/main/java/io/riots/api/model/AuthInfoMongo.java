@@ -13,6 +13,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 public class AuthInfoMongo extends AuthInfoExternal {
 
+	public AuthInfoMongo() {}
+	public AuthInfoMongo(AuthInfoExternal info) {
+		copyFrom(info);
+	}
+
 	@Indexed(unique = true)
 	public String getAccessToken() {
 		return super.getAccessToken();

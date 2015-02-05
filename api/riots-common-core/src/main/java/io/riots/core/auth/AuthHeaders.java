@@ -77,7 +77,12 @@ public class AuthHeaders {
         	return isOAuthBased() || isRiotsBased();
         }
 
-        String getTokenKey() {
+        /**
+         * Returns a hash key which identifies this token. Used
+         * as key for the hashmap which caches auth tokens.
+         * @return
+         */
+        String getTokenHashKey() {
         	if(isOAuthBased()) {
         		return token + "@" + network;
         	} else if(isRiotsBased()) {

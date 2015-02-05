@@ -17,6 +17,9 @@ import org.springframework.context.annotation.Configuration;
 public class RiotsServiceRegistryStarter {
 
     public static void main(String[] args) {
+    	com.netflix.blitz4j.LoggingConfiguration c;
+    	org.springframework.cloud.netflix.eureka.server.EurekaServerInitializerConfiguration c1;
+
         SpringApplication.run(RiotsServiceRegistryStarter.class, args);
     }
 
