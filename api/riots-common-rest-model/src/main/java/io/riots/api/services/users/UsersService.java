@@ -124,6 +124,42 @@ public interface UsersService {
             response = AuthToken.class)
     public AuthInfoExternal getInfoForAuthToken(AuthToken r);
 
+    /**
+     * Whether a user account is active or not.
+     */
+    public static class UserActiveStatus {
+    	/** User ID. */
+    	public String userId;
+    	/** Active status. */
+    	public boolean active;
+    	/** Status text. */
+    	public String status;
+
+    	public UserActiveStatus() {}
+    	public UserActiveStatus(String userId, boolean active) {
+    		this.userId = userId;
+    		this.active = active;
+    	}
+    }
+
+    @GET
+    @Path("/active/{userId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Get user's active status.",
+            notes = "Get status of user account (active/inactive).")
+    @PreAuthorize(Role.HAS_ROLE_ADMIN)
+    public UserActiveStatus getActiveStatus(@PathParam("userId") String userId);
+
+    @POST
+    @Path("/active/{userId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Set user's active status.",
+            notes = "Set status of user account (active/inactive).")
+    @PreAuthorize(Role.HAS_ROLE_ADMIN)
+    public UserActiveStatus setActiveStatus(@PathParam("userId") String userId, UserActiveStatus status);
+
     /* USER ACTION METHODS */
 
     @POST

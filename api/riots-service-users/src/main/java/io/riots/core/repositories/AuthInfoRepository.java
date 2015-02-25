@@ -1,6 +1,6 @@
 package io.riots.core.repositories;
 
-import io.riots.api.services.users.AuthInfoExternal;
+import io.riots.api.model.AuthInfoMongo;
 
 import java.util.List;
 
@@ -9,8 +9,8 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 /**
  * @author whummer
  */
-public interface AuthInfoRepository extends PagingAndSortingRepository<AuthInfoExternal,String> {
+public interface AuthInfoRepository extends PagingAndSortingRepository<AuthInfoMongo,String> {
 
-    List<AuthInfoExternal> findByAccessToken(String token);
+    List<AuthInfoMongo> findByAccessToken(String token);
 
 }

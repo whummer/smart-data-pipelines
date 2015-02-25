@@ -9,14 +9,14 @@ import io.hummer.osm.query.OSMContainer;
 import io.hummer.osm.query.OSMElement;
 import io.hummer.osm.query.OSMNode;
 import io.hummer.osm.util.Util;
-import io.riots.core.sim.ValueInterpolation;
-import io.riots.core.util.geo.GeoUtil;
 import io.riots.api.services.scenarios.PropertyValue;
+import io.riots.api.services.scenarios.TimedValue;
 import io.riots.api.services.sim.LocationInTime;
 import io.riots.api.services.sim.PropertySimulationGPS;
 import io.riots.api.services.sim.TrafficTraces;
-import io.riots.api.services.sim.TimelineValues.TimedValue;
 import io.riots.api.services.sim.TrafficTraces.TrafficTrace;
+import io.riots.core.sim.ValueInterpolation;
+import io.riots.core.util.geo.GeoUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -27,15 +27,18 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.matsim.api.core.v01.Coord;
+import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.events.LinkEnterEvent;
 import org.matsim.api.core.v01.events.handler.LinkEnterEventHandler;
+import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.network.Node;
 import org.matsim.api.core.v01.population.Activity;
@@ -68,6 +71,10 @@ public class TrafficSimulatorMatsim {
 	private static final double MAX_TRACE_POINTS = 10000;
 	private static final Random RAND = new Random();
 
+	private static CoordinateTransformation COORDS_TRANS = TransformationFactory
+			.getCoordinateTransformation(
+					TransformationFactory.WGS84, TransformationFactory.WGS84);
+
 	static {
 		/* disable logging */
 		Logger.getLogger(OsmNetworkReader.class).setLevel(Level.OFF);
@@ -95,9 +102,6 @@ public class TrafficSimulatorMatsim {
 		
 		PropertyConfigurator.configure(getClass().getResource("/log4j.properties"));
 
-		CoordinateTransformation ct = TransformationFactory
-				.getCoordinateTransformation("WGS84", "WGS84");
-
 		Config config = ConfigUtils.createConfig();
 		config.planCalcScore().addActivityParams(new ActivityParams("startAndStop") {
 			{
@@ -123,7 +127,7 @@ public class TrafficSimulatorMatsim {
 
 		PopulationFactory populationFactory = population.getFactory();
 
-		int numPoints = 20;
+		int numPoints = 10;
 
 		for (int i = 1; i <= numVehicles; i++) {
 			Person person = populationFactory
@@ -136,7 +140,7 @@ public class TrafficSimulatorMatsim {
 			Point p1 = getRandomPoint(bounds, nodes);
 			Coord coords1 = sc.createCoord(p1.x, p1.y);
 			Activity act1 = populationFactory.createActivityFromCoord(
-					"startAndStop", ct.transform(coords1));
+					"startAndStop", COORDS_TRANS.transform(coords1));
 			act1.setMaximumDuration(0);
 			plan.addActivity(act1);
 
@@ -147,7 +151,7 @@ public class TrafficSimulatorMatsim {
 
 				Point p2 = getRandomPoint(bounds, nodes);
 				Activity act2 = populationFactory.createActivityFromCoord(
-						"pitstop", ct.transform(sc.createCoord(p2.x, p2.y)));
+						"pitstop", COORDS_TRANS.transform(sc.createCoord(p2.x, p2.y)));
 				act2.setMaximumDuration(0);
 				plan.addActivity(act2);
 
@@ -157,7 +161,7 @@ public class TrafficSimulatorMatsim {
 			Point p2 = getRandomPoint(bounds, nodes);
 			Coord coords2 = sc.createCoord(p2.x, p2.y);
 			Activity act2 = populationFactory.createActivityFromCoord(
-					"startAndStop", ct.transform(coords2));
+					"startAndStop", COORDS_TRANS.transform(coords2));
 			act2.setMaximumDuration(0);
 			// use infinity, apparently this is what matsim wants (avoids a WARN output)
 			act2.setEndTime((1.0D / 0.0D));
@@ -171,16 +175,29 @@ public class TrafficSimulatorMatsim {
 
 	private void importNetwork(Scenario sc, OSMContainer map) throws Exception {
 		String osm = map.toXML();
+		System.out.println("Network XML file length " + osm.length());
 
 		Network net = sc.getNetwork();
-		CoordinateTransformation ct = TransformationFactory
-				.getCoordinateTransformation(TransformationFactory.WGS84,
-						TransformationFactory.WGS84);
-		OsmNetworkReader onr = new OsmNetworkReader(net, ct);
+		OsmNetworkReader onr = new OsmNetworkReader(net, COORDS_TRANS);
 		InputStream is = new ByteArrayInputStream(osm.getBytes());
 		Method m = onr.getClass().getDeclaredMethod("parse", InputStream.class);
 		m.setAccessible(true);
 		m.invoke(onr, is);
+
+		Map<Id,? extends Link> links = sc.getNetwork().getLinks();
+		for(Entry<Id,? extends Link> e : links.entrySet()) {
+			double speed = e.getValue().getFreespeed();
+			System.out.println(speed);
+			speed = GeoUtil.convertMetersToDegrees(speed);
+			speed = speed * (60 * 60 / 1000.0); // TODO needed?
+			System.out.println(speed);
+			e.getValue().setFreespeed(speed);
+		}
+
+		System.out.println(sc.getNetwork());
+		System.out.println(sc.getNetwork().getNodes());
+		System.out.println(sc.getNetwork().getLinks());
+		System.out.println(links.get(new Random().nextInt(links.size())));
 	}
 
 	void dumpVehiclePaths() {
@@ -194,14 +211,14 @@ public class TrafficSimulatorMatsim {
 		}
 	}
 	static void dumpVehiclePath(String id, List<LocationInTime> points) {
-		List<PathPoint> list = convert(points);
+		List<PathPoint> list = convertFromLocations(points);
 		doDumpVehiclePath(id, list);
 	}
 	static void doDumpVehiclePath(String id, List<PathPoint> list) {
 		Util.write(new File("vehicle_" + id + ".kml"),
 				PathExporter.exportKML(list));
 	}
-	static List<LocationInTime> convert1(List<PathPoint> points) {
+	static List<LocationInTime> convertFromPoints(List<PathPoint> points) {
 		List<LocationInTime> list = new LinkedList<>();
 		for(PathPoint l : points) {
 			LocationInTime p = new LocationInTime(l.y, l.x, l.time);
@@ -209,7 +226,7 @@ public class TrafficSimulatorMatsim {
 		}
 		return list;
 	}
-	static List<PathPoint> convert(List<LocationInTime> points) {
+	static List<PathPoint> convertFromLocations(List<LocationInTime> points) {
 		List<PathPoint> list = new LinkedList<>();
 		for(LocationInTime l : points) {
 			PathPoint p = new PathPoint(l.getLongitude(), 
@@ -293,7 +310,7 @@ public class TrafficSimulatorMatsim {
 		for(String s : r.keySet()) {
 			TrafficTrace t = new TrafficTrace();
 			t.id = s;
-			t.points = convert1(r.get(s));
+			t.points = convertFromPoints(r.get(s));
 			result.traces.add(t);
 		}
 		return result;
@@ -316,6 +333,8 @@ public class TrafficSimulatorMatsim {
 			trimMaxTime(t.points, timeDuration);
 			/* interpolate time */
 			ValueInterpolation.interpolate(t.points, timeStepLength);
+			/* trim time again */
+			trimMaxTime(t.points, timeDuration);
 		}
 		/* dump results */
 		dumpVehiclePaths(result);
@@ -332,18 +351,6 @@ public class TrafficSimulatorMatsim {
 			gps.getValues().add(new TimedValue<PropertyValue>(p.time, prop));
 		}
 		return traces;
-	}
-
-	public static void main(String[] args) throws Exception {
-
-		/* Vienna */
-		double lat = 48.2063, lon = 16.3710;
-		double vicinity = 0.01;
-		int numVehicles = 1;
-
-		TrafficTraces traces = TrafficSimulatorMatsim.generateTraces(
-				numVehicles, lat, lon, vicinity, 100, 1);
-		System.out.println(traces.traces);
 	}
 
 }

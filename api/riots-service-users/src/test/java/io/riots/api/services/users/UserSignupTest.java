@@ -1,6 +1,7 @@
 package io.riots.api.services.users;
 
 import static org.mockito.Mockito.when;
+import io.riots.api.services.users.UsersService.UserActiveStatus;
 import io.riots.boot.starters.UsersServiceTestStarter;
 import io.riots.core.auth.AuthFilterBase;
 import io.riots.core.auth.AuthHeaders;
@@ -16,6 +17,7 @@ import javax.mail.Message;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.cxf.helpers.IOUtils;
+import org.apache.cxf.jaxrs.client.Client;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,18 +40,19 @@ import com.netflix.discovery.shared.Application;
 /**
  * @author whummer
  */
-@SpringApplicationConfiguration(classes = {UsersServiceTestStarter.class})
+@SpringApplicationConfiguration(classes = { UsersServiceTestStarter.class })
 @EnableDiscoveryClient
 @WebIntegrationTest("server.port:0")
-public class TestUserSignup extends AbstractTestNGSpringContextTests {
+public class UserSignupTest extends AbstractTestNGSpringContextTests {
 
-	static final Logger LOG = Logger.getLogger(TestUserSignup.class);
+	static final Logger LOG = Logger.getLogger(UserSignupTest.class);
 
 	private static final String TEST_USER_EMPTY = "";
 	private static final String TEST_PASS_INVALID = "pass"; // too short
 	private static final String TEST_PASS_VALID = "pass123";
 	private static final String TEST_EMAIL_USER_1 = "test@riots.io";
-	private static final String TEST_EMAIL_INVALID = "test@riots"; // invalid email
+	private static final String TEST_EMAIL_INVALID = "test@riots"; // invalid
+																	// email
 	private static final String TEST_ADMIN_1 = AuthFilterBase.ADMIN_USER_1;
 
 	@Value("${local.server.port}")
@@ -66,53 +69,53 @@ public class TestUserSignup extends AbstractTestNGSpringContextTests {
 
 	private UsersService users;
 
-    @Autowired
-    private ServiceClientFactory serviceClientFactory;
+	@Autowired
+	private ServiceClientFactory serviceClientFactory;
 
-    @Bean
-    public ServiceClientFactory getFactory() {
-    	return new ServiceClientFactory();
-    }
+	@Bean
+	public ServiceClientFactory getFactory() {
+		return new ServiceClientFactory();
+	}
 
-    @Bean
-    public EmbeddedServletContainerFactory getContainerFactory() {
-    	return new TomcatEmbeddedServletContainerFactory();
-    }
+	@Bean
+	public EmbeddedServletContainerFactory getContainerFactory() {
+		return new TomcatEmbeddedServletContainerFactory();
+	}
 
-    static {
-        String prop = "eureka.client.serviceUrl.defaultZone";
-        if (System.getProperty(prop) == null) {
-            System.setProperty(prop, "http://localhost:10000/eureka/");
-        }
-    }
+	static {
+		String prop = "eureka.client.serviceUrl.defaultZone";
+		if (System.getProperty(prop) == null) {
+			System.setProperty(prop, "http://localhost:10000/eureka/");
+		}
+	}
 
-    @BeforeClass
-    public void setup() {
+	@BeforeClass
+	public void setup() {
 
-        /* setup discovery client */
+		/* setup discovery client */
 		InstanceInfo.Builder builder = InstanceInfo.Builder.newBuilder();
-        Application usersService = new Application(ServiceClientFactory.SERVICE_USERS_EUREKA_NAME);
-		usersService.addInstance(builder
-						.setHostName("localhost")
-						.setIPAddr("127.0.0.1")
-						.setPort(port)
-						.setAppName(ServiceClientFactory.SERVICE_USERS_EUREKA_NAME)
-						.build()
-		);
-		when(discoveryClient.getApplication(
-				ServiceClientFactory.SERVICE_USERS_EUREKA_NAME)).thenReturn(usersService);
+		Application usersService = new Application(
+				ServiceClientFactory.SERVICE_USERS_EUREKA_NAME);
+		usersService.addInstance(builder.setHostName("localhost")
+				.setIPAddr("127.0.0.1").setPort(port)
+				.setAppName(ServiceClientFactory.SERVICE_USERS_EUREKA_NAME)
+				.build());
+		when(
+				discoveryClient
+						.getApplication(ServiceClientFactory.SERVICE_USERS_EUREKA_NAME))
+				.thenReturn(usersService);
 
-        /* delete existing user */
-        users = serviceClientFactory.getUsersServiceClient();
+		/* delete existing user */
+		users = serviceClientFactory.getUsersServiceClient();
 		setTestUserHeader(TEST_ADMIN_1);
-        users.deleteUser(TEST_EMAIL_USER_1);
+		users.deleteUser(TEST_EMAIL_USER_1);
 
-    }
+	}
 
-    @org.testng.annotations.Test
-    public void testSignup() throws Exception {
+	@org.testng.annotations.Test
+	public void testSignup() throws Exception {
 
-        /* empty request, see it fail */
+		/* empty request, see it fail */
 		setTestUserHeader(TEST_USER_EMPTY);
 		RequestSignupUser req = new RequestSignupUser();
 		testSignUpInvalid(req);
@@ -144,15 +147,17 @@ public class TestUserSignup extends AbstractTestNGSpringContextTests {
 
 		/* get activation message */
 		Message actMsg = null;
-		for(int i = 0; i < 3; i ++) {
-			List<Message> msgs = EmailSender.getEmailsForTestAccount(true);
-			for(Message m : msgs) {
-				if(m.getReceivedDate().after(beforeSignup)) {
+		double startWaitTime = System.currentTimeMillis();
+		double maxWaitTime = 1000 * 60 * 2; // we have seen cases where email sending takes up to 2 minutes .. :/
+		while ((System.currentTimeMillis() - startWaitTime) < maxWaitTime) {
+			List<Message> msgs = EmailSender.getEmailsForTestAccount(false);
+			for (Message m : msgs) {
+				if (m.getReceivedDate().after(beforeSignup)) {
 					actMsg = msgs.get(msgs.size() - 1);
 					break;
 				}
 			}
-			if(actMsg != null) {
+			if (actMsg != null) {
 				break;
 			}
 			Thread.sleep(5000);
@@ -161,7 +166,9 @@ public class TestUserSignup extends AbstractTestNGSpringContextTests {
 
 		/* get activation key */
 		String msg = IOUtils.readStringFromStream(actMsg.getInputStream());
-		String actKeyPattern = "(?s).+" + EmailSender.URL_ACTIVATION.replace("<activationKey>", "([^\\n]+)") + ".+";
+		String actKeyPattern = "(?s).+"
+				+ EmailSender.URL_ACTIVATION.replace("<activationKey>",
+						"([^\\n]+)") + ".+";
 		String actKey = msg.replaceAll(actKeyPattern, "$1").trim();
 		System.out.println("--> activation key " + actKey);
 
@@ -169,31 +176,75 @@ public class TestUserSignup extends AbstractTestNGSpringContextTests {
 		boolean result = users.activate(new RequestActivateAccount(actKey));
 		Assert.assertTrue(result);
 
+		/* create login request */
+		RequestGetAuthToken loginReq = new RequestGetAuthToken(
+				TEST_EMAIL_USER_1, PasswordUtils.createHash(TEST_PASS_VALID));
+
+		/* check if the account needs to be confirmed by an admin first. */
+		if (UsersServiceImpl.ACCOUNTS_REQUIRE_ADMIN_ACTIVATION) {
+			assertAccessDenied(
+					new Runnable() {
+						public void run() {
+							users.login(loginReq);
+						}
+					},
+					"User account should be inactive (should have to be activated by an admin first).");
+			/* try activating as normal user */
+			assertAccessDenied(new Runnable() {
+				public void run() {
+					users.setActiveStatus(u.getId(),
+							new UserActiveStatus(u.getId(), true));
+				}
+			}, "Only admins should activate accounts.");
+			/* activate account as admin */
+			setTestUserHeader(TEST_ADMIN_1);
+			users.setActiveStatus(u.getId(), new UserActiveStatus(u.getId(),
+					true));
+			/* reset header to normal user */
+			setTestUserHeader(TEST_USER_EMPTY);
+		}
+
 		/* perform login */
-		AuthInfoExternal info = users.login(new RequestGetAuthToken(
-				TEST_EMAIL_USER_1, PasswordUtils.createHash(TEST_PASS_VALID)));
+		AuthInfoExternal info = users.login(loginReq);
 		Assert.assertNotNull(info);
 		Assert.assertEquals(info.getEmail(), TEST_EMAIL_USER_1);
 		Assert.assertEquals(info.getNetwork(), AuthNetwork.RIOTS);
 		Assert.assertFalse(StringUtils.isEmpty(info.getId()));
 		Assert.assertFalse(StringUtils.isEmpty(info.getUserID()));
 
-    }
+	}
 
-    private void testSignUpInvalid(RequestSignupUser req) {
-    	boolean denied = false;
-    	try {
-        	users.signup(req);
+	private void assertAccessDenied(Runnable run, String msg) {
+		boolean isDenied = false;
+		try {
+			run.run();
 		} catch (Exception e) {
-        	denied = true;
+			/* expected */
+			isDenied = true;
 		}
-    	if(!denied) {
-    		throw new RuntimeException("Expected error.");
-    	}
-    }
+		Assert.assertTrue(isDenied, msg);
+	}
+
+	private void testSignUpInvalid(RequestSignupUser req) {
+		boolean denied = false;
+		try {
+			users.signup(req);
+		} catch (Exception e) {
+			denied = true;
+		}
+		if (!denied) {
+			throw new RuntimeException("Expected error.");
+		}
+	}
 
 	private void setTestUserHeader(String user) {
-        AuthHeaders.THREAD_AUTH_INFO.get().get().setEmail(user);
-        WebClient.client(users).header(AuthHeaders.HEADER_AUTH_EMAIL, user);
+		AuthHeaders.THREAD_AUTH_INFO.get().get().setEmail(user);
+		Client c = WebClient.client(users);
+		if(c.getHeaders().containsKey(AuthHeaders.HEADER_AUTH_EMAIL)) {
+			users = serviceClientFactory.getUsersServiceClient();
+			c = WebClient.client(users);
+		}
+		c.getHeaders().remove(AuthHeaders.HEADER_AUTH_EMAIL);
+		c.header(AuthHeaders.HEADER_AUTH_EMAIL, user);
 	}
 }

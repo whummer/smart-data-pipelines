@@ -1,5 +1,6 @@
 package io.riots.api.services.users;
 
+import io.riots.api.model.AuthInfoMongo;
 import io.riots.api.model.UserMongo;
 import io.riots.api.model.UserPasswordMongo;
 import io.riots.api.services.billing.BillingService;
@@ -59,7 +60,10 @@ public class UsersServiceImpl implements UsersService {
 
 	static final Logger LOG = Logger.getLogger(UsersServiceImpl.class);
 
+	/** expiry period for authentication tokens */
 	private static final int TOKEN_EXPIRY_MS = 1000 * 60 * 60;
+	/** whether the accounts need to be confirmed by admins */
+	public static final boolean ACCOUNTS_REQUIRE_ADMIN_ACTIVATION = true;
 
 	/**
 	 * Cache for auth tokens.
@@ -174,6 +178,7 @@ public class UsersServiceImpl implements UsersService {
     		tmp.setId(userId);
     		user = userCommand.createOrUpdate(tmp);
     	} else {
+    		/* save new user in DB */
     		UserMongo tmp = new UserMongo(r);
     		user = userCommand.createOrUpdate(tmp);
     	}
@@ -184,16 +189,41 @@ public class UsersServiceImpl implements UsersService {
     	pass = userPassRepo.save(pass);
 
     	/* set email activation code */
-    	UserActivation act = new UserActivation(user.getId(), UUID.randomUUID().toString());
-    	act.setCreated(new Date());
-    	act.setCreatorId(user.getId());
-    	userActivationRepo.save(act);
+    	UserActivation act = createUserActivation(user.getId(), UUID.randomUUID().toString());
 
     	/* send activation email */
     	EmailSender.sendActivationMessage(user, act.getActivationKey());
 
     	return user;
     }
+
+	@Override
+    @Timed @ExceptionMetered
+    public UserActiveStatus getActiveStatus(String userId) {
+    	UserActivation act = getOrCreateUserActivation(userId);
+    	UserActiveStatus status = new UserActiveStatus(userId, act.checkIsAccountActive());
+    	status.status = 
+			!act.checkIsEmailConfirmed() ? "PENDING_EMAIL_ACTIVATION" :
+			act.isDeactivated() ? "DEACTIVATED" : 
+			"ACTIVE";
+		return status;
+	}
+
+	@Override
+	@Timed @ExceptionMetered
+	public UserActiveStatus setActiveStatus(String userId, UserActiveStatus status) {
+		User user = findByID(status.userId);
+		UserActivation act = getOrCreateUserActivation(user.getId());
+		act.setDeactivated(!status.active);
+		if(status.active) {
+			act.setActivationDate(System.currentTimeMillis());
+		}
+		act = userActivationRepo.save(act);
+		if(status.active && act.checkIsEmailConfirmed()) {
+			EmailSender.sendAccountActivatedMessage(user);
+		}
+		return getActiveStatus(userId);
+	}
 
     @Override
     @Timed @ExceptionMetered
@@ -212,18 +242,10 @@ public class UsersServiceImpl implements UsersService {
     	    	throw ServiceUtil.forbidden("Login failed. Please try again.");
     		}
     		/* check activation */
-    		List<UserActivation> actList = userActivationRepo.findByUserId(user.getId());
-    		if(actList.size() > 1) {
-    			ServiceUtil.setResponseStatus(context, HttpServletResponse.SC_FORBIDDEN);
-    			LOG.info("Login error: Unexpected array of activations in DB for user id '" + 
-    					user.getId() + "': " + actList);
-    	    	throw ServiceUtil.forbidden("An error occured. Error code: " + ErrorCodes.ERR_DUPLICATE_ACTIVATION);
-    		} else if(actList.size() == 1) {
-    			UserActivation act = actList.get(0);
-    			if(act.getActivationDate() <= 0) {
-    				throw ServiceUtil.forbidden("Login error, this account is currently in state 'inactive'.");
-    			}
-    		}
+    		UserActivation act = getOrCreateUserActivation(user.getId());
+			if(!act.checkIsAccountActive()) {
+				throw ServiceUtil.forbidden("Login error, this account is currently in state 'inactive'.");
+			}
     		/* check password */
     		List<UserPasswordMongo> userPasswords = userPassRepo.findByUserId(user.getId());
     		if(userPasswords.size() > 1) {
@@ -248,6 +270,7 @@ public class UsersServiceImpl implements UsersService {
     	throw new NotImplementedException();
     }
 
+
     @Override
     @Timed @ExceptionMetered
     public boolean activate(RequestActivateAccount r) {
@@ -258,7 +281,7 @@ public class UsersServiceImpl implements UsersService {
 					r.activationKey + "': " + actList);
 	    	throw ServiceUtil.forbidden("An error occured. Error code: " + ErrorCodes.ERR_DUPLICATE_ACTIVATION);
 		} else if(actList.isEmpty()) {
-    		throw ServiceUtil.forbidden("Invalid activation key.");
+			throw ServiceUtil.forbidden("Invalid activation key.");
 		}
 		UserActivation act = actList.get(0);
 		act.setActivationDate(System.currentTimeMillis());
@@ -279,7 +302,7 @@ public class UsersServiceImpl implements UsersService {
     	}
 
     	/* get tokens from DB */
-    	List<AuthInfoExternal> list = authInfoRepo.findByAccessToken(r.token);
+    	List<AuthInfoMongo> list = authInfoRepo.findByAccessToken(r.token);
     	if(list.size() == 1) {
 	    	authInfo = list.get(0);
 	    	/* update info and return token */
@@ -393,6 +416,34 @@ public class UsersServiceImpl implements UsersService {
 
     /* PRIVATE HELPER METHODS */
 
+
+    private UserActivation createUserActivation(String userId, String activationKey) {
+    	UserActivation act = new UserActivation(userId, activationKey);
+		act.setCreated(new Date());
+		act.setDeactivated(ACCOUNTS_REQUIRE_ADMIN_ACTIVATION);
+		act = userActivationRepo.save(act);
+		return act;
+	}
+    private UserActivation getOrCreateUserActivation(String userIdOrEmail) {
+    	String userId = userIdOrEmail;
+    	if(EmailValidator.getInstance().isValid(userIdOrEmail)) {
+    		User user = userQuery.findOrCreateByEmail(userIdOrEmail);
+    		userId = user.getId();
+    	}
+    	List<UserActivation> actList = userActivationRepo.findByUserId(userId);
+		if(actList.size() > 1) {
+			ServiceUtil.setResponseStatus(context, HttpServletResponse.SC_FORBIDDEN);
+			LOG.info("Login error: Unexpected array of activations in DB for user id '" + 
+					userIdOrEmail + "': " + actList);
+	    	throw ServiceUtil.forbidden("An error occured. Error code: " + ErrorCodes.ERR_DUPLICATE_ACTIVATION);
+		}
+		if(actList.isEmpty()) {
+			return createUserActivation(userIdOrEmail, null);
+		}
+		UserActivation act = actList.get(0);
+		return act;
+    }
+
     private AuthInfoExternal fillInAndSaveAuthInfo(AuthInfoExternal info, User user) {
 		info.setEmail(user.getEmail());
 		info.setUserID(user.getId());
@@ -408,7 +459,10 @@ public class UsersServiceImpl implements UsersService {
 
     private AuthInfoExternal updateAndSaveAuthInfo(AuthInfoExternal info) {
     	info.setExpiry(new Date(System.currentTimeMillis() + TOKEN_EXPIRY_MS));
-		info = authInfoRepo.save(info);
+    	if(!(info instanceof AuthInfoMongo)) {
+    		info = new AuthInfoMongo(info);
+    	}
+		info = authInfoRepo.save((AuthInfoMongo)info);
 		/* put token to cache */
 		AUTH_TOKENS_CACHE.put(info.getAccessToken(), info);
 		return info;

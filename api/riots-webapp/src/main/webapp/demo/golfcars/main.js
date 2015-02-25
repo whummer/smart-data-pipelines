@@ -101,6 +101,8 @@ app.controller('MainCtrl', function ($scope) {
 	}
 
 	var removeAllMarkers = function() {
+		if(!$scope.things)
+			return;
 		$.each($scope.things, function(idx,el) {
 			if(el.marker) {
 				$scope.map.removeLayer(el.marker);
@@ -123,6 +125,7 @@ app.controller('MainCtrl', function ($scope) {
 					subscribeProp(thing, "pressure");
 					subscribeProp(thing, "temperature");
 					subscribeProp(thing, "batteryPercent");
+					subscribeProp(thing, "speed");
 					subscribeProp(thing, GEO_FENCE);
 					riots.thingType(thing[THING_TYPE], function(thingType) {
 						if(!thingType) return;
@@ -135,6 +138,7 @@ app.controller('MainCtrl', function ($scope) {
 				});
 			}
 			riots.unsubscribeAll(callback);
+			setupSpeedCalc();
 		});
 	}
 
@@ -147,6 +151,20 @@ app.controller('MainCtrl', function ($scope) {
 			doLoadThings();
 		}, function() {
 			alert("Invalid authentication provided. Please check RIOTS_USER_ID and RIOTS_APP_KEY.");
+		});
+	};
+
+	var setupSpeedCalc = function() {
+		if(!$scope.things)
+			return;
+		var speedCalc = {
+			type: "SPEED_CALCULATOR"
+		};
+		$.each($scope.things, function(idx,el) {
+			speedCalc[THING_ID] = el.id;
+			riots.add.trigger(speedCalc, function(speedCalc) {
+				console.log("added speedCalc", speedCalc);
+			});
 		});
 	};
 

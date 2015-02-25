@@ -25,7 +25,16 @@ app.controller('AdminUsersController',
             {label: "Last Name", field: "lastname", sortable: true},
             {label: "Email", field: "email", sortable: true},
             {label: "Country", field: "country", sortable: true},
-            {label: "Registered", field: "created", sortable: true}
+            {label: "Registered", field: CREATION_DATE, sortable: true, cellTemplate:
+            	"<div class='ui-grid-cell-contents'>{{row.entity.formatCreationDate()}}</div>"
+          	},
+          	{label: "Status", field: "status.status", sortable: true},
+            {label: "Actions", field: "created", cellTemplate:
+            	"<div class='ui-grid-cell-contents'>" +
+        		"<button ng-show='!row.entity.status.active' ng-click='row.entity.activateUser()'>Activate</button>" +
+        		"<button ng-show='row.entity.status.active' ng-click='row.entity.deactivateUser()'>Deactivate</button>" +
+            	"</div>"
+            }
         ];
         $scope.gridConfig.data = [];
         renderUITable($scope.gridConfig, "usersTable", columnsConfig,
@@ -46,6 +55,24 @@ app.controller('AdminUsersController',
     var loadTable = function() {
     	riots.users(function(users) {
     		$scope.gridConfig.data = users;
+    		$.each(users, function(idx, el) {
+    			el.formatCreationDate = function() {
+    				return formatDate(el[CREATION_DATE]);
+    			};
+    			el.activateUser = function() {
+    				riots.account.activate(el, function(statusNew){
+    					el.status = statusNew;
+    				});
+    			};
+    			el.deactivateUser = function() {
+    				riots.account.deactivate(el, function(statusNew) {
+    					el.status = statusNew;
+    				});
+    			};
+    			riots.account.active(el, function(result) {
+    				el.status = result;
+				});
+    		});
     	});
     }
 

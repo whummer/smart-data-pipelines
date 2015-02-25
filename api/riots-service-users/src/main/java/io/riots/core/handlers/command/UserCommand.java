@@ -1,5 +1,7 @@
 package io.riots.core.handlers.command;
 
+import java.util.Date;
+
 import io.riots.api.model.UserMongo;
 import io.riots.core.logging.Markers;
 import io.riots.core.repositories.UserRepository;
@@ -22,6 +24,9 @@ public class UserCommand {
 
     public UserMongo createOrUpdate(UserMongo obj) {
         log.debug(Markers.COMMAND, "Updating User {}", obj);
+        if(obj.getCreated() == null || obj.getCreated().getTime() == 0) {
+        	obj.setCreated(new Date());
+        }
         return repository.save(obj);
     }
 

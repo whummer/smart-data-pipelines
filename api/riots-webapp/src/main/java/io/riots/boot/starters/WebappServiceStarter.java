@@ -35,11 +35,6 @@ public class WebappServiceStarter extends SpringBootServletInitializer {
 	    return filterRegBean;
 	}
 
-//	@Bean
-//	public CORSFilter corsFilter() {
-//		return new CORSFilter();
-//	}
-
 	public static void main(String[] args) {
     	ServiceStarter.setDefaultSystemProps();
 		new SpringApplication(WebappServiceStarter.class).run(args);

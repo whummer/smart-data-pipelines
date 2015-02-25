@@ -8,11 +8,14 @@ import io.riots.core.handlers.query.PropertySimulationQuery;
 import io.riots.core.handlers.query.SimulationQuery;
 import io.riots.core.handlers.query.SimulationTypeQuery;
 import io.riots.core.util.ServiceUtil;
+import io.riots.core.util.geo.GeoUtil;
 import io.riots.core.auth.AuthHeaders;
 import io.riots.core.sim.PropertyValueGenerator;
 import io.riots.core.sim.SimulationManager;
 import io.riots.core.sim.traffic.TrafficSimulatorMatsim;
+import io.riots.api.services.model.Location;
 import io.riots.api.services.scenarios.PropertyValue;
+import io.riots.api.services.sim.TrafficTraces.TrafficTrace;
 
 import java.net.URL;
 import java.util.Date;
@@ -231,4 +234,18 @@ public class SimulationServiceImpl implements SimulationService {
 //        return true;
 //    }
 
+    
+//    public static void main(String[] args) {
+//
+//		/* Vienna */
+//		double lat = 48.2063, lon = 16.3710;
+//		double vicinity = 0.005;
+//		int numVehicles = 1;
+//
+//		TrafficTraces traces = TrafficSimulatorMatsim.generateTraces(
+//				numVehicles, lat, lon, vicinity, 1000, 1);
+//		for(TrafficTrace t : traces.traces) {
+//			System.out.println(t);
+//		}
+//	}
 }

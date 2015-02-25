@@ -7,6 +7,7 @@ import io.riots.api.services.users.AuthToken;
 import io.riots.api.services.users.Role;
 import io.riots.api.services.users.User;
 import io.riots.api.services.users.UsersService;
+import io.riots.api.services.users.UsersService.UserActiveStatus;
 import io.riots.core.auth.AuthHeaders.AuthRequestInfo;
 import io.riots.core.clients.ServiceClientFactory;
 import io.riots.core.model.ModelCache;
@@ -256,7 +257,7 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
             /*
              * attempt to get token from cache
              */
-        	String tokenID = requestInfo.getTokenKey();
+        	String tokenID = requestInfo.getTokenHashKey();
             AuthInfo info = TOKENS.get(tokenID);
             boolean doVerify = true;
             if (info != null) {
@@ -272,12 +273,12 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
             if (doVerify) {
 
             	AuthInfo newInfo = null;
+            	ServiceClientFactory fac = getClientFactory();
+            	UsersService users = fac.getUsersServiceClient(AuthHeaders.INTERNAL_CALL);
 
                 try {
     				if(requestInfo.isOAuthBased()) {
 
-		            	ServiceClientFactory fac = getClientFactory();
-		            	UsersService users = fac.getUsersServiceClient(AuthHeaders.INTERNAL_CALL);
 		            	AuthInfoExternal ext = users.getInfoForAuthToken(
 		            			new AuthToken(requestInfo.network, requestInfo.token));
 		            	if(ext != null) {
@@ -294,7 +295,6 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
                     LOG.warn(msg + ": " + e);
                     response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                     throw new RuntimeException(msg, e);
-//                    return false;
 				}
 
             	if(newInfo == null) {
@@ -302,10 +302,19 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
                     return false;
             	}
 
-	            newInfo.setExpiry(new Date(new Date().getTime() + AuthFilterBase.EXPIRY_TIMEOUT_MS));
-
 				/* set user roles in AuthInfo */
 	            fillInRoles(newInfo);
+
+            	/* check whether account is active! */
+            	UserActiveStatus status = users.getActiveStatus(
+            			newInfo.getId() != null ? newInfo.getId() : newInfo.getEmail());
+            	if(!newInfo.isAdmin() && !status.active) {
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    return false;
+            	}
+
+            	/* set expiry time */
+	            newInfo.setExpiry(new Date(new Date().getTime() + AuthFilterBase.EXPIRY_TIMEOUT_MS));
 
 				/* store the AuthInfo in a map */
                 TOKENS.put(tokenID, newInfo);

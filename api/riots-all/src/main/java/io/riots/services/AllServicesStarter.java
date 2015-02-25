@@ -29,12 +29,15 @@ public class AllServicesStarter {
 		for(Class<?> clazz : Arrays.asList(
 				RiotsServiceRegistryStarter.class,
 				GatewayServiceStarter.class,
-				WebappServiceStarter.class,
 				CatalogServiceStarter.class,
 				UsersServiceStarter.class,
-				EnvironmentServiceStarter.class,
-				SimulationServiceStarter.class,
-				FilesServiceStarter.class)) {
+				EnvironmentServiceStarter.class
+
+				, SimulationServiceStarter.class
+				, FilesServiceStarter.class
+
+//				, WebappServiceStarter.class
+		)) {
 			start(clazz);
 		}
 	}
@@ -44,7 +47,7 @@ public class AllServicesStarter {
 		if (new File(file).exists()) {
 			return IOUtils.toString(new FileInputStream(file));
 		}
-		String dir = System.getProperty("user.dir") + "/../api/";
+		String dir = System.getProperty("user.dir") + "/../../api/";
 		if (clazz == CatalogServiceStarter.class) {
 			dir += "riots-service-catalog";
 		} else if (clazz == UsersServiceStarter.class) {

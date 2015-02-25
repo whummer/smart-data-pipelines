@@ -29,6 +29,7 @@ public abstract class PropertySimulation<T> {
 	public static final String TYPE_ENUMERATED = "POINTS";
 	public static final String TYPE_GPS_TRACE = "GPS";
 	public static final String TYPE_FUNCTIONBASED = "FUNCTIONBASED";
+	public static final String TYPE_DERIVED = "DERIVED";
 
 	/**
 	 * ID of the thing this simulation applies to.

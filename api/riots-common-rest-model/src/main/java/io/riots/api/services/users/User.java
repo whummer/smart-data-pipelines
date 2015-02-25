@@ -1,27 +1,38 @@
 package io.riots.api.services.users;
 
+import io.riots.api.services.model.Constants;
+import io.riots.api.services.model.interfaces.ObjectCreated;
 import io.riots.api.services.model.interfaces.ObjectIdentifiable;
 
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
  * Represents a user in the system.
  * 
  * @author Waldemar Hummer
  */
-public class User implements ObjectIdentifiable {
+public class User implements ObjectIdentifiable, ObjectCreated {
 
 	/**
 	 * Unique identifier.
 	 */
 	@JsonProperty
 	private String id;
+	/**
+	 * Creating user.
+	 */
+	@JsonProperty(Constants.CREATION_DATE)
+	@JsonInclude(Include.NON_EMPTY)
+	private Date created;
 	/**
 	 * Email address.
 	 */
@@ -47,10 +58,16 @@ public class User implements ObjectIdentifiable {
 	 */
 	@JsonProperty
 	private String birthDate;
-
+	/**
+	 * Roles assigned to this user.
+	 */
+	@JsonIgnore
 	private List<Role> roles = new LinkedList<Role>();
 
 	public User() {}
+	public User(String email) {
+		this.email = email;
+	}
 	public User(RequestSignupUser r) {
 		this.copyFrom(r);
 	}
@@ -85,6 +102,16 @@ public class User implements ObjectIdentifiable {
 		return name;
 	}
 
+	public Date getCreated() {
+		return created;
+	}
+	public void setCreated(Date created) {
+		this.created = created;
+	}
+	@JsonIgnore
+	public String getCreatorId() {
+		return null; /* no explicit creator used */
+	}
 	public String getEmail() {
 		return email;
 	}

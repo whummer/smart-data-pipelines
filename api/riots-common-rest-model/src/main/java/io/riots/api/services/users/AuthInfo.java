@@ -18,6 +18,8 @@ public class AuthInfo extends AuthInfoExternal {
 	@JsonIgnore
 	boolean internalCall;
 	@JsonIgnore
+	boolean accountActive;
+	@JsonIgnore
 	final Set<String> roles = new HashSet<String>();
 	@JsonIgnore
 	final Set<GrantedAuthority> rolesAsGrantedAuthorities = new HashSet<GrantedAuthority>();
@@ -41,6 +43,14 @@ public class AuthInfo extends AuthInfoExternal {
 
 	public long getLastActiveTime() {
 		return lastActiveTime;
+	}
+
+	public void setAccountActive(boolean accountActive) {
+		this.accountActive = accountActive;
+	}
+
+	public boolean isAccountActive() {
+		return this.accountActive;
 	}
 
 	public void setActiveNow() {
