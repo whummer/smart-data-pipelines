@@ -59,6 +59,7 @@
 					<th>Location</th>
 					<th>Battery Level</th>
 					<th>Tire Pressure</th>
+					<th>Speed</th>
 					<th>Within Geo Fence</th>
 				</tr></thead>
 				<tr ng-repeat="thing in things">
@@ -67,6 +68,7 @@
 					<td>{{thing.properties['location.latitude']}},{{thing.properties['location.longitude']}}</td>
 					<td>{{thing.properties.batteryPercent}} %</td>
 					<td>{{thing.properties.pressure}} %</td>
+					<td>{{thing.properties.speed}} m/s</td>
 					<td>{{thing.properties.isInCurrentGeoFence}}</td>
 				</tr>
 				</table>

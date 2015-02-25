@@ -25,7 +25,7 @@ import com.codahale.metrics.annotation.Timed;
  * @author whummer
  */
 @Service
-public class TriggersServiceImpl implements GeoFence.TriggersService {
+public class TriggersServiceImpl implements TriggersService {
 
 	@Autowired
 	AuthHeaders authHeaders;
@@ -91,7 +91,9 @@ public class TriggersServiceImpl implements GeoFence.TriggersService {
 		t.setCreated(new Date());
 		t = (T) triggerCmd.create(t);
 		if(t instanceof GeoFence) {
-			geoListener.addGeoFence((GeoFence)t);
+			t = (T)geoListener.addGeoFence((GeoFence)t);
+		} else if(t instanceof SpeedCalculator) {
+			t = (T)geoListener.addSpeedCalc((SpeedCalculator)t);
 		}
 		return t;
 	}
@@ -116,6 +118,8 @@ public class TriggersServiceImpl implements GeoFence.TriggersService {
 		}
 		if(triggerClass == GeoFence.class) {
 			geoListener.removeGeoFence(id);
+		} else if(triggerClass == SpeedCalculator.class) {
+			geoListener.removeSpeedCalc(id);
 		}
 		triggerCmd.delete(id);
 	}

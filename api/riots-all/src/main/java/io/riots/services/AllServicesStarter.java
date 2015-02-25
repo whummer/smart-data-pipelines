@@ -32,9 +32,11 @@ public class AllServicesStarter {
 				CatalogServiceStarter.class,
 				UsersServiceStarter.class,
 				EnvironmentServiceStarter.class
-//				, SimulationServiceStarter.class
-//				, FilesServiceStarter.class
-//				WebappServiceStarter.class,
+
+				, SimulationServiceStarter.class
+				, FilesServiceStarter.class
+
+//				, WebappServiceStarter.class
 		)) {
 			start(clazz);
 		}

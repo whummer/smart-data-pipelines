@@ -3,23 +3,23 @@ package io.riots.api.services.sim;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Simulation based on a mathematical function.
+ * Random value simulation.
  * 
  * @author Waldemar Hummer
  */
-public class PropertySimulationFunctionBased extends PropertySimulation<Double> {
+public class PropertySimulationDerived extends PropertySimulation<Double> {
 
 	{
-		type = PropertySimulation.TYPE_DERIVED;
+		type = PropertySimulation.TYPE_FUNCTIONBASED;
 	}
 
 	@JsonProperty
 	private String function;
 
-	public PropertySimulationFunctionBased() {
+	public PropertySimulationDerived() {
 	}
 
-	public PropertySimulationFunctionBased(String function, double stepInterval) {
+	public PropertySimulationDerived(String function, double stepInterval) {
 		this.function = function;
 		this.stepInterval = stepInterval;
 	}

@@ -1,9 +1,7 @@
 package io.riots.core.sim;
 
-import io.riots.core.sim.jep.CustomOperators;
-import io.riots.core.sim.jep.CustomOperators.OperatorType;
-import io.riots.core.sim.traffic.TrafficSimulatorMatsim;
 import io.riots.api.services.scenarios.PropertyValue;
+import io.riots.api.services.scenarios.TimedValue;
 import io.riots.api.services.sim.Context;
 import io.riots.api.services.sim.PropertySimulation;
 import io.riots.api.services.sim.PropertySimulationEnumerated;
@@ -12,7 +10,9 @@ import io.riots.api.services.sim.PropertySimulationGPS;
 import io.riots.api.services.sim.PropertySimulationRandom;
 import io.riots.api.services.sim.Time;
 import io.riots.api.services.sim.TimelineValues;
-import io.riots.api.services.sim.TimelineValues.TimedValue;
+import io.riots.core.sim.jep.CustomOperators;
+import io.riots.core.sim.jep.CustomOperators.OperatorType;
+import io.riots.core.sim.traffic.TrafficSimulatorMatsim;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -110,8 +110,7 @@ public class PropertyValueGenerator {
 			t = round(t);
 			PropertyValue val = getValueAt(sim, new Time(t), ctx);
 			result.getValues().add(
-					new TimelineValues.TimedValue<>(
-					new Time(t), val));
+					new TimedValue<>(new Time(t), val));
 		}
 		return result;
 	}

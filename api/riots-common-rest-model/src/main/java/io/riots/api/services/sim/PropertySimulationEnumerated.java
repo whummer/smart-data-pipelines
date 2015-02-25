@@ -1,7 +1,7 @@
 package io.riots.api.services.sim;
 
 import io.riots.api.services.scenarios.PropertyValue;
-import io.riots.api.services.sim.TimelineValues.TimedValue;
+import io.riots.api.services.scenarios.TimedValue;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -36,7 +36,8 @@ define(['app'], function(app) {
 							data[THING_ID] = $scope.thingSelected.id;
 							data[PROPERTY_NAME] = $scope[el].name;
 							data[PROPERTY_VALUE] = state[el];
-							data[TIMESTAMP] = state[el];
+							data[TIMESTAMP] = new Date().getTime();
+							console.log("adding data", data);
 							riots.add.data(data, data, null, 
 								function() {
 									// error callback

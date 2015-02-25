@@ -25,13 +25,14 @@
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-mongodb</artifactId>
         </dependency>
-        
+
 		<!-- MatSim traffic simulation -->
 		<dependency>
 			<groupId>matsim</groupId>
 			<artifactId>matsim</artifactId>
 			<version>0.6.1</version>
 		</dependency>
+
 		<dependency>
 			<groupId>io.hummer</groupId>
 			<artifactId>osm-util</artifactId>
