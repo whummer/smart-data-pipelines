@@ -1,4 +1,4 @@
-var GEO_FENCE = "riots.geo.fence";
+var GEO_FENCE = "riots.geoFence";
 
 /** Extend Number object with method to convert numeric degrees to radians */
 if (typeof Number.prototype.toRadians == 'undefined') {
@@ -90,6 +90,10 @@ app.controller('MainCtrl', function ($scope) {
 		});
 	}
 
+	var processGeoFenceUpdate() {
+		
+	}
+
 	var getIcon = function(url) {
 		var theURL = "/img/markers/" + url;
 		var icon = L.icon({
@@ -158,8 +162,10 @@ app.controller('MainCtrl', function ($scope) {
 		if(!$scope.things)
 			return;
 		var speedCalc = {
-			type: "SPEED_CALCULATOR"
+			property: "location.*",
+			resultProperty: "speed"
 		};
+		speedCalc["function"] = "speed";
 		$.each($scope.things, function(idx,el) {
 			speedCalc[THING_ID] = el.id;
 			riots.add.trigger(speedCalc, function(speedCalc) {
@@ -180,24 +186,28 @@ app.controller('MainCtrl', function ($scope) {
 		});
 		var center = $scope.map.getCenter();
 		$scope.geoFence = {
-			type: "GEO_FENCE",
-			center: {
-				latitude: center.lat,
-				longitude: center.lng
-			},
-			diameter: $scope.diameter
+			property: "location.*",
+			resultProperty: GEO_FENCE,
+			config: {
+				center: {
+					latitude: center.lat,
+					longitude: center.lng
+				},
+				diameter: $scope.diameter
+			}
 		};
+		$scope.geoFence["function"] = "geoFence";
 		riots.add.trigger($scope.geoFence, function(fence) {
 			$scope.$apply(function() {
 				$scope.geoFence = fence;
 			});
-			var loc = [fence.center.latitude, fence.center.longitude];
+			var loc = [fence.config.center.latitude, fence.config.center.longitude];
 			if(!$scope.currentDiameter) {
-				$scope.currentDiameter = L.circle(loc, fence.diameter);
+				$scope.currentDiameter = L.circle(loc, fence.config.diameter);
 				$scope.currentDiameter.addTo($scope.map);
 			} else {
 				$scope.currentDiameter.setLatLng(loc);
-				$scope.currentDiameter.setRadius(fence.diameter);
+				$scope.currentDiameter.setRadius(fence.config.diameter);
 			}
 		});
 	}

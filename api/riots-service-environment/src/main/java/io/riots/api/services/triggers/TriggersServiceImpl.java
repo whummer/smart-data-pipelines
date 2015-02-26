@@ -1,14 +1,13 @@
 package io.riots.api.services.triggers;
 
-import io.riots.core.handlers.command.TriggerCommand;
-import io.riots.core.handlers.query.TriggerQuery;
-import io.riots.core.util.ServiceUtil;
-import io.riots.core.auth.AuthHeaders;
-import io.riots.core.util.geo.GeoPositionListener;
-import io.riots.api.services.triggers.GeoFence;
-import io.riots.api.services.triggers.Trigger;
 import io.riots.api.services.triggers.Trigger.TriggerType;
 import io.riots.api.services.users.User;
+import io.riots.core.auth.AuthHeaders;
+import io.riots.core.handlers.command.TriggerCommand;
+import io.riots.core.handlers.query.TriggerQuery;
+import io.riots.core.triggers.GeoPositionListener;
+import io.riots.core.triggers.TriggerFunctionListener;
+import io.riots.core.util.ServiceUtil;
 
 import java.util.Date;
 import java.util.List;
@@ -39,6 +38,8 @@ public class TriggersServiceImpl implements TriggersService {
 
 	@Autowired
 	GeoPositionListener geoListener;
+	@Autowired
+	TriggerFunctionListener funcListener;
 
 	/* GENERIC TRIGGER METHODS */
 
@@ -92,8 +93,8 @@ public class TriggersServiceImpl implements TriggersService {
 		t = (T) triggerCmd.create(t);
 		if(t instanceof GeoFence) {
 			t = (T)geoListener.addGeoFence((GeoFence)t);
-		} else if(t instanceof SpeedCalculator) {
-			t = (T)geoListener.addSpeedCalc((SpeedCalculator)t);
+		} else if(t instanceof ThingPropsFunction) {
+			t = (T)funcListener.addFunction((ThingPropsFunction)t);
 		}
 		return t;
 	}
@@ -118,8 +119,6 @@ public class TriggersServiceImpl implements TriggersService {
 		}
 		if(triggerClass == GeoFence.class) {
 			geoListener.removeGeoFence(id);
-		} else if(triggerClass == SpeedCalculator.class) {
-			geoListener.removeSpeedCalc(id);
 		}
 		triggerCmd.delete(id);
 	}

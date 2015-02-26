@@ -263,6 +263,9 @@ sh.add.simulationType = function(simType, callback) {
 	return callPOST(appConfig.services.simulationTypes.url, simType, callback);
 }
 sh.add.trigger = function(trigger, callback) {
+	if(!trigger.type) {
+		trigger.type = "FUNCTION";
+	}
 	return callPOST(appConfig.services.triggers.url, trigger, callback);
 }
 sh.add.data = function(opts, dataItem, callback, errorCallback) {

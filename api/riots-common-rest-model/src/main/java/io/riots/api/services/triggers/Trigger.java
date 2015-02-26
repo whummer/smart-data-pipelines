@@ -19,7 +19,8 @@ import java.util.Date;
 @JsonSubTypes({
 	@Type(value = Trigger.class, name="UNDEFINED"),
 	@Type(value = GeoFence.class, name="GEO_FENCE"),
-	@Type(value = SpeedCalculator.class, name="SPEED_CALCULATOR")
+	@Type(value = SpeedCalculator.class, name="SPEED_CALCULATOR"),
+	@Type(value = ThingPropsFunction.class, name="FUNCTION")
 })
 @JsonTypeInfo(
 	use = JsonTypeInfo.Id.NAME,
@@ -64,7 +65,7 @@ public class Trigger implements ObjectCreated, ObjectIdentifiable {
 	 * Type of trigger.
 	 */
 	public static enum TriggerType {
-		GEO_FENCE, SPEED_CALCULATOR, UNDEFINED
+		GEO_FENCE, SPEED_CALCULATOR, FUNCTION, UNDEFINED
 	}
 
 	public String getId() {

@@ -23,7 +23,7 @@ public class JSONUtil {
 		try {
 			return mapper.readValue(o, clazz);
 		} catch (Exception e) {
-			throw new RuntimeException();
+			throw new RuntimeException(e);
 		}
 	}
 

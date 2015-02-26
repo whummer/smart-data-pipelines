@@ -1,15 +1,15 @@
-package io.riots.core.util.geo;
+package io.riots.core.triggers;
 
 import io.riots.api.services.model.Location;
 import io.riots.api.services.scenarios.PropertyValue;
 import io.riots.api.services.sim.LocationInTime;
 import io.riots.api.services.sim.Time;
 import io.riots.api.services.triggers.GeoFence;
-import io.riots.api.services.triggers.SpeedCalculator;
 import io.riots.api.services.users.User;
 import io.riots.core.jms.EventBroker;
 import io.riots.core.jms.EventBrokerComponent;
 import io.riots.core.util.JSONUtil;
+import io.riots.core.util.geo.GeoUtil;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
@@ -31,11 +30,11 @@ import org.springframework.stereotype.Component;
 public class GeoPositionListener {
 
 	private static final String PROPERTY_GEO_FENCE = "riots.geo.fence";
-	private static final String PROPERTY_SPEED = "speed";
+//	private static final String PROPERTY_SPEED = "speed";
 	private static final Logger LOG = Logger.getLogger(GeoPositionListener.class);
 
 	final Map<String,GeoFence> geoFences = new ConcurrentHashMap<>();
-	final Map<String,SpeedCalculator> speeds = new ConcurrentHashMap<>();
+//	final Map<String,SpeedCalculator> speeds = new ConcurrentHashMap<>();
 
 	/**
 	 * Maps thingId -> current (last seen) location
@@ -88,32 +87,6 @@ public class GeoPositionListener {
 
 		/* process geo fences */
 		processGeoFences(prop.getThingId(), l, oldLoc);
-		/* process speed calculations */
-		processSpeedCalcs(prop.getThingId(), l, oldLoc);
-	}
-
-	private void processSpeedCalcs(String thingId, 
-			LocationInTime newLoc, LocationInTime oldLoc) {
-		if(oldLoc == null)
-			return;
-		for(SpeedCalculator s : speeds.values()) {
-			if(thingId.equals(s.getThingId())) {
-				double dist = GeoUtil.distanceInMeters(
-						newLoc.getLocation(), oldLoc.getLocation());
-				double time = (newLoc.getTime() - oldLoc.getTime()) / 1000.0;
-				double speed = dist / time;
-				double minTimeDiffBetweenTwoLocations = 0.1;
-				if(speed != Double.NaN && time >= minTimeDiffBetweenTwoLocations) {
-					// fire event
-					PropertyValue propValue = new PropertyValue();
-					propValue.setPropertyName(PROPERTY_SPEED);
-					propValue.setThingId(thingId);
-					propValue.setValue(speed);
-					propValue.setTimestamp(newLoc.getTime());
-					eventBroker.sendOutboundChangeNotifyMessage(propValue);
-				}
-			}
-		}
 	}
 
 	private void processGeoFences(String thingId, LocationInTime newLoc, LocationInTime oldLoc) {
@@ -168,27 +141,6 @@ public class GeoPositionListener {
 			}
 		}
 		return result;
-	}
-
-	public SpeedCalculator addSpeedCalc(SpeedCalculator t) {
-		if(StringUtils.isEmpty(t.getThingId()))
-			throw new IllegalArgumentException("Thing ID must not be empty.");
-		SpeedCalculator existing = speeds.get(t.getThingId());
-		if(existing != null) {
-			return existing;
-		}
-		if(t.getId() == null) {
-			t.setId(UUID.randomUUID().toString());
-		}
-		speeds.put(t.getThingId(), t);
-		return t;
-	}
-
-	public void removeSpeedCalc(String id) {
-		if(id == null) {
-			throw new IllegalArgumentException("Illegal ID: " + id);
-		}
-		speeds.remove(id);
 	}
 
 }

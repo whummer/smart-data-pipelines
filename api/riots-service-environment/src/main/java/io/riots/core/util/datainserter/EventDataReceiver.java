@@ -22,13 +22,16 @@ public class EventDataReceiver {
 	DataInserter dataInserter;
 
 	/**
-	 * This message is called each time we retrieve a status change
-	 * generated in any of the currently running simulations.
+	 * This message is called each time we retrieve a property value update
+	 * EITHER
+	 *  - from an external API call,
+	 * OR
+	 *  - in any of the currently running simulations.
 	 */
 	@JmsListener(containerFactory = EventBroker.CONTAINER_FACTORY_NAME,
 			destination = EventBroker.MQ_INBOUND_PROP_UPDATE, 
 			concurrency = "1")
-	public void processSimulationUpdate(Object data) {
+	public void processUpdate(Object data) {
 		//System.out.println("processSimulationUpdate " + data + " " + this + " - " + Thread.currentThread());
 		PropertyValue prop = null;
 		if(data instanceof String) {

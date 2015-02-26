@@ -36,11 +36,6 @@ public class EventBroker {
 	private static String BROKER_URL = "tcp://localhost:61616";
 	private static AtomicBoolean BROKER_URL_DIRTY = new AtomicBoolean(true);
 
-//	@Autowired
-//	ServiceClientFactory clientFactory;
-//	@Autowired
-//    @Qualifier("jmsQueueTemplate")
-//	JmsTemplate jmsQueueTemplate;
     @Autowired
     @Qualifier("jmsTopicTemplate")
     JmsTemplate jmsTopicTemplate;
@@ -50,9 +45,6 @@ public class EventBroker {
 	@Qualifier(EventBroker.MQ_OUTBOUND_PROP_CHANGE_NOTIFY)
 	@Autowired
 	Topic topicPropChange;
-
-//    @Autowired
-//    JmsTemplate jmsTemplate;
 
 	public static enum SendType {
 		TOPIC_PUBSUB, QUEUE_POINT2POINT
@@ -76,15 +68,6 @@ public class EventBroker {
 			dest = topicPropChange;
 		}
 
-		//System.out.println("Sending " + destination + " - " + type + " - " + " - " + destination);
-
-//		if(type == SendType.TOPIC_PUBSUB) {
-//			sendMessage(dest, theTemplate, payload);
-//		} else {
-//			// TODO
-////			sendMessage(dest, jmsQueueTemplate, payload);
-//		}
-//		sendMessage(destination, jmsTopicTemplate, payload);
 		sendMessage(dest, jmsTopicTemplate, payload);
 	}
 
