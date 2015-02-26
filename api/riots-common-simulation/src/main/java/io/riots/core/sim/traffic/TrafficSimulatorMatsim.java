@@ -344,7 +344,8 @@ public class TrafficSimulatorMatsim {
 	public static TrafficTraces generateTraces(PropertySimulationGPS gps) {
 		double vicinity = GeoUtil.convertMetersToDegrees(gps.getDiameter());
 		TrafficTraces traces = TrafficSimulatorMatsim.generateTraces(
-				1, gps.getLatitude(), gps.getLongitude(), vicinity);
+				1, gps.getLatitude(), gps.getLongitude(), vicinity, 
+				gps.endTime - gps.startTime, gps.stepInterval);
 		TrafficTrace t = traces.traces.get(0);
 		for(LocationInTime p : t.points) {
 			PropertyValue prop = new PropertyValue(p.property);

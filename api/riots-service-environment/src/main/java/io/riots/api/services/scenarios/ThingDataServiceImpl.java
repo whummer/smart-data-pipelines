@@ -1,16 +1,12 @@
 package io.riots.api.services.scenarios;
 
-import io.riots.core.util.datainserter.DataInserter;
-import io.riots.core.jms.EventBrokerComponent;
+import io.riots.api.services.catalog.Property;
 import io.riots.core.auth.AuthHeaders;
+import io.riots.core.clients.ServiceClientFactory;
+import io.riots.core.handlers.query.PropertyValueQuery;
+import io.riots.core.jms.EventBrokerComponent;
 import io.riots.core.model.PropertyFinder;
 import io.riots.core.repositories.PropertyValueRepository;
-import io.riots.core.clients.ServiceClientFactory;
-import io.riots.api.services.scenarios.ThingDataService;
-import io.riots.api.services.scenarios.ThingsService;
-import io.riots.api.services.catalog.Property;
-import io.riots.api.services.scenarios.PropertyValue;
-import io.riots.api.services.scenarios.Thing;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -20,9 +16,6 @@ import javax.ws.rs.core.Context;
 import org.apache.cxf.jaxrs.ext.MessageContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.codahale.metrics.annotation.ExceptionMetered;
@@ -39,15 +32,14 @@ public class ThingDataServiceImpl implements ThingDataService {
 
     @Autowired
     PropertyValueRepository propValueRepo;
+    @Autowired
+    PropertyValueQuery propValueQuery;
 
 	@Autowired
 	ServiceClientFactory serviceClientFactory;
 
     @Autowired
 	PropertyFinder propertyFinder;
-
-    @Autowired
-	DataInserter dataInserter;
 
     @Context
     MessageContext context;
@@ -92,7 +84,7 @@ public class ThingDataServiceImpl implements ThingDataService {
     	}
     	propValue.setPropertyName(propertyName);
     	propValue.setThingId(thingId);
-    	dataInserter.postValue(propValue);
+    	eventBroker.sendInboundPropUpdateMessage(propValue);
     }
 
     @Override
@@ -126,9 +118,7 @@ public class ThingDataServiceImpl implements ThingDataService {
     		throw new IllegalArgumentException("Cannot find property '" +
     				propertyName + "' for thing '" + thingId + "'");
     	}
-    	List<PropertyValue> values = propValueRepo.findByThingIdAndPropertyName(thingId, propertyName,
-    			new PageRequest(0, amount, new Sort(Direction.DESC, "timestamp"))).getContent();
-    	return values;
+    	return propValueQuery.retrieveValues(thingId, propertyName, amount);
     }
 
 }

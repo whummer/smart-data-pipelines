@@ -61,7 +61,6 @@ public class WebsocketHandler extends TextWebSocketHandler {
 			s.clientId = m1.clientId;
 			s.propertyName = m1.propertyName;
 			subscriptions.put(session.getId(), s);
-			//startSim(s.thingId, m1.propertyName); // TODO temp
 		} else if(m instanceof WSMessageUnsubscribe) {
 			WSMessageUnsubscribe m1 = (WSMessageUnsubscribe)m;
 			WSSubscription sub = subscriptions.get(session.getId());
@@ -93,31 +92,5 @@ public class WebsocketHandler extends TextWebSocketHandler {
 			LOG.info("Unable to terminate Web socket subscription");
 		}
 	}
-
-//	TODO remove
-//	private void startSim(String thingId, String propertyName) {
-//		new Thread() {
-//			public void run() {
-//				for (int i = 0; i < 10; i++) {
-//					try {
-//						Property p = new Property();
-//						p.setName(propertyName);
-//						PropertyValue v = new PropertyValue(p, Math.random());
-//						v.setThingId(thingId);
-//						v.setPropertyName(propertyName);
-//						v.setTimestamp(System.currentTimeMillis());
-//						EventBroker.sendMessage(EventBroker.MQ_PROP_SIM_UPDATE, template, v);
-//						try {
-//							Thread.sleep(1000);
-//						} catch (InterruptedException e) {
-//						}
-//					} catch (Exception e) {
-//						e.printStackTrace();
-//						break;
-//					}
-//				}
-//			}
-//		}.start();
-//	}
 
 }

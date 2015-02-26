@@ -1,12 +1,14 @@
 package io.riots.core.handlers.query;
 
-import io.riots.core.repositories.PropertyValueRepository;
 import io.riots.api.services.scenarios.PropertyValue;
+import io.riots.core.repositories.PropertyValueRepository;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Component;
 
 /**
@@ -26,4 +28,11 @@ public class PropertyValueQuery {
         return repository.findAll(new PageRequest(
         		paged.getPage(), paged.getSize())).getContent();
     }
+
+    public List<PropertyValue> retrieveValues(String thingId, String propertyName, int amount) {
+    	List<PropertyValue> values = repository.findByThingIdAndPropertyName(thingId, propertyName,
+    			new PageRequest(0, amount, new Sort(Direction.DESC, "timestamp"))).getContent();
+    	return values;
+    }
+
 }
