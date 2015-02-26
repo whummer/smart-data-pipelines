@@ -1,70 +1,67 @@
-<section ng-controller="AppsViewController" style="height: 100%">
+<div class="container-fluid">
 
-	<div class="container">
+	<div ng-controller="AppsViewController" class="ibox float-e-margins" style="min-height: 400px">
+		<div class="ibox-title">
+			<span class="fa fa-edit"></span> <strong>Application: {{shared.selectedApplication.name}}</strong>
+		</div>
 
-		<div class="panel panel-default" style="min-height: 400px">
-			<div class="panel-heading">
-				<h2 class="panel-title">
-					<span class="glyphicon glyphicon-edit"></span> <b>Application:
-						{{shared.selectedApplication.name}}</b>
-				</h2>
-			</div>
+		<div class="ibox-content">
 
-			<div class="panel-body">
+			<div ng-show="shared.selectedApplication">
 
-				<div class="panel-body" ng-show="!shared.selectedApplication">
-					Please select an application from the main menu.</div>
+				<div class="row" style="min-height: 400px">
 
-				<div ng-show="shared.selectedApplication">
-					<div class="row" style="min-height: 400px">
-
-						<!-- Left Panel -->
-						<div class="col-md-5 col-sm-5">
-							<tabset> <tab heading="Basics"
-								select="tabs.active = 'basics'"> <ng-include
-								src="appConfig['appRootPath'] + '/views/apps_list.html'"></ng-include>
-							</tab> <tab heading="Things" select="tabs.active = 'things'"> <ng-include
-								src="appConfig['appRootPath'] + '/views/apps_things.html'"></ng-include>
-							</tab> <tab heading="Triggers" select="tabs.active = 'triggers'">
-							<ng-include
-								src="appConfig['appRootPath'] + '/views/apps_triggers.html'"></ng-include>
-							</tab> </tabset>
-						</div>
-
-						<!-- Right Panel -->
-						<div class="col-md-7 col-sm-7">
-							<div ng-show="tabs.active == 'basics'">
-								<ng-include
-									src="appConfig['appRootPath'] + '/views/apps_details_overview.html'"></ng-include>
-							</div>
-							<tabset ng-show="tabs.active == 'things'"> <tab
-								heading="Details"> <ng-include
-								src="appConfig['appRootPath'] + '/views/apps_thing_props.html'"></ng-include>
-							</tab> <tab heading="Drivers"> <ng-include
-								src="appConfig['appRootPath'] + '/views/apps_thing_drivers.html'"></ng-include>
-							</tab> <tab heading="Data"> <ng-include
-								src="appConfig['appRootPath'] + '/views/apps_thing_data.html'"></ng-include>
-							</tab> </tabset>
-							<tabset ng-show="tabs.active == 'triggers'"> <tab
-								heading="Details"> <ng-include
-								src="appConfig['appRootPath'] + '/views/apps_trigger_details.html'"></ng-include>
-							</tab> </tabset>
-						</div>
+					<!-- Left Panel -->
+					<div class="col-lg-5 col-md-12 col-sm-12">
+						<tabset type="pills">
+							<tab heading="Basics" select="tabs.active = 'basics'">
+								<ng-include src="appConfig['appRootPath'] + '/views/apps_list.html'"></ng-include>
+							</tab>
+							<tab heading="Things" select="tabs.active = 'things'">
+								<ng-include src="appConfig['appRootPath'] + '/views/apps_things.html'"></ng-include>
+							</tab>
+							<tab heading="Triggers" select="tabs.active = 'triggers'">
+								<ng-include src="appConfig['appRootPath'] + '/views/apps_triggers.html'"></ng-include>
+							</tab>
+						</tabset>
 					</div>
 
-					<!-- Delete Application button is omnipresent -->
-					<div class="pull">
-						<hr />
-						<button class="btn btn-danger btn-sm" id="btnDeleteApp">
-							<span class="glyphicon glyphicon-remove"></span> Delete
-							Application
-						</button>
-						<button class="btn btn-primary btn-sm pull-right">
-							<span class="glyphicon glyphicon-home"></span> Cancel
-						</button>
+					<!-- Right Panel -->
+					<div class="col-lg-7 col-md-12 col-sm-12">
+						<div ng-show="tabs.active == 'basics'">
+							<ng-include src="appConfig['appRootPath'] + '/views/apps_details_overview.html'"></ng-include>
+						</div>
+						<tabset ng-show="tabs.active == 'things'" type="pills">
+							<tab heading="Details">
+								<ng-include src="appConfig['appRootPath'] + '/views/apps_thing_props.html'"></ng-include>
+							</tab>
+							<tab heading="Drivers">
+								<ng-include src="appConfig['appRootPath'] + '/views/apps_thing_drivers.html'"></ng-include>
+							</tab>
+							<tab heading="Data">
+								<ng-include src="appConfig['appRootPath'] + '/views/apps_thing_data.html'"></ng-include>
+							</tab>
+						</tabset>
+						<tabset ng-show="tabs.active == 'triggers'" type="pills">
+							<tab heading="Details">
+								<ng-include src="appConfig['appRootPath'] + '/views/apps_trigger_details.html'"></ng-include>
+							</tab>
+						</tabset>
 					</div>
+				</div>
+
+				<!-- Delete Application button is omnipresent -->
+				<div class="pull">
+					<hr/>
+					<button class="btn btn-danger btn-sm" id="btnDeleteApp">
+						<span class="glyphicon glyphicon-remove"></span> Delete
+						Application
+					</button>
+					<button class="btn btn-primary btn-sm pull-right">
+						<span class="glyphicon glyphicon-home"></span> Cancel
+					</button>
 				</div>
 			</div>
 		</div>
 	</div>
-</section>
+</div>

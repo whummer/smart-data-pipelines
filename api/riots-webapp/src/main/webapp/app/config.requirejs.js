@@ -126,19 +126,42 @@ var requirejsAppConfig = {
 			name: 'angular-bootstrap-checkbox',
 			location: appConfig['bowerRootPath'] + '/angular-bootstrap-checkbox/',
 			main: 'angular-bootstrap-checkbox'
-		},{
+		}, {
 			name: 'fancybox',
 			location: appConfig['bowerRootPath'] + '/fancybox',
 			main: 'source/jquery.fancybox.pack'
 		}, {
-			name: 'jvectormap',
-			location: appConfig['bowerRootPath'] + '/jvectormap',
-			main: 'jquery-jvectormap-1.2.2.min'
-		}, {
+		 name: 'jvectormap',
+		 location: appConfig['bowerRootPath'] + '/jvectormap',
+		 main: 'jquery-jvectormap'
+		 },
+		{
 			name: 'd3',
 			location: appConfig['bowerRootPath'] + '/d3',
 			main: 'd3.min'
-		}
+		}, {
+			name: 'jquery-knob',
+			location: appConfig['bowerRootPath'] + '/jquery-knob',
+			main: 'js/jquery.knob'
+		}, {
+			name: 'angular-knob',
+			location: appConfig['bowerRootPath'] + '/angular-knob',
+			main: 'src/angular-knob'
+		}, {
+			name: 'angular-toastr',
+			location: appConfig['bowerRootPath'] + '/angular-toastr',
+			main: 'dist/angular-toastr.tpls.min'
+		},
+		/*{
+			name: 'ZeroClipboard',
+			location: appConfig['bowerRootPath'] + '/zeroclipboard',
+			main: 'dist/ZeroClipboard.min'
+		},
+		{
+			name: 'ng-clip',
+			location: appConfig['bowerRootPath'] + '/ng-clip',
+			main: 'dest/ng-clip.min'
+		},*/
 
 		/* TODO old/unused/deprecated?
 		 {

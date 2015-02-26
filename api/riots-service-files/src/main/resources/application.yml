@@ -11,7 +11,7 @@ endpoints:
 
 storage:
   backend: fileStorage
-  directory: /tmp/files
+  directory: /var/tmp/riots-file-service-data
 
 eureka:
   hostname: localhost

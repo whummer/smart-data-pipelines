@@ -7,7 +7,6 @@
 	<!-- don't load pace via require.js -->
 	<script type="text/javascript" src="scripts/ext/pace/pace.min.js"></script>
 
-
 	<!--
 		-
 		- STYLES
@@ -30,6 +29,9 @@
 
 	<!-- Angular notify -->
 	<link href="styles/ext/plugins/angular-notify/angular-notify.min.css" rel="stylesheet">
+
+	<!-- Angular toastr -->
+	<link href="styles/ext/plugins/angular-toastr/angular-toastr.min.css" rel="stylesheet">
 
 	<!-- Font awesome -->
 	<link href="styles/ext/font-awesome/css/font-awesome.css" rel="stylesheet">
@@ -141,7 +143,7 @@
 
 	<!-- Page wraper -->
 	<!-- ng-class with current state name give you the ability to extended customization your view -->
-	<div id="page-wrapper" class="gray-bg {{$state.current.name}}" ng-if="authInfo || isUnprotectedPage">
+	<div id="page-wrapper" class="white-bg {{$state.current.name}}" ng-if="authInfo || isUnprotectedPage">
 
 		<!-- Page wrapper -->
 		<ng-include src="appConfig['appRootPath'] + '/views/common/topnavbar.html'"></ng-include>
@@ -159,12 +161,6 @@
 	<!-- End page wrapper-->
 
 </div>
-
-<!-- Custom and plugin javascript -->
-<script src="scripts/ext/inspinia/inspinia.js"></script>
-
-<!-- Angular Dependiences -->
-<script src="scripts/ext/inspinia/plugins/uievents/event.js"></script>
 
 
 </body>
