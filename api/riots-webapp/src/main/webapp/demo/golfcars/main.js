@@ -36,6 +36,14 @@ app.controller('MainCtrl', function ($scope, $interval, $timeout) {
 		return (milage - (Math.floor(Math.random() * (3 - 1)) + 1));
 	};
 
+	var fenceId = 0;
+	var geoFences = [
+		{id: "fence_" + fenceId++, name: "OMV Gas Station", center: {latitude: 48.0000, longitude: 16.11111}, diameter: 200, vouchers : []},
+		{id: "fence_" + fenceId, name: "Landzeit", center: {latitude: 48.0000, longitude: 16.11111} , diameter: 200, vouchers : []}
+	];
+
+	$scope.geoFences = geoFences;
+
 	var carId = 0;
 	var activeCars = [
 		{
@@ -47,7 +55,7 @@ app.controller('MainCtrl', function ($scope, $interval, $timeout) {
 			milage: 900
 		},
 		{
-			id: "car" + carId++,
+			id: "car" + carId,
 			name: "Porsche 911",
 			description: "Cool Porsche",
 			speed: 0,
@@ -175,7 +183,7 @@ app.controller('MainCtrl', function ($scope, $interval, $timeout) {
 		});
 	};
 
-	var processGeoFenceUpdate = function() {
+	var processGeoFenceUpdate = function () {
 
 	}
 
@@ -261,28 +269,32 @@ app.controller('MainCtrl', function ($scope, $interval, $timeout) {
 		});
 	};
 
-	$scope.setupGeoFence = function () {
+	$scope.addGeoFence = function () {
 		if ($scope.geoFence && $scope.geoFence.id) {
 			riots.delete.trigger($scope.geoFence.id);
 		}
+
 		$.each($scope.things, function (idx, el) {
 			delete el.properties.isInCurrentGeoFence;
 			if (el.marker) {
 				el.marker.setIcon(getIcon("marker_azure.png"));
 			}
 		});
+
+		// create new geo fence object
 		var center = $scope.overviewMap.getCenter();
 		$scope.geoFence = {
 			property: "location.*",
 			resultProperty: GEO_FENCE,
 			config: {
-			center: {
-				latitude: center.lat,
-				longitude: center.lng
-			},
-			diameter: $scope.diameter
+				center: {
+					latitude: center.lat,
+					longitude: center.lng
+				},
+				diameter: $scope.diameter
 			}
 		};
+
 		$scope.geoFence["function"] = "geoFence";
 		riots.add.trigger($scope.geoFence, function (fence) {
 			$scope.$apply(function () {
@@ -291,7 +303,7 @@ app.controller('MainCtrl', function ($scope, $interval, $timeout) {
 			var loc = [fence.config.center.latitude, fence.config.center.longitude];
 			if (!$scope.currentDiameter) {
 				$scope.currentDiameter = L.circle(loc, fence.config.diameter);
-				$scope.currentDiameter.addTo($scope.map);
+				$scope.currentDiameter.addTo($scope.overviewMap);
 			} else {
 				$scope.currentDiameter.setLatLng(loc);
 				$scope.currentDiameter.setRadius(fence.config.diameter);
