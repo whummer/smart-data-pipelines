@@ -105,7 +105,9 @@ public class TriggersServiceImpl implements TriggersService {
 		//User user = ServiceUtil.assertValidUser(authHeaders, req);
 		t = (T) triggerCmd.update(t);
 		if(t instanceof GeoFence) {
-			geoListener.updateGeoFence((GeoFence)t);
+			t = (T)geoListener.updateGeoFence((GeoFence)t);
+		} else if(t instanceof ThingPropsFunction) {
+			t = (T)funcListener.updateFunction((ThingPropsFunction)t);
 		}
 		return t;
 	}
@@ -119,6 +121,8 @@ public class TriggersServiceImpl implements TriggersService {
 		}
 		if(triggerClass == GeoFence.class) {
 			geoListener.removeGeoFence(id);
+		} else if(triggerClass == GeoFence.class) {
+			funcListener.removeFunction(id);
 		}
 		triggerCmd.delete(id);
 	}

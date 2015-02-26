@@ -90,7 +90,7 @@ app.controller('MainCtrl', function ($scope) {
 		});
 	}
 
-	var processGeoFenceUpdate() {
+	var processGeoFenceUpdate = function() {
 		
 	}
 
@@ -130,6 +130,7 @@ app.controller('MainCtrl', function ($scope) {
 					subscribeProp(thing, "temperature");
 					subscribeProp(thing, "batteryPercent");
 					subscribeProp(thing, "speed");
+					subscribeProp(thing, "mileageRemaining");
 					subscribeProp(thing, GEO_FENCE);
 					riots.thingType(thing[THING_TYPE], function(thingType) {
 						if(!thingType) return;
@@ -143,6 +144,7 @@ app.controller('MainCtrl', function ($scope) {
 			}
 			riots.unsubscribeAll(callback);
 			setupSpeedCalc();
+			setupRemainingMileage();
 		});
 	}
 
@@ -163,13 +165,32 @@ app.controller('MainCtrl', function ($scope) {
 			return;
 		var speedCalc = {
 			property: "location.*",
-			resultProperty: "speed"
+			resultProperty: "speed",
+			triggerFunction: "speed"
 		};
-		speedCalc["function"] = "speed";
 		$.each($scope.things, function(idx,el) {
 			speedCalc[THING_ID] = el.id;
 			riots.add.trigger(speedCalc, function(speedCalc) {
 				console.log("added speedCalc", speedCalc);
+			});
+		});
+	};
+
+	var setupRemainingMileage = function() {
+		if(!$scope.things)
+			return;
+		var mileage = {
+			property: "(location.*)|(batteryPercent)",
+			resultProperty: "mileageRemaining",
+			triggerFunction: "mileageRemaining",
+			config: {
+				percentagePropName: "batteryPercent"
+			}
+		};
+		$.each($scope.things, function(idx,el) {
+			mileage[THING_ID] = el.id;
+			riots.add.trigger(mileage, function(mileage) {
+				console.log("added mileage", mileage);
 			});
 		});
 	};
@@ -188,6 +209,7 @@ app.controller('MainCtrl', function ($scope) {
 		$scope.geoFence = {
 			property: "location.*",
 			resultProperty: GEO_FENCE,
+			triggerFunction: "geoFence",
 			config: {
 				center: {
 					latitude: center.lat,
@@ -196,7 +218,6 @@ app.controller('MainCtrl', function ($scope) {
 				diameter: $scope.diameter
 			}
 		};
-		$scope.geoFence["function"] = "geoFence";
 		riots.add.trigger($scope.geoFence, function(fence) {
 			$scope.$apply(function() {
 				$scope.geoFence = fence;
