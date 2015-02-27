@@ -15,93 +15,22 @@ if (typeof Number.prototype.toDegrees == 'undefined') {
 	};
 }
 
-var app = angular.module('demo', ['ui.knob']);
-app.controller('MainCtrl', function ($scope, $interval, $timeout) {
+// hardcoded for testing
+window.RIOTS_USER_ID = "54cfa5b0bee88c0d9b4d157a";
+window.RIOTS_APP_KEY = "da022e9f-4a5b-4a6b-b2d6-9d1e199447c4";
 
-	$scope.diameter = 100;
+var app = angular.module('demo', ['ui.knob', 'colorpicker.module']);
+app.controller('MainCtrl', function ($scope, $log) {
+
+	// controller configuration
+	//$scope.diameter = 100;
 	$scope.RIOTS_USER_ID = window.RIOTS_USER_ID;
 	$scope.RIOTS_APP_KEY = window.RIOTS_APP_KEY;
 	$scope.things = [];
-	$scope.carMaps = [];
-
-	var carSpeed = function (min, max) {
-		return Math.floor(Math.random() * (max - min)) + min;
-	};
-
-	var carFuelLevel = function (car) {
-		return (car.fuelLevel - 1);
-	};
-
-	var remainingMilage = function (milage) {
-		return (milage - (Math.floor(Math.random() * (3 - 1)) + 1));
-	};
-
-	var fenceId = 0;
-	var geoFences = [
-		{id: "fence_" + fenceId++, name: "OMV Gas Station", center: {latitude: 48.0000, longitude: 16.11111}, diameter: 200, vouchers : []},
-		{id: "fence_" + fenceId, name: "Landzeit", center: {latitude: 48.0000, longitude: 16.11111} , diameter: 200, vouchers : []}
-	];
-
-	$scope.geoFences = geoFences;
-
-	var carId = 0;
-	var activeCars = [
-		{
-			id: "car" + carId++,
-			name: "BMW 320d",
-			description: "Cool BMW",
-			speed: 0,
-			fuelLevel: 100,
-			milage: 900
-		},
-		{
-			id: "car" + carId,
-			name: "Porsche 911",
-			description: "Cool Porsche",
-			speed: 0,
-			fuelLevel: 100,
-			milage: 500
-		}
-	];
-
-	$scope.activeCars = activeCars;
-
-	// update speed
-	$interval(function () {
-		angular.forEach(activeCars, function (car) {
-			var speed = carSpeed(30, 150);
-			car.speed = speed;
-			$('#' + car.id + "_speed")
-					.val(speed)
-					.trigger('change');
-		})
-
-	}, 1000);
-
-	// update milage
-	$interval(function () {
-		angular.forEach(activeCars, function (car) {
-			var milage = remainingMilage(car.milage);
-			car.milage = milage;
-			$('#' + car.id + "_milage")
-					.val(milage)
-					.trigger('change');
-		})
-
-	}, 2000);
-
-	// update fuel level
-	$interval(function () {
-		angular.forEach(activeCars, function (car) {
-			var fuel = carFuelLevel(car);
-			car.fuelLevel = fuel;
-			$('#' + car.id + "_fuel")
-					.val(fuel)
-					.trigger('change');
-		})
-
-	}, 3000);
-
+	$scope.vehicleMaps = [];
+	$scope.geoFences = [];
+	$scope.showLoyalty = true;
+	$scope.showInactive = false;
 
 	function setupMap(mapName) {
 		var defaultLocation = [48.19742, 16.37127];
@@ -116,14 +45,14 @@ app.controller('MainCtrl', function ($scope, $interval, $timeout) {
 			maxNativeZoom: 19
 		}).addTo(map);
 
+		$log.debug("Added new map with name '" + mapName + "': ", map);
 		return map;
 	}
 
-	var addCarMaps = function () {
-		angular.forEach(activeCars, function (car) {
-			var mapId = car.id + "_map";
-			var mapElement = angular.element(mapId);
-			$scope.carMaps.push({id: mapId, carMap: setupMap(mapId)})
+	var addVehicleMaps = function () {
+		angular.forEach($scope.things, function (thing) {
+			var mapId = thing.id + "_map";
+			$scope.vehicleMaps[mapId] = setupMap(mapId);
 		});
 	};
 
@@ -131,52 +60,78 @@ app.controller('MainCtrl', function ($scope, $interval, $timeout) {
 		var lat = thing.properties["location.latitude"];
 		var lng = thing.properties["location.longitude"];
 		if (!lat || !lng) return;
-		if (!thing.marker) {
+		if (!thing.overviewMapMarker) {
 			var options = {};
-			thing.marker = L.marker([lat, lng], options);
-			$scope.overviewMap.addLayer(thing.marker);
+			thing.overviewMapMarker = L.marker([lat, lng], options);
+			$scope.overviewMap.addLayer(thing.overviewMapMarker);
 			if (!$scope.overviewMap.options.__markers.length) {
 				$scope.overviewMap.panTo(new L.LatLng(lat, lng));
 			}
-			$scope.overviewMap.options.__markers.push(thing.marker);
+			$scope.overviewMap.options.__markers.push(thing.overviewMapMarker);
 		}
-		thing.marker.setLatLng([lat, lng]);
-		thing.marker.bindPopup(thing.name + " (" + lat + "," + lng + ")");
+
+		thing.overviewMapMarker.setLatLng([lat, lng]);
+		thing.overviewMapMarker.bindPopup(thing.name + " (" + lat + "," + lng + ")");
+
+		var vehicleMap = $scope.vehicleMaps[thing.id + "_map"];
+		if (!thing.vehicleMapMarker) {
+			var options = {};
+			thing.vehicleMapMarker = L.marker([lat, lng], options);
+			vehicleMap.addLayer(thing.vehicleMapMarker);
+			if (!vehicleMap.options.__markers.length) {
+				vehicleMap.panTo(new L.LatLng(lat, lng));
+			}
+
+			vehicleMap.options.__markers.push(thing.vehicleMapMarker);
+		}
+
+		thing.vehicleMapMarker.setLatLng([lat, lng]);
+		vehicleMap.panTo(new L.LatLng(lat, lng));
+		thing.vehicleMapMarker.bindPopup(thing.name + " (" + lat + "," + lng + ")");
+
 	};
 
 	var subscribeProp = function (thing, propName) {
 		riots.subscribe({
 			thingId: thing.id,
 			propertyName: propName
-		}, function(data) {
-			$scope.$apply(function() {
-				console.log(propName, data);
-				if(propName == GEO_FENCE) {
-					if(!thing.properties[propName]) {
+		}, function (data) {
+			$scope.$apply(function () {
+				//		console.log(propName, data);
+				if (propName == GEO_FENCE) {
+					if (!thing.properties[propName]) {
 						thing.properties[propName] = {}
 					}
 					var fences = thing.properties[propName]
 					$.extend(fences, data.value);
-					if($scope.geoFence && $scope.geoFence.id) {
-						if(typeof fences[$scope.geoFence.id] != "undefined") {
+					if ($scope.geoFence && $scope.geoFence.id) {
+						if (typeof fences[$scope.geoFence.id] != "undefined") {
 							var isInFence = thing.properties.isInCurrentGeoFence = fences[$scope.geoFence.id];
-							if(isInFence) {
-								if(thing.marker) thing.marker.setIcon(getIcon("marker_green.png"));
+							if (isInFence) {
+								if (thing.marker) thing.marker.setIcon(getIcon("marker_green.png"));
 							} else {
-								if(thing.marker) thing.marker.setIcon(getIcon("marker_pink.png"));
+								if (thing.marker) thing.marker.setIcon(getIcon("marker_pink.png"));
 							}
 						}
-					} else if(thing.marker) {
+					} else if (thing.marker) {
 						thing.marker.setIcon(getIcon("marker_azure.png"));
 					}
 				} else {
 					thing.properties[propName] = data.value;
 					setMarker(thing);
 				}
-				if(propName == "location") {
+
+				if (propName == "location") {
 					thing.properties["location.latitude"] = data.value.latitude;
 					thing.properties["location.longitude"] = data.value.longitude;
 					setMarker(thing);
+				}
+
+				if (propName == "speed") {
+					$log.debug("Triggering speed update for thing ", thing)
+					angular.element('#' + thing.id + "_speed")
+							.val(thing.properties.speed)
+							.trigger('change')
 				}
 			});
 		});
@@ -186,34 +141,41 @@ app.controller('MainCtrl', function ($scope, $interval, $timeout) {
 
 	}
 
-	var getIcon = function(url) {
+	var getIcon = function (url) {
 		var theURL = "/img/markers/" + url;
 		var icon = L.icon({
-		    iconUrl: theURL,
-		    iconSize: [30, 30],
-		    iconAnchor: [15, 15]
+			iconUrl: theURL,
+			iconSize: [30, 30],
+			iconAnchor: [15, 15]
 		});
 		return icon;
 	};
 
-	var removeAllMarkers = function() {
-		if(!$scope.things)
+	var removeAllMarkers = function () {
+		if (!$scope.things)
 			return;
-		$.each($scope.things, function(idx,el) {
-			if(el.marker) {
-				$scope.map.removeLayer(el.marker);
+
+		angular.forEach($scope.things, function (thing) {
+			if (thing.overviewMapMarker) {
+				$scope.overviewMap.removeLayer(thing.overviewMapMarker);
+			}
+
+			if (thing.vehicleMapMarker) {
+				$scope.overviewMap.removeLayer(thing.vehicleMapMarker);
 			}
 		});
 	};
 
-	var doLoadThings = function() {
+	var doLoadThings = function () {
 		removeAllMarkers();
-		riots.things({}, function(things) {
-			$scope.$apply(function() {
+		riots.things({}, function (things) {
+			$scope.$apply(function () {
 				$scope.things = things;
 			});
-			var callback = function() {
-				$.each(things, function(idx,thing) {
+			var callback = function () {
+				addVehicleMaps();
+
+				$.each(things, function (idx, thing) {
 					thing.properties = {};
 					subscribeProp(thing, "location");
 					subscribeProp(thing, "location.latitude");
@@ -224,10 +186,10 @@ app.controller('MainCtrl', function ($scope, $interval, $timeout) {
 					subscribeProp(thing, "speed");
 					subscribeProp(thing, "mileageRemaining");
 					subscribeProp(thing, GEO_FENCE);
-					riots.thingType(thing[THING_TYPE], function(thingType) {
-						if(!thingType) return;
-						$scope.$apply(function() {
-							if(thingType[IMAGE_DATA] && thingType[IMAGE_DATA].length) {
+					riots.thingType(thing[THING_TYPE], function (thingType) {
+						if (!thingType) return;
+						$scope.$apply(function () {
+							if (thingType[IMAGE_DATA] && thingType[IMAGE_DATA].length) {
 								thing.img = thingType[IMAGE_DATA][0].href;
 							}
 						});
@@ -241,65 +203,66 @@ app.controller('MainCtrl', function ($scope, $interval, $timeout) {
 		});
 	};
 
-	$scope.loadThings = function() {
-		if(!window.RIOTS_USER_ID || !window.RIOTS_APP_KEY) {
+	$scope.loadThings = function () {
+		if (!window.RIOTS_USER_ID || !window.RIOTS_APP_KEY) {
 			alert("Please provide RIOTS_APP_KEY and RIOTS_USER_ID for authentication.");
 			return;
 		}
-		riots.auth(null, function() {
+		riots.auth(null, function () {
 			doLoadThings();
-		}, function() {
+		}, function () {
 			alert("Invalid authentication provided. Please check RIOTS_USER_ID and RIOTS_APP_KEY.");
 		});
 	};
 
-	var setupSpeedCalc = function() {
-		if(!$scope.things)
+	var setupSpeedCalc = function () {
+		if (!$scope.things)
 			return;
 		var speedCalc = {
+			name: "speedCalculator",
 			property: "location.*",
 			resultProperty: "speed",
 			triggerFunction: "speed"
 		};
-		$.each($scope.things, function(idx,el) {
+		$.each($scope.things, function (idx, el) {
 			speedCalc[THING_ID] = el.id;
-			riots.add.trigger(speedCalc, function(speedCalc) {
+			riots.add.trigger(speedCalc, function (speedCalc) {
 				console.log("added speedCalc", speedCalc);
 			});
 		});
 	};
 
-	var setupRemainingMileage = function() {
-		if(!$scope.things)
+	var setupRemainingMileage = function () {
+		if (!$scope.things)
 			return;
 		var mileage = {
-			property: "(location.*)|(batteryPercent)",
+			name: "remainingMilageCalculator",
+			property: "(location.*)|(fuelLevel)",
 			resultProperty: "mileageRemaining",
 			triggerFunction: "mileageRemaining",
 			config: {
-				percentagePropName: "batteryPercent"
+				percentagePropName: "fuelLevel"
 			}
 		};
-		$.each($scope.things, function(idx,el) {
+		$.each($scope.things, function (idx, el) {
 			mileage[THING_ID] = el.id;
-			riots.add.trigger(mileage, function(mileage) {
+			riots.add.trigger(mileage, function (mileage) {
 				console.log("added mileage", mileage);
 			});
 		});
 	};
 
-	$scope.setupGeoFence = function() {
-		if($scope.geoFence && $scope.geoFence.id) {
-			riots.delete.trigger($scope.geoFence.id);
-		}
-		$.each($scope.things, function(idx,el) {
-			delete el.properties.isInCurrentGeoFence;
-			if(el.marker) {
+	$scope.setupGeoFence = function () {
+
+		$.each($scope.things, function (idx, el) {
+			//delete el.properties.isInCurrentGeoFence;
+			if (el.marker) {
 				el.marker.setIcon(getIcon("marker_azure.png"));
 			}
 		});
-		var center = $scope.map.getCenter();
+		var center = $scope.overviewMap.getCenter();
 		$scope.geoFence = {
+			name: $scope.geoFenceName,
 			property: "location.*",
 			resultProperty: GEO_FENCE,
 			triggerFunction: "geoFence",
@@ -308,45 +271,55 @@ app.controller('MainCtrl', function ($scope, $interval, $timeout) {
 					latitude: center.lat,
 					longitude: center.lng
 				},
-				diameter: $scope.diameter
+				diameter: $scope.diameter,
+				color: $scope.geoFenceColor
 			}
 		};
-		$scope.geoFence["function"] = "geoFence";
-		riots.add.trigger($scope.geoFence, function(fence) {
-			$scope.$apply(function() {
-				$scope.geoFence = fence;
-			});
+
+		riots.add.trigger($scope.geoFence, function (fence) {
 			var loc = [fence.config.center.latitude, fence.config.center.longitude];
-			if(!$scope.currentDiameter) {
-				$scope.currentDiameter = L.circle(loc, fence.config.diameter);
-				$scope.currentDiameter.addTo($scope.map);
-			} else {
-				$scope.currentDiameter.setLatLng(loc);
-				$scope.currentDiameter.setRadius(fence.config.diameter);
+			var geoFenceOverlayOptions = {};
+			if ($scope.geoFenceColor) {
+				geoFenceOverlayOptions.color = $scope.geoFenceColor;
 			}
+
+			var geoFenceOverlay = L.circle(loc, fence.config.diameter, geoFenceOverlayOptions);
+			geoFenceOverlay.addTo($scope.overviewMap);
+			fence.overlay = geoFenceOverlay;
+			$scope.$apply(function () {
+				$scope.geoFences.push(fence);
+			});
 		});
 	};
 
 	/* register event listeners */
-	$scope.$watch("RIOTS_APP_KEY", function() {
+	$scope.$watch("RIOTS_APP_KEY", function () {
 		window.RIOTS_APP_KEY = $scope.RIOTS_APP_KEY;
 	});
-	$scope.$watch("RIOTS_USER_ID", function() {
+	$scope.$watch("RIOTS_USER_ID", function () {
 		window.RIOTS_USER_ID = $scope.RIOTS_USER_ID;
 	});
 
 	/* load main elements */
-	//$scope.loadThings();
 	$scope.overviewMap = setupMap("worldMap");
 
+	$scope.carsInFence = function (fence) {
+		return "";
+	};
 
-	// required to render map _after_ DOM is fully rendered
-	$timeout(function () {
-		addCarMaps();
+	$scope.removeGeoFence = function (fence) {
+		riots.delete.trigger(fence.id);
+		angular.forEach($scope.geoFences, function (geoFence, idx) {
+			if (fence.id == geoFence.id) {
+				$scope.geoFences.splice(idx, 1);
+			}
+		});
 
-	});
+		$scope.overviewMap.removeLayer(fence.overlay)
 
+	};
 
 	console.log("Initialized sucessfully")
+
 
 });

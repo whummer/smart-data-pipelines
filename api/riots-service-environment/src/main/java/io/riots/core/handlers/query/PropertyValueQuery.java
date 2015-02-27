@@ -4,7 +4,9 @@ import io.riots.api.services.scenarios.PropertyValue;
 import io.riots.core.repositories.PropertyValueRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import io.riots.core.util.JSONUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -33,6 +35,14 @@ public class PropertyValueQuery {
     	List<PropertyValue> values = repository.findByThingIdAndPropertyName(thingId, propertyName,
     			new PageRequest(0, amount, new Sort(Direction.DESC, "timestamp"))).getContent();
     	return values;
+    }
+
+
+	public List<String> retrieveValuesAsJson(String thingId, String propertyName, int amount) {
+    	List<PropertyValue> values = repository.findByThingIdAndPropertyName(thingId, propertyName,
+    			new PageRequest(0, amount, new Sort(Direction.DESC, "timestamp"))).getContent();
+
+		return values.stream().map(propertyValue -> JSONUtil.toJSON(propertyValue)).collect(Collectors.toList());
     }
 
 }

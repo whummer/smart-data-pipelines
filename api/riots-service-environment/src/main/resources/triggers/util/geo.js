@@ -41,15 +41,26 @@ function constructPath(values) {
 	var i;
 	for(i = 0; i < values.length; i ++) {
 		v = values[i];
-		curLoc[v.getPropertyName()] = v.getValue();
-		curLoc["time"] = v.getTimestamp();
+		var propertyValue = JSON.parse(v);
+		/*print("VVV: " + v);
+		print("VVV propertyValue: " + propertyValue);
+		print("VVV PropertyName: " + propertyValue.property);
+		print("VVV Value: " + propertyValue.value);*/
+		curLoc[propertyValue.property] = propertyValue.value;
+		curLoc["time"] = propertyValue.timestamp;
 
-		if(v.getPropertyName().endsWith("longitude")) {
+
+		curLoc.longitude = propertyValue.value.longitude;
+		curLoc.latitude = propertyValue.value.latitude;
+
+		/*if(v.getPropertyName().endsWith("longitude")) {
 			curLoc.longitude = v.getValue();
 		}
 		if(v.getPropertyName().endsWith("latitude")) {
 			curLoc.latitude = v.getValue();
-		}
+		}*/
+
+		//print("Curlocation: " + curLoc);
 		path.push(clone(curLoc));
 	}
 	return path;
@@ -63,7 +74,7 @@ function constructPathMap(values) {
 	var map = {};
 	for(var i = 0; i < values.length; i ++) {
 		var v = values[i];
-		var thingId = v.getThingId();
+		var thingId = v['thing-id'];
 		if(!map[thingId]) {
 			map[thingId] = [];
 		}

@@ -86,10 +86,10 @@ public class GeoPositionListener {
 		}
 
 		/* process geo fences */
-		processGeoFences(prop.getThingId(), l, oldLoc);
+		processGeoFences(prop.getThingId(), l);
 	}
 
-	private void processGeoFences(String thingId, LocationInTime newLoc, LocationInTime oldLoc) {
+	private void processGeoFences(String thingId, LocationInTime newLoc) {
 		for(GeoFence gf : geoFences.values()) {
 			boolean range = isWithinRange(newLoc.getLocation(), gf);
 			// fire event

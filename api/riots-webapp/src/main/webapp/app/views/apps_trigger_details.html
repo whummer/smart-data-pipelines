@@ -9,13 +9,20 @@
 
     <form class="form-horizontal">
 
+			<!-- ID -->
+			<div class="form-group">
+				<label for="triggerId" class="col-sm-3 control-label">ID</label>
+				<div class="col-sm-9">
+					<input id="triggerId" class="form-control input-sm" disabled="disabled"
+								 ng-model="shared.selectedTrigger.id" />
+				</div>
+			</div>
 
-      <!-- type -->
+      <!-- name -->
       <div class="form-group">
-        <label for="inputId" class="col-sm-3 control-label">ID:</label>
+        <label for="triggerName" class="col-sm-3 control-label">Name</label>
         <div class="col-sm-9">
-          <input id="inputId" class="form-control input-sm" disabled="disabled"
-                 ng-model="shared.selectedTrigger.id" />
+          <input id="triggerName" class="form-control input-sm" ng-model="shared.selectedTrigger.name" />
         </div>
       </div>
 
@@ -29,12 +36,11 @@
 
       <!-- type -->
       <div class="form-group">
-        <label for="inputType" class="col-sm-3 control-label">Trigger
+        <label for="triggerType" class="col-sm-3 control-label">Trigger
           Type:</label>
 
         <div class="col-sm-9">
-          <select id="inputType" class="form-control input-sm"
-                  ng-model="shared.selectedTrigger.type">
+          <select id="triggerType" class="form-control input-sm" ng-model="shared.selectedTrigger.type">
             <option value="UNDEFINED"> -- Undefined --</option>
             <option value="GEO_FENCE">Geo Fence</option>
           </select>
@@ -44,9 +50,7 @@
       <!-- Geo Fence Details -->
       <div ng-show="shared.selectedTrigger.type == 'GEO_FENCE'">
         <div class="form-group">
-          <label for="inputType" class="col-sm-3 control-label">Center
-            (lat/lng):</label>
-
+          <label class="col-sm-3 control-label">Center (lat/lng):</label>
           <div class="col-sm-9">
             <table >
               <tr>

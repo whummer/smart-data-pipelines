@@ -19,7 +19,7 @@ function isWithinRange(location, center, rangeInMeters) {
 
 /* main function */
 function main() {
-	var thingId = VALUES[VALUES.length - 1].thingId;
+	var thingId = VALUES[VALUES.length - 1]['thing-id'];
 
 	/* construct path map */
 	var PATH_MAP = constructPathMap(VALUES);

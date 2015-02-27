@@ -1,12 +1,14 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html ng-app="demo">
 <head>
+
+	<!--
+	  - STYLE SHEETS
+	  -->
+
 	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css"/>
 	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css"/>
-	<!-- INSPINIA STUFF HERE WE GO -->
-
 
 	<!-- Font awesome -->
 	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
@@ -37,12 +39,19 @@
 	<!-- iCheck -->
 	<link href="/styles/ext/plugins/iCheck/custom.css" rel="stylesheet">
 
+	<!-- colorpicker -->
+	<link href="/styles/ext/plugins/colorpicker/colorpicker.css" rel="stylesheet">
+
+	<!-- Main Inspinia CSS files -->
+	<link href="animate.css" rel="stylesheet">
+	<link href="style.css" rel="stylesheet">
+
 	<!-- demo css -->
 	<link rel="stylesheet" href="demo.css"/>
 
-	<!-- Main Inspinia CSS files -->
-	<link href="/styles/ext/animate.css" rel="stylesheet">
-	<link href="/styles/ext/style.css" rel="stylesheet">
+	<!--
+		- JAVA SCRIPT STUFF
+		-->
 
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.8/angular.js"></script>
@@ -51,11 +60,12 @@
 	<!-- riots API dependencies -->
 	<script type="application/javascript" src="/scripts/ext/jsKnob/angular-knob.js"></script>
 	<script type="application/javascript" src="/scripts/ext/jsKnob/jquery.knob.js"></script>
+	<script type="application/javascript" src="/scripts/ext/colorpicker/bootstrap-colorpicker-module.js"></script>
 	<script type="text/javascript" src="/demo/golfcars/main.js"></script>
 
 	<script>
-		window.RIOTS_USER_ID = "Please insert userid";
-		window.RIOTS_APP_KEY = "Please insert appkey";
+		window.RIOTS_USER_ID = "54cfa5b0bee88c0d9b4d157a"
+		window.RIOTS_APP_KEY = "da022e9f-4a5b-4a6b-b2d6-9d1e199447c4"
 	</script>
 
 
@@ -65,6 +75,7 @@
 
 	<title>Demo - Porsche Fleet Management</title>
 </head>
+
 <body style="background-color: #eeeeee">
 
 <div class="container" ng-controller="MainCtrl">
@@ -99,52 +110,13 @@
 						</div>
 					</div>
 					<div class="clearfix">
-						<button class="pull-right btn btn-sm btn-primary" ng-click="loadThings()">Save Configuration</button>
+						<button class="pull-right btn btn-sm btn-primary" ng-click="loadThings()">Reload Configuration</button>
 					</div>
 				</form>
 			</div>
 		</div>
 	</div>
 
-	<!-- GEO FENCE CONFIGURATION -->
-	<!--<div class="col-lg-6">
-		<div class="ibox">
-			<div class="ibox-title"><strong>Geo Fence Configuration</strong></div>
-			<div class="ibox-content">
-				<form class="form-horizontal">
-
-					<div class="form-group">
-						<label for="latitude" class="control-label col-sm-2">Latitude</label>
-						<div class="col-sm-10">
-							<input id="latitude" style="width: 25%" ng-model="geofence.center.latitude"
-										 class="input-sm form-control"/>
-						</div>
-					</div>
-
-					<div class="form-group">
-						<label for="longitude" class="control-label col-sm-2">Longitude</label>
-						<div class="col-sm-10">
-							<input id="longitude" style="width: 25%" ng-model="geofence.center.longitude"
-										 class="form-control input-sm"/>
-						</div>
-					</div>
-
-					<div class="form-group">
-						<label for="diameter" class="control-label col-sm-2">Radius</label>
-						<div class="col-sm-10">
-							<input id="diameter" style="width: 25%" ng-model="diameter" class="form-control input-sm"/>
-						</div>
-					</div>
-
-					<div class="clearfix">
-						<button class="pull-right btn btn-primary btn-sm" ng-click="setupGeoFence()">Setup Geo Fence</button>
-					</div>
-
-				</form>
-			</div>
-		</div>
-
-	</div>-->
 
 	<!-- ACTIVE CARS -->
 	<div class="col-lg-12">
@@ -152,28 +124,27 @@
 			<div class="ibox-title"><strong>Active Cars</strong></div>
 			<div class="ibox-content">
 				<table class="table table-bordered table-hover">
-					<thead>
-					<tr>
-						<!--<th>Image</th>-->
+					<thead><tr>
+						<th>Image</th>
+						<th>ID</th>
 						<th>Name</th>
 						<th>Location</th>
+						<th>Battery Level</th>
+						<th>Remaining Mileage</th>
+						<th>Tire Pressure</th>
 						<th>Speed</th>
-						<th>Fuel Level</th>
-						<th>Remaining Milage</th>
-					</tr>
-					</thead>
-					<tr ng-repeat="car in activeCars">
-						<td><b>{{car.name}}</b></td>
-						<td>{{car.location.longitude}} {{car.location.latitude}}</td>
-						<td>{{car.speed}}</td>
-						<td>{{car.fuelLevel}}</td>
-						<td>{{car.milage}}</td>
-						<!--<td><img ng-src="{{thing.img}}" style="height: 30px;"/></td>
+						<th>Within Geo Fence</th>
+					</tr></thead>
+					<tr ng-repeat="thing in things">
+						<td><img ng-src="{{thing.img}}" style="height: 30px;"/></td>
+						<td>{{thing.id}}</td>
 						<td><b>{{thing.name}}</b></td>
 						<td>{{thing.properties['location.latitude']}},{{thing.properties['location.longitude']}}</td>
 						<td>{{thing.properties.batteryPercent}} %</td>
+						<td>{{thing.properties.mileageRemaining}} m</td>
 						<td>{{thing.properties.pressure}} %</td>
-						<td>{{thing.properties.isInCurrentGeoFence}}</td>-->
+						<td>{{thing.properties.speed}} m/s</td>
+						<td>{{thing.properties.isInCurrentGeoFence}}</td>
 					</tr>
 				</table>
 			</div>
@@ -182,7 +153,69 @@
 
 
 	<!-- ACTIVE CARS -->
-	<div class="col-lg-6 col-md-12 col-sm-12" ng-repeat="car in activeCars">
+	<div class="col-lg-6 col-md-12 col-sm-12" ng-repeat="thing in things">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title"><span class="fa fa-car"></span> <strong>{{thing.name}}</strong></div>
+			<div class="ibox-content">
+
+				<div class="row">
+
+					<div class="col-sm-12 col-xs-12">
+						<div id="{{thing.id + '_map'}}" style="height: 300px;"></div>
+					</div>
+				</div>
+
+				<div class="row" style="margin-top: 15px">
+					<div class="col-sm-12 col-xs-12 text-center">
+						<div class="col-sm-4">
+							<knob id="{{thing.id + '_speed'}}"
+										knob-data="{{thing.properties.speed}}" class="m-r-sm" data-skin="tron"
+										data-fgColor="#1AB394"
+										data-width="85"
+										data-height="85"
+										data-thickness="0.1"
+										data-max="260"
+										data-angleOffset=-125
+										data-angleArc=250
+										knob-options=""></knob>
+
+						</div>
+						<div class="col-sm-4 text-center" >
+							<knob id="{{thing.id + '_fuel'}}"
+										knob-data="{{thing.properties.fuelLevel}}" class="m-r-sm" data-skin="tron"
+										data-fgColor="#00AC23"
+										data-width="85"
+										data-height="85"
+										data-thickness="0.1"
+										data-angleOffset=-125 data-angleArc=250
+										knob-options=""></knob>
+						</div>
+						<div class="col-sm-4 text-center">
+							<knob
+									id="{{thing.id + '_milage'}}"
+									knob-data="{{car.properties.remainingMilage}}" class="m-r-sm" data-skin="tron"
+									data-fgColor="#00AC23"
+									data-width="85"
+									data-height="85"
+									data-thickness="0.1"
+									data-readOnly="true"
+									data-max="{{car.milage}}"
+									data-angleOffset=-125 data-angleArc=250
+									knob-options=""></knob>
+						</div>
+
+					</div>
+
+					<div class="row">
+						<div class="col-sm-4 col-xs-4 text-center"><strong>Speed</strong></div>
+						<div class="col-sm-4 col-xs-4 text-center"><strong>Fuel Level</strong></div>
+						<div class="col-sm-4 col-xs-4 text-center"><strong>Remaining Milage</strong></div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div><!--<div class="col-lg-6 col-md-12 col-sm-12" ng-repeat="car in activeCars">
 		<div class="ibox float-e-margins">
 			<div class="ibox-title"><span class="fa fa-car"></span> <strong>{{car.name}}</strong></div>
 			<div class="ibox-content">
@@ -244,7 +277,7 @@
 				</div>
 			</div>
 		</div>
-	</div>
+	</div>-->
 
 
 	<div class="col-lg-12">
@@ -253,7 +286,7 @@
 			<div class="ibox-content">
 				<div class="row">
 					<div class="col-sm-12 col-lg-12 col-md-12">
-						<div id="worldMap" style="height: 300px;"></div>
+						<div id="worldMap" style="height: 500px;"></div>
 					</div>
 				</div>
 				<div class="row" style="margin-top: 20px;">
@@ -289,37 +322,78 @@
 				</div>
 
 				<div class="row">
+
+					<div class="col-sm-12">
+						<form class="form-inline" role="form">
+
+							<div class="form-group">
+								<label for="name" class="control-label sr-only">Name</label>
+								<input id="name" placeholder="Name for Geofence" ng-model="geoFenceName" class="form-control input-sm"/>
+							</div>
+
+							<div class="form-group">
+								<label for="diameter" class="control-label sr-only">Radius</label>
+								<input id="diameter" placeholder="Enter Diameter" ng-model="diameter" class="form-control input-sm"/>
+							</div>
+
+							<input colorpicker type="text" ng-model="geoFenceColor" placeholder="Color"
+										 class="form-control input-sm"/>
+
+							<div class="form-group">
+								<button class="pull-right btn btn-primary btn-sm" ng-click="setupGeoFence()">Setup Geo
+									Fence</button>
+							</div>
+
+						</form>
+					</div>
+
+				</div>
+
+				<div class="row" style="margin-top: 10px">
 					<div class="col-sm-12">
 						<table class="table table-bordered table-hover">
 							<thead>
 							<tr>
 								<!--<th>Image</th>-->
+								<th>ID</th>
 								<th>Name</th>
 								<th>Center</th>
 								<th>Diameter</th>
 								<th>Associated Vouchers</th>
 								<th>Cars in Range</th>
-								<th>Remove</th>
+								<th class="text-center">Color</th>
+								<th class="text-center">Remove</th>
 							</tr>
 							</thead>
 							<tr ng-repeat="geoFence in geoFences">
 								<td>
+									{{geoFence.id}}
+								</td>
+								<td>
 									{{geoFence.name}}
 								</td>
 								<td>
-									{{geoFence.center}}
+									{{geoFence.config.center.latitude}}, {{geoFence.config.center.longitude}}
 								</td>
 								<td>
-									{{geoFence.diameter}}
+									{{geoFence.config.diameter}}
 								</td>
+
 								<td>
 									{{geoFence.vouchers}}
 								</td>
 								<td>
-									{{geoFence.cars}}
+									{{carsInFence(geoFence)}}
 								</td>
-								<td>
-									<span class="fa fa-remove"></span> Clear
+								<td class="text-center">
+									<span style="background-color: {{geoFence.config.color}}">
+										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									</span>
+								</td>
+								<td class="text-center">
+									<button class="btn btn-xs btn-warning" ng-click="removeGeoFence(geoFence)"><span
+											class="fa fa-remove"></span> Clear
+									</button>
 								</td>
 							</tr>
 						</table>
@@ -327,41 +401,7 @@
 				</div>
 
 
-				<div class="row">
 
-					<div class="col-sm-12">
-						<form class="form-inline" role="form">
-
-							<div class="form-group">
-								<label for="latitude" class="control-label sr-only">Latitude</label>
-								<input id="latitude" placeholder="latitude" ng-model="geoFence.center.latitude"
-											 class="input-sm form-control"/>
-							</div>
-
-							<div class="form-group">
-								<label for="longitude" class="control-label sr-only">Longitude</label>
-								<input id="longitude" placeholder="longitude" ng-model="geoFence.center.longitude"
-											 class="form-control input-sm"/>
-							</div>
-
-							<div class="form-group">
-								<label for="diameter" class="control-label sr-only">Radius</label>
-								<input id="diameter" placeholder="radius" ng-model="diameter" class="form-control input-sm"/>
-							</div>
-
-							<div class="form-group">
-								<label for="name" class="control-label sr-only">Name</label>
-								<input id="name" placeholder="Name" ng-model="geoFenceName" class="form-control input-sm"/>
-							</div>
-
-							<div class="form-group">
-								<button class="pull-right btn btn-primary btn-sm" ng-click="addGeoFence()">Setup Geo Fence</button>
-							</div>
-
-						</form>
-					</div>
-
-				</div>
 
 			</div>
 		</div>

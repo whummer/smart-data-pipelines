@@ -27,12 +27,12 @@ public class PropertyValue implements ObjectIdentifiable {
 	private Object value;
 
 	@JsonProperty
-	private double timestamp;
+	private long timestamp;
 
 	public PropertyValue() {
 	}
 
-	public PropertyValue(String thingId, String propertyName, Object value, double timestamp) {
+	public PropertyValue(String thingId, String propertyName, Object value, long timestamp) {
 		this.thingId = thingId;
 		this.propertyName = propertyName;
 		this.value = value;
@@ -46,10 +46,10 @@ public class PropertyValue implements ObjectIdentifiable {
 	public PropertyValue(Property property, Object value) {
 		this(property, value, 0);
 	}
-	public PropertyValue(Property property, Object value, double time) {
+	public PropertyValue(Property property, Object value, long time) {
 		this(null, property, value, time);
 	}
-	public PropertyValue(String thingId, Property property, Object value, double time) {
+	public PropertyValue(String thingId, Property property, Object value, long time) {
 		if(property != null) {
 			this.propertyName = property.getName();
 		}
@@ -87,10 +87,10 @@ public class PropertyValue implements ObjectIdentifiable {
 	public void setValue(Object value) {
 		this.value = value;
 	}
-	public double getTimestamp() {
+	public long getTimestamp() {
 		return timestamp;
 	}
-	public void setTimestamp(double timestamp) {
+	public void setTimestamp(long timestamp) {
 		this.timestamp = timestamp;
 	}
 

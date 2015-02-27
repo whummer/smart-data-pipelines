@@ -92,9 +92,12 @@ public class TriggerFunctionListener {
 			state.code = srcUtil + "\n" + src;
 			state.function = function;
 			state.engine = ScriptUtil.getEngineJS();
-			List<PropertyValue> values = propValQuery.retrieveValues(function.getThingId(), 
+			/*List<PropertyValue> values = propValQuery.retrieveValues(function.getThingId(),
 					function.getPropertyName(), (int)function.getWindowSize());
-			values = new LinkedList<PropertyValue>(values); // make modifiable list
+			*/
+			List<String> values = propValQuery.retrieveValuesAsJson(function.getThingId(), function.getPropertyName(), (int)function.getWindowSize());
+			//values = new LinkedList<PropertyValue>(values); // make modifiable list
+			values = new LinkedList<String>(values); // make modifiable list
 			state.variables.put(VAR_NAME_FUNCTION, function);
 			state.variables.put(VAR_NAME_VALUES, values);
 			state.variables.put(VAR_NAME_CONFIG, function.getConfig());
@@ -110,12 +113,15 @@ public class TriggerFunctionListener {
 
 	private void executeFunction(FuncExecState s, PropertyValue prop) {
 		@SuppressWarnings("unchecked")
-		List<PropertyValue> list = (List<PropertyValue>) s.variables.get(VAR_NAME_VALUES);
-		list.add(prop);
+		//List<PropertyValue> list = (List<PropertyValue>) s.variables.get(VAR_NAME_VALUES);
+		List<String> list = (List<String>) s.variables.get(VAR_NAME_VALUES);
+
+
+		list.add(JSONUtil.toJSON(prop));
 		while(s.variables.size() > s.function.getWindowSize()) {
 			list.remove(0);
 		}
-		System.out.println("Executing function " + s.function.getTriggerFunction());
+		//System.out.println("Executing function " + s.function.getTriggerFunction());
 		Object result = ScriptUtil.eval(s.engine, "main();");
 
 		if(result != null) {
