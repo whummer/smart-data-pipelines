@@ -173,8 +173,9 @@ public class InsertDemoDataViaCatalog {
             t.setName("GPS Trace - Vienna/Austria");
             PropertySimulationGPS sim = new PropertySimulationGPS();
             sim.startTime = 1;
-            sim.endTime = 1000;
+            sim.endTime = 60*10;
             sim.stepInterval = 1;
+            sim.setRepetitions(-1);
             sim.setLatitude(48.19742);
             sim.setLongitude(16.37127);
             sim.setDiameter(1000); // meters

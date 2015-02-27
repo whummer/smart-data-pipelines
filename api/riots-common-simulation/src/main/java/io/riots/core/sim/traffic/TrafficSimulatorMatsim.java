@@ -157,8 +157,8 @@ public class TrafficSimulatorMatsim {
 
 			}
 
-			/* set end point */
-			Point p2 = getRandomPoint(bounds, nodes);
+			/* set end point (same as start point) */
+			Point p2 = p1;
 			Coord coords2 = sc.createCoord(p2.x, p2.y);
 			Activity act2 = populationFactory.createActivityFromCoord(
 					"startAndStop", COORDS_TRANS.transform(coords2));
@@ -187,17 +187,11 @@ public class TrafficSimulatorMatsim {
 		Map<Id,? extends Link> links = sc.getNetwork().getLinks();
 		for(Entry<Id,? extends Link> e : links.entrySet()) {
 			double speed = e.getValue().getFreespeed();
-			System.out.println(speed);
 			speed = GeoUtil.convertMetersToDegrees(speed);
-			speed = speed * (60 * 60 / 1000.0); // TODO needed?
-			System.out.println(speed);
+//			speed = speed * (60 * 60 / 1000.0); // TODO needed?
+//			System.out.println(speed);
 			e.getValue().setFreespeed(speed);
 		}
-
-		System.out.println(sc.getNetwork());
-		System.out.println(sc.getNetwork().getNodes());
-		System.out.println(sc.getNetwork().getLinks());
-		System.out.println(links.get(new Random().nextInt(links.size())));
 	}
 
 	void dumpVehiclePaths() {

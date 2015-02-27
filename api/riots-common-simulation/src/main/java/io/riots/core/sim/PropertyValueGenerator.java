@@ -31,15 +31,29 @@ public class PropertyValueGenerator {
 
 	static double DEFAULT_INTERVAL_STEPS = 100;
 
-	public static PropertyValue getValueAt(
-			PropertySimulation<?> sim, Time atTime, Context ctx) {
-		PropertyValue result = null;
-
+	public static void prepareValues(PropertySimulation<?> sim) {
 		/* generate values if necessary */
 		if(sim instanceof PropertySimulationGPS) {
 			PropertySimulationGPS gps = (PropertySimulationGPS)sim;
 			if(gps.getValues().isEmpty()) {
 				TrafficSimulatorMatsim.generateTraces(gps);
+			}
+		}
+	}
+
+	public static PropertyValue getValueAt(
+			PropertySimulation<?> sim, Time atTime, Context ctx) {
+		PropertyValue result = null;
+
+		/* prepare values */
+		prepareValues(sim);
+
+		/* make sure the time is within range */
+		if(sim.endTime > sim.startTime) {
+			double range = sim.endTime - sim.startTime;
+			for(int i = 0; atTime.getTime() > sim.endTime && 
+					(sim.getRepetitions() < 0 || sim.getRepetitions() > i); i ++) {
+				atTime = new Time(atTime.getTime() - range);
 			}
 		}
 

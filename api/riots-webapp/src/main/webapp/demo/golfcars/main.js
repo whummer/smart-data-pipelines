@@ -18,6 +18,7 @@ app.controller('MainCtrl', function ($scope) {
 	$scope.RIOTS_USER_ID = window.RIOTS_USER_ID;
 	$scope.RIOTS_APP_KEY = window.RIOTS_APP_KEY;
 	$scope.things = [];
+	$scope.triggers = {};
 
 	function setupMap() {
 		var defaultLocation = [ 48.19742, 16.37127 ];
@@ -164,6 +165,9 @@ app.controller('MainCtrl', function ($scope) {
 	var setupSpeedCalc = function() {
 		if(!$scope.things)
 			return;
+		if($scope.triggers.speedCalc && $scope.triggers.speedCalc.id) {
+			riots.delete.trigger($scope.triggers.speedCalc.id);
+		}
 		var speedCalc = {
 			property: "location.*",
 			resultProperty: "speed",
@@ -172,6 +176,7 @@ app.controller('MainCtrl', function ($scope) {
 		$.each($scope.things, function(idx,el) {
 			speedCalc[THING_ID] = el.id;
 			riots.add.trigger(speedCalc, function(speedCalc) {
+				$scope.triggers.speedCalc = speedCalc;
 				console.log("added speedCalc", speedCalc);
 			});
 		});
@@ -180,6 +185,9 @@ app.controller('MainCtrl', function ($scope) {
 	var setupUsageCalc = function() {
 		if(!$scope.things)
 			return;
+		if($scope.triggers.usageCalc && $scope.triggers.usageCalc.id) {
+			riots.delete.trigger($scope.triggers.usageCalc.id);
+		}
 		var usageCalc = {
 			property: "(location.*)|(batteryPercent)",
 			triggerProperty: "location.*",
@@ -193,6 +201,7 @@ app.controller('MainCtrl', function ($scope) {
 		$.each($scope.things, function(idx,el) {
 			usageCalc[THING_ID] = el.id;
 			riots.add.trigger(usageCalc, function(usageCalc) {
+				$scope.triggers.usageCalc = usageCalc;
 				console.log("added usageCalc", usageCalc);
 			});
 		});
@@ -201,6 +210,9 @@ app.controller('MainCtrl', function ($scope) {
 	var setupRemainingMileage = function() {
 		if(!$scope.things)
 			return;
+		if($scope.triggers.mileage && $scope.triggers.mileage.id) {
+			riots.delete.trigger($scope.triggers.mileage.id);
+		}
 		var mileage = {
 			property: "(location.*)|(batteryPercent)",
 			resultProperty: "mileageRemaining",
@@ -212,6 +224,7 @@ app.controller('MainCtrl', function ($scope) {
 		$.each($scope.things, function(idx,el) {
 			mileage[THING_ID] = el.id;
 			riots.add.trigger(mileage, function(mileage) {
+				$scope.triggers.mileage = mileage;
 				console.log("added mileage", mileage);
 			});
 		});
