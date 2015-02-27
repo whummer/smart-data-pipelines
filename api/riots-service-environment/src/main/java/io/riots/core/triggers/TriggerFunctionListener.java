@@ -15,6 +15,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.script.ScriptEngine;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +30,9 @@ import org.springframework.stereotype.Component;
 public class TriggerFunctionListener {
 
 	private static final Logger LOG = Logger.getLogger(TriggerFunctionListener.class);
-	private static final String VAR_NAME_VALUES = "VALUES";
-	private static final String VAR_NAME_CONFIG = "CONFIG";
+	public static final String VAR_NAME_VALUES = "VALUES";
+	public static final String VAR_NAME_CONFIG = "CONFIG";
+	public static final String VAR_NAME_FUNCTION = "FUNCTION";
 
 	@Autowired
 	private EventBrokerComponent eventBroker;
@@ -42,6 +45,7 @@ public class TriggerFunctionListener {
 		ThingPropsFunction function;
 		String code;
 		Map<String,Object> variables = new ConcurrentHashMap<>();
+		ScriptEngine engine;
 	}
 
 	@JmsListener(containerFactory = EventBroker.CONTAINER_FACTORY_NAME, 
@@ -71,24 +75,33 @@ public class TriggerFunctionListener {
 			if(StringUtils.isEmpty(function.getId())) {
 				function.setId(UUID.randomUUID().toString());
 			}
+			if(StringUtils.isEmpty(function.getResultPropertyName())) {
+				function.setResultPropertyName(function.getTriggerFunction());
+			}
 			if(function.getConfig() == null) {
 				function.setConfig(new HashMap<String,Object>());
 			}
 
-			/* include util functions TODO make configurable */
+			/* include util functions. TODO make configurable */
 			String srcUtil = ScriptUtil.getScriptCode("util/geo");
 			/* load requested script code */
-			String src = ScriptUtil.getScriptCode(function.getFunction());
+			String src = ScriptUtil.getScriptCode(function.getTriggerFunction());
 
 			FuncExecState state = new FuncExecState();
 			functions.put(function.getId(), state);
 			state.code = srcUtil + "\n" + src;
 			state.function = function;
+			state.engine = ScriptUtil.getEngineJS();
 			List<PropertyValue> values = propValQuery.retrieveValues(function.getThingId(), 
 					function.getPropertyName(), (int)function.getWindowSize());
 			values = new LinkedList<PropertyValue>(values); // make modifiable list
+			state.variables.put(VAR_NAME_FUNCTION, function);
 			state.variables.put(VAR_NAME_VALUES, values);
 			state.variables.put(VAR_NAME_CONFIG, function.getConfig());
+
+			/* initialize code engine */
+			ScriptUtil.bindVariables(state.engine, state.variables);
+			ScriptUtil.eval(state.engine, state.code);
 		} catch (Exception e) {
 			LOG.warn("Unable to add trigger function", e);
 		}
@@ -102,9 +115,11 @@ public class TriggerFunctionListener {
 		while(s.variables.size() > s.function.getWindowSize()) {
 			list.remove(0);
 		}
-		Object result = ScriptUtil.getInstance().execJavaScript(s.code, s.variables);
+		System.out.println("Executing function " + s.function.getTriggerFunction());
+		Object result = ScriptUtil.eval(s.engine, "main();");
+
 		if(result != null) {
-			// fire event
+			// fire new event with result
 			PropertyValue propValue = new PropertyValue();
 			propValue.setPropertyName(s.function.getResultPropertyName());
 			propValue.setThingId(prop.getThingId());
@@ -112,6 +127,18 @@ public class TriggerFunctionListener {
 			propValue.setTimestamp(prop.getTimestamp());
 			eventBroker.sendOutboundChangeNotifyMessage(propValue);
 		}
+	}
+
+	public FuncExecState removeFunction(String id) {
+		FuncExecState deleted = functions.remove(id);
+		System.gc();
+		return deleted;
+	}
+
+	public ThingPropsFunction updateFunction(ThingPropsFunction func) {
+		FuncExecState existing = removeFunction(func.getId());
+		addFunction(func);
+		return existing != null ? existing.function : null;
 	}
 
 }

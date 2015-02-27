@@ -1,4 +1,4 @@
-var GEO_FENCE = "riots.geo.fence";
+var GEO_FENCE = "riots.geoFence";
 
 /** Extend Number object with method to convert numeric degrees to radians */
 if (typeof Number.prototype.toRadians == 'undefined') {
@@ -111,7 +111,6 @@ app.controller('MainCtrl', function ($scope, $interval, $timeout) {
 		}).setView(defaultLocation, 18).on("mouseup", function (e) {
 			//var newLoc = $scope.overviewMap.getCenter();
 		});
-
 		L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
 			maxZoom: 23,
 			maxNativeZoom: 19
@@ -149,32 +148,32 @@ app.controller('MainCtrl', function ($scope, $interval, $timeout) {
 		riots.subscribe({
 			thingId: thing.id,
 			propertyName: propName
-		}, function (data) {
-			$scope.$apply(function () {
+		}, function(data) {
+			$scope.$apply(function() {
 				console.log(propName, data);
-				if (propName == GEO_FENCE) {
-					if (!thing.properties[propName]) {
+				if(propName == GEO_FENCE) {
+					if(!thing.properties[propName]) {
 						thing.properties[propName] = {}
 					}
 					var fences = thing.properties[propName]
 					$.extend(fences, data.value);
-					if ($scope.geoFence && $scope.geoFence.id) {
-						if (typeof fences[$scope.geoFence.id] != "undefined") {
+					if($scope.geoFence && $scope.geoFence.id) {
+						if(typeof fences[$scope.geoFence.id] != "undefined") {
 							var isInFence = thing.properties.isInCurrentGeoFence = fences[$scope.geoFence.id];
-							if (isInFence) {
-								if (thing.marker) thing.marker.setIcon(getIcon("marker_green.png"));
+							if(isInFence) {
+								if(thing.marker) thing.marker.setIcon(getIcon("marker_green.png"));
 							} else {
-								if (thing.marker) thing.marker.setIcon(getIcon("marker_pink.png"));
+								if(thing.marker) thing.marker.setIcon(getIcon("marker_pink.png"));
 							}
 						}
-					} else if (thing.marker) {
+					} else if(thing.marker) {
 						thing.marker.setIcon(getIcon("marker_azure.png"));
 					}
 				} else {
 					thing.properties[propName] = data.value;
 					setMarker(thing);
 				}
-				if (propName == "location") {
+				if(propName == "location") {
 					thing.properties["location.latitude"] = data.value.latitude;
 					thing.properties["location.longitude"] = data.value.longitude;
 					setMarker(thing);
@@ -187,35 +186,34 @@ app.controller('MainCtrl', function ($scope, $interval, $timeout) {
 
 	}
 
-	var getIcon = function (url) {
+	var getIcon = function(url) {
 		var theURL = "/img/markers/" + url;
 		var icon = L.icon({
-			iconUrl: theURL,
-			iconSize: [30, 30],
-			iconAnchor: [15, 15]
+		    iconUrl: theURL,
+		    iconSize: [30, 30],
+		    iconAnchor: [15, 15]
 		});
 		return icon;
 	};
 
-	var removeAllMarkers = function () {
-		if (!$scope.things)
+	var removeAllMarkers = function() {
+		if(!$scope.things)
 			return;
-		$.each($scope.things, function (idx, el) {
-			if (el.marker) {
-				$scope.overviewMap.removeLayer(el.marker);
+		$.each($scope.things, function(idx,el) {
+			if(el.marker) {
+				$scope.map.removeLayer(el.marker);
 			}
 		});
 	};
 
-	var doLoadThings = function () {
+	var doLoadThings = function() {
 		removeAllMarkers();
-		riots.things({}, function (things) {
-			$scope.$apply(function () {
+		riots.things({}, function(things) {
+			$scope.$apply(function() {
 				$scope.things = things;
 			});
-
-			var callback = function () {
-				$.each(things, function (idx, thing) {
+			var callback = function() {
+				$.each(things, function(idx,thing) {
 					thing.properties = {};
 					subscribeProp(thing, "location");
 					subscribeProp(thing, "location.latitude");
@@ -224,11 +222,12 @@ app.controller('MainCtrl', function ($scope, $interval, $timeout) {
 					subscribeProp(thing, "temperature");
 					subscribeProp(thing, "batteryPercent");
 					subscribeProp(thing, "speed");
+					subscribeProp(thing, "mileageRemaining");
 					subscribeProp(thing, GEO_FENCE);
-					riots.thingType(thing[THING_TYPE], function (thingType) {
-						if (!thingType) return;
-						$scope.$apply(function () {
-							if (thingType[IMAGE_DATA] && thingType[IMAGE_DATA].length) {
+					riots.thingType(thing[THING_TYPE], function(thingType) {
+						if(!thingType) return;
+						$scope.$apply(function() {
+							if(thingType[IMAGE_DATA] && thingType[IMAGE_DATA].length) {
 								thing.img = thingType[IMAGE_DATA][0].href;
 							}
 						});
@@ -238,54 +237,72 @@ app.controller('MainCtrl', function ($scope, $interval, $timeout) {
 
 			riots.unsubscribeAll(callback);
 			setupSpeedCalc();
+			setupRemainingMileage();
 		});
 	};
 
-	$scope.loadThings = function () {
-		if (!window.RIOTS_USER_ID || !window.RIOTS_APP_KEY) {
+	$scope.loadThings = function() {
+		if(!window.RIOTS_USER_ID || !window.RIOTS_APP_KEY) {
 			alert("Please provide RIOTS_APP_KEY and RIOTS_USER_ID for authentication.");
 			return;
 		}
-		riots.auth(null, function () {
+		riots.auth(null, function() {
 			doLoadThings();
-		}, function () {
+		}, function() {
 			alert("Invalid authentication provided. Please check RIOTS_USER_ID and RIOTS_APP_KEY.");
 		});
 	};
 
-	var setupSpeedCalc = function () {
-		if (!$scope.things)
+	var setupSpeedCalc = function() {
+		if(!$scope.things)
 			return;
 		var speedCalc = {
 			property: "location.*",
-			resultProperty: "speed"
+			resultProperty: "speed",
+			triggerFunction: "speed"
 		};
-		speedCalc["function"] = "speed";
-		$.each($scope.things, function (idx, el) {
+		$.each($scope.things, function(idx,el) {
 			speedCalc[THING_ID] = el.id;
-			riots.add.trigger(speedCalc, function (speedCalc) {
+			riots.add.trigger(speedCalc, function(speedCalc) {
 				console.log("added speedCalc", speedCalc);
 			});
 		});
 	};
 
-	$scope.addGeoFence = function () {
-		if ($scope.geoFence && $scope.geoFence.id) {
+	var setupRemainingMileage = function() {
+		if(!$scope.things)
+			return;
+		var mileage = {
+			property: "(location.*)|(batteryPercent)",
+			resultProperty: "mileageRemaining",
+			triggerFunction: "mileageRemaining",
+			config: {
+				percentagePropName: "batteryPercent"
+			}
+		};
+		$.each($scope.things, function(idx,el) {
+			mileage[THING_ID] = el.id;
+			riots.add.trigger(mileage, function(mileage) {
+				console.log("added mileage", mileage);
+			});
+		});
+	};
+
+	$scope.setupGeoFence = function() {
+		if($scope.geoFence && $scope.geoFence.id) {
 			riots.delete.trigger($scope.geoFence.id);
 		}
-
-		$.each($scope.things, function (idx, el) {
+		$.each($scope.things, function(idx,el) {
 			delete el.properties.isInCurrentGeoFence;
-			if (el.marker) {
+			if(el.marker) {
 				el.marker.setIcon(getIcon("marker_azure.png"));
 			}
 		});
-
-		// create new geo fence object
-		var center = $scope.overviewMap.getCenter();
+		var center = $scope.map.getCenter();
 		$scope.geoFence = {
 			property: "location.*",
 			resultProperty: GEO_FENCE,
+			triggerFunction: "geoFence",
 			config: {
 				center: {
 					latitude: center.lat,
@@ -294,28 +311,27 @@ app.controller('MainCtrl', function ($scope, $interval, $timeout) {
 				diameter: $scope.diameter
 			}
 		};
-
 		$scope.geoFence["function"] = "geoFence";
-		riots.add.trigger($scope.geoFence, function (fence) {
-			$scope.$apply(function () {
+		riots.add.trigger($scope.geoFence, function(fence) {
+			$scope.$apply(function() {
 				$scope.geoFence = fence;
 			});
 			var loc = [fence.config.center.latitude, fence.config.center.longitude];
-			if (!$scope.currentDiameter) {
+			if(!$scope.currentDiameter) {
 				$scope.currentDiameter = L.circle(loc, fence.config.diameter);
-				$scope.currentDiameter.addTo($scope.overviewMap);
+				$scope.currentDiameter.addTo($scope.map);
 			} else {
 				$scope.currentDiameter.setLatLng(loc);
 				$scope.currentDiameter.setRadius(fence.config.diameter);
 			}
 		});
-	}
+	};
 
 	/* register event listeners */
-	$scope.$watch("RIOTS_APP_KEY", function () {
+	$scope.$watch("RIOTS_APP_KEY", function() {
 		window.RIOTS_APP_KEY = $scope.RIOTS_APP_KEY;
 	});
-	$scope.$watch("RIOTS_USER_ID", function () {
+	$scope.$watch("RIOTS_USER_ID", function() {
 		window.RIOTS_USER_ID = $scope.RIOTS_USER_ID;
 	});
 

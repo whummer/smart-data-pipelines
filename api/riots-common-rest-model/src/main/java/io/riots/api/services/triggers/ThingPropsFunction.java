@@ -39,7 +39,7 @@ public class ThingPropsFunction extends Trigger {
 	 * Function which defined this trigger.
 	 */
 	@JsonProperty
-	private String function;
+	private String triggerFunction;
 	/**
 	 * Configuration object.
 	 */
@@ -50,14 +50,17 @@ public class ThingPropsFunction extends Trigger {
 	public String getThingId() {
 		return thingId;
 	}
-	public String getFunction() {
-		return function;
+	public String getTriggerFunction() {
+		return triggerFunction;
 	}
 	public String getPropertyName() {
 		return propertyName;
 	}
 	public String getResultPropertyName() {
 		return resultPropertyName;
+	}
+	public void setResultPropertyName(String resultPropertyName) {
+		this.resultPropertyName = resultPropertyName;
 	}
 	public long getWindowSize() {
 		return windowSize;
