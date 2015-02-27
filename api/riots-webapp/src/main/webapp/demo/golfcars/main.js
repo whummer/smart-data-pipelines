@@ -143,6 +143,7 @@ app.controller('MainCtrl', function ($scope) {
 				});
 			}
 			riots.unsubscribeAll(callback);
+			setupUsageCalc();
 			setupSpeedCalc();
 			setupRemainingMileage();
 		});
@@ -172,6 +173,27 @@ app.controller('MainCtrl', function ($scope) {
 			speedCalc[THING_ID] = el.id;
 			riots.add.trigger(speedCalc, function(speedCalc) {
 				console.log("added speedCalc", speedCalc);
+			});
+		});
+	};
+
+	var setupUsageCalc = function() {
+		if(!$scope.things)
+			return;
+		var usageCalc = {
+			property: "(location.*)|(batteryPercent)",
+			triggerProperty: "location.*",
+			resultProperty: "batteryPercent",
+			triggerFunction: "gasUsage",
+			config: {
+				levelPropName: "batteryPercent",
+				consumptionPercentPerKm: 1
+			}
+		};
+		$.each($scope.things, function(idx,el) {
+			usageCalc[THING_ID] = el.id;
+			riots.add.trigger(usageCalc, function(usageCalc) {
+				console.log("added usageCalc", usageCalc);
 			});
 		});
 	};

@@ -44,5 +44,6 @@ public class Constants {
 	public static final String USER_ID = "user-id";
 	public static final String START_TIME = "start-time";
 	public static final String END_TIME = "end-time";
+	public static final String TRIGGER_PROPERTY_NAME = "triggerProperty";
 
 }

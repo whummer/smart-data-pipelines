@@ -33,6 +33,7 @@ public class TriggerFunctionListener {
 	public static final String VAR_NAME_VALUES = "VALUES";
 	public static final String VAR_NAME_CONFIG = "CONFIG";
 	public static final String VAR_NAME_FUNCTION = "FUNCTION";
+	public static final String SRC_FILE_UTIL = "util/common";
 
 	@Autowired
 	private EventBrokerComponent eventBroker;
@@ -58,13 +59,17 @@ public class TriggerFunctionListener {
 			return;
 		}
 
-		//System.out.println("--> " + functions);
 		for(FuncExecState s : functions.values()) {
 			boolean thingMatches = StringUtils.isEmpty(s.function.getThingId()) ||
 					prop.getThingId().matches(s.function.getThingId());
 			boolean propMatches = StringUtils.isEmpty(s.function.getPropertyName()) ||
 					prop.getPropertyName().matches(s.function.getPropertyName());
+			boolean triggerPropMatches = StringUtils.isEmpty(s.function.getTriggerPropertyName()) ||
+					prop.getPropertyName().matches(s.function.getTriggerPropertyName());
 			if(thingMatches && propMatches) {
+				addValueToFunctionState(s, prop);
+			}
+			if(thingMatches && triggerPropMatches) {
 				executeFunction(s, prop);
 			}
 		}
@@ -78,12 +83,15 @@ public class TriggerFunctionListener {
 			if(StringUtils.isEmpty(function.getResultPropertyName())) {
 				function.setResultPropertyName(function.getTriggerFunction());
 			}
+			if(StringUtils.isEmpty(function.getTriggerPropertyName())) {
+				function.setTriggerPropertyName(function.getPropertyName());
+			}
 			if(function.getConfig() == null) {
 				function.setConfig(new HashMap<String,Object>());
 			}
 
 			/* include util functions. TODO make configurable */
-			String srcUtil = ScriptUtil.getScriptCode("util/geo");
+			String srcUtil = ScriptUtil.getScriptCode(SRC_FILE_UTIL);
 			/* load requested script code */
 			String src = ScriptUtil.getScriptCode(function.getTriggerFunction());
 
@@ -93,11 +101,11 @@ public class TriggerFunctionListener {
 			state.function = function;
 			state.engine = ScriptUtil.getEngineJS();
 			List<PropertyValue> values = propValQuery.retrieveValues(function.getThingId(), 
-					function.getPropertyName(), (int)function.getWindowSize());
+					function.getPropertyName(), function.getWindowSize());
 			values = new LinkedList<PropertyValue>(values); // make modifiable list
 			state.variables.put(VAR_NAME_FUNCTION, function);
-			state.variables.put(VAR_NAME_VALUES, values);
 			state.variables.put(VAR_NAME_CONFIG, function.getConfig());
+			ScriptUtil.eval(state.engine, VAR_NAME_VALUES + " = []");
 
 			/* initialize code engine */
 			ScriptUtil.bindVariables(state.engine, state.variables);
@@ -108,14 +116,12 @@ public class TriggerFunctionListener {
 		return function;
 	}
 
+	private void addValueToFunctionState(FuncExecState s, PropertyValue prop) {
+		ScriptUtil.pushToList(s.engine, VAR_NAME_VALUES, prop);
+		ScriptUtil.ensureListMaxSize(s.engine, VAR_NAME_VALUES, s.function.getWindowSize());
+	}
+
 	private void executeFunction(FuncExecState s, PropertyValue prop) {
-		@SuppressWarnings("unchecked")
-		List<PropertyValue> list = (List<PropertyValue>) s.variables.get(VAR_NAME_VALUES);
-		list.add(prop);
-		while(s.variables.size() > s.function.getWindowSize()) {
-			list.remove(0);
-		}
-		System.out.println("Executing function " + s.function.getTriggerFunction());
 		Object result = ScriptUtil.eval(s.engine, "main();");
 
 		if(result != null) {
@@ -125,7 +131,7 @@ public class TriggerFunctionListener {
 			propValue.setThingId(prop.getThingId());
 			propValue.setValue(result);
 			propValue.setTimestamp(prop.getTimestamp());
-			eventBroker.sendOutboundChangeNotifyMessage(propValue);
+			eventBroker.sendInboundPropUpdateMessage(propValue);
 		}
 	}
 

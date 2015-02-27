@@ -2,6 +2,9 @@
  * compute distance between two points
  */
 function distanceInMeters(p1, p2) {
+	if(!p1 || !p2) {
+		return -1;
+	}
 	var lat1 = p1.latitude;
 	var lat2 = p2.latitude;
 	var lon1 = p1.longitude;
@@ -36,23 +39,34 @@ function clone(obj) {
  * changes containing latitude and longitude changes.
  */
 function constructPath(values) {
-	var curLoc = {};
+	var curState = {};
 	var path = [];
 	var i;
 	for(i = 0; i < values.length; i ++) {
 		v = values[i];
-		curLoc[v.getPropertyName()] = v.getValue();
-		curLoc["time"] = v.getTimestamp();
-
-		if(v.getPropertyName().endsWith("longitude")) {
-			curLoc.longitude = v.getValue();
-		}
-		if(v.getPropertyName().endsWith("latitude")) {
-			curLoc.latitude = v.getValue();
-		}
-		path.push(clone(curLoc));
+		setProperty(curState, v.property, v.value)
+		curState["time"] = v.timestamp;
+		var cloned = clone(curState);
+		path.push(cloned);
 	}
 	return path;
+}
+
+/**
+ * Set a property value. The key may contain dots to navigate 
+ * from parent to child properties (e.g., parent.child.grandchild).
+ */
+function setProperty(obj, key, value) {
+	if(key.indexOf(".") >= 0) {
+		var parentProp = key.substring(0, key.indexOf("."));
+		var childProp = key.substring(key.indexOf(".") + 1);
+		if(!obj[parentProp]) {
+			obj[parentProp] = {};
+		}
+		setProperty(obj[parentProp], childProp, value);
+	} else {
+		obj[key] = value;
+	}
 }
 
 /**
@@ -63,7 +77,7 @@ function constructPathMap(values) {
 	var map = {};
 	for(var i = 0; i < values.length; i ++) {
 		var v = values[i];
-		var thingId = v.getThingId();
+		var thingId = v["thing-id"];
 		if(!map[thingId]) {
 			map[thingId] = [];
 		}

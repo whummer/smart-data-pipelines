@@ -1,5 +1,8 @@
 package io.riots.core.util.script;
 
+import io.riots.api.services.scenarios.PropertyValue;
+import io.riots.core.util.JSONUtil;
+
 import java.io.IOException;
 import java.util.Map;
 
@@ -83,6 +86,19 @@ public class ScriptUtil {
 	
 	public static Object runMain(ScriptEngine engine) {
 		return eval(engine, "main()");
+	}
+
+	public static void pushToList(ScriptEngine engine, String listName,
+			PropertyValue propertyValue) {
+		String tmpName = "__tmpStr__";
+		engine.put(tmpName, JSONUtil.toJSON(propertyValue));
+		ScriptUtil.eval(engine, listName + ".push(JSON.parse(" + tmpName + "))");
+	}
+
+	public static void ensureListMaxSize(ScriptEngine engine,
+			String listName, int maxSize) {
+		eval(engine, "while(" + listName + ".length > " + maxSize + ") { "
+				+ listName + ".shift(); }");
 	}
 
 }
