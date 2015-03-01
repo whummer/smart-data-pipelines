@@ -144,6 +144,8 @@ app.controller('MainCtrl', function ($scope, $log) {
 				}, function (data) {
 					$scope.$apply(function () {
 
+						//$log.debug("Got update for property: ", propName);
+
 						if (propName == GEO_FENCE) {
 							if (!thing.properties[propName]) {
 								thing.properties[propName] = {}
@@ -183,7 +185,14 @@ app.controller('MainCtrl', function ($scope, $log) {
 
 						if (propName == "speed") {
 							angular.element('#' + thing.id + "_speed")
-									.val(thing.properties.speed * 3.6)
+									.val(thing.properties.speed * 3.6) // m/s -> km/h
+									.trigger('change')
+						}
+
+
+						if (propName == "fuelLevel") {
+							angular.element('#' + thing.id + "_fuel")
+									.val(thing.properties.fuelLevel) // m/s -> km/h
 									.trigger('change')
 						}
 					});
