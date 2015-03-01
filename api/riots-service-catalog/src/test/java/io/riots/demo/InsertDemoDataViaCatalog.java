@@ -53,7 +53,9 @@ import java.util.List;
 public class InsertDemoDataViaCatalog {
 
     static final Logger LOG = Logger.getLogger(InsertDemoDataViaCatalog.class);
-
+	private static CatalogService catalog;
+	private static SimulationService simulations;
+	private static BillingService billing;
     @Autowired
     ServiceClientFactory serviceClientFactory;
 
@@ -63,22 +65,13 @@ public class InsertDemoDataViaCatalog {
             System.setProperty(prop, "http://localhost:10000/eureka/");
         }
     }
+	@Autowired
+	ApplicationContext context;
 
     @Bean
     public HttpServletRequest getServletRequest() {
         return new MockHttpServletRequest();
     }
-
-    @Autowired
-    ApplicationContext context;
-
-
-    public static class TestConfiguration {
-    }
-
-    private static CatalogService catalog;
-    private static SimulationService simulations;
-    private static BillingService billing;
 
     @Before
     public void setup() {

@@ -151,7 +151,11 @@ function AppController($scope, $http, $compile, growl) {
 		} else if(type == "error") {
 			func = g.warn ? g.warn : g.addErrorMessage;
 		}
-		func(message, options);
+
+		console.log("HERE WE GROWL");
+
+		g.warning(message, options);
+		//func(message, options);
 	}
 
 	$scope.range = function(from, to, step) {

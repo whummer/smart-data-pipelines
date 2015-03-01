@@ -110,7 +110,12 @@
 						</div>
 					</div>
 					<div class="clearfix">
-						<button class="pull-right btn btn-sm btn-primary" ng-click="loadThings()">Reload Configuration</button>
+						<button class="pull-right btn btn-sm btn-warning" ng-click="removeAllTriggers()">
+							Remove All Triggers
+						</button>
+						<button class="pull-right btn btn-sm btn-primary" ng-click="reloadConfiguration()">
+							Reload Configuration
+						</button>
 					</div>
 				</form>
 			</div>
@@ -119,32 +124,44 @@
 
 
 	<!-- ACTIVE CARS -->
-	<div class="col-lg-12">
+	<div class="col-lg-12" ng-if="things.length">
 		<div class="ibox float-e-margins">
 			<div class="ibox-title"><strong>Active Cars</strong></div>
 			<div class="ibox-content">
 				<table class="table table-bordered table-hover">
-					<thead><tr>
+					<thead>
+					<tr>
 						<th>Image</th>
 						<th>ID</th>
 						<th>Name</th>
 						<th>Location</th>
-						<th>Battery Level</th>
+						<th>Fuel Level</th>
 						<th>Remaining Mileage</th>
 						<th>Tire Pressure</th>
 						<th>Speed</th>
 						<th>Within Geo Fence</th>
-					</tr></thead>
+					</tr>
+					</thead>
 					<tr ng-repeat="thing in things">
 						<td><img ng-src="{{thing.img}}" style="height: 30px;"/></td>
-						<td>{{thing.id}}</td>
-						<td><b>{{thing.name}}</b></td>
-						<td>{{thing.properties['location.latitude']}},{{thing.properties['location.longitude']}}</td>
-						<td>{{thing.properties.batteryPercent}} %</td>
-						<td>{{thing.properties.mileageRemaining}} m</td>
-						<td>{{thing.properties.pressure}} %</td>
-						<td>{{thing.properties.speed}} m/s</td>
-						<td>{{thing.properties.isInCurrentGeoFence}}</td>
+						<td style="vertical-align: middle">{{thing.id}}</td>
+						<td style="vertical-align: middle"><b>{{thing.name}}</b></td>
+						<td style="vertical-align: middle">
+							{{thing.properties['location.latitude'] | number : 6 }},
+							{{thing.properties['location.longitude'] | number : 6}}
+						</td>
+						<td style="vertical-align: middle">{{thing.properties.fuelLevel | number :2}} %</td>
+						<td style="vertical-align: middle">{{(thing.properties.mileageRemaining / 1000) | number : 3}} km</td>
+						<td style="vertical-align: middle">{{thing.properties.pressure}} %</td>
+						<td style="vertical-align: middle">{{thing.properties.speed | number : 2}} m/s</td>
+						<td style="vertical-align: middle">
+							<span ng-repeat="geoFence in thing.properties.withinGeoFences">
+								<span class="label" style="color: white; background-color: {{geoFence.config.color}}">
+									{{geoFence.name}}
+								</span>
+								<span ng-show="!$last">&nbsp;&nbsp;</span>
+							</span>
+						</td>
 					</tr>
 				</table>
 			</div>
@@ -180,7 +197,7 @@
 										knob-options=""></knob>
 
 						</div>
-						<div class="col-sm-4 text-center" >
+						<div class="col-sm-4 text-center">
 							<knob id="{{thing.id + '_fuel'}}"
 										knob-data="{{thing.properties.fuelLevel}}" class="m-r-sm" data-skin="tron"
 										data-fgColor="#00AC23"
@@ -207,78 +224,15 @@
 					</div>
 
 					<div class="row">
-						<div class="col-sm-4 col-xs-4 text-center"><strong>Speed</strong></div>
-						<div class="col-sm-4 col-xs-4 text-center"><strong>Fuel Level</strong></div>
-						<div class="col-sm-4 col-xs-4 text-center"><strong>Remaining Milage</strong></div>
+						<div class="col-sm-4 col-xs-4 text-center"><strong>Speed (km/h)</strong></div>
+						<div class="col-sm-4 col-xs-4 text-center"><strong>Fuel Level (%)</strong></div>
+						<div class="col-sm-4 col-xs-4 text-center"><strong>Remaining Milage (km)</strong></div>
 					</div>
 
 				</div>
 			</div>
 		</div>
-	</div><!--<div class="col-lg-6 col-md-12 col-sm-12" ng-repeat="car in activeCars">
-		<div class="ibox float-e-margins">
-			<div class="ibox-title"><span class="fa fa-car"></span> <strong>{{car.name}}</strong></div>
-			<div class="ibox-content">
-
-				<div class="row">
-
-					<div class="col-sm-12 col-xs-12">
-						<div id="{{car.id + '_map'}}" style="height: 300px;"></div>
-					</div>
-				</div>
-
-				<div class="row" style="margin-top: 15px">
-					<div class="col-sm-12 col-xs-12 text-center">
-						<div class="col-sm-4">
-							<knob id="{{car.id + '_speed'}}"
-										knob-data="{{car.speed}}" class="m-r-sm" data-skin="tron"
-										data-fgColor="#1AB394"
-										data-width="85"
-										data-height="85"
-										data-thickness="0.1"
-										data-max="260"
-										data-angleOffset=-125
-										data-angleArc=250
-										knob-options=""></knob>
-
-						</div>
-						<div class="col-sm-4 text-center" >
-							<knob id="{{car.id + '_fuel'}}"
-										knob-data="{{car.fuelLevel}}" class="m-r-sm" data-skin="tron"
-										data-fgColor="#00AC23"
-										data-width="85"
-										data-height="85"
-										data-thickness="0.1"
-										data-angleOffset=-125 data-angleArc=250
-										knob-options=""></knob>
-						</div>
-						<div class="col-sm-4 text-center">
-							<knob
-									id="{{car.id + '_milage'}}"
-									knob-data="{{car.milage}}" class="m-r-sm" data-skin="tron"
-									data-fgColor="#00AC23"
-									data-width="85"
-									data-height="85"
-									data-thickness="0.1"
-									data-readOnly="true"
-									data-max="{{car.milage}}"
-									data-angleOffset=-125 data-angleArc=250
-									knob-options=""></knob>
-						</div>
-
-					</div>
-
-					<div class="row">
-						<div class="col-sm-4 col-xs-4 text-center"><strong>Speed</strong></div>
-						<div class="col-sm-4 col-xs-4 text-center"><strong>Remaining Milage</strong></div>
-						<div class="col-sm-4 col-xs-4 text-center"><strong>Fuel Level</strong></div>
-					</div>
-
-				</div>
-			</div>
-		</div>
-	</div>-->
-
+	</div>
 
 	<div class="col-lg-12">
 		<div class="ibox">
@@ -314,6 +268,17 @@
 						</label>
 					</div>
 				</div>
+				<div class="row" style="margin-top: 10px">
+					<div class="col-sm-2">
+						Show Vehicle Tooltip
+					</div>
+					<div class="col-sm-10">
+						<label class="switch">
+							<input class="form-control" type="checkbox" ng-model="showTooltips"/>
+							<i></i>
+						</label>
+					</div>
+				</div>
 
 				<div class="row" style="margin-top: 10px">
 					<div class="col-sm-12">
@@ -339,9 +304,18 @@
 							<input colorpicker type="text" ng-model="geoFenceColor" placeholder="Color"
 										 class="form-control input-sm"/>
 
+							<input class="form-control input-sm" ng-model="voucherDescription" placeholder="Voucher"/>
+
+							<span ng-repeat="voucher in vouchers">
+								<img ng-src="{{voucher.src}}" style="max-width: 30px; max-height: 30px; cursor: pointer"
+										 ng-click="selectVoucher(voucher)"/>
+							</span>
+
+
 							<div class="form-group">
 								<button class="pull-right btn btn-primary btn-sm" ng-click="setupGeoFence()">Setup Geo
-									Fence</button>
+									Fence
+								</button>
 							</div>
 
 						</form>
@@ -349,7 +323,7 @@
 
 				</div>
 
-				<div class="row" style="margin-top: 10px">
+				<div class="row" style="margin-top: 10px" ng-if="geoFences.length">
 					<div class="col-sm-12">
 						<table class="table table-bordered table-hover">
 							<thead>
@@ -373,14 +347,17 @@
 									{{geoFence.name}}
 								</td>
 								<td>
-									{{geoFence.config.center.latitude}}, {{geoFence.config.center.longitude}}
+									{{geoFence.config.center.latitude | number : 6}}, {{geoFence.config.center.longitude | number : 6}}
 								</td>
 								<td>
 									{{geoFence.config.diameter}}
 								</td>
 
 								<td>
-									{{geoFence.vouchers}}
+									<img ng-src="{{geoFence.config.voucher.src}}"
+											 style="max-width: 30px; max-height: 30px"
+											 alt="{{geoFence.config.voucher.id}}"
+											 ng-show="geoFence.config.voucher"/>
 								</td>
 								<td>
 									{{carsInFence(geoFence)}}
@@ -399,8 +376,6 @@
 						</table>
 					</div>
 				</div>
-
-
 
 
 			</div>

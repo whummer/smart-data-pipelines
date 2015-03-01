@@ -39,7 +39,7 @@ function clone(obj) {
  * Construct the path from a sequence of property value
  * changes containing latitude and longitude changes.
  */
-function constructPath(values) {
+/*function constructPath(values) {
 	var curLoc = {};
 	var path = [];
 	var i;
@@ -54,9 +54,9 @@ function constructPath(values) {
 	}
 	
 	return path;
-}
+}*/
 
-/*function constructPath(values) {
+function constructPath(values) {
 	var curState = {};
 	var path = [];
 	var i;
@@ -70,10 +70,6 @@ function constructPath(values) {
 	return path;
 }
 
-*//**
- * Set a property value. The key may contain dots to navigate
- * from parent to child properties (e.g., parent.child.grandchild).
- *//*
 function setProperty(obj, key, value) {
 	if(key.indexOf(".") >= 0) {
 		var parentProp = key.substring(0, key.indexOf("."));
@@ -85,7 +81,7 @@ function setProperty(obj, key, value) {
 	} else {
 		obj[key] = value;
 	}
-}*/
+}
 
 /**
  * Construct a map of object property values,

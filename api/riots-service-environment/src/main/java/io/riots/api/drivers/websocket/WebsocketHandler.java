@@ -30,7 +30,7 @@ public class WebsocketHandler extends TextWebSocketHandler {
 	@JmsListener(containerFactory = EventBroker.CONTAINER_FACTORY_NAME, 
 			destination = EventBroker.MQ_OUTBOUND_PROP_CHANGE_NOTIFY)
 	public void processEvent(String data) {
-		System.out.println("websocket data out: " + data);
+		//System.out.println("websocket data out: " + data);
 		PropertyValue obj = JSONUtil.fromJSON(data, PropertyValue.class);
 		for (String key : subscriptions.keySet()) {
 			WSSubscription s = subscriptions.get(key);
