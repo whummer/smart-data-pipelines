@@ -64,7 +64,12 @@ public class TriggerFunctionListener {
 					prop.getThingId().matches(s.function.getThingId());
 			boolean propMatches = StringUtils.isEmpty(s.function.getPropertyName()) ||
 					prop.getPropertyName().matches(s.function.getPropertyName());
+			boolean triggerPropMatches = StringUtils.isEmpty(s.function.getTriggerPropertyName()) ||
+					prop.getPropertyName().matches(s.function.getTriggerPropertyName());
 			if(thingMatches && propMatches) {
+				addValueToFunctionState(s, prop);
+			}
+			if(thingMatches && triggerPropMatches) {
 				executeFunction(s, prop);
 			}
 		}
@@ -78,12 +83,15 @@ public class TriggerFunctionListener {
 			if(StringUtils.isEmpty(function.getResultPropertyName())) {
 				function.setResultPropertyName(function.getTriggerFunction());
 			}
+			if(StringUtils.isEmpty(function.getTriggerPropertyName())) {
+				function.setTriggerPropertyName(function.getPropertyName());
+			}
 			if(function.getConfig() == null) {
 				function.setConfig(new HashMap<String,Object>());
 			}
 
 			/* include util functions. TODO make configurable */
-			String srcUtil = ScriptUtil.getScriptCode("util/geo");
+			String srcUtil = ScriptUtil.getScriptCode(SRC_FILE_UTIL);
 			/* load requested script code */
 			String src = ScriptUtil.getScriptCode(function.getTriggerFunction());
 
@@ -100,6 +108,7 @@ public class TriggerFunctionListener {
 			values = new LinkedList<String>(values); // make modifiable list
 			state.variables.put(VAR_NAME_FUNCTION, function);
 			state.variables.put(VAR_NAME_VALUES, values);
+			//ScriptUtil.eval(state.engine, VAR_NAME_VALUES + " = []");
 			state.variables.put(VAR_NAME_CONFIG, function.getConfig());
 
 			/* initialize code engine */
@@ -109,6 +118,11 @@ public class TriggerFunctionListener {
 			LOG.warn("Unable to add trigger function", e);
 		}
 		return function;
+	}
+
+	private void addValueToFunctionState(FuncExecState s, PropertyValue prop) {
+		ScriptUtil.pushToList(s.engine, VAR_NAME_VALUES, prop);
+		ScriptUtil.ensureListMaxSize(s.engine, VAR_NAME_VALUES, s.function.getWindowSize());
 	}
 
 	private void executeFunction(FuncExecState s, PropertyValue prop) {
@@ -134,6 +148,20 @@ public class TriggerFunctionListener {
 			eventBroker.sendOutboundChangeNotifyMessage(propValue);
 		}
 	}
+
+	/*private void executeFunction(FuncExecState s, PropertyValue prop) {
+		Object result = ScriptUtil.eval(s.engine, "main();");
+
+		if(result != null) {
+			// fire new event with result
+			PropertyValue propValue = new PropertyValue();
+			propValue.setPropertyName(s.function.getResultPropertyName());
+			propValue.setThingId(prop.getThingId());
+			propValue.setValue(result);
+			propValue.setTimestamp(prop.getTimestamp());
+			eventBroker.sendInboundPropUpdateMessage(propValue);
+		}
+	}*/
 
 	public FuncExecState removeFunction(String id) {
 		FuncExecState deleted = functions.remove(id);

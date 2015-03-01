@@ -52,34 +52,42 @@ import java.util.List;
 @EnableConfigurationProperties
 public class InsertDemoDataViaCatalog {
 
-	static final Logger LOG = Logger.getLogger(InsertDemoDataViaCatalog.class);
-	private static CatalogService catalog;
-	private static SimulationService simulations;
-	private static BillingService billing;
-	@Autowired
-	ServiceClientFactory serviceClientFactory;
-	static {
-		String prop = "eureka.client.serviceUrl.defaultZone";
-		if (System.getProperty(prop) == null) {
-			System.setProperty(prop, "http://localhost:10000/eureka/");
-		}
-	}
-	@Autowired
-	ApplicationContext context;
+    static final Logger LOG = Logger.getLogger(InsertDemoDataViaCatalog.class);
 
-	@Bean
-	public HttpServletRequest getServletRequest() {
-		return new MockHttpServletRequest();
-	}
+    @Autowired
+    ServiceClientFactory serviceClientFactory;
 
-	@Before
-	public void setup() {
-		try {
-			catalog = serviceClientFactory.getCatalogServiceClient();
-			simulations = serviceClientFactory.getSimulationsServiceClient();
-			billing = serviceClientFactory.getBillingServiceClient(AuthHeaders.INTERNAL_CALL);
+    static {
+        String prop = "eureka.client.serviceUrl.defaultZone";
+        if (System.getProperty(prop) == null) {
+            System.setProperty(prop, "http://localhost:10000/eureka/");
+        }
+    }
 
-			// TODO uncomment to insert test data into public webapp
+    @Bean
+    public HttpServletRequest getServletRequest() {
+        return new MockHttpServletRequest();
+    }
+
+    @Autowired
+    ApplicationContext context;
+
+
+    public static class TestConfiguration {
+    }
+
+    private static CatalogService catalog;
+    private static SimulationService simulations;
+    private static BillingService billing;
+
+    @Before
+    public void setup() {
+        try {
+            catalog = serviceClientFactory.getCatalogServiceClient();
+            simulations = serviceClientFactory.getSimulationsServiceClient();
+            billing = serviceClientFactory.getBillingServiceClient(AuthHeaders.INTERNAL_CALL);
+
+            // TODO uncomment to insert test data into public webapp
 //            catalog = serviceClientFactory.getServiceInstanceForURL(
 //            		"http://platform.riots.io:8083/api/v1", CatalogService.class);
 //            simulations = serviceClientFactory.getServiceInstanceForURL(
@@ -87,53 +95,53 @@ public class InsertDemoDataViaCatalog {
 //            billing = serviceClientFactory.getServiceInstanceForURL(
 //            		"http://platform.riots.io:8086/api/v1", BillingService.class);
 
-			WebClient.client(simulations).header(AuthHeaders.HEADER_AUTH_EMAIL, "test@riots.io");
-		} catch (Exception e) {
-			e.printStackTrace();
-			/* services not running, do not run this test class */
-		}
-	}
+            WebClient.client(simulations).header(AuthHeaders.HEADER_AUTH_EMAIL, "test@riots.io");
+        } catch (Exception e) {
+            e.printStackTrace();
+            /* services not running, do not run this test class */
+        }
+    }
 
-	@Test
-	public void insertData() throws IOException {
-		if (catalog == null || simulations == null) {
-			LOG.info("Services not available, skipping test. Not inserting data.");
-			return;
-		}
-		insertPropData();
-		insertDevData();
-		insertManufacturerData();
-		insertThingData();
-		insertSimulationData();
-		insertBillingPlans();
-	}
+    @Test
+    public void insertData() throws IOException {
+        if (catalog == null || simulations == null) {
+            LOG.info("Services not available, skipping test. Not inserting data.");
+            return;
+        }
+        insertPropData();
+        insertDevData();
+        insertManufacturerData();
+        insertThingData();
+        insertSimulationData();
+        insertBillingPlans();
+    }
 
-	private void insertBillingPlans() {
-		PricingPlan plan0 = new PricingPlan(UsersService.DEFAULT_BILLING_PLAN, "Trial Account", 0);
+    private void insertBillingPlans() {
+    	PricingPlan plan0 = new PricingPlan(UsersService.DEFAULT_BILLING_PLAN, "Trial Account", 0);
 		plan0.addLimit(UserActionType.API_ACCESS, 1, TimePeriod.PER_SECOND);
 		plan0.addLimit(UserActionType.API_ACCESS, 10000, TimePeriod.OVERALL);
 
-		PricingPlan plan1 = new PricingPlan("personal", "Personal Plan", 5);
+    	PricingPlan plan1 = new PricingPlan("personal", "Personal Plan", 5);
 		plan1.addLimit(UserActionType.API_ACCESS, 5, TimePeriod.PER_SECOND);
 		plan1.addLimit(UserActionType.API_ACCESS, 50000, TimePeriod.BILLING_PERIOD);
 
-		PricingPlan plan2 = new PricingPlan("professional", "Professional Plan", 50);
+    	PricingPlan plan2 = new PricingPlan("professional", "Professional Plan", 50);
 		plan2.addLimit(UserActionType.API_ACCESS, 20, TimePeriod.PER_SECOND);
 		plan2.addLimit(UserActionType.API_ACCESS, 250000, TimePeriod.BILLING_PERIOD);
 
-		PricingPlan plan3 = new PricingPlan("business", "Business Plan", 250);
+    	PricingPlan plan3 = new PricingPlan("business", "Business Plan", 250);
 		plan3.addLimit(UserActionType.API_ACCESS, 100, TimePeriod.PER_SECOND);
 		plan3.addLimit(UserActionType.API_ACCESS, 2000000, TimePeriod.BILLING_PERIOD);
 
-		PricingPlan plan4 = new PricingPlan("pay_per_use", "Pay Per Use", 0);
+    	PricingPlan plan4 = new PricingPlan("pay_per_use", "Pay Per Use", 0);
 
-		List<PricingPlan> list = billing.getPlans();
-		for (PricingPlan p : Arrays.asList(plan0, plan1, plan2, plan3, plan4)) {
-			boolean exists = isIncluded(list, p.getName());
-			if (!exists) {
-				billing.saveBillingPlan(p);
-			}
-		}
+    	List<PricingPlan> list = billing.getPlans();
+    	for(PricingPlan p : Arrays.asList(plan0, plan1, plan2, plan3, plan4)) {
+    		boolean exists = isIncluded(list, p.getName());
+    		if(!exists) {
+    			billing.saveBillingPlan(p);
+    		}
+    	}
 	}
 
 	private void insertSimulationData() {
@@ -167,6 +175,7 @@ public class InsertDemoDataViaCatalog {
 			sim.startTime = 1;
 			sim.endTime = 500;
 			sim.stepInterval = 1;
+			sim.setRepetitions(-1);
 			sim.setLatitude(48.19742);
 			sim.setLongitude(16.37127);
 			sim.setDiameter(1000); // meters
@@ -176,22 +185,22 @@ public class InsertDemoDataViaCatalog {
 		}
 	}
 
-	private void createSimType(List<SimulationType> existing, SimulationType t) {
-		for (SimulationType e : existing) {
+    private void createSimType(List<SimulationType> existing, SimulationType t) {
+        for (SimulationType e : existing) {
 			if (e.getName().equals(t.getName())) {
-				return;
-			}
-		}
-		simulations.createSimType(t);
-	}
+                return;
+            }
+        }
+        simulations.createSimType(t);
+    }
 
-	private ObjectNamed getExisting(List<? extends ObjectNamed> list, String name) {
-		for (ObjectNamed t : list) {
-			if (name.equals(t.getName()))
-				return t;
-		}
-		return null;
-	}
+    private ObjectNamed getExisting(List<? extends ObjectNamed> list, String name) {
+        for (ObjectNamed t : list) {
+            if (name.equals(t.getName()))
+                return t;
+        }
+        return null;
+    }
 
 	private boolean isIncluded(List<? extends ObjectNamed> types, String name) {
 		return getExisting(types, name) != null;
@@ -724,7 +733,5 @@ public class InsertDemoDataViaCatalog {
 		return new String(Base64.encodeBase64(imageBytes));
 	}
 
-	public static class TestConfiguration {
-
-	}
+	
 }

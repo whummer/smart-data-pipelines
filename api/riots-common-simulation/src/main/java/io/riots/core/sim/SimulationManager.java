@@ -18,6 +18,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,6 +30,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class SimulationManager {
 
+	private static final Logger LOG = Logger.getLogger(SimulationManager.class);
 	private static final double MIN_INTERVAL_SEC = 0.1;
 
 	/**
@@ -81,6 +83,8 @@ public class SimulationManager {
 			}
 			PropertyValue value = PropertyValueGenerator.getValueAt(
 					propSim, new Time(currentTick), ctx);
+			value.setTimestamp(System.currentTimeMillis());
+			LOG.debug("Running simulation tick #" + currentTick + ": " + value);
 			try {
 				long timestamp = System.currentTimeMillis();
 				value.setTimestamp(timestamp);
@@ -111,6 +115,7 @@ public class SimulationManager {
 			}
 			SimulationRunner runner = new SimulationRunner(r, propSim);
 			simulationRunners.add(runner);
+			PropertyValueGenerator.prepareValues(propSim);
 			System.out.println("starting runner " + runner + " - " + r + " - " + propSim);
 			ScheduledFuture<?> f = executor.scheduleAtFixedRate(runner, 0,
 					(int) (propSim.getStepInterval() * 1000.0),

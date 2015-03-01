@@ -14,6 +14,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,8 @@ import com.codahale.metrics.annotation.Timed;
  */
 @Service
 public class TriggersServiceImpl implements TriggersService {
+
+	private static final Logger LOG = Logger.getLogger(TriggersServiceImpl.class);
 
 	@Autowired
 	AuthHeaders authHeaders;
@@ -91,10 +94,13 @@ public class TriggersServiceImpl implements TriggersService {
 		t.setCreatorId(user.getId());
 		t.setCreated(new Date());
 		t = (T) triggerCmd.create(t);
-		if(t instanceof GeoFence) {
-			t = (T)geoListener.addGeoFence((GeoFence)t);
-		} else if(t instanceof ThingPropsFunction) {
+//		if(t instanceof GeoFence) {
+//			t = (T)geoListener.addGeoFence((GeoFence)t);
+//		} else 
+		if(t instanceof ThingPropsFunction) {
 			t = (T)funcListener.addFunction((ThingPropsFunction)t);
+		} else {
+			LOG.warn("Unexpected trigger type: " + t);
 		}
 		return t;
 	}
@@ -104,10 +110,13 @@ public class TriggersServiceImpl implements TriggersService {
 		// TODO check permissions
 		//User user = ServiceUtil.assertValidUser(authHeaders, req);
 		t = (T) triggerCmd.update(t);
-		if(t instanceof GeoFence) {
-			t = (T)geoListener.updateGeoFence((GeoFence)t);
-		} else if(t instanceof ThingPropsFunction) {
+//		if(t instanceof GeoFence) {
+//			t = (T)geoListener.updateGeoFence((GeoFence)t);
+//		} else 
+		if(t instanceof ThingPropsFunction) {
 			t = (T)funcListener.updateFunction((ThingPropsFunction)t);
+		} else {
+			LOG.warn("Unexpected trigger type: " + t);
 		}
 		return t;
 	}
@@ -119,10 +128,13 @@ public class TriggersServiceImpl implements TriggersService {
 				triggerClass = t.getClass();
 			}
 		}
-		if(triggerClass == GeoFence.class) {
-			geoListener.removeGeoFence(id);
-		} else if(triggerClass == GeoFence.class) {
+//		if(triggerClass == GeoFence.class) {
+//			geoListener.removeGeoFence(id);
+//		} else
+		if(triggerClass == ThingPropsFunction.class) {
 			funcListener.removeFunction(id);
+		} else {
+			LOG.warn("Unexpected trigger type: " + triggerClass);
 		}
 		triggerCmd.delete(id);
 	}
@@ -136,6 +148,8 @@ public class TriggersServiceImpl implements TriggersService {
 		TriggerType specialType = null;
 		if(specialClass == GeoFence.class) {
 			specialType = TriggerType.GEO_FENCE;
+		} else if(specialClass == ThingPropsFunction.class) {
+			specialType = TriggerType.FUNCTION;
 		}
 		return (List<T>) triggerQuery.findForTypeAndUser(specialType, user.getId());
 	}

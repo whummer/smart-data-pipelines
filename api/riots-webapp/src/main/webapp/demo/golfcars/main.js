@@ -31,6 +31,7 @@ app.controller('MainCtrl', function ($scope, $log) {
 	$scope.geoFences = [];
 	$scope.showLoyalty = true;
 	$scope.showInactive = false;
+	$scope.triggers = {};
 
 	function setupMap(mapName) {
 		var defaultLocation = [48.19742, 16.37127];
@@ -69,6 +70,9 @@ app.controller('MainCtrl', function ($scope, $log) {
 			}
 			$scope.overviewMap.options.__markers.push(thing.overviewMapMarker);
 		}
+		thing.marker.setLatLng([lat, lng]);
+		thing.marker.bindPopup(thing.name + " (" + lat + "," + lng + ")");
+	}
 
 		thing.overviewMapMarker.setLatLng([lat, lng]);
 		thing.overviewMapMarker.bindPopup(thing.name + " (" + lat + "," + lng + ")");
@@ -186,18 +190,18 @@ app.controller('MainCtrl', function ($scope, $log) {
 					subscribeProp(thing, "speed");
 					subscribeProp(thing, "mileageRemaining");
 					subscribeProp(thing, GEO_FENCE);
-					riots.thingType(thing[THING_TYPE], function (thingType) {
-						if (!thingType) return;
-						$scope.$apply(function () {
-							if (thingType[IMAGE_DATA] && thingType[IMAGE_DATA].length) {
+					riots.thingType(thing[THING_TYPE], function(thingType) {
+						if(!thingType) return;
+						$scope.$apply(function() {
+							if(thingType[IMAGE_DATA] && thingType[IMAGE_DATA].length) {
 								thing.img = thingType[IMAGE_DATA][0].href;
 							}
 						});
 					});
 				});
-			};
-
+			}
 			riots.unsubscribeAll(callback);
+			setupUsageCalc();
 			setupSpeedCalc();
 			setupRemainingMileage();
 		});
@@ -218,6 +222,9 @@ app.controller('MainCtrl', function ($scope, $log) {
 	var setupSpeedCalc = function () {
 		if (!$scope.things)
 			return;
+		if($scope.triggers.speedCalc && $scope.triggers.speedCalc.id) {
+			riots.delete.trigger($scope.triggers.speedCalc.id);
+		}
 		var speedCalc = {
 			name: "speedCalculator",
 			property: "location.*",
@@ -232,9 +239,39 @@ app.controller('MainCtrl', function ($scope, $log) {
 		});
 	};
 
+	var setupUsageCalc = function() {
+		if(!$scope.things)
+			return;
+		if($scope.triggers.usageCalc && $scope.triggers.usageCalc.id) {
+			riots.delete.trigger($scope.triggers.usageCalc.id);
+		}
+		var usageCalc = {
+			property: "(location.*)|(batteryPercent)",
+			triggerProperty: "location.*",
+			resultProperty: "batteryPercent",
+			triggerFunction: "gasUsage",
+			config: {
+				levelPropName: "batteryPercent",
+				consumptionPercentPerKm: 1
+			}
+		};
+		$.each($scope.things, function(idx,el) {
+			usageCalc[THING_ID] = el.id;
+			riots.add.trigger(usageCalc, function(usageCalc) {
+				$scope.triggers.usageCalc = usageCalc;
+				console.log("added usageCalc", usageCalc);
+			});
+		});
+	};
+
+	var setupRemainingMileage = function() {
+		if(!$scope.things)
 	var setupRemainingMileage = function () {
 		if (!$scope.things)
 			return;
+		/*if($scope.triggers.mileage && $scope.triggers.mileage.id) {
+			riots.delete.trigger($scope.triggers.mileage.id);
+		}*/
 		var mileage = {
 			name: "remainingMilageCalculator",
 			property: "(location.*)|(fuelLevel)",

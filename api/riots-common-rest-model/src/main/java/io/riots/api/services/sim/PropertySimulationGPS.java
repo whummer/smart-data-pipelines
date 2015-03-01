@@ -32,7 +32,7 @@ public class PropertySimulationGPS extends
 	@JsonProperty
 	protected double diameter;
 	/**
-	 * Diameter of the trace area around the center (in km);
+	 * Maximum speed (in km/h);
 	 */
 	@JsonProperty
 	protected double maxSpeed;

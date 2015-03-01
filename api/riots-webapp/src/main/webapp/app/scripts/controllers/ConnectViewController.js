@@ -12,45 +12,84 @@ define(['app'], function(app) {
 			L.Icon.Default.imagePath = 'img/markers/';
 
 			$scope.udateIntervalMS = "1000";
+			var PROP_LAT = "propLat", PROP_LNG = "propLng";
+			var PROP_ACCEL_X = "propAccelX", PROP_ACCEL_Y = "propAccelY", PROP_ACCEL_Z = "propAccelZ";
+
 			var state = {};
 			var trackedProps = [
-				"propAccelX", "propAccelY", "propAccelZ",
-				"propLat", "propLng"
+				PROP_ACCEL_X, PROP_ACCEL_Y, PROP_ACCEL_Z,
+				PROP_LAT, PROP_LNG
 			];
 
 			function updateInfoPeriodically() {
 				/* update UI */
 				showPosition();
-				if(state.propAccelX) {
-					document.getElementById("x").innerHTML = state.propAccelX;
-					document.getElementById("y").innerHTML = state.propAccelY;
-					document.getElementById("z").innerHTML = state.propAccelZ;
+				if(state[PROP_ACCEL_X]) {
+					document.getElementById("x").innerHTML = state[PROP_ACCEL_X];
+					document.getElementById("y").innerHTML = state[PROP_ACCEL_Y];
+					document.getElementById("z").innerHTML = state[PROP_ACCEL_Z];
 				}
 				/* send data to riots platform... */
 				if($scope.isTracking) {
-					$.each(trackedProps, function(idx,el) {
-						if($scope[el]) {
-							var url = $scope.thingsAPI + "/" +
-								$scope.thingSelected.id + "/" + $scope[el].name;
-							data = {};
-							data[THING_ID] = $scope.thingSelected.id;
-							data[PROPERTY_NAME] = $scope[el].name;
-							data[PROPERTY_VALUE] = state[el];
-							data[TIMESTAMP] = new Date().getTime();
-							console.log("adding data", data);
-							riots.add.data(data, data, null, 
-								function() {
-									// error callback
-									setTracking(false);
-									showErrorDialog("Cannot send thing data.", 
-									"There was an error sending your thing data (this may be a temporary problem). The data transmission has been paused.");
-								}
-							);
-						}
-					});
+					if($scope[PROP_LAT] && $scope[PROP_LNG]) {
+						sendLocationData();
+					}
+					if($scope[PROP_ACCEL_X] && $scope[PROP_ACCEL_Y] && $scope[PROP_ACCEL_Z]) {
+						sendAccelerationData();
+					}
 				}
 				/* timeout next loop */
 				setTimeout(updateInfoPeriodically, parseInt($scope.udateIntervalMS));
+			}
+
+			function sendLocationData() {
+				var propNameLat = $scope[PROP_LAT].name;
+				var propNameLng = $scope[PROP_LNG].name;
+				
+				if(propNameLat.indexOf(".") >= 0 && propNameLng.indexOf(".") >= 0) {
+					var parentPropLat = propNameLat.substring(0, propNameLat.indexOf("."));
+					var parentPropLng = propNameLng.substring(0, propNameLng.indexOf("."));
+					if(parentPropLat == parentPropLng) {
+						/* CASE 1: send lat/lon in a common location object! */
+						var childPropLat = propNameLat.substring(propNameLat.indexOf(".") + 1);
+						var childPropLng = propNameLng.substring(propNameLng.indexOf(".") + 1);
+						var value = {};
+						value[childPropLat] = state[PROP_LAT];
+						value[childPropLng] = state[PROP_LNG];
+						sendData(parentPropLat, value);
+						return;
+					}
+				}
+				/* CASE 2: send latitude and longitude separately! */
+				sendData(propNameLat, state[PROP_LAT]);
+				sendData(propNameLng, state[PROP_LNG]);
+			}
+
+			function sendAccelerationData() {
+				// TODO send in a common parent prop (see location above)
+				sendData($scope[PROP_ACCEL_X].name, state[PROP_ACCEL_X]);
+				sendData($scope[PROP_ACCEL_Y].name, state[PROP_ACCEL_Y]);
+				sendData($scope[PROP_ACCEL_Z].name, state[PROP_ACCEL_Z]);
+			}
+
+			function sendData(propName, propValue) {
+				var url = $scope.thingsAPI + "/" +
+					$scope.thingSelected.id + "/" + propName;
+				data = {};
+				data[THING_ID] = $scope.thingSelected.id;
+				data[PROPERTY_NAME] = propName;
+				data[PROPERTY_VALUE] = propValue;
+				data[TIMESTAMP] = new Date().getTime();
+				console.log("adding data", data);
+				riots.add.data(data, data, null,
+					function() {
+						// error callback
+						setTracking(false);
+						showErrorDialog("Cannot send thing data.", 
+						"There was an error sending your thing data (this may be a temporary problem). " +
+						"The data transmission has been paused.");
+					}
+				);
 			}
 
 			function getAndStorePositionPeriodically(position) {

@@ -20,10 +20,15 @@ public class ThingPropsFunction extends Trigger {
 	@JsonProperty(Constants.THING_ID)
 	private String thingId;
 	/**
-	 * Thing property to apply this trigger function to.
+	 * Thing property(ies) to apply this trigger function to (regex).
 	 */
 	@JsonProperty(Constants.PROPERTY_NAME)
 	private String propertyName;
+	/**
+	 * Thing property(ies) which trigger evaluation of this function (regex).
+	 */
+	@JsonProperty(Constants.TRIGGER_PROPERTY_NAME)
+	private String triggerPropertyName;
 	/**
 	 * Thing property to store the result to.
 	 */
@@ -34,7 +39,7 @@ public class ThingPropsFunction extends Trigger {
 	 * values to consider in the function processing.
 	 */
 	@JsonProperty
-	private long windowSize = 100;
+	private int windowSize = 100;
 	/**
 	 * Function which defined this trigger.
 	 */
@@ -59,10 +64,16 @@ public class ThingPropsFunction extends Trigger {
 	public String getResultPropertyName() {
 		return resultPropertyName;
 	}
+	public String getTriggerPropertyName() {
+		return triggerPropertyName;
+	}
+	public void setTriggerPropertyName(String triggerPropertyName) {
+		this.triggerPropertyName = triggerPropertyName;
+	}
 	public void setResultPropertyName(String resultPropertyName) {
 		this.resultPropertyName = resultPropertyName;
 	}
-	public long getWindowSize() {
+	public int getWindowSize() {
 		return windowSize;
 	}
 	public Object getConfig() {
