@@ -101,12 +101,14 @@ public class InsertDemoDataViaCatalog {
             LOG.info("Services not available, skipping test. Not inserting data.");
             return;
         }
+/*
         insertPropData();
         insertDevData();
         insertManufacturerData();
         insertThingData();
+*/
         insertSimulationData();
-        insertBillingPlans();
+//        insertBillingPlans();
     }
 
     private void insertBillingPlans() {

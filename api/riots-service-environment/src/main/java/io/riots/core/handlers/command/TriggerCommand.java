@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * @author whummer
  */
@@ -33,4 +35,9 @@ public class TriggerCommand {
     public void delete(String id) {
         repository.delete(id);
     }
+
+	public void deleteAllForCreator(String creatorId) {
+		List<Trigger> triggers = repository.findByCreatorId(creatorId);
+		repository.delete(triggers);
+	}
 }

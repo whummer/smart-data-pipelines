@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 /**
  * @author whummer
@@ -45,6 +46,7 @@ public class TriggerFunctionListener {
 			destination = EventBroker.MQ_INBOUND_PROP_UPDATE,
 			concurrency = "1")
 	public void processEvent(String data) {
+		LOG.info("Got data: " + data);
 		PropertyValue prop = JSONUtil.fromJSON(data, PropertyValue.class);
 		if (prop == null || prop.getPropertyName() == null) {
 			LOG.warn("Received null property: " + prop);
@@ -111,6 +113,7 @@ public class TriggerFunctionListener {
 
 
 	private void addValueToFunctionState(FuncExecState s, PropertyValue prop) {
+		Assert.notNull(s.engine);
 		ScriptUtil.pushToList(s.engine, VAR_NAME_VALUES, prop);
 		ScriptUtil.ensureListMaxSize(s.engine, VAR_NAME_VALUES, s.function.getWindowSize());
 	}

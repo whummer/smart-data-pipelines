@@ -31,10 +31,13 @@ app.controller('MainCtrl', function ($scope, $log) {
 			$scope.showLoyalty = true;
 			$scope.showInactive = false;
 			$scope.showTooltips = false;
+			$scope.geoFenceLayerGroup = L.layerGroup();
+			$scope.removeExistingTriggers = true;
+
 			$scope.triggers = {
 				usageCalc: {},
-				speedCalc : {},
-				mileage : {}
+				speedCalc: {},
+				mileage: {}
 			};
 
 			$scope.vouchers = [
@@ -42,17 +45,15 @@ app.controller('MainCtrl', function ($scope, $log) {
 				{id: "omv", src: "omv.jpeg"}
 			];
 
-
-
 			//
 			// functions for maps setup
 			//
-			function setupMap(mapName) {
+			function setupMap(mapName, zoomLevel) {
 				var defaultLocation = [48.19742, 16.37127];
 				var map = L.map(mapName, {
 					"maxZoom": 23,
 					"__markers": []
-				}).setView(defaultLocation, 18).on("mouseup", function (e) {
+				}).setView(defaultLocation, zoomLevel).on("mouseup", function (e) {
 					//var newLoc = $scope.overviewMap.getCenter();
 				});
 				L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
@@ -67,55 +68,74 @@ app.controller('MainCtrl', function ($scope, $log) {
 			var addVehicleMaps = function () {
 				angular.forEach($scope.things, function (thing) {
 					var mapId = thing.id + "_map";
-					$scope.vehicleMaps[mapId] = setupMap(mapId);
+					$scope.vehicleMaps[mapId] = setupMap(mapId, 16);
 				});
 			};
 
 			//
 			// functions for map markers
 			//
-			var setMarker = function (thing) {
-				var lat = thing.properties["location.latitude"];
-				var lng = thing.properties["location.longitude"];
+			var getGeofenceListForPopup = function (vehicle) {
+				var geoFenceList = "";
+				angular.forEach(vehicle.properties.withinGeoFences, function (geoFence) {
+					geoFenceList += "<span class='label' style='color: white; background-color: " + geoFence.config.color + "'>";
+					geoFenceList += geoFence.name + "</span>";
+					geoFenceList += '<span ng-show="!$last">&nbsp;&nbsp;</span>';
+					geoFenceList += '</span>';
+				});
+
+				return geoFenceList;
+			};
+
+			var setMarker = function (vehicle) {
+				var lat = vehicle.properties["location.latitude"];
+				var lng = vehicle.properties["location.longitude"];
 				if (!lat || !lng) return;
-				if (!thing.overviewMapMarker) {
-					thing.overviewMapMarker = L.marker([lat, lng]);
-					$scope.overviewMap.addLayer(thing.overviewMapMarker);
+				if (!vehicle.overviewMapMarker) {
+					vehicle.overviewMapMarker = L.marker([lat, lng]);
+					$scope.overviewMap.addLayer(vehicle.overviewMapMarker);
 					if (!$scope.overviewMap.options.__markers.length) {
 						$scope.overviewMap.panTo(new L.LatLng(lat, lng));
 					}
-					$scope.overviewMap.options.__markers.push(thing.overviewMapMarker);
+					$scope.overviewMap.options.__markers.push(vehicle.overviewMapMarker);
 				}
 
-				thing.overviewMapMarker.setLatLng([lat, lng]);
-				thing.overviewMapMarker.bindPopup(thing.name + " (" + lat + "," + lng + ")");
+				vehicle.overviewMapMarker.setLatLng([lat, lng]);
 
-				var vehicleMap = $scope.vehicleMaps[thing.id + "_map"];
-				if (!thing.vehicleMapMarker) {
-					thing.vehicleMapMarker = L.marker([lat, lng]);
-					vehicleMap.addLayer(thing.vehicleMapMarker);
+				var popupContent = "<h5>"+ vehicle.name + "</h5>" +
+						"Position: " + lat.toFixed(5) + "," + lng.toFixed(5) + "<br/>" +
+						"In Geofence: " + getGeofenceListForPopup(vehicle);
+				if (!vehicle.overviewMapPopup) {
+					vehicle.overviewMapPopup = L.popup({offset: L.point(0, -25)});
+				}
+
+				vehicle.overviewMapPopup.setLatLng([lat, lng]).setContent(popupContent);
+				vehicle.overviewMapMarker.bindPopup(vehicle.overviewMapPopup);
+
+				var vehicleMap = $scope.vehicleMaps[vehicle.id + "_map"];
+				if (!vehicle.vehicleMapMarker) {
+					vehicle.vehicleMapMarker = L.marker([lat, lng]);
+					vehicleMap.addLayer(vehicle.vehicleMapMarker);
 					if (!vehicleMap.options.__markers.length) {
 						vehicleMap.panTo(new L.LatLng(lat, lng));
 					}
 
-					vehicleMap.options.__markers.push(thing.vehicleMapMarker);
+					vehicleMap.options.__markers.push(vehicle.vehicleMapMarker);
 				}
 
-				thing.vehicleMapMarker.setLatLng([lat, lng]);
+				vehicle.vehicleMapMarker.setLatLng([lat, lng]);
 				vehicleMap.panTo(new L.LatLng(lat, lng));
-				thing.vehicleMapMarker.bindPopup(thing.name + " (" + lat + "," + lng + ")");
+				vehicle.vehicleMapMarker.bindPopup(vehicle.name + " (" + lat + "," + lng + ")");
 
 			};
 
-
 			var getIcon = function (url) {
 				var theURL = "/img/markers/" + url;
-				var icon = L.icon({
+				return L.icon({
 					iconUrl: theURL,
 					iconSize: [30, 30],
 					iconAnchor: [15, 15]
 				});
-				return icon;
 			};
 
 			var removeAllMarkers = function () {
@@ -137,9 +157,9 @@ app.controller('MainCtrl', function ($scope, $log) {
 			//
 			// functions for updates on vehicles
 			//
-			var subscribeProp = function (thing, propName) {
+			var subscribeProp = function (vehicle, propName) {
 				riots.subscribe({
-					thingId: thing.id,
+					thingId: vehicle.id,
 					propertyName: propName
 				}, function (data) {
 					$scope.$apply(function () {
@@ -147,53 +167,64 @@ app.controller('MainCtrl', function ($scope, $log) {
 						//$log.debug("Got update for property: ", propName);
 
 						if (propName == GEO_FENCE) {
-							if (!thing.properties[propName]) {
-								thing.properties[propName] = {}
+							if (!vehicle.properties[GEO_FENCE]) {
+								vehicle.properties[GEO_FENCE] = {}
 							}
 
-							thing.properties.withinGeoFences = [];
+							vehicle.properties.withinGeoFences = [];
 
-							var fences = thing.properties[propName];
+							var fences = vehicle.properties[GEO_FENCE];
 							$.extend(fences, data.value);
 							angular.forEach($scope.geoFences, function (geoFence) {
 								if (geoFence && geoFence.id) {
 									var isInFence = fences[geoFence.id];
 									if (isInFence) {
-										thing.properties.withinGeoFences.push(geoFence);
-										if (thing.overviewMapMarker) {
-											thing.overviewMapMarker.setIcon(getIcon("marker_green.png"));
+										vehicle.properties.withinGeoFences.push(geoFence);
+										if (vehicle.properties.receivedVouchers.indexOf(geoFence.config.voucher.src) == -1) {
+											vehicle.properties.receivedVouchers.push(geoFence.config.voucher.src);
+										}
+
+										if (vehicle.overviewMapMarker) {
+											vehicle.overviewMapMarker.setIcon(getIcon("marker_green.png"));
 										}
 									} else {
-										if (thing.overviewMapMarker) {
-											thing.overviewMapMarker.setIcon(getIcon("marker_pink.png"));
+										if (vehicle.overviewMapMarker) {
+											vehicle.overviewMapMarker.setIcon(getIcon("marker_pink.png"));
 										}
 									}
-								} else if (thing.marker) {
-									thing.overviewMapMarker.setIcon(getIcon("marker_azure.png"));
+								} else if (vehicle.overviewMapMarker) {
+									vehicle.overviewMapMarker.setIcon(getIcon("marker_azure.png"));
 								}
 							});
 						} else {
-							thing.properties[propName] = data.value;
-							setMarker(thing);
+							vehicle.properties[propName] = data.value;
+							setMarker(vehicle);
 						}
 
 						if (propName == "location") {
-							thing.properties["location.latitude"] = data.value.latitude;
-							thing.properties["location.longitude"] = data.value.longitude;
-							setMarker(thing);
+							vehicle.properties["location.latitude"] = data.value.latitude;
+							vehicle.properties["location.longitude"] = data.value.longitude;
+							setMarker(vehicle);
 						}
 
 						if (propName == "speed") {
-							angular.element('#' + thing.id + "_speed")
-									.val(thing.properties.speed * 3.6) // m/s -> km/h
+							angular.element('#' + vehicle.id + "_speed")
+									.val(vehicle.properties.speed * 3.6) // m/s -> km/h
 									.trigger('change')
 						}
 
 
 						if (propName == "fuelLevel") {
-							angular.element('#' + thing.id + "_fuel")
-									.val(thing.properties.fuelLevel) // m/s -> km/h
+							angular.element('#' + vehicle.id + "_fuel")
+									.val(vehicle.properties.fuelLevel)
 									.trigger('change')
+						}
+
+						if (propName == "milage") {
+							angular.element('#' + vehicle.id + "_milage")
+									.val(vehicle.properties.mileageRemaining)
+									.trigger('change')
+
 						}
 					});
 				});
@@ -201,29 +232,30 @@ app.controller('MainCtrl', function ($scope, $log) {
 
 			var doLoadConfiguration = function () {
 				removeAllMarkers();
-				riots.things({}, function (things) {
+				riots.things({}, function (vehicles) {
 					$scope.$apply(function () {
-						$scope.things = things;
+						$scope.things = vehicles;
 					});
 					var callback = function () {
 						addVehicleMaps();
 
-						$.each(things, function (idx, thing) {
-							thing.properties = {};
-							subscribeProp(thing, "location");
-							subscribeProp(thing, "location.latitude");
-							subscribeProp(thing, "location.longitude");
-							subscribeProp(thing, "pressure");
-							subscribeProp(thing, "temperature");
-							subscribeProp(thing, "fuelLevel");
-							subscribeProp(thing, "speed");
-							subscribeProp(thing, "mileageRemaining");
-							subscribeProp(thing, GEO_FENCE);
-							riots.thingType(thing[THING_TYPE], function (thingType) {
+						angular.forEach(vehicles, function (vehicle) {
+							vehicle.properties = {};
+							vehicle.properties.receivedVouchers = [];
+							subscribeProp(vehicle, "location");
+							subscribeProp(vehicle, "location.latitude");
+							subscribeProp(vehicle, "location.longitude");
+							subscribeProp(vehicle, "pressure");
+							subscribeProp(vehicle, "temperature");
+							subscribeProp(vehicle, "fuelLevel");
+							subscribeProp(vehicle, "speed");
+							subscribeProp(vehicle, "mileageRemaining");
+							subscribeProp(vehicle, GEO_FENCE);
+							riots.thingType(vehicle[THING_TYPE], function (thingType) {
 								if (!thingType) return;
 								$scope.$apply(function () {
 									if (thingType[IMAGE_DATA] && thingType[IMAGE_DATA].length) {
-										thing.img = thingType[IMAGE_DATA][0].href;
+										vehicle.img = thingType[IMAGE_DATA][0].href;
 									}
 								});
 							});
@@ -238,13 +270,17 @@ app.controller('MainCtrl', function ($scope, $log) {
 				});
 			};
 
-			$scope.reloadConfiguration = function () {
+			$scope.reloadConfiguration = function (removeTriggers) {
 				if (!window.RIOTS_USER_ID || !window.RIOTS_APP_KEY) {
 					alert("Please provide RIOTS_APP_KEY and RIOTS_USER_ID for authentication.");
 					return;
 				}
 				riots.auth(null, function () {
-					doLoadConfiguration();
+					if (removeTriggers) {
+						$scope.removeAllTriggers(true);
+					} else {
+						doLoadConfiguration();
+					}
 				}, function () {
 					alert("Invalid authentication provided. Please check RIOTS_USER_ID and RIOTS_APP_KEY.");
 				});
@@ -253,13 +289,13 @@ app.controller('MainCtrl', function ($scope, $log) {
 			//
 			// trigger functions
 			//
-			$scope.removeAllTriggers = function () {
+			$scope.removeAllTriggers = function (reloadConfiguration) {
 				$log.warn("About to remove all triggers from application");
-				riots.triggers(function (triggers) {
-					angular.forEach(triggers, function (trigger) {
-						riots.delete.trigger(trigger.id);
-					});
-				});
+				riots.delete.triggersForCreator($scope.RIOTS_USER_ID, function() {
+					if (reloadConfiguration) {
+						$scope.reloadConfiguration(false);
+					}
+				})
 			};
 
 			var setupSpeedCalc = function () {
@@ -361,7 +397,7 @@ app.controller('MainCtrl', function ($scope, $log) {
 				};
 
 				if ($scope.selectedVoucher) {
-					$scope.geoFence.config.voucher =  {
+					$scope.geoFence.config.voucher = {
 						id: $scope.selectedVoucher.id,
 						src: $scope.selectedVoucher.src
 					}
@@ -376,7 +412,7 @@ app.controller('MainCtrl', function ($scope, $log) {
 			//
 			// voucher stuff
 			//
-			$scope.selectVoucher = function(voucher) {
+			$scope.selectVoucher = function (voucher) {
 				$scope.selectedVoucher = voucher;
 				$scope.voucherDescription = voucher.id;
 			};
@@ -393,7 +429,8 @@ app.controller('MainCtrl', function ($scope, $log) {
 				}
 
 				var geoFenceOverlay = L.circle(loc, fence.config.diameter, geoFenceOverlayOptions);
-				geoFenceOverlay.addTo($scope.overviewMap);
+				//geoFenceOverlay.addTo($scope.overviewMap);
+				$scope.geoFenceLayerGroup.addLayer(geoFenceOverlay);
 				fence.overlay = geoFenceOverlay;
 				$scope.$apply(function () {
 					$scope.geoFences.push(fence);
@@ -424,7 +461,8 @@ app.controller('MainCtrl', function ($scope, $log) {
 					}
 				});
 
-				$scope.overviewMap.removeLayer(fence.overlay)
+				$scope.geoFenceLayerGroup.removeLayer(fence.overlay);
+				//$scope.overviewMap.removeLayer(fence.overlay)
 			};
 
 			//
@@ -442,9 +480,9 @@ app.controller('MainCtrl', function ($scope, $log) {
 				angular.forEach($scope.things, function (vehicle) {
 					if (vehicle.overviewMapMarker) {
 						if (showTooltips) {
-							vehicle.overviewMapMarker.openPopup();
+							vehicle.overviewMapPopup.addTo($scope.overviewMap);
 						} else {
-							vehicle.overviewMapMarker.closePopup();
+							$scope.overviewMap.removeLayer(vehicle.overviewMapPopup);
 						}
 					}
 				});
@@ -455,11 +493,35 @@ app.controller('MainCtrl', function ($scope, $log) {
 				toggleVehicleTooltips($scope.showTooltips);
 			});
 
+			function toggleLoyaltyFences(showLoyalty) {
+				if (showLoyalty) {
+					if ($scope.overviewMap.hasLayer($scope.geoFenceLayerGroup)) {
+						$log.debug("Loyalty layer already exists on overview map, not adding");
+					} else {
+						$log.debug("Adding loyalty fence layer group to overview map");
+						$scope.overviewMap.addLayer($scope.geoFenceLayerGroup);
+					}
+				} else {
+					if ($scope.overviewMap.hasLayer($scope.geoFenceLayerGroup)) {
+						$log.debug("Adding loyalty fence layer group to overview map");
+						$scope.overviewMap.removeLayer($scope.geoFenceLayerGroup);
+					} else {
+						$log.debug("No loyalty layer on overview map, not removing");
+					}
+				}
+			}
+
+			$scope.$watch("showLoyalty", function () {
+				$log.debug("Toggling loyalty fences: ", $scope.showLoyalty);
+				toggleLoyaltyFences($scope.showLoyalty);
+			});
+
 
 			//
 			// load overview map
 			//
-			$scope.overviewMap = setupMap("worldMap");
+			$scope.overviewMap = setupMap("worldMap", 13);
+			$scope.geoFenceLayerGroup.addTo($scope.overviewMap);
 
 			console.log("Initialized sucessfully")
 		}

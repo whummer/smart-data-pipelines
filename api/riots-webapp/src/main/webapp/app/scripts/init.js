@@ -5,7 +5,7 @@ require(['jquery', 'jquery-ui', 'angular', 'moment'],
 						'app',
 						'riots/auth', 'riots/service-calls', 'riots/utils',
 						'riots/widgets-angularui', 'riots/maps-markers',
-						'riots/ratings', 'riots/charting', 'ZeroClipboard'
+						'riots/ratings', 'riots/charting'
 					],
 					function (app, auth) {
 						try {

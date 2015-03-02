@@ -151,7 +151,7 @@ var requirejsAppConfig = {
 			name: 'angular-toastr',
 			location: appConfig['bowerRootPath'] + '/angular-toastr',
 			main: 'dist/angular-toastr.tpls.min'
-		},
+		}
 		/*{
 			name: 'ZeroClipboard',
 			location: appConfig['bowerRootPath'] + '/zeroclipboard',

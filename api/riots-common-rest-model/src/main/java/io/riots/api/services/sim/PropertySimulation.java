@@ -63,6 +63,7 @@ public abstract class PropertySimulation<T> {
 	 */
 	@JsonProperty
 	public int repetitions;
+
 	/**
 	 * Simulation type. Determines concrete sub-classes.
 	 */

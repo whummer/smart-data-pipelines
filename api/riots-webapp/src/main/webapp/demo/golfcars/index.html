@@ -2,6 +2,9 @@
 <html ng-app="demo">
 <head>
 
+	<!-- PACE progress bar -->
+	<link rel="stylesheet" href="pace.css"/>
+	<script type="application/javascript" src="pace.min.js"></script>
 	<!--
 	  - STYLE SHEETS
 	  -->
@@ -64,8 +67,8 @@
 	<script type="text/javascript" src="/demo/golfcars/main.js"></script>
 
 	<script>
-		window.RIOTS_USER_ID = "54cfa5b0bee88c0d9b4d157a"
-		window.RIOTS_APP_KEY = "da022e9f-4a5b-4a6b-b2d6-9d1e199447c4"
+		window.RIOTS_USER_ID = "54cfa5b0bee88c0d9b4d157a";
+		window.RIOTS_APP_KEY = "da022e9f-4a5b-4a6b-b2d6-9d1e199447c4";
 	</script>
 
 
@@ -80,11 +83,11 @@
 
 <div class="container" ng-controller="MainCtrl">
 
-	<div class="col-lg-12">
+	<div class="col-lg-12" style="margin-bottom: 10px">
 		<div class="ibox">
 			<div class="ibox-content">
-				<div class="text-center" style="margin-bottom: 40px">
-					<img src="/demo/golfcars/porsche-holding.png" class="center-block img-responsive" alt=""/>
+				<div class="text-center">
+					<img src="/demo/golfcars/porsche_powered_by_a1.png" class="center-block img-responsive" alt=""/>
 				</div>
 			</div>
 		</div>
@@ -93,31 +96,40 @@
 	<div class="col-lg-6">
 		<div class="ibox float-e-margins">
 			<div class="ibox-title">
-				<strong>riots Configuration</strong>
+				<span class="fa fa-wrench"></span> <strong>riots Configuration</strong>
 			</div>
 			<div class="ibox-content">
 				<form class="form-horizontal">
 					<div class="form-group">
-						<label for="riotsUserId" class="control-label col-sm-3">riots UserId</label>
-						<div class="col-sm-9">
+						<label for="riotsUserId" class="control-label col-sm-4">riots UserId</label>
+						<div class="col-sm-8">
 							<input id="riotsUserId" ng-model="RIOTS_USER_ID" class="input-sm form-control"/>
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="riotsAppKey" class="control-label col-sm-3">riots AppKey</label>
-						<div class="col-sm-9">
+						<label for="riotsAppKey" class="control-label col-sm-4">riots AppKey</label>
+						<div class="col-sm-8">
 							<input id="riotsAppKey" ng-model="RIOTS_APP_KEY" class="form-control input-sm"/>
 						</div>
 					</div>
-					<div class="clearfix">
-						<button class="pull-right btn btn-sm btn-warning" ng-click="removeAllTriggers()">
-							Remove All Triggers
-						</button>
-						<button class="pull-right btn btn-sm btn-primary" ng-click="reloadConfiguration()">
-							Reload Configuration
-						</button>
+					<div class="form-group">
+						<label for="riotsAppKey" class="control-label col-sm-4">Remove Triggers</label>
+						<div class="col-sm-8">
+							<label class="switch">
+								<input type="checkbox" ng-model="removeExistingTriggers" class="form-control "/>
+								<i></i>
+							</label>
+						</div>
 					</div>
 				</form>
+
+				<div class="row">
+					<div class="col-sm-12">
+						<button class="btn btn-sm btn-primary pull-right" ng-click="reloadConfiguration(removeExistingTriggers)">
+							<span class="fa fa-refresh"></span> Reload Configuration
+						</button>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -126,7 +138,7 @@
 	<!-- ACTIVE CARS -->
 	<div class="col-lg-12" ng-if="things.length">
 		<div class="ibox float-e-margins">
-			<div class="ibox-title"><strong>Active Cars</strong></div>
+			<div class="ibox-title"><span class="fa fa-car"></span> <strong>Active Cars</strong></div>
 			<div class="ibox-content">
 				<table class="table table-bordered table-hover">
 					<thead>
@@ -142,20 +154,20 @@
 						<th>Within Geo Fence</th>
 					</tr>
 					</thead>
-					<tr ng-repeat="thing in things">
-						<td><img ng-src="{{thing.img}}" style="height: 30px;"/></td>
-						<td style="vertical-align: middle">{{thing.id}}</td>
-						<td style="vertical-align: middle"><b>{{thing.name}}</b></td>
+					<tr ng-repeat="vehicle in things">
+						<td><img ng-src="{{vehicle.img}}" style="height: 30px;"/></td>
+						<td style="vertical-align: middle">{{vehicle.id}}</td>
+						<td style="vertical-align: middle"><b>{{vehicle.name}}</b></td>
 						<td style="vertical-align: middle">
-							{{thing.properties['location.latitude'] | number : 6 }},
-							{{thing.properties['location.longitude'] | number : 6}}
+							{{vehicle.properties['location.latitude'] | number : 6 }},
+							{{vehicle.properties['location.longitude'] | number : 6}}
 						</td>
-						<td style="vertical-align: middle">{{thing.properties.fuelLevel | number :2}} %</td>
-						<td style="vertical-align: middle">{{(thing.properties.mileageRemaining / 1000) | number : 3}} km</td>
-						<td style="vertical-align: middle">{{thing.properties.pressure}} %</td>
-						<td style="vertical-align: middle">{{thing.properties.speed | number : 2}} m/s</td>
+						<td style="vertical-align: middle">{{vehicle.properties.fuelLevel | number :2}} %</td>
+						<td style="vertical-align: middle">{{(vehicle.properties.mileageRemaining / 1000) | number : 3}} km</td>
+						<td style="vertical-align: middle">{{vehicle.properties.pressure}} %</td>
+						<td style="vertical-align: middle">{{vehicle.properties.speed | number : 2}} m/s</td>
 						<td style="vertical-align: middle">
-							<span ng-repeat="geoFence in thing.properties.withinGeoFences">
+							<span ng-repeat="geoFence in vehicle.properties.withinGeoFences">
 								<span class="label" style="color: white; background-color: {{geoFence.config.color}}">
 									{{geoFence.name}}
 								</span>
@@ -170,23 +182,23 @@
 
 
 	<!-- ACTIVE CARS -->
-	<div class="col-lg-6 col-md-12 col-sm-12" ng-repeat="thing in things">
+	<div class="col-lg-6 col-md-12 col-sm-12" ng-repeat="vehicle in things">
 		<div class="ibox float-e-margins">
-			<div class="ibox-title"><span class="fa fa-car"></span> <strong>{{thing.name}}</strong></div>
+			<div class="ibox-title"><img ng-src="{{vehicle.img}}" style="height: 20px;"/>
+				<strong>{{vehicle.name}}</strong></div>
 			<div class="ibox-content">
 
 				<div class="row">
-
 					<div class="col-sm-12 col-xs-12">
-						<div id="{{thing.id + '_map'}}" style="height: 300px;"></div>
+						<div id="{{vehicle.id + '_map'}}" style="height: 300px;"></div>
 					</div>
 				</div>
 
 				<div class="row" style="margin-top: 15px">
-					<div class="col-sm-12 col-xs-12 text-center">
-						<div class="col-sm-4">
-							<knob id="{{thing.id + '_speed'}}"
-										knob-data="{{thing.properties.speed}}" class="m-r-sm" data-skin="tron"
+					<div class="col-sm-12 col-xs-12 ">
+						<div class="col-sm-4 text-center">
+							<knob id="{{vehicle.id + '_speed'}}"
+										knob-data="{{vehicle.properties.speed}}" class="m-r-sm" data-skin="tron"
 										data-fgColor="#1AB394"
 										data-width="85"
 										data-height="85"
@@ -198,8 +210,8 @@
 
 						</div>
 						<div class="col-sm-4 text-center">
-							<knob id="{{thing.id + '_fuel'}}"
-										knob-data="{{thing.properties.fuelLevel}}" class="m-r-sm" data-skin="tron"
+							<knob id="{{vehicle.id + '_fuel'}}"
+										knob-data="{{vehicle.properties.fuelLevel}}" class="m-r-sm" data-skin="tron"
 										data-fgColor="#00AC23"
 										data-width="85"
 										data-height="85"
@@ -207,26 +219,50 @@
 										data-angleOffset=-125 data-angleArc=250
 										knob-options=""></knob>
 						</div>
-						<div class="col-sm-4 text-center">
+						<!--<div class="col-sm-4 text-center">
 							<knob
-									id="{{thing.id + '_milage'}}"
-									knob-data="{{car.properties.remainingMilage}}" class="m-r-sm" data-skin="tron"
+									id="{{vehicle.id + '_milage'}}"
+									knob-data="{{vehicle.properties.remainingMilage}}" class="m-r-sm" data-skin="tron"
 									data-fgColor="#00AC23"
 									data-width="85"
 									data-height="85"
 									data-thickness="0.1"
 									data-readOnly="true"
-									data-max="{{car.milage}}"
+									data-max="{{vehicle.milage}}"
 									data-angleOffset=-125 data-angleArc=250
 									knob-options=""></knob>
-						</div>
+						</div>-->
 
+						<div class="col-sm-4 text-center" style="height: 100%">
+
+							<table style="height: 100%; width: 100%; vertical-align: middle" class="table-bordered">
+								<tr>
+									<td style="vertical-align: middle; padding: 10px; color: #00A000 ">100%</td>
+									<td style="vertical-align: middle; padding: 10px; color: #00A000">100%</td>
+								</tr>
+								<tr>
+									<td style="vertical-align: middle; padding: 10px; color: #00A000">100%</td>
+									<td style="vertical-align: middle; padding: 10px; color: #00A000">100%</td>
+								</tr>
+							</table>
+						</div>
 					</div>
 
-					<div class="row">
-						<div class="col-sm-4 col-xs-4 text-center"><strong>Speed (km/h)</strong></div>
-						<div class="col-sm-4 col-xs-4 text-center"><strong>Fuel Level (%)</strong></div>
-						<div class="col-sm-4 col-xs-4 text-center"><strong>Remaining Milage (km)</strong></div>
+					<div class="row text-center">
+						<div class="col-sm-12 col-xs-12 text-center">
+							<div class="col-sm-4 text-center"><strong>Speed (km/h)</strong></div>
+							<div class="col-sm-4 text-center"><strong>Fuel Level (%)</strong></div>
+							<div class="col-sm-4 text-center"><strong>Tire Pressure (%)</strong></div>
+						</div>
+					</div>
+
+					<div class="row" style="margin-top: 20px" ng-show="vehicle.properties.receivedVouchers.length">
+						<div class="col-sm-12 col-xs-12">
+							<span style="padding-left: 10px;"></span> <strong>Received Vouchers: </strong>
+							<span ng-repeat="voucher in vehicle.properties.receivedVouchers">
+								<img ng-src="{{voucher}}" style="margin-right: 10px; height: 30px; width: 30px"/>
+							</span>
+						</div>
 					</div>
 
 				</div>
@@ -236,7 +272,7 @@
 
 	<div class="col-lg-12">
 		<div class="ibox">
-			<div class="ibox-title"><strong>Map View of Active Cars</strong></div>
+			<div class="ibox-title"><span class="fa fa-location-arrow"></span> <strong>Map View of Active Cars</strong></div>
 			<div class="ibox-content">
 				<div class="row">
 					<div class="col-sm-12 col-lg-12 col-md-12">

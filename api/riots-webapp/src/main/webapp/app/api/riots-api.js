@@ -333,6 +333,10 @@ sh.delete.simulationType = function(simType, callback) {
 sh.delete.trigger = function(trigger, callback) {
 	var id = trigger.id ? trigger.id : trigger;
 	return callDELETE(appConfig.services.triggers.url + "/" + id, callback);
+};
+
+sh.delete.triggersForCreator = function(creatorId, callback) {
+	return callDELETE(appConfig.services.triggers.url + "?creatorId=" + creatorId, callback);
 }
 
 /* methods for simulation control */
@@ -400,14 +404,14 @@ var callPUT = sh.callPUT = function(url, body, callback, errorCallback) {
 }
 
 var callDELETE = sh.callDELETE = function(url, callback) {
-	invokeDELETE(null, url,
+	return invokeDELETE(null, url,
 		function(data, status, headers, config) {
 			if(callback) {
 				callback(data, status, headers, config);
 			}
 		}
 	);
-}
+};
 
 /* "shared memory", used as entity cache */
 
