@@ -163,6 +163,9 @@ sh.thing = sh.get.thing = function(id, callback, doCacheResults) {
 sh.triggers = sh.get.triggers = function(callback, doCacheResults) {
 	return callGET(appConfig.services.triggers.url, callback, doCacheResults);
 }
+sh.streams = sh.get.streams = function(callback) {
+	return callGET(appConfig.services.streams.url, callback);
+}
 sh.manufacturers = sh.get.manufacturers = function(callback, doCacheResults) {
 	return callGET(appConfig.services.manufacturers.url, callback, doCacheResults);
 }
@@ -268,6 +271,9 @@ sh.add.trigger = function(trigger, callback) {
 	}
 	return callPOST(appConfig.services.triggers.url, trigger, callback);
 }
+sh.add.stream = function(stream, callback) {
+	return callPOST(appConfig.services.streams.url, stream, callback);
+}
 sh.add.data = function(opts, dataItem, callback, errorCallback) {
 	var url = appConfig.services.thingData.url + "/" +
                       opts[THING_ID] + "/" + 
@@ -299,6 +305,9 @@ sh.save.simulationType = function(simType, callback) {
 }
 sh.save.trigger = function(trigger, callback) {
 	return callPUT(appConfig.services.triggers.url, trigger, callback);
+}
+sh.save.stream = function(stream, callback) {
+	return callPUT(appConfig.services.streams.url, stream, callback);
 }
 sh.save.driver = function(driver, callback) {
 	var url = appConfig.services.drivers.url + "/forThing/" +
@@ -338,6 +347,10 @@ sh.delete.trigger = function(trigger, callback) {
 sh.delete.triggersForCreator = function(creatorId, callback) {
 	return callDELETE(appConfig.services.triggers.url + "?creatorId=" + creatorId, callback);
 }
+sh.delete.stream = function(stream, callback) {
+	var id = stream.id ? stream.id : stream;
+	return callDELETE(appConfig.services.streams.url + "/" + id, callback);
+}
 
 /* methods for simulation control */
 
@@ -368,6 +381,10 @@ var callGET = sh.callGET = function(url, callback, doCacheResults, errorCallback
 	}
 	invokeGET(null, url,
 		function(data, status, headers, config) {
+			if(!data) {
+				callback(data);
+				return;
+			}
 			//console.log("data.result", typeof data.result, data.result, Array.isArray(data.result), url);
 			if(Array.isArray(data.result)) {
 				m[url] = data.result;

@@ -325,7 +325,9 @@ public class InsertDemoDataViaCatalog {
 		{
 			temperatureSensor.withImageData(Arrays.asList(
 					new ImageData()
-							.withBase64String(getBase64ImageFromUrl("http://www.3bm.de/wp-content/uploads/2013/09/DS18B20.jpg"))
+							.withBase64String(getBase64ImageFromUrl(
+									//"http://www.3bm.de/wp-content/uploads/2013/09/DS18B20.jpg"
+									"http://s1.electrodragon.com/wp-content/uploads/2011/11/ds18b20.jpg"))
 									//.withHref("http://www.3bm.de/wp-content/uploads/2013/09/DS18B20.jpg")
 							.withContentType("image/jpeg")));
 			temperatureSensor.setDescription(

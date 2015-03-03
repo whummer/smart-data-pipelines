@@ -1,0 +1,21 @@
+<section ng-controller="StreamsViewController">
+	<script type="text/javascript" src="api/riots-api-admin.js"></script>
+	<div class="ibox float-e-margins">
+		<div class="ibox-title">
+			<span class="glyphicon glyphicon-edit"></span>
+			<b>Streams</b>
+		</div>
+		<div class="ibox-content">
+			<tabset type="pills">
+				<tab heading="Streams">
+					<ng-include
+						src="appConfig['appRootPath'] + '/views/streams_list.html'"></ng-include>
+				</tab>
+				<tab heading="Permissions"> 
+					<ng-include
+						src="appConfig['appRootPath'] + '/views/streams_perms.html'"></ng-include>
+				</tab> 
+			</tabset>
+		</div>
+	</div>
+</section>

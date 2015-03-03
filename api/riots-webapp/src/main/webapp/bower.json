@@ -17,7 +17,7 @@
     "angular-bootstrap": "0.11.2",
     "angular-bootstrap-slider": "#",
     "angular-bootstrap-datetimepicker": "#",
-    "jquery": "~2.1.0",
+    "jquery": "components/jquery#~2.1.1",
     "jquery-ui": "~1.11.0",
     "requirejs": "~2.1.11",
     "bootstrap": "3.3.1",
@@ -46,13 +46,17 @@
     "angular-bootstrap-checkbox": "~0.3.1",
     "pace": "~1.0.2",
     "fancybox": "~2.1.5",
+    "colorpicker": "angular-bootstrap-colorpicker#",
     "jvectormap": "1.2.2",
     "jquery-knob": "~1.2.11",
+    "angular-knob": "~0.0.2",
     "zeroclipboard": "~2.2.0",
     "ng-clip": "~0.2.6",
-    "angular-toastr": "~1.0.2"
+    "angular-toastr": "~1.0.2",
+    "ui-autocomplete": "~0.6.1"
   },
   "resolutions": {
-    "angular": "1.2.26"
+    "angular": "1.2.26",
+    "jquery": "2.1.3"
   }
 }

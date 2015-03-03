@@ -7,7 +7,6 @@ import io.riots.api.services.users.User;
 import io.riots.core.auth.AuthHeaders;
 import io.riots.core.handlers.command.TriggerCommand;
 import io.riots.core.handlers.query.TriggerQuery;
-import io.riots.core.triggers.GeoPositionListener;
 import io.riots.core.triggers.TriggerFunctionListener;
 import io.riots.core.util.ServiceUtil;
 import org.apache.log4j.Logger;
@@ -37,8 +36,8 @@ public class TriggersServiceImpl implements TriggersService {
 	@Autowired
 	TriggerQuery triggerQuery;
 
-	@Autowired
-	GeoPositionListener geoListener;
+//	@Autowired
+//	GeoPositionListener geoListener;
 	@Autowired
 	TriggerFunctionListener funcListener;
 
@@ -100,11 +99,8 @@ public class TriggersServiceImpl implements TriggersService {
 		t.setCreatorId(user.getId());
 		t.setCreated(new Date());
 		t = (T) triggerCmd.create(t);
-//		if(t instanceof GeoFence) {
-//			t = (T)geoListener.addGeoFence((GeoFence)t);
-//		} else 
-		if (t instanceof ThingPropsFunction) {
-			t = (T) funcListener.addFunction((ThingPropsFunction) t);
+		if(t instanceof ThingPropsFunction) {
+			t = (T)funcListener.addFunction((ThingPropsFunction)t);
 		} else {
 			LOG.warn("Unexpected trigger type: " + t);
 		}
@@ -116,11 +112,8 @@ public class TriggersServiceImpl implements TriggersService {
 		// TODO check permissions
 		//User user = ServiceUtil.assertValidUser(authHeaders, req);
 		t = (T) triggerCmd.update(t);
-//		if(t instanceof GeoFence) {
-//			t = (T)geoListener.updateGeoFence((GeoFence)t);
-//		} else 
-		if (t instanceof ThingPropsFunction) {
-			t = (T) funcListener.updateFunction((ThingPropsFunction) t);
+		if(t instanceof ThingPropsFunction) {
+			t = (T)funcListener.updateFunction((ThingPropsFunction)t);
 		} else {
 			LOG.warn("Unexpected trigger type: " + t);
 		}
