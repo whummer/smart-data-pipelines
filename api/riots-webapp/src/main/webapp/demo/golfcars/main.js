@@ -19,7 +19,7 @@ if (typeof Number.prototype.toDegrees == 'undefined') {
 window.RIOTS_USER_ID = "54cfa5b0bee88c0d9b4d157a";
 window.RIOTS_APP_KEY = "da022e9f-4a5b-4a6b-b2d6-9d1e199447c4";
 
-var app = angular.module('demo', ['ui.knob', 'colorpicker.module']);
+var app = angular.module('demo', ['ui.knob', 'colorpicker.module', 'angular-peity']);
 app.controller('MainCtrl', function ($scope, $log) {
 
 			// controller configuration
@@ -33,6 +33,16 @@ app.controller('MainCtrl', function ($scope, $log) {
 			$scope.showTooltips = false;
 			$scope.geoFenceLayerGroup = L.layerGroup();
 			$scope.removeExistingTriggers = true;
+
+
+			$scope.LineChart = {
+				data: [],
+				options: {
+					fill: '#1ab394',
+					stroke: '#169c81',
+					width: 64
+				}
+			};
 
 			$scope.triggers = {
 				usageCalc: {},
@@ -208,9 +218,20 @@ app.controller('MainCtrl', function ($scope, $log) {
 						}
 
 						if (propName == "speed") {
+							var kmh = vehicle.properties.speed * 3.6;
 							angular.element('#' + vehicle.id + "_speed")
-									.val(vehicle.properties.speed * 3.6) // m/s -> km/h
-									.trigger('change')
+									.val(kmh)
+									.trigger('change');
+
+							var chart = angular.element('#'+ vehicle.id + "_speedchart");
+
+							var values = chart.text().split(",");
+							//values.shift();
+							values.push(kmh);
+							chart.text(values.join(","));
+							chart.change();
+
+							$scope.LineChart.data.push(kmh);
 						}
 
 

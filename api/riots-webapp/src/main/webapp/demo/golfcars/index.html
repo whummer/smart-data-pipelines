@@ -72,6 +72,8 @@
 	</script>
 
 
+	<script type="application/javascript" src="angular-peity.js"></script>
+	<script type="application/javascript" src="jquery.peity.min.js"></script>
 	<script type="text/javascript" src="/config.js"></script>
 	<script type="text/javascript" src="/scripts/modules/service-calls.js"></script>
 	<script type="text/javascript" src="/api/riots-api.js"></script>
@@ -235,7 +237,12 @@
 
 						<div class="col-sm-4 text-center" style="height: 100%">
 
-							<table style="height: 100%; width: 100%; vertical-align: middle" class="table-bordered">
+							<line-chart id="{{vehicle.id + '_speedchart'}}"
+													data="LineChart.data"
+													options="LineChart.options"></line-chart>
+
+
+<!--							<table style="height: 100%; width: 100%; vertical-align: middle" class="table-bordered">
 								<tr>
 									<td style="vertical-align: middle; padding: 10px; color: #00A000 ">100%</td>
 									<td style="vertical-align: middle; padding: 10px; color: #00A000">100%</td>
@@ -245,7 +252,7 @@
 									<td style="vertical-align: middle; padding: 10px; color: #00A000">100%</td>
 								</tr>
 							</table>
-						</div>
+	-->					</div>
 					</div>
 
 					<div class="row text-center">
