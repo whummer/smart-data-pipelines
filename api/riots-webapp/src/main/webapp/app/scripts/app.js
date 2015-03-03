@@ -28,6 +28,7 @@ define(
 			'angular-route', 'angular-ui-grid', 'infinite-scroll',
 			'angular-hotkeys', 'd3', 'angular-animate', 'angular-bootstrap-checkbox', 'metisMenu', 'iCheck',
 			'slimscroll', 'jasny-bootstrap', 'angular-ui-tree', 'angular-notify', 'fancybox', 'riots/auth', 'jvectormap', //'ZeroClipboard', 'ng-clip'
+			'ui-autocomplete'
 		],
 
 		function (config) {
@@ -43,6 +44,7 @@ define(
 				'ui.grid.cellNav',
 				'ui.grid.selection',
 				'ui.grid.autoResize',
+				'ui.autocomplete',
 				'infinite-scroll',
 				'cfp.hotkeys',
 				'angular-growl',

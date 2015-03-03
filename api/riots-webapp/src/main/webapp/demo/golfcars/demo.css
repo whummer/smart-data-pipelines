@@ -1,3 +1,6 @@
+html, body {
+	background: #fff;
+}
 .switch input {
 	display: none;
 }

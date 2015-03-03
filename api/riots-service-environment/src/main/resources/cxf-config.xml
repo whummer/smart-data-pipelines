@@ -22,6 +22,7 @@
             <ref bean="thingDataServiceImpl"/>
             <ref bean="driversServiceImpl"/>
             <ref bean="triggersServiceImpl"/>
+            <ref bean="streamsServiceImpl"/>
         </jaxrs:serviceBeans>
         <jaxrs:features>
             <cxf:logging/>

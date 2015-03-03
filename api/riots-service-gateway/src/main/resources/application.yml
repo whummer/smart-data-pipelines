@@ -47,12 +47,16 @@ zuul:
       path: /api/v1/drivers/**
       stripPrefix: false
       serviceId: environment-service
+    streams-service:
+      path: /api/v1/streams/**
+      stripPrefix: false
+      serviceId: environment-service
     catalog-service:
       path: /api/v1/catalog/**
       stripPrefix: false
     simulation-service:
       path: /api/v1/simulations/**
-      stripPrefix: false      
+      stripPrefix: false
     files-service:
       path: /api/v1/files/**
       stripPrefix: false

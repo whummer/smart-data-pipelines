@@ -131,11 +131,10 @@ var requirejsAppConfig = {
 			location: appConfig['bowerRootPath'] + '/fancybox',
 			main: 'source/jquery.fancybox.pack'
 		}, {
-		 name: 'jvectormap',
-		 location: appConfig['bowerRootPath'] + '/jvectormap',
-		 main: 'jquery-jvectormap'
-		 },
-		{
+			name: 'jvectormap',
+			location: appConfig['bowerRootPath'] + '/jvectormap',
+			main: 'jquery-jvectormap'
+		}, {
 			name: 'd3',
 			location: appConfig['bowerRootPath'] + '/d3',
 			main: 'd3.min'
@@ -151,17 +150,19 @@ var requirejsAppConfig = {
 			name: 'angular-toastr',
 			location: appConfig['bowerRootPath'] + '/angular-toastr',
 			main: 'dist/angular-toastr.tpls.min'
-		}
-		/*{
+		}, {
 			name: 'ZeroClipboard',
 			location: appConfig['bowerRootPath'] + '/zeroclipboard',
 			main: 'dist/ZeroClipboard.min'
-		},
-		{
+		}, {
 			name: 'ng-clip',
 			location: appConfig['bowerRootPath'] + '/ng-clip',
 			main: 'dest/ng-clip.min'
-		},*/
+		}, {
+			name: 'ui-autocomplete',
+			location: appConfig['bowerRootPath'] + '/ui-autocomplete',
+			main: 'autocomplete'
+		},
 
 		/* TODO old/unused/deprecated?
 		 {

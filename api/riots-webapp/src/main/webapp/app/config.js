@@ -13,6 +13,7 @@ var appConfig = {
 		things: { url: "/api/v1/things" },
 		thingData: { url: "/api/v1/things" },
 		triggers: { url: "/api/v1/triggers" },
+		streams: { url: "/api/v1/streams" },
 		simulations: { url: "/api/v1/simulations" },
 		simulationProps: { url: "/api/v1/simulations/properties" },
 		simulationDevices: { url: "/api/v1/simulations/devices" },
@@ -39,7 +40,7 @@ var appConfig = {
 	}
 };
 
-// set websocket URL (for dev./testing):
+// set websocket URL (TODO for dev./testing):
 if(window.location && window.location.hostname) {
 	appConfig.services.websocket.url = appConfig.services.websocket.url.replace(
 		"platform.riots.io", window.location.hostname);

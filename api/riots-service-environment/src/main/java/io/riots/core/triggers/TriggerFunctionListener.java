@@ -9,8 +9,6 @@ import io.riots.core.util.JSONUtil;
 import io.riots.core.util.script.ScriptUtil;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -117,32 +115,6 @@ public class TriggerFunctionListener {
 		ScriptUtil.pushToList(s.engine, VAR_NAME_VALUES, prop);
 		ScriptUtil.ensureListMaxSize(s.engine, VAR_NAME_VALUES, s.function.getWindowSize());
 	}
-
-
-	/*private void executeFunction(FuncExecState s, PropertyValue prop) {
-		@SuppressWarnings("unchecked")
-		//List<PropertyValue> list = (List<PropertyValue>) s.variables.get(VAR_NAME_VALUES);
-				List<String> list = (List<String>) s.variables.get(VAR_NAME_VALUES);
-
-
-		list.add(JSONUtil.toJSON(prop));
-		while (s.variables.size() > s.function.getWindowSize()) {
-			list.remove(0);
-		}
-		//System.out.println("Executing function " + s.function.getTriggerFunction());
-		Object result = ScriptUtil.eval(s.engine, "main();");
-
-		if (result != null) {
-			// fire new event with result
-			PropertyValue propValue = new PropertyValue();
-			propValue.setPropertyName(s.function.getResultPropertyName());
-			propValue.setThingId(prop.getThingId());
-			propValue.setValue(result);
-			propValue.setTimestamp(prop.getTimestamp());
-			eventBroker.sendOutboundChangeNotifyMessage(propValue);
-		}
-	}*/
-
 
 	public FuncExecState removeFunction(String id) {
 		FuncExecState deleted = functions.remove(id);
