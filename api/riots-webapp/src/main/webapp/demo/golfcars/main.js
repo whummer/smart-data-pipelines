@@ -34,6 +34,7 @@ app.controller('MainCtrl', function ($scope, $log) {
 			$scope.geoFenceLayerGroup = L.layerGroup();
 			$scope.removeExistingTriggers = true;
 
+			$scope.updatesReceived = 0;
 
 			$scope.LineChart = {
 				data: [],
@@ -167,12 +168,26 @@ app.controller('MainCtrl', function ($scope, $log) {
 			//
 			// functions for updates on vehicles
 			//
+			function updateReceiveRate(vehicle) {
+				if (!vehicle.startTime) {
+					vehicle.startTime = new Date().getTime();
+				}
+
+				vehicle.properties.updatesReceived++;
+				var now = new Date().getTime();
+				var elapsed = now - vehicle.startTime;
+				vehicle.properties.updateRate  = vehicle.properties.updatesReceived /  (elapsed * 1000);
+			}
+
 			var subscribeProp = function (vehicle, propName) {
 				riots.subscribe({
 					thingId: vehicle.id,
 					propertyName: propName
 				}, function (data) {
 					$scope.$apply(function () {
+
+						updateReceiveRate(vehicle);
+						updateHistoryChart(vehicle.properties.updateRateHistory, vehicle.properties.updateRate, '#'+ vehicle.id + "_updatechart")
 
 						//$log.debug("Got update for property: ", propName);
 
@@ -218,20 +233,13 @@ app.controller('MainCtrl', function ($scope, $log) {
 						}
 
 						if (propName == "speed") {
+
 							var kmh = vehicle.properties.speed * 3.6;
 							angular.element('#' + vehicle.id + "_speed")
 									.val(kmh)
 									.trigger('change');
 
-							var chart = angular.element('#'+ vehicle.id + "_speedchart");
-
-							var values = chart.text().split(",");
-							//values.shift();
-							values.push(kmh);
-							chart.text(values.join(","));
-							chart.change();
-
-							$scope.LineChart.data.push(kmh);
+							updateHistoryChart(vehicle.properties.speedHistory, kmh, '#'+ vehicle.id + "_speedchart")
 						}
 
 
@@ -251,6 +259,20 @@ app.controller('MainCtrl', function ($scope, $log) {
 				});
 			};
 
+			var updateHistoryChart = function(history, value, chartElementName) {
+				if (!isNaN(parseFloat(value)) && isFinite(value)) {
+					history.push(value);
+				}
+
+				if (history.length > 30) {
+					history.shift();
+				}
+
+				var chart = angular.element(chartElementName);
+				chart.text(history.join(","));
+				chart.change();
+			};
+
 			var doLoadConfiguration = function () {
 				removeAllMarkers();
 				riots.things({}, function (vehicles) {
@@ -263,6 +285,9 @@ app.controller('MainCtrl', function ($scope, $log) {
 						angular.forEach(vehicles, function (vehicle) {
 							vehicle.properties = {};
 							vehicle.properties.receivedVouchers = [];
+							vehicle.properties.speedHistory = [];
+							vehicle.properties.updateRateHistory = [];
+							angular.element('#'+ vehicle.id + "_speedchart").peity("line", { width: "100%", height:  30, min: 5, max: 50});
 							subscribeProp(vehicle, "location");
 							subscribeProp(vehicle, "location.latitude");
 							subscribeProp(vehicle, "location.longitude");

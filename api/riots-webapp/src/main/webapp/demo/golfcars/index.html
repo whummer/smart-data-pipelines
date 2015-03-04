@@ -165,7 +165,7 @@
 							{{vehicle.properties['location.longitude'] | number : 6}}
 						</td>
 						<td style="vertical-align: middle">{{vehicle.properties.fuelLevel | number :2}} %</td>
-						<td style="vertical-align: middle">{{(vehicle.properties.mileageRemaining / 1000) | number : 3}} km</td>
+						<td style="vertical-align: middle">{{(vehicle.properties.mileageRemaining / 1000) | number : 1}} km</td>
 						<td style="vertical-align: middle">{{vehicle.properties.pressure}} %</td>
 						<td style="vertical-align: middle">{{vehicle.properties.speed | number : 2}} m/s</td>
 						<td style="vertical-align: middle">
@@ -237,22 +237,40 @@
 
 						<div class="col-sm-4 text-center" style="height: 100%">
 
-							<line-chart id="{{vehicle.id + '_speedchart'}}"
+							<!--<line-chart id="{{vehicle.id + '_speedchart'}}"
 													data="LineChart.data"
-													options="LineChart.options"></line-chart>
+													options="LineChart.options"></line-chart>-->
 
-
-<!--							<table style="height: 100%; width: 100%; vertical-align: middle" class="table-bordered">
+							<table style="width: 100%; vertical-align: middle" class="table">
 								<tr>
-									<td style="vertical-align: middle; padding: 10px; color: #00A000 ">100%</td>
-									<td style="vertical-align: middle; padding: 10px; color: #00A000">100%</td>
+									<td style="vertical-align: middle; padding: 5px; color: #00A000">100%</td>
+									<td style="vertical-align: middle; padding: 5px; color: #00A000">100%</td>
 								</tr>
 								<tr>
-									<td style="vertical-align: middle; padding: 10px; color: #00A000">100%</td>
-									<td style="vertical-align: middle; padding: 10px; color: #00A000">100%</td>
+									<td style="vertical-align: middle; padding: 5px; color: #00A000">100%</td>
+									<td style="vertical-align: middle; padding: 5px; color: #00A000">100%</td>
 								</tr>
+								<!--<tr>
+									<td colspan="2"><strong>Tire Pressure</strong></td>
+								</tr>-->
 							</table>
-	-->					</div>
+
+
+							<div>
+
+
+							</div>
+							<!--							<table style="height: 100%; width: 100%; vertical-align: middle" class="table-bordered">
+															<tr>
+																<td style="vertical-align: middle; padding: 10px; color: #00A000 ">100%</td>
+																<td style="vertical-align: middle; padding: 10px; color: #00A000">100%</td>
+															</tr>
+															<tr>
+																<td style="vertical-align: middle; padding: 10px; color: #00A000">100%</td>
+																<td style="vertical-align: middle; padding: 10px; color: #00A000">100%</td>
+															</tr>
+														</table>
+								-->          </div>
 					</div>
 
 					<div class="row text-center">
@@ -263,12 +281,24 @@
 						</div>
 					</div>
 
-					<div class="row" style="margin-top: 20px" ng-show="vehicle.properties.receivedVouchers.length">
-						<div class="col-sm-12 col-xs-12">
-							<span style="padding-left: 10px;"></span> <strong>Received Vouchers: </strong>
-							<span ng-repeat="voucher in vehicle.properties.receivedVouchers">
-								<img ng-src="{{voucher}}" style="margin-right: 10px; height: 30px; width: 30px"/>
-							</span>
+					<div class="row" style="margin-top: 20px">
+						<div class="col-sm-4 col-xs-4" style="margin-left: 10px;">
+							<span id="{{vehicle.id + '_speedchart'}}" ></span>
+							<p align="center"><strong>Average Speed (km/h)</strong></p>
+						</div>
+
+						<div class="col-sm-4 col-xs-4" style="margin-left: 10px;">
+							<span id="{{vehicle.id + '_updatechart'}}" ></span>
+							<p align="center"><strong>Updates/sec</strong></p>
+						</div>
+
+						<div class="col-sm-4 col-xs-4">
+							<div ng-show="vehicle.properties.receivedVouchers.length">
+								<span style="padding-left: 10px;"></span> <strong>Received Vouchers: </strong>
+								<span ng-repeat="voucher in vehicle.properties.receivedVouchers">
+									<img ng-src="{{voucher}}" style="margin-right: 10px; height: 30px; width: 30px"/>
+								</span>
+							</div>
 						</div>
 					</div>
 
