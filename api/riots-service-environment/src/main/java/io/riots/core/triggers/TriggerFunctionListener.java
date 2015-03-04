@@ -44,7 +44,7 @@ public class TriggerFunctionListener {
 			destination = EventBroker.MQ_INBOUND_PROP_UPDATE,
 			concurrency = "1")
 	public void processEvent(String data) {
-		LOG.info("Got data: " + data);
+		//LOG.info("Got data: " + data);
 		PropertyValue prop = JSONUtil.fromJSON(data, PropertyValue.class);
 		if (prop == null || prop.getPropertyName() == null) {
 			LOG.warn("Received null property: " + prop);
@@ -141,6 +141,11 @@ public class TriggerFunctionListener {
 		FuncExecState existing = removeFunction(func.getId());
 		addFunction(func);
 		return existing != null ? existing.function : null;
+	}
+
+	public void removeAllFunctions() {
+		functions.clear();
+		System.gc();
 	}
 
 	private static class FuncExecState {

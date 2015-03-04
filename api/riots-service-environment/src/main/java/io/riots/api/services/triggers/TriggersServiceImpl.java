@@ -123,6 +123,8 @@ public class TriggersServiceImpl implements TriggersService {
 	private void doRemoveTrigger(String id, Class<? extends Trigger> triggerClass, String creatorId) {
 		if (creatorId != null) {
 			triggerCmd.deleteAllForCreator(creatorId);
+			funcListener.removeAllFunctions();
+
 		} else {
 			if (triggerClass == null) {
 				Trigger t = triggerQuery.single(id);

@@ -129,6 +129,8 @@
 					<div class="col-sm-12">
 						<button class="btn btn-sm btn-primary pull-right" ng-click="reloadConfiguration(removeExistingTriggers)">
 							<span class="fa fa-refresh"></span> Reload Configuration
+						</button><button class="btn btn-sm btn-warn pull-right" ng-click="removeAllTriggers()">
+							<span class="fa fa-refresh"></span> Remove All Triggers
 						</button>
 					</div>
 				</div>
@@ -289,7 +291,7 @@
 
 						<div class="col-sm-4 col-xs-4" style="margin-left: 10px;">
 							<span id="{{vehicle.id + '_updatechart'}}" ></span>
-							<p align="center"><strong>Updates/sec</strong></p>
+							<p align="center"><strong>Updates/sec: {{vehicle.properties.updateRate | number : 2 }}</strong></p>
 						</div>
 
 						<div class="col-sm-4 col-xs-4">

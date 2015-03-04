@@ -113,7 +113,7 @@ app.controller('MainCtrl', function ($scope, $log) {
 
 				vehicle.overviewMapMarker.setLatLng([lat, lng]);
 
-				var popupContent = "<h5>"+ vehicle.name + "</h5>" +
+				var popupContent = "<h5>" + vehicle.name + "</h5>" +
 						"Position: " + lat.toFixed(5) + "," + lng.toFixed(5) + "<br/>" +
 						"In Geofence: " + getGeofenceListForPopup(vehicle);
 				if (!vehicle.overviewMapPopup) {
@@ -176,7 +176,7 @@ app.controller('MainCtrl', function ($scope, $log) {
 				vehicle.properties.updatesReceived++;
 				var now = new Date().getTime();
 				var elapsed = now - vehicle.startTime;
-				vehicle.properties.updateRate  = vehicle.properties.updatesReceived /  (elapsed * 1000);
+				vehicle.properties.updateRate = vehicle.properties.updatesReceived / (elapsed / 1000);
 			}
 
 			var subscribeProp = function (vehicle, propName) {
@@ -187,7 +187,8 @@ app.controller('MainCtrl', function ($scope, $log) {
 					$scope.$apply(function () {
 
 						updateReceiveRate(vehicle);
-						updateHistoryChart(vehicle.properties.updateRateHistory, vehicle.properties.updateRate, '#'+ vehicle.id + "_updatechart")
+						updateHistoryChart(vehicle.properties.updateRateHistory,
+								vehicle.properties.updateRate, '#' + vehicle.id + "_updatechart");
 
 						//$log.debug("Got update for property: ", propName);
 
@@ -239,7 +240,7 @@ app.controller('MainCtrl', function ($scope, $log) {
 									.val(kmh)
 									.trigger('change');
 
-							updateHistoryChart(vehicle.properties.speedHistory, kmh, '#'+ vehicle.id + "_speedchart")
+							updateHistoryChart(vehicle.properties.speedHistory, kmh, '#' + vehicle.id + "_speedchart")
 						}
 
 
@@ -259,7 +260,7 @@ app.controller('MainCtrl', function ($scope, $log) {
 				});
 			};
 
-			var updateHistoryChart = function(history, value, chartElementName) {
+			var updateHistoryChart = function (history, value, chartElementName) {
 				if (!isNaN(parseFloat(value)) && isFinite(value)) {
 					history.push(value);
 				}
@@ -287,7 +288,20 @@ app.controller('MainCtrl', function ($scope, $log) {
 							vehicle.properties.receivedVouchers = [];
 							vehicle.properties.speedHistory = [];
 							vehicle.properties.updateRateHistory = [];
-							angular.element('#'+ vehicle.id + "_speedchart").peity("line", { width: "100%", height:  30, min: 5, max: 50});
+							vehicle.properties.updatesReceived = 0;
+							angular.element('#' + vehicle.id + "_speedchart").peity("line", {
+								width: "100%",
+								height: 30,
+								min: 5,
+								max: 50
+							});
+
+							angular.element('#' + vehicle.id + "_updatechart").peity("line", {
+								width: "100%",
+								height: 30,
+								min: 5,
+								max: 50
+							});
 							subscribeProp(vehicle, "location");
 							subscribeProp(vehicle, "location.latitude");
 							subscribeProp(vehicle, "location.longitude");
@@ -337,7 +351,7 @@ app.controller('MainCtrl', function ($scope, $log) {
 			//
 			$scope.removeAllTriggers = function (reloadConfiguration) {
 				$log.warn("About to remove all triggers from application");
-				riots.delete.triggersForCreator($scope.RIOTS_USER_ID, function() {
+				riots.delete.triggersForCreator($scope.RIOTS_USER_ID, function () {
 					if (reloadConfiguration) {
 						$scope.reloadConfiguration(false);
 					}
@@ -404,7 +418,7 @@ app.controller('MainCtrl', function ($scope, $log) {
 
 				var mileage = {
 					name: "remainingMilageCalculator",
-					property: "(location.*)|(fuelLevel)",
+					triggerProperty: "location.*",
 					resultProperty: "mileageRemaining",
 					triggerFunction: "mileageRemaining",
 					config: {
