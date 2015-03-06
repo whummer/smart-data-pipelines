@@ -10,11 +10,11 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 
@@ -31,14 +31,23 @@ public interface StreamsService {
 
 	/* METHODS FOR STREAMS */
 
-    @GET
-    @Path("/")
+	public static class SearchQuery {
+		@JsonProperty
+		public String query;
+		@JsonProperty
+		public int page;
+		@JsonProperty
+		public int size;
+	}
+
+    @POST
+    @Path("/query")
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Query public streams.",
             notes = "Search for publicly available data streams by keywords.",
             response = Stream.class)
-    List<Stream> searchPublicStreams(@QueryParam("q") String query,
-			@QueryParam("page") int page, @QueryParam("size") int size);
+    List<Stream> searchPublicStreams(SearchQuery query);
 
     @GET
     @Path("/")
@@ -74,6 +83,14 @@ public interface StreamsService {
     void removeStream(@PathParam("id") String id);
 
     /* METHODS FOR STREAM PERMISSIONS */
+
+    @GET
+    @Path("/{id}/permissions")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Get stream permissions.",
+            notes = "Retrieve all configured permissions for a data stream.",
+            response = Stream.class)
+    List<StreamPermission> queryPermissions(@PathParam("id") String id);
 
     @POST
     @Path("/{id}/permissions")

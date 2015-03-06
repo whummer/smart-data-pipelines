@@ -37,21 +37,26 @@ public class StreamsServiceImpl implements StreamsService {
 
 	@Override
 	@Timed @ExceptionMetered
-	public List<Stream> listStreams() {
-		User user = ServiceUtil.assertValidUser(authHeaders, req);
-		List<Stream> result = streamRepo.findByCreatorId(user.getId());
-		System.out.println("listStreams: " + result);
+	public List<StreamPermission> queryPermissions(String streamID) {
+		List<StreamPermission> result = streamPermRepo.findByStreamId(streamID);
 		return result;
 	}
 
 	@Override
 	@Timed @ExceptionMetered
-	public List<Stream> searchPublicStreams(String query, int page, int size) {
-		if(StringUtils.isEmpty(query)) {
-			query = "%";
+	public List<Stream> listStreams() {
+		User user = ServiceUtil.assertValidUser(authHeaders, req);
+		List<Stream> result = streamRepo.findByCreatorId(user.getId());
+		return result;
+	}
+
+	@Override
+	@Timed @ExceptionMetered
+	public List<Stream> searchPublicStreams(SearchQuery opts) {
+		if(StringUtils.isEmpty(opts.query)) {
+			opts.query = "*";
 		}
-		List<Stream> result = streamRepo.findByVisibleAndNameLike(true, query);
-		System.out.println("query: " + query + " - " + result);
+		List<Stream> result = streamRepo.findByVisibleAndNameLike(true, opts.query);
 		return result;
 	}
 
@@ -79,16 +84,28 @@ public class StreamsServiceImpl implements StreamsService {
 	@Override
 	@Timed @ExceptionMetered
 	public StreamPermission requestPermission(String id, StreamPermission perm) {
-		perm.status = PermissionStatus.REQUESTED;
+		User user = ServiceUtil.assertValidUser(authHeaders, req);
+		perm.setStatus(PermissionStatus.REQUESTED);
+		if(!StringUtils.isEmpty(perm.getUserId())) {
+			perm.setUserId(user.getId());
+		}
+		perm.setCreated(new Date());
+		perm.setCreatorId(user.getId());
 		return streamPermRepo.save(perm);
 	}
 
 	@Override
 	@Timed @ExceptionMetered
 	public StreamPermission updatePermission(String id, StreamPermission perm) {
+		if(StringUtils.isEmpty(perm.getId())) {
+			User user = ServiceUtil.assertValidUser(authHeaders, req);
+			perm.setCreated(new Date());
+			perm.setCreatorId(user.getId());
+		}
 		if(perm.status != PermissionStatus.DENIED && perm.status != PermissionStatus.GRANTED) {
 			throw new RuntimeException("Invalid permission status.");
 		}
+		perm = streamPermRepo.save(perm);
 		return perm;
 	}
 

@@ -6,8 +6,8 @@
 
 			<!-- Navigation Header -->
 			<li class="nav-header">
-				<div id="riots-logo-lg">
-					<img class="src" src="img/riots_turkis_white_transparent_md.png" style="max-height: 40px" alt=""/>
+				<div id="riots-logo-lg" style="text-align: center;">
+					<img class="src" src="img/riox_bright_blue1.png" style="max-height: 40px;" alt=""/>
 				</div>
 
 				<div class="profile-element">
@@ -20,7 +20,7 @@
 				</div>
 
 				<div class="logo-element">
-					<img src="/img/riots_turkis_white_transparent_md.png" width="50"/>
+					<img src="/img/riox_bright_blue1.png" width="50"/>
 				</div>
 			</li>
 
@@ -85,10 +85,32 @@
 
 			<!-- Data Streams -->
 			<li ng-class="{active: $state.includes('streams')}">
-				<a ui-sref="streams" href="#/streams">
+				<a ui-sref="streams">
 					<i class="fa fa-exchange"></i>
 					<span class="nav-label">Data Streams</span> <span class="fa arrow"></span>
 				</a>
+				<ul class="nav nav-second-level" ng-class="{in: $state.includes('streams')}">
+					<li ui-sref-active="active">
+						<a href="#/streams/public" ui-sref="streams.public">
+							<i class="fa fa-bullseye"></i> Public Streams
+						</a>
+					</li>
+					<li ui-sref-active="active">
+						<a href="#/streams/own" ui-sref="streams.my">
+							<i class="fa fa-bullseye"></i> My Streams
+						</a>
+					</li>
+					<li ui-sref-active="active">
+						<a href="#/streams/permissions" ui-sref="streams.permissions">
+							<i class="fa fa-bullseye"></i> Permissions
+						</a>
+					</li>
+					<li ui-sref-active="active">
+						<a href="#/streams/billing" ui-sref="streams.billing">
+							<i class="fa fa-bullseye"></i> Billing
+						</a>
+					</li>
+				</ul>
 			</li>
 
 			<!-- Behaviors -->

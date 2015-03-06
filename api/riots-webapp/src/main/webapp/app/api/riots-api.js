@@ -20,6 +20,8 @@ var SIMULATION_ID = "simulation-id";
 var START_TIME = "start-time";
 var END_TIME = "end-time";
 var USER_ID = "user-id";
+var STREAM_ID = "stream-id";
+var ORGANIZATION_ID = "organization-id";
 
 (function() {
 
@@ -164,7 +166,11 @@ sh.triggers = sh.get.triggers = function(callback, doCacheResults) {
 	return callGET(appConfig.services.triggers.url, callback, doCacheResults);
 };
 sh.streams = sh.get.streams = function(searchOpts, callback) {
-	var url = buildQueryURL(appConfig.services.streams.url, searchOpts);
+	var url = appConfig.services.streams.url;
+	if(searchOpts && typeof searchOpts.query != "undefined") {
+		url += "/query";
+		return callPOST(url, searchOpts, callback);
+	}
 	return callGET(url, callback);
 };
 sh.manufacturers = sh.get.manufacturers = function(callback, doCacheResults) {
@@ -362,10 +368,23 @@ sh.delete.stream = function(stream, callback) {
 /* methods for accessing streams */
 sh.stream = {};
 
-sh.stream.request = function(stream, callback) {
-	var id = stream.id ? stream.id : stream;
-	return callPOST(appConfig.services.streams.url + "/" + id + "/permissions", callback);
+sh.stream.request = function(req, callback) {
+	var id = req[STREAM_ID];
+	if(!id) throw "Invalid stream id.";
+	var url = appConfig.services.streams.url + "/" + id + "/permissions";
+	console.log(url, " - ", req);
+	return callPOST(url, req, callback);
 };
+sh.stream.permissions = function(stream, callback) {
+	var id = stream.id ? stream.id : stream;
+	var url = appConfig.services.streams.url + "/" + id + "/permissions";
+	return callGET(url, callback);
+};
+sh.stream.permissions.save = function(perms, callback) {
+	var url = appConfig.services.streams.url + "/" + perms[STREAM_ID] + "/permissions";
+	return callPUT(url, perms, callback);
+};
+
 
 /* methods for simulation control */
 
@@ -558,6 +577,7 @@ var guid = (function() {
 
 /* expose API */
 window.riots = sh;
+window.riox = sh;
 
 
 /* INIT METHODS (must go last) */

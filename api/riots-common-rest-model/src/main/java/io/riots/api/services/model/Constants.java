@@ -48,5 +48,7 @@ public class Constants {
 	public static final String TRIGGER_PROPERTY_NAME = "triggerProperty";
 	public static final String RESULT_PROPERTY_NAME = "resultProperty";
 	public static final String TYPE = "type";
+	public static final String STREAM_ID = "stream-id";
+	public static final String ORGANIZATION_ID = "organization-id";
 
 }

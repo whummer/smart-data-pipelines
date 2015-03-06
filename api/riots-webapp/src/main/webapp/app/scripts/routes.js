@@ -52,8 +52,26 @@ define([], function () {
 					appRoot + '/scripts/controllers/SimViewController.js',
 				]
 			},
-			'/streams': {
-				templateUrl: appRoot + '/views/streams.html',
+			'/streams/public': {
+				templateUrl: appRoot + '/views/streams_public.html',
+				dependencies: [
+					appRoot + '/scripts/controllers/StreamsViewController.js',
+				]
+			},
+			'/streams/own': {
+				templateUrl: appRoot + '/views/streams_user.html',
+				dependencies: [
+					appRoot + '/scripts/controllers/StreamsViewController.js',
+				]
+			},
+			'/streams/billing': {
+				templateUrl: appRoot + '/views/streams_billing.html',
+				dependencies: [
+					appRoot + '/scripts/controllers/StreamsViewController.js',
+				]
+			},
+			'/streams/permissions': {
+				templateUrl: appRoot + '/views/streams_perms.html',
 				dependencies: [
 					appRoot + '/scripts/controllers/StreamsViewController.js',
 				]
