@@ -63,29 +63,29 @@ public interface TriggersService {
     void removeTrigger(@QueryParam("creatorId") String creatorId);
 
     /* SPECIALIZED FUNCTIONS FOR GEO FENCES */
-
-    @GET
-    @Path("/geo/fence")
-    @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "List current geo fences.",
-            notes = "List geo fences currently configured.",
-            response = GeoFence.class)
-    List<GeoFence> listGeoFences();
-
-    @POST
-    @Path("/geo/fence")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Create geo fence.",
-            notes = "Set up a geo fence.",
-            response = GeoFence.class)
-    GeoFence setupGeoFence(GeoFence fence);
-
-    @DELETE
-    @Path("/geo/fence/{id}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Retrieve aggregated rating for an ID",
-            notes = "Retrieve aggregated rating for an ID")
-    void removeGeoFence(@PathParam("id") String id);
+	// TODO remove
+//    @GET
+//    @Path("/geo/fence")
+//    @Produces(MediaType.APPLICATION_JSON)
+//    @ApiOperation(value = "List current geo fences.",
+//            notes = "List geo fences currently configured.",
+//            response = GeoFence.class)
+//    List<GeoFence> listGeoFences();
+//
+//    @POST
+//    @Path("/geo/fence")
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    @Produces(MediaType.APPLICATION_JSON)
+//    @ApiOperation(value = "Create geo fence.",
+//            notes = "Set up a geo fence.",
+//            response = GeoFence.class)
+//    GeoFence setupGeoFence(GeoFence fence);
+//
+//    @DELETE
+//    @Path("/geo/fence/{id}")
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    @ApiOperation(value = "Retrieve aggregated rating for an ID",
+//            notes = "Retrieve aggregated rating for an ID")
+//    void removeGeoFence(@PathParam("id") String id);
 
 }

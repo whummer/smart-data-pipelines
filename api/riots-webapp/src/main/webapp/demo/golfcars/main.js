@@ -418,6 +418,7 @@ app.controller('MainCtrl', function ($scope, $log) {
 
 				var mileage = {
 					name: "remainingMilageCalculator",
+					property: "(location.*)|(fuelLevel)",
 					triggerProperty: "location.*",
 					resultProperty: "mileageRemaining",
 					triggerFunction: "mileageRemaining",
@@ -575,7 +576,6 @@ app.controller('MainCtrl', function ($scope, $log) {
 				$log.debug("Toggling loyalty fences: ", $scope.showLoyalty);
 				toggleLoyaltyFences($scope.showLoyalty);
 			});
-
 
 			//
 			// load overview map

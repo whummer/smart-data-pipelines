@@ -1,0 +1,116 @@
+<section ng-controller="PubStreamsDetailsController">
+
+	<div style="margin-top: 10px;">
+	
+		<div class="form-group">
+			<div class="col-sm-9">
+				<input ng-model="txtStreamSearch" class="form-control"/>
+			</div>
+			<div class="col-sm-3">
+				<button class="btn btn-primary btn-sm" id="btnPubStreamSearch">
+					<span class="glyphicon glyphicon-search"></span> Search Stream
+				</button>
+			</div>
+		</div>
+	</div>
+
+	<div style="clear: both">
+		<div id="pubStreamsTable" ui-grid="gridConfig" ui-grid-selection ui-grid-edit ui-grid-row-edit
+            class="grid"></div>
+	</div>
+
+	<div ng-show="selectedStream">
+		<div class="row">
+			<div class="col-md-6 col-sm-6">
+				Click here to request access to this stream:
+				<button class="btn btn-primary btn-sm" id="btnPubStreamRequest">
+					<span class="glyphicon glyphicon-unlock"></span> Request Access
+				</button>
+			</div>
+		</div>
+	</div>
+</section>
+<style type="text/css">
+#pubStreamsTable {
+	height: 250px;
+}
+</style>
+<script type="text/javascript">
+
+var app = angular.module("app");
+app.controller('PubStreamsDetailsController',
+		function ($scope, $http, $compile, $routeParams, $log, $location) {
+    AppController($scope, $http, $compile);
+
+    $scope.gridConfig = [];
+    $scope.THING_TYPE = THING_TYPE;
+    $scope.propAutocomp = {options: {
+		html: true,
+		focusOpen: true,
+		valueList: [],
+		source: function (request, response) {
+			response($scope.propAutocomp.options.valueList);
+    	}
+    }};
+
+    var initTable = function () {
+        var columnsConfig = [
+            {label: "Creation Time", field: CREATION_DATE, sortable: true,
+            	cellTemplate: "<div class='ui-grid-cell-contents'>{{row.entity.formatTime()}}</div>"
+            },
+            {label: "Name", field: "name", sortable: true},
+            {label: "Type", field: "type", sortable: true},
+            {label: "Thing Type", field: THING_TYPE, sortable: true},
+            {label: "Thing Property", field: PROPERTY_NAME, sortable: true}
+        ];
+        $scope.gridConfig.data = [];
+        renderUITable($scope.gridConfig, "pubStreamsTable", columnsConfig,
+	        function (event) {
+	            if (event.type == "dgrid-select") {
+	                $scope.$apply(function () {
+	                    $scope.selectedStream = event.rows[0].data;
+	                });
+	            } else if (event.type == "dgrid-deselect") {
+	                $scope.$apply(function () {
+	                    $scope.selectedStream = null;
+	                });
+	            }
+	        }
+        );
+    }
+
+    var loadTable = function() {
+    	riots.streams($scope.txtStreamSearch, function(streams) {
+    		$scope.gridConfig.data = streams;
+    		$.each(streams, function(idx,el) {
+    			el.formatTime = function() {
+    				return formatDate(el[CREATION_DATE]);
+    			};
+    		});
+    	});
+    };
+
+    var requestStream = function() {
+    	if(!$scope.selectedStream) {
+    		return;
+    	}
+    	var stream = clone($scope.selectedStream);
+    	riots.stream.request($scope.selectedStream, function() {
+    		$scope.growlInfo(M.SUC_PERM_REQUESTED);
+    	});
+    };
+
+    var searchStreams = function() {
+    	loadTable(); // TODO
+    };
+
+    /* register event handlers */
+    $scope.addClickHandler("btnPubStreamSearch", searchStreams);
+    $scope.addClickHandler("btnPubStreamRequest", requestStream);
+
+	/* render main elements */
+    initTable();
+    loadTable();
+});
+
+</script>

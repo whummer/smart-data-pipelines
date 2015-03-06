@@ -60,6 +60,11 @@ public class Stream implements ObjectIdentifiable, ObjectNamed, ObjectCreated {
 	 */
 	@JsonProperty
 	StreamPricing pricing;
+	/**
+	 * Whether this stream is publicly visible, searchable, queryable.
+	 */
+	@JsonProperty
+	boolean visible;
 
 	public String getName() {
 		return name;
@@ -81,6 +86,9 @@ public class Stream implements ObjectIdentifiable, ObjectNamed, ObjectCreated {
 	}
 	public StreamType getType() {
 		return type;
+	}
+	public boolean isVisible() {
+		return visible;
 	}
 
 }

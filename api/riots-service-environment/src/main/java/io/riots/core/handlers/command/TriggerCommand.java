@@ -1,15 +1,15 @@
 package io.riots.core.handlers.command;
 
+import io.riots.api.services.triggers.Trigger;
 import io.riots.core.logging.Markers;
 import io.riots.core.repositories.TriggerRepository;
-import io.riots.api.services.triggers.Trigger;
+
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 /**
  * @author whummer

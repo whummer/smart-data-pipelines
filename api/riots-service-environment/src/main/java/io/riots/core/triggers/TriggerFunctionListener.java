@@ -9,6 +9,7 @@ import io.riots.core.util.JSONUtil;
 import io.riots.core.util.script.ScriptUtil;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -60,12 +61,18 @@ public class TriggerFunctionListener {
 			boolean triggerPropMatches = StringUtils.isEmpty(s.function.getTriggerPropertyName()) ||
 					prop.getPropertyName().matches(s.function.getTriggerPropertyName());
 
-			if (thingMatches && propMatches) {
+			boolean doAddValue = thingMatches && propMatches;
+			boolean doExecFunc = thingMatches && triggerPropMatches;
+
+			if (doAddValue) {
 				addValueToFunctionState(s, prop);
 			}
-
-			if (thingMatches && triggerPropMatches) {
+			if (doExecFunc) {
 				executeFunction(s, prop);
+			}
+			if(doAddValue || doExecFunc) {
+				System.out.println("--> " + s.function + " -- " + 
+						prop + " - add: "  + doAddValue + ", exec: "  + doExecFunc);
 			}
 		}
 	}
@@ -99,6 +106,7 @@ public class TriggerFunctionListener {
 			state.variables.put(VAR_NAME_FUNCTION, function);
 			state.variables.put(VAR_NAME_CONFIG, function.getConfig());
 			ScriptUtil.eval(state.engine, VAR_NAME_VALUES + " = []");
+			LOG.info("Added trigger function " + state.function);
 
 			/* initialize code engine */
 			ScriptUtil.bindVariables(state.engine, state.variables);
@@ -148,6 +156,15 @@ public class TriggerFunctionListener {
 		System.gc();
 	}
 
+	public void removeAllForCreator(String creatorId) {
+		for(String funcId : new HashSet<String>(functions.keySet())) {
+			FuncExecState s = functions.get(funcId);
+			if(!StringUtils.isEmpty(creatorId) && creatorId.equals(s.function.getCreatorId())) {
+				functions.remove(funcId);
+			}
+		}
+	}
+
 	private static class FuncExecState {
 
 		ThingPropsFunction function;
@@ -155,4 +172,5 @@ public class TriggerFunctionListener {
 		Map<String, Object> variables = new ConcurrentHashMap<>();
 		ScriptEngine engine;
 	}
+
 }

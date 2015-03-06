@@ -13,4 +13,6 @@ public interface StreamRepository extends PagingAndSortingRepository<Stream,Stri
 
 	List<Stream> findByCreatorId(String userId);
 
+	List<Stream> findByVisibleAndNameLike(boolean visible, String name);
+
 }

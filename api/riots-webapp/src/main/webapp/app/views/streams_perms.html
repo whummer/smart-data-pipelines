@@ -19,9 +19,14 @@
 					<h5>Stream Users</h5>
 				</div>
 				<div class="ibox-content">
-					<b>Currently no stream users configured.</b>
-<!-- 					<div id="permsUsersTable" ui-grid="usersGridConfig" ui-grid-selection ui-grid-edit ui-grid-row-edit -->
-<!-- 				            class="grid"></div> -->
+					<div ng-show="selectedStream">
+						<b>Currently no users configured for stream {{selectedStream.id}}.</b>
+<!-- 						<div id="permsUsersTable" ui-grid="usersGridConfig" ui-grid-selection ui-grid-edit ui-grid-row-edit -->
+<!-- 					            class="grid"></div> -->
+					</div>
+					<div ng-show="!selectedStream">
+						<b>No stream selected.</b>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -43,7 +48,7 @@ app.controller('StreamsPermsController',
     $scope.streamsGridConfig = [];
     $scope.usersGridConfig = [];
 
-    var initTable = function () {
+    var initTables = function () {
         var columnsConfig = [
 			{label: "Name", field: "name", sortable: true},
 			{label: "Type", field: "type", sortable: true}
@@ -70,31 +75,14 @@ app.controller('StreamsPermsController',
     	});
     };
 
-    var saveStream = function() {
-    	// TODO
-    };
-
-    var addStream = function() {
-    	var stream = {};
-    	riots.add.stream(stream, function(stream) {
-    		loadTable();
-    	});
-    };
-
-    var deleteStream = function() {
-    	var stream = {};
-    	riots.delete.stream(stream, function(stream) {
-    		loadTable();
-    	});
-    };
-
     /* register event handlers */
-    $scope.addClickHandler("btnPermAdd", addStream);
-    $scope.addClickHandler("btnPermSave", saveStream);
-    $scope.addClickHandler("btnPermDelete", deleteStream);
+    $scope.$watch("selectedStream", function() {
+    	if(!$scope.selectedStream) return;
+    	var id = $scope.selectedStream.id;
+    });
 
 	/* render main elements */
-    initTable();
+    initTables();
     loadTable();
 });
 

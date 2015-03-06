@@ -27,6 +27,8 @@ function main() {
 	var gasUsage = gasLevelStart - gasLevelEnd;
 	var gasUsagePerM = gasUsage / dist;
 	var remaining = gasLevelEnd / gasUsagePerM;
+//	print("mileage: " + (new Date().getTime()) + " - " + remaining + " -- " + gasUsagePerM + " - " + dist + 
+//			" - " + gasLevelStart + " - " + gasLevelEnd + " - " + gasUsage + " - " + PATH.length);
 
 	/* return result*/
 	return remaining;

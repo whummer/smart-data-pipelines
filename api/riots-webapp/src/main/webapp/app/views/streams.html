@@ -7,9 +7,13 @@
 		</div>
 		<div class="ibox-content">
 			<tabset type="pills">
-				<tab heading="Streams">
+				<tab heading="Public Streams">
 					<ng-include
-						src="appConfig['appRootPath'] + '/views/streams_list.html'"></ng-include>
+						src="appConfig['appRootPath'] + '/views/streams_public.html'"></ng-include>
+				</tab>
+				<tab heading="My Streams">
+					<ng-include
+						src="appConfig['appRootPath'] + '/views/streams_user.html'"></ng-include>
 				</tab>
 				<tab heading="Permissions"> 
 					<ng-include
