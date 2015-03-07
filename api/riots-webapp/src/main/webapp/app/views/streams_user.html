@@ -10,232 +10,249 @@
 	</div>
 
 	<div id="streamsTable" ui-grid="gridConfig" ui-grid-selection ui-grid-edit ui-grid-row-edit
-            class="grid"></div>
+			 class="grid"></div>
 
-	<div ng-show="selectedStream">
-		<div class="row">
-			<div class="col-md-6 col-sm-6">
-				<div class="form-group">
-					<label for="driverName" class="col-sm-4 control-label">Name</label>
-					<div class="col-sm-8">
-						<input class="form-control input-sm" data-ng-model="selectedStream.name"/>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="driverName" class="col-sm-4 control-label">Public</label>
-					<div class="col-sm-8" style="line-height: 30px;">
-						<input type="checkbox" class="" style="" data-ng-model="selectedStream.visible"/>
-						<span ng-show="selectedStream.visible">(This stream is publicly visible and can be found by other users.)</span>
-						<span ng-show="!selectedStream.visible">(This stream is not visible to other users.)</span>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-sm-4 control-label">Stream Type</label>
-					<div class="col-sm-8">
-						<select class="form-control input-sm" data-ng-model="selectedStream.type">
-							<option value="THING_PROPERTY">Thing property values</option>
-							<option value="CUSTOM">Custom stream</option>
-						</select>
-					</div>
-				</div>
-				<div ng-show="selectedStream.type == 'THING_PROPERTY'">
+	<div ng-show="selectedStream" style="margin-top: 10px">
+		<form class="form-horizontal">
+
+			<div class="row">
+				<div class="col-md-6 col-sm-6">
 					<div class="form-group">
-						<label for="streamThingType" class="col-sm-4 control-label">Thing Type</label>
+						<label for="streamName" class="col-sm-4 control-label">Name</label>
 						<div class="col-sm-8">
-							<select id="streamThingType" class="form-control input-sm"
-									ng-options="opt.id as opt.name for opt in shared.thingTypes"
-									ng-model="selectedStream[THING_TYPE]">
+							<input id="streamName" class="form-control input-sm" data-ng-model="selectedStream.name"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="public" class="col-sm-4 control-label">Public</label>
+						<div class="col-sm-8" style="line-height: 30px;">
+							<input id="public" type="checkbox" class="" style="" data-ng-model="selectedStream.visible"/>
+							<span
+									ng-show="selectedStream.visible">(This stream is publicly visible and can be found by other users.)</span>
+							<span ng-show="!selectedStream.visible">(This stream is not visible to other users.)</span>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-4 control-label">Stream Type</label>
+						<div class="col-sm-8">
+							<select class="form-control input-sm" data-ng-model="selectedStream.type">
+								<option value="THING_PROPERTY">Thing property values</option>
+								<option value="CUSTOM">Custom stream</option>
 							</select>
 						</div>
 					</div>
-					<div class="form-group">
-						<label for="streamPropName" class="col-sm-4 control-label">Property Name</label>
-						<div class="col-sm-8">
-						<input id="streamPropName" class="form-control input-sm" 
-							data-ng-model="selectedStream.property" ui-autocomplete="propAutocomp"/>
+					<div ng-show="selectedStream.type == 'THING_PROPERTY'">
+						<div class="form-group">
+							<label for="streamThingType" class="col-sm-4 control-label">Thing Type</label>
+							<div class="col-sm-8">
+								<select id="streamThingType" class="form-control input-sm"
+												ng-options="opt.id as opt.name for opt in shared.thingTypes"
+												ng-model="selectedStream[THING_TYPE]">
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="streamPropName" class="col-sm-4 control-label">Property Name</label>
+							<div class="col-sm-8">
+								<input id="streamPropName" class="form-control input-sm"
+											 data-ng-model="selectedStream.property" ui-autocomplete="propAutocomp"/>
+							</div>
 						</div>
 					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-sm-4 control-label">Pricing - Billing Unit</label>
-					<div class="col-sm-8">
-						<select class="form-control input-sm" data-ng-model="selectedStream.pricing.billingUnit">
-							<option value="NONE">None (free of charge)</option>
-							<option value="TIME_MS">Time - milliseconds</option>
-							<option value="TIME_SEC">Time - seconds</option>
-							<option value="TIME_MIN">Time - minutes</option>
-							<option value="TIME_H">Time - hours</option>
-							<option value="TIME_DAY">Time - days</option>
-							<option value="TIME_WEEK">Time - weeks</option>
-							<option value="TIME_MONTH">Time - months</option>
-							<option value="TIME_YEAR">Time - years</option>
-							<option value="VOL_B">Data Volume - Bytes</option>
-							<option value="VOL_KB">Data Volume - KiloBytes</option>
-							<option value="VOL_MB">Data Volume - MegaBytes</option>
-							<option value="VOL_GB">Data Volume - GigaBytes</option>
-							<option value="PER_EVENT">Event-Based - Per Data Updates</option>
-						</select>
-					</div>
-				</div>
-				
-				<div ng-show="selectedStream.pricing.billingUnit && selectedStream.pricing.billingUnit != 'NONE'">
-					<div class="form-group">
-						<label for="streamPropUnitSize" class="col-sm-4 control-label">Pricing - Unit Size</label>
-						<div class="col-sm-8">
-							<input id="streamPropUnitSize" class="form-control input-sm" 
-								data-ng-model="selectedStream.pricing.unitSize"/>
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="streamPropUnitPrice" class="col-sm-4 control-label">Pricing - Unit Price</label>
-						<div class="col-sm-8">
-							<input id="streamPropUnitPrice" class="form-control input-sm" 
-								data-ng-model="selectedStream.pricing.unitPrice"/>
-						</div>
-					</div>
-				</div>
 
-				<div class="form-group">
-					<div class="col-sm-4"></div>
-					<div class="col-sm-8">
-					    <button class="pull-right btn btn-primary btn-sm" id="btnStreamSave">
-					    	<span class="glyphicon glyphicon-floppy-disk"></span> Save</button>
+					<div class="form-group">
+						<label for="streamSinkConfig" class="col-sm-4 control-label">StreamSink Config</label>
+						<div class="col-sm-8">
+							<input id="streamSinkConfig" class="form-control input-sm"
+										 data-ng-model="selectedStream.sinkConfig.endpoint"/>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-sm-4 control-label">Pricing - Billing Unit</label>
+						<div class="col-sm-8">
+							<select class="form-control input-sm" data-ng-model="selectedStream.pricing.billingUnit">
+								<option value="NONE">None (free of charge)</option>
+								<option value="TIME_MS">Time - milliseconds</option>
+								<option value="TIME_SEC">Time - seconds</option>
+								<option value="TIME_MIN">Time - minutes</option>
+								<option value="TIME_H">Time - hours</option>
+								<option value="TIME_DAY">Time - days</option>
+								<option value="TIME_WEEK">Time - weeks</option>
+								<option value="TIME_MONTH">Time - months</option>
+								<option value="TIME_YEAR">Time - years</option>
+								<option value="VOL_B">Data Volume - Bytes</option>
+								<option value="VOL_KB">Data Volume - KiloBytes</option>
+								<option value="VOL_MB">Data Volume - MegaBytes</option>
+								<option value="VOL_GB">Data Volume - GigaBytes</option>
+								<option value="PER_EVENT">Event-Based - Per Data Updates</option>
+							</select>
+						</div>
+					</div>
+
+					<div ng-show="selectedStream.pricing.billingUnit && selectedStream.pricing.billingUnit != 'NONE'">
+						<div class="form-group">
+							<label for="streamPropUnitSize" class="col-sm-4 control-label">Pricing - Unit Size</label>
+							<div class="col-sm-8">
+								<input id="streamPropUnitSize" class="form-control input-sm"
+											 data-ng-model="selectedStream.pricing.unitSize"/>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="streamPropUnitPrice" class="col-sm-4 control-label">Pricing - Unit Price</label>
+							<div class="col-sm-8">
+								<input id="streamPropUnitPrice" class="form-control input-sm"
+											 data-ng-model="selectedStream.pricing.unitPrice"/>
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="col-sm-4"></div>
+						<div class="col-sm-8">
+							<button class="pull-right btn btn-primary btn-sm" id="btnStreamSave">
+								<span class="glyphicon glyphicon-floppy-disk"></span> Save
+							</button>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
+		</form>
 	</div>
 </section>
 <style type="text/css">
-#streamsTable {
-	height: 250px;
-}
+	#streamsTable {
+		height: 250px;
+	}
 </style>
 <script type="text/javascript">
 
-var app = angular.module("app");
-app.controller('StreamsDetailsController',
-		function ($scope, $http, $compile, $routeParams, $log, $location) {
-    AppController($scope, $http, $compile);
+	var app = angular.module("app");
+	app.controller('StreamsDetailsController',
+			function ($scope, $http, $compile, $routeParams, $log, $location) {
+				AppController($scope, $http, $compile);
 
-    $scope.gridConfig = [];
-    $scope.THING_TYPE = THING_TYPE;
-    $scope.propAutocomp = {options: {
-		html: true,
-		focusOpen: true,
-		valueList: [],
-		source: function (request, response) {
-			response($scope.propAutocomp.options.valueList);
-    	}
-    }};
+				$scope.gridConfig = [];
+				$scope.THING_TYPE = THING_TYPE;
+				$scope.propAutocomp = {
+					options: {
+						html: true,
+						focusOpen: true,
+						valueList: [],
+						source: function (request, response) {
+							response($scope.propAutocomp.options.valueList);
+						}
+					}
+				};
 
-    var initTable = function () {
-        var columnsConfig = [
-            {label: "Creation Time", field: CREATION_DATE, sortable: true,
-            	cellTemplate: "<div class='ui-grid-cell-contents'>{{row.entity.formatTime()}}</div>"
-            },
-            {label: "Name", field: "name", sortable: true},
-            {label: "Type", field: "type", sortable: true},
-            {label: "Thing Type", field: THING_TYPE, sortable: true},
-            {label: "Thing Property", field: PROPERTY_NAME, sortable: true}
-        ];
-        $scope.gridConfig.data = [];
-        renderUITable($scope.gridConfig, "streamsTable", columnsConfig,
-	        function (event) {
-	            if (event.type == "dgrid-select") {
-	                $scope.$apply(function () {
-	                    $scope.selectedStream = event.rows[0].data;
-	                });
-	            } else if (event.type == "dgrid-deselect") {
-	                $scope.$apply(function () {
-	                    $scope.selectedStream = null;
-	                });
-	            }
-	        }
-        );
-    }
+				var initTable = function () {
+					var columnsConfig = [
+						{
+							label: "Creation Time", field: CREATION_DATE, sortable: true,
+							cellTemplate: "<div class='ui-grid-cell-contents'>{{row.entity.formatTime()}}</div>"
+						},
+						{label: "Name", field: "name", sortable: true},
+						{label: "Type", field: "type", sortable: true},
+						{label: "Thing Type", field: THING_TYPE, sortable: true},
+						{label: "Thing Property", field: PROPERTY_NAME, sortable: true}
+					];
+					$scope.gridConfig.data = [];
+					renderUITable($scope.gridConfig, "streamsTable", columnsConfig,
+							function (event) {
+								if (event.type == "dgrid-select") {
+									$scope.$apply(function () {
+										$scope.selectedStream = event.rows[0].data;
+									});
+								} else if (event.type == "dgrid-deselect") {
+									$scope.$apply(function () {
+										$scope.selectedStream = null;
+									});
+								}
+							}
+					);
+				}
 
-    var loadTable = function() {
-    	riots.streams(null, function(streams) {
-    		$scope.gridConfig.data = streams;
-    		$.each(streams, function(idx,el) {
-    			el.formatTime = function() {
-    				return formatDate(el[CREATION_DATE]);
-    			};
-    		});
-    	});
-    };
+				var loadTable = function () {
+					riots.streams(null, function (streams) {
+						$scope.gridConfig.data = streams;
+						$.each(streams, function (idx, el) {
+							el.formatTime = function () {
+								return formatDate(el[CREATION_DATE]);
+							};
+						});
+					});
+				};
 
-    var saveStream = function() {
-    	if(!$scope.selectedStream) {
-    		return;
-    	}
-    	var stream = clone($scope.selectedStream);
-    	delete stream["$$hashKey"];
-    	if(stream.type != 'THING_PROPERTY') {
-    		delete stream[THING_TYPE];
-    		delete stream[PROPERTY_NAME];
-    	}
-    	if(stream[THING_TYPE] && stream[THING_TYPE].id) {
-    		stream[THING_TYPE] = stream[THING_TYPE].id;
-    	}
-    	riots.save.stream(stream, function(stream) {
-    		$scope.growlInfo(M.SUC_STREAM_SAVED);
-    	});
-    };
+				var saveStream = function () {
+					if (!$scope.selectedStream) {
+						return;
+					}
+					var stream = clone($scope.selectedStream);
+					delete stream["$$hashKey"];
+					if (stream.type != 'THING_PROPERTY') {
+						delete stream[THING_TYPE];
+						delete stream[PROPERTY_NAME];
+					}
+					if (stream[THING_TYPE] && stream[THING_TYPE].id) {
+						stream[THING_TYPE] = stream[THING_TYPE].id;
+					}
+					riots.save.stream(stream, function (stream) {
+						$scope.growlInfo(M.SUC_STREAM_SAVED);
+					});
+				};
 
-    var addStream = function() {
-    	var stream = {
-    			name: "New Stream",
-    			type: "CUSTOM",
-    			pricing: {}
-    	};
-    	riots.add.stream(stream, function(stream) {
-    		loadTable();
-    	});
-    };
+				var addStream = function () {
+					var stream = {
+						name: "New Stream",
+						type: "CUSTOM",
+						pricing: {}
+					};
+					riots.add.stream(stream, function (stream) {
+						loadTable();
+					});
+				};
 
-    var deleteStream = function() {
-    	if(!$scope.selectedStream) {
-    		return;
-    	}
-    	riots.delete.stream($scope.selectedStream, function(stream) {
-    		loadTable();
-    	});
-    };
-    
-    var loadThingTypes = function() {
-    	if($scope.shared.thingTypes) return;
-    	riots.thingTypes(function(thingTypes) {
-    		$scope.shared.thingTypes = thingTypes;
-    	});
-    }
+				var deleteStream = function () {
+					if (!$scope.selectedStream) {
+						return;
+					}
+					riots.delete.stream($scope.selectedStream, function (stream) {
+						loadTable();
+					});
+				};
 
-    var loadPropNames = function(thingType) {
-    	if(!thingType.id) {
-    		thingType = byId($scope.shared.thingTypes, thingType)[0];
-    	}
-    	if(!thingType.properties) return;
-    	var list = [];
-    	$.each(thingType.properties, function(idx, el) {
-    		list.push(el.name);
-    	});
-    	$scope.propAutocomp.options.valueList = list;
-    }
+				var loadThingTypes = function () {
+					if ($scope.shared.thingTypes) return;
+					riots.thingTypes(function (thingTypes) {
+						$scope.shared.thingTypes = thingTypes;
+					});
+				}
 
-    /* register event handlers */
-    $scope.addClickHandler("btnStreamAdd", addStream);
-    $scope.addClickHandler("btnStreamSave", saveStream);
-    $scope.addClickHandler("btnStreamDelete", deleteStream);
-    $scope.$watch("selectedStream[THING_TYPE]", function(thingType) {
-    	if(!thingType) return;
-    	loadPropNames(thingType);
-    });
+				var loadPropNames = function (thingType) {
+					if (!thingType.id) {
+						thingType = byId($scope.shared.thingTypes, thingType)[0];
+					}
+					if (!thingType.properties) return;
+					var list = [];
+					$.each(thingType.properties, function (idx, el) {
+						list.push(el.name);
+					});
+					$scope.propAutocomp.options.valueList = list;
+				}
 
-	/* render main elements */
-    initTable();
-    loadTable();
-    loadThingTypes();
-});
+				/* register event handlers */
+				$scope.addClickHandler("btnStreamAdd", addStream);
+				$scope.addClickHandler("btnStreamSave", saveStream);
+				$scope.addClickHandler("btnStreamDelete", deleteStream);
+				$scope.$watch("selectedStream[THING_TYPE]", function (thingType) {
+					if (!thingType) return;
+					loadPropNames(thingType);
+				});
+
+				/* render main elements */
+				initTable();
+				loadTable();
+				loadThingTypes();
+			});
 
 </script>

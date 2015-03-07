@@ -85,22 +85,19 @@
 
 <div class="container" ng-controller="MainCtrl">
 
-	<div class="col-lg-12" style="margin-bottom: 10px">
-		<div class="ibox">
-			<div class="ibox-content">
-				<div class="text-center">
-					<img src="/demo/golfcars/porsche_powered_by_a1.png" class="center-block img-responsive" alt=""/>
-				</div>
-			</div>
+	<div class="col-lg-12 animated slideInDown" style="margin-bottom:20px">
+		<div class="text-center">
+			<img src="/demo/golfcars/codefest_full_banner.jpg" class="center-block img-responsive" alt=""/>
 		</div>
 	</div>
 
-	<div class="col-lg-6">
+
+	<div class="col-lg-6  animated slideInLeft">
 		<div class="ibox float-e-margins">
 			<div class="ibox-title">
-				<span class="fa fa-wrench"></span> <strong>riots Configuration</strong>
+				<span class="fa fa-wrench"></span> <strong>API Configuration</strong>
 			</div>
-			<div class="ibox-content">
+			<div class="ibox-content" style="min-height: 170px">
 				<form class="form-horizontal">
 					<div class="form-group">
 						<label for="riotsUserId" class="control-label col-sm-4">riots UserId</label>
@@ -114,15 +111,6 @@
 							<input id="riotsAppKey" ng-model="RIOTS_APP_KEY" class="form-control input-sm"/>
 						</div>
 					</div>
-					<div class="form-group">
-						<label for="riotsAppKey" class="control-label col-sm-4">Remove Triggers</label>
-						<div class="col-sm-8">
-							<label class="switch">
-								<input type="checkbox" ng-model="removeExistingTriggers" class="form-control "/>
-								<i></i>
-							</label>
-						</div>
-					</div>
 				</form>
 
 				<div class="row">
@@ -130,18 +118,53 @@
 						<button class="btn btn-sm btn-primary pull-right" ng-click="reloadConfiguration(removeExistingTriggers)">
 							<span class="fa fa-refresh"></span> Reload Configuration
 						</button>
-						<button class="btn btn-sm btn-warn pull-right" ng-click="removeAllTriggers()">
-							<span class="fa fa-refresh"></span> Remove All Triggers
-						</button>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 
+	<div class="col-lg-6 animated slideInRight">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<span class="fa fa-wrench"></span> <strong>Advanced Configuration</strong>
+			</div>
+			<div class="ibox-content" style="min-height: 170px">
+				<form class="form-horizontal">
 
-	<!-- ACTIVE CARS -->
-	<div class="col-lg-12" ng-if="things.length">
+					<div class="form-group">
+						<label for="riotsAppKey" class="control-label col-sm-8">Remove Application Triggers on Config Reload</label>
+						<div class="col-sm-4">
+							<label class="switch">
+								<input type="checkbox" ng-model="removeExistingTriggers" class="form-control "/>
+								<i></i>
+							</label>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="riotsAppKey" class="control-label col-sm-8">Restart Simulation on Config Reload</label>
+						<div class="col-sm-4">
+							<label class="switch">
+								<input type="checkbox" ng-model="restartSimulation" class="form-control "/>
+								<i></i>
+							</label>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="riotsAppKey" class="control-label col-sm-8">Manually remove all triggers (take care!)</label>
+						<div class="col-sm-4">
+							<button class="btn btn-sm btn-warning" ng-click="removeAllTriggers()">
+								<span class="fa fa-minus-circle"></span> Remove All Triggers
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<!-- ACTIVE CARS OVERVIEW -->
+	<div class="col-lg-12 animated bounceInUp" ng-if="things.length">
 		<div class="ibox float-e-margins">
 			<div class="ibox-title"><span class="fa fa-car"></span> <strong>Active Cars</strong></div>
 			<div class="ibox-content">
@@ -159,7 +182,7 @@
 						<th>Within Geo Fence</th>
 					</tr>
 					</thead>
-					<tr ng-repeat="vehicle in things">
+					<tr ng-repeat="vehicle in things" ng-class="{success : vehicle.active, warning : !vehicle.active}">
 						<td><img ng-src="{{vehicle.img}}" style="height: 30px;"/></td>
 						<td style="vertical-align: middle">{{vehicle.id}}</td>
 						<td style="vertical-align: middle"><b>{{vehicle.name}}</b></td>
@@ -189,6 +212,15 @@
 	<!-- ACTIVE CARS -->
 	<div class="col-lg-6 col-md-12 col-sm-12" ng-repeat="vehicle in things">
 		<div class="ibox float-e-margins">
+			<div class="overlay" ng-hide="vehicle.active">
+				<div style="margin-top: 150px" class="text-center">
+					<span class="fa fa-warning fa-2x"></span>
+
+					<h2>Vehicle is not Active.<br/>
+						Please start simulation or data feed.</h2>
+				</div>
+
+			</div>
 			<div class="ibox-title"><img ng-src="{{vehicle.img}}" style="height: 20px;"/>
 				<strong>{{vehicle.name}}</strong></div>
 			<div class="ibox-content">
@@ -285,34 +317,32 @@
 					</div>
 
 					<div class="row" style="margin-top: 20px">
-						<div class="col-sm-4 col-xs-4" style="margin-left: 10px;">
+						<div class="col-sm-offset-1 col-sm-5 col-xs-5">
 							<span id="{{vehicle.id + '_speedchart'}}"></span>
-							<p align="center"><strong>Average Speed (km/h)</strong></p>
+							<p align="center"><strong>Avg. Speed: {{vehicle.properties.averageSpeed | number : 2}}</strong></p>
 						</div>
 
-						<div class="col-sm-4 col-xs-4" style="margin-left: 10px;">
+						<div class="col-sm-5 col-xs-5" style="margin-left: 10px;">
 							<span id="{{vehicle.id + '_updatechart'}}"></span>
 							<p align="center"><strong>Updates/sec: {{vehicle.properties.updateRate | number : 2 }}</strong></p>
 						</div>
 
-						<div class="col-sm-4 col-xs-4">
-							<div ng-show="vehicle.properties.receivedVouchers.length">
-								<span style="padding-left: 10px;"> <strong>Received Vouchers: </strong>
-								<span ng-repeat="voucher in vehicle.properties.receivedVouchers">
-									<img ng-src="{{voucher}}" style="margin-right: 10px; height: 30px; width: 30px"/>
-								</span>
-						</span>
-
-							</div>
-						</div>
 					</div>
 
+					<div class="row">
+						<div class="col-sm-offset-1 col-sm-11" ng-show="vehicle.properties.receivedVouchers.length">
+							<strong>Received Vouchers: </strong>
+							<img ng-repeat="voucher in vehicle.properties.receivedVouchers" ng-src="{{voucher}}"
+									 style="margin-right: 10px; height: 30px; width: 30px;"/>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 
-	<div class="col-lg-12">
+	<!-- Map of Active Cars -->
+	<div class="col-lg-12 animated bounceInUp">
 		<div class="ibox">
 			<div class="ibox-title"><span class="fa fa-location-arrow"></span> <strong>Map View of Active Cars</strong></div>
 			<div class="ibox-content">

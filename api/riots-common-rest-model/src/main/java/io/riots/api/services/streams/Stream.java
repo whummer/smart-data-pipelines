@@ -1,5 +1,9 @@
 package io.riots.api.services.streams;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.riots.api.services.model.Constants;
 import io.riots.api.services.model.interfaces.ObjectCreated;
 import io.riots.api.services.model.interfaces.ObjectIdentifiable;
@@ -7,18 +11,14 @@ import io.riots.api.services.model.interfaces.ObjectNamed;
 
 import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-
 /**
  * Class to represent a data stream.
+ *
  * @author whummer
  */
 @JsonSubTypes({
-	@Type(value = StreamOfThingPropValues.class, name="THING_PROPERTY"),
-	@Type(value = Stream.class, name="CUSTOM")
+		@Type(value = StreamOfThingPropValues.class, name = "THING_PROPERTY"),
+		@Type(value = Stream.class, name = "CUSTOM")
 })
 @JsonTypeInfo(
 		use = JsonTypeInfo.Id.NAME,
@@ -26,6 +26,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 		property = "type"
 )
 public class Stream implements ObjectIdentifiable, ObjectNamed, ObjectCreated {
+
 	{
 		type = StreamType.CUSTOM;
 	}
@@ -60,6 +61,10 @@ public class Stream implements ObjectIdentifiable, ObjectNamed, ObjectCreated {
 	 */
 	@JsonProperty
 	StreamPricing pricing;
+
+	@JsonProperty
+	StreamSinkConfig sinkConfig;
+
 	/**
 	 * Whether this stream is publicly visible, searchable, queryable.
 	 */
@@ -69,26 +74,40 @@ public class Stream implements ObjectIdentifiable, ObjectNamed, ObjectCreated {
 	public String getName() {
 		return name;
 	}
+
 	public String getId() {
 		return id;
 	}
+
 	public Date getCreated() {
 		return created;
 	}
+
 	public void setCreated(Date created) {
 		this.created = created;
 	}
+
 	public String getCreatorId() {
 		return creatorId;
 	}
+
 	public void setCreatorId(String creatorId) {
 		this.creatorId = creatorId;
 	}
+
 	public StreamType getType() {
 		return type;
 	}
+
 	public boolean isVisible() {
 		return visible;
 	}
 
+	public StreamSinkConfig getSinkConfig() {
+		return sinkConfig;
+	}
+
+	public void setSinkConfig(StreamSinkConfig sinkConfig) {
+		this.sinkConfig = sinkConfig;
+	}
 }

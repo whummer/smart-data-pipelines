@@ -431,8 +431,8 @@ body.fixed-sidebar.mini-navbar .navbar-default .nav li a span {
   color: #fff;
 }
 .btn-primary {
-  background-color: #4a96ad;
-  border-color: #4a96ad;
+  background-color: #0A6385;
+  border-color: #0A6385;
   color: #FFFFFF;
 }
 .btn-primary:hover,
@@ -1609,6 +1609,7 @@ table.dataTable thead .sorting:after {
 /* UI Sortable */
 .ui-sortable .ibox-title {
   cursor: move;
+	border-color: #0A6385;
 }
 .ui-sortable-placeholder {
   border: 1px dashed #cecece !important;
@@ -2985,7 +2986,7 @@ code {
   -moz-border-right-colors: none;
   -moz-border-top-colors: none;
   background-color: #ffffff;
-  border-color: #4a96ad;
+  border-color: #0A6385;
   border-image: none;
   border-style: solid solid none;
   border-width: 4px 0px 0;

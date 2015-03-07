@@ -20,7 +20,7 @@ window.RIOTS_USER_ID = "54cfa5b0bee88c0d9b4d157a";
 window.RIOTS_APP_KEY = "da022e9f-4a5b-4a6b-b2d6-9d1e199447c4";
 
 var app = angular.module('demo', ['ui.knob', 'colorpicker.module', 'angular-peity']);
-app.controller('MainCtrl', function ($scope, $log) {
+app.controller('MainCtrl', function ($scope, $log, $interval) {
 
 			// controller configuration
 			$scope.RIOTS_USER_ID = window.RIOTS_USER_ID;
@@ -179,12 +179,36 @@ app.controller('MainCtrl', function ($scope, $log) {
 				vehicle.properties.updateRate = vehicle.properties.updatesReceived / (elapsed / 1000);
 			}
 
+			function updateAverageSpeed(vehicle) {
+				if (vehicle.properties.speedHistory.length > 3) {
+					var sum = 0;
+					angular.forEach(vehicle.properties.speedHistory, function (speed) {
+						sum += speed;
+					});
+
+					vehicle.properties.averageSpeed = sum / vehicle.properties.speedHistory.length;
+				}
+			}
+
+
 			var subscribeProp = function (vehicle, propName) {
 				riots.subscribe({
 					thingId: vehicle.id,
 					propertyName: propName
 				}, function (data) {
 					$scope.$apply(function () {
+
+						// set vehicle state
+
+						vehicle.avtive = true;
+						vehicle.lastUpdate = new Date();
+
+						if (!vehicle.timer) {
+							vehicle.timer = $interval(function() {
+								var noUpdateFor = new Date().getTime() - vehicle.lastUpdate;
+								vehicle.active = noUpdateFor <= 5000;
+							}, 2500, 0, true);
+						}
 
 						updateReceiveRate(vehicle);
 						updateHistoryChart(vehicle.properties.updateRateHistory,
@@ -240,7 +264,8 @@ app.controller('MainCtrl', function ($scope, $log) {
 									.val(kmh)
 									.trigger('change');
 
-							updateHistoryChart(vehicle.properties.speedHistory, kmh, '#' + vehicle.id + "_speedchart")
+							updateHistoryChart(vehicle.properties.speedHistory, kmh, '#' + vehicle.id + "_speedchart");
+							updateAverageSpeed(vehicle);
 						}
 
 
@@ -265,7 +290,7 @@ app.controller('MainCtrl', function ($scope, $log) {
 					history.push(value);
 				}
 
-				if (history.length > 30) {
+				if (history.length > 50) {
 					history.shift();
 				}
 
@@ -564,7 +589,7 @@ app.controller('MainCtrl', function ($scope, $log) {
 					}
 				} else {
 					if ($scope.overviewMap.hasLayer($scope.geoFenceLayerGroup)) {
-						$log.debug("Adding loyalty fence layer group to overview map");
+						$log.debug("Removing loyalty fence layer group from overview map");
 						$scope.overviewMap.removeLayer($scope.geoFenceLayerGroup);
 					} else {
 						$log.debug("No loyalty layer on overview map, not removing");
