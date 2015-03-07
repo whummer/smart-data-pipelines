@@ -67,6 +67,19 @@ public interface DriversService {
     DataDriver setForThing(@PathParam("id") String thingId, 
     		@PathParam("propName") String propertyName, DataDriver driver);
 
+	@PUT
+    @Path("/resetFor/{id}/{propName}")
+    @Consumes({MediaType.APPLICATION_JSON})
+    @ApiOperation(value = "Create a DataDriver for a thing property",
+            notes = "Create a new DataDriver for a thing property according to the provided JSON payload. "
+            		+ "Upon successful creation, HTTP 201 and a Location header for the" +
+                    " created DataDriver is returned."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "Malformed DataDriver provided. See error message for details")
+    })
+    void resetFor(@PathParam("id") String thingId, @PathParam("propName") String propertyName);
+
     @DELETE
     @Path("/{id}")
     @Produces({MediaType.APPLICATION_JSON})

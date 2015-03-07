@@ -100,7 +100,13 @@ public class DriversServiceImpl implements DriversService {
         return driver;
     }
 
-    @Override
+	@Override
+	public void resetFor(String thingId, String propertyName) {
+		DataDriver d = retrieveForThing(thingId, propertyName);
+		driverRepo.delete(d);
+	}
+
+	@Override
     @Timed @ExceptionMetered
     public boolean delete(String itemId) {
         driverRepo.delete(itemId);
@@ -117,6 +123,13 @@ public class DriversServiceImpl implements DriversService {
     	} else if(driverConnector == DriverConnector.RIOTS_SIMULATION) {
     		SimulationService simService = clientFactory.getSimulationsServiceClient();
     		simService.stopSimulation(driver.getThingId(), driver.getPropertyName());
+			String thingId = driver.getThingId();
+			String propertyName = driver.getPropertyName();
+			List<Simulation> simulationsToDelete = simService.listSimulations(thingId, propertyName, 0, 0);
+			// todo why has the array a single NULL element
+			if (!simulationsToDelete.isEmpty() && simulationsToDelete.get(0) != null) {
+				simService.deleteSimulation(simulationsToDelete.get(0).getId());
+			}
     	}
     }
     private void startDriver(DataDriver driver, User creator) {
@@ -134,7 +147,8 @@ public class DriversServiceImpl implements DriversService {
     		}
     		SimulationType simType = simService.retrieveSimType(driverSim.getSimulationId());
     		Simulation sim = new Simulation();
-    		sim.setCreatorId(driver.getCreatorId());
+//    		sim.setName();
+			sim.setCreatorId(driver.getCreatorId());
     		PropertySimulation<?> propSim = simType.getSimulation();
     		propSim.fillInParameters(driverSim.getParameters());
     		propSim.setPropertyName(driver.getPropertyName());
@@ -142,6 +156,7 @@ public class DriversServiceImpl implements DriversService {
     		sim.getSimulationProperties().add(propSim);
     		/* post new simulation to simulation clients */
     		simService.startSimulation(sim);
+			simService.create(sim);
     	}
     }
 
