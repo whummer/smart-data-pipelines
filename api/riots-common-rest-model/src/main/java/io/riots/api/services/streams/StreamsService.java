@@ -110,4 +110,23 @@ public interface StreamsService {
             response = Stream.class)
     StreamPermission updatePermission(@PathParam("id") String id, StreamPermission perm);
 
+    /* METHODS FOR STREAM RESTRICTIONS */
+
+    @GET
+    @Path("/{id}/restrictions")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Get stream restrictions.",
+            notes = "Retrieve all configured restrictions for a data stream.",
+            response = StreamRestriction.class)
+    List<StreamRestriction> queryRestrictions(@PathParam("id") String id);
+
+    @PUT
+    @Path("/{id}/restrictions")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Update restriction status.",
+            notes = "Update the restriction status for a data stream.",
+            response = StreamRestriction.class)
+    StreamRestriction saveRestriction(@PathParam("id") String id, StreamRestriction r);
+
 }

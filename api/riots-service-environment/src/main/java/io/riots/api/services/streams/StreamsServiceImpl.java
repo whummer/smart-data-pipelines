@@ -109,4 +109,15 @@ public class StreamsServiceImpl implements StreamsService {
 		return perm;
 	}
 
+	@Override
+	public List<StreamRestriction> queryRestrictions(String id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	@Override
+	public StreamRestriction saveRestriction(String id, StreamRestriction r) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
