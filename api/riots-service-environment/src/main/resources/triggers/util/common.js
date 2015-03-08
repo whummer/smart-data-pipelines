@@ -13,7 +13,7 @@ function distanceInMeters(p1, p2) {
 	var lat2 = getPropRecursive(p2, "latitude");
 	var lon1 = getPropRecursive(p1, "longitude");
 	var lon2 = getPropRecursive(p2, "longitude");
-	print("lat/lon 1/2 " + lat1 + " - " + lat2 + " - " + lon1 + " - " + lon2);
+	//print("lat/lon 1/2 " + lat1 + " - " + lat2 + " - " + lon1 + " - " + lon2);
 	if(typeof lat1 == "undefined" ||
 			typeof lat2 == "undefined" ||
 			typeof lon1 == "undefined" ||
@@ -36,10 +36,12 @@ function getPropRecursive(obj, propName) {
 	if(typeof obj[propName] != "undefined") {
 		return obj[propName];
 	}
-	for(key in obj) {
-		var v = getPropRecursive(key, obj[key]);
-		if(typeof v != "undefined") {
-			return v;
+	if(typeof obj == "object") {
+		for(key in obj) {
+			var v = getPropRecursive(obj[key], propName);
+			if(typeof v != "undefined") {
+				return v;
+			}
 		}
 	}
 };

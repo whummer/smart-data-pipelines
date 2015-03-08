@@ -10,8 +10,10 @@ function main() {
 	var gasLevelStart = -1;
 	var gasLevelEnd = -1;
 	for(var i = 0; i < PATH.length - 1; i ++) {
-		var loc1 = PATH[i].location;
-		var loc2 = PATH[i + 1].location;
+		var loc1 = getPropRecursive(PATH[i], "location");
+		var loc2 = getPropRecursive(PATH[i + 1], "location");
+		//var loc1 = PATH[i].location;
+		//var loc2 = PATH[i + 1].location;
 		var tmp = distanceInMeters(loc1, loc2);
 		if(tmp >= 0) {
 			dist += tmp

@@ -27,11 +27,11 @@ function main() {
 	var lastLoc = PATH[PATH.length - 1];
 	var loc1 = getPropRecursive(lastGasLevelState, "location");
 	var loc2 = getPropRecursive(lastLoc, "location");
-	print("loc1/loc2 " + " - " + loc1 + " - " + loc2);
+	//print("loc1/loc2 " + " - " + loc1 + " - " + loc2 + " - " + JSON.stringify(lastGasLevelState) + " - " + JSON.stringify(lastLoc));
 	var distInKm = distanceInMeters(loc1, loc2) / 1000;
-	print("lastGasLevel " + " - " + lastGasLevel + " - " + consumptionPerKm + " - " + distInKm);
-	print(VALUES[VALUES.length - 1]);
-	print(PATH[PATH.length - 1]);
+	//print("lastGasLevel " + " - " + lastGasLevel + " - " + consumptionPerKm + " - " + distInKm);
+	//print(VALUES[VALUES.length - 1]);
+	//print(PATH[PATH.length - 1]);
 	var result = lastGasLevel - (consumptionPerKm * distInKm);
 
 	/* return result */
