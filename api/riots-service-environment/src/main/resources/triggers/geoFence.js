@@ -17,7 +17,7 @@ function main() {
 
 	/* compute result */
 	var thingPropList = PATH_MAP[thingId];
-	var lastLoc = thingPropList[thingPropList.length - 1].location;
+	var lastLoc = getPropRecursive(thingPropList[thingPropList.length - 1], "location");
 	var inFence = isWithinRange(lastLoc, center, range);
 
 	/* return result */
