@@ -1,5 +1,6 @@
 package io.riots.api.services.scenarios;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.riots.api.services.catalog.Property;
@@ -92,6 +93,19 @@ public class PropertyValue implements ObjectIdentifiable {
 	}
 	public void setTimestamp(long timestamp) {
 		this.timestamp = timestamp;
+	}
+
+	/**
+	 * Return the name part after the last dot "." (if
+	 * a dot exists in the name at all)
+	 * @return
+	 */
+	@JsonIgnore
+	public String getLocalName() {
+		if(propertyName == null || !propertyName.contains("."))
+			return propertyName;
+		return propertyName.substring(propertyName.lastIndexOf("."),
+				propertyName.length() - 1);
 	}
 
 	@Override

@@ -15,4 +15,6 @@ public interface StreamRestrictionRepository extends PagingAndSortingRepository<
 
 	List<StreamRestriction> deleteByStreamIdAndThingIdAndPropertyName(String streamID, String thingID, String propertyName);
 
+	List<StreamRestriction> findByThingId(String thingId);
+
 }

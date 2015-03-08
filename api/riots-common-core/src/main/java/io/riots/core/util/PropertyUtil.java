@@ -28,4 +28,20 @@ public class PropertyUtil {
 		return result;
 	}
 
+	public static Object removeChildProperty(PropertyValue propValue,
+			PropertyValue childPropValue) {
+		return removeChildProperty(propValue, childPropValue.getLocalName());
+	}
+
+	public static Object removeChildProperty(PropertyValue propValue,
+			String childPropValue) {
+		if(!(propValue.getValue() instanceof Map<?,?>)) {
+			// invalid -> not a composite property (?)
+			return null;
+		}
+		Map<?,?> value = (Map<?,?>)propValue.getValue();
+		Object deleted = value.remove(childPropValue);
+		return deleted;
+	}
+
 }
