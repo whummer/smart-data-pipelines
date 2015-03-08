@@ -68,4 +68,11 @@ public class StreamRestriction implements ObjectIdentifiable {
 		this.streamId = streamId;
 	}
 
+	@Override
+	public String toString() {
+		return "StreamRestriction [thingId=" + thingId + ", streamId="
+				+ streamId + ", propertyName=" + propertyName + ", visible="
+				+ visible + "]";
+	}
+
 }

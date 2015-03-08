@@ -104,8 +104,8 @@ public class PropertyValue implements ObjectIdentifiable {
 	public String getLocalName() {
 		if(propertyName == null || !propertyName.contains("."))
 			return propertyName;
-		return propertyName.substring(propertyName.lastIndexOf("."),
-				propertyName.length() - 1);
+		return propertyName.substring(propertyName.lastIndexOf(".") + 1,
+				propertyName.length());
 	}
 
 	@Override

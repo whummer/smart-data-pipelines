@@ -113,7 +113,8 @@ public class DataInserter {
 	private boolean isAccessPermitted(PropertyValue propValue, List<StreamRestriction> restrs) {
 		for(StreamRestriction r : restrs) {
 			if(r.getThingId().matches(propValue.getThingId()) && 
-					r.getPropertyName().matches(propValue.getPropertyName()) && 
+					(r.getPropertyName().matches(propValue.getPropertyName()) || 
+							r.getPropertyName().matches(propValue.getLocalName())) && 
 					!r.isVisible()) {
 				return false;
 			}
@@ -122,11 +123,14 @@ public class DataInserter {
 	}
 
 	private void removeSubPropertiesIfNecessary(PropertyValue propValue, List<StreamRestriction> restrs) {
-		for(PropertyValue childPropValue : PropertyUtil.getChildren(propValue)) {
+		List<PropertyValue> childProps = PropertyUtil.getChildren(propValue);
+		//System.out.println("child props: " + childProps + " - " + restrs);
+		for(PropertyValue childPropValue : childProps) {
 			boolean perm = isAccessPermitted(childPropValue, restrs);
-//			System.out.println("access to subprop permitted: " + perm);
+			//System.out.println("access to subprop permitted: " + perm + " - " + childPropValue + " - " + childPropValue.getLocalName());
 			if(!perm) {
-				Object deleted = PropertyUtil.removeChildProperty(propValue, childPropValue);
+//				Object deleted = 
+				PropertyUtil.removeChildProperty(propValue, childPropValue);
 //				System.out.println("Removing restricted property " + 
 //						childPropValue.getPropertyName() + " - " + 
 //						childPropValue.getLocalName() + " - " + deleted);

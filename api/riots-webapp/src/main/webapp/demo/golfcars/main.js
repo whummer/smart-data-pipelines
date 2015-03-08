@@ -200,13 +200,19 @@ app.controller('MainCtrl', function ($scope, $log, $interval) {
 
 						// set vehicle state
 
-						vehicle.avtive = true;
+						vehicle.active = true;
 						vehicle.lastUpdate = new Date();
 
 						if (!vehicle.timer) {
 							vehicle.timer = $interval(function() {
 								var noUpdateFor = new Date().getTime() - vehicle.lastUpdate;
 								vehicle.active = noUpdateFor <= 5000;
+							}, 2500, 0, true);
+						}
+						if (!vehicle.locationTimer) {
+							vehicle.locationTimer = $interval(function() {
+								var noUpdateFor = new Date().getTime() - vehicle.lastLocationUpdate;
+								vehicle.locationActive = noUpdateFor <= 5000;
 							}, 2500, 0, true);
 						}
 
@@ -252,6 +258,7 @@ app.controller('MainCtrl', function ($scope, $log, $interval) {
 						}
 
 						if (propName == "location") {
+							vehicle.lastLocationUpdate = vehicle.lastUpdate;
 							vehicle.properties["location.latitude"] = data.value.latitude;
 							vehicle.properties["location.longitude"] = data.value.longitude;
 							setMarker(vehicle);

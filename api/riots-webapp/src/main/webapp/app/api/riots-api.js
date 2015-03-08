@@ -1,4 +1,4 @@
-/** 
+/**
  * @author whummer
  */
 
@@ -184,6 +184,20 @@ sh.simulationTypes = sh.get.simulationTypes = function(callback, doCacheResults)
 	var maxResults = 100;
 	return callGET(appConfig.services.simulationTypes.url + "?page=0&size=" + maxResults, callback, doCacheResults);
 };
+
+sh.simulations = sh.get.simulations = function(callback, doCacheResults) {
+	var maxResults = 100;
+	return callGET(appConfig.services.simulations.url + "?page=0&size=" + maxResults, callback, doCacheResults);
+};
+
+sh.simulationByThingIdAndPropertyName = sh.get.simulationByThingIdAndPropertyName = function(opts, callback, doCacheResults) {
+	var maxResults = 100;
+	var thingId = opts.thingId;
+	var propertyName = opts.propertyName;
+	return callGET(appConfig.services.simulations.url + "?page=0&size=" + maxResults + "&thingId="
+	+ thingId + "&propertyName=" + propertyName, callback, doCacheResults);
+};
+
 sh.data = sh.get.data = function(opts, callback, errorCallback) {
 	var url = appConfig.services.thingData.url + "/" +
                       opts[THING_ID] + "/" + opts[PROPERTY_NAME];
@@ -202,6 +216,8 @@ sh.driver = sh.get.driver = function(opts, callback) {
                       opts[THING_ID] + "/" + opts[PROPERTY_NAME];
 	return callGET(url, callback);
 };
+
+
 sh.plans = sh.get.plans = function(callback) {
 	var url = appConfig.services.billing.url + "/plans";
 	return callGET(url, callback);
@@ -250,7 +266,10 @@ sh.properties = sh.get.properties = function(thingType, callback, doCacheResults
 	}
 };
 
-sh.propertiesRecursive = function(props, result, propNamePrefix) {
+sh.propertiesRecursive = function(props, includeComplexProps) {
+	return doGetPropertiesRecursive(props, undefined, undefined, includeComplexProps);
+}
+var doGetPropertiesRecursive = function(props, result, propNamePrefix, includeComplexProps) {
 	if(!result) result = [];
 	if(!propNamePrefix) propNamePrefix = "";
 	$.each(props, function(idx,prop) {
@@ -258,9 +277,10 @@ sh.propertiesRecursive = function(props, result, propNamePrefix) {
 			$.each(prop.children, function(idx,subProp) {
 				subProp = clone(subProp);
 				subProp.name = propNamePrefix + subProp.name;
-				sh.propertiesRecursive([subProp], result, subProp.name + ".");
+				sh.propertiesRecursive([subProp], result, subProp.name + ".", includeComplexProps);
 			});
-		} else {
+		}
+		if(includeComplexProps || !prop.children) {
 			result.push(prop);
 		}
 	});
@@ -306,7 +326,7 @@ sh.add.stream = function(stream, callback) {
 };
 sh.add.data = function(opts, dataItem, callback, errorCallback) {
 	var url = appConfig.services.thingData.url + "/" +
-                      opts[THING_ID] + "/" + 
+                      opts[THING_ID] + "/" +
                       opts[PROPERTY_NAME];
 	return callPOST(url, dataItem, callback, errorCallback);
 };
@@ -369,6 +389,9 @@ sh.delete.simulationType = function(simType, callback) {
 	var id = simType.id ? simType.id : simType;
 	return callDELETE(appConfig.services.simulationTypes.url + "/" + id, callback);
 };
+sh.delete.simulation = function(id, callback) {
+	return callDELETE(appConfig.services.simulations.url + "/" + id, callback);
+};
 sh.delete.trigger = function(trigger, callback) {
 	var id = trigger.id ? trigger.id : trigger;
 	return callDELETE(appConfig.services.triggers.url + "/" + id, callback);
@@ -379,6 +402,12 @@ sh.delete.triggersForCreator = function(creatorId, callback) {
 sh.delete.stream = function(stream, callback) {
 	var id = stream.id ? stream.id : stream;
 	return callDELETE(appConfig.services.streams.url + "/" + id, callback);
+};
+sh.delete.driver = function(opts, callback) {
+	console.log("OPts: ", opts);
+	var url = appConfig.services.drivers.url + "/resetFor/" +
+			opts[THING_ID] + "/" + opts[PROPERTY_NAME];
+	return callGET(url, callback);
 };
 
 
@@ -404,6 +433,7 @@ sh.stream.permissions.save = function(perms, callback) {
 sh.stream.restrictions = function(stream, callback) {
 	var id = stream.id ? stream.id : stream;
 	var url = appConfig.services.streams.url + "/" + id + "/restrictions";
+	console.log("url ", url);
 	return callGET(url, callback);
 };
 sh.stream.restrictions.save = function(restr, callback) {
@@ -515,10 +545,10 @@ var connectWebsocket = function(onOpenCallback) {
 		var authToken = window.authToken ? window.authToken : sh.authToken;
 
 		if(authToken.network && authToken.access_token) {
-			this.websocket = ws = new WebSocket(wsURL, 
+			this.websocket = ws = new WebSocket(wsURL,
 					authToken.network + "~" + authToken.access_token);
 		} else if(authToken.userId && authToken.appKey) {
-			this.websocket = ws = new WebSocket(wsURL, 
+			this.websocket = ws = new WebSocket(wsURL,
 					authToken.userId + "~" + authToken.appKey);
 		} else {
 			throw "Please provide RIOTS_USER_ID and RIOTS_APP_KEY variables.";
