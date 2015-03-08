@@ -61,10 +61,11 @@ public class Stream implements ObjectIdentifiable, ObjectNamed, ObjectCreated {
 	 */
 	@JsonProperty
 	StreamPricing pricing;
-
+	/**
+	 * Stream sink config.
+	 */
 	@JsonProperty
 	StreamSinkConfig sinkConfig;
-
 	/**
 	 * Whether this stream is publicly visible, searchable, queryable.
 	 */

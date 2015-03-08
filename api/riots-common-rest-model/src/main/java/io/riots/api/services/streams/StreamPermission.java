@@ -1,16 +1,12 @@
 package io.riots.api.services.streams;
 
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-
 import io.riots.api.services.model.Constants;
 import io.riots.api.services.model.interfaces.ObjectCreated;
 import io.riots.api.services.model.interfaces.ObjectIdentifiable;
+
+import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Models permissions on data streams.
@@ -59,13 +55,6 @@ public class StreamPermission implements ObjectIdentifiable, ObjectCreated {
 	 */
 	@JsonProperty
 	PermissionStatus status;
-	/**
-	 * Stream restrictions
-	 */
-	@JsonProperty
-	@JsonInclude(Include.NON_EMPTY)
-	List<StreamRestriction> restrictions = new LinkedList<StreamRestriction>();
-
 
 	public String getId() {
 		return id;
@@ -99,9 +88,6 @@ public class StreamPermission implements ObjectIdentifiable, ObjectCreated {
 	}
 	public void setStatus(PermissionStatus status) {
 		this.status = status;
-	}
-	public List<StreamRestriction> getRestrictions() {
-		return restrictions;
 	}
 
 }

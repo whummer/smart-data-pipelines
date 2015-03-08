@@ -1,3 +1,7 @@
+function toRad(num) {
+	return num * Math.PI / 180;
+}
+
 /**
  * compute distance between two points
  */
@@ -5,30 +9,43 @@ function distanceInMeters(p1, p2) {
 	if(!p1 || !p2) {
 		return -1;
 	}
-	var lat1 = p1.latitude;
-	var lat2 = p2.latitude;
-	var lon1 = p1.longitude;
-	var lon2 = p2.longitude;
-	if(typeof lat1 == "undefined" || 
+	var lat1 = getPropRecursive(p1, "latitude");
+	var lat2 = getPropRecursive(p2, "latitude");
+	var lon1 = getPropRecursive(p1, "longitude");
+	var lon2 = getPropRecursive(p2, "longitude");
+	print("lat/lon 1/2 " + lat1 + " - " + lat2 + " - " + lon1 + " - " + lon2);
+	if(typeof lat1 == "undefined" ||
 			typeof lat2 == "undefined" ||
 			typeof lon1 == "undefined" ||
 			typeof lon2 == "undefined") {
 		return -1;
 	}
 	var R = 6371 * 1000;
-	var dLat = (lat2-lat1).toRad();
-	var dLon = (lon2-lon1).toRad();
+	var dLat = toRad(lat2-lat1);
+	var dLon = toRad(lon2-lon1);
 	var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-	        Math.cos((lat1).toRad()) * 
-	        Math.cos((lat2).toRad()) * 
+	        Math.cos(toRad(lat1)) * 
+	        Math.cos(toRad(lat2)) * 
 	        Math.sin(dLon/2) * Math.sin(dLon/2);
 	var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
 	var d = R * c;
-	return d;
+	return Math.abs(d);
 }
 
+function getPropRecursive(obj, propName) {
+	if(typeof obj[propName] != "undefined") {
+		return obj[propName];
+	}
+	for(key in obj) {
+		var v = getPropRecursive(key, obj[key]);
+		if(typeof v != "undefined") {
+			return v;
+		}
+	}
+};
+
 Number.prototype.toRad = function() {
-	return this * Math.PI / 180;
+	return toRad(this);
 };
 
 function clone(obj) {
@@ -63,7 +80,7 @@ function constructPath(values) {
 	for(i = 0; i < values.length; i ++) {
 		v = values[i];
 		setProperty(curState, v.property, v.value)
-		curState["time"] = v.timestamp;
+		curState.time = v.timestamp;
 		var cloned = clone(curState);
 		path.push(cloned);
 	}

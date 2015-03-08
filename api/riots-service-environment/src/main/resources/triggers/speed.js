@@ -5,9 +5,6 @@ function main() {
 
 	/* construct path */
 	var PATH = constructPath(VALUES);
-	/*print("-------- PATH --------");
-
-	print(JSON.stringify(PATH));*/
 
 	/* compute speed */
 	var dist = 0;
@@ -19,10 +16,8 @@ function main() {
 		var tmp = distanceInMeters(v.location, v1.location);
 		time += Math.abs(v.time - v1.time) / 1000;
 		dist += tmp >= 0 ? tmp : 0;
+		//print("distanceInMeters " + distanceInMeters + " - " + v.time + " - " + v1.time + " - " + (v.time - v1.time) + " - " + dist);
 	}
-
-	/*print("Distance: " + dist);
-	print("Time: " + time);*/
 
 	/* return speed */
 	var speed = dist / time;

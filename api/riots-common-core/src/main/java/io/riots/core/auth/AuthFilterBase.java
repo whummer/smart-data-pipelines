@@ -420,7 +420,7 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
                     	info.token = secondPart;
                     }
             	} else {
-            		/* interpret as <userId>:<appKey> token */
+            		/* interpret as <userId>~<appKey> token */
             		info.userId = firstPart;
             		info.appKey = secondPart;
             	}

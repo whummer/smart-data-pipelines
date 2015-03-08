@@ -146,6 +146,9 @@ public class DriversServiceImpl implements DriversService {
     			throw new IllegalArgumentException("Invalid simulation ID provided: " + driverSim.getSimulationId());
     		}
     		SimulationType simType = simService.retrieveSimType(driverSim.getSimulationId());
+    		if(simType == null) {
+    			throw new IllegalArgumentException("Unable to find simulation type ID: " + driverSim.getSimulationId());
+    		}
     		Simulation sim = new Simulation();
 //    		sim.setName();
 			sim.setCreatorId(driver.getCreatorId());

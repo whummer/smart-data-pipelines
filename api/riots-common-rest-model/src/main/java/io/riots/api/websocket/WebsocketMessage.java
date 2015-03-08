@@ -1,9 +1,7 @@
-package io.riots.api.drivers.websocket;
+package io.riots.api.websocket;
 
-import org.springframework.web.socket.WebSocketSession;
-
-import io.riots.api.drivers.websocket.WebsocketMessage.WSMessageSubscribe;
-import io.riots.api.drivers.websocket.WebsocketMessage.WSMessageUnsubscribe;
+import io.riots.api.websocket.WebsocketMessage.WSMessageSubscribe;
+import io.riots.api.websocket.WebsocketMessage.WSMessageUnsubscribe;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -62,18 +60,6 @@ public class WebsocketMessage {
 		@JsonProperty
 		public boolean closeConnection = false;
 
-		public boolean matches(WSSubscription sub, WebSocketSession currentSession) {
-			if(sub.clientId != null && !sub.clientId.equals(clientId)) {
-				return false;
-			}
-			if(unsubscribeAll) {
-				// TODO: whu: consider multiple tenants and 
-				// make sure different users don't interfere!
-				return true;
-			}
-			return sub.thingId.equals(thingId) && 
-					sub.propertyName.equals(propertyName);
-		}
 	}
 
 }

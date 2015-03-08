@@ -250,6 +250,23 @@ sh.properties = sh.get.properties = function(thingType, callback, doCacheResults
 	}
 };
 
+sh.propertiesRecursive = function(props, result, propNamePrefix) {
+	if(!result) result = [];
+	if(!propNamePrefix) propNamePrefix = "";
+	$.each(props, function(idx,prop) {
+		if(prop.children) {
+			$.each(prop.children, function(idx,subProp) {
+				subProp = clone(subProp);
+				subProp.name = propNamePrefix + subProp.name;
+				sh.propertiesRecursive([subProp], result, subProp.name + ".");
+			});
+		} else {
+			result.push(prop);
+		}
+	});
+	return result;
+};
+
 var buildQueryURL = function(baseURL, opts) {
 	if(!opts) opts = {};
 	var url = baseURL;
@@ -260,7 +277,7 @@ var buildQueryURL = function(baseURL, opts) {
 	if(opts.to) url += "&to=" + opts.to;
 	if(opts.period) url += "&period=" + opts.period;
 	return url;
-}
+};
 
 /* methods for POSTing data */
 
@@ -383,6 +400,15 @@ sh.stream.permissions = function(stream, callback) {
 sh.stream.permissions.save = function(perms, callback) {
 	var url = appConfig.services.streams.url + "/" + perms[STREAM_ID] + "/permissions";
 	return callPUT(url, perms, callback);
+};
+sh.stream.restrictions = function(stream, callback) {
+	var id = stream.id ? stream.id : stream;
+	var url = appConfig.services.streams.url + "/" + id + "/restrictions";
+	return callGET(url, callback);
+};
+sh.stream.restrictions.save = function(restr, callback) {
+	var url = appConfig.services.streams.url + "/" + restr[STREAM_ID] + "/restrictions";
+	return callPUT(url, restr, callback);
 };
 
 
@@ -559,7 +585,6 @@ sh.unsubscribeAll = function(callback) {
 	});
 };
 
-
 /* HELPER METHODS */
 
 /* http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript */
@@ -574,6 +599,10 @@ var guid = (function() {
            s4() + '-' + s4() + s4() + s4();
   };
 })();
+
+var clone = function(obj) {
+	return JSON.parse(JSON.stringify(obj));
+};
 
 /* expose API */
 window.riots = sh;

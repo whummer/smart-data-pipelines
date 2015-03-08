@@ -6,6 +6,7 @@ import io.riots.core.handlers.query.PropertyValueQuery;
 import io.riots.core.jms.EventBroker;
 import io.riots.core.jms.EventBrokerComponent;
 import io.riots.core.util.JSONUtil;
+import io.riots.core.util.PropertyUtil;
 import io.riots.core.util.script.ScriptUtil;
 
 import java.util.HashMap;
@@ -34,6 +35,8 @@ public class TriggerFunctionListener {
 	public static final String VAR_NAME_FUNCTION = "FUNCTION";
 	public static final String SRC_FILE_UTIL = "util/common";
 	private static final Logger LOG = Logger.getLogger(TriggerFunctionListener.class);
+	private static final boolean DO_RECURSE_SUBPROPERTIES = true;
+
 	@Autowired
 	private EventBrokerComponent eventBroker;
 	@Autowired
@@ -52,6 +55,21 @@ public class TriggerFunctionListener {
 			return;
 		}
 
+		if(DO_RECURSE_SUBPROPERTIES) {
+			processPropertyAndChildrenRecursively(prop);
+		} else {
+			processProperty(prop);
+		}
+	}
+
+	private void processPropertyAndChildrenRecursively(PropertyValue prop) {
+		processProperty(prop);
+		for(PropertyValue v : PropertyUtil.getChildren(prop)) {
+			processPropertyAndChildrenRecursively(v);
+		}
+	}
+
+	private void processProperty(PropertyValue prop) {
 		//System.out.println("--> " + functions);
 		for (FuncExecState s : functions.values()) {
 			boolean thingMatches = StringUtils.isEmpty(s.function.getThingId()) ||
@@ -71,12 +89,13 @@ public class TriggerFunctionListener {
 				executeFunction(s, prop);
 			}
 			if(doAddValue || doExecFunc) {
-				System.out.println("--> " + s.function + " -- " + 
-						prop + " - add: "  + doAddValue + ", exec: "  + doExecFunc);
+//				System.out.println("==> " + s.function + " -- " + 
+//						prop + " - add: "  + doAddValue + ", exec: "  + doExecFunc);
 			}
+//			System.out.println("--> " + s.function + " -- " + 
+//					prop + " - add: "  + doAddValue + ", exec: "  + doExecFunc);
 		}
 	}
-
 
 	public ThingPropsFunction addFunction(ThingPropsFunction function) {
 		try {
@@ -116,7 +135,6 @@ public class TriggerFunctionListener {
 		}
 		return function;
 	}
-
 
 	private void addValueToFunctionState(FuncExecState s, PropertyValue prop) {
 		Assert.notNull(s.engine);

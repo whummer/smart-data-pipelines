@@ -5,6 +5,7 @@ import io.riots.api.services.users.User;
 import io.riots.core.auth.AuthHeaders;
 import io.riots.core.repositories.StreamPermissionRepository;
 import io.riots.core.repositories.StreamRepository;
+import io.riots.core.repositories.StreamRestrictionRepository;
 import io.riots.core.util.ServiceUtil;
 
 import java.util.Date;
@@ -29,6 +30,8 @@ public class StreamsServiceImpl implements StreamsService {
 	StreamRepository streamRepo;
 	@Autowired
 	StreamPermissionRepository streamPermRepo;
+	@Autowired
+	StreamRestrictionRepository streamRestRepo;
 
 	@Autowired
 	AuthHeaders authHeaders;
@@ -110,14 +113,26 @@ public class StreamsServiceImpl implements StreamsService {
 	}
 
 	@Override
-	public List<StreamRestriction> queryRestrictions(String id) {
-		// TODO Auto-generated method stub
-		return null;
+	@Timed @ExceptionMetered
+	public List<StreamRestriction> queryRestrictions(String streamID) {
+		List<StreamRestriction> result = streamRestRepo.findByStreamId(streamID);
+		return result;
 	}
-	
+
 	@Override
-	public StreamRestriction saveRestriction(String id, StreamRestriction r) {
-		// TODO Auto-generated method stub
-		return null;
+	@Timed @ExceptionMetered
+	public StreamRestriction saveRestriction(String streamID, StreamRestriction r) {
+		streamRestRepo.deleteByStreamIdAndThingIdAndPropertyName(
+				streamID, r.thingId, r.propertyName);
+		if(!r.isVisible()) {
+			if(StringUtils.isEmpty(r.getStreamId())) {
+				r.setStreamId(streamID);
+			}
+			if(!streamID.equals(r.getStreamId())) {
+				throw new RuntimeException("Illegal stream identifier in request.");
+			}
+			r = streamRestRepo.save(r);
+		}
+		return r;
 	}
 }

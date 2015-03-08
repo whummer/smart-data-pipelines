@@ -24,6 +24,11 @@ public class StreamRestriction implements ObjectIdentifiable {
 	@JsonProperty(Constants.THING_ID)
 	String thingId;
 	/**
+	 * Target thing id.
+	 */
+	@JsonProperty(Constants.STREAM_ID)
+	String streamId;
+	/**
 	 * Target thing property name.
 	 */
 	@JsonProperty(Constants.PROPERTY_NAME)
@@ -33,6 +38,7 @@ public class StreamRestriction implements ObjectIdentifiable {
 	 */
 	@JsonProperty
 	boolean visible;
+
 
 	public String getId() {
 		return id;
@@ -54,6 +60,12 @@ public class StreamRestriction implements ObjectIdentifiable {
 	}
 	public boolean isVisible() {
 		return visible;
+	}
+	public String getStreamId() {
+		return streamId;
+	}
+	public void setStreamId(String streamId) {
+		this.streamId = streamId;
 	}
 
 }
