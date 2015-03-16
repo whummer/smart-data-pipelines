@@ -173,6 +173,13 @@ sh.streams = sh.get.streams = function(searchOpts, callback) {
 	}
 	return callGET(url, callback);
 };
+
+sh.sinks = sh.get.sinks = function(searchOpts, callback) {
+	var url = appConfig.services.streamsinks.url;
+	//url += "?creatorId=" + window.RIOTS_USER_ID;
+	return callGET(url, callback);
+};
+
 sh.manufacturers = sh.get.manufacturers = function(callback, doCacheResults) {
 	return callGET(appConfig.services.manufacturers.url, callback, doCacheResults);
 };
@@ -324,6 +331,10 @@ sh.add.trigger = function(trigger, callback) {
 sh.add.stream = function(stream, callback) {
 	return callPOST(appConfig.services.streams.url, stream, callback);
 };
+
+sh.add.sink = function(sink, callback) {
+	return callPOST(appConfig.services.streamsinks.url, sink, callback);
+};
 sh.add.data = function(opts, dataItem, callback, errorCallback) {
 	var url = appConfig.services.thingData.url + "/" +
                       opts[THING_ID] + "/" +
@@ -358,6 +369,9 @@ sh.save.trigger = function(trigger, callback) {
 };
 sh.save.stream = function(stream, callback) {
 	return callPUT(appConfig.services.streams.url, stream, callback);
+};
+sh.save.sink = function(sink, callback) {
+	return callPUT(appConfig.services.streamsinks.url, sink, callback);
 };
 sh.save.driver = function(driver, callback) {
 	var url = appConfig.services.drivers.url + "/forThing/" +
@@ -402,6 +416,9 @@ sh.delete.triggersForCreator = function(creatorId, callback) {
 sh.delete.stream = function(stream, callback) {
 	var id = stream.id ? stream.id : stream;
 	return callDELETE(appConfig.services.streams.url + "/" + id, callback);
+};sh.delete.sink = function(sink, callback) {
+	var id = sink.id ? sink.id : sink;
+	return callDELETE(appConfig.services.streamsinks.url + "/" + id, callback);
 };
 sh.delete.driver = function(opts, callback) {
 	console.log("OPts: ", opts);

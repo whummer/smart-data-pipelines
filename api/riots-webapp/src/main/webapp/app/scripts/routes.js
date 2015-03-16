@@ -69,6 +69,11 @@ define([], function () {
 				dependencies: [
 					appRoot + '/scripts/controllers/StreamsViewController.js',
 				]
+			},'/streams/sinks': {
+				templateUrl: appRoot + '/views/streams_sinks.html',
+				dependencies: [
+					appRoot + '/scripts/controllers/StreamsViewController.js',
+				]
 			},
 			'/streams/permissions': {
 				templateUrl: appRoot + '/views/streams_perms.html',

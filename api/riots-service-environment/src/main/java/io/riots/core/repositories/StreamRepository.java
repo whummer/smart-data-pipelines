@@ -15,4 +15,5 @@ public interface StreamRepository extends PagingAndSortingRepository<Stream,Stri
 
 	List<Stream> findByVisibleAndNameLike(boolean visible, String name);
 
+	List<Stream> findBySinkId(String sinkId);
 }

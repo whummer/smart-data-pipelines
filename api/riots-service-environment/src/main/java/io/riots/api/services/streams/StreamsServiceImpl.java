@@ -28,13 +28,16 @@ public class StreamsServiceImpl implements StreamsService {
 
 	@Autowired
 	StreamRepository streamRepo;
+
 	@Autowired
 	StreamPermissionRepository streamPermRepo;
+
 	@Autowired
 	StreamRestrictionRepository streamRestRepo;
 
 	@Autowired
 	AuthHeaders authHeaders;
+
 	@Autowired
 	HttpServletRequest req;
 

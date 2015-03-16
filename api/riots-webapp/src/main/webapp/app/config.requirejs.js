@@ -130,11 +130,11 @@ var requirejsAppConfig = {
 			name: 'fancybox',
 			location: appConfig['bowerRootPath'] + '/fancybox',
 			main: 'source/jquery.fancybox.pack'
-		}, {
+		}, /*{
 			name: 'jvectormap',
 			location: appConfig['bowerRootPath'] + '/jvectormap',
 			main: 'jquery-jvectormap'
-		}, {
+		},*/ {
 			name: 'd3',
 			location: appConfig['bowerRootPath'] + '/d3',
 			main: 'd3.min'

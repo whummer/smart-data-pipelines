@@ -64,8 +64,9 @@ public class Stream implements ObjectIdentifiable, ObjectNamed, ObjectCreated {
 	/**
 	 * Stream sink config.
 	 */
-	@JsonProperty
-	StreamSinkConfig sinkConfig;
+	@JsonProperty("sink-id")
+	String sinkId;
+
 	/**
 	 * Whether this stream is publicly visible, searchable, queryable.
 	 */
@@ -104,11 +105,15 @@ public class Stream implements ObjectIdentifiable, ObjectNamed, ObjectCreated {
 		return visible;
 	}
 
-	public StreamSinkConfig getSinkConfig() {
-		return sinkConfig;
+	public String getSinkId() {
+		return sinkId;
 	}
 
-	public void setSinkConfig(StreamSinkConfig sinkConfig) {
-		this.sinkConfig = sinkConfig;
+	public void setSinkId(String sinkId) {
+		this.sinkId = sinkId;
+	}
+
+	public boolean hasSink() {
+		return sinkId != null;
 	}
 }

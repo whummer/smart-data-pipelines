@@ -51,6 +51,10 @@ zuul:
       path: /api/v1/streams/**
       stripPrefix: false
       serviceId: environment-service
+    sinks-service:
+      path: /api/v1/stream-sinks/**
+      stripPrefix: false
+      serviceId: environment-service
     catalog-service:
       path: /api/v1/catalog/**
       stripPrefix: false

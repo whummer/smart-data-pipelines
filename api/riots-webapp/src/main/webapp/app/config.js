@@ -14,6 +14,7 @@ var appConfig = {
 		thingData: { url: "/api/v1/things" },
 		triggers: { url: "/api/v1/triggers" },
 		streams: { url: "/api/v1/streams" },
+		streamsinks: { url: "/api/v1/stream-sinks" },
 		simulations: { url: "/api/v1/simulations" },
 		simulationProps: { url: "/api/v1/simulations/properties" },
 		simulationDevices: { url: "/api/v1/simulations/devices" },

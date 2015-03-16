@@ -1,0 +1,197 @@
+<section ng-controller="SinkDetailsController">
+
+	<div style="margin-top: 10px; margin-bottom: 10px" class="text-right">
+		<button class="btn btn-primary btn-sm" id="btnStreamAdd" ng-click="addNewSink()">
+			<span class="glyphicon glyphicon-plus"></span> Add New Sink
+		</button>
+		<button class="btn btn-warning btn-sm" id="btnStreamDelete" ng-click="deleteSink()"><span
+				class="glyphicon glyphicon-minus"></span> Delete Sink
+		</button>
+	</div>
+
+	<div id="sinksTable" ui-grid="gridConfig" ui-grid-selection ui-grid-edit ui-grid-row-edit
+			 class="grid"></div>
+
+	<div ng-show="selectedSink" style="margin-top: 10px">
+		<form class="form-horizontal">
+
+			<div class="row">
+				<div class="col-md-6 col-sm-6">
+					<div class="form-group">
+						<label for="sinkName" class="col-sm-4 control-label">Name</label>
+						<div class="col-sm-8">
+							<input id="sinkName" class="form-control input-sm" ng-model="selectedSink.name"/>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-sm-4 control-label">Sink Type</label>
+						<div class="col-sm-8">
+							<select class="form-control input-sm" ng-model="selectedSink.type">
+								<option value="HTTP">HTTP Sink</option>
+								<option value="AMQP">AMQP Sink</option>
+								<option value="FILE">FILE Sink</option>
+							</select>
+						</div>
+					</div>
+
+					<div ng-show="selectedSink.type == 'HTTP'">
+						<div class="form-group">
+							<label for="sinkHttpEndpoint" class="col-sm-4 control-label">HTTP Endpoint (URI)</label>
+							<div class="col-sm-8">
+								<input id="sinkHttpEndpoint" class="form-control input-sm"
+											 data-ng-model="selectedSink['endpoint-url']"/>
+							</div>
+						</div>
+					</div>
+
+					<div ng-show="selectedSink.type == 'AMQP'">
+						<div class="form-group">
+							<label for="sinkAmqpUri" class="col-sm-4 control-label">AMQP Endpoint (URI)</label>
+							<div class="col-sm-8">
+								<input id="sinkAmqpUri" class="form-control input-sm"
+											 data-ng-model="selectedSink['amqp-endpoint']"/>
+							</div>
+						</div>
+					</div>
+
+					<div ng-show="selectedSink.type == 'FILE'">
+						<div class="form-group">
+							<label for="sinkFileName" class="col-sm-4 control-label">Filename</label>
+							<div class="col-sm-8">
+								<input id="sinkFileName" class="form-control input-sm"
+											 data-ng-model="selectedSink.filename"/>
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="sinkActive" class="col-sm-4 control-label">Active</label>
+						<div class="col-sm-8">
+							<input type="checkbox" id="sinkActive" class="form-control input-sm" ng-model="selectedSink.active"/>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="sinkCreateXd" class="col-sm-4 control-label">Create XD Stream</label>
+						<div class="col-sm-8">
+							<input type="checkbox" id="sinkCreateXd" class="form-control input-sm"
+										 ng-model="selectedSink['create-xd-stream']"/>
+						</div>
+					</div>
+
+					<div class="form-group" ng-show="selectedSink['create-xd-stream']">
+						<label for="sinkXdDefinition" class="col-sm-4 control-label">XD Stream Defintion</label>
+						<div class="col-sm-8">
+							<input id="sinkXdDefinition" class="form-control input-sm" ng-model="selectedSink['xd-definition']"/>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="col-sm-4"></div>
+						<div class="col-sm-8">
+							<button class="pull-right btn btn-primary btn-sm" id="btnSinkSave" ng-click="saveSink()">
+								<span class="glyphicon glyphicon-floppy-disk"></span> Save
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</section>
+<style type="text/css">
+	#sinksTable {
+		height: 250px;
+	}
+</style>
+<script type="text/javascript">
+
+	var app = angular.module("app");
+	app.controller('SinkDetailsController',
+			function ($scope, $http, $compile, $routeParams, $log, $location) {
+				AppController($scope, $http, $compile);
+
+				$scope.gridConfig = [];
+
+				var initTable = function () {
+					var columnsConfig = [
+						{
+							label: "Creation Time", field: CREATION_DATE, sortable: true,
+							cellTemplate: "<div class='ui-grid-cell-contents'>{{row.entity.formatTime()}}</div>"
+						},
+						{label: "Name", field: "name", sortable: true},
+						{label: "Type", field: "type", sortable: true},
+						{label: "Active", field: "active", sortable: true}
+						/*{label: "Thing Type", field: THING_TYPE, sortable: true},
+						{label: "Thing Property", field: PROPERTY_NAME, sortable: true}*/
+					];
+					$scope.gridConfig.data = [];
+					renderUITable($scope.gridConfig, "sinksTable", columnsConfig,
+							function (event) {
+								if (event.type == "dgrid-select") {
+									$scope.$apply(function () {
+										$scope.selectedSink = event.rows[0].data;
+									});
+								} else if (event.type == "dgrid-deselect") {
+									$scope.$apply(function () {
+										$scope.selectedSink = null;
+									});
+								}
+							}
+					);
+				};
+
+				var loadTable = function () {
+					riots.sinks(null, function (sinks) {
+						$scope.gridConfig.data = sinks;
+						angular.forEach(sinks, function (sink) {
+							sink.formatTime = function () {
+								return formatDate(sink[CREATION_DATE]);
+							};
+						});
+					});
+				};
+
+				$scope.saveSink = function () {
+					if (!$scope.selectedSink) {
+						return;
+					}
+
+					var sink = angular.toJson($scope.selectedSink);
+					$log.debug("Saving streamsink: ", sink);
+					riots.save.sink(sink, function (savedSink) {
+						$log.debug("Successfully saved streamsink: ", savedSink);
+						$scope.growlInfo(M.SUC_STREAM_SAVED);
+					});
+				};
+
+				$scope.addNewSink = function () {
+					var sink = {
+						name: "New Sink",
+						type: "HTTP"
+					};
+
+					riots.add.sink(sink, function (sink) {
+						$log.debug("Successfully created new sink: ", sink);
+						loadTable();
+					});
+				};
+
+				$scope.deleteSink = function () {
+					if (!$scope.selectedSink) {
+						return;
+					}
+					riots.delete.sink($scope.selectedSink, function (sink) {
+						loadTable();
+						$scope.selectedSink = null;
+					});
+				};
+
+
+				/* render main elements */
+				initTable();
+				loadTable();
+			});
+
+</script>
