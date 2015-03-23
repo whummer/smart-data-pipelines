@@ -23,6 +23,15 @@
 							<input id="streamName" class="form-control input-sm" data-ng-model="selectedStream.name"/>
 						</div>
 					</div>
+						<div class="form-group">
+							<label for="streamOrg" class="col-sm-4 control-label">Organization</label>
+							<div class="col-sm-8">
+								<select id="streamOrg" class="form-control input-sm"
+												ng-options="opt.id as opt.name for opt in userOrganizations"
+												ng-model="selectedStream[ORGANIZATION_ID]">
+								</select>
+							</div>
+						</div>
 					<div class="form-group">
 						<label for="public" class="col-sm-4 control-label">Public</label>
 						<div class="col-sm-8" style="line-height: 30px;">
@@ -135,6 +144,9 @@
 
 				$scope.gridConfig = [];
 				$scope.THING_TYPE = THING_TYPE;
+				$scope.ORGANIZATION_ID = ORGANIZATION_ID;
+				$scope.userOrganizations = [];
+
 				$scope.propAutocomp = {
 					options: {
 						html: true,
@@ -258,6 +270,12 @@
 					$scope.propAutocomp.options.valueList = list;
 				};
 
+				var loadOrgs = function() {
+					riots.organizations(function(orgs) {
+						$scope.userOrganizations = orgs;
+					});
+				};
+
 				/* register event handlers */
 				$scope.addClickHandler("btnStreamAdd", addStream);
 				$scope.addClickHandler("btnStreamSave", saveStream);
@@ -266,12 +284,13 @@
 					if (!thingType) return;
 					loadPropNames(thingType);
 				});
+				$scope.$watch($scope.shared.thingTypes, loadTable);
 
 				/* render main elements */
 				loadThingTypes();
 				initTable();
-				$scope.$watch($scope.shared.thingTypes, loadTable);
 				loadSinks();
+				loadOrgs();
 			});
 
 </script>

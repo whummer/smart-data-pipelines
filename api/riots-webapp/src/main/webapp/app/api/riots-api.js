@@ -233,6 +233,11 @@ sh.organizations = sh.get.organizations = function(callback) {
 	var url = appConfig.services.organizations.url;
 	return callGET(url, callback);
 };
+sh.organization = sh.get.organization = function(org, callback) {
+	var id = org.id ? org.id : org;
+	var url = appConfig.services.organizations.url + "/" + id;
+	return callGET(url, callback);
+};
 sh.usage = sh.get.usage = function(callback, errorCallback) {
 	var url = appConfig.services.users.url + "/me/usage";
 	return callGET(url, callback, false, errorCallback);

@@ -1,7 +1,7 @@
-<section ng-controller="PubStreamsDetailsController">
+<section ng-controller="PubStreamsDetailsController" id="thingTypesSection" hotkey="{s: focusSearchInput}">
 
+	<!-- search input row -->
 	<div style="margin-top: 10px;">
-	
 		<div class="form-group">
 			<div class="col-sm-9">
 				<input ng-model="txtStreamSearch" class="form-control"/>
@@ -15,114 +15,103 @@
 	</div>
 
 	<div style="clear: both">
-		<div id="pubStreamsTable" ui-grid="gridConfig" ui-grid-selection ui-grid-edit ui-grid-row-edit
-			class="grid"></div>
 	</div>
 
-	<div ng-show="selectedStream" style="max-width: 600px;">
-		<div class="row">
-		
-<!-- 			<div class="col-lg-12"> -->
-<!-- 				<div class="ibox float-e-margins"> -->
-<!-- 					<div class="ibox-title"> -->
-<!-- 						<h5>Request Stream Access</h5> -->
-<!-- 						<div class="ibox-tools"> -->
-<!-- 							<a class="close-link"> -->
-<!-- 								<i class="fa fa-times"></i> -->
-<!-- 							</a> -->
-<!-- 						</div> -->
-<!-- 					</div> -->
-<!-- 					<div class="ibox-content" style="display: block;"> -->
-<!-- 						<form> -->
-<!-- 						<div class="form-group"> -->
-<!-- 							<label class="col-sm-4 control-label">Stream ID</label> -->
-<!-- 							<div class="col-sm-8"> -->
-<!-- 								<input class="form-control" ng-model="selectedStream.id" disabled="disabled"/> -->
-<!-- 							</div> -->
-<!-- 						</div> -->
-<!-- 						<div class="hr-line-dashed"></div> -->
-<!-- 						<div class="form-group"> -->
-<!-- 							<label class="col-sm-4 control-label">Stream Name</label> -->
-<!-- 							<div class="col-sm-8"> -->
-<!-- 								<input class="form-control" ng-model="selectedStream.name" disabled="disabled"/> -->
-<!-- 							</div> -->
-<!-- 						</div> -->
-<!-- 						<div class="hr-line-dashed"></div> -->
-<!-- 						<div class="form-group"> -->
-<!-- 							<label class="col-sm-4 control-label">Identity</label> -->
-<!-- 							<div class="col-sm-8"> -->
-<!-- 								<select class="form-control" ng-model="selectedStream.identity"> -->
-<!-- 									<option value="USER">User (disclose user identity)</option> -->
-<!-- 									<option value="ANONYMOUS">Anonymous (hide user identity)</option> -->
-<!-- 								</select> -->
-<!-- 							</div> -->
-<!-- 						</div> -->
-<!-- 						<div class="hr-line-dashed"></div> -->
-<!-- 						<div class="form-group"> -->
-<!-- 							<label class="col-sm-24 control-label">User Organization</label> -->
-<!-- 							<div class="col-sm-8"> -->
-<!-- 								<select class="form-control" ng-model="selectedStream[ORGANIZATION_ID]" -->
-<!-- 										ng-options="opt.id as opt.name for opt in userOrgs"> -->
-<!-- 								</select> -->
-<!-- 							</div> -->
-<!-- 						</div> -->
-<!-- 						<div class="hr-line-dashed"></div> -->
-<!-- 						<div class="form-group"> -->
-<!-- 							<div class="col-sm-4 col-sm-offset-2"> -->
-<!-- 								<button class="btn btn-primary" type="submit">Request Access</button> -->
-<!-- 							</div> -->
-<!-- 						</div> -->
-<!-- 						</form> -->
-<!-- 					</div> -->
-<!-- 				</div> -->
-<!-- 			</div> -->
+	<!-- search results as grid view -->
+	<div id="searchResults" infinite-scroll='thingTypes.nextPage()'
+			 infinite-scroll-disabled='thingTypes.busy'
+			 infinite-scroll-immediate-check="true" infinite-scroll-distance='0'
+			 class="wrapper wrapper-content">
 
-			<h3>Request Stream Access</h3>
-			<div class="form-group">
-				<label class="col-sm-5 control-label">Stream ID</label>
-				<div class="col-sm-7">
-					<input class="form-control" ng-model="selectedStream.id" disabled="disabled"/>
+		<div class="panel panel-info" ng-show="!streams.length && !thingTypes.busy">
+			<div class="panel-heading">
+				<div class="panel-title">
+					<b>No Results</b>
 				</div>
 			</div>
-			<div class="form-group">
-				<label class="col-sm-5 control-label">Stream Name</label>
-				<div class="col-sm-7">
-					<input class="form-control" ng-model="selectedStream.name" disabled="disabled"/>
-				</div>
+			<div class="panel-body">
+				There are no streams matching your search criteria.
 			</div>
-			<div class="form-group">
-				<label class="col-sm-5 control-label">Identity</label>
-				<div class="col-sm-7">
-					<select class="form-control" ng-model="selectedStream.identity">
-						<option value="USER">User (disclose user identity)</option>
-						<option value="ANONYMOUS">Anonymous (hide user identity)</option>
-					</select>
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-sm-5 control-label">User Organization</label>
-				<div class="col-sm-7">
-					<select class="form-control" ng-model="selectedStream[ORGANIZATION_ID]"
-							ng-options="opt.id as opt.name for opt in userOrgs">
-					</select>
-				</div>
-			</div>
-			<div class="form-group">
-				<label for="streamPropUnitPrice" class="col-sm-5 control-label"></label>
-				<div class="col-sm-7">
-					<button class="btn btn-primary btn-sm" id="btnPubStreamRequest">
-						<span class="glyphicon glyphicon-unlock"></span> Request Access
-					</button>
+		</div>
+
+		<div ng-repeat="thing in streams" ng-init="thingIndex = $index" class="animated fadeIn">
+			<div class="col-sm-12 col-md-6 col-lg-4" style="padding: 12px"
+					 ng-if="streams[thingIndex + columnIndex] != undefined">
+				<div class="thumbnail-riots animated" style="min-height: 250px; padding: 10px;"
+						 ng-class="{thumbnailhalo: hover}"
+						 ng-mouseenter="hover = true"
+						 ng-mouseleave="hover = false"
+						 ng-dblclick="editItem(streams[thingIndex + columnIndex].id)">
+
+					<!-- tags -->
+					<div class="pull-right"
+							 style="margin-bottom: 10px; margin-top: 10px; min-height: 18px;">
+									<span style="cursor: pointer; margin-right: 5px"
+												ng-repeat="tag in streams[thingIndex + columnIndex].tags"
+												class="label label-info label-as-badge"
+												ng-click="selectTag(tag)"> {{tag}} </span>
+					</div>
+
+					<div class="clearfix"></div>
+
+					<!-- organization image -->
+					<div class="logo">
+						<img ng-show="streams[thingIndex + columnIndex].organizationImg"
+								ng-src="{{streams[thingIndex + columnIndex].organizationImg}}"
+								class="img-responsive" style="margin: auto; max-height: 100px"/></slide>
+						<div ng-hide="streams[thingIndex + columnIndex].organizationImg"
+								class="text-center">
+							<img ng-src="img/no_image_available.jpg"
+									 style="max-width: 125px; max-height: 125px;"/>
+						</div>
+					</div>
+
+					<!-- content -->
+					<div class="caption">
+						<h4>{{streams[thingIndex + columnIndex].name}}</h4>
+
+						<div class="thing-type-box" style="margin-top: 10px"
+								 id="{{streams[thingIndex + columnIndex].id}}_description">
+							{{streams[thingIndex + columnIndex].description}}
+						</div>
+
+						<div class="row">
+							<div class="col-sm-4">
+								Organization:
+							</div>
+							<div class="col-sm-8">
+								{{streams[thingIndex + columnIndex].organizationName}}
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-4">
+								Price:
+							</div>
+							<div class="col-sm-8">
+							123
+							</div>
+						</div>
+
+						<!-- collapse/expand description -->
+						<div class="pull-right" style="margin-bottom: 10px; margin-top: 5px" ng-show="hover">
+							<div id="{{streams[thingIndex + columnIndex].id}}_expand" style="float: left">
+								<a ng-click="showMore(streams[thingIndex + columnIndex].id)" role="button">
+									<span class="fa fa-lg fa-angle-double-down"></span>
+								</a>
+							</div>
+							<div id="{{streams[thingIndex + columnIndex].id}}_collapse" class="invisible">
+								<a ng-click="showLess(streams[thingIndex + columnIndex].id)" role="button">
+									<span class="fa fa-lg fa-angle-double-up"></span>
+								</a>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
+	<div ng-show='thingTypes.busy'>Loading data...</div>
 </section>
-<style type="text/css">
-#pubStreamsTable {
-	height: 250px;
-}
-</style>
 <script type="text/javascript">
 
 var app = angular.module("app");
@@ -130,7 +119,6 @@ app.controller('PubStreamsDetailsController',
 		function ($scope, $http, $compile, $routeParams, $log, $location) {
 	AppController($scope, $http, $compile);
 
-	$scope.gridConfig = [];
 	$scope.THING_TYPE = THING_TYPE;
 	$scope.txtStreamSearch = "*";
 	$scope.ORGANIZATION_ID = ORGANIZATION_ID;
@@ -144,42 +132,25 @@ app.controller('PubStreamsDetailsController',
 		}
 	}};
 
-	var initTable = function () {
-		var columnsConfig = [
-			{label: "Creation Time", field: CREATION_DATE, sortable: true,
-				cellTemplate: "<div class='ui-grid-cell-contents'>{{row.entity.formatTime()}}</div>"
-			},
-			{label: "Name", field: "name", sortable: true},
-			{label: "Type", field: "type", sortable: true},
-			{label: "Thing Type", field: THING_TYPE, sortable: true},
-			{label: "Thing Property", field: PROPERTY_NAME, sortable: true}
-		];
-		$scope.gridConfig.data = [];
-		renderUITable($scope.gridConfig, "pubStreamsTable", columnsConfig,
-			function (event) {
-				if (event.type == "dgrid-select") {
-					$scope.$apply(function () {
-						$scope.selectedStream = event.rows[0].data;
-					});
-				} else if (event.type == "dgrid-deselect") {
-					$scope.$apply(function () {
-						$scope.selectedStream = null;
-					});
-				}
-			}
-		);
-	}
-
-	var loadTable = function() {
+	var loadStreams = function() {
 		var opts = {
 			query: $scope.txtStreamSearch
 		};
 		riots.streams(opts, function(streams) {
-			$scope.gridConfig.data = streams;
+			$scope.streams = streams;
 			$.each(streams, function(idx,el) {
 				el.formatTime = function() {
 					return formatDate(el[CREATION_DATE]);
 				};
+				if(el[ORGANIZATION_ID]) {
+					riox.organization(el[ORGANIZATION_ID], function(org) {
+						el.organizationName = org.name;
+						console.log("org", el);
+						if(org[IMAGE_DATA] && org[IMAGE_DATA][0]) {
+							el.organizationImg = org[IMAGE_DATA][0].href;
+						}
+					});
+				}
 			});
 		});
 	};
@@ -200,7 +171,7 @@ app.controller('PubStreamsDetailsController',
 	};
 
 	var searchStreams = function() {
-		loadTable();
+		loadStreams();
 	};
 
 	/* register event handlers */
@@ -219,8 +190,7 @@ app.controller('PubStreamsDetailsController',
 	});
 
 	/* render main elements */
-	initTable();
-	loadTable();
+	loadStreams();
 });
 
 </script>

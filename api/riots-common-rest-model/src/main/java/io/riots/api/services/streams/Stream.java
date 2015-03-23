@@ -18,13 +18,8 @@ import java.util.Date;
  */
 @JsonSubTypes({
 		@Type(value = StreamOfThingPropValues.class, name = "THING_PROPERTY"),
-		@Type(value = Stream.class, name = "CUSTOM")
-})
-@JsonTypeInfo(
-		use = JsonTypeInfo.Id.NAME,
-		include = JsonTypeInfo.As.PROPERTY,
-		property = "type"
-)
+		@Type(value = Stream.class, name = "CUSTOM") })
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 public class Stream implements ObjectIdentifiable, ObjectNamed, ObjectCreated {
 
 	{
@@ -51,6 +46,11 @@ public class Stream implements ObjectIdentifiable, ObjectNamed, ObjectCreated {
 	 */
 	@JsonProperty(Constants.CREATION_DATE)
 	Date created;
+	/**
+	 * Creator.
+	 */
+	@JsonProperty(Constants.ORGANIZATION_ID)
+	String organizationId;
 	/**
 	 * Stream Type.
 	 */
@@ -115,5 +115,13 @@ public class Stream implements ObjectIdentifiable, ObjectNamed, ObjectCreated {
 
 	public boolean hasSink() {
 		return sinkId != null;
+	}
+
+	public String getOrganizationId() {
+		return organizationId;
+	}
+
+	public void setOrganizationId(String organizationId) {
+		this.organizationId = organizationId;
 	}
 }

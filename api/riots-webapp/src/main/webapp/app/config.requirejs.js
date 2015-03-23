@@ -30,6 +30,11 @@ var requirejsAppConfig = {
 			name: 'raty',
 			location: appConfig['appRootPath'] + '/scripts/ext/raty/',
 			main: 'lib/jquery.raty'
+		}, {
+			name: 'ng-file-upload',
+			location: appConfig['appRootPath'] + '/scripts/ext/ng-file-upload',
+			main: 'angular-file-upload',
+			excludeFromOptimize: true
 		},
 
 		/* dependencies in /bower_components */

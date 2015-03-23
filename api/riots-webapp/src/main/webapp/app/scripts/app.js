@@ -28,7 +28,7 @@ define(
 			'angular-route', 'angular-ui-grid', 'infinite-scroll',
 			'angular-hotkeys', 'd3', 'angular-animate', 'angular-bootstrap-checkbox', 'metisMenu', 'iCheck',
 			'slimscroll', 'jasny-bootstrap', 'angular-ui-tree', 'angular-notify', 'fancybox', 'riots/auth', 'jvectormap', //'ZeroClipboard', 'ng-clip'
-			'ui-autocomplete'
+			'ui-autocomplete', 'ng-file-upload'
 		],
 
 		function (config) {
@@ -67,7 +67,8 @@ define(
 				//'ngGrid',                       // ngGrid
 				//'ui.codemirror',                // Code editor
 				'ui.tree',                      // Nestable list
-				'cgNotify'                     // Angular notify
+				'cgNotify',                     // Angular notify
+				'angularFileUpload'             // Angular file upload
 			]);
 
 			var dependencyResolverFor = function (defaultDependencies, dependencies, $http) {
