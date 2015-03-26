@@ -1,7 +1,7 @@
 /**!
  * AngularJS file upload/drop directive and service with progress and abort
  * @author  Danial  <danial.farid@gmail.com>
- * @version 3.2.4
+ * @version 3.2.5
  */
 (function () {
 
@@ -10,10 +10,8 @@ function patchXHR(fnName, newFn) {
     window.XMLHttpRequest.prototype[fnName] = newFn(window.XMLHttpRequest.prototype[fnName]);
 }
 
-console.log("window.XMLHttpRequest && !window.XMLHttpRequest.__isFileAPIShim", window.XMLHttpRequest && !window.XMLHttpRequest.__isFileAPIShim);
 if (window.XMLHttpRequest && !window.XMLHttpRequest.__isFileAPIShim) {
     patchXHR('setRequestHeader', function (orig) {
-    	console.log("orig", orig);
         return function (header, value) {
             if (header === '__setXHR_') {
                 var val = value(this);
@@ -30,7 +28,7 @@ if (window.XMLHttpRequest && !window.XMLHttpRequest.__isFileAPIShim) {
 
 var angularFileUpload = angular.module('angularFileUpload', []);
 
-angularFileUpload.version = '3.2.4';
+angularFileUpload.version = '3.2.5';
 angularFileUpload.service('$upload', ['$http', '$q', '$timeout', function ($http, $q, $timeout) {
     function sendHttp(config) {
         config.method = config.method || 'POST';
@@ -245,7 +243,9 @@ function linkFileSelect(scope, elem, attr, ngModel, $parse, $timeout, $compile) 
 
         for (var i = 0; i < elem[0].attributes.length; i++) {
             var attribute = elem[0].attributes[i];
-            fileElem.attr(attribute.name, attribute.value);
+            if (attribute.name !== 'type') {
+            	fileElem.attr(attribute.name, attribute.value);
+            }
         }
 
         if (isInputTypeFile()) {

@@ -44,9 +44,9 @@
 			<div style="float: left">
 				<div ng-file-drop ng-file-select ng-model="files" class="drop-box" 
 			        drag-over-class="dragover" ng-multiple="true" allow-dir="false"
-			        accept=".jpg,.png,.gif" ng-show="!orgInfo.main[IMAGE_DATA][0].href">Drop image here</div>
+			        accept="'image/*'" ng-show="!orgInfo.main[IMAGE_DATA][0].href">Drop image here</div>
 				<div class="col-sm-8" ng-show="orgInfo.main[IMAGE_DATA][0].href">
-					<img ng-src="{{orgInfo.main[IMAGE_DATA][0].href}}" style="max-height: 50px; max-width: 50px;"/>
+					<img ng-src="{{orgInfo.main[IMAGE_DATA][0].href}}" style="max-height: 70px; max-width: 100px;"/>
 				</div>
 			</div>
 			<div class="col-md-12">
@@ -94,6 +94,7 @@ app.controller('OrganizationOrganizationController',
 	$scope.CREATOR_ID = CREATOR_ID;
 	$scope.IMAGE_DATA = IMAGE_DATA;
 	var fileServiceURL = appConfig.services.files.url;
+	var fileServiceURLAbs = resolve(fileServiceURL);
 
 	var saveOrganization = function() {
 		var main = $scope.orgInfo.main;
@@ -106,6 +107,7 @@ app.controller('OrganizationOrganizationController',
 		main[IMAGE_DATA] = [ { href: url } ];
 		riots.save.organization(main, function() {
 			$scope.growlInfo("Organization details saved successfully.");
+			loadOrgs();
 		});
 	}
 
@@ -136,6 +138,9 @@ app.controller('OrganizationOrganizationController',
 			   			if(!dfltOrg.members) {
 			   				dfltOrg.members = [];
 			   			}
+			   			if(dfltOrg[IMAGE_DATA] && dfltOrg[IMAGE_DATA][0]) {
+			   				dfltOrg.imageUrl = dfltOrg[IMAGE_DATA][0].href;
+			   			}
 					} else {
 						$scope.orgInfo.additional.push(el);
 					}
@@ -147,17 +152,24 @@ app.controller('OrganizationOrganizationController',
 	}
 
     var upload = function (files) {
+    	//console.log("upload", files, angular.identity);
         for (var i = 0; i < files.length; i++) {
             var file = files[i];
-            var url = $scope.fileServiceURL + '/upload';
+            var url = fileServiceURL + '/upload';
+            //console.log("url", url, file, XMLHttpRequest, XMLHttpRequest.prototype);
             $upload.upload({
                 url: url,
-                file: file
+                file: file,
+                fileFormDataName: 'filedata',
+                'transformRequest': angular.identity
             }).progress(function (evt) {
                 var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-                console.log('progress: ' + progressPercentage + '% ' + evt.config.file.name);
+                //console.log('progress: ' + progressPercentage + '% ' + evt.config.file.name);
             }).success(function (data, status, headers, config) {
-                console.log('file ' + config.file.name + 'uploaded. Response: ' + data);
+                //console.log('file ' + config.file.name + 'uploaded. Response: ' + data);
+	   			var dfltOrg = $scope.orgInfo.main;
+	   			var id = data.replace(/"/g, "");
+	   			dfltOrg.imageUrl = fileServiceURLAbs + "/" + id;
             });
         }
     };

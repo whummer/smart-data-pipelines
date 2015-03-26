@@ -53,7 +53,8 @@
     "zeroclipboard": "~2.2.0",
     "ng-clip": "~0.2.6",
     "angular-toastr": "~1.0.2",
-    "ui-autocomplete": "~0.6.1"
+    "ui-autocomplete": "~0.6.1",
+    "ng-file-upload": "#master"
   },
   "resolutions": {
     "angular": "1.2.26",

@@ -2,7 +2,7 @@
  * AngularJS file upload/drop directive and service with progress and abort
  * FileAPI Flash shim for old browsers not supporting FormData 
  * @author  Danial  <danial.farid@gmail.com>
- * @version 3.2.4
+ * @version 3.2.5
  */
 
 (function() {
@@ -21,9 +21,14 @@ function patchXHR(fnName, newFn) {
 	window.XMLHttpRequest.prototype[fnName] = newFn(window.XMLHttpRequest.prototype[fnName]);
 };
 
-console.log(window.XMLHttpRequest, window.FormData, window.FileAPI);
-console.log((window.XMLHttpRequest && !window.FormData) || (window.FileAPI && FileAPI.forceLoad));
-if ((window.XMLHttpRequest && !window.FormData) || (window.FileAPI && FileAPI.forceLoad)) {
+// begin whu
+var doPatch = (window.XMLHttpRequest && !window.FormData) || (window.FileAPI && FileAPI.forceLoad);
+// end whu
+if (doPatch
+	// begin whu
+	|| window.__patch__setRequestHeader
+	// end whu
+	) {
 	var initializeUploadListener = function(xhr) {
 		if (!xhr.__listeners) {
 			if (!xhr.upload) xhr.upload = {};
@@ -36,6 +41,10 @@ if ((window.XMLHttpRequest && !window.FormData) || (window.FileAPI && FileAPI.fo
 		}
 	}
 	
+	// begin whu
+	if (doPatch) {
+	// end whu
+
 	patchXHR('open', function(orig) {
 		return function(m, url, b) {
 			initializeUploadListener(this);
@@ -69,9 +78,12 @@ if ((window.XMLHttpRequest && !window.FormData) || (window.FileAPI && FileAPI.fo
 		}
 	});
 
-	console.log("patchXHR setRequestHeader");
+	// begin whu
+	}
+	if(doPatch || window.__patch__setRequestHeader) {
+	// end whu
+
 	patchXHR('setRequestHeader', function(orig) {
-		console.log("setRequestHeader", orig);
 		return function(header, value) {
 			if (header === '__setXHR_') {
 				initializeUploadListener(this);
@@ -87,7 +99,12 @@ if ((window.XMLHttpRequest && !window.FormData) || (window.FileAPI && FileAPI.fo
 			}
 		}
 	});
-	
+
+	// begin whu
+	}
+	if(doPatch) {
+	// end whu
+
 	function redefineProp(xhr, prop, fn) {
 		try {
 			Object.defineProperty(xhr, prop, {get: fn});
@@ -293,6 +310,10 @@ if ((window.XMLHttpRequest && !window.FormData) || (window.FileAPI && FileAPI.fo
 			elem.addClass('js-fileapi-wrapper');
 		}
 	}
+
+	// begin whu
+	}
+	// end whu
 }
 
 

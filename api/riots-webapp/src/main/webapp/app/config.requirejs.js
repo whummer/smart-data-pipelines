@@ -29,7 +29,8 @@ var requirejsAppConfig = {
 			 request image files from /bower_components */
 			name: 'raty',
 			location: appConfig['appRootPath'] + '/scripts/ext/raty/',
-			main: 'lib/jquery.raty'
+			main: 'lib/jquery.raty',
+			excludeFromOptimize: true
 		}, {
 			name: 'ng-file-upload',
 			location: appConfig['appRootPath'] + '/scripts/ext/ng-file-upload',
@@ -135,11 +136,11 @@ var requirejsAppConfig = {
 			name: 'fancybox',
 			location: appConfig['bowerRootPath'] + '/fancybox',
 			main: 'source/jquery.fancybox.pack'
-		}, /*{
+		}, {
 			name: 'jvectormap',
 			location: appConfig['bowerRootPath'] + '/jvectormap',
 			main: 'jquery-jvectormap'
-		},*/ {
+		}, {
 			name: 'd3',
 			location: appConfig['bowerRootPath'] + '/d3',
 			main: 'd3.min'

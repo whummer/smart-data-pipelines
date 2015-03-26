@@ -4,10 +4,16 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
-	<!-- don't load pace via require.js -->
-	<script type="text/javascript" src="scripts/ext/pace/pace.min.js"></script>
-	<!-- ng-file-upload shim needs to go before angular.js -->
+	<script>
+	/*  Note, pace has some conflicts with ng-file-upload (both mess with 
+		XMLHttpRequest object), hence we need to apply a little patch here */
+	window.__patch__setRequestHeader = true;
+	</script>
+	<!-- ng-file-upload shim needs to go before pace.js and before angular.js -->
 	<script type="text/javascript" src="scripts/ext/ng-file-upload/angular-file-upload-shim.js"></script>
+
+	<!-- don't load pace via require.js. -->
+	<script type="text/javascript" src="scripts/ext/pace/pace.min.js"></script>
 
 	<!--
 		-
@@ -18,6 +24,7 @@
 	<link rel="stylesheet" href="scripts/ext/leaflet/dist/leaflet.css"/>
 	<link rel="stylesheet" href="scripts/ext/raty/lib/jquery.raty.css"/>
 	<link rel="stylesheet" href="scripts/ext/angular-bootstrap-datetimepicker/src/css/datetimepicker.css"/>
+	<link rel="stylesheet" href="scripts/ext/pace/themes/red/pace-theme-minimal.css"/>
 
 	<!-- Use CDN version because JAR packaging of some CSS files results in corrupted font files -->
 	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
