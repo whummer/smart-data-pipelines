@@ -49,3 +49,7 @@ crashlytics.properties
 crashlytics-build.properties
 
 
+
+node_modules
+bower_components
+.tmp

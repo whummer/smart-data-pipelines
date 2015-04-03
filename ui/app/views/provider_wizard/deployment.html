@@ -1,6 +1,6 @@
 <div class="animated fadeIn">
 	<h2>Summary for Data Resource {{resourceData.name}}</h2>
-	<div class="widget p-xl" >
+	<div class="widget p-xl">
 		<div class="row" style="margin-top: 10px;">
 			<dl class="dl-horizontal" style="text-align: left;">
 				<dt>Name</dt>
@@ -371,13 +371,16 @@
 	</div>
 	<div style="margin-top: 20px">
 		<input id="acceptTerms" ui-switch="{color:'#5C9C4D', size: 'small'}"
-							name="acceptTerms" type="checkbox" ng-model="resourceData.termsAccepted"
-							class="form-control required"> <label for="acceptTerms">I agree with the Terms and Conditions.</label>
+					 name="acceptTerms" type="checkbox" ng-model="resourceData.termsAccepted"
+					 class="form-control required"> <label for="acceptTerms">I agree with the Terms and Conditions.</label>
 	</div>
 
 </fieldset>
 
 <fieldset class="m-t-md">
 	<a ui-sref="provider.wizard.data_retention" class="btn btn-default">Previous</a>
-	<button type="submit" class="btn btn-primary" ng-disabled="!resourceData.termsAccepted">Create Resource</button>
+	<button type="submit" class="btn btn-primary"
+					ng-disabled="!resourceData.termsAccepted || resourceForm.$invalid || resourceForm.$pristine">
+		Create Resource
+	</button>
 </fieldset>

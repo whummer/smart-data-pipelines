@@ -1,4 +1,6 @@
-function config($stateProvider, $urlRouterProvider) {
+function config(growlProvider, $stateProvider, $urlRouterProvider) {
+    growlProvider.globalTimeToLive(3000);
+
     $urlRouterProvider.otherwise("/index/main");
 
     $stateProvider
@@ -35,7 +37,7 @@ function config($stateProvider, $urlRouterProvider) {
         })
 
         .state('provider.wizard', {
-            url: "/wizard",
+            url: "/wizard?debug",
             templateUrl: "views/provider_setup.html",
             controller: providerWizardCtrl,
             data: { pageTitle: 'Wizard form' }
@@ -90,6 +92,7 @@ function config($stateProvider, $urlRouterProvider) {
             data: { pageTitle: 'Wizard form' }
         })*/
 }
+
 angular
     .module('riox')
     .config(config)

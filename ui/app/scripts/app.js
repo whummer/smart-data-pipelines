@@ -5,6 +5,7 @@
         'ui.sortable',                 // sortable (draggable items)
         'localytics.directives',        // Chosen select
         'NgSwitchery',
+        'angular-growl',
         'ngAnimate'
     ])
 })();

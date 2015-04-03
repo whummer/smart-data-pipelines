@@ -1,28 +1,3 @@
-/* Only demo */
-@media (max-width: 1000px) {
-  .welcome-message {
-    display: none;
-  }
-}
-/*
-
-.widget-row.ng-hide-add {
-  animation: fadeOutUp 2s;
-}
-*/
-
-
-/*.ng-hide-remove {
-  -webkit-animation: slideInLeft 2.5s;
-  animation: slideInLeft 2.5s;
-}
-
-.ng-hide-add {
-  -webkit-animation: slideOutRight 1s;
-  animation: slideOutRight 1s;
-  display: block !important;
-}*/
-
 .overlay-container {
   position: relative;
 }
@@ -33,6 +8,21 @@
   left: 0;
   width: 100%;
   color: #fff;
+}
+
+.wizard > .steps a,
+.wizard > .steps a:hover,
+.wizard > .steps a:active
+{
+  display: block;
+  width: auto;
+  margin: 0 0.5em 0.5em;
+  padding: 8px;
+  text-decoration: none;
+
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  border-radius: 0px;
 }
 
 .wizard > .steps .disabled a,
@@ -68,6 +58,21 @@
   background: #ED5565 ;
   color: #fff;
 }
+
+.wizard > .content
+{
+  background: #eee;
+  display: block;
+  margin: 5px 5px 10px 5px;
+  min-height: 120px;
+  overflow: hidden;
+  position: relative;
+  width: auto;
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  border-radius:0px;
+}
+
 
 /* CHOSEN PLUGIN */
 .chosen-container-single .chosen-single {
@@ -112,61 +117,8 @@
   width:200px;
 }
 
-.icheckbox_square-green,
-.iradio_square-green {
-  display: inline-block;
-  *display: inline;
-  vertical-align: middle;
-  margin: 0;
-  padding: 0;
-  width: 22px;
-  height: 22px;
-  background: url(green.png) no-repeat;
-  border: none;
-  cursor: pointer;
-}
-
-.icheckbox_square-green {
-  background-position: 0 0;
-}
-.icheckbox_square-green.hover {
-  background-position: -24px 0;
-}
-.icheckbox_square-green.checked {
-  background-position: -48px 0;
-}
-.icheckbox_square-green.disabled {
-  background-position: -72px 0;
-  cursor: default;
-}
-.icheckbox_square-green.checked.disabled {
-  background-position: -96px 0;
-}
-
-.iradio_square-green {
-  background-position: -120px 0;
-}
-.iradio_square-green.hover {
-  background-position: -144px 0;
-}
-.iradio_square-green.checked {
-  background-position: -168px 0;
-}
-.iradio_square-green.disabled {
-  background-position: -192px 0;
-  cursor: default;
-}
-.iradio_square-green.checked.disabled {
-  background-position: -216px 0;
-}
-
-/* HiDPI support */
-@media (-o-min-device-pixel-ratio: 5/4), (-webkit-min-device-pixel-ratio: 1.25), (min-resolution: 120dpi) {
-  .icheckbox_square-green,
-  .iradio_square-green {
-    background-image: url(green@2x.png);
-    -webkit-background-size: 240px 24px;
-    background-size: 240px 24px;
-  }
+.data-resource-bg {
+  color: #6a6a6a;
+  background: @data-resource-color;
 }
 

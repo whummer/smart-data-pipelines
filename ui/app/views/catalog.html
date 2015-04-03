@@ -1,12 +1,20 @@
-<div class="col-lg-4">
-	<div class="animated ibox float-e-margins" ng-repeat="resource in dataResources">
-		<div class="ibox-title">
-			<h5>{{resource.name}}</h5>
+<div class="col-lg-4 animated bounceIn" style="margin-top: 20px" ng-repeat="resource in dataResources">
+	<div class="widget-text-box data-resource-bg animated">
+		<!-- tags -->
+		<div class="pull-right" style="margin-bottom: 10px; margin-right: -20px; margin-top: -10px; min-height: 18px;">
+				<span style="cursor: pointer; margin-right: 5px; background-color: rgba(96, 125, 135, 0.48)" ng-repeat="tag in resource.tags"
+							class="label label-info label-as-badge">
+					{{tag}}
+				</span>
 		</div>
-		<div class="ibox-content">
-			<img ng-src="/img/provider-logos/{{resource.logo}}" style="max-width: 40px;"/>
-		</div>
+
+		<img class="img-responsive" ng-src="/img/provider-logos/{{resource.logo}}" style="max-height: 25px; margin-top: 10px;"/>
+
+		<h3>{{resource.name}}</h3>
+
+
 	</div>
 </div>
+
 
 

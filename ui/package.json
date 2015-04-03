@@ -3,7 +3,12 @@
   "version": "0.0.1",
   "description": "new an shiny riox user interface",
   "dependencies": {
-    "grunt": "^0.4.5"
+    "grunt": "^0.4.5",
+    "lodash": "^3.6.0",
+    "mongojs": "^0.18.2",
+    "mongoose": "^4.0.1",
+    "restify": "^3.0.1",
+    "winston": "^0.9.0"
   },
   "devDependencies": {
     "grunt": "^0.4.5",

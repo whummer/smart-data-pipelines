@@ -40,34 +40,34 @@
 				<div type="file" class="dropzone" drop-zone id="logoDropzone" ng-model="logo"/>
 			</div>
 		</div>
+	</div>
 
 
-		<div class="row" style="overflow: visible">
-			<div class="form-group" style="overflow: visible;">
-				<label for="resourceDescription" class="col-sm-3 control-label">Choose some related Resource Tags</label>
-				<div class="col-sm-5">
-					<select multiple chosen class="chosen-select" ng-model="resourceData.tags"
-									style="width:100%;; overflow: visible;">
-						<option value="car">car</option>
-						<option value="speed">speed</option>
-						<option value="temperature">temperature</option>
-						<option value="pressure">pressure</option>
-						<option value="acceleration">acceleration</option>
-						<option value="altitude">altitude</option>
-						<option value="humidity">humidity</option>
-						<option value="traffic">traffic</option>
-						<option value="city">city</option>
-						<option value="farming">farming</option>
-					</select>
-				</div>
+	<div class="row" style="overflow: visible">
+		<div class="form-group" style="overflow: visible;">
+			<label for="resourceDescription" class="col-sm-3 control-label">Choose some related Resource Tags</label>
+			<div class="col-sm-5">
+				<select multiple chosen class="chosen-select" ng-model="resourceData.tags"
+								style="width:100%;; overflow: visible;">
+					<option value="car">car</option>
+					<option value="speed">speed</option>
+					<option value="temperature">temperature</option>
+					<option value="pressure">pressure</option>
+					<option value="acceleration">acceleration</option>
+					<option value="altitude">altitude</option>
+					<option value="humidity">humidity</option>
+					<option value="traffic">traffic</option>
+					<option value="city">city</option>
+					<option value="farming">farming</option>
+				</select>
 			</div>
 		</div>
-
-
-		<button ui-sref="provider.wizard.connector_setup" class="btn btn-primary"
-						ng-disabled="resourceForm.$invalid || resourceForm.$pristine">Next
-		</button>
 	</div>
+
+
+	<button ui-sref="provider.wizard.connector_setup" class="btn btn-primary"
+					ng-disabled="resourceForm.$invalid || resourceForm.$pristine">Next
+	</button>
 </div>
 
 

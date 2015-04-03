@@ -32,7 +32,8 @@
     "ionrangeslider": "~2.0.6",
     "switchery": "~0.7.0",
     "ng-switchery": "~1.0.0-alpha7",
-    "angular-ui-sortable": "~0.13.3"
+    "angular-ui-sortable": "~0.13.3",
+    "angular-growl-v2": "~0.7.3"
   },
   "resolutions": {
     "switchery": "~0.7.0"
