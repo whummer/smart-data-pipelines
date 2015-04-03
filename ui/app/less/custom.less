@@ -1,0 +1,172 @@
+/* Only demo */
+@media (max-width: 1000px) {
+  .welcome-message {
+    display: none;
+  }
+}
+/*
+
+.widget-row.ng-hide-add {
+  animation: fadeOutUp 2s;
+}
+*/
+
+
+/*.ng-hide-remove {
+  -webkit-animation: slideInLeft 2.5s;
+  animation: slideInLeft 2.5s;
+}
+
+.ng-hide-add {
+  -webkit-animation: slideOutRight 1s;
+  animation: slideOutRight 1s;
+  display: block !important;
+}*/
+
+.overlay-container {
+  position: relative;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  color: #fff;
+}
+
+.wizard > .steps .disabled a,
+.wizard > .steps .disabled a:hover,
+.wizard > .steps .disabled a:active
+{
+  background: #eee;
+  color: #aaa;
+  cursor: default;
+}
+
+.wizard > .steps .current a,
+.wizard > .steps .current a:hover,
+.wizard > .steps .current a:active
+{
+  background: @consumer-bg;
+  color: #fff;
+  cursor: default;
+}
+
+.wizard > .steps .done a,
+.wizard > .steps .done a:hover,
+.wizard > .steps .done a:active
+{
+  background: #6fd1bd;
+  color: #fff;
+}
+
+.wizard > .steps .error a,
+.wizard > .steps .error a:hover,
+.wizard > .steps .error a:active
+{
+  background: #ED5565 ;
+  color: #fff;
+}
+
+/* CHOSEN PLUGIN */
+.chosen-container-single .chosen-single {
+  background: #ffffff;
+  box-shadow: none;
+  -moz-box-sizing: border-box;
+  background-color: #FFFFFF;
+  border: 1px solid #CBD5DD;
+  border-radius: 2px;
+  cursor: text;
+  height: auto !important;
+  margin: 0;
+  min-height: 30px;
+  overflow: hidden;
+  padding: 4px 12px;
+  position: relative;
+  width: 100%;
+}
+.chosen-container-multi .chosen-choices li.search-choice {
+  background: #f1f1f1;
+  border: 1px solid #ededed;
+  border-radius: 2px;
+  box-shadow: none;
+  color: #333333;
+  cursor: default;
+  line-height: 13px;
+  margin: 3px 0 3px 5px;
+  padding: 3px 20px 3px 5px;
+  position: relative;
+}
+
+.form-horizontal .control-label {
+  /* text-align:right; */
+  text-align: left;
+  margin-left: 18px;
+}
+
+.dl-horizontal {
+  text-align: left;
+}
+.tooltip {
+  width:200px;
+}
+
+.icheckbox_square-green,
+.iradio_square-green {
+  display: inline-block;
+  *display: inline;
+  vertical-align: middle;
+  margin: 0;
+  padding: 0;
+  width: 22px;
+  height: 22px;
+  background: url(green.png) no-repeat;
+  border: none;
+  cursor: pointer;
+}
+
+.icheckbox_square-green {
+  background-position: 0 0;
+}
+.icheckbox_square-green.hover {
+  background-position: -24px 0;
+}
+.icheckbox_square-green.checked {
+  background-position: -48px 0;
+}
+.icheckbox_square-green.disabled {
+  background-position: -72px 0;
+  cursor: default;
+}
+.icheckbox_square-green.checked.disabled {
+  background-position: -96px 0;
+}
+
+.iradio_square-green {
+  background-position: -120px 0;
+}
+.iradio_square-green.hover {
+  background-position: -144px 0;
+}
+.iradio_square-green.checked {
+  background-position: -168px 0;
+}
+.iradio_square-green.disabled {
+  background-position: -192px 0;
+  cursor: default;
+}
+.iradio_square-green.checked.disabled {
+  background-position: -216px 0;
+}
+
+/* HiDPI support */
+@media (-o-min-device-pixel-ratio: 5/4), (-webkit-min-device-pixel-ratio: 1.25), (min-resolution: 120dpi) {
+  .icheckbox_square-green,
+  .iradio_square-green {
+    background-image: url(green@2x.png);
+    -webkit-background-size: 240px 24px;
+    background-size: 240px 24px;
+  }
+}
+

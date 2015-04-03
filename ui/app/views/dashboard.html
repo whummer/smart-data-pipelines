@@ -1,0 +1,110 @@
+<div class="row animated fadeInRight" ng-controller="dashboardCtrl">
+	<div class="col-lg-6 connectPanels" ui-sortable="sortableOptions">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<h5>Top 5 Consumers Worldwide</h5>
+				<div ibox-tools></div>
+			</div>
+			<div class="ibox-content">
+
+				<div class="row">
+					<div class="col-lg-12">
+						<table class="table table-hover margin bottom">
+							<thead>
+							<tr>
+								<th style="width: 1%" class="text-center">No.</th>
+								<th>Consumer Name</th>
+								<th class="text-center">Datapoints Consumed</th>
+								<th class="text-center">Amount</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr ng-repeat="consumer in dashboard.consumers">
+								<td class="text-center">{{consumer.idx}}</td>
+								<td>{{consumer.name}}</td>
+								<td class="text-center small">{{consumer.consumed}}</td>
+								<td class="text-center"><span class="label label-primary">{{consumer.amount}}</span></td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-lg-6 connectPanels" ui-sortable="sortableOptions">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<h5>Top 5 Consumers Worldwide</h5>
+				<div ibox-tools></div>
+			</div>
+			<div class="ibox-content">
+				<div class="row">
+					<div class="col-lg-12">
+						<div vector-map style="height: 300px;" my-map-data="dashboard.map.data"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="col-lg-3 connectPanels" ui-sortable="sortableOptions">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<h5>Income</h5>
+				<div ibox-tools></div>
+			</div>
+			<div class="ibox-content">
+				<h1 class="no-margins">&euro; 12886.20</h1>
+				<div class="stat-percent font-bold text-success">98% <i class="fa fa-bolt"></i></div>
+				<small>Total income per last billing cycle </small>
+			</div>
+		</div>
+	</div>
+	<div class="col-lg-3 connectPanels" ui-sortable="sortableOptions">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<div ibox-tools></div>
+				<h5>Datapoints Provided</h5>
+			</div>
+			<div class="ibox-content">
+				<h1 class="no-margins">275,800</h1>
+				<div class="stat-percent font-bold text-info">20% <i class="fa fa-level-up"></i></div>
+				<small>provided by you (04/2015)</small>
+			</div>
+		</div>
+	</div>
+	<div class="col-lg-3 connectPanels" ui-sortable="sortableOptions">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<div ibox-tools></div>
+				<h5>Datapoints Consumed</h5>
+			</div>
+			<div class="ibox-content">
+				<h1 class="no-margins">101,236,120</h1>
+				<div class="stat-percent font-bold text-success">24% <i class="fa fa-level-up"></i></div>
+				<small>consumed by clients (04/2015)</small>
+			</div>
+		</div>
+	</div>
+	<div class="col-lg-3 connectPanels" ui-sortable="sortableOptions">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<div ibox-tools></div>
+				<h5>New Consumers</h5>
+			</div>
+			<div class="ibox-content">
+				<h1 class="no-margins">4</h1>
+
+				<div class="stat-percent font-bold text-danger">38% <i class="fa fa-level-down"></i></div>
+				<small>Last Month (04/2015)</small>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
