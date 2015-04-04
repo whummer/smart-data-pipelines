@@ -69,28 +69,41 @@ function config(growlProvider, $stateProvider, $urlRouterProvider) {
             data: { pageTitle: 'Setup connector deployment' }
         })
 
-       /* // consumer wizard setup
-        .state('index.consumer.wizard', {
-            url: "/consumer-wizard",
+        // consumer wizard setup
+        
+        .state('consumer', {
+            abstract: true,
+            templateUrl: "views/common/content.html",
+            url: "/consumers"
+        })
+
+        .state('consumer.wizard', {
+            url: "/wizard",
             templateUrl: "views/consumer_setup.html",
-            controller: providerWizardCtrl,
+            controller: consumerWizardCtrl,
             data: { pageTitle: 'Wizard form' }
         })
-        .state('index.consumer.wizard.step_one', {
+
+        .state('consumer.wizard.catalog', {
             url: '/step_one',
-            templateUrl: 'views/consumer_wizard/technology.html',
+            templateUrl: 'views/consumer_wizard/catalog.html',
             data: { pageTitle: 'Wizard form' }
         })
-        .state('index.provider.wizard.step_two', {
-            url: '/step_two',
-            templateUrl: 'views/consumer_wizard/connector_setup.html',
+        .state('consumer.wizard.request', {
+            url: '/step_one',
+            templateUrl: 'views/consumer_wizard/request.html',
             data: { pageTitle: 'Wizard form' }
         })
-        .state('index.provider.wizard.step_three', {
-            url: '/step_three',
-            templateUrl: 'views/consumer_wizard/data_retention.html',
+        .state('consumer.wizard.billing', {
+            url: '/step_one',
+            templateUrl: 'views/consumer_wizard/billing.html',
             data: { pageTitle: 'Wizard form' }
-        })*/
+        })
+        .state('consumer.wizard.confirm', {
+            url: '/step_one',
+            templateUrl: 'views/consumer_wizard/confirm.html',
+            data: { pageTitle: 'Wizard form' }
+        });
 }
 
 angular

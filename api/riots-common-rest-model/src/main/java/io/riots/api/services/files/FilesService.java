@@ -20,7 +20,7 @@ import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
 
 /**
- * Implements the simple file clients with a file-based backend
+ * Interface for a simple file service.
  *
  * @author riox
  */
@@ -53,7 +53,7 @@ public interface FilesService {
 			+ " created file is returned.")
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "Malformed file provided. See error message for details") })	
 	public String create(FileData data);
-	
+
 	@DELETE
 	@Path("/{id}")
 	@Consumes({ MediaType.APPLICATION_JSON })

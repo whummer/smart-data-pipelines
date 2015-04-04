@@ -130,6 +130,32 @@ function consumerWizardCtrl($scope) {
 	$scope.processForm = function () {
 		alert('Wizard completed');
 	};
+	
+	$scope.streams = [
+	   	           {id: 1, name: "Traffic Lights", 
+	   	        	   organizationImg: "img/provider-logos/smart_city_wien.png", organizationName: "City of Vienna"},
+		           {id: 2, name: "Car Data", organizationImg: "img/provider-logos/bmw.png"},
+		           {id: 3, name: "Temperature Values", organizationImg: "img/provider-logos/smart_city_wien.png", 
+	   	        	   organizationImg: "img/provider-logos/smart_city_wien.png", organizationName: "City of Vienna"},
+		           {id: 4, name: "Incidents", 
+		   	        	   organizationImg: "img/provider-logos/smart_city_wien.png", organizationName: "City of Vienna"}
+	];
+	
+	$scope.producersAutocomp = {
+		options: {
+			html: true,
+			focusOpen: true,
+			valueList: [
+					{id: 1, label: "BMW"},
+					{id: 2, label: "Volkswagen"},
+					{id: 3, label: "Smart City Vienna"}
+			],
+			source: function (request, response) {
+				console.log(request);
+				response($scope.producersAutocomp.options.valueList);
+			}
+		}
+	};
 }
 
 function dashboardCtrl($scope, $log) {
