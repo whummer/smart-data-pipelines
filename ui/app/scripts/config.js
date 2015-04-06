@@ -85,22 +85,22 @@ function config(growlProvider, $stateProvider, $urlRouterProvider) {
         })
 
         .state('consumer.wizard.catalog', {
-            url: '/step_one',
+            url: '/catalog',
             templateUrl: 'views/consumer_wizard/catalog.html',
             data: { pageTitle: 'Wizard form' }
         })
         .state('consumer.wizard.request', {
-            url: '/step_one',
+            url: '/request',
             templateUrl: 'views/consumer_wizard/request.html',
             data: { pageTitle: 'Wizard form' }
         })
         .state('consumer.wizard.billing', {
-            url: '/step_one',
+            url: '/billing',
             templateUrl: 'views/consumer_wizard/billing.html',
             data: { pageTitle: 'Wizard form' }
         })
         .state('consumer.wizard.confirm', {
-            url: '/step_one',
+            url: '/confirm',
             templateUrl: 'views/consumer_wizard/confirm.html',
             data: { pageTitle: 'Wizard form' }
         });

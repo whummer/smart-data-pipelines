@@ -26,12 +26,13 @@
     <div class="results">
     	
     	<div ng-repeat="thing in streams" ng-init="thingIndex = $index" class="animated fadeIn">
-			<div class="col-sm-12 col-md-6 col-lg-4" style="padding: 12px"
+			<div class="col-sm-12 col-md-6 col-lg-4" style="padding: 15px"
 					 ng-if="streams[thingIndex + columnIndex] != undefined">
-				<div class="thumbnail-riots animated" style="min-height: 250px; padding: 10px;"
-						 ng-class="{thumbnailhalo: hover}"
+				<div class="thumbnail-riots animated" style="padding: 13px;"
+						 ng-class="{thumbnailhalo: hover || formData.selectedStream == thing}"
 						 ng-mouseenter="hover = true"
 						 ng-mouseleave="hover = false"
+						 ng-click="formData.selectedStream = thing"
 						 ng-dblclick="editItem(streams[thingIndex + columnIndex].id)">
 
 					<!-- tags -->
@@ -59,36 +60,37 @@
 					<!-- content -->
 					<div class="caption">
 						<h4>{{streams[thingIndex + columnIndex].name}}</h4>
-
-						<div class="thing-type-box" style="margin-top: 10px"
-								 id="{{streams[thingIndex + columnIndex].id}}_description">
-							{{streams[thingIndex + columnIndex].description}}
+						<hr/>
+						<b>Publisher:</b> {{streams[thingIndex + columnIndex].organizationName}}
+						<hr/>
+						{{trim(streams[thingIndex + columnIndex].description, 200)}}
+					</div>
+					
+					<div class="price" ng-init="thePrice = streams[thingIndex + columnIndex].price">
+						<div ng-show="thePrice.type == 'per_event' || thePrice.type == 'per_day'" style="margin: auto;">
+						{{thePrice.amount}} €
+						<span style="font-weight: normal;">
+							<span ng-show="thePrice.type == 'per_event'">per data point</span>
+							<span ng-show="thePrice.type == 'per_day'">per day</span>
+						</span>
 						</div>
-
-						<div class="row">
-							<div class="col-sm-4">
-								Organization:
-							</div>
-							<div class="col-sm-8">
-								{{streams[thingIndex + columnIndex].organizationName}}
-							</div>
+						<div ng-show="thePrice.type == 'free'" style="line-height: 40px;">
+						free of charge
 						</div>
-						<div class="row">
-							<div class="col-sm-4">
-								Price:
-							</div>
-							<div class="col-sm-8">
-							123
-							</div>
+						<div ng-show="thePrice.type == 'on_request'" style="line-height: 40px;">
+						request price
 						</div>
-
 					</div>
 				</div>
 			</div>
 		</div>
 		
 		<div class="clearfix"></div>
-
+		<div class="selection" ng-show="formData.selectedStream">
+			Selected Stream: {{formData.selectedStream.name}} ({{formData.selectedStream.organizationName}})
+			<a ui-sref="consumer.wizard.request" class="btn btn-primary" style="float: right">Next</a>
+		</div>
+		
     </div>
-    <a ui-sref="consumer.wizard.request" class="btn btn-primary">Next</a>
+
 </fieldset>

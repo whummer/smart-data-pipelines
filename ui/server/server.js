@@ -1,7 +1,8 @@
 var restify = require('restify');
 var mongoose = require('mongoose');
-var log = require('winston');
 var _ = require('lodash');
+var log = global.log = require('winston');
+var ModelUtil = global.ModelUtil = require('./model/model_util');
 
 //
 // setup loglevel
@@ -13,6 +14,7 @@ log.add(log.transports.Console, {timestamp: true, level: 'debug', colorize: true
 // setup mongoose schema
 //
 mongoose.connect('mongodb://localhost/riox');
+global.mongoose = mongoose;
 var DataResource = mongoose.model('DataResource',
 		{
 			name: String,
@@ -38,6 +40,15 @@ server.get('/resources', loadResources);
 server.post('/resources', createResource);
 server.get('/resources/:id', loadResource);
 server.get('/__init', initDataResourceCollection);
+
+
+//
+//include specialized services
+//
+global.server = server;
+require('./services/user/users_service.js');
+require('./services/access/access_service.js');
+
 
 // fire up instance
 server.listen(8080, function () {
