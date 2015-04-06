@@ -6,11 +6,11 @@ import io.riots.core.handlers.query.PropertyValueQuery;
 import io.riots.core.jms.EventBroker;
 import io.riots.core.jms.EventBrokerComponent;
 import io.riots.core.util.JSONUtil;
+import io.riots.core.util.PropertyUtil;
 import io.riots.core.util.script.ScriptUtil;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 /**
  * @author whummer
@@ -29,65 +30,86 @@ import org.springframework.stereotype.Component;
 @Component
 public class TriggerFunctionListener {
 
-	private static final Logger LOG = Logger.getLogger(TriggerFunctionListener.class);
 	public static final String VAR_NAME_VALUES = "VALUES";
 	public static final String VAR_NAME_CONFIG = "CONFIG";
 	public static final String VAR_NAME_FUNCTION = "FUNCTION";
 	public static final String SRC_FILE_UTIL = "util/common";
+	private static final Logger LOG = Logger.getLogger(TriggerFunctionListener.class);
+	private static final boolean DO_RECURSE_SUBPROPERTIES = true;
 
 	@Autowired
 	private EventBrokerComponent eventBroker;
 	@Autowired
 	private PropertyValueQuery propValQuery;
 
-	private Map<String,FuncExecState> functions = new ConcurrentHashMap<>();
+	private Map<String, FuncExecState> functions = new ConcurrentHashMap<>();
 
-	private static class FuncExecState {
-		ThingPropsFunction function;
-		String code;
-		Map<String,Object> variables = new ConcurrentHashMap<>();
-		ScriptEngine engine;
-	}
-
-	@JmsListener(containerFactory = EventBroker.CONTAINER_FACTORY_NAME, 
-			destination = EventBroker.MQ_INBOUND_PROP_UPDATE, 
+	@JmsListener(containerFactory = EventBroker.CONTAINER_FACTORY_NAME,
+			destination = EventBroker.MQ_INBOUND_PROP_UPDATE,
 			concurrency = "1")
 	public void processEvent(String data) {
+		//LOG.info("Got data: " + data);
 		PropertyValue prop = JSONUtil.fromJSON(data, PropertyValue.class);
-		if(prop == null || prop.getPropertyName() == null) {
+		if (prop == null || prop.getPropertyName() == null) {
 			LOG.warn("Received null property: " + prop);
 			return;
 		}
 
-		for(FuncExecState s : functions.values()) {
+		if(DO_RECURSE_SUBPROPERTIES) {
+			processPropertyAndChildrenRecursively(prop);
+		} else {
+			processProperty(prop);
+		}
+	}
+
+	private void processPropertyAndChildrenRecursively(PropertyValue prop) {
+		processProperty(prop);
+		for(PropertyValue v : PropertyUtil.getChildren(prop)) {
+			processPropertyAndChildrenRecursively(v);
+		}
+	}
+
+	private void processProperty(PropertyValue prop) {
+		//System.out.println("--> " + functions);
+		for (FuncExecState s : functions.values()) {
 			boolean thingMatches = StringUtils.isEmpty(s.function.getThingId()) ||
 					prop.getThingId().matches(s.function.getThingId());
 			boolean propMatches = StringUtils.isEmpty(s.function.getPropertyName()) ||
 					prop.getPropertyName().matches(s.function.getPropertyName());
 			boolean triggerPropMatches = StringUtils.isEmpty(s.function.getTriggerPropertyName()) ||
 					prop.getPropertyName().matches(s.function.getTriggerPropertyName());
-			if(thingMatches && propMatches) {
+
+			boolean doAddValue = thingMatches && propMatches;
+			boolean doExecFunc = thingMatches && triggerPropMatches;
+
+			if (doAddValue) {
 				addValueToFunctionState(s, prop);
 			}
-			if(thingMatches && triggerPropMatches) {
+			if (doExecFunc) {
 				executeFunction(s, prop);
 			}
+			if(doAddValue || doExecFunc) {
+//				System.out.println("==> " + s.function + " -- " + 
+//						prop + " - add: "  + doAddValue + ", exec: "  + doExecFunc);
+			}
+//			System.out.println("--> " + s.function + " -- " + 
+//					prop + " - add: "  + doAddValue + ", exec: "  + doExecFunc);
 		}
 	}
 
 	public ThingPropsFunction addFunction(ThingPropsFunction function) {
 		try {
-			if(StringUtils.isEmpty(function.getId())) {
+			if (StringUtils.isEmpty(function.getId())) {
 				function.setId(UUID.randomUUID().toString());
 			}
-			if(StringUtils.isEmpty(function.getResultPropertyName())) {
+			if (StringUtils.isEmpty(function.getResultPropertyName())) {
 				function.setResultPropertyName(function.getTriggerFunction());
 			}
-			if(StringUtils.isEmpty(function.getTriggerPropertyName())) {
+			if (StringUtils.isEmpty(function.getTriggerPropertyName())) {
 				function.setTriggerPropertyName(function.getPropertyName());
 			}
-			if(function.getConfig() == null) {
-				function.setConfig(new HashMap<String,Object>());
+			if (function.getConfig() == null) {
+				function.setConfig(new HashMap<String, Object>());
 			}
 
 			/* include util functions. TODO make configurable */
@@ -100,12 +122,10 @@ public class TriggerFunctionListener {
 			state.code = srcUtil + "\n" + src;
 			state.function = function;
 			state.engine = ScriptUtil.getEngineJS();
-			List<PropertyValue> values = propValQuery.retrieveValues(function.getThingId(), 
-					function.getPropertyName(), function.getWindowSize());
-			values = new LinkedList<PropertyValue>(values); // make modifiable list
 			state.variables.put(VAR_NAME_FUNCTION, function);
 			state.variables.put(VAR_NAME_CONFIG, function.getConfig());
 			ScriptUtil.eval(state.engine, VAR_NAME_VALUES + " = []");
+			LOG.info("Added trigger function " + state.function);
 
 			/* initialize code engine */
 			ScriptUtil.bindVariables(state.engine, state.variables);
@@ -117,8 +137,15 @@ public class TriggerFunctionListener {
 	}
 
 	private void addValueToFunctionState(FuncExecState s, PropertyValue prop) {
+		Assert.notNull(s.engine);
 		ScriptUtil.pushToList(s.engine, VAR_NAME_VALUES, prop);
 		ScriptUtil.ensureListMaxSize(s.engine, VAR_NAME_VALUES, s.function.getWindowSize());
+	}
+
+	public FuncExecState removeFunction(String id) {
+		FuncExecState deleted = functions.remove(id);
+		System.gc();
+		return deleted;
 	}
 
 	private void executeFunction(FuncExecState s, PropertyValue prop) {
@@ -135,16 +162,33 @@ public class TriggerFunctionListener {
 		}
 	}
 
-	public FuncExecState removeFunction(String id) {
-		FuncExecState deleted = functions.remove(id);
-		System.gc();
-		return deleted;
-	}
 
 	public ThingPropsFunction updateFunction(ThingPropsFunction func) {
 		FuncExecState existing = removeFunction(func.getId());
 		addFunction(func);
 		return existing != null ? existing.function : null;
+	}
+
+	public void removeAllFunctions() {
+		functions.clear();
+		System.gc();
+	}
+
+	public void removeAllForCreator(String creatorId) {
+		for(String funcId : new HashSet<String>(functions.keySet())) {
+			FuncExecState s = functions.get(funcId);
+			if(!StringUtils.isEmpty(creatorId) && creatorId.equals(s.function.getCreatorId())) {
+				functions.remove(funcId);
+			}
+		}
+	}
+
+	private static class FuncExecState {
+
+		ThingPropsFunction function;
+		String code;
+		Map<String, Object> variables = new ConcurrentHashMap<>();
+		ScriptEngine engine;
 	}
 
 }

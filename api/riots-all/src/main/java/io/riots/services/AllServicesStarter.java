@@ -24,22 +24,46 @@ import com.google.common.base.Joiner;
 public class AllServicesStarter {
 
 	private static final List<Process> PROCESSES = new LinkedList<Process>();
+	private static String HOST_UTIL = null;
 
 	public static void main(String[] args) throws Exception {
+		String utilityHost = System.getProperty("utilities.host");
+
+		if(utilityHost == null) {
+			startAllLocal();
+		} else if(utilityHost.equals("localhost")) {
+			startUtilities();
+		} else {
+			HOST_UTIL  = utilityHost;
+			startCoreServices();
+		}
+	}
+
+	private static void startCoreServices() throws Exception {
 		for(Class<?> clazz : Arrays.asList(
-				RiotsServiceRegistryStarter.class,
-				GatewayServiceStarter.class,
 				CatalogServiceStarter.class,
 				UsersServiceStarter.class,
 				EnvironmentServiceStarter.class
-
 				, SimulationServiceStarter.class
-				, FilesServiceStarter.class
-
 //				, WebappServiceStarter.class
 		)) {
 			start(clazz);
 		}
+	}
+
+	private static void startUtilities() throws Exception {
+		for(Class<?> clazz : Arrays.asList(
+				RiotsServiceRegistryStarter.class,
+				GatewayServiceStarter.class,
+				FilesServiceStarter.class
+		)) {
+			start(clazz);
+		}
+	}
+
+	static void startAllLocal() throws Exception {
+		startUtilities();
+		startCoreServices();
 	}
 
 	private static String getClasspath(Class<?> clazz) throws Exception {
@@ -101,8 +125,12 @@ public class AllServicesStarter {
 				try {
 					while (true) {
 						String cp = getClasspath(clazz);
-						String[] command = new String[]{
-								"java", "-cp", cp, clazz.getName()};
+						List<String> cmd = new LinkedList<String>(Arrays.asList("java"));
+						if(HOST_UTIL != null) {
+							cmd.addAll(Arrays.asList("-Deureka.hostname=" + HOST_UTIL));
+						}
+						cmd.addAll(Arrays.asList("-cp", cp, clazz.getName()));
+						String[] command = cmd.toArray(new String[0]);
 						System.out.println(Joiner.on(" ").join(command));
 						/* (re-)start the process. */
 						ProcessBuilder b = new ProcessBuilder(command);

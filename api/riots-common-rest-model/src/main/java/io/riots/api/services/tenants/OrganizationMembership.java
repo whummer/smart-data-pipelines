@@ -29,6 +29,7 @@ public class OrganizationMembership extends Organization {
 		this.setCreated(copyFrom.getCreated());
 		this.setName(copyFrom.getName());
 		this.getMembers().addAll(copyFrom.getMembers());
+		this.getImageData().addAll(copyFrom.getImageData());
 	}
 
 	public String getCreatorDisplayName() {
@@ -43,4 +44,6 @@ public class OrganizationMembership extends Organization {
 	public void setStatus(InvitationStatus status) {
 		this.status = status;
 	}
+	
+	
 }

@@ -62,8 +62,7 @@ public class FilesServiceImpl implements FilesService {
 			log.error("Error in POST request: ", e);
 			ServiceUtil.setResponseStatus(context, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			return null;
-		}			
-		
+		}				
 	}
 
 	@Override

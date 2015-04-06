@@ -52,20 +52,31 @@ public class OrganizationsServiceImpl implements OrganizationsService {
 	@Override
 	@Timed @ExceptionMetered
 	public List<Organization> getAllOrganizations() {
-		return Arrays.asList(Iterables.toArray(orgRepo.findAll(), Organization.class));
+		Iterable<Organization> list = orgRepo.findAll();
+		System.out.println("list");
+		for(Organization org : list) {
+			System.out.println("--> " + org);
+		}
+		List<Organization> result = Arrays.asList(Iterables.toArray(list, Organization.class));
+		System.out.println("result2 " + result);
+		return result;
 	}
 
 	@Override
 	@Timed @ExceptionMetered
 	public Organization getOrganization(String id) {
-		return orgRepo.findOne(id);
+		Organization result = orgRepo.findOne(id);
+		System.out.println("result1 " + result);
+		return result;
 	}
 
 	@Override
 	@Timed @ExceptionMetered
 	public Organization getDefaultOrganizationOfUser() {
 		User user = ServiceUtil.assertValidUser(authHeaders, req);
-		return getOrInsertDefaultOrganization(user);
+		Organization result = getOrInsertDefaultOrganization(user);
+		System.out.println("result " + result);
+		return result;
 	}
 
 	@Override

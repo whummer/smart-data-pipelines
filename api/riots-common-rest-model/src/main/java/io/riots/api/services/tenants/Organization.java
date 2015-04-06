@@ -1,12 +1,16 @@
 package io.riots.api.services.tenants;
 
+import io.riots.api.services.catalog.ImageData;
 import io.riots.api.services.model.Constants;
 import io.riots.api.services.model.interfaces.ObjectCreated;
 import io.riots.api.services.model.interfaces.ObjectIdentifiable;
 import io.riots.api.services.model.interfaces.ObjectNamed;
+import io.riots.api.services.model.interfaces.ObjectWithImages;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -16,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * user is associated with an organization.
  * @author whummer
  */
-public class Organization implements ObjectIdentifiable, ObjectNamed, ObjectCreated {
+public class Organization implements ObjectIdentifiable, ObjectNamed, ObjectCreated, ObjectWithImages {
 
 	public static final String DEFAULT_ORGANIZATION_NAME = "Default Organization";
 
@@ -46,6 +50,12 @@ public class Organization implements ObjectIdentifiable, ObjectNamed, ObjectCrea
 	 */
 	@JsonProperty
 	private Set<String> members = new HashSet<String>();
+	/**
+	 * Image data.
+	 */
+	@JsonProperty(Constants.IMAGE_DATA)
+	private List<ImageData> imageData = new LinkedList<ImageData>();
+
 
 	public String getId() {
 		return id;
@@ -73,5 +83,11 @@ public class Organization implements ObjectIdentifiable, ObjectNamed, ObjectCrea
 	}
 	public void setCreatorId(String creatorId) {
 		this.creatorId = creatorId;
+	}
+	public List<ImageData> getImageData() {
+		return imageData;
+	}
+	public void setImageData(List<ImageData> imageData) {
+		this.imageData = imageData;
 	}
 }

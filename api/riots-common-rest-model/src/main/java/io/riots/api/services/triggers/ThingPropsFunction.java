@@ -32,7 +32,7 @@ public class ThingPropsFunction extends Trigger {
 	/**
 	 * Thing property to store the result to.
 	 */
-	@JsonProperty("resultProperty")
+	@JsonProperty(Constants.RESULT_PROPERTY_NAME)
 	private String resultPropertyName;
 	/**
 	 * Window size, i.e., number of historical 
@@ -64,14 +64,14 @@ public class ThingPropsFunction extends Trigger {
 	public String getResultPropertyName() {
 		return resultPropertyName;
 	}
+	public void setResultPropertyName(String resultPropertyName) {
+		this.resultPropertyName = resultPropertyName;
+	}
 	public String getTriggerPropertyName() {
 		return triggerPropertyName;
 	}
 	public void setTriggerPropertyName(String triggerPropertyName) {
 		this.triggerPropertyName = triggerPropertyName;
-	}
-	public void setResultPropertyName(String resultPropertyName) {
-		this.resultPropertyName = resultPropertyName;
 	}
 	public int getWindowSize() {
 		return windowSize;
@@ -85,8 +85,11 @@ public class ThingPropsFunction extends Trigger {
 
 	@Override
 	public String toString() {
-		return this.getClass().getSimpleName() + "[id=" + id + 
-				", created=" + created + ", creatorId=" + creatorId + "]";
+		return "ThingPropsFunction [thingId=" + thingId + ", propertyName="
+				+ propertyName + ", triggerPropertyName=" + triggerPropertyName
+				+ ", resultPropertyName=" + resultPropertyName
+				+ ", windowSize=" + windowSize + ", triggerFunction="
+				+ triggerFunction + ", config=" + config + "]";
 	}
 
 }

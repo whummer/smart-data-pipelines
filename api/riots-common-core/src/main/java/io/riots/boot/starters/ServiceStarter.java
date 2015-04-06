@@ -2,12 +2,15 @@ package io.riots.boot.starters;
 
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Slf4jReporter;
+
 import io.riots.core.cxf.RefIdEnabledCxfServlet;
 
 // TODO fix this import com.codahale.metrics.servlets.MetricsServlet;
 //import com.google.inject.servlet.GuiceFilter;
 //import com.netflix.hystrix.contrib.metrics.eventstream.HystrixMetricsStreamServlet;
 //import com.netflix.karyon.server.guice.KaryonGuiceContextListener;
+
+import io.riots.core.util.Config;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -53,6 +56,17 @@ public abstract class ServiceStarter {
 	public static void setDefaultSystemProps() {
 		if (StringUtils.isEmpty(System.getProperty("RIOTS_LOG_DIR"))) {
 			System.setProperty("RIOTS_LOG_DIR", "log");
+		}
+		String EUREKA_HOSTNAME = "eureka.hostname";
+		String EUREKA_INST_HOSTNAME = "eureka.instance.hostname";
+
+		String registryHost = Config.get(EUREKA_HOSTNAME);
+		if(registryHost != null) {
+			System.setProperty(EUREKA_HOSTNAME, registryHost);
+		}
+		String instHost = Config.get(EUREKA_INST_HOSTNAME);
+		if(instHost != null) {
+			System.setProperty(EUREKA_INST_HOSTNAME, instHost);
 		}
 	}
 

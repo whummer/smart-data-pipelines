@@ -3,8 +3,10 @@ package io.riots.api.services.sim;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import io.riots.api.services.model.interfaces.ObjectCreated;
 import io.riots.api.services.model.interfaces.ObjectIdentifiable;
+import io.riots.api.services.model.interfaces.ObjectNamed;
 
 import java.util.Date;
 import java.util.LinkedList;
@@ -16,7 +18,7 @@ import java.util.List;
  * 
  * @author whummer
  */
-public class SimulationType implements ObjectCreated, ObjectIdentifiable {
+public class SimulationType implements ObjectCreated, ObjectIdentifiable, ObjectNamed {
 
 	private String id;
 

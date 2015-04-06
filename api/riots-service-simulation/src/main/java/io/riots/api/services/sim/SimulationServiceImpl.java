@@ -15,6 +15,7 @@ import io.riots.core.sim.traffic.TrafficSimulatorMatsim;
 import io.riots.core.util.ServiceUtil;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -23,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.jaxrs.ext.MessageContext;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,12 +81,23 @@ public class SimulationServiceImpl implements SimulationService {
 
     @Override
     @Timed @ExceptionMetered
-    public List<Simulation> listSimulations(int page, int size) {
-    	List<Simulation> result = simulationQuery.query(new Paged(page, size));
+    public List<Simulation> listSimulations(String thingId, String propertyName, int page, int size) {
+		if (size == 0) {
+			size = 100;
+		}
+
+		List<Simulation> result = new ArrayList<>();
+
+		if (StringUtils.isNotBlank(thingId) && StringUtils.isNotBlank(propertyName)) {
+			result.add(simulationQuery.findByThingIdAndPropertyName(thingId, propertyName));
+		} else {
+			result = simulationQuery.query(new Paged(page, size));
+		}
         return result;
     }
 
-    @Override
+
+	@Override
     @Timed @ExceptionMetered
     public Simulation create(Simulation item) {
     	item.setCreatorId(authHeaders.getRequestingUser(req).getId());

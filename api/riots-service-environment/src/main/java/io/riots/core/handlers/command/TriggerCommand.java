@@ -1,8 +1,10 @@
 package io.riots.core.handlers.command;
 
+import io.riots.api.services.triggers.Trigger;
 import io.riots.core.logging.Markers;
 import io.riots.core.repositories.TriggerRepository;
-import io.riots.api.services.triggers.Trigger;
+
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,4 +35,9 @@ public class TriggerCommand {
     public void delete(String id) {
         repository.delete(id);
     }
+
+	public void deleteAllForCreator(String creatorId) {
+		List<Trigger> triggers = repository.findByCreatorId(creatorId);
+		repository.delete(triggers);
+	}
 }

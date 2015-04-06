@@ -1,13 +1,13 @@
-<section ng-controller="CatalogViewController" id="devCatalogSection">
-  <div class="container" ng-controller="ThingTypesController">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h2 class="panel-title"><span class="glyphicon glyphicon-edit"></span> <b>{{shared.selectedThingType.name}}</b>
-        </h2>
+<div ng-controller="CatalogViewController" class="animated fadeIn row">
+
+  <div ng-controller="ThingTypesController" class="col-lg-12 col-md-12 col-sm-12">
+    <div class="ibox float-e-margins">
+      <div class="ibox-title">
+        <h4><span class="fa fa-edit"></span> <b>{{shared.selectedThingType.name}}</b></h4>
       </div>
-      <div class="panel-body">
+      <div class="ibox-content">
         <section ng-controller="ThingTypeController" id="devTypeSection">
-          <tabset>
+          <tabset type="pills">
             <tab heading="Details">
               <ng-include src="appConfig['appRootPath'] + '/views/thing_type_details.html'"></ng-include>
             </tab>
@@ -20,7 +20,6 @@
           </tabset>
 
           <div class="form-group" style="display: block; float: left; width: 100%;">
-
             <hr/>
             <div class="pull-left">
               <button class="btn  btn-sm btn-danger" id="btnDevTypeDelete">
@@ -41,7 +40,7 @@
       </div>
     </div>
   </div>
-</section>
+</div>
 
 <script type="text/javascript">
 

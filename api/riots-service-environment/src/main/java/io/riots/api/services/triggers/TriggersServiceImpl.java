@@ -5,7 +5,6 @@ import io.riots.api.services.users.User;
 import io.riots.core.auth.AuthHeaders;
 import io.riots.core.handlers.command.TriggerCommand;
 import io.riots.core.handlers.query.TriggerQuery;
-import io.riots.core.triggers.GeoPositionListener;
 import io.riots.core.triggers.TriggerFunctionListener;
 import io.riots.core.util.ServiceUtil;
 
@@ -17,9 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.codahale.metrics.annotation.ExceptionMetered;
-import com.codahale.metrics.annotation.Timed;
 
 /**
  * @author whummer
@@ -36,15 +32,14 @@ public class TriggersServiceImpl implements TriggersService {
 
 	@Autowired
 	TriggerCommand triggerCmd;
+
 	@Autowired
 	TriggerQuery triggerQuery;
 
 	@Autowired
-	GeoPositionListener geoListener;
-	@Autowired
 	TriggerFunctionListener funcListener;
 
-	/* GENERIC TRIGGER METHODS */
+	/* API METHODS FOR TRIGGERS */
 
 	@Override
 	public List<Trigger> listTriggers() {
@@ -62,28 +57,13 @@ public class TriggersServiceImpl implements TriggersService {
 	}
 
 	@Override
-	public void removeTrigger(String id) {
-		doRemoveTrigger(id, null);
-	}
-
-	/* GEO FENCES */
-
-	@Override
-	@Timed @ExceptionMetered
-	public List<GeoFence> listGeoFences() {
-		return doListTriggers(GeoFence.class);
+	public void removeTrigger(String id, String creatorId) {
+		doRemoveTrigger(id, creatorId);
 	}
 
 	@Override
-	@Timed @ExceptionMetered
-	public GeoFence setupGeoFence(GeoFence fence) {
-		return doSetupTrigger(fence);
-	}
-
-	@Override
-	@Timed @ExceptionMetered
-	public void removeGeoFence(String id) {
-		doRemoveTrigger(id, GeoFence.class);
+	public void removeTrigger(String creatorId) {
+		doRemoveTrigger(null, creatorId);
 	}
 
 	/* PRIVATE HELPER METHODS */
@@ -94,9 +74,6 @@ public class TriggersServiceImpl implements TriggersService {
 		t.setCreatorId(user.getId());
 		t.setCreated(new Date());
 		t = (T) triggerCmd.create(t);
-//		if(t instanceof GeoFence) {
-//			t = (T)geoListener.addGeoFence((GeoFence)t);
-//		} else 
 		if(t instanceof ThingPropsFunction) {
 			t = (T)funcListener.addFunction((ThingPropsFunction)t);
 		} else {
@@ -110,9 +87,6 @@ public class TriggersServiceImpl implements TriggersService {
 		// TODO check permissions
 		//User user = ServiceUtil.assertValidUser(authHeaders, req);
 		t = (T) triggerCmd.update(t);
-//		if(t instanceof GeoFence) {
-//			t = (T)geoListener.updateGeoFence((GeoFence)t);
-//		} else 
 		if(t instanceof ThingPropsFunction) {
 			t = (T)funcListener.updateFunction((ThingPropsFunction)t);
 		} else {
@@ -121,34 +95,27 @@ public class TriggersServiceImpl implements TriggersService {
 		return t;
 	}
 
-	private void doRemoveTrigger(String id, Class<? extends Trigger> triggerClass) {
-		if(triggerClass == null) {
-			Trigger t = triggerQuery.single(id);
-			if(t != null) {
-				triggerClass = t.getClass();
-			}
-		}
-//		if(triggerClass == GeoFence.class) {
-//			geoListener.removeGeoFence(id);
-//		} else
-		if(triggerClass == ThingPropsFunction.class) {
-			funcListener.removeFunction(id);
+	private void doRemoveTrigger(String id, String creatorId) {
+		if (creatorId != null) {
+			triggerCmd.deleteAllForCreator(creatorId);
+			funcListener.removeAllForCreator(creatorId);
 		} else {
-			LOG.warn("Unexpected trigger type: " + triggerClass);
+			funcListener.removeFunction(id);
+			triggerCmd.delete(id);
 		}
-		triggerCmd.delete(id);
+
 	}
 
 	@SuppressWarnings("unchecked")
 	private <T extends Trigger> List<T> doListTriggers(Class<T> specialClass) {
 		User user = ServiceUtil.assertValidUser(authHeaders, req);
-		if(specialClass == null) {
-			return (List<T>)triggerQuery.findForUser(user.getId());
+		if (specialClass == null) {
+			return (List<T>) triggerQuery.findForUser(user.getId());
 		}
 		TriggerType specialType = null;
-		if(specialClass == GeoFence.class) {
+		if (specialClass == GeoFence.class) {
 			specialType = TriggerType.GEO_FENCE;
-		} else if(specialClass == ThingPropsFunction.class) {
+		} else if (specialClass == ThingPropsFunction.class) {
 			specialType = TriggerType.FUNCTION;
 		}
 		return (List<T>) triggerQuery.findForTypeAndUser(specialType, user.getId());

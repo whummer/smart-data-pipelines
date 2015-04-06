@@ -86,6 +86,8 @@ public class SimulationManager {
 			value.setTimestamp(System.currentTimeMillis());
 			LOG.debug("Running simulation tick #" + currentTick + ": " + value);
 			try {
+				long timestamp = System.currentTimeMillis();
+				value.setTimestamp(timestamp);
 				eventBroker.sendInboundPropUpdateMessage(value);
 			} catch (Throwable e) {
 				e.printStackTrace();
@@ -114,7 +116,7 @@ public class SimulationManager {
 			SimulationRunner runner = new SimulationRunner(r, propSim);
 			simulationRunners.add(runner);
 			PropertyValueGenerator.prepareValues(propSim);
-			System.out.println("starting runner " + runner + " - " + r + " - " + propSim);
+			System.out.println("starting runner " + runner + " - " + r + " - " + propSim + " - " + propSim.getStepInterval());
 			ScheduledFuture<?> f = executor.scheduleAtFixedRate(runner, 0,
 					(int) (propSim.getStepInterval() * 1000.0),
 					TimeUnit.MILLISECONDS);

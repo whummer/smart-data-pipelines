@@ -1,0 +1,189 @@
+<nav class="navbar-default navbar-static-side" style="background: #4A96AD" role="navigation"
+		 ng-controller="MenuController">
+
+	<div class="sidebar-collapse">
+		<ul side-navigation class="nav" id="side-menu">
+
+			<!-- Navigation Header -->
+			<li class="nav-header">
+				<div id="riots-logo-lg" style="text-align: center;">
+					<img class="src" src="img/riox_bright_blue1.png" style="max-height: 40px;" alt=""/>
+				</div>
+
+				<div class="profile-element">
+					<img class="img-circle pull-right block" style="max-height: 40px; margin-top: 15px"
+							 ng-src="{{authInfo.avatar}}"
+							 ng-if="authInfo.avatar"/>
+					<!--<span class="block text-muted m-t-xs pull-right clear">-->
+					<!--<strong class="font-bold">{{authInfo.name}}</strong>-->
+					<!--</span>-->
+				</div>
+
+				<div class="logo-element">
+					<img src="/img/riox_bright_blue1.png" width="50"/>
+				</div>
+			</li>
+
+			<!-- Dashboards -->
+			<li ng-class="{active: $state.includes('dashboards')}" style="margin-top: 20px">
+				<a ui-sref="dashboards" href="#/home">
+					<i class="fa fa-th-large"></i>
+					<span class="nav-label">Dashboard</span> <span class="fa arrow"></span>
+				</a>
+				<!--<ul class="nav nav-second-level" ng-class="{in: $state.includes('dashboards')}">
+					<li ui-sref-active="active"><a ui-sref="dashboards.dashboard_1">Dashboard v.1</a></li>
+					<li ui-sref-active="active"><a ui-sref="dashboards.dashboard_2">Dashboard v.2</a></li>
+					<li ui-sref-active="active"><a ui-sref="dashboards.dashboard_3">Dashboard v.3</a></li>
+				</ul>-->
+			</li>
+
+			<!-- Catalog -->
+			<li ng-class="{active: $state.includes('catalog')}" ng-controller="ModalAddDeviceTypeController"
+					hotkey="{a: openAddThingTypeModal}">
+				<a ui-sref="catalog" href="">
+					<i class="fa fa-book"></i>
+					<span class="nav-label">Catalog</span> <span class="fa arrow"></span>
+				</a>
+				<ul class="nav nav-second-level" ng-class="{in: $state.includes('catalog')}">
+					<li ui-sref-active="active">
+						<a href="#/catalog" ui-sref="catalog.browse">
+							<i class="fa fa-list"></i> Browse Catalog
+						</a>
+					</li>
+					<li ui-sref-active="active">
+						<a ng-click="openAddThingTypeModal()" ui-sref="catalog.thingtype.add">
+							<i class="fa fa-plus"></i> Add Thing Type
+						</a>
+					</li>
+					<li ui-sref-active="active">
+						<a href="#/meta" ui-sref="catalog.metadata.edit">
+							<i class="fa fa-edit"></i> Edit Metadata
+						</a>
+					</li>
+				</ul>
+			</li>
+
+			<!-- Applications -->
+			<li ng-class="{active: $state.includes('applications')}">
+				<a ui-sref="applications">
+					<i class="fa fa-cogs"></i>
+					<span class="nav-label">Applications </span><span class="fa arrow"></span>
+				</a>
+				<ul class="nav nav-second-level" ng-class="{in: $state.includes('applications')}">
+					<li ui-sref-active="active">
+						<a ng-click="addApplication()" ui-sref="applications.add">
+							<i class="fa fa-plus"></i> Add Application
+						</a>
+					</li>
+					<li ng-repeat="app in shared.applications">
+						<a ui-sref-active="active" ui-sref="applications.{{app.id}}" href="#/apps/{{app.id}}">
+							<i class="fa fa-cog"></i> {{app.name}}
+						</a>
+					</li>
+				</ul>
+			</li>
+
+			<!-- Data Streams -->
+			<li ng-class="{active: $state.includes('streams')}">
+				<a ui-sref="streams">
+					<i class="fa fa-exchange"></i>
+					<span class="nav-label">Data Streams</span> <span class="fa arrow"></span>
+				</a>
+				<ul class="nav nav-second-level" ng-class="{in: $state.includes('streams')}">
+					<li ui-sref-active="active">
+						<a href="#/streams/public" ui-sref="streams.public">
+							<i class="fa fa-share-alt"></i> Public Streams
+						</a>
+					</li>
+					<li ui-sref-active="active">
+						<a href="#/streams/own" ui-sref="streams.my">
+							<i class="fa fa-bullseye"></i> My Streams
+						</a>
+					</li>
+					<li ui-sref-active="active">
+						<a href="#/streams/permissions" ui-sref="streams.permissions">
+							<i class="fa fa-shield"></i> Permissions
+						</a>
+					</li>
+					<li ui-sref-active="active">
+						<a href="#/streams/billing" ui-sref="streams.billing">
+							<i class="fa fa-money"></i> Billing
+						</a>
+					</li>
+					<li ui-sref-active="active">
+						<a href="#/streams/sinks" ui-sref="streams.sinks">
+							<i class="fa fa-download"></i> Data Sinks
+						</a>
+					</li>
+				</ul>
+			</li>
+
+			<!-- Behaviors -->
+			<li ng-class="{active: $state.includes('behaviors')}">
+				<a ui-sref="behaviors">
+					<i class="fa fa-eye"></i>
+					<span class="nav-label">Behaviors </span><span class="fa arrow"></span>
+				</a>
+				<ul class="nav nav-second-level" ng-class="{in: $state.includes('behaviors')}">
+					<li ui-sref-active="active">
+						<a href="#/sim" ui-sref="behaviors.simulations">
+							<i class="fa fa-random"></i> Simulations
+						</a>
+					</li>
+					<li ui-sref-active="active">
+						<a href="#/func" ui-sref="behaviors.triggers">
+							<i class="fa fa-bullseye"></i> Triggers
+						</a>
+					</li>
+				</ul>
+			</li>
+
+			<!--<li ui-sref-active="active">
+				<a ui-sref="widgets"><i class="fa fa-flask"></i> <span class="nav-label">Widgets</span></a>
+			</li>
+			<li ng-class="{active: $state.includes('forms')}">
+				<a href=""><i class="fa fa-edit"></i> <span class="nav-label">Forms</span><span class="fa arrow"></span></a>
+				<ul class="nav nav-second-level" ng-class="{in: $state.includes('forms')}">
+					<li ui-sref-active="active"><a ui-sref="forms.basic_form">Basic form</a></li>
+					<li ui-sref-active="active"><a ui-sref="forms.advanced_plugins">Advanced Plugins</a></li>
+					<li ui-sref-active="active"><a ui-sref="forms.wizard.step_one">Wizard</a></li>
+					<li ui-sref-active="active"><a ui-sref="forms.file_upload">File Upload</a></li>
+					<li ui-sref-active="active"><a ui-sref="forms.text_editor">Text Editor</a></li>
+				</ul>
+			</li>
+			<li ng-class="{active: $state.includes('app')}">
+				<a href=""><i class="fa fa-desktop"></i> <span class="nav-label">App Views</span> <span
+						class="pull-right label label-primary">SPECIAL</span></a>
+				<ul class="nav nav-second-level" ng-class="{in: $state.includes('app')}">
+					<li ui-sref-active="active"><a ui-sref="app.contacts">Contacts</a></li>
+					<li ui-sref-active="active"><a ui-sref="app.profile">Profile</a></li>
+					<li ui-sref-active="active"><a ui-sref="app.projects">Projects</a></li>
+					<li ui-sref-active="active"><a ui-sref="app.project_detail">Project detail</a></li>
+					<li ui-sref-active="active"><a ui-sref="app.file_manager">File manager</a></li>
+					<li ui-sref-active="active"><a ui-sref="app.calendar">Calendar</a></li>
+					<li ui-sref-active="active"><a ui-sref="app.faq">FAQ</a></li>
+					<li ui-sref-active="active"><a ui-sref="app.timeline">Timeline</a></li>
+					<li ui-sref-active="active"><a ui-sref="app.pin_board">Pin board</a></li>
+					<li ui-sref-active="active"><a ui-sref="app.invoice">Invoice</a></li>
+					<li><a href="login.html">Login</a></li>
+					<li><a href="register.html">Register</a></li>
+				</ul>
+			</li>
+
+			<li ui-sref-active="active">
+				<a ui-sref="css_animations"><i class="fa fa-magic"></i> <span class="nav-label">CSS Animations </span><span
+						class="label label-info pull-right">62</span></a>
+			</li>
+			<li class="landing_link">
+				<a target="_blank" href="../../Landing_page/index.html"><i class="fa fa-star"></i> <span class="nav-label">Landing Page</span>
+					<span class="label label-warning pull-right">NEW</span></a>
+			</li>
+			<li class="special_link">
+				<a href="../index.html"><i class="fa fa-html5"></i> <span class="nav-label">HTML/CSS Version</span></a>
+			</li>
+		</ul>-->
+		</ul>
+	</div>
+</nav>
+
+<script src="/app/scripts/controllers/MenuController.js"></script>

@@ -1,7 +1,7 @@
 /**
  * @author whummer
  *
- * Util script for packaging bower dependencies into a single 
+ * Util script for packaging bower dependencies into a single
  * optimized JavaScript file. Default location for the final file is
  * app/scripts/build/r.js . This file will be overwritten each time.
  *
@@ -10,7 +10,7 @@
  *   npm install -g -S 'jsdom@latest'
  * Then execute the file:
  *   node optimize.js
- * 
+ *
  */
 
 
@@ -33,7 +33,7 @@ env("", function (errors, window) {
 
 	// build config includes
 	cfg.include = [
-		//"riots/auth", // TODO uncomment!
+		"riots/auth",
 		"riots/charting",
 		"riots/maps-markers",
 		"riots/imports",
@@ -62,7 +62,7 @@ env("", function (errors, window) {
 	});
 
 	cfg.exclude = [];
-	
+
     cfg.baseUrl = ".";
    	delete cfg.name;
     cfg.out = appDir + "/scripts/build/riots-all.js";

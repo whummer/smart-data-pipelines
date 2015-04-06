@@ -1,0 +1,57 @@
+<div class="col-lg-3" ng-controller="StatsOverviewController">
+	<div class="ibox float-e-margins">
+		<div class="ibox-title">
+			<!--<span class="label label-success pull-right">Platform Statistics</span>-->
+			<span ng-click="removeWidget('stats_catalog')" class="pull-right fa fa-remove"></span>
+			<h5>Catalog Statistics</h5>
+		</div>
+		<div class="ibox-content">
+
+			<div class="row" style="margin-top: 10px">
+				<div class="col-sm-6">
+					<h1 class="no-margins">{{stats.total.numThingTypes}}</h1>
+					<small>Thing Types (total)</small>
+				</div>
+				<div class="col-sm-6">
+					<h1 class="no-margins">{{stats.forUser.numThingTypes}}</h1>
+					<small>Thing Types ({{authInfo.name}})</small>
+				</div>
+			</div>
+
+			<div class="row" style="margin-top: 10px">
+				<div class="col-sm-6">
+					<h1 class="no-margins">{{stats.total.numThings}}</h1>
+					<small>Thing Instances (total)</small>
+				</div>
+				<div class="col-sm-6">
+					<h1 class="no-margins">{{stats.forUser.numThings}}</h1>
+					<small>Thing Instances ({{authInfo.name}})</small>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+<script>
+
+	var app = angular.module("app");
+	app.controller('StatsOverviewController', [
+		'$scope', '$http', '$compile',
+		function ($scope, $http, $compile) {
+
+			AppController($scope, $http, $compile);
+
+			var retrieveStats = function () {
+				var opts = {};
+				opts.type = "platform";
+				riots.stats(opts, function (stats) {
+					$scope.stats = stats;
+				});
+			};
+
+			retrieveStats();
+		}
+	]);
+
+</script>

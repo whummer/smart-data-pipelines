@@ -25,4 +25,8 @@ public class SimulationQuery {
     public List<Simulation> query(Paged paged) {
         return repository.findAll(new PageRequest(paged.getPage(), paged.getSize())).getContent();
     }
+
+	public Simulation findByThingIdAndPropertyName(String thingId, String propertyName) {
+		return repository.findBySimulationPropertiesPropertyNameAndSimulationPropertiesThingId(propertyName, thingId);
+	}
 }

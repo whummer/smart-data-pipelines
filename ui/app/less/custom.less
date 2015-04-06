@@ -1,0 +1,150 @@
+.overlay-container {
+  position: relative;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  color: #fff;
+}
+
+.wizard > .steps a,
+.wizard > .steps a:hover,
+.wizard > .steps a:active
+{
+  display: block;
+  width: auto;
+  margin: 0 0.5em 0.5em;
+  padding: 8px;
+  text-decoration: none;
+
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  border-radius: 0px;
+}
+
+.wizard > .steps .disabled a,
+.wizard > .steps .disabled a:hover,
+.wizard > .steps .disabled a:active
+{
+  background: #eee;
+  color: #aaa;
+  cursor: default;
+}
+
+.wizard > .steps .current a,
+.wizard > .steps .current a:hover,
+.wizard > .steps .current a:active
+{
+  background: @consumer-bg;
+  color: #fff;
+  cursor: default;
+}
+
+.wizard > .steps .done a,
+.wizard > .steps .done a:hover,
+.wizard > .steps .done a:active
+{
+  background: #6fd1bd;
+  color: #fff;
+}
+
+.wizard > .steps .error a,
+.wizard > .steps .error a:hover,
+.wizard > .steps .error a:active
+{
+  background: #ED5565 ;
+  color: #fff;
+}
+
+.wizard > .content
+{
+  background: #eee;
+  display: block;
+  margin: 5px 5px 10px 5px;
+  min-height: 120px;
+  overflow: hidden;
+  position: relative;
+  width: auto;
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  border-radius:0px;
+}
+
+
+/* CHOSEN PLUGIN */
+.chosen-container-single .chosen-single {
+  background: #ffffff;
+  box-shadow: none;
+  -moz-box-sizing: border-box;
+  background-color: #FFFFFF;
+  border: 1px solid #CBD5DD;
+  border-radius: 2px;
+  cursor: text;
+  height: auto !important;
+  margin: 0;
+  min-height: 30px;
+  overflow: hidden;
+  padding: 4px 12px;
+  position: relative;
+  width: 100%;
+}
+.chosen-container-multi .chosen-choices li.search-choice {
+  background: #f1f1f1;
+  border: 1px solid #ededed;
+  border-radius: 2px;
+  box-shadow: none;
+  color: #333333;
+  cursor: default;
+  line-height: 13px;
+  margin: 3px 0 3px 5px;
+  padding: 3px 20px 3px 5px;
+  position: relative;
+}
+
+.form-horizontal .control-label {
+  /* text-align:right; */
+  text-align: left;
+  margin-left: 18px;
+}
+
+.dl-horizontal {
+  text-align: left;
+}
+.tooltip {
+  width:200px;
+}
+
+.data-resource-bg {
+  color: #6a6a6a;
+  background: @data-resource-color;
+}
+
+/* thumbnail halos */
+
+.thumbnail-riots {
+	background: #fdfdff;
+    border-radius: 6px;
+    border: 1px solid #aaaaaa;
+}
+
+.thumbnailhalo {
+    display: block;
+    padding: 4px;
+    line-height: 1.428571429;
+    /*background-color: #ffffff;*/
+    -webkit-transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
+    border-color: rgb(74, 150, 173);
+    box-shadow: rgba(74, 150, 173, 0.07) 0px 1px 1px 0px inset, rgba(74, 150, 173, 0.60) 0px 0px 7.99704837799072px 0px;
+    outline: 0 none;
+}
+
+.logo {
+	float: right;
+}
+.logo img {
+	max-width: 75px; max-height: 75px;
+}

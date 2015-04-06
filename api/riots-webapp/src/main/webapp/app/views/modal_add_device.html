@@ -1,0 +1,70 @@
+<div class="modal-header">
+	<h3 class="modal-title">
+		<span style="margin-right: 10px" class="glyphicon glyphicon-plus-sign"></span>Add a new Thing Type
+	</h3>
+</div>
+<div class="modal-body">
+
+	<div style="margin-bottom: 10px">Click on an icon below to add a new thing type
+	</div>
+
+	<div class="media" ng-class="selected.item == 'riots' ? 'well media' :  'media'"
+			 id="manual">
+		<a class="pull-left" ng-click="selected.item = 'riots'">
+			<img width="30" src="/app/img/riots.png" alt="riots">
+		</a>
+
+		<div class="media-body">
+			<h4 class="media-heading">Add Thing manually</h4>
+			Manually enter the details of the things you want to add.
+		</div>
+	</div>
+
+	<div class="media" ng-class="selected.item == 'wolfram' ? 'well media' :  'media'"
+			 id="wolfram">
+		<a class="pull-left" ng-click="selected.item = 'wolfram'">
+			<img width="30" height="30" src="/app/img/wolfram_devices.jpeg"
+					 alt="wolfram">
+		</a>
+
+		<div class="media-body">
+			<h4 class="media-heading">Wolfram Devices</h4>
+			Connected devices are central to our long-term strategy of injecting
+			sophisticated computation and knowledge into everything. With the Wolfram
+			Language we now have a way to describe and compute about things in the
+			world. Connected devices are what we need to measure and interface with
+			those things.
+		</div>
+	</div>
+
+	<div class="media" ng-class="selected.item == 'sparkfun' ? 'well media' :  'media'"
+			 id="sparkfun">
+		<a class="pull-left" ng-click="selected.item = 'sparkfun'">
+			<img width="30" src="/app/img/sparkfun.jpg" alt="sparkfun">
+		</a>
+
+		<div class="media-body">
+			<h4 class="media-heading">Sparkfun</h4>
+			SparkFun is an online retail store that sells the bits and pieces to make
+			your electronics projects possible.
+		</div>
+	</div>
+
+	<div class="media" ng-class="selected.item == 'iotdb' ? 'well media' :  'media'"
+			 id="iotdb">
+		<a class="pull-left" ng-click="selected.item = 'iotdb'">
+			<img width="30" src="/app/img/iotdb.png" alt="iotdb">
+		</a>
+
+		<div class="media-body">
+			<h4 class="media-heading">IOTDB</h4>
+			Semantics for the Internet of Things. You don't think of data as being a pin
+			value between 0 and 1023, you shouldn't use it that way either! If it's
+			temperature, it's temperature in units Celsius or Fahrenheit.
+		</div>
+	</div>
+</div>
+<div class="modal-footer">
+	<button class="btn btn-primary" ng-click="ok()" autofocus="autofocus">OK</button>
+	<button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+</div>

@@ -1,0 +1,94 @@
+<fieldset>
+    <h2>Catalog of Data Streams</h2>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="form-group">
+                <label>Keywords</label>
+                <input id="streamName" ng-model="formData.streamName" name="streamName" class="form-control" />
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="form-group">
+                <label>Producer</label>
+                <input id="streamProducer" class="form-control"
+						data-ng-model="formData.producer" ui-autocomplete="producersAutocomp"/>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="form-group text-right">
+                <button class="btn btn-primary" >Search</button>
+            </div>
+        </div>
+    </div>
+    <div class="results">
+    	
+    	<div ng-repeat="thing in streams" ng-init="thingIndex = $index" class="animated fadeIn">
+			<div class="col-sm-12 col-md-6 col-lg-4" style="padding: 12px"
+					 ng-if="streams[thingIndex + columnIndex] != undefined">
+				<div class="thumbnail-riots animated" style="min-height: 250px; padding: 10px;"
+						 ng-class="{thumbnailhalo: hover}"
+						 ng-mouseenter="hover = true"
+						 ng-mouseleave="hover = false"
+						 ng-dblclick="editItem(streams[thingIndex + columnIndex].id)">
+
+					<!-- tags -->
+					<div class="pull-right"
+							 style="margin-bottom: 10px; margin-top: 10px;">
+									<span style="cursor: pointer; margin-right: 5px"
+												ng-repeat="tag in streams[thingIndex + columnIndex].tags"
+												class="label label-info label-as-badge"
+												ng-click="selectTag(tag)"> {{tag}} </span>
+					</div>
+
+					<div class="clearfix" ng-show="streams[thingIndex + columnIndex].tags.length"></div>
+
+					<!-- organization image -->
+					<div class="logo">
+						<img ng-show="streams[thingIndex + columnIndex].organizationImg"
+								ng-src="{{streams[thingIndex + columnIndex].organizationImg}}"
+								class="img-responsive" style="margin: auto; max-height: 100px"/></slide>
+						<div ng-hide="streams[thingIndex + columnIndex].organizationImg"
+								class="text-center">
+							<img ng-src="img/no_image_available.png"/>
+						</div>
+					</div>
+
+					<!-- content -->
+					<div class="caption">
+						<h4>{{streams[thingIndex + columnIndex].name}}</h4>
+
+						<div class="thing-type-box" style="margin-top: 10px"
+								 id="{{streams[thingIndex + columnIndex].id}}_description">
+							{{streams[thingIndex + columnIndex].description}}
+						</div>
+
+						<div class="row">
+							<div class="col-sm-4">
+								Organization:
+							</div>
+							<div class="col-sm-8">
+								{{streams[thingIndex + columnIndex].organizationName}}
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-4">
+								Price:
+							</div>
+							<div class="col-sm-8">
+							123
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="clearfix"></div>
+
+    </div>
+    <a ui-sref="consumer.wizard.request" class="btn btn-primary">Next</a>
+</fieldset>

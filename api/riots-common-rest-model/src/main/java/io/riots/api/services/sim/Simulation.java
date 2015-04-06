@@ -67,6 +67,11 @@ public class Simulation implements ObjectCreated, ObjectIdentifiable {
 	public String getName() {
 		return name;
 	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public List<PropertySimulation<?>> getSimulationProperties() {
 		return simulationProperties;
 	}
