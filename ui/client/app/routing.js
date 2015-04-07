@@ -6,43 +6,55 @@ angular.module('rioxApp')
     $urlRouterProvider.otherwise("/index/main");
 
     $stateProvider
-      .state('index', {
+        .state('index', {
             url: "/index",
-            templateUrl: "app/common/content.html"
+            templateUrl: "app/views/common/content.html"
         })
         .state('index.main', {
             url: "/main",
-            templateUrl: "app/main/main.html",
+            templateUrl: "app/views/main/main.html",
             data: { pageTitle: 'Example view' }
         })
 
         // settings and dashboard states
         .state('index.dashboard', {
             url: '/dashboard',
-            templateUrl: 'app/views/dashboard.html',
+            templateUrl: 'app/views/account/dashboard/dashboard.html',
             data: { pageTitle: 'riox.io - dashboard' }
         })
         .state('index.settings', {
-            url: '/settings',
-            templateUrl: 'app/views/settings.html',
-            data: { pageTitle: 'riox.io - settings' }
+          url: '/settings',
+          templateUrl: 'app/views/account/settings/settings.html',
+          controller: 'SettingsCtrl',
+          data: { pageTitle: 'riox.io - settings' },
+          authenticate: true
         })
 
-        // provider wizard setup
+        // authentication,
+        .state('index.login', {
+          url: '/login',
+          templateUrl: 'app/views/account/login/login.html',
+          controller: 'LoginCtrl'
+        })
+        .state('index.signup', {
+          url: '/signup',
+          templateUrl: 'app/views/account/signup/signup.html',
+          controller: 'SignupCtrl'
+        })
 
+
+        // provider wizard/setup
         .state('provider', {
             abstract: true,
-            templateUrl: "app/common/content.html",
+            templateUrl: "app/views/common/content.html",
             url: "/providers"
         })
-
         .state('provider.wizard', {
             url: "/wizard?debug",
-            templateUrl: "app/views/provider_setup.html",
+            templateUrl: "app/views/provider_wizard/provider_setup.html",
             controller: providerWizardCtrl,
             data: { pageTitle: 'Wizard form' }
         })
-
         .state('provider.wizard.semantics', {
             url: '/semantics',
             templateUrl: 'app/views/provider_wizard/data_semantics.html',
@@ -70,20 +82,17 @@ angular.module('rioxApp')
         })
 
         // consumer wizard setup
-        
         .state('consumer', {
             abstract: true,
-            templateUrl: "app/common/content.html",
+            templateUrl: "app/views/common/content.html",
             url: "/consumers"
         })
-
         .state('consumer.wizard', {
             url: "/wizard",
-            templateUrl: "app/views/consumer_setup.html",
+            templateUrl: "app/views/consumer_wizard/consumer_setup.html",
             controller: consumerWizardCtrl,
             data: { pageTitle: 'Wizard form' }
         })
-
         .state('consumer.wizard.catalog', {
             url: '/catalog',
             templateUrl: 'app/views/consumer_wizard/catalog.html',

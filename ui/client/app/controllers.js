@@ -1,9 +1,8 @@
-
 function catalogCtrl($scope, $log, $http) {
 	$log.debug("Inside Catalog Controller");
 
 	// Simple GET request example :
-	$http.get('http://localhost:8080/resources').
+	$http.get('/resources').
 			success(function (data, status, headers, config) {
 				$log.debug("Loaded " + data.length + " resources from mongo");
 				$scope.dataResources = data;
@@ -11,29 +10,6 @@ function catalogCtrl($scope, $log, $http) {
 			error(function (data, status, headers, config) {
 				$log.error("Could not load resources from mongo. Status code: " + status + ". Additional Info: ", data)
 			});
-
-	/*	$scope.dataResources = [
-	 {
-	 name : 'BMW Connected Drive',
-	 description : 'Telemetry data about BMW connected cars',
-	 price : '32',
-	 logo : 'bmw.png'
-	 },
-	 {
-	 name : 'Mercedes-Benz Commander Data',
-	 description : 'Telemetry data about Mercedes connected cars',
-	 price : '34',
-	 logo : 'mercedes.gif'
-	 },
-	 {
-	 name : 'Toyota',
-	 description : 'Connected car data by Totyota',
-	 price : '35',
-	 logo : 'toyota.png'
-	 }
-	 ]*/
-	;
-
 
 }
 
@@ -111,7 +87,7 @@ function providerWizardCtrl($scope, $log, $http, growl, $state) {
 
 	$scope.processForm = function () {
 		$log.debug("Saving new resource: ", $scope.resourceData);
-		$http.post('http://localhost:8080/resources', $scope.resourceData)
+		$http.post('/resources', $scope.resourceData)
 				.success(function (data, status, headers) {
 					$log.info("Created new resource at '%s'", headers.location);
 					growl.success("Successfully created new resource");
@@ -134,46 +110,54 @@ function consumerWizardCtrl($scope) {
 	var LOREM = " Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum";
 
 	$scope.streams = [
-	   	           {id: 1, name: "Traffic Lights", description: "This data stream contains live " +
-	   	           		"updates of traffic lights." + LOREM,
-	   	        	   organizationImg: "img/provider-logos/smart_city_wien.png", organizationName: "City of Vienna",
-	   	        	   price: {type: "per_day", amount: 123.4}, permit: {type: "auto"}
-	   	           },
-		           {id: 2, name: "Car Data", description: "This data stream contains live vehicle data, " +
-		           		"including location, fuel level." + LOREM,
-	   	        	   organizationImg: "img/provider-logos/bmw.png", organizationName: "BMW",
-	   	        	   price: {type: "per_event", amount: 0.0012}, permit: {type: "manual"}
-	   	           },
-		           {id: 3, name: "Temperature Values", description: "Live temperature updates of various locations in " +
-		           		"Vienna, Austria." + LOREM,
-	   	        	   organizationImg: "img/provider-logos/smart_city_wien.png", organizationName: "City of Vienna",
-	   	        	   price: {type: "free"}, permit: {type: "auto"}
-	   	           },
-		           {id: 4, name: "Incidents", description: "This data stream contains live incidents " +
-		           		"for the City of Vienna." + LOREM,
-		   	        	   organizationImg: "img/provider-logos/smart_city_wien.png", organizationName: "City of Vienna",
-		   	        	   price: {type: "free"}, permit: {type: "auto"}
-	   	           },
-		           {id: 5, name: "Car Data", description: "This data stream contains live vehicle data, " +
-		           		"including location, fuel level." + LOREM,
-	   	        	   organizationImg: "img/provider-logos/tesla.png", organizationName: "TESLA",
-	   	        	   price: {type: "per_event", amount: 0.0025}, permit: {type: "auto"}
-	   	           },
-		           {id: 6, name: "Car Data", description: "This data stream contains live vehicle data, " +
-		           		"including location, fuel level." + LOREM,
-	   	        	   organizationImg: "img/provider-logos/mercedes.gif", organizationName: "Mercedes",
-	   	        	   price: {type: "per_event", amount: 0.0018}, permit: {type: "auto"}
-	   	           },
-		           {id: 7, name: "Car Data", description: "This data stream contains live vehicle data, " +
-		           		"including location, fuel level." + LOREM,
-	   	        	   organizationImg: "img/provider-logos/toyota.png", organizationName: "Toyota",
-	   	        	   price: {type: "per_event", amount: 0.0018}, permit: {type: "auto"}
-	   	           },
-		           {id: 8, name: "Smart Building Data", description: "This data stream contains " +
-		           		"live about smart buildings." + LOREM, 
-		           		organizationImg: "img/provider-logos/energieeffizienz.jpg", organizationName: "Energieeffizienz",
-		           		price: {type: "on_request", amount: 0.0018}, permit: {type: "auto"}
-	   	           }
+		{
+			id: 1, name: "Traffic Lights", description: "This data stream contains live " +
+		"updates of traffic lights." + LOREM,
+			organizationImg: "img/provider-logos/smart_city_wien.png", organizationName: "City of Vienna",
+			price: {type: "per_day", amount: 123.4}, permit: {type: "auto"}
+		},
+		{
+			id: 2, name: "Car Data", description: "This data stream contains live vehicle data, " +
+		"including location, fuel level." + LOREM,
+			organizationImg: "img/provider-logos/bmw.png", organizationName: "BMW",
+			price: {type: "per_event", amount: 0.0012}, permit: {type: "manual"}
+		},
+		{
+			id: 3, name: "Temperature Values", description: "Live temperature updates of various locations in " +
+		"Vienna, Austria." + LOREM,
+			organizationImg: "img/provider-logos/smart_city_wien.png", organizationName: "City of Vienna",
+			price: {type: "free"}, permit: {type: "auto"}
+		},
+		{
+			id: 4, name: "Incidents", description: "This data stream contains live incidents " +
+		"for the City of Vienna." + LOREM,
+			organizationImg: "img/provider-logos/smart_city_wien.png", organizationName: "City of Vienna",
+			price: {type: "free"}, permit: {type: "auto"}
+		},
+		{
+			id: 5, name: "Car Data", description: "This data stream contains live vehicle data, " +
+		"including location, fuel level." + LOREM,
+			organizationImg: "img/provider-logos/tesla.png", organizationName: "TESLA",
+			price: {type: "per_event", amount: 0.0025}, permit: {type: "auto"}
+		},
+		{
+			id: 6, name: "Car Data", description: "This data stream contains live vehicle data, " +
+		"including location, fuel level." + LOREM,
+			organizationImg: "img/provider-logos/mercedes.gif", organizationName: "Mercedes",
+			price: {type: "per_event", amount: 0.0018}, permit: {type: "auto"}
+		},
+		{
+			id: 7, name: "Car Data", description: "This data stream contains live vehicle data, " +
+		"including location, fuel level." + LOREM,
+			organizationImg: "img/provider-logos/toyota.png", organizationName: "Toyota",
+			price: {type: "per_event", amount: 0.0018}, permit: {type: "auto"}
+		},
+		{
+			id: 8, name: "Smart Building Data", description: "This data stream contains " +
+		"live about smart buildings." + LOREM,
+			organizationImg: "img/provider-logos/energieeffizienz.jpg", organizationName: "Energieeffizienz",
+			price: {type: "on_request", amount: 0.0018}, permit: {type: "auto"}
+		}
 	];
 
 	$scope.producersAutocomp = {
@@ -181,9 +165,9 @@ function consumerWizardCtrl($scope) {
 			html: true,
 			focusOpen: true,
 			valueList: [
-					{id: 1, label: "BMW"},
-					{id: 2, label: "Volkswagen"},
-					{id: 3, label: "Smart City Vienna"}
+				{id: 1, label: "BMW"},
+				{id: 2, label: "Volkswagen"},
+				{id: 3, label: "Smart City Vienna"}
 			],
 			source: function (request, response) {
 				console.log(request);
@@ -192,10 +176,10 @@ function consumerWizardCtrl($scope) {
 		}
 	};
 
-	$scope.requestAccess = function() {
-		if(!$scope.formData.streamAccess) {
+	$scope.requestAccess = function () {
+		if (!$scope.formData.streamAccess) {
 			$scope.formData.streamAccess = {};
-			$scope.loadAccessStatus(function() {
+			$scope.loadAccessStatus(function () {
 				$scope.formData.streamAccess.status = "requested";
 			});
 		} else {
@@ -203,13 +187,13 @@ function consumerWizardCtrl($scope) {
 		}
 	};
 
-	$scope.loadAccessStatus = function(callback) {
+	$scope.loadAccessStatus = function (callback) {
 		var query = {
 			streamId: $scope.formData.selectedStream.id
 		};
-		riox.access(query, function(access) {
+		riox.access(query, function (access) {
 			$scope.formData.streamAccess = access;
-			if(callback) {
+			if (callback) {
 				callback();
 			}
 		});

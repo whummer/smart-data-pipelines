@@ -12,55 +12,27 @@
 
 .wizard > .steps a,
 .wizard > .steps a:hover,
-.wizard > .steps a:active
-{
+.wizard > .steps a:active {
   display: block;
   width: auto;
   margin: 0 0.5em 0.5em;
   padding: 8px;
   text-decoration: none;
 
-  -webkit-border-radius: 0px;
-  -moz-border-radius: 0px;
-  border-radius: 0px;
-}
-
-.wizard > .steps .disabled a,
-.wizard > .steps .disabled a:hover,
-.wizard > .steps .disabled a:active
-{
-  background: #eee;
-  color: #aaa;
-  cursor: default;
+  -webkit-border-radius: @wizard-border-radius;
+  -moz-border-radius: @wizard-border-radius;
+  border-radius: @wizard-border-radius;
 }
 
 .wizard > .steps .current a,
 .wizard > .steps .current a:hover,
-.wizard > .steps .current a:active
-{
+.wizard > .steps .current a:active {
   background: @consumer-bg;
   color: #fff;
   cursor: default;
 }
 
-.wizard > .steps .done a,
-.wizard > .steps .done a:hover,
-.wizard > .steps .done a:active
-{
-  background: #6fd1bd;
-  color: #fff;
-}
-
-.wizard > .steps .error a,
-.wizard > .steps .error a:hover,
-.wizard > .steps .error a:active
-{
-  background: #ED5565 ;
-  color: #fff;
-}
-
-.wizard > .content
-{
+.wizard > .content {
   background: #eee;
   display: block;
   margin: 5px 5px 10px 5px;
@@ -68,11 +40,10 @@
   overflow: hidden;
   position: relative;
   width: auto;
-  -webkit-border-radius: 0px;
-  -moz-border-radius: 0px;
-  border-radius:0px;
+  -webkit-border-radius: @wizard-border-radius;
+  -moz-border-radius: @wizard-border-radius;
+  border-radius: @wizard-border-radius;
 }
-
 
 /* CHOSEN PLUGIN */
 .chosen-container-single .chosen-single {
@@ -91,6 +62,7 @@
   position: relative;
   width: 100%;
 }
+
 .chosen-container-multi .chosen-choices li.search-choice {
   background: #f1f1f1;
   border: 1px solid #ededed;
@@ -113,8 +85,9 @@
 .dl-horizontal {
   text-align: left;
 }
+
 .tooltip {
-  width:200px;
+  width: 200px;
 }
 
 .data-resource-bg {
@@ -125,64 +98,75 @@
 /* thumbnail halos */
 
 .thumbnail-riots {
-	background: #fdfdff;
-    border-radius: 6px;
-    border: 1px solid #aaaaaa;
-    min-height: 200px;
+  background: #fdfdff;
+  border-radius: 6px;
+  border: 1px solid #aaaaaa;
+  min-height: 200px;
 }
 
 .thumbnailhalo {
-    display: block;
-    padding: 4px;
-    line-height: 1.428571429;
-    /*background-color: #ffffff;*/
-    -webkit-transition: all 0.2s ease-in-out;
-    transition: all 0.2s ease-in-out;
-    border-color: rgb(74, 150, 173);
-    box-shadow: rgba(74, 150, 173, 0.07) 0px 1px 1px 0px inset, rgba(74, 150, 173, 0.60) 0px 0px 7.99704837799072px 0px;
-    outline: 0 none;
+  display: block;
+  padding: 4px;
+  line-height: 1.428571429;
+  /*background-color: #ffffff;*/
+  -webkit-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+  border-color: rgb(74, 150, 173);
+  box-shadow: rgba(74, 150, 173, 0.07) 0px 1px 1px 0px inset, rgba(74, 150, 173, 0.60) 0px 0px 7.99704837799072px 0px;
+  outline: 0 none;
 }
+
 .thumbnail-riots hr {
-	margin-top: 3px;
-	margin-bottom: 3px;
+  margin-top: 3px;
+  margin-bottom: 3px;
 }
+
 .thumbnail-riots .price {
-	position: absolute;
-	bottom: 10px;
-	right: 10px;
-	margin-bottom: 15px;
-	margin-right: 15px;
-    text-align: center;
-    font-weight: bold;
-	background: #f8f9ff;
-    border-radius: 6px;
-    border: 1px solid #aaaaaa;
-    height: 40px; width: 100px;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  margin-bottom: 15px;
+  margin-right: 15px;
+  text-align: center;
+  font-weight: bold;
+  background: #f8f9ff;
+  border-radius: 6px;
+  border: 1px solid #aaaaaa;
+  height: 40px;
+  width: 100px;
 }
+
 .thumbnail-riots .caption {
-	margin-bottom: 40px;
+  margin-bottom: 40px;
 }
+
 .thumbnail-riots .publisher {
 }
+
 .thumbnail-riots .logo {
-	float: right;
+  float: right;
 }
+
 .thumbnail-riots .logo img {
-	max-width: 75px; max-height: 75px;
+  max-width: 75px;
+  max-height: 75px;
 }
 
 .selection {
-	background: #fdfdff;
-    border-radius: 6px;
-    border: 1px solid #aaaaaa;
-	font-weight: bold;
-	padding: 10px;
-	line-height: 33px;
+  background: #fdfdff;
+  border-radius: 6px;
+  border: 1px solid #aaaaaa;
+  font-weight: bold;
+  padding: 10px;
+  line-height: 33px;
 }
 
 .text-cell {
-	line-height: 35px; height: 35px; display: block;
+  line-height: 35px;
+  height: 35px;
+  display: block;
 }
+
 label.text-cell {
-	margin-bottom: 0px;
+  margin-bottom: 0px;
 }

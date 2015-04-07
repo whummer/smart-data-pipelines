@@ -40,7 +40,7 @@ function iboxTools($timeout) {
 	return {
 		restrict: 'A',
 		scope: true,
-		templateUrl: 'views/common/ibox_tools.html',
+		templateUrl: 'app/views/common/ibox_tools.html',
 		controller: function ($scope, $element) {
 			// Function for collapse ibox
 			$scope.showhide = function () {
@@ -213,7 +213,7 @@ function vectorMap() {
 							normalizeFunction: 'polynomial'
 						}
 					]
-				},
+				}
 			});
 		}
 	}
@@ -233,4 +233,4 @@ angular
 		.directive('icheck', icheck)
 		.directive('ionRangeSlider', ionRangeSlider)
 		.directive('vectorMap', vectorMap)
-		.directive('minimalizaSidebar', minimalizaSidebar)
+		.directive('minimalizaSidebar', minimalizaSidebar);
