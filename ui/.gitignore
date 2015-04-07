@@ -54,3 +54,8 @@ crashlytics-build.properties
 /bower_components/
 /.tmp
 /bin/
+public
+/.idea
+/client/bower_components
+/dist
+/server/config/local.env.js
