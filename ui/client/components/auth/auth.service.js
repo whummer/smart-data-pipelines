@@ -2,9 +2,23 @@
 
 angular.module('rioxApp')
   .factory('Auth', function Auth($location, $rootScope, $http, User, $cookieStore, $q) {
+
+    /**
+     * Set auth headers for riox JS API.
+     */
+    var configureRioxApiAuth = function(token) {
+    	  /* configure riox API */
+    	  var authServ = this;
+        riox.auth({
+      	  RIOTS_AUTH_NETWORK: "riots",
+      	  RIOTS_AUTH_TOKEN: token
+        });
+    }
+
     var currentUser = {};
     if($cookieStore.get('token')) {
-      currentUser = User.get();
+    	currentUser = User.get();
+    	configureRioxApiAuth($cookieStore.get('token'));
     }
 
     return {
@@ -19,6 +33,8 @@ angular.module('rioxApp')
       login: function(user, callback) {
         var cb = callback || angular.noop;
         var deferred = $q.defer();
+        
+        var authServ = this;
 
         $http.post('/auth/local', {
           email: user.email,
@@ -28,6 +44,7 @@ angular.module('rioxApp')
           $cookieStore.put('token', data.token);
           currentUser = User.get();
           deferred.resolve(data);
+          configureRioxApiAuth(data.token);
           return cb();
         }).
         error(function(err) {
@@ -59,9 +76,12 @@ angular.module('rioxApp')
       createUser: function(user, callback) {
         var cb = callback || angular.noop;
 
+        var authServ = this;
+
         return User.save(user,
           function(data) {
             $cookieStore.put('token', data.token);
+            configureRioxApiAuth(data.token);
             currentUser = User.get();
             return cb(user);
           },
@@ -142,5 +162,6 @@ angular.module('rioxApp')
       getToken: function() {
         return $cookieStore.get('token');
       }
+
     };
   });

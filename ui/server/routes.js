@@ -11,7 +11,7 @@ module.exports = function(app) {
   /* API routes */
   app.use('/api/v1/users', require('./api/users'));
   app.use('/api/v1/access', require('./api/access'));
-  app.use('/api/v1/streams', require('./api/access'));
+  app.use('/api/v1/streams', require('./api/streams'));
 
   /* auth route */
   app.use('/auth', require('./auth'));

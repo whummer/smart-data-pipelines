@@ -10,6 +10,13 @@ var validationError = function(res, err) {
 };
 
 /**
+ * Authentication request
+ */
+exports.auth = function(req, res) {
+	res.json(200, {}); // TODO check token
+};
+
+/**
  * Get list of users
  * restriction: 'admin'
  */
