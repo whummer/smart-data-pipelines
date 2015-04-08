@@ -6,7 +6,7 @@ var config = require('../config/environment');
 var jwt = require('jsonwebtoken');
 var expressJwt = require('express-jwt');
 var compose = require('composable-middleware');
-var User = require('../api/user/user.model');
+var User = require('../api/users/user.model');
 var validateJwt = expressJwt({ secret: config.secrets.session });
 
 /**
@@ -21,6 +21,7 @@ function isAuthenticated() {
       if(req.query && req.query.hasOwnProperty('access_token')) {
         req.headers.authorization = 'Bearer ' + req.query.access_token;
       }
+      console.log("validateJwt", req.headers);
       validateJwt(req, res, next);
     })
     // Attach user to request
