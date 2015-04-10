@@ -1,0 +1,63 @@
+<div class="wrapper wrapper-content animated fadeInRight" ng-controller="MainCtrl">
+
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="jumbotron top-nav-bg">
+        <h2 style="font-size: xx-large">Riox Connecting Data</h2>
+        <p>
+          With riox, anyone can build next-generation, data-driven services. We provide you with distinct data
+          guarantees, including data authenticity, relevance and timeliness.
+        </p>
+        <h3>Get started by using riox either as a <strong>Data Provider</strong> or <strong>Data Consumer</strong>
+        </h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="row animated " id="widget-row" ng-hide="provider_clicked || consumer_clicked">
+    <div class="col-lg-6">
+      <a ui-sref="provider.wizard.semantics">
+        <div class="widget provider-widget-bg p-lg text-center animated"
+             ng-mouseenter="provider_hover = true"
+             ng-mouseleave="provider_hover = false"
+             ng-click="provider_clicked = true"
+             ng-class="{pulse: provider_hover}">
+          <div class="m-b-md">
+            <i class="fa fa-upload fa-4x"></i>
+            <br/>
+            <h1 class="m-xs">Create a Data Resource</h1>
+            <h3 class="font-bold no-margins">
+              Use riox to share your data resources
+            </h3>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-lg-6">
+      <a ui-sref="consumer.wizard.catalog">
+        <div class="widget consumer-widget-bg p-lg text-center animated"
+             ng-mouseenter="consumer_hover = true"
+             ng-mouseleave="consumer_hover = false"
+             ng-click="consumer_clicked = true"
+             ng-class="{pulse: consumer_hover}">
+          <div class="m-b-md">
+            <i class="fa fa-download fa-4x"></i>
+            <br/>
+            <h1 class="m-xs">Consume a Data Resource</h1>
+            <h3 class="font-bold no-margins">
+              Build data driven services with riox
+            </h3>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+  <br/>
+  <br/>
+  <h2>Popular Data Resources</h2>
+  <!--<div class="row animated" ng-controller="catalogCtrl" style="margin-top: 0px">
+  </div>-->
+
+</div>
+
