@@ -12,8 +12,7 @@ angular.module('rioxApp')
         })
         .state('index.main', {
             url: "/main",
-            templateUrl: "app/views/main/main.html",
-            data: { pageTitle: 'Example view' }
+            templateUrl: "app/views/main/main.html"
         })
 
         // settings and dashboard states
@@ -112,6 +111,13 @@ angular.module('rioxApp')
             url: '/confirm',
             templateUrl: 'app/views/consumer_wizard/confirm.html',
             data: { pageTitle: 'Wizard form' }
+        })
+
+        // general
+        .state('index.notifications', {
+            url: "/notifications",
+            templateUrl: "app/views/account/notifications/notifications.html",
+            controller: "NotificationsCtrl"
         });
 
   });

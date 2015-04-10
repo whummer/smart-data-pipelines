@@ -131,9 +131,13 @@ function consumerWizardCtrl($scope) {
 
 	$scope.requestAccess = function () {
 		if (!$scope.formData.streamAccess) {
-			$scope.formData.streamAccess = {};
-			$scope.loadAccessStatus(function () {
+			var streamAccess = {
+				status: "requested",
+				streamId: $scope.formData.selectedStream.id
+			};
+			riox.save.access(streamAccess, function() {
 				$scope.formData.streamAccess.status = "requested";
+				$scope.loadAccessStatus();
 			});
 		} else {
 			$scope.formData.streamAccess.status = "requested";
