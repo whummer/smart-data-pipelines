@@ -40,21 +40,21 @@ ModelUtil.CRUD.create = function(obj, callback) {
 			callback(err);
 			return;
 		};
-		log.debug("Successfully created new resource: ", obj);
+		//log.debug("Successfully created new resource: ", obj);
 		callback(result);
 	});
 };
 ModelUtil.CRUD.find = function(query, callback) {
 	var name = ModelUtil.getClassName(this);
 	this._schema.find(query).exec(function (err, resources) {
-		log.debug("Loaded %s resources for '%s'", resources.length, name);
+		//log.debug("Loaded %s resources for '%s'", resources.length, name);
 		callback(resources);
 	});
 };
 ModelUtil.CRUD.findOne = function(query, callback) {
 	var name = ModelUtil.getClassName(this);
 	this._schema.findOne(query).exec(function (err, resource) {
-		log.debug("Loaded resource for '%s'", name);
+		//log.debug("Loaded resource for '%s'", name);
 		callback(resource);
 	});
 };

@@ -80,6 +80,14 @@ exports.create = function (req, res, next) {
 	});
 };
 
+exports.update = function(req, res) {
+	var obj = new DataStream(req.body);
+	obj.save(req.params.id, function(err, obj) {
+		if (err) return validationError(res, err);
+		res.json(obj);
+	});
+};
+
 exports.show = function (req, res, next) {
 	var id = req.params.id;
 

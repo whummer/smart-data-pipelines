@@ -1,0 +1,13 @@
+---
+applications:
+- name: riox
+  memory: 512M
+  buildpack: https://github.com/cloudfoundry/buildpack-nodejs.git
+  instances: 1
+  host: riox
+  domain: de.a9sapp.eu
+  path: .
+  env:
+    NODE_ENV: test
+  services:
+    - mongodb-fr-node-demo

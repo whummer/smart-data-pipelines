@@ -49,14 +49,11 @@ module.exports = function(app) {
   }
 
   if ('development' === env || 'test' === env) {
+    app.use(require('connect-livereload')());
     app.use(express.static(path.join(config.root, '.tmp')));
-    app.use(express.static(path.join(config.root, 'client')));
-    app.set('appPath', 'client');
+    app.use(express.static(path.join(config.root, '.')));
+    app.set('appPath', '.');
     app.use(morgan('dev'));
     app.use(errorHandler()); // Error handler - has to be last
-  }
-
-  if ('development' === env) {
-    app.use(require('connect-livereload')()); 
   }
 };
