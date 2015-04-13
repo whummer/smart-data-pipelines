@@ -8,7 +8,7 @@ var gulp = require('gulp'),
 		path = require('path'),
 		inject = require('gulp-inject'),
 		angular_filesort = require('gulp-angular-filesort'),
-		del = require('del'),
+		cp = require('child_process'),
 		rename = require('gulp-rename'),
 		replace = require('gulp-replace'),
 		clean = require('gulp-clean'),
@@ -231,7 +231,6 @@ gulp.task('build:prod:noimagemin', [], function () {
 // build PROD (no image optimization)
 //
 gulp.task('build:test', function () {
-	util.log(util.colors.green("Running TEST build"));
 	runSequence('copy:test', 'inject:test');
 });
 
@@ -258,19 +257,24 @@ gulp.task('serve:test', ['build:test'],  function () {
 // Docker tasks
 //
 gulp.task('docker:build:test', function() {
-	util.log(util.colors.magenta("Building Docker image for TEST"));
-	gulp.src(paths.dockerfile)
+	util.log(util.colors.magenta("Building Docker image for TEST..."));
+	runSequence('build:test', 'docker:build:test:dockerfile', 'docker:build:test:push', function() {
+		util.log(util.colors.magenta("Built Docker image for TEST. Enjoy."));
+	});
+});
+
+gulp.task('docker:build:test:dockerfile', function() {
+	return gulp.src(paths.dockerfile)
 			.pipe(replace("%NODE_ENV%", "test"))
 			.pipe(replace("%PORT%", dockerSettings.web_ui.port))
 			.pipe(rename("Dockerfile"))
 			.pipe(gulp.dest(UI_BASE_DIR));
 });
 
-
-gulp.task('watch:test', function() {
-	gulp.watch([paths.scripts, paths.main, paths.html], function(what) {
-		util.log(util.colors.red("Something changed: "), what);
-	});
-
+gulp.task('docker:build:test:push', function() {
+	return cp.spawn('bin/build-push.sh', ['--no-push'], { env: process.env, cwd: UI_BASE_DIR, stdio: 'inherit' })
 });
+
+
+
 
