@@ -12,6 +12,7 @@ module.exports = function(app) {
   app.use('/api/v1/users', require('./api/users'));
   app.use('/api/v1/access', require('./api/access'));
   app.use('/api/v1/streams', require('./api/streams'));
+  app.use('/api/v1/organizations', require('./api/organizations'));
 
   /* auth route */
   app.use('/auth', require('./auth'));

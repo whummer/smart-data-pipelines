@@ -1,0 +1,118 @@
+<!doctype html>
+<!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js"> <!--<![endif]-->
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<link rel="shortcut icon" href="http://riox.io/favicon.ico" />
+	<base href="/">
+	<title>Riox</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width">
+
+	<!-- bower:css -->
+	<link rel="stylesheet" href="/bower_components/font-awesome/css/font-awesome.css">
+	<link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.css">
+	<link rel="stylesheet" href="/bower_components/metisMenu/dist/metisMenu.css">
+	<link rel="stylesheet" href="/bower_components/fontawesome/css/font-awesome.css">
+	<link rel="stylesheet" href="/bower_components/dropzone/dist/min/dropzone.min.css">
+	<link rel="stylesheet" href="/bower_components/ionrangeslider/css/ion.rangeSlider.css">
+	<link rel="stylesheet" href="/bower_components/ionrangeslider/css/ion.rangeSlider.skinFlat.css">
+	<link rel="stylesheet" href="/bower_components/angular-growl-v2/build/angular-growl.css">
+	<link rel="stylesheet" href="/bower_components/animate.css/animate.css">
+	<link rel="stylesheet" href="/bower_components/switchery/dist/switchery.css">
+	<!-- endinject -->
+	<!-- inject:css -->
+	<link rel="stylesheet" href="/app/styles/css/chosen.css">
+	<link rel="stylesheet" href="/app/styles/css/jquery.steps.css">
+	<link rel="stylesheet" href="/app/app.css">
+	<!-- endinject -->
+
+</head>
+
+<!-- here we go -->
+<body ng-app="rioxApp" class="top-navigation">
+
+<!-- growl div (for notifications) -->
+<div growl></div>
+
+<!-- Add your site or application content here -->
+<div ui-view="" ng-controller="MainCtrl"></div>
+
+
+<!--[if lt IE 9]>
+<script src="bower_components/es5-shim/es5-shim.js"></script>
+<script src="bower_components/json3/lib/json3.min.js"></script>
+<![endif]-->
+
+<!-- include jquery -->
+<script src="/bower_components/jquery/dist/jquery.js"></script>
+
+<!-- bower:js -->
+<script src="/bower_components/angular/angular.js"></script>
+<script src="/bower_components/json3/lib/json3.js"></script>
+<script src="/bower_components/es5-shim/es5-shim.js"></script>
+<script src="/bower_components/angular-resource/angular-resource.js"></script>
+<script src="/bower_components/angular-cookies/angular-cookies.js"></script>
+<script src="/bower_components/angular-sanitize/angular-sanitize.js"></script>
+<script src="/bower_components/lodash/dist/lodash.compat.js"></script>
+<script src="/bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+<script src="/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+<script src="/bower_components/jquery-ui/jquery-ui.js"></script>
+<script src="/bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+<script src="/bower_components/metisMenu/dist/metisMenu.js"></script>
+<script src="/bower_components/PACE/pace.js"></script>
+<script src="/bower_components/slimScroll/jquery.slimscroll.min.js"></script>
+<script src="/bower_components/angular-animate/angular-animate.js"></script>
+<script src="/bower_components/chosen/chosen.jquery.min.js"></script>
+<script src="/bower_components/dropzone/dist/min/dropzone.min.js"></script>
+<script src="/bower_components/iCheck/icheck.min.js"></script>
+<script src="/bower_components/ionrangeslider/js/ion.rangeSlider.js"></script>
+<script src="/bower_components/transitionize/dist/transitionize.js"></script>
+<script src="/bower_components/fastclick/lib/fastclick.js"></script>
+<script src="/bower_components/angular-ui-sortable/sortable.js"></script>
+<script src="/bower_components/angular-growl-v2/build/angular-growl.js"></script>
+<script src="/bower_components/ui-autocomplete/autocomplete.js"></script>
+<script src="/bower_components/jquery-wizard/src/jquery.wizard.js"></script>
+<script src="/bower_components/angular-chosen-localytics/chosen.js"></script>
+<script src="/bower_components/switchery/dist/switchery.js"></script>
+<script src="/bower_components/ng-switchery/src/ng-switchery.js"></script>
+<!-- endinject -->
+
+<!-- todo find a way to control the order without this explicit bs -->
+<script src="/bower_components/angular-dropzone/lib/angular-dropzone.js"></script>
+<script src="/app/components/js/jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
+<script src="/app/components/js/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+
+<!-- inject:js -->
+<script src="/app/app.js"></script>
+<script src="/app/views/account/signup/signup.controller.js"></script>
+<script src="/app/views/account/settings/settings.controller.js"></script>
+<script src="/app/views/account/login/login.controller.js"></script>
+<script src="/app/views/account/dashboard/dashboard.controller.js"></script>
+<script src="/app/components/js/mongoose-error/mongoose-error.directive.js"></script>
+<script src="/app/components/js/auth/user.service.js"></script>
+<script src="/app/components/js/auth/auth.service.js"></script>
+<script src="/app/views/provider_wizard/provider-wizard.controller.js"></script>
+<script src="/app/views/main/main.controller.js"></script>
+<script src="/app/views/consumer_wizard/consumer-wizard.controller.js"></script>
+<script src="/app/views/consumer_wizard/catalog.controller.js"></script>
+<script src="/app/views/common/footer.controller.js"></script>
+<script src="/app/components/js/util.js"></script>
+<script src="/app/components/js/inspinia.js"></script>
+<script src="/app/components/js/directives.js"></script>
+<script src="/app/components/js/config.js"></script>
+<script src="/app/routing.js"></script>
+<!-- endinject -->
+
+<!--<script src="http://riox.io/js/service-calls.js"></script>
+<script src="http://riox.io/js/riox-api.js"></script>-->
+
+</body>
+</html>

@@ -1,0 +1,36 @@
+<style>
+	.form-horizontal .control-label{
+		/* text-align:right; */
+		text-align:left;
+		margin-left: 18px;
+	}
+</style>
+
+<fieldset class="animated fadeIn">
+	<h2>Connector Technology</h2>
+
+	<div class="row">
+		<div class="form-group">
+			<label for="technology" class="col-sm-2  control-label">Select Technology</label>
+			<div class="col-sm-3">
+				<select id="technology" ng-model="formData.connector" class="form-control m-b"
+								ng-options="connector.name for connector in connectors"></select>
+
+			</div>
+		</div>
+	</div>
+
+	<div class="col-lg-4 col-lg-offset-2" ng-show="formData.connector.name=='HTTP'">
+		<a ui-sref="provider.wizard.technology">
+			<div class="widget provider-widget-bg p-lg">
+				<div class="m-b-md">
+					<i class="fa fa-cogs fa-2x"></i> <span style="font-size: x-large">HTTP Connector Settings</span>
+				</div>
+			</div>
+		</a>
+	</div>
+
+	<div class="clearfix"></div>
+
+	<a ui-sref="provider.wizard.connector_setup" class="btn btn-primary">Next</a>
+</fieldset>

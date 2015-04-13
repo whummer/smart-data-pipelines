@@ -1,0 +1,63 @@
+<fieldset>
+    <h2>Request Access</h2>
+
+    <div class="row">
+        <div class="col-lg-8">
+			<div class="form-group">
+				<label class="col-lg-5 text-cell">Stream Name</label>
+				<div class="col-lg-7 text-cell">
+					{{formData.selectedStream.name}}
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-lg-5 text-cell">Publisher</label>
+				<div class="col-lg-7 text-cell">
+					{{formData.selectedStream.organizationName}}
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-lg-5 text-cell">Access Status</label>
+				<div class="col-lg-7 text-cell">
+					<div ng-show="formData.selectedStream.permit.type == 'auto'" >
+					Access to this stream is automatically granted.
+					</div>
+					<div ng-show="formData.selectedStream.permit.type == 'manual'" >
+						<div ng-show="!formData.streamAccess.status">
+							Access permission required. <a ng-click="requestAccess()">Request access now</a>.
+						</div>
+						<div ng-show="formData.streamAccess.status == 'requested'">
+							Request sent. Awaiting access permission.
+						</div>
+						<div ng-show="formData.streamAccess.status == 'granted'">
+							Access to this stream has been granted.
+						</div>
+						<div ng-show="formData.streamAccess.status == 'denied'">
+							This stream is currently inaccessible.
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-lg-5 text-cell">Pricing</label>
+				<div class="col-lg-7 text-cell">
+					<div class="price text-cell" ng-init="thePrice=formData.selectedStream.price">
+						<div ng-show="thePrice.type == 'per_event' || thePrice.type == 'per_day'" style="margin: auto;">
+						{{thePrice.amount}} €
+						<span style="font-weight: normal;">
+							<span ng-show="thePrice.type == 'per_event'">per data point</span>
+							<span ng-show="thePrice.type == 'per_day'">per day</span>
+						</span>
+						</div>
+						<div ng-show="thePrice.type == 'free'" style="line-height: 40px;">
+						free of charge
+						</div>
+						<div ng-show="thePrice.type == 'on_request'" style="line-height: 40px;">
+						request price
+						</div>
+					</div>
+				</div>
+			</div>
+        </div>
+    </div>
+    <a ui-sref="consumer.wizard.billing" class="btn btn-primary">Next</a>
+</fieldset>
