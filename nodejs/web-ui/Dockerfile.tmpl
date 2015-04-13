@@ -2,12 +2,11 @@
 # Pull base image.
 FROM dockerfile/nodejs
 
-# TODO: change to production once the code is fixed
-ENV NODE_ENV test 
+ENV NODE_ENV %NODE_ENV%
 ENV PORT 8080
 
 ENV APPDIR /var/riox/
-ADD ./build/test $APPDIR/lib
+ADD ./build/%NODE_ENV% $APPDIR/lib
 ADD ./node_modules $APPDIR/node_modules
 ADD ./package.json $APPDIR
 WORKDIR $APPDIR

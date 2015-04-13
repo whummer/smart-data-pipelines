@@ -10,9 +10,9 @@ var gulp = require('gulp'),
 		angular_filesort = require('gulp-angular-filesort'),
 		del = require('del'),
 		rename = require('gulp-rename'),
+		replace = require('gulp-replace'),
 		clean = require('gulp-clean'),
 		util = require('gulp-util'),
-		coffee = require('gulp-coffee'),
 		uglify = require('gulp-uglify'),
 		concat = require('gulp-concat'),
 		gulpFilter = require('gulp-filter'),
@@ -57,9 +57,21 @@ var paths = {
 	// "main" (index.html) file
 	main: UI_SRC_DIR + '/index.tmpl.html',
 
-	minified_js : UI_BUILD_DIR_PROD + "/app/components/js/riox.all.min.js"
+	// all in one concatenated and minified JS files
+	minified_js : UI_BUILD_DIR_PROD + "/app/components/js/riox.all.min.js",
+
+	// Dockerfile template
+	dockerfile : UI_BASE_DIR + "/Dockerfile.tmpl"
 };
 
+//
+// Dockerfile settings
+//
+var dockerSettings = {
+	web_ui : {
+		port : '8080'
+	}
+};
 
 //
 // gulp task definitions
@@ -148,7 +160,8 @@ function injectResources(indexLocation, cssLocation, ignorePath, minified) {
 									.pipe(vectorMapFilter)
 									.pipe(angular_filesort())), {ignorePath: ignorePath}))
 
-			.pipe(rename('index.html'))
+			.pipe(rename('index.html'))// rename from index.tmpl.html to index.html
+
 			.pipe(gulp.dest(indexLocation));
 }
 
@@ -160,9 +173,8 @@ gulp.task('scriptsmin', function () {
 	return gulp.src(paths.scripts)
 			.pipe(angular_filesort())
 			.pipe(sourcemaps.init())
-			//.pipe(coffee())
 			.pipe(concat('riox.all.min.js'))
-			//.pipe(uglify())
+			.pipe(uglify())
 			.pipe(sourcemaps.write())
 			.pipe(gulp.dest(UI_BUILD_DIR_PROD + '/app/components/js'));
 });
@@ -179,6 +191,7 @@ gulp.task('imagemin', function () {
 						interlaced: true
 					}
 			))
+
 			.pipe(gulp.dest(UI_BUILD_DIR_PROD + '/app/components/img/'));
 });
 
@@ -189,7 +202,13 @@ gulp.task('serve', ['inject:dev'],  function () {
 	var server = gls.static(UI_SRC_DIR, 8888);
 	server.start();
 	util.log(util.colors.cyan("live server up and running"));
-	gulp.watch([paths.scripts, paths.main, paths.html], rebuild(server))
+	//gulp.watch([paths.scripts, paths.main, paths.html], rebuild(server))
+	gulp.watch([paths.scripts, paths.main, paths.html], function(whatChanged) {
+		server.notify();
+		if (whatChanged.type == 'changed') {
+			util.log("Updated: ", whatChanged.path);
+		}
+	})
 });
 
 function rebuild(server) {
@@ -239,4 +258,24 @@ gulp.task('serve:test', ['build:test'],  function () {
 	util.log(util.colors.cyan("TEST server up and running"));
 });
 
+
+//
+// Docker tasks
+//
+gulp.task('docker:build:test', function() {
+	util.log(util.colors.magenta("Building Docker image for TEST"));
+	gulp.src(paths.dockerfile)
+			.pipe(replace("%NODE_ENV%", "test"))
+			.pipe(replace("%PORT%", dockerSettings.web_ui.port))
+			.pipe(rename("Dockerfile"))
+			.pipe(gulp.dest(UI_BASE_DIR));
+});
+
+
+gulp.task('watch:test', function() {
+	gulp.watch([paths.scripts, paths.main, paths.html], function(what) {
+		util.log(util.colors.red("Something changed: "), what);
+	});
+
+});
 
