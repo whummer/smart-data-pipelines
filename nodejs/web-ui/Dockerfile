@@ -7,9 +7,9 @@ ENV NODE_ENV test
 ENV PORT 8080
 
 ENV APPDIR /var/riox/
-ADD build/test $APPDIR
-ADD node_modules $APPDIR
-ADD package.json $APPDIR
+ADD ./build/test $APPDIR/lib
+ADD ./node_modules $APPDIR/node_modules
+ADD ./package.json $APPDIR
 WORKDIR $APPDIR
 
 # TODO this is not properly cached by docker see - http://www.clock.co.uk/blog/a-guide-on-how-to-cache-npm-install-with-docker
