@@ -211,11 +211,6 @@ gulp.task('serve', ['inject:dev'],  function () {
 	})
 });
 
-function rebuild(server) {
-	//injectResources(paths.base, paths.base + '/app', 'web-ui/lib')
-	server.notify;
-}
-
 //
 // build PROD
 //

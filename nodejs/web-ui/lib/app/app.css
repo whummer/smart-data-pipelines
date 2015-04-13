@@ -85,9 +85,6 @@ body.boxed-layout #wrapper {
 .boxed-layout #wrapper.top-navigation {
   max-width: 1300px !important;
 }
-.myshit {
-  background-color: white;
-}
 .block {
   display: block;
 }
