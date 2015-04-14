@@ -1,7 +1,7 @@
 //
 // require gulp and plugins
 //
-var gulp = require('gulp'),
+var gulp = require('gulp-help')(require('gulp')),
 		gls = require('gulp-live-server'),
 		bowerFiles = require('main-bower-files'),
 		less = require('gulp-less'),
