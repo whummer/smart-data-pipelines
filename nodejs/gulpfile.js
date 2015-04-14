@@ -275,6 +275,8 @@ gulp.task('docker:build:test:push', function() {
 	return cp.spawn('bin/build-push.sh', ['--no-push'], { env: process.env, cwd: UI_BASE_DIR, stdio: 'inherit' })
 });
 
+gulp.task('docker:build:streams-service', function() {
 
+})
 
 

@@ -2,14 +2,13 @@
 
 var express = require('express');
 var passport = require('passport');
-var config = require('../config/environment');
-var User = require('../api/users/user.model');
+var User = require('../model/user.model');
 
 // Passport Configuration
-require('./local/passport').setup(User, config);
-require('./facebook/passport').setup(User, config);
-require('./google/passport').setup(User, config);
-require('./twitter/passport').setup(User, config);
+require('./local/passport').setup(User, global.config);
+require('./facebook/passport').setup(User, global.config);
+require('./google/passport').setup(User, global.config);
+require('./twitter/passport').setup(User, global.config);
 
 var router = express.Router();
 

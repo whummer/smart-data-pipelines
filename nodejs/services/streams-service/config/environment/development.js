@@ -8,5 +8,5 @@ module.exports = {
     uri: 'mongodb://localhost/riox-dev'
   },
 
-  seedDB: true
+  seedDB: false
 };

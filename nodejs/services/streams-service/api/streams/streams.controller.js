@@ -1,7 +1,6 @@
 'use strict';
 
 var DataStream = require('./datastream.model');
-var config = require('../../config/environment');
 var passport = require('passport');
 var jwt = require('jsonwebtoken');
 

@@ -16,13 +16,17 @@ var path = require('path');
 var config = require('./environment');
 var passport = require('passport');
 var session = require('express-session');
-// var mongoStore = require('connect-mongo')(session);
-// var mongoose = require('mongoose');
+
+function commonConfig(app) {
+  app.use(express.static(path.join(config.root, 'static')));
+  app.set('appPath', '/');
+  app.use(morgan('dev'));
+}
 
 module.exports = function(app) {
   var env = app.get('env');
 
-  app.set('views', config.root + '/app/views');
+  //app.set('views', config.root + '/app/views');
   app.engine('html', require('ejs').renderFile);
   app.set('view engine', 'html');
   app.use(compression());
@@ -43,19 +47,12 @@ module.exports = function(app) {
   // }));
   
   if ('production' === env) {
-    app.use(favicon(path.join(config.root, 'public', 'favicon.ico')));
-    app.use(express.static(path.join(config.root, 'public')));
-    app.set('appPath', config.root + '/public');
-    app.use(morgan('dev'));
+    commonConfig(app);
   }
 
   if ('development' === env || 'test' === env) {
     app.use(require('connect-livereload')());
-    console.log("config.root: ", config.root);
-    app.use(express.static(path.join(config.root, '.tmp')));
-    app.use(express.static(path.join(config.root, 'web-ui/src')));
-    app.set('appPath', 'web-ui/src');
-    app.use(morgan('dev'));
+    commonConfig(app);
     app.use(errorHandler()); // Error handler - has to be last
   }
 };

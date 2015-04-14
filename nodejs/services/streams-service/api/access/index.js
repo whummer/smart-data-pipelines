@@ -3,10 +3,9 @@
 var express = require('express');
 var mongoose = require('mongoose');
 var controller = require('./access.controller');
-var config = require('../../config/environment');
-var auth = require('../../auth/auth.service');
+var auth = require('_/auth/auth.service');
 var StreamAccess = require('./stream.access');
-var ModelUtil = require("../../model/model.util");
+var ModelUtil = require("_/model/model.util");
 
 /* export schemas to mongo */
 ModelUtil.exportModelSchema(StreamAccess);
