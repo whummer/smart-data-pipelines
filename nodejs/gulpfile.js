@@ -2,7 +2,8 @@
 // require gulp and plugins
 //
 var gulp = require('gulp-help')(require('gulp')),
-		gls = require('gulp-live-server'),
+//gls = require('gulp-live-server'),
+		nodemon = require('gulp-nodemon'),
 		bowerFiles = require('main-bower-files'),
 		less = require('gulp-less'),
 		path = require('path'),
@@ -15,6 +16,7 @@ var gulp = require('gulp-help')(require('gulp')),
 		util = require('gulp-util'),
 		uglify = require('gulp-uglify'),
 		concat = require('gulp-concat'),
+		livereload = require('gulp-livereload'),
 		gulpFilter = require('gulp-filter'),
 		sourcemaps = require('gulp-sourcemaps'),
 		imagemin = require('gulp-imagemin'),
@@ -58,18 +60,18 @@ var paths = {
 	main: UI_SRC_DIR + '/index.tmpl.html',
 
 	// all in one concatenated and minified JS files
-	minified_js : UI_BUILD_DIR_PROD + "/app/components/js/riox.all.min.js",
+	minified_js: UI_BUILD_DIR_PROD + "/app/components/js/riox.all.min.js",
 
 	// Dockerfile template
-	dockerfile : UI_BASE_DIR + "/Dockerfile.tmpl"
+	dockerfile: UI_BASE_DIR + "/Dockerfile.tmpl"
 };
 
 //
 // Dockerfile settings
 //
 var dockerSettings = {
-	web_ui : {
-		port : '8080'
+	web_ui: {
+		port: '8080'
 	}
 };
 
@@ -84,7 +86,7 @@ gulp.task('default', function () {
 // clean output directories
 //
 gulp.task('clean', function () {
-	return gulp.src(UI_BUILD_DIR, {read:false}).pipe(clean());
+	return gulp.src(UI_BUILD_DIR, {read: false}).pipe(clean());
 });
 
 //
@@ -92,20 +94,20 @@ gulp.task('clean', function () {
 //
 gulp.task('copy:test', function () {
 	return gulp.src([
-			UI_SRC_DIR + '/**',
-			'!' + "/**/*.less",
-			'!' + "/**/index.tmpl.html",
-			'!' + UI_SRC_DIR + '/app/styles/less{,/**}'
-		]).pipe(gulp.dest(UI_BUILD_DIR_TEST));
+		UI_SRC_DIR + '/**',
+		'!' + "/**/*.less",
+		'!' + "/**/index.tmpl.html",
+		'!' + UI_SRC_DIR + '/app/styles/less{,/**}'
+	]).pipe(gulp.dest(UI_BUILD_DIR_TEST));
 });
 
 gulp.task('copy:prod', function () {
 	return gulp.src([
-			UI_SRC_DIR + '/**',
-			'!' + "/**/*.less",
-			'!' + "index.tmpl.html",
-			'!' + UI_SRC_DIR + '/app/styles/less{,/**}',
-			'!' + UI_SRC_DIR + '/app/components/js{,/**}'
+		UI_SRC_DIR + '/**',
+		'!' + "/**/*.less",
+		'!' + "index.tmpl.html",
+		'!' + UI_SRC_DIR + '/app/styles/less{,/**}',
+		'!' + UI_SRC_DIR + '/app/components/js{,/**}'
 	]).pipe(gulp.dest(UI_BUILD_DIR_PROD));
 });
 
@@ -154,11 +156,11 @@ function injectResources(indexLocation, cssLocation, ignorePath, minified) {
 							.pipe(jqueryFilter), {name: 'bower', ignorePath: ignorePath}))
 
 			.pipe(inject(es.merge(
-							cssFiles, // compiled less files
-							gulp.src(paths.css), // plain CSS files
-							gulp.src(scripts)
-									.pipe(vectorMapFilter)
-									.pipe(angular_filesort())), {ignorePath: ignorePath}))
+					cssFiles, // compiled less files
+					gulp.src(paths.css), // plain CSS files
+					gulp.src(scripts)
+							.pipe(vectorMapFilter)
+							.pipe(angular_filesort())), {ignorePath: ignorePath}))
 
 			.pipe(rename('index.html'))// rename from index.tmpl.html to index.html
 
@@ -198,18 +200,30 @@ gulp.task('imagemin', function () {
 //
 // serve DEV task for development
 //
-gulp.task('serve', ['inject:dev'],  function () {
-	var server = gls.static(UI_SRC_DIR, 8888);
-	server.start();
-	util.log(util.colors.cyan("live server up and running"));
-	//gulp.watch([paths.scripts, paths.main, paths.html], rebuild(server))
-	gulp.watch([paths.scripts, paths.main, paths.html], function(whatChanged) {
-		server.notify();
+
+//run app using nodemon
+gulp.task('serve', ['inject:dev'], function () {
+	return nodemon({
+		script: UI_SRC_DIR + '/server.js', options: '-i ' + UI_SRC_DIR + "/*"
+	});
+});
+
+
+// livereload browser on client app changes
+gulp.task('livereload', ['serve'], function () {
+	livereload();
+	livereload.listen();
+	util.log(livereload);
+	var all_build_files = UI_SRC_DIR + '/app/**/*';
+	return gulp.watch(all_build_files, function (whatChanged) {
 		if (whatChanged.type == 'changed') {
 			util.log("Updated: ", whatChanged.path);
 		}
-	})
+
+		livereload.changed(whatChanged.path);
+	});
 });
+
 
 //
 // build PROD
@@ -237,7 +251,7 @@ gulp.task('build:test', function () {
 //
 // serve PROD task (to check build) - NO LIVE RELOAD
 //
-gulp.task('serve:prod', ['build:prod'],  function () {
+gulp.task('serve:prod', ['build:prod'], function () {
 	var server = gls.static(UI_BUILD_DIR_PROD, 8080);
 	server.start();
 	util.log(util.colors.cyan("PROD server up and running"));
@@ -246,7 +260,7 @@ gulp.task('serve:prod', ['build:prod'],  function () {
 //
 // serve PROD task (to check build) - NO LIVE RELOAD
 //
-gulp.task('serve:test', ['build:test'],  function () {
+gulp.task('serve:test', ['build:test'], function () {
 	var server = gls.static(UI_BUILD_DIR_TEST, 8080);
 	server.start();
 	util.log(util.colors.cyan("TEST server up and running"));
@@ -256,14 +270,14 @@ gulp.task('serve:test', ['build:test'],  function () {
 //
 // Docker tasks
 //
-gulp.task('docker:build:test', function() {
+gulp.task('docker:build:test', function () {
 	util.log(util.colors.magenta("Building Docker image for TEST..."));
-	runSequence('build:test', 'docker:build:test:dockerfile', 'docker:build:test:push', function() {
+	runSequence('build:test', 'docker:build:test:dockerfile', 'docker:build:test:push', function () {
 		util.log(util.colors.magenta("Built Docker image for TEST. Enjoy."));
 	});
 });
 
-gulp.task('docker:build:test:dockerfile', function() {
+gulp.task('docker:build:test:dockerfile', function () {
 	return gulp.src(paths.dockerfile)
 			.pipe(replace("%NODE_ENV%", "test"))
 			.pipe(replace("%PORT%", dockerSettings.web_ui.port))
@@ -271,11 +285,11 @@ gulp.task('docker:build:test:dockerfile', function() {
 			.pipe(gulp.dest(UI_BASE_DIR));
 });
 
-gulp.task('docker:build:test:push', function() {
-	return cp.spawn('bin/build-push.sh', ['--no-push'], { env: process.env, cwd: UI_BASE_DIR, stdio: 'inherit' })
+gulp.task('docker:build:test:push', function () {
+	return cp.spawn('bin/build-push.sh', ['--no-push'], {env: process.env, cwd: UI_BASE_DIR, stdio: 'inherit'})
 });
 
-gulp.task('docker:build:streams-service', function() {
+gulp.task('docker:build:streams-service', function () {
 
 })
 
