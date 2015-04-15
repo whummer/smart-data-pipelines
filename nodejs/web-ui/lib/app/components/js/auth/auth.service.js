@@ -7,9 +7,8 @@ angular.module('rioxApp')
      * Set auth headers for riox JS API.
      */
     var configureRioxApiAuth = function(token) {
-    	  /* configure riox API */
-    	  var authServ = this;
-        riox.auth({
+    	/* configure riox API */
+    	riox.auth({
       	  RIOTS_AUTH_NETWORK: "riots",
       	  RIOTS_AUTH_TOKEN: token
         });
@@ -66,6 +65,7 @@ angular.module('rioxApp')
       logout: function() {
         $cookieStore.remove('token');
         currentUser = {};
+        configureRioxApiAuth("__invalid__");
       },
 
       /**

@@ -18,7 +18,6 @@ global.config = config; // TODO needed?
 config.port = 8084;
 
 // Connect to database
-console.log("connect", config.mongo.uri, config.mongo.options);
 mongoose.connect(config.mongo.uri, config.mongo.options);
 
 

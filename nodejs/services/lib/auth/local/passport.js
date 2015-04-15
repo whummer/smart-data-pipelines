@@ -1,10 +1,10 @@
 var passport = require('passport');
-var mongoose = require('mongoose');
-var config = require('../../config/environment');
 var LocalStrategy = require('passport-local').Strategy;
 
-// TODO: whu: make connection centrally in app.js. No clue why the connection is not open here.
-mongoose.connect(config.mongo.uri, config.mongo.options);
+// TODO: whu: fix connection centrally in app.js. No clue why the connection is not open here (sometimes).
+//var mongoose = require('mongoose');
+//var config = require('../../config/environment');
+//mongoose.connect(config.mongo.uri, config.mongo.options);
 
 exports.setup = function (User, config) {
   passport.use(new LocalStrategy({

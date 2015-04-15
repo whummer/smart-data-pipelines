@@ -2,9 +2,8 @@
 
 var StreamAccess = require('./stream.access');
 var passport = require('passport');
-var config = require('../../config/environment');
 var jwt = require('jsonwebtoken');
-var auth = require('../../auth/auth.service');
+var auth = require('_/auth/auth.service');
 
 function read(query, req, res, next) {
 	StreamAccess.findOne(query, function(result) {

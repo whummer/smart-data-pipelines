@@ -9,6 +9,10 @@ var compose = require('composable-middleware');
 var User = require('../model/user.model');
 var validateJwt = expressJwt({ secret: config.secrets.session });
 
+//TODO: whu: fix connection centrally in app.js. No clue why the connection is not open here.
+mongoose.connect(config.mongo.uri, config.mongo.options);
+
+
 /**
  * Attaches the user object to the request if authenticated
  * Otherwise returns 403
@@ -29,7 +33,7 @@ function isAuthenticated() {
         if (err) return next(err);
         if (!user) return res.send(401);
 
-        console.log("req.user", req.user);
+        //console.log("req.user", req.user);
         req.user = user;
         next();
       });
