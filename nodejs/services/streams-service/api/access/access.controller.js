@@ -4,6 +4,7 @@ var StreamAccess = require('./stream.access');
 var passport = require('passport');
 var config = require('../../config/environment');
 var jwt = require('jsonwebtoken');
+var auth = require('../../auth/auth.service');
 
 function read(query, req, res, next) {
 	StreamAccess.findOne(query, function(result) {
@@ -16,13 +17,14 @@ function read(query, req, res, next) {
 
 exports.index = function(req, res, next) {
 	var query = {};
+	var user = auth.getCurrentUser();
 	StreamAccess.find(query, function(result) {
 		res.send(result);
 		next();
 	});
 }
 exports.getByStream = function(req, res, next) {
-	var query = {streamId: req.params.id};
+	var query = {streamId: req.params.streamId};
 	return read(query, req, res, next);
 }
 exports.show = function(req, res, next) {
@@ -35,10 +37,12 @@ exports.destroy = function(req, res, next) {
 }
 
 exports.create = function(req, res, next) {
-	var access = JSON.parse(req.body);
+	//var access = JSON.parse(req.body);
+	var access = req.body;
+	console.log("req.user", req.user);
+	access.requestorId = req.user.id;
 	StreamAccess.create(access, function(access) {
-		res.send(access);
-		next();
+		res.json(200, access);
 	});
 }
  

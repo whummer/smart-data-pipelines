@@ -36,7 +36,9 @@ angular.module('rioxApp')
         
         var authServ = this;
 
-        $http.post('/auth/local', {
+        var authLocalUrl = appConfig.services.users.url + "/auth/local";
+
+        $http.post(authLocalUrl, {
           email: user.email,
           password: user.password
         }).

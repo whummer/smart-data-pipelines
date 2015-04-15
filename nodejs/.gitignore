@@ -49,7 +49,7 @@ crashlytics.properties
 crashlytics-build.properties
 
 
-/node_modules/
+node_modules/
 /web-ui/lib/bower_components/
 /.tmp
 public

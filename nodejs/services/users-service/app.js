@@ -10,15 +10,17 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 var express = require('express');
 var mongoose = require('mongoose');
 var cors = require('cors');
-var config = require('../lib/config/environment');
+var config = require('_/config/environment');
 
-global.config = config;
+global.config = config; // TODO needed?
 
-//TODO find better place to configure port for microservices
-config.port = 8085;
+// TODO find better place to configure port for microservices
+config.port = 8084;
 
 // Connect to database
+console.log("connect", config.mongo.uri, config.mongo.options);
 mongoose.connect(config.mongo.uri, config.mongo.options);
+
 
 // Populate DB with sample data
 if(config.seedDB) { require('./config/seed'); }

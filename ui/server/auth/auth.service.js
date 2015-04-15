@@ -29,6 +29,7 @@ function isAuthenticated() {
         if (err) return next(err);
         if (!user) return res.send(401);
 
+        console.log("req.user", req.user);
         req.user = user;
         next();
       });
@@ -54,6 +55,20 @@ function hasRole(roleRequired) {
 }
 
 /**
+ * Gets the current user of this request.
+ */
+function getCurrentUser() {
+	console.log("getCurrentUser");
+  var user = compose().
+  			use(isAuthenticated()).
+  			use(function(req, res, next) {
+  		      console.log("foo123", req.user)
+  		    });
+  console.log(user);
+  return user;
+}
+
+/**
  * Returns a jwt token signed by the app secret
  */
 function signToken(id) {
@@ -74,3 +89,4 @@ exports.isAuthenticated = isAuthenticated;
 exports.hasRole = hasRole;
 exports.signToken = signToken;
 exports.setTokenCookie = setTokenCookie;
+exports.getCurrentUser = getCurrentUser;

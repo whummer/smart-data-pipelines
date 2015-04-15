@@ -2,11 +2,10 @@
 
 var mongoose = require('mongoose');
 var passport = require('passport');
-var config = global.config;
+var config = require('../config/environment');
 var jwt = require('jsonwebtoken');
 var expressJwt = require('express-jwt');
 var compose = require('composable-middleware');
-//var modelUtils = require('../model/model.util');
 var User = require('../model/user.model');
 var validateJwt = expressJwt({ secret: config.secrets.session });
 
@@ -22,17 +21,15 @@ function isAuthenticated() {
       if(req.query && req.query.hasOwnProperty('access_token')) {
         req.headers.authorization = 'Bearer ' + req.query.access_token;
       }
-      console.log("validateJwt", req.headers, validateJwt);
       validateJwt(req, res, next);
     })
     // Attach user to request
     .use(function(req, res, next) {
-    	console.log("find user", req.user._id);
       User.findById(req.user._id, function (err, user) {
-      	console.log("err", err, user);
         if (err) return next(err);
         if (!user) return res.send(401);
 
+        console.log("req.user", req.user);
         req.user = user;
         next();
       });
@@ -58,6 +55,20 @@ function hasRole(roleRequired) {
 }
 
 /**
+ * Gets the current user of this request.
+ */
+function getCurrentUser() {
+	console.log("getCurrentUser");
+  var user = compose().
+  			use(isAuthenticated()).
+  			use(function(req, res, next) {
+  		      console.log("foo123", req.user)
+  		    });
+  console.log(user);
+  return user;
+}
+
+/**
  * Returns a jwt token signed by the app secret
  */
 function signToken(id) {
@@ -78,3 +89,4 @@ exports.isAuthenticated = isAuthenticated;
 exports.hasRole = hasRole;
 exports.signToken = signToken;
 exports.setTokenCookie = setTokenCookie;
+exports.getCurrentUser = getCurrentUser;

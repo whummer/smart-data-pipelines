@@ -4,6 +4,8 @@ var StreamAccess = require('./streamaccess.model');
 var passport = require('passport');
 var config = require('../../config/environment');
 var jwt = require('jsonwebtoken');
+var auth = require('../../auth/auth.service');
+
 
 function read(query, req, res, next) {
 	StreamAccess.findOne(query, function(result) {
@@ -17,6 +19,7 @@ function read(query, req, res, next) {
 
 exports.index = function(req, res, next) {
 	var query = {};
+	var user = auth.getCurrentUser();
 	StreamAccess.find(query, function(result) {
 		console.log("index", result);
 		res.json(result);

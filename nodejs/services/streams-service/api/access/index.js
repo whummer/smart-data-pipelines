@@ -15,7 +15,7 @@ var router = express.Router();
 router.get('/', auth.hasRole('admin'), controller.index);
 router.delete('/:id', auth.hasRole('admin'), controller.destroy);
 router.get('/:id', auth.isAuthenticated(), controller.show);
-router.get('/stream/:id', auth.isAuthenticated(), controller.getByStream);
+router.get('/stream/:streamId', auth.isAuthenticated(), controller.getByStream);
 router.post('/', controller.create);
 
 module.exports = router;

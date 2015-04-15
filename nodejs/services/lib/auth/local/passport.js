@@ -1,5 +1,10 @@
 var passport = require('passport');
+var mongoose = require('mongoose');
+var config = require('../../config/environment');
 var LocalStrategy = require('passport-local').Strategy;
+
+// TODO: whu: make connection centrally in app.js. No clue why the connection is not open here.
+mongoose.connect(config.mongo.uri, config.mongo.options);
 
 exports.setup = function (User, config) {
   passport.use(new LocalStrategy({
@@ -7,8 +12,8 @@ exports.setup = function (User, config) {
       passwordField: 'password' // this is the virtual field on the model
     },
     function(email, password, done) {
-      User.findOne({
-        email: email.toLowerCase()
+	  var res = User.findOne({
+	        email: email.toLowerCase()
       }, function(err, user) {
         if (err) return done(err);
 

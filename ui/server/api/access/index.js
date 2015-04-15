@@ -17,6 +17,6 @@ router.get('/', auth.isAuthenticated(), controller.index);
 router.delete('/:id', auth.hasRole('admin'), controller.destroy);
 router.get('/:id', auth.isAuthenticated(), controller.show);
 router.get('/stream/:streamId', auth.isAuthenticated(), controller.getByStream);
-router.post('/', controller.create);
+router.post('/', auth.isAuthenticated(), controller.create);
 
 module.exports = router;

@@ -3,24 +3,22 @@
 angular.module('rioxApp')
   .config(function ($stateProvider, $urlRouterProvider) {
 
-    $urlRouterProvider.otherwise("/");
+    $urlRouterProvider.otherwise("/index/main");
 
     $stateProvider
         .state('index', {
-            abstract: true,
+            url: "/index",
             templateUrl: "app/views/common/content.html"
         })
         .state('index.main', {
-            url: "/",
-            templateUrl: "app/views/main/main.html",
-            data: { pageTitle: 'Example view' }
+            url: "/main",
+            templateUrl: "app/views/main/main.html"
         })
 
         // settings and dashboard states
         .state('index.dashboard', {
             url: '/dashboard',
             templateUrl: 'app/views/account/dashboard/dashboard.html',
-            controller : dashboardCtrl,
             data: { pageTitle: 'riox.io - dashboard' }
         })
         .state('index.settings', {
@@ -113,6 +111,13 @@ angular.module('rioxApp')
             url: '/confirm',
             templateUrl: 'app/views/consumer_wizard/confirm.html',
             data: { pageTitle: 'Wizard form' }
+        })
+
+        // general
+        .state('index.notifications', {
+            url: "/notifications",
+            templateUrl: "app/views/account/notifications/notifications.html",
+            controller: "NotificationsCtrl"
         });
 
   });
