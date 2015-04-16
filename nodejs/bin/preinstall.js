@@ -15,31 +15,23 @@ var web_ui_directory = 'web-ui';
 console.log("Preinstalling node modules");
 
 function preinstall_dir(base, dir) {
-	// get library path
-	var lib = resolve(__dirname, join(base, dir));
+	var preinstallDirectory = resolve(__dirname, join(base, dir));
+	console.log('Preinstalling node modules in ', preinstallDirectory);
+	// ensure path has package.json
 
-	fs.readdirSync(lib)
-			.forEach(function (mod) {
-				var modPath = join(lib, mod)
+	if (!fs.existsSync(join(preinstallDirectory, 'package.json'))) {
+		return;
+	}
 
-				console.log('Preinstalling node modules in ', modPath);
-
-
-				// ensure path has package.json
-				if (!fs.existsSync(join(modPath, 'package.json'))) {
-					return;
-				}
-
-
-				// install folder
-				cp.spawn('npm', ['i'], {env: process.env, cwd: modPath, stdio: 'inherit'})
-			})
+	// install folder
+	cp.spawn('npm', ['i'], {env: process.env, cwd: preinstallDirectory, stdio: 'inherit'})
 }
+
 
 // preinstall web-ui
 preinstall_dir('..', web_ui_directory);
 
 // preinstall service directories
-_.forEach(service_directories, function(service_dir) {
+_.forEach(service_directories, function (service_dir) {
 	preinstall_dir('../services', service_dir);
 });
