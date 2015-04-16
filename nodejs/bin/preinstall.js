@@ -1,8 +1,3 @@
-/**
- *  Visit every component and runs npm install.
- *  See: https://strongloop.com/strongblog/modular-node-js-express/
- */
-
 var fs = require('fs');
 var resolve = require('path').resolve;
 var join = require('path').join;
@@ -17,8 +12,6 @@ console.log("Preinstalling node modules");
 function preinstall_dir(base, dir) {
 	var preinstallDirectory = resolve(__dirname, join(base, dir));
 	console.log('Preinstalling node modules in ', preinstallDirectory);
-	// ensure path has package.json
-
 	if (!fs.existsSync(join(preinstallDirectory, 'package.json'))) {
 		return;
 	}

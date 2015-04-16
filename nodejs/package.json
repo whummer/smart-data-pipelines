@@ -76,9 +76,7 @@
   },
   "scripts": {
     "preinstall": "node bin/preinstall.js",
-    "start": "node server/app.js",
-    "test": "grunt test",
-    "update-webdriver": "node node_modules/grunt-protractor-runner/node_modules/protractor/bin/webdriver-manager update"
+    "test": "gulp test"
   },
   "private": true
 }

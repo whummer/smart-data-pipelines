@@ -19,11 +19,13 @@ var session = require('express-session');
 // var mongoStore = require('connect-mongo')(session);
 // var mongoose = require('mongoose');
 
+function setupDefaults(app) {
+ app.use(express.static(config.root));
+ app.set('appPath', '');
+}
+
 module.exports = function(app) {
   var env = app.get('env');
-
-  app.set('views', config.root + '/app/views');
-  app.engine('html', require('ejs').renderFile);
   app.set('view engine', 'html');
   app.use(compression());
   app.use(bodyParser.urlencoded({ extended: false }));
@@ -45,21 +47,21 @@ module.exports = function(app) {
   // todo om: either switch this to '/lib' or adapt gulpfile for /public structure
   if ('production' === env) {
     app.use(favicon(path.join(config.root, 'public', 'favicon.ico')));
-    app.use(express.static(path.join(config.root, 'public')));
-    app.set('appPath', config.root + '/public');
+    setupDefaults(app);
     app.use(morgan('dev'));
   }
 
   if ('development' === env || 'test' === env) {
-    app.use(express.static(path.join(config.root, '.tmp')));
-    app.use(express.static(path.join(config.root, 'lib')));
-    app.set('appPath', 'lib');
+    console.log('ConfigRoot: ', config.root);
+    setupDefaults(app);
     app.use(morgan('dev'));
     app.use(errorHandler()); // Error handler - has to be last
   }
 
   if ('development' === env ) {
     //app.use(require('connect-livereload')());
+    app.use(express.static(path.join(config.root, 'lib')));
+    app.set('appPath', 'lib');
   }
     
 };
