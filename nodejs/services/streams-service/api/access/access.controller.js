@@ -15,8 +15,13 @@ function read(query, req, res, next) {
 }
 
 exports.index = function(req, res, next) {
-	var query = {};
-	var user = auth.getCurrentUser();
+	var user = auth.getCurrentUser(req);
+	var query = { $or: 
+		[
+			{ownerId: user.id},
+			{requestorId: user.id}
+		]
+	};
 	StreamAccess.find(query, function(result) {
 		res.send(result);
 		next();
@@ -36,10 +41,10 @@ exports.destroy = function(req, res, next) {
 }
 
 exports.create = function(req, res, next) {
-	//var access = JSON.parse(req.body);
 	var access = req.body;
-	console.log("req.user", req.user);
-	access.requestorId = req.user.id;
+	access.created = access.changed = new Date().getTime();
+	var user = auth.getCurrentUser(req);
+	access.requestorId = user.id;
 	StreamAccess.create(access, function(access) {
 		res.json(200, access);
 	});

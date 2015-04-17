@@ -12,10 +12,10 @@ ModelUtil.exportModelSchema(StreamAccess);
 
 /* define routes */
 var router = express.Router();
-router.get('/', auth.hasRole('admin'), controller.index);
+router.get('/', auth.isAuthenticated(), controller.index);
 router.delete('/:id', auth.hasRole('admin'), controller.destroy);
 router.get('/:id', auth.isAuthenticated(), controller.show);
 router.get('/stream/:streamId', auth.isAuthenticated(), controller.getByStream);
-router.post('/', controller.create);
+router.post('/', auth.isAuthenticated(), controller.create);
 
 module.exports = router;

@@ -61,14 +61,8 @@ function hasRole(roleRequired) {
 /**
  * Gets the current user of this request.
  */
-function getCurrentUser() {
-	console.log("getCurrentUser");
-  var user = compose().
-  			use(isAuthenticated()).
-  			use(function(req, res, next) {
-  		      console.log("foo123", req.user)
-  		    });
-  console.log(user);
+function getCurrentUser(req) {
+	var user = req.user;
   return user;
 }
 

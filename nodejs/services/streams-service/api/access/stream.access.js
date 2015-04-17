@@ -11,8 +11,10 @@ StreamAccess.getTemplate = function() {
 	return {
 		id: String,
 		streamId: String,
+		ownerId: String,
 		requestorId: String,
 		created: Date,
+		changed: Date,
 		status: {type: String}
 	};
 }

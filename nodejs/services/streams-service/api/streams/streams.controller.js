@@ -12,7 +12,7 @@ var demoData = [
 		id: 1, name: "Traffic Lights", description: "This data stream contains live " +
 	"updates of traffic lights." + LOREM,
 		organizationImg: "app/components/img/provider-logos/smart_city_wien.png", organizationName: "City of Vienna",
-		price: {type: "per_day", amount: 123.4}, permit: {type: "auto"}
+		price: {type: "per_day", amount: 123.4}, permit: {type: "manual"}
 	},
 	{
 		id: 2, name: "Car Data", description: "This data stream contains live vehicle data, " +
@@ -24,7 +24,7 @@ var demoData = [
 		id: 3, name: "Temperature Values", description: "Live temperature updates of various locations in " +
 	"Vienna, Austria." + LOREM,
 		organizationImg: "app/components/img/provider-logos/smart_city_wien.png", organizationName: "City of Vienna",
-		price: {type: "free"}, permit: {type: "auto"}
+		price: {type: "free"}, permit: {type: "manual"}
 	},
 	{
 		id: 4, name: "Incidents", description: "This data stream contains live incidents " +

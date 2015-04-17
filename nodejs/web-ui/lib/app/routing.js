@@ -118,6 +118,23 @@ angular.module('rioxApp')
             url: "/notifications",
             templateUrl: "app/views/account/notifications/notifications.html",
             controller: "NotificationsCtrl"
-        });
+        })
+
+	    // streams
+        .state('streams', {
+            abstract: true,
+            templateUrl: "app/views/common/content.html",
+            url: "/streams"
+        })
+	    .state('streams.provided', {
+	        url: "/streams/provided",
+	        templateUrl: "app/views/streams/streams.provided.html",
+	        controller: "StreamProduceCtrl"
+	    })
+	    .state('streams.consumed', {
+	        url: "/streams/consumed",
+	        templateUrl: "app/views/streams/streams.consumed.html",
+	        controller: "StreamConsumeCtrl"
+	    });
 
   });
