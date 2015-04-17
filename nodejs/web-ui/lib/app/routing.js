@@ -69,6 +69,16 @@ angular.module('rioxApp')
             templateUrl: 'app/views/provider_wizard/data_retention.html',
             data: { pageTitle: 'Setup data retention' }
         })
+        .state('provider.wizard.data_pricing', {
+            url: '/data-pricing',
+            templateUrl: 'app/views/provider_wizard/data_pricing.html',
+            data: { pageTitle: 'Setup data pricing' }
+        })
+        .state('provider.wizard.data_items', {
+            url: '/data-items',
+            templateUrl: 'app/views/provider_wizard/data_items.html',
+            data: { pageTitle: 'Extract data items' }
+        })
         .state('provider.wizard.analytics', {
             url: '/analytics',
             templateUrl: 'app/views/provider_wizard/analytics.html',

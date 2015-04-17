@@ -11,6 +11,7 @@ angular.module('rioxApp', [
   'localytics.directives',        // Chosen select
   'NgSwitchery',
   'angular-growl',
+    'checklist-model',
   'ngAnimate'
 ])
   .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {

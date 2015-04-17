@@ -14,12 +14,12 @@ function preinstall_dir(base, dir) {
 		return;
 	}
 
-	cp.exec('npm i', {env: process.env, cwd: preinstallDirectory}, function(error, stdout, stderr) {
+	cp.exec('npm i', {env: process.env, cwd: preinstallDirectory}, function (error, stdout, stderr) {
 		console.log('Finished node_modules install in dir: ', preinstallDirectory);
 		var nodeModulesDir = join(preinstallDirectory, 'node_modules');
 		if (!fs.existsSync(join(nodeModulesDir, "/_"))) {
 			console.log("Creating _ link in node_modules directory: ", nodeModulesDir);
-			cp.exec('ln -sf ../../lib _', {env: process.env, cwd: nodeModulesDir}, function(error, stdout, stderr) {
+			cp.exec('ln -sf ../../lib _', {env: process.env, cwd: nodeModulesDir}, function (error, stdout, stderr) {
 				if (error) {
 					console.log("Cannot create _ link in " + nodeModulesDir + ": ", stderr);
 				}

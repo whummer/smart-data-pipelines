@@ -1,0 +1,84 @@
+<div class="animated fadeIn" style="overflow: visible;;" ng-controller="dataItemsExtractorCtrl">
+	<h2>Extract individual data items from your Data Resource</h2>
+	<br/>
+
+	<div class="row">
+		<!--<div class="form-group">
+			<label for="resourceName" class="col-sm-3 control-label">Name of your Resource</label>
+			<div class="col-sm-5">
+				<input id="resourceName" name="resourceName" placeholder="BMW" class="form-control"
+							 ng-model="resourceData.name" required>
+			</div>
+			<label for="resourceName" class="control-label col-sm-3 animated fadeIn"
+						 ng-show="resourceForm.$submitted || resourceForm.resourceName.$touched">
+				<div class="text-danger " ng-show="resourceForm.resourceName.$error.required">A Resource Name is required</div>
+			</label>
+		</div>
+
+	</div>-->
+
+
+		<div class="form-group">
+			<label for="resourcePayload" class="col-sm-3 control-label">Sample Payload (e.g. JSON or XML)</label>
+			<div class="col-sm-8">
+				<textarea id="resourcePayload" rows="10" name="resourcePayload" placeholder="" class="form-control"
+									ng-model="resourceData.payload" required></textarea>
+				<a ng-click="extractDataItems();" style="margin-top: 10px;;" class="btn btn-primary pull-right"
+					 ng-hide="extractedItems"
+					 ng-disabled="!resourceData.payload.length">
+					Extract Data Items
+				</a>
+			</div>
+
+		</div>
+
+	</div>
+
+	<div class="row widget dark-grey-widget-bg p-xl animated fadeIn" ng-show="resourceData.extractedItems">
+		<h3>Please pick and describe your individual data items</h3><br/>
+		<div class="form-group" ng-repeat="(property, value) in resourceData.extractedItems"
+				 ng-init="resourceData.dataItems[property].name = property">
+			<label for="item_{{property}}" class="col-sm-3 control-label">{{property}}</label>
+			<div class="col-sm-1">
+				<input id="item_{{property}}"
+							 ui-switch="{color:'#5C9C4D', size: 'small'}"
+							 ng-model="resourceData.dataItems[property].enabled"
+							 type="checkbox"
+							 class="form-control"/>
+
+			</div>
+			<div class="col-sm-6" ng-show="resourceData.dataItems[property].enabled">
+				<input type="text" class="form-control"
+							 style="color: #676a6c;;"
+							 ng-model="resourceData.dataItems[property].description"
+							 placeholder="enter description for data item '{{property}}'"/>
+			</div>
+			<!--todo add select for data item tags-->
+			<!--<div class="col-sm-4" ng-show="resourceData.dataItems[property].enabled">
+				<select multiple chosen ng-model="resourceData.dataItems[property].tags" style="overflow: visible;">
+					<option value="car">id</option>
+					<option value="speed">speed</option>
+					<option value="temperature">temperature</option>
+					<option value="pressure">pressure</option>
+					<option value="acceleration">acceleration</option>
+					<option value="altitude">altitude</option>
+					<option value="humidity">humidity</option>
+				</select>
+			</div>-->
+		</div>
+
+	</div>
+
+	<button ui-sref="provider.wizard.data_retention" class="btn btn-primary">
+		Previous
+	</button>
+
+	<button ui-sref="provider.wizard.data_pricing" class="btn btn-primary"
+					ng-disabled="resourceForm.$invalid || resourceForm.$pristine">
+		Next
+	</button>
+
+
+	</div>
+
+

@@ -9,10 +9,7 @@ function providerWizardCtrl($scope, $log, $http, growl, $state) {
 
 	if ($state.params.debug) {
 		$scope.debug = true;
-
 	}
-
-	$scope.debug = true;
 
 	$scope.connectors = [
 		{name: "HTTP Connector"},
