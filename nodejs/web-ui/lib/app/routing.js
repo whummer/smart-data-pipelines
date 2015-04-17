@@ -127,12 +127,12 @@ angular.module('rioxApp')
             url: "/streams"
         })
 	    .state('streams.provided', {
-	        url: "/streams/provided",
+	        url: "/provided",
 	        templateUrl: "app/views/streams/streams.provided.html",
 	        controller: "StreamProduceCtrl"
 	    })
 	    .state('streams.consumed', {
-	        url: "/streams/consumed",
+	        url: "/consumed/{streamId}",
 	        templateUrl: "app/views/streams/streams.consumed.html",
 	        controller: "StreamConsumeCtrl"
 	    });

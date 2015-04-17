@@ -1,0 +1,39 @@
+<div>
+	<div class="row">
+		<div class="col-sm-9 m-b-xs"></div>
+		<div class="col-sm-3">
+			<div class="input-group">
+				<input type="text" placeholder="Search"
+					class="input-sm form-control"> <span
+					class="input-group-btn">
+					<button type="button" class="btn btn-sm btn-primary">Go!</button>
+				</span>
+			</div>
+		</div>
+	</div>
+	<div class="table-responsive">
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Date</th>
+					<th>Name</th>
+					<th>Description</th>
+					<th>Consumers</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="n in notifications"
+					ng-class="{ 'font-bold' : n.unresolved }">
+					<td>1</td>
+					<td>{{n.time}}</td>
+					<td>{{n.type}}</td>
+					<td>{{n.text}}</td>
+					<td>{{n.status}}</td>
+					<td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
