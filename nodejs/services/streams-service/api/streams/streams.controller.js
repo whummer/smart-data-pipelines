@@ -68,7 +68,7 @@ exports.show = function(req, res, next) {
 		if (err)
 			return next(err);
 		if (!obj)
-			return res.send(401);
+			return res.send(404);
 		//console.log("stream", obj);
 		res.json(obj);
 	});

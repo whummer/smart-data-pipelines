@@ -94,7 +94,8 @@ angular.module('rioxApp')
         .state('consumer', {
             abstract: true,
             templateUrl: "app/views/common/content.html",
-            url: "/consumers"
+            url: "/consumers",
+            controller: "StreamsCtrl"
         })
         .state('consumer.wizard', {
             url: "/wizard",
@@ -134,7 +135,8 @@ angular.module('rioxApp')
         .state('streams', {
             abstract: true,
             templateUrl: "app/views/common/content.html",
-            url: "/streams"
+            url: "/streams",
+            controller: "StreamsCtrl"
         })
 	    .state('streams.provided', {
 	        url: "/provided",
