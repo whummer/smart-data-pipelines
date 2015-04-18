@@ -66,18 +66,18 @@
 						{{trim(streams[thingIndex + columnIndex].description, 200)}}
 					</div>
 					
-					<div class="price" ng-init="thePrice = streams[thingIndex + columnIndex].price">
-						<div ng-show="thePrice.type == 'per_event' || thePrice.type == 'per_day'" style="margin: auto;">
-						{{thePrice.amount}} €
+					<div class="price" ng-init="thePrice = streams[thingIndex + columnIndex].pricing">
+						<div ng-show="thePrice.billingUnit == 'event' || thePrice.billingUnit == 'day'" style="margin: auto;">
+						{{thePrice.unitPrice}} €
 						<span style="font-weight: normal;">
-							<span ng-show="thePrice.type == 'per_event'">per data point</span>
-							<span ng-show="thePrice.type == 'per_day'">per day</span>
+							<span ng-show="thePrice.billingUnit == 'event'">per data point</span>
+							<span ng-show="thePrice.billingUnit == 'day'">per day</span>
 						</span>
 						</div>
-						<div ng-show="thePrice.type == 'free'" style="line-height: 40px;">
+						<div ng-show="thePrice.billingUnit == 'free'" style="line-height: 40px;">
 						free of charge
 						</div>
-						<div ng-show="thePrice.type == 'on_request'" style="line-height: 40px;">
+						<div ng-show="thePrice.billingUnit == 'on_request'" style="line-height: 40px;">
 						request price
 						</div>
 					</div>

@@ -7,6 +7,7 @@ angular.module('rioxApp').controller(
 	riox.streams.consumed({}, function(streams) {
 		$scope.$apply(function() {
 			$scope.streams = streams;
+			console.log("consumed", streams)
 		});
 	});
 

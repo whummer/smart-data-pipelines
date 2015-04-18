@@ -11,6 +11,15 @@ function consumerWizardCtrl($scope) {
 	riox.streams({}, function(streams) {
 		$scope.$apply(function() {
 			$scope.streams = streams;
+			$.each(streams, function(idx, el) {
+				if(el[ORGANIZATION_ID]) {
+					riox.organization(el[ORGANIZATION_ID], function(org) {
+						if(org[IMAGE_DATA] && org[IMAGE_DATA][0]) {
+							el.organizationImg = org[IMAGE_DATA][0].href;
+						}
+					});
+				}
+			});
 		});
 	});
 

@@ -19,10 +19,12 @@ config.port = 8084;
 
 // Connect to database
 mongoose.connect(config.mongo.uri, config.mongo.options);
+global.mongooseAutoIncrement = require('mongoose-auto-increment');
+global.mongooseAutoIncrement.initialize(mongoose.connection);
 
 
 // Populate DB with sample data
-if(config.seedDB) { require('./config/seed'); }
+if(config.seedDB) { require('./demodata'); }
 
 // Setup server
 var app = express();

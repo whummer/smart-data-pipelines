@@ -146,4 +146,8 @@ UserSchema.methods = {
   }
 };
 
+
+UserSchema.plugin(mongooseAutoIncrement.plugin, 
+		{ model: 'User', field: 'id' });
+
 module.exports = mongoose.model('User', UserSchema);

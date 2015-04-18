@@ -23,6 +23,10 @@ var template = {
 	 */
 	"organization-id": String,
 	/**
+	 * Description.
+	 */
+	"description": String,
+	/**
 	 * Stream Type.
 	 */
 	"type": String,
@@ -35,6 +39,12 @@ var template = {
 		"unitPrice": Number
 	},
 	/**
+	 * Permission type (e.g., auto, manual, negotiation)
+	 */
+	permit : {
+		type : String
+	},
+	/**
 	 * Stream sink config.
 	 */
 	"sink-id": String,
@@ -45,5 +55,6 @@ var template = {
 }
 
 var DataStreamSchema = new Schema(template);
+DataStreamSchema.plugin(mongooseAutoIncrement.plugin, { model: 'DataStream', field: 'id' });
 
 module.exports = mongoose.model('DataStream', DataStreamSchema);

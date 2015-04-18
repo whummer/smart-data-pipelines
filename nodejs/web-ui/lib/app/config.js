@@ -21,11 +21,11 @@ var appConfig = {
 		ratings: { url: "http://localhost:8080/api/v1/ratings" },
 		stats: { url: "http://localhost:8080/api/v1/stats" },
 		files: { url: "http://localhost:8080/api/v1/files" },
-		organizations: { url: "http://localhost:8080/api/v1/organizations" },
 		billing: { url: "http://localhost:8080/api/v1/billing" },
 		semanticTypes: { url: "http://localhost:8080/api/v1/semantic-types" },
 
 		users: { url: "http://localhost:8084/api/v1/users" },
+		organizations: { url: "http://localhost:8084/api/v1/organizations" },
 		streams: { url: "http://localhost:8085/api/v1/streams" },
 		access: { url: "http://localhost:8085/api/v1/access" },
 		websocket: { url: "ws://platform.riots.io:8085/websocket" }
