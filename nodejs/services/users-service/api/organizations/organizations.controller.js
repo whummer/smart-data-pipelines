@@ -40,11 +40,11 @@ exports.update = function(req, res) {
 
 exports.show = function(req, res, next) {
 	var id = req.params.id;
-	var query = {id: id};
+	var query = {_id: id};
 	Organization.find(query, function(err, obj) {
 		if (err)
 			return next(err);
-		if (!obj)
+		if (!obj || !obj.length)
 			return res.send(401);
 		res.json(obj[0]);
 	});

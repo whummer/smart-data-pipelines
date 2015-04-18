@@ -11,6 +11,7 @@ var express = require('express');
 var mongoose = require('mongoose');
 var cors = require('cors');
 var config = require('_/config/environment');
+var util = require('_/util/util');
 
 global.config = config; // TODO needed?
 
@@ -19,9 +20,6 @@ config.port = 8084;
 
 // Connect to database
 mongoose.connect(config.mongo.uri, config.mongo.options);
-global.mongooseAutoIncrement = require('mongoose-auto-increment');
-global.mongooseAutoIncrement.initialize(mongoose.connection);
-
 
 // Populate DB with sample data
 if(config.seedDB) { require('./demodata'); }

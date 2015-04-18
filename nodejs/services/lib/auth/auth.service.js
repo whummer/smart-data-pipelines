@@ -29,12 +29,14 @@ function isAuthenticated() {
     })
     // Attach user to request
     .use(function(req, res, next) {
+//      var query = {id: req.user._id};
+//  	console.log(query, req.user);
       User.findById(req.user._id, function (err, user) {
         if (err) return next(err);
         if (!user) return res.send(401);
 
-        //console.log("req.user", req.user);
         req.user = user;
+//        console.log("req.user", req.user);
         next();
       });
     });
@@ -49,6 +51,7 @@ function hasRole(roleRequired) {
   return compose()
     .use(isAuthenticated())
     .use(function meetsRequirements(req, res, next) {
+//    	console.log("config.userRoles", config.userRoles, req.user.role, config.userRoles.indexOf(req.user.role), config.userRoles.indexOf(roleRequired));
       if (config.userRoles.indexOf(req.user.role) >= config.userRoles.indexOf(roleRequired)) {
         next();
       }
@@ -70,7 +73,7 @@ function getCurrentUser(req) {
  * Returns a jwt token signed by the app secret
  */
 function signToken(id) {
-  return jwt.sign({ _id: id }, config.secrets.session, { expiresInMinutes: 60*5 });
+  return jwt.sign({ _id: id }, config.secrets.session, { expiresInMinutes: 60*10 });
 }
 
 /**

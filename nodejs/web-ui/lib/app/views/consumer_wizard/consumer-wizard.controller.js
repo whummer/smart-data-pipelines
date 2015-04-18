@@ -17,6 +17,7 @@ function consumerWizardCtrl($scope) {
 						if(org[IMAGE_DATA] && org[IMAGE_DATA][0]) {
 							el.organizationImg = org[IMAGE_DATA][0].href;
 						}
+						el.organization = org;
 					});
 				}
 			});

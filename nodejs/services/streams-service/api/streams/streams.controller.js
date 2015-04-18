@@ -13,10 +13,10 @@ var validationError = function(res, err) {
 };
 
 function list(query, req, res) {
-	console.log("streams.index", query);
 	DataStream.find(query, function(err, list) {
 		if (err)
 			return res.send(500, err);
+//		console.log("list consumed", query, list);
 		res.json(200, list);
 	});
 }
@@ -38,7 +38,7 @@ exports.listConsumed = function(req, res) {
 		data.forEach(function(el) {
 			ids.push(el.streamId);
 		});
-		var query = {id: { $in : ids } };
+		var query = {_id: { $in : ids } };
 		return list(query, req, res);
 	});
 };
@@ -69,6 +69,7 @@ exports.show = function(req, res, next) {
 			return next(err);
 		if (!obj)
 			return res.send(401);
+		//console.log("stream", obj);
 		res.json(obj);
 	});
 };

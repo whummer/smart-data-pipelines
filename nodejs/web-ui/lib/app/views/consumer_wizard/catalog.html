@@ -61,7 +61,7 @@
 					<div class="caption">
 						<h4>{{streams[thingIndex + columnIndex].name}}</h4>
 						<hr/>
-						<b>Publisher:</b> {{streams[thingIndex + columnIndex].organizationName}}
+						<b>Publisher:</b> {{streams[thingIndex + columnIndex].organization.name}}
 						<hr/>
 						{{trim(streams[thingIndex + columnIndex].description, 200)}}
 					</div>
@@ -87,7 +87,7 @@
 		
 		<div class="clearfix"></div>
 		<div class="selection" ng-show="formData.selectedStream">
-			Selected Stream: {{formData.selectedStream.name}} ({{formData.selectedStream.organizationName}})
+			Selected Stream: {{formData.selectedStream.name}} ({{formData.selectedStream.organization.name}})
 			<a ui-sref="consumer.wizard.request" ng-click="loadAccessStatus()" 
 				class="btn btn-primary" style="float: right">Next</a>
 		</div>

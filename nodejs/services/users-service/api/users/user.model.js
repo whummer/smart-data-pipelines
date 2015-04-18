@@ -6,6 +6,7 @@ var crypto = require('crypto');
 var authTypes = ['github', 'twitter', 'facebook', 'google'];
 
 var UserSchema = new Schema({
+  id: String,
   name: String,
   email: { type: String, lowercase: true },
   role: {
@@ -49,10 +50,12 @@ UserSchema
 UserSchema
   .virtual('token')
   .get(function() {
-    return {
+    var tok = {
       '_id': this._id,
       'role': this.role
     };
+    console.log("token", tok, this.id, this._id);
+    return tok;
   });
 
 /**
@@ -146,8 +149,6 @@ UserSchema.methods = {
   }
 };
 
-
-UserSchema.plugin(mongooseAutoIncrement.plugin, 
-		{ model: 'User', field: 'id' });
+//UserSchema.set('toJSON', { virtuals: true });
 
 module.exports = mongoose.model('User', UserSchema);

@@ -10,7 +10,8 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 var express = require('express');
 var mongoose = require('mongoose');
 var cors = require('cors');
-var config = require('../lib/config/environment');
+var config = require('_/config/environment');
+var util = require('_/util/util');
 
 /* globals */
 global.config = config;
@@ -20,8 +21,6 @@ config.port = 8085;
 
 // Connect to database
 mongoose.connect(config.mongo.uri, config.mongo.options);
-global.mongooseAutoIncrement = require('mongoose-auto-increment');
-global.mongooseAutoIncrement.initialize(mongoose.connection);
 
 // Populate DB with sample data
 if(config.seedDB) { require('./demodata'); }

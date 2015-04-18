@@ -4,6 +4,6 @@ var pathPrefix = appConfig.services.access.url;
 var api = {};
 
 /* add API methods */
-apiUtil.addMethod(api, "list", pathPrefix + "/", "GET");
+api.list = apiUtil.registerMethod("access_list", pathPrefix + "/", "GET");
 
 module.exports = api;

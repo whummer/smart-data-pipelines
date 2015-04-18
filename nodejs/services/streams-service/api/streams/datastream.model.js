@@ -3,9 +3,10 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
+
 var template = {
 
-	"id": String,
+	"_id": { type: String, default: genShortUUID},
 	/**
 	 * Name.
 	 */
@@ -42,7 +43,7 @@ var template = {
 	 * Permission type (e.g., auto, manual, negotiation)
 	 */
 	permit : {
-		type : String
+		type : {type: String}
 	},
 	/**
 	 * Stream sink config.
@@ -55,6 +56,7 @@ var template = {
 }
 
 var DataStreamSchema = new Schema(template);
-DataStreamSchema.plugin(mongooseAutoIncrement.plugin, { model: 'DataStream', field: 'id' });
+DataStreamSchema.set('toJSON', { virtuals: true });
+DataStreamSchema.set('toObject', { virtuals: true });
 
 module.exports = mongoose.model('DataStream', DataStreamSchema);

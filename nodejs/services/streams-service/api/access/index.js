@@ -4,11 +4,8 @@ var express = require('express');
 var mongoose = require('mongoose');
 var controller = require('./access.controller');
 var auth = require('_/auth/auth.service');
-var StreamAccess = require('./stream.access');
+var StreamAccess = require('./streamaccess.model');
 var ModelUtil = require("_/model/model.util");
-
-/* export schemas to mongo */
-ModelUtil.exportModelSchema(StreamAccess);
 
 /* define routes */
 var router = express.Router();

@@ -1,4 +1,5 @@
 var Organization = require('./api/organizations/organization.model');
+var User = require('./api/users/user.model');
 
 var demoData = [
             	{
@@ -44,3 +45,11 @@ Organization.find({}, function(err, list) {
 		});
 	}
 });
+
+User.find({email: adminUser.email}, function(err, list) {
+	if (!list || !list.length) {
+		var admin = new User(adminUser);
+		admin.save();
+	}
+});
+

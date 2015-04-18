@@ -2,6 +2,9 @@
 
 var appConfig = require("_/../../web-ui/lib/app/config.js");
 
+/* set global admin user */
+global.adminUser = {email: "riox", password: "riox", role: "admin"};
+
 // Development specific configuration
 // ==================================
 module.exports = {
