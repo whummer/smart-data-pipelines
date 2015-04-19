@@ -28,51 +28,49 @@ var gulp = require('gulp-help')(require('gulp')),
 //
 // build path configuration
 //
-var UI_BASE_DIR = 'web-ui';
-var UI_SRC_DIR = UI_BASE_DIR + '/lib';
-var UI_BUILD_DIR = UI_BASE_DIR + '/build';
-var UI_BUILD_DIR_TEST = UI_BASE_DIR + '/build/test';
-var UI_BUILD_DIR_PROD = UI_BASE_DIR + '/build/production';
+var BASE_DIR = 'web-ui';
+var SRC_DIR = BASE_DIR + '/lib';
+var BUILD_DIR = BASE_DIR + '/build';
+var BUILD_DIR_TEST = BASE_DIR + '/build/test';
+var BUILD_DIR_PROD = BASE_DIR + '/build/production';
 
 var paths = {
 	// app base
-	base: UI_SRC_DIR,
+	base: SRC_DIR,
 
 	// do not inject '.spec.js' files
-	scripts: [UI_SRC_DIR + '/app/**/*.js', '!' + UI_SRC_DIR + '/app/**/*.spec.js'],
+	scripts: [SRC_DIR + '/app/**/*.js', '!' + SRC_DIR + '/app/**/*.spec.js'],
 
 	// glob for all LESS files (required for file watching)
-	less: [UI_SRC_DIR + '/app/styles/less/*.less'],
+	less: [SRC_DIR + '/app/styles/less/*.less'],
 
 	// glob for all CSS files
-	css: [UI_SRC_DIR + '/app/styles/css/**/*.css'],
+	css: [SRC_DIR + '/app/styles/css/**/*.css'],
 
 	// "main" LESS file (the one that imports all other less files)
-	less_main: [UI_SRC_DIR + '/app/app.less'],
+	less_main: [SRC_DIR + '/app/app.less'],
 
 	// images (for optimization by imagemin)
-	images: UI_SRC_DIR + '/app/components/img/**/*',
+	images: SRC_DIR + '/app/components/img/**/*',
 
 	// html files / views
-	html: UI_SRC_DIR + "/app/**/*.html",
+	html: SRC_DIR + "/app/**/*.html",
 
 	// "main" (index.html) file
-	main: UI_SRC_DIR + '/index.tmpl.html',
+	main: SRC_DIR + '/index.tmpl.html',
 
 	// all in one concatenated and minified JS files
-	minified_js: UI_BUILD_DIR_PROD + "/app/components/js/riox.all.min.js",
+	minified_js: BUILD_DIR_PROD + "/app/components/js/riox.all.min.js",
 
 	// Dockerfile template
-	dockerfile: UI_BASE_DIR + "/Dockerfile.tmpl"
+	dockerfile: BASE_DIR + "/Dockerfile.tmpl"
 };
 
 //
 // Dockerfile settings
 //
 var dockerSettings = {
-	web_ui: {
-		port: '8080'
-	}
+	port: '8080'
 };
 
 //
@@ -86,7 +84,7 @@ gulp.task('default', 'i\'m only here for the beer', function () {
 // clean output directories
 //
 gulp.task('ui:clean', 'remove build directories',  function () {
-	return gulp.src(UI_BUILD_DIR, {read: false}).pipe(clean());
+	return gulp.src(BUILD_DIR, {read: false}).pipe(clean());
 });
 
 //
@@ -94,21 +92,21 @@ gulp.task('ui:clean', 'remove build directories',  function () {
 //
 gulp.task('ui:copy:test', 'copies riox-ui sources to TEST build dir', function () {
 	return gulp.src([
-		UI_SRC_DIR + '/**',
+		SRC_DIR + '/**',
 		'!' + "/**/*.less",
 		'!' + "/**/index.tmpl.html",
-		'!' + UI_SRC_DIR + '/app/styles/less{,/**}'
-	]).pipe(gulp.dest(UI_BUILD_DIR_TEST));
+		'!' + SRC_DIR + '/app/styles/less{,/**}'
+	]).pipe(gulp.dest(BUILD_DIR_TEST));
 });
 
 gulp.task('ui:copy:prod', 'copies riox-ui sources to PRODUCTION build dir', function () {
 	return gulp.src([
-		UI_SRC_DIR + '/**',
+		SRC_DIR + '/**',
 		'!' + "/**/*.less",
 		'!' + "index.tmpl.html",
-		'!' + UI_SRC_DIR + '/app/styles/less{,/**}',
-		'!' + UI_SRC_DIR + '/app/components/js{,/**}'
-	]).pipe(gulp.dest(UI_BUILD_DIR_PROD));
+		'!' + SRC_DIR + '/app/styles/less{,/**}',
+		'!' + SRC_DIR + '/app/components/js{,/**}'
+	]).pipe(gulp.dest(BUILD_DIR_PROD));
 });
 
 //
@@ -133,11 +131,11 @@ gulp.task('ui:inject:dev', 'inject resources (CSS, JS) into index.html (DEV)',  
 });
 
 gulp.task('ui:inject:test', 'inject resources (CSS, JS) into index.html (TEST)', function () {
-	return injectResources(UI_BUILD_DIR_TEST, paths.base + '/app', 'web-ui/lib')
+	return injectResources(BUILD_DIR_TEST, paths.base + '/app', 'web-ui/lib')
 });
 
 gulp.task('ui:inject:prod','inject resources (CSS, JS) into index.html (PROD)', function () {
-	return injectResources(UI_BUILD_DIR_PROD, paths.base + '/app', ['web-ui/lib', 'web-ui/build/prod'], true)
+	return injectResources(BUILD_DIR_PROD, paths.base + '/app', ['web-ui/lib', 'web-ui/build/prod'], true)
 });
 
 function injectResources(indexLocation, cssLocation, ignorePath, minified) {
@@ -152,7 +150,7 @@ function injectResources(indexLocation, cssLocation, ignorePath, minified) {
 	return gulp.src(paths.main)
 
 			.pipe(inject(
-					gulp.src(bowerFiles({paths: UI_BASE_DIR}), {read: false})
+					gulp.src(bowerFiles({paths: BASE_DIR}), {read: false})
 							.pipe(jqueryFilter), {name: 'bower', ignorePath: ignorePath}))
 
 			.pipe(inject(es.merge(
@@ -178,7 +176,7 @@ gulp.task('ui:scriptsmin', 'concatenate, minify and uglify JS script sources',  
 			.pipe(concat('riox.all.min.js'))
 			.pipe(uglify())
 			.pipe(sourcemaps.write())
-			.pipe(gulp.dest(UI_BUILD_DIR_PROD + '/app/components/js'));
+			.pipe(gulp.dest(BUILD_DIR_PROD + '/app/components/js'));
 });
 
 //
@@ -194,7 +192,7 @@ gulp.task('ui:imagemin', 'optimize image size', function () {
 					}
 			))
 
-			.pipe(gulp.dest(UI_BUILD_DIR_PROD + '/app/components/img/'));
+			.pipe(gulp.dest(BUILD_DIR_PROD + '/app/components/img/'));
 });
 
 //
@@ -204,7 +202,7 @@ gulp.task('ui:imagemin', 'optimize image size', function () {
 //run app using nodemon
 gulp.task('ui:serve', 'serve the riox-ui src using nodemon', ['ui:inject:dev'], function () {
 	return nodemon({
-		script: UI_SRC_DIR + '/server.js', options: '-i ' + UI_SRC_DIR + "/*"
+		script: SRC_DIR + '/server.js', options: '-i ' + SRC_DIR + "/*"
 	});
 });
 
@@ -214,7 +212,7 @@ gulp.task('ui:livereload', 'servce the riox-ui using nodemon (with livereload)',
 	livereload();
 	livereload.listen();
 	util.log(livereload);
-	var all_build_files = UI_SRC_DIR + '/app/**/*';
+	var all_build_files = SRC_DIR + '/app/**/*';
 	return gulp.watch(all_build_files, function (whatChanged) {
 		if (whatChanged.type == 'changed') {
 			util.log("Updated: ", whatChanged.path);
@@ -253,9 +251,9 @@ gulp.task('ui:build:test', 'create a TEST build of riox-ui', function () {
 //
 gulp.task('ui:serve:prod','serve the PRODUCTION build of riox-ui (8080)',  ['ui:build:prod'],  function () {
 	return nodemon({
-		script: UI_BUILD_DIR_PROD + '/server.js',
+		script: BUILD_DIR_PROD + '/server.js',
 		env: { 'NODE_ENV': 'production' , 'PORT' : 8080},
-		options: '-i ' + UI_BUILD_DIR_PROD + "/*"
+		options: '-i ' + BUILD_DIR_PROD + "/*"
 	});
 });
 
@@ -264,9 +262,9 @@ gulp.task('ui:serve:prod','serve the PRODUCTION build of riox-ui (8080)',  ['ui:
 //
 gulp.task('ui:serve:test', 'serve the TEST build of riox-ui (8080)', ['ui:build:test'], function () {
 	return nodemon({
-		script: UI_BUILD_DIR_TEST + '/server.js',
+		script: BUILD_DIR_TEST + '/server.js',
 		env: { 'NODE_ENV': 'test', 'PORT' : 8080},
-		//options: '-i ' + UI_BUILD_DIR_TEST + "/*"
+		//options: '-i ' + BUILD_DIR_TEST + "/*"
 	});
 });
 
@@ -299,13 +297,13 @@ gulp.task('ui:docker:build:prod:dockerfile', 'prepare a Dockerfile for riox-ui (
 function prepareDockerfile(env) {
 	return gulp.src(paths.dockerfile)
 			.pipe(replace("%NODE_ENV%", env))
-			.pipe(replace("%PORT%", dockerSettings.web_ui.port))
+			.pipe(replace("%PORT%", dockerSettings.port))
 			.pipe(rename("Dockerfile"))
-			.pipe(gulp.dest(UI_BASE_DIR));
+			.pipe(gulp.dest(BASE_DIR));
 }
 
 gulp.task('ui:docker:push', function () {
-	return cp.spawn('bin/build-push.sh', ['--no-push'], {env: process.env, cwd: UI_BASE_DIR, stdio: 'inherit'})
+	return cp.spawn('bin/build-push.sh', ['--no-push'], {env: process.env, cwd: BASE_DIR + '/..', stdio: 'inherit'})
 });
 
 

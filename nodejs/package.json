@@ -21,6 +21,7 @@
     "mongoose-auto-increment": "~4.0.0",
     "morgan": "~1.0.0",
     "node-rest-client": "^1.5.0",
+    "node-uuid": "^1.4.3",
     "passport": "~0.2.0",
     "passport-facebook": "latest",
     "passport-google-oauth": "latest",
