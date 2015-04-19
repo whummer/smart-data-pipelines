@@ -2,7 +2,6 @@
 
 IMAGE_NAME=""
 BASEDIR=$(dirname $0)
-
 VERBOSE=0
 NO_PUSH=0
 PRETEND=0
@@ -20,6 +19,10 @@ while true; do
 done
 
 DOCKER_CMD="docker build -t ${IMAGE_NAME} ${BASEDIR}"
+
+if [ "$VERBOSE" -eq "1" ]; then
+  echo "DOCKER_CMD: $DOCKER_CMD";
+fi;
 
 if [ "$PRETEND" -eq "1" ]; then
   echo "$DOCKER_CMD";
