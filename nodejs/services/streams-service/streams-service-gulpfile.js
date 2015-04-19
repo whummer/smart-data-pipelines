@@ -74,7 +74,8 @@ gulp.task('services:streams:copy:prod', 'copies streams-service sources to PRODU
 //
 gulp.task('services:streams:serve', 'serve the streams-service  using nodemon', function () {
 	return nodemon({
-		script: BASE_DIR + '/app.js'
+		script: BASE_DIR + '/app.js',
+		env: { 'NODE_ENV': 'development' , 'PORT' : dockerSettings.port}
 	});
 });
 

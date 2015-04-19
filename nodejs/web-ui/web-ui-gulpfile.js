@@ -202,7 +202,8 @@ gulp.task('ui:imagemin', 'optimize image size', function () {
 //run app using nodemon
 gulp.task('ui:serve', 'serve the riox-ui src using nodemon', ['ui:inject:dev'], function () {
 	return nodemon({
-		script: SRC_DIR + '/server.js', options: '-i ' + SRC_DIR + "/*"
+		script: SRC_DIR + '/server.js', options: '-i ' + SRC_DIR + "/*",
+		env: { 'NODE_ENV': 'development' , 'PORT' : 8080}
 	});
 });
 
@@ -263,7 +264,7 @@ gulp.task('ui:serve:prod','serve the PRODUCTION build of riox-ui (8080)',  ['ui:
 gulp.task('ui:serve:test', 'serve the TEST build of riox-ui (8080)', ['ui:build:test'], function () {
 	return nodemon({
 		script: BUILD_DIR_TEST + '/server.js',
-		env: { 'NODE_ENV': 'test', 'PORT' : 8080},
+		env: { 'NODE_ENV': 'test', 'PORT' : 8080}
 		//options: '-i ' + BUILD_DIR_TEST + "/*"
 	});
 });
