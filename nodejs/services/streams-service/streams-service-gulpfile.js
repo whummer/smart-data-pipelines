@@ -42,7 +42,7 @@ gulp.task('services:streams:clean', 'remove build directories', function () {
 //
 // Build tasks for TEST and PROD
 //
-gulp.task('services:streams:build:test', 'copies riox-ui sources to TEST build dir', function () {
+gulp.task('services:streams:build:test', 'copies streams-service sources to TEST build dir', function () {
 	runSequence('services:streams:copy:src:test', 'services:streams:copy:lib:test');
 });
 
@@ -64,7 +64,7 @@ gulp.task('services:streams:copy:lib:test', 'copies stream service libraries to 
 });
 
 
-gulp.task('services:streams:copy:prod', 'copies riox-ui sources to PRODUCTION build dir', function () {
+gulp.task('services:streams:copy:prod', 'copies streams-service sources to PRODUCTION build dir', function () {
 	return gulp.src([BASE_DIR + '/**', '!' + BASE_DIR + "/build"])
 			.pipe(gulp.dest(BUILD_DIR_PROD));
 });
@@ -72,23 +72,23 @@ gulp.task('services:streams:copy:prod', 'copies riox-ui sources to PRODUCTION bu
 //
 // run service using nodemon
 //
-gulp.task('services:streams:serve', 'serve the streams-service  using nodemon', ['services:streams:inject:dev'], function () {
+gulp.task('services:streams:serve', 'serve the streams-service  using nodemon', function () {
 	return nodemon({
-		script: SRC_DIR + '/server.js', options: '-i ' + SRC_DIR + "/*"
+		script: BASE_DIR + '/app.js'
 	});
 });
 
 //
 // Docker tasks
 //
-gulp.task('services:streams:docker:build:test', 'build a Docker image from riox-ui TEST build', function () {
+gulp.task('services:streams:docker:build:test', 'build a Docker image from streams-service TEST build', function () {
 	util.log(util.colors.magenta("Building Docker image for TEST..."));
 	runSequence('services:streams:build:test', 'services:streams:docker:build:test:dockerfile', 'services:streams:docker:push', function () {
 		util.log(util.colors.magenta("Built Docker image for TEST. Enjoy."));
 	});
 });
 
-gulp.task('services:streams:docker:build:prod', 'build a Docker image from riox-ui PRODUCTION build', function () {
+gulp.task('services:streams:docker:build:prod', 'build a Docker image from streams-service PRODUCTION build', function () {
 	util.log(util.colors.magenta("Building Docker image for TEST..."));
 	runSequence('services:streams:build:prod', 'services:streams:docker:build:prod:dockerfile', 'services:streams:docker:push', function () {
 		util.log(util.colors.magenta("Built Docker image for TEST. Enjoy."));
