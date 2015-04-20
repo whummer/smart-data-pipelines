@@ -27,7 +27,7 @@ describe('/streams', function() {
 		app.streams.server.close();
 	});
 
-	it('returns username if name param is a valid user', function(done) {
+	it('returns streams list if we have a valid user', function(done) {
 		superagent.get(app.streams.url).
 				set("authorization", app.tokenHeaders.authorization).
 				end(
