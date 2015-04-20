@@ -705,7 +705,7 @@ var clone = function(obj) {
 
 if(typeof module != "undefined") {
 	module.exports = sh;
-} else if(typeof windows != "undefined") {
+} else if(typeof window != "undefined") {
 	window.riots = sh;
 	window.riox = sh;
 

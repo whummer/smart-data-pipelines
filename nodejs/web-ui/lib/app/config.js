@@ -1,7 +1,7 @@
 /**
  * global app configurations
  */
-var appConfig = {
+var appConfig = servicesConfig = {
 	appRootPath: "/app",
 	bowerRootPath: "/bower_components",
 	services: {
