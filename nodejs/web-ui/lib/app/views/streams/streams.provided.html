@@ -103,7 +103,7 @@
 					<div class="ibox-title">
 						<h5>Stream Consumers</h5>
 					</div>
-					<div class="ibox-content">
+					<div class="ibox-content" ng-show="selectedStream.consumers.length">
 						<div class="table-responsive">
 							<table class="table table-striped">
 								<thead>
@@ -126,6 +126,9 @@
 								</tbody>
 							</table>
 						</div>
+					</div>
+					<div class="ibox-content" ng-show="!selectedStream.consumers.length">
+						Currently there are no consumers for this stream.
 					</div>
 				</div>
 			</div>

@@ -1,0 +1,12 @@
+{
+  "name": "riox",
+  "version": "0.0.0",
+  "dependencies": {
+    "mongoose": "~4.0.0"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "private": true
+}

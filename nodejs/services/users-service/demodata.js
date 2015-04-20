@@ -1,5 +1,5 @@
 var Organization = require('./api/organizations/organization.model');
-var User = require('./api/users/user.model');
+var User = require('_/model/user.model');
 
 var demoData = [
             	{

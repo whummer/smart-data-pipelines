@@ -6,11 +6,8 @@ var config = require('../config/environment');
 var jwt = require('jsonwebtoken');
 var expressJwt = require('express-jwt');
 var compose = require('composable-middleware');
-var User = require('../model/user.model');
+var User = require('_/model/user.model');
 var validateJwt = expressJwt({ secret: config.secrets.session });
-
-//TODO: whu: fix connection centrally in app.js. No clue why the connection is not open here.
-mongoose.connect(config.mongo.uri, config.mongo.options);
 
 
 /**

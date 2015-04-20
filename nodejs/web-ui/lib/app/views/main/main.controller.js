@@ -9,7 +9,8 @@ angular.module('rioxApp')
 
     $scope.logout = function() {
       Auth.logout();
-      $location.path('/login');
+      $state.go('index.login');
+      //$location.path('/login');
       /* important: make sure to reload the entire page, to 
        * reset all controllers, state information, etc.
        */
@@ -21,10 +22,11 @@ angular.module('rioxApp')
     };
 
     riox.defaultErrorCallback = function(p1, p2, p3, p4) {
-    	console.log("inv error", p1, p2, p3, p4);
     	if(p1.status == 401) {
-    		//$state.go('index.login');
-    		showConfirmDialog("Access denied. Please log in.");
+    		//console.log("inv error", p1, p2, p3, p4);
+    		showConfirmDialog("Access denied. Please log in.", function() {
+    			$scope.logout();
+    		});
     	}
     };
 

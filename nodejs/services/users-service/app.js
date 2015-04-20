@@ -13,10 +13,10 @@ var cors = require('cors');
 var config = require('_/config/environment');
 var util = require('_/util/util');
 
-global.config = config; // TODO needed?
+global.config = config;
 
 // TODO find better place to configure port for microservices
-config.port = 8084;
+config.port = process.env.SERVICE_PORT || 8084;
 
 // Connect to database
 mongoose.connect(config.mongo.uri, config.mongo.options);

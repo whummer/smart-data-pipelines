@@ -12,5 +12,5 @@ var gulpFiles = {
 
 
 gulp.task('riox', 'start riox nodejs infrastructure', function() {
-	runSequence('ui:livereload', 'services:streams:serve');
+	runSequence('ui:livereload', 'services:streams:serve', 'services:users:serve');
 });
