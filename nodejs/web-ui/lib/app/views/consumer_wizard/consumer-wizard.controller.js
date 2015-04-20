@@ -8,14 +8,18 @@ function consumerWizardCtrl($scope) {
 	$scope.trim = window.trim;
 
 	/* load streams */
-	riox.streams({}, function(streams) {
-		$scope.$apply(function() {
-			$scope.streams = streams;
-			$.each(streams, function(idx, el) {
-				$scope.prepareStream(el);
+	var loadStreams = function() {
+		riox.streams({}, function(streams) {
+			$scope.$apply(function() {
+				$scope.streams = streams;
+				$.each(streams, function(idx, el) {
+					$scope.prepareStream(el);
+				});
 			});
 		});
-	});
+	}
+
+	loadStreams();
 
 	$scope.producersAutocomp = {
 		options: {
@@ -34,7 +38,7 @@ function consumerWizardCtrl($scope) {
 	};
 
 	$scope.requestAccess = function () {
-		if (!$scope.formData.streamAccess) {
+		if (!$scope.formData.streamAccess || !$scope.formData.streamAccess.status) {
 			var streamAccess = {
 				status: "requested",
 				streamId: $scope.formData.selectedStream.id
@@ -54,7 +58,11 @@ function consumerWizardCtrl($scope) {
 			streamId: $scope.formData.selectedStream.id
 		};
 		riox.access(query, function (access) {
-			$scope.formData.streamAccess = access;
+			if(access[0]) {
+				$scope.formData.streamAccess = access[0];
+			} else {
+				$scope.formData.streamAccess = {};
+			}
 			if (callback) {
 				callback();
 			}

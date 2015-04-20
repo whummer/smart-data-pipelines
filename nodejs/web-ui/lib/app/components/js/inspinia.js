@@ -18,6 +18,8 @@ $(window).bind("load resize click scroll", function() {
     }
 });
 
+$("#modalDialog").show();
+
 // Minimalize menu when screen is less than 768px
 $(window).bind("load resize", function() {
     if ($(this).width() < 769) {

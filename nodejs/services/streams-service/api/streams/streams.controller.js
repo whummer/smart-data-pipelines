@@ -28,6 +28,7 @@ exports.index = function(req, res) {
 exports.listProvided = function(req, res) {
 	var user = auth.getCurrentUser(req);
 	var query = {ownerId: user.id};
+	query = {}; // TODO remove! (testing only)
 	return list(query, req, res);
 };
 

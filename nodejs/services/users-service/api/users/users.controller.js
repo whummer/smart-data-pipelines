@@ -1,6 +1,6 @@
 'use strict';
 
-var User = require('./user.model');
+var User = require('_/model/user.model');
 var passport = require('passport');
 var config = require('_/config/environment');
 var jwt = require('jsonwebtoken');

@@ -6,6 +6,8 @@ angular.module('rioxApp')
     $urlRouterProvider.otherwise("/index/main");
 
     $stateProvider
+
+	    /* main index */
         .state('index', {
             url: "/index",
             templateUrl: "app/views/common/content.html"
@@ -139,14 +141,14 @@ angular.module('rioxApp')
             controller: "StreamsCtrl"
         })
 	    .state('streams.provided', {
-	        url: "/provided",
+	        url: "/provided/{streamId}",
 	        templateUrl: "app/views/streams/streams.provided.html",
-	        controller: "StreamProduceCtrl"
+	        controller: "StreamsProvidedCtrl"
 	    })
 	    .state('streams.consumed', {
 	        url: "/consumed/{streamId}",
 	        templateUrl: "app/views/streams/streams.consumed.html",
-	        controller: "StreamConsumeCtrl"
+	        controller: "StreamsConsumedCtrl"
 	    });
 
   });

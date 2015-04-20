@@ -151,4 +151,8 @@ UserSchema.methods = {
 
 //UserSchema.set('toJSON', { virtuals: true });
 
-module.exports = mongoose.model('User', UserSchema);
+try {
+	module.exports = mongoose.model('User', UserSchema);
+} catch(e) {
+	//console.log(e);
+}

@@ -5,7 +5,6 @@ angular.module('rioxApp').controller(
 
 	$scope.prepareStreams = function(list) {
 		$.each(list, function(idx,el) {
-			console.log("preparing", el);
 			$scope.prepareStream(el);
 		});
 	}
