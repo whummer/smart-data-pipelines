@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('rioxApp').controller(
-'StreamConsumeCtrl', function ($scope, Auth, $stateParams) {
+'StreamsConsumedCtrl', function ($scope, Auth, $stateParams) {
 
 	$scope.trim = window.trim;
 	$scope.selectedStream = null;

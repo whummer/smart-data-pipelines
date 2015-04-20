@@ -5,17 +5,6 @@ var passport = require('passport');
 var jwt = require('jsonwebtoken');
 var auth = require('_/auth/auth.service');
 
-function read(query, req, res, next) {
-	StreamAccess.findOne(query, function(err, obj) {
-		if (err)
-			return next(err);
-		if (!obj)
-			return res.send(401);
-		//console.log("stream", obj);
-		res.json(obj);
-	});
-}
-
 exports.index = function(req, res, next) {
 	var user = auth.getCurrentUser(req);
 	var query = { $or: 
@@ -31,9 +20,23 @@ exports.index = function(req, res, next) {
 	});
 }
 exports.getByStream = function(req, res, next) {
-	var query = {streamId: req.params.streamId};
-	console.log("getByStream", query);
-	return read(query, req, res, next);
+	var user = auth.getCurrentUser(req);
+	var query = {
+			streamId: req.params.streamId,
+			$or: 
+				[
+					{ownerId: user.id},
+					{requestorId: user.id}
+				]
+	};
+	return StreamAccess.find(query, function(err, obj) {
+		if (err)
+			return next(err);
+		if (!obj)
+			return res.send(404);
+		//console.log("stream", obj);
+		res.json(obj);
+	});
 }
 exports.show = function(req, res, next) {
 	var id = req.params.id;
@@ -42,7 +45,7 @@ exports.show = function(req, res, next) {
 		if (err)
 			return next(err);
 		if (!obj)
-			return res.send(401);
+			return res.send(404);
 		res.json(obj);
 	});
 }

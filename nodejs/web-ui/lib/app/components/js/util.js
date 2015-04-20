@@ -7,10 +7,11 @@
 
 		//trim the string to the maximum length
 		var trimmed = str.substr(0, length);
-		//re-trim if we are in the middle of a word
-		trimmed = trimmed.substr(0, 
-				Math.min(trimmed.length, trimmed.lastIndexOf(" ")));
 		if(trimmed.length < str.length) {
+			//re-trim if we are in the middle of a word
+			trimmed = trimmed.substr(0, 
+					Math.min(trimmed.length, trimmed.lastIndexOf(" ")));
+			// add dots
 			trimmed += "...";
 		}
 		return trimmed;

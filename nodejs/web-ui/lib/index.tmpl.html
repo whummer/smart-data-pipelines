@@ -29,10 +29,6 @@
 <!-- growl div (for notifications) -->
 <div growl></div>
 
-<!-- Add your site or application content here -->
-<div ui-view="" ng-controller="MainCtrl"></div>
-
-
 <!--[if lt IE 9]>
 <script src="bower_components/es5-shim/es5-shim.js"></script>
 <script src="bower_components/json3/lib/json3.min.js"></script>
@@ -54,6 +50,16 @@
 
 <script src="http://riox.io/js/service-calls.js"></script>
 <script src="http://riox.io/js/riox-api.js"></script>
+
+<!-- Add your site or application content here -->
+<div ng-controller="MainCtrl">
+	<!-- modal div (for notifications) -->
+<!-- 	<div ng-include="'app/views/common/modal.html'"></div> -->
+	<div ng-include="'app/views/common/dialogs.html'"></div>
+	<!-- main view -->
+	<div ui-view=""></div>
+</div>
+
 
 </body>
 </html>
