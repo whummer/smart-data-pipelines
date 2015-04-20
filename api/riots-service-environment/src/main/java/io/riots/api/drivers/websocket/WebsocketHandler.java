@@ -1,10 +1,12 @@
 package io.riots.api.drivers.websocket;
 
+import io.riots.api.services.scenarios.PropertyValue;
+import io.riots.api.websocket.WebsocketMessage;
+import io.riots.api.websocket.WebsocketMessage.WSMessageSubscribe;
+import io.riots.api.websocket.WebsocketMessage.WSMessageUnsubscribe;
 import io.riots.core.jms.EventBroker;
 import io.riots.core.util.JSONUtil;
-import io.riots.api.drivers.websocket.WebsocketMessage.WSMessageSubscribe;
-import io.riots.api.drivers.websocket.WebsocketMessage.WSMessageUnsubscribe;
-import io.riots.api.services.scenarios.PropertyValue;
+import io.riots.core.util.PropertyUtil;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,17 +28,33 @@ public class WebsocketHandler extends TextWebSocketHandler {
 
 	private static Map<String,WSSubscription> subscriptions = new ConcurrentHashMap<>();
 	private static final Logger LOG = Logger.getLogger(WebsocketHandler.class);
+	private static final boolean DO_RECURSE_SUBPROPERTIES = true;
 
 	@JmsListener(containerFactory = EventBroker.CONTAINER_FACTORY_NAME, 
 			destination = EventBroker.MQ_OUTBOUND_PROP_CHANGE_NOTIFY)
 	public void processEvent(String data) {
-		System.out.println("websocket data out: " + data);
+		//System.out.println("websocket data out: " + data);
 		PropertyValue obj = JSONUtil.fromJSON(data, PropertyValue.class);
+		if(DO_RECURSE_SUBPROPERTIES) {
+			processPropertyAndChildrenRecursively(obj);
+		} else {
+			processProperty(obj);
+		}
+	}
+
+	private void processPropertyAndChildrenRecursively(PropertyValue obj) {
+		processProperty(obj);
+		for(PropertyValue v : PropertyUtil.getChildren(obj)) {
+			processPropertyAndChildrenRecursively(v);
+		}
+	}
+
+	private void processProperty(PropertyValue obj) {
 		for (String key : subscriptions.keySet()) {
 			WSSubscription s = subscriptions.get(key);
 			try {
 				if(s.matches(obj)) {
-					s.session.sendMessage(new TextMessage(data));
+					s.session.sendMessage(new TextMessage(JSONUtil.toJSON(obj)));
 				}
 			} catch (Exception e) {
 				if(!s.session.isOpen()) {
@@ -61,7 +79,6 @@ public class WebsocketHandler extends TextWebSocketHandler {
 			s.clientId = m1.clientId;
 			s.propertyName = m1.propertyName;
 			subscriptions.put(session.getId(), s);
-			//startSim(s.thingId, m1.propertyName); // TODO temp
 		} else if(m instanceof WSMessageUnsubscribe) {
 			WSMessageUnsubscribe m1 = (WSMessageUnsubscribe)m;
 			WSSubscription sub = subscriptions.get(session.getId());
@@ -73,7 +90,7 @@ public class WebsocketHandler extends TextWebSocketHandler {
 					WSSubscription s = subscriptions.get(id);
 //					System.out.println("Subscription matches: " + 
 //							m1.matches(s, session) + " - " + s + " - " + session);
-					if(m1.matches(s, session)) {
+					if(s.matches(m1, session)) {
 						terminate(s, m1.closeConnection);
 					}
 				}
@@ -93,31 +110,5 @@ public class WebsocketHandler extends TextWebSocketHandler {
 			LOG.info("Unable to terminate Web socket subscription");
 		}
 	}
-
-//	TODO remove
-//	private void startSim(String thingId, String propertyName) {
-//		new Thread() {
-//			public void run() {
-//				for (int i = 0; i < 10; i++) {
-//					try {
-//						Property p = new Property();
-//						p.setName(propertyName);
-//						PropertyValue v = new PropertyValue(p, Math.random());
-//						v.setThingId(thingId);
-//						v.setPropertyName(propertyName);
-//						v.setTimestamp(System.currentTimeMillis());
-//						EventBroker.sendMessage(EventBroker.MQ_PROP_SIM_UPDATE, template, v);
-//						try {
-//							Thread.sleep(1000);
-//						} catch (InterruptedException e) {
-//						}
-//					} catch (Exception e) {
-//						e.printStackTrace();
-//						break;
-//					}
-//				}
-//			}
-//		}.start();
-//	}
 
 }

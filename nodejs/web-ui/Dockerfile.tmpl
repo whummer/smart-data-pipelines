@@ -1,0 +1,18 @@
+
+# Pull base image.
+FROM dockerfile/nodejs
+
+ENV NODE_ENV %NODE_ENV%
+ENV PORT 8080
+
+ENV APPDIR /var/riox/
+ADD ./build/%NODE_ENV% $APPDIR/lib
+ADD ./node_modules $APPDIR/node_modules
+ADD ./package.json $APPDIR
+WORKDIR $APPDIR
+
+# TODO this is not properly cached by docker see - http://www.clock.co.uk/blog/a-guide-on-how-to-cache-npm-install-with-docker
+RUN npm install 
+
+EXPOSE ${PORT}
+ENTRYPOINT node lib/server.js

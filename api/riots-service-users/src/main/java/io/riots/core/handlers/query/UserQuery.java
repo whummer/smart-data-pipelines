@@ -1,5 +1,6 @@
 package io.riots.core.handlers.query;
 
+import io.riots.api.model.UserMongo;
 import io.riots.api.services.users.User;
 import io.riots.core.repositories.UserRepository;
 
@@ -20,19 +21,19 @@ public class UserQuery {
     @Autowired
     UserRepository repository;
 
-    public User findOrCreateByEmail(String email) {
+    public UserMongo findOrCreateByEmail(String email) {
     	// TODO make atomic operation
-    	User u = findByEmail(email);
+    	UserMongo u = findByEmail(email);
     	if(u == null) {
-    		u = new User();
+    		u = new UserMongo();
     		u.setEmail(email);
     		u = repository.save(u);
     	}
     	return u;
     }
 
-    public User findByEmail(String email) {
-        List<User> users = repository.findByEmail(email);
+    public UserMongo findByEmail(String email) {
+        List<UserMongo> users = repository.findByEmail(email);
         if(users.isEmpty())
         	return null;
 		if(users.size() > 1)

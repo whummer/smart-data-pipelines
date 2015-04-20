@@ -1,94 +1,124 @@
-<section ng-controller="HomeViewController" id="homeViewDiv" class="container-fluid">
+<section ng-controller="HomeViewController" id="homeViewDiv" class="wrapper wrapper-content">
 
-  <div ng-repeat="n in range(0, userConfig.dashboardElements.length - 1)">
-    <div class="container-fluid">
-      <div class="col-lg-10 col-md-10 col-sm-12">
-        <ng-include src="appConfig['appRootPath'] + '/views/home_' + userConfig.dashboardElements[n].widgetType + '.html'"></ng-include>
-      </div>
-    </div>
-  </div>
+	<div class="row">
+		<div ng-repeat="n in range(0, userConfig.dashboardElements.length - 1)">
 
-  <div class="jumbotron" ng-show="!userConfig.dashboardElements.length">
-    <div>
-      <h3>Hi {{authInfo.name.split(' ')[0]}}</h3>
+			<div class="row" ng-if="!userConfig.dashboardElements[n].widgetType.indexOf('dashboard_stats') ">
+				<ng-include
+						src="appConfig['appRootPath'] + '/views/dashboard_' + userConfig.dashboardElements[n].widgetType + '.html'"></ng-include>
+			</div>
 
-      <p>It looks like you have not yet configured your dashboard.
-        You may try adding some widgets to this page.</p>
-      <!-- 
-      <a class="btn btn-primary" href="#">
-        <span class="glyphicon glyphicon-question-sign" style="margin-right: 10px"></span> Take the Tour
-      </a>
-       -->
-    </div>
-  </div>
+			<ng-include ng-if="userConfig.dashboardElements[n].widgetType.indexOf('dashboard_stats')"
+									src="appConfig['appRootPath'] + '/views/dashboard_' + userConfig.dashboardElements[n].widgetType + '.html'"></ng-include>
 
-  <div>
-    <p>
-      <a class="btn btn-primary " href="#" data-toggle="modal"
-         data-target="#addWidgetModal"
-         role="button">
-        <span class="glyphicon glyphicon-plus-sign" style="margin-right: 10px"></span> Add Widgets
-      </a>
+		</div>
+	</div>
 
-      <a class="btn btn-warning " href="#"
-         ng-show="userConfig.dashboardElements.length"
-         ng-click="removeAllWidgets()" role="button">
-        <span class="glyphicon glyphicon-minus-sign" style="margin-right: 10px"></span> Remove All Widgets
-      </a>
-    </p>
-  </div>
+	<div class="jumbotron" ng-show="!userConfig.dashboardElements.length">
+		<div>
+			<h3>Hi {{authInfo.name.split(' ')[0]}}</h3>
+			<p>It looks like you have not yet configured your dashboard. You may try adding some widgets to this page.</p>
+		</div>
+	</div>
 
-  <div class="modal fade" id="addWidgetModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal"><span
-                  aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-          <h4 class="modal-title" id="myModalLabel">Add a Widget to your Dashboard</h4>
-        </div>
-        <div class="modal-body row">
-          <div class="col-md-6">
-            <div class="media" ng-class="selectedWidget == 'stats' ? 'well media' : 'well-flat media'">
-              <div class="media-body" ng-click="selectedWidget = 'stats'">
-                <h4 class="media-heading">Platform Statistics</h4>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="media" ng-class="selectedWidget == 'history' ? 'well media' : 'well-flat media'">
-              <div class="media-body" ng-click="selectedWidget = 'history'">
-                <h4 class="media-heading">Data Usage Overview</h4>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- TODO
-        <div class="modal-body row">
-          <div class="col-md-6">
-            <div class="media" ng-class="selectedWidget == 'updates' ? 'well media' : 'well-flat media'">
-              <div class="media-body" ng-click="selectedWidget = 'updates'">
-                <h4 class="media-heading">Catalog Updates</h4>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="media" ng-class="selectedWidget == 'current' ? 'well media' : 'well-flat media'">
-              <div class="media-body" ng-click="selectedWidget = 'current'">
-                <h4 class="media-heading">Health Status</h4>
-              </div>
-            </div>
-          </div>
-        </div>
-        -->
+	<div>
+		<p>
+			<a class="btn btn-primary " href="#" data-toggle="modal"
+				 data-target="#addWidgetModal"
+				 role="button">
+				<span class="glyphicon glyphicon-plus-sign" style="margin-right: 10px"></span> Add Widgets
+			</a>
 
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="addWidget()">
-            <span class="glyphicon glyphicon-plus-sign" style="margin-right: 10px"></span>Add
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
+			<a class="btn btn-warning " href="#"
+				 ng-show="userConfig.dashboardElements.length"
+				 ng-click="removeAllWidgets()" role="button">
+				<span class="glyphicon glyphicon-minus-sign" style="margin-right: 10px"></span> Remove All Widgets
+			</a>
+		</p>
+	</div>
+
+	<div class="modal fade" id="addWidgetModal" tabindex="-1" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">
+						<span aria-hidden="true">&times;</span>
+						<span class="sr-only">Close</span>
+					</button>
+					<h3 class="modal-title">Add a Widget to your Dashboard</h3>
+				</div>
+
+				<div class="modal-body row">
+					<div class="col-md-6">
+						<div class="media" style="cursor: pointer;"
+								 ng-class="selectedWidget == 'stats_catalog' ? 'well media' : 'well-flat media'">
+							<div class="media-body" ng-click="selectedWidget = 'stats_catalog'">
+								<i class="fa fa-list fa-2x"></i>
+								<h4 class="media-heading">Catalog Statistics</h4>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="media" style="cursor: pointer;"
+								 ng-class="selectedWidget == 'stats_user' ? 'well media' : 'well-flat media'">
+							<div class="media-body" ng-click="selectedWidget = 'stats_user'">
+								<i class="fa fa-group fa-2x"></i>
+								<h4 class="media-heading">User Statistics</h4>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="modal-body row">
+					<div class="col-md-6">
+						<div class="media" style="cursor: pointer;"
+								 ng-class="selectedWidget == 'stats_application' ? 'well media' : 'well-flat media'">
+							<div class="media-body" ng-click="selectedWidget = 'stats_application'">
+								<i class="fa fa-cogs fa-2x"></i>
+								<h4 class="media-heading">Application Statistics</h4>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-6">
+						<div class="media" style="cursor: pointer;"
+								 ng-class="selectedWidget == 'map' ? 'well media' : 'well-flat media'">
+							<div class="media-body" ng-click="selectedWidget = 'map'">
+								<i class="fa fa-globe fa-2x"></i>
+								<h4 class="media-heading">Thing Distribution</h4>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="modal-body row">
+					<div class="col-md-6">
+						<div class="media" style="cursor: pointer;"
+								 ng-class="selectedWidget == 'history' ? 'well media' : 'well-flat media'">
+							<div class="media-body" ng-click="selectedWidget = 'history'">
+								<i class="fa fa-bar-chart-o fa-2x"></i>
+								<h4 class="media-heading">Data Usage Overview</h4>
+							</div>
+						</div>
+					</div>
+
+					<!-- <div class="col-md-6">
+							<div class="media" ng-class="selectedWidget == 'map' ? 'well media' : 'well-flat media'">
+								<div class="media-body" ng-click="selectedWidget = 'map'">
+									<h4 class="media-heading">Thing Distribution</h4>
+								</div>
+							</div>
+						</div>-->
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="addWidget()">
+						<span class="fa fa-plus" style="margin-right: 10px"></span>Add Widget
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
 </section>

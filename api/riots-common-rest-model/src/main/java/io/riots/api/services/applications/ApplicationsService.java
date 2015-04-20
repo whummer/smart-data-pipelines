@@ -32,6 +32,7 @@ public interface ApplicationsService {
 	@ApiResponses(value = { @ApiResponse(code = 404, message = "No application with given ID found") })
 	Application retrieve(@PathParam("id") String id);
 
+	// TODO: maybe merge with retrieve(..) (retrieve by id)
 	@GET
 	@Path("/by/appKey/{appKey}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -65,8 +66,9 @@ public interface ApplicationsService {
 	@ApiOperation(value = "Update an existing Application", 
 		notes = "Update an existing Application according to the provided JSON payload. Upon success, HTTP 200 is returned.")
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "Malformed Application provided. See error message for details") })
-    @PreAuthorize(Role.HAS_ROLE_USER  + " and " 
-            + Permission.CAN_UPDATE_APPLICATION)
+    @PreAuthorize(Role.HAS_ROLE_USER
+    		+ " and " + Permission.CAN_UPDATE_APPLICATION
+    )
 	Application update(Application application);
 
 	@DELETE

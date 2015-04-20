@@ -13,6 +13,8 @@ var appConfig = {
 		things: { url: "/api/v1/things" },
 		thingData: { url: "/api/v1/things" },
 		triggers: { url: "/api/v1/triggers" },
+		streams: { url: "/api/v1/streams" },
+		streamsinks: { url: "/api/v1/stream-sinks" },
 		simulations: { url: "/api/v1/simulations" },
 		simulationProps: { url: "/api/v1/simulations/properties" },
 		simulationDevices: { url: "/api/v1/simulations/devices" },
@@ -20,6 +22,8 @@ var appConfig = {
 		ratings: { url: "/api/v1/ratings" },
 		stats: { url: "/api/v1/stats" },
 		users: { url: "/api/v1/users" },
+		files: { url: "/api/v1/files" },
+		organizations: { url: "/api/v1/organizations" },
 		billing: { url: "/api/v1/billing" },
 		semanticTypes: { url: "/api/v1/semantic-types" },
 		websocket: { url: "ws://platform.riots.io:8085/websocket" }
@@ -38,7 +42,7 @@ var appConfig = {
 	}
 };
 
-// set websocket URL (for dev./testing):
+// set websocket URL (TODO for dev./testing):
 if(window.location && window.location.hostname) {
 	appConfig.services.websocket.url = appConfig.services.websocket.url.replace(
 		"platform.riots.io", window.location.hostname);

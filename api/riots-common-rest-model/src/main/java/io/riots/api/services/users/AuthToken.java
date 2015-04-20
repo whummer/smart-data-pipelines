@@ -1,6 +1,5 @@
 package io.riots.api.services.users;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -10,21 +9,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class AuthToken {
 
 	/**
-	 * Database identifier, for internal use. Not serialized into JSON.
-	 */
-	@JsonIgnore
-	public String id;
-	/**
 	 * Either "riots", or a third-party OAuth network,
 	 * e.g., "github", "google", "facebook"
 	 */
 	@JsonProperty
 	public String network;
-	/**
-	 * Username which identifies the user of this token.
-	 */
-	@JsonProperty
-	public String username;
 	/**
 	 * Unique Token string.
 	 */
@@ -35,5 +24,18 @@ public class AuthToken {
 	 */
 	@JsonProperty
 	public long expiry;
+
+	public AuthToken() {}
+	public AuthToken(String network, String token) {
+		this.network = network;
+		this.token = token;
+	}
+
+
+	@Override
+	public String toString() {
+		return "AuthToken [network=" + network + ", token=" + token
+				+ ", expiry=" + expiry + "]";
+	}
 
 }

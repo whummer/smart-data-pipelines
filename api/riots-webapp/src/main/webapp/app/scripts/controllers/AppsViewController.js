@@ -7,7 +7,7 @@ define(['app'], function(app) {
 			AppController($scope, $http, $compile);
 			//World3DController($scope, $http, $compile);
 
-			$scope.highlightMenuItem("#menuItemScenario");
+			//$scope.highlightMenuItem("#menuItemScenario");
 
 			/* define model constants in angular scope */
 			$scope.CREATION_DATE = CREATION_DATE;

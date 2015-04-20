@@ -51,16 +51,28 @@ public class Property extends HierarchicalObject<Property> {
 	@JsonInclude(Include.NON_EMPTY)
 	private String unit;
 
+	/**
+	 * Description of this property
+	 */
+	@JsonInclude(Include.NON_EMPTY)
+	private String description;
+
+
 	public Property() {
 	}
 
 	public Property(String name) {
 		super(name);
 	}
-	
+
 	public Property(String name, PropertyType type) {
+		this(name, null, type);
+	}
+
+	public Property(String name, String description, PropertyType type) {
 		this(name);
 		this.propertyType = type;
+		this.description = description;
 	}
 
 	public Collection<Constraint> getConstraints() {
@@ -94,6 +106,14 @@ public class Property extends HierarchicalObject<Property> {
 	public Property setSensable(Boolean sensable) {
 		this.sensable = sensable;
 		return this;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public Boolean isActuatable() {

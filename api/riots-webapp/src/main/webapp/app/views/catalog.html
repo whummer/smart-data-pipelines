@@ -15,14 +15,9 @@
 }
 </style>
 
-<div class="container">
-	<section ng-controller="CatalogViewController" id="catalogViewDiv"
-		style="height: 100%">
-
-		<div id="catalogViewDivWrapper" class="container">
-			<ng-include
-				src="appConfig['appRootPath'] + '/views/thing_types.html'"></ng-include>
+<div class="row">
+		<div ng-controller="CatalogViewController" class="col-lg-12 col-md-12">
+			<ng-include src="appConfig['appRootPath'] + '/views/thing_types.html'"></ng-include>
 			<br class="clear" />
 		</div>
-	</section>
 </div>

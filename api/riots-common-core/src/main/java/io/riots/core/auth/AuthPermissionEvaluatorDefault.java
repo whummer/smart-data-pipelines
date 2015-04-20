@@ -1,11 +1,11 @@
 package io.riots.core.auth;
 
-import io.riots.core.auth.AuthHeaders.AuthInfo;
-import io.riots.core.clients.ServiceClientFactory;
-import io.riots.api.services.users.UsersService;
 import io.riots.api.services.model.interfaces.ObjectCreated;
+import io.riots.api.services.users.AuthInfo;
 import io.riots.api.services.users.Permission.Operation;
 import io.riots.api.services.users.Role;
+import io.riots.api.services.users.UsersService;
+import io.riots.core.clients.ServiceClientFactory;
 
 import java.util.Arrays;
 import java.util.List;
@@ -45,12 +45,12 @@ public class AuthPermissionEvaluatorDefault {
 		}
 
 		/* admins are permitted to do anything */
-		if (info.roles.contains(Role.ROLE_ADMIN)) {
+		if (info.hasRole(Role.ROLE_ADMIN)) {
 			return true;
 		}
 
 		/* non-users are permitted nothing */
-		if (!info.roles.contains(Role.ROLE_USER)) {
+		if (!info.hasRole(Role.ROLE_USER)) {
 			return false;
 		}
 
@@ -61,6 +61,10 @@ public class AuthPermissionEvaluatorDefault {
 			String creatingUserID = null;
 			if (targetDomainObject instanceof ObjectCreated) {
 				creatingUserID = ((ObjectCreated) targetDomainObject).getCreatorId();
+			} else if(targetDomainObject == null) {
+				LOG.warn("Unable to determine creating user for NULL object: " + 
+						targetDomainObject + " - " + permission + " - " + authentication);
+				Thread.dumpStack();
 			} else {
 				LOG.warn("Unable to determine creating user for object " + targetDomainObject);
 			}
@@ -71,12 +75,12 @@ public class AuthPermissionEvaluatorDefault {
 			}
 
 			/* make sure we have a valid user ID */
-			if(info.userID == null) {
-				info.userID = users.findByEmail(info.email).getId();
+			if(info.getUserID() == null) {
+				info.setUserID(users.findByEmail(info.getEmail()).getId());
 			}
 
 			/* non-admin users may not modify objects which they did not create */
-			if (!creatingUserID.equals(info.userID)) {
+			if (!creatingUserID.equals(info.getUserID())) {
 				return false;
 			}
 		}

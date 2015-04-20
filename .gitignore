@@ -8,13 +8,15 @@
 /pkg/
 /spec/reports/
 tmp/
+test-output/
 *.bundle
 *.so
 *.o
 *.a
-mkmf.log
+*.log
 .project
 .classpath
+*.classpath
 .settings
 target/
 log/

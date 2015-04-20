@@ -1,16 +1,13 @@
 package io.riots.core.auth;
 
-import io.riots.core.clients.ServiceClientFactory;
-import io.riots.api.services.users.UsersService;
-import io.riots.api.services.users.Role;
+import io.riots.api.services.users.AuthInfo;
 import io.riots.api.services.users.User;
+import io.riots.api.services.users.UsersService;
+import io.riots.core.clients.ServiceClientFactory;
 
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,8 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 /**
@@ -82,7 +77,12 @@ public class AuthHeaders {
         	return isOAuthBased() || isRiotsBased();
         }
 
-        String getTokenKey() {
+        /**
+         * Returns a hash key which identifies this token. Used
+         * as key for the hashmap which caches auth tokens.
+         * @return
+         */
+        String getTokenHashKey() {
         	if(isOAuthBased()) {
         		return token + "@" + network;
         	} else if(isRiotsBased()) {
@@ -99,88 +99,18 @@ public class AuthHeaders {
     }
 
     /**
-     * Class which holds authentication information.
-     */
-    public static class AuthInfo {
-        String accessToken;
-        Date expiry;
-        long lastActiveTime;
-        String userID;
-        String userName;
-        String email;
-        boolean internalCall;
-        final Set<String> roles = new HashSet<String>();
-        final Set<GrantedAuthority> rolesAsGrantedAuthorities = new HashSet<GrantedAuthority>();
-
-		public void addRole(String role) {
-			roles.add(role);
-        	rolesAsGrantedAuthorities.add(
-                    new SimpleGrantedAuthority(role));
-		}
-		public void addRoles(String ... roles) {
-			for(String role : roles)
-				addRole(role);
-		}
-
-        public boolean isExpired() {
-            return expiry.before(new Date());
-        }
-		public void setActiveNow() {
-			lastActiveTime = System.currentTimeMillis();
-		}
-		public boolean isInternalCall() {
-			return internalCall;
-		}
-		public boolean isCurrentlyActive() {
-			return (System.currentTimeMillis() - lastActiveTime) 
-					< AuthFilterBase.INACTIVITY_TIMEOUT_MS;
-		}
-		public String getUserID() {
-			return userID;
-		}
-		public void setUserID(String userID) {
-			this.userID = userID;
-		}
-		public String getEmail() {
-			return email;
-		}
-		public void setEmail(String email) {
-			this.email = email;
-		}
-		public Set<String> getRoles() {
-			return roles;
-		}
-		public boolean isAdmin() {
-			return hasRole(Role.ROLE_ADMIN);
-		}
-		public boolean hasRole(String role) {
-			return roles.contains(role);
-		}
-
-		@Override
-		public String toString() {
-			return "AuthInfo [internalCall=" + internalCall + ", userID=" + userID + 
-					", userName=" + userName + ", email=" + email + ", roles="
-					+ roles + ", accessToken=" + accessToken + ", expiry="
-					+ expiry + ", rolesAsGrantedAuthorities="
-					+ rolesAsGrantedAuthorities + "]";
-		}
-
-    }
-
-    /**
      * Construct requesting user from given information.
      */
     public static synchronized User getRequestingUser(String userEmail,
                                    String userID, UsersService usersService) {
 		/* find existing user */
-        LOG.info("INFO: Get requesting user: " + userEmail + " - " + userID);
         User existing = null;
-        if(!StringUtils.isEmpty(userID)) {
-        	existing = usersService.findByID(userID);
-        } else if (!StringUtils.isEmpty(userEmail)) {
+        if (!StringUtils.isEmpty(userEmail)) {
             existing = usersService.findByEmail(userEmail);
+        } else if(!StringUtils.isEmpty(userID)) {
+        	existing = usersService.findByID(userID);
         }
+        LOG.info("INFO: Got requesting user: " + userEmail + " - " + userID + " - " + existing);
         return existing;
     }
 

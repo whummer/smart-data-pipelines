@@ -64,8 +64,7 @@ public class TestGatewayModifyInternalHeader {
     @Before
     public void setup() {
         try {
-        	String url = serviceClientFactory.getServiceUrlForName(
-        			ServiceClientFactory.SERVICE_USERS_EUREKA_NAME);
+        	String url = serviceClientFactory.getServiceUrlForInterface(UsersService.class);
         	url = url.replaceAll(":[0-9]+", ":8080");
             users = serviceClientFactory.getServiceInstanceForURL(url, UsersService.class);
             apps = serviceClientFactory.getServiceInstanceForURL(url, ApplicationsService.class);

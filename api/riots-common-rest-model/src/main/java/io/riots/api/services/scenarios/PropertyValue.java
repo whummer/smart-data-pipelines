@@ -1,5 +1,6 @@
 package io.riots.api.services.scenarios;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.riots.api.services.catalog.Property;
@@ -27,12 +28,12 @@ public class PropertyValue implements ObjectIdentifiable {
 	private Object value;
 
 	@JsonProperty
-	private double timestamp;
+	private long timestamp;
 
 	public PropertyValue() {
 	}
 
-	public PropertyValue(String thingId, String propertyName, Object value, double timestamp) {
+	public PropertyValue(String thingId, String propertyName, Object value, long timestamp) {
 		this.thingId = thingId;
 		this.propertyName = propertyName;
 		this.value = value;
@@ -44,10 +45,18 @@ public class PropertyValue implements ObjectIdentifiable {
 	}
 
 	public PropertyValue(Property property, Object value) {
+		this(property, value, 0);
+	}
+	public PropertyValue(Property property, Object value, long time) {
+		this(null, property, value, time);
+	}
+	public PropertyValue(String thingId, Property property, Object value, long time) {
 		if(property != null) {
 			this.propertyName = property.getName();
 		}
 		this.value = value;
+		this.timestamp = time;
+		this.thingId = thingId;
 	}
 
 	public PropertyValue(PropertyValue propValueTemplate, Object value) {
@@ -79,11 +88,24 @@ public class PropertyValue implements ObjectIdentifiable {
 	public void setValue(Object value) {
 		this.value = value;
 	}
-	public double getTimestamp() {
+	public long getTimestamp() {
 		return timestamp;
 	}
-	public void setTimestamp(double timestamp) {
+	public void setTimestamp(long timestamp) {
 		this.timestamp = timestamp;
+	}
+
+	/**
+	 * Return the name part after the last dot "." (if
+	 * a dot exists in the name at all)
+	 * @return
+	 */
+	@JsonIgnore
+	public String getLocalName() {
+		if(propertyName == null || !propertyName.contains("."))
+			return propertyName;
+		return propertyName.substring(propertyName.lastIndexOf(".") + 1,
+				propertyName.length());
 	}
 
 	@Override

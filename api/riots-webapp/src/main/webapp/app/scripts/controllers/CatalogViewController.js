@@ -7,7 +7,7 @@ define(['app', 'bootstrap-tagsinput'], function (app) {
 
             AppController($scope, $http, $compile);
 
-            $scope.highlightMenuItem("#menuItemCatalog");
+            //$scope.highlightMenuItem("#menuItemCatalog");
 
             $scope.thingTypesAPI = appConfig.services.thingTypes.url;
             $scope.semanticsAPI = appConfig.services.semanticTypes.url;
@@ -56,7 +56,7 @@ define(['app', 'bootstrap-tagsinput'], function (app) {
     app.controller('ThingTypesController',
 
         function ($scope, $log, ThingTypes, hotkeys, $location) {
-    	
+
     		$scope.IMAGE_DATA = IMAGE_DATA;
 
             $log.debug("Inside ThingTypesController");

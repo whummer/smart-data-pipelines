@@ -1,8 +1,10 @@
 package io.riots.core.handlers.command;
 
+import java.util.Date;
+
+import io.riots.api.model.UserMongo;
 import io.riots.core.logging.Markers;
 import io.riots.core.repositories.UserRepository;
-import io.riots.api.services.users.User;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,9 +22,17 @@ public class UserCommand {
     @Autowired
     UserRepository repository;
 
-    public User update(User obj) {
-        log.debug(Markers.COMMAND, "Persisting User {}", obj);
+    public UserMongo createOrUpdate(UserMongo obj) {
+        log.debug(Markers.COMMAND, "Updating User {}", obj);
+        if(obj.getCreated() == null || obj.getCreated().getTime() == 0) {
+        	obj.setCreated(new Date());
+        }
         return repository.save(obj);
     }
+
+	public void delete(String id) {
+        log.debug(Markers.COMMAND, "Deleting User {}", id);
+        repository.delete(id);
+	}
 
 }

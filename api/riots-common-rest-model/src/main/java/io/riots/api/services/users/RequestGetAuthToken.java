@@ -21,9 +21,14 @@ public class RequestGetAuthToken {
 	@JsonProperty
 	public String username;
 	/**
-	 * Password, hashed (typically SHA-256).
+	 * Password (hashed, typically SHA-256).
 	 */
 	@JsonProperty
 	public String password;
 
+	public RequestGetAuthToken() {}
+	public RequestGetAuthToken(String username, String password) {
+		this.username = username;
+		this.password = password;
+	}
 }

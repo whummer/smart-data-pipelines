@@ -1,288 +1,290 @@
 <section ng-controller="ThingDriverController">
 
-  <div class="alert alert-warning alert-dismissible" role="alert">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-    <b><i>Riots Drivers</i></b> enable you to connect a communication technology (e.g. MQTT) to your things. If you want to simulate the data a thing generates, chose <b><i>Simulation (Riots)</i></b> below.
-  </div>
+	<div class="alert alert-warning alert-dismissible" role="alert">
+		<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>
+		</button>
+		<b><i>Riots Drivers</i></b> enable you to connect a communication technology (e.g. MQTT) to your things. If you want
+		to simulate the data a thing generates, chose <b><i>Simulation (Riots)</i></b> below.
+	</div>
 
-  <div ng-show="shared.selectedThing">
+	<div ng-show="shared.selectedThing">
 
-    <div id="thingPropsTable" ui-grid="gridConfig" ui-grid-selection ui-grid-edit ui-grid-row-edit
-         class="grid"></div>
+		<div id="thingPropsTable" ui-grid="gridConfig" ui-grid-selection ui-grid-edit ui-grid-row-edit
+				 class="grid"></div>
 
-    <div ng-show="selectedProperty">
-      <form class="form-horizontal" role="form" style="text-align: left">
+		<div ng-show="selectedProperty" style="margin-top: 10px">
+			<form class="form-horizontal" role="form" style="text-align: left">
 
-        <!-- driver name -->
-        <div class="form-group">
-          <label for="driverName" class="col-sm-3 control-label">Property Name</label>
+				<!-- driver name -->
+				<div class="form-group">
+					<label for="driverName" class="col-sm-3 control-label">Property Name</label>
 
-          <div class="col-sm-9">
-            <input id="driverName" class="form-control input-sm" disabled="disabled"
-                   data-ng-model="selectedProperty.driver[PROPERTY_NAME]"/>
-          </div>
-        </div>
+					<div class="col-sm-9">
+						<input id="driverName" class="form-control input-sm" disabled="disabled"
+									 data-ng-model="selectedProperty.driver[PROPERTY_NAME]"/>
+					</div>
+				</div>
 
-        <!-- platform/protocol support -->
-        <div class="form-group">
-          <label for="driverProtocol" class="col-sm-3 control-label">Platform/Protocol</label>
+				<!-- platform/protocol support -->
+				<div class="form-group">
+					<label for="driverProtocol" class="col-sm-3 control-label">Platform/Protocol</label>
 
-          <div class="col-sm-9">
-            <select id="driverProtocol" class="form-control input-sm"
-                    ng-model="selectedProperty.driver.connector">
-              <option value="RIOTS_REST">REST API (Riots)</option>
-              <option value="RIOTS_SIMULATION">Simulation (Riots)</option>
-              <option value="MQTT">MQTT</option>
-              <option value="XIVELY">Xively</option>
-              <option value="SPARK_IO">Spark.io</option>
-              <option value="CoAP">CoAP</option>
-              <option value="XMPP">XMPP</option>
-              <option value="AMQP">AMQP</option>
-              <option value="DDS">DDS</option>
-            </select>
-          </div>
-        </div>
+					<div class="col-sm-9">
+						<select id="driverProtocol" class="form-control input-sm"
+										ng-model="selectedProperty.driver.connector">
+							<option value="RIOTS_REST">REST API (Riots)</option>
+							<option value="RIOTS_SIMULATION">Simulation (Riots)</option>
+							<option value="MQTT">MQTT</option>
+							<option value="XIVELY">Xively</option>
+							<option value="SPARK_IO">Spark.io</option>
+							<option value="CoAP">CoAP</option>
+							<option value="XMPP">XMPP</option>
+							<option value="AMQP">AMQP</option>
+							<option value="DDS">DDS</option>
+						</select>
+					</div>
+				</div>
 
-        <!-- not yet implemented -->
-        <div ng-show="selectedProperty.driver.connector == 'XIVELY' ||
+				<!-- not yet implemented -->
+				<div ng-show="selectedProperty.driver.connector == 'XIVELY' ||
                		selectedProperty.driver.connector == 'SPARK_IO' ||
                		selectedProperty.driver.connector == 'CoAP' ||
                		selectedProperty.driver.connector == 'XMPP' ||
                		selectedProperty.driver.connector == 'AMQP' ||
                		selectedProperty.driver.connector == 'DDS' ">
-          <div class="form-group">
-            <label for="driverTopic" class="col-sm-3 control-label"></label>
+					<div class="form-group">
+						<label for="driverTopic" class="col-sm-3 control-label"></label>
 
-            <div class="col-sm-9">
-              <b>Note: Driver connector {{selectedProperty.driver.connector}} not yet available, coming soon.</b>
-            </div>
-          </div>
-        </div>
+						<div class="col-sm-9">
+							<b>Note: Driver connector {{selectedProperty.driver.connector}} not yet available, coming soon.</b>
+						</div>
+					</div>
+				</div>
 
-        <!-- MQTT stuff -->
-        <div ng-show="selectedProperty.driver.connector == 'MQTT'">
-          <div class="form-group">
-            <label for="driverBrokerURL" class="col-sm-3 control-label">Broker URL</label>
+				<!-- MQTT stuff -->
+				<div ng-show="selectedProperty.driver.connector == 'MQTT'">
+					<div class="form-group">
+						<label for="driverBrokerURL" class="col-sm-3 control-label">Broker URL</label>
 
-            <div class="col-sm-9">
-              <input id="driverBrokerURL" class="form-control input-sm"
-                     data-ng-model="selectedProperty.driver.brokerURL"/>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="driverTopic" class="col-sm-3 control-label">Topic Name</label>
+						<div class="col-sm-9">
+							<input id="driverBrokerURL" class="form-control input-sm"
+										 data-ng-model="selectedProperty.driver.brokerURL"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="driverTopic" class="col-sm-3 control-label">Topic Name</label>
 
-            <div class="col-sm-9">
-              <input id="driverTopic" class="form-control input-sm"
-                     data-ng-model="selectedProperty.driver.topicFilter"/>
-            </div>
-          </div>
+						<div class="col-sm-9">
+							<input id="driverTopic" class="form-control input-sm"
+										 data-ng-model="selectedProperty.driver.topicFilter"/>
+						</div>
+					</div>
 
-          <div class="form-group">
-            <label for="driverPayload" class="col-sm-3 control-label">Payload Format</label>
+					<div class="form-group">
+						<label for="driverPayload" class="col-sm-3 control-label">Payload Format</label>
 
-            <div class="col-sm-9">
-              <textarea id="driverPayload" data-ng-model="selectedProperty.driver.payloadFormat"></textarea>
-            </div>
-          </div>
-        </div>
+						<div class="col-sm-9">
+							<textarea id="driverPayload" data-ng-model="selectedProperty.driver.payloadFormat"></textarea>
+						</div>
+					</div>
+				</div>
 
-        <!-- Simulation stuff -->
-        <div ng-show="selectedProperty.driver.connector == 'RIOTS_SIMULATION'">
-          <div class="form-group">
-            <label for="driverSimType" class="col-sm-3 control-label">Simulation Type</label>
+				<!-- Simulation stuff -->
+				<div ng-show="selectedProperty.driver.connector == 'RIOTS_SIMULATION'">
+					<div class="form-group">
+						<label for="driverSimType" class="col-sm-3 control-label">Simulation Type</label>
 
-            <div class="col-sm-9">
-              <select id="driverSimType" class="form-control input-sm"
-                      ng-options="opt.id as opt.name for opt in simulationTypes"
-                      ng-model="selectedProperty.driver[SIMULATION_ID]">
-              </select>
-            </div>
-          </div>
+						<div class="col-sm-9">
+							<select id="driverSimType" class="form-control input-sm"
+											ng-options="opt.id as opt.name for opt in simulationTypes"
+											ng-model="selectedProperty.driver[SIMULATION_ID]">
+							</select>
+						</div>
+					</div>
 
-          <!--<div class="form-group">
-            <label for="driverSimType" class="col-sm-3 control-label">Parameters</label>
+					<!--<div class="form-group">
+						<label for="driverSimType" class="col-sm-3 control-label">Parameters</label>
 
-            <div class="col-sm-9">
-              <table>
-                <tr ng-repeat="n in range(0, selectedProperty.driver.parameters.length - 1)">
-                  <td><input
-                          ng-model="selectedProperty.driver.parameters[n].name"
-                          class="propSimValueKey form-control input-sm"/></td>
-                  <td> =</td>
-                  <td><input
-                          ng-model="selectedProperty.driver.parameters[n].value"
-                          class="propSimValueValue form-control input-sm"/></td>
-                </tr>
-              </table>
-              <button class="btn btn-default btn-sm"
-                      data-dojo-props="iconClass:'icon-plus-sign'" id="btnAddSimParam">Add
-                Value
-              </button>
-            </div>
-            -->
-          </div>
+						<div class="col-sm-9">
+							<table>
+								<tr ng-repeat="n in range(0, selectedProperty.driver.parameters.length - 1)">
+									<td><input
+													ng-model="selectedProperty.driver.parameters[n].name"
+													class="propSimValueKey form-control input-sm"/></td>
+									<td> =</td>
+									<td><input
+													ng-model="selectedProperty.driver.parameters[n].value"
+													class="propSimValueValue form-control input-sm"/></td>
+								</tr>
+							</table>
+							<button class="btn btn-default btn-sm"
+											data-dojo-props="iconClass:'icon-plus-sign'" id="btnAddSimParam">Add
+								Value
+							</button>
+						</div>
+						-->
+				</div>
 
-          <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10 text-right">
-              <button class="btn btn-sm btn-primary" id="btnThingDriverSave"><span
-                      class="glyphicon glyphicon-ok"></span> Save Changes
-              </button>
-              <a href="#/catalog" class="btn btn-sm btn-info"><span
-                      class="glyphicon glyphicon-remove"></span> Cancel</a>
-            </div>
-          </div>
-      </form>
-    </div>
-    <br class="clear"/>
-  </div>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10 text-right">
+						<button class="btn btn-sm btn-primary" id="btnThingDriverSave"><span
+								class="glyphicon glyphicon-ok"></span> Save Changes
+						</button>
+						<a href="#/catalog" class="btn btn-sm btn-info"><span
+								class="glyphicon glyphicon-remove"></span> Cancel</a>
+					</div>
+				</div>
+			</form>
+		</div>
+		<br class="clear"/>
+	</div>
 
 </section>
 
 <style>
-  #thingPropsTable {
-    height: 200px;
-  }
+	#thingPropsTable {
+		height: 200px;
+	}
 </style>
 
 <script type="text/javascript">
 
-  var app = angular.module("app");
-  app.controller('ThingDriverController', [
-    '$scope', '$http', '$compile',
-    function ($scope, $http, $compile) {
+	var app = angular.module("app");
+	app.controller('ThingDriverController', [
+		'$scope', '$http', '$compile',
+		function ($scope, $http, $compile) {
 
-      AppController($scope, $http, $compile);
+			AppController($scope, $http, $compile);
 
-      $scope.selectedProperty = null;
-      $scope.gridConfig = {};
-      $scope.SIMULATION_ID = SIMULATION_ID;
-      $scope.PROPERTY_NAME = PROPERTY_NAME;
-      $scope.simulationTypes = [];
+			$scope.selectedProperty = null;
+			$scope.gridConfig = {};
+			$scope.SIMULATION_ID = SIMULATION_ID;
+			$scope.PROPERTY_NAME = PROPERTY_NAME;
+			$scope.simulationTypes = [];
 
-      var initPropsTable = function () {
-        var columnsConfig = [
-          {label: "Property", field: "name", sortable: true},
-          {label: "Data Type", field: PROPERTY_TYPE},
-          {label: "Driver", field: "driver.connector"}
-        ];
-        $scope.gridConfig.data = [];
-        renderUITable($scope.gridConfig, "thingPropsTable", columnsConfig,
-                function (event) {
-                  if (event.type == "dgrid-select") {
-                    $scope.$apply(function () {
-                      $scope.selectedProperty = event.rows[0].data;
-                    });
-                  } else if (event.type == "dgrid-deselect") {
-                    $scope.$apply(function () {
-                      $scope.selectedProperty = null;
-                    });
-                  }
-                  /* adjust UI elements */
-                  $("#btnThingDriverDelete").attr("disabled", !$scope.selectedProperty);
-                }
-        );
-      }
+			var initPropsTable = function () {
+				var columnsConfig = [
+					{label: "Property", field: "name", sortable: true},
+					{label: "Data Type", field: PROPERTY_TYPE},
+					{label: "Driver", field: "driver.connector"}
+				];
+				$scope.gridConfig.data = [];
+				renderUITable($scope.gridConfig, "thingPropsTable", columnsConfig,
+						function (event) {
+							if (event.type == "dgrid-select") {
+								$scope.$apply(function () {
+									$scope.selectedProperty = event.rows[0].data;
+								});
+							} else if (event.type == "dgrid-deselect") {
+								$scope.$apply(function () {
+									$scope.selectedProperty = null;
+								});
+							}
+							/* adjust UI elements */
+							$("#btnThingDriverDelete").attr("disabled", !$scope.selectedProperty);
+						}
+				);
+			}
 
-      initPropsTable();
+			initPropsTable();
 
-      var buildPropsTable = function (thing) {
-        $scope.gridConfig.data = [];
-        if (!thing) return;
-        var thingType = thing[THING_TYPE];
-        if (!thingType || !thingType.id) return;
-        var list = [];
-        riots.properties(thingType.id, function (els) {
-          $.each(els, function (idx, el) {
-            list.push(el);
-            var url = $scope.driversAPI + "/forThing/" +
-                    thing.id + "/" + el.name;
-            if (!el.driver)
-              el.driver = {};
-            if (!el.driver[THING_ID])
-              el.driver[THING_ID] = thing.id;
-            if (!el.driver[PROPERTY_NAME])
-              el.driver[PROPERTY_NAME] = el.name;
-            var opts = {};
-            opts[THING_ID] = thing.id;
-            opts[PROPERTY_NAME] = el.name;
-            riots.driver(opts, function(driver) {
-            	if (driver) {
-                    el.driver = driver;
-                    if (!el.driver[THING_ID])
-                      el.driver[THING_ID] = thing.id;
-                    if (!el.driver[PROPERTY_NAME])
-                      el.driver[PROPERTY_NAME] = el.name;
-                  }
-            });
-          })
-        });
-        $scope.gridConfig.data = list;
-      };
+			var buildPropsTable = function (thing) {
+				$scope.gridConfig.data = [];
+				if (!thing) return;
+				var thingType = thing[THING_TYPE];
+				if (!thingType || !thingType.id) return;
+				var list = [];
+				riots.properties(thingType.id, function (els) {
+					$.each(els, function (idx, el) {
+						list.push(el);
+						var url = $scope.driversAPI + "/forThing/" +
+								thing.id + "/" + el.name;
+						if (!el.driver)
+							el.driver = {};
+						if (!el.driver[THING_ID])
+							el.driver[THING_ID] = thing.id;
+						if (!el.driver[PROPERTY_NAME])
+							el.driver[PROPERTY_NAME] = el.name;
+						var opts = {};
+						opts[THING_ID] = thing.id;
+						opts[PROPERTY_NAME] = el.name;
+						riots.driver(opts, function (driver) {
+							if (driver) {
+								el.driver = driver;
+								if (!el.driver[THING_ID])
+									el.driver[THING_ID] = thing.id;
+								if (!el.driver[PROPERTY_NAME])
+									el.driver[PROPERTY_NAME] = el.name;
+							}
+						});
+					})
+				});
+				$scope.gridConfig.data = list;
+			};
 
-      var saveThingDriver = function () {
-    	var prop = $scope.selectedProperty;
-        var thing = $scope.shared.selectedThing;
-        if (!thing || !prop || !prop.driver) {
-          return;
-        }
-        var item = prop.driver;
-        if (!item.connector)
-          item.connector = "RIOTS_REST";
+			var saveThingDriver = function () {
+				var prop = $scope.selectedProperty;
+				var thing = $scope.shared.selectedThing;
+				if (!thing || !prop || !prop.driver) {
+					return;
+				}
+				var item = prop.driver;
+				if (!item.connector)
+					item.connector = "RIOTS_REST";
 
-        /* check form input */
-        if (item.connector == "RIOTS_SIMULATION") {
-        	if(!item[SIMULATION_ID]) {
-        		showConfirmDialog("Please choose a simulation type.");
-        		return;
-        	}
-        }
+				/* check form input */
+				if (item.connector == "RIOTS_SIMULATION") {
+					if (!item[SIMULATION_ID]) {
+						showConfirmDialog("Please choose a simulation type.");
+						return;
+					}
+				}
 
-        /* rectify model */
-        if (item.connector != "RIOTS_SIMULATION") {
-          delete item.parameters;
-          delete item[SIMULATION_ID];
-        }
-        console.log("saving driver", item);
+				/* rectify model */
+				if (item.connector != "RIOTS_SIMULATION") {
+					delete item.parameters;
+					delete item[SIMULATION_ID];
+				}
+				console.log("saving driver", item);
 
-        delete item["$$hashKey"];
-        riots.save.driver(item, function () {
-            // successfully saved
-        });
-      }
+				delete item["$$hashKey"];
+				riots.save.driver(item, function () {
+					$scope.growlInfo(M.SUC_THING_SAVED);
+				});
+			}
 
-      var addSimParam = function () {
-        var prop = $scope.selectedProperty;
-        if (!prop.driver.parameters) {
-          prop.driver.parameters = [];
-        }
-        $scope.$apply(function () {
-          prop.driver.parameters.push({name: "name", value: "value"});
-        });
-      }
+			var addSimParam = function () {
+				var prop = $scope.selectedProperty;
+				if (!prop.driver.parameters) {
+					prop.driver.parameters = [];
+				}
+				$scope.$apply(function () {
+					prop.driver.parameters.push({name: "name", value: "value"});
+				});
+			}
 
-      var loadSimulationTypes = function () {
-        riots.simulationTypes(function (simTypes) {
-          $scope.simulationTypes = simTypes;
-        });
-      }
+			var loadSimulationTypes = function () {
+				riots.simulationTypes(function (simTypes) {
+					$scope.simulationTypes = simTypes;
+				});
+			}
 
-      /* register event handlers*/
-      $scope.addClickHandler("btnThingDriverSave", saveThingDriver);
-      $scope.addClickHandler("btnAddSimParam", addSimParam);
-      $scope.$watch("shared.selectedThing", function (value) {
-    		buildPropsTable($scope.shared.selectedThing);
-      });
-      $scope.$watch("shared.selectedThing['" + THING_TYPE + "'].id", function (value) {
-      		buildPropsTable($scope.shared.selectedThing);
-      });
-      $scope.$watch("shared.selectedThing", function (value) {
-        $scope.selectedProperty = null;
-      });
+			/* register event handlers*/
+			$scope.addClickHandler("btnThingDriverSave", saveThingDriver);
+			$scope.addClickHandler("btnAddSimParam", addSimParam);
+			$scope.$watch("shared.selectedThing", function (value) {
+				buildPropsTable($scope.shared.selectedThing);
+			});
+			$scope.$watch("shared.selectedThing['" + THING_TYPE + "'].id", function (value) {
+				buildPropsTable($scope.shared.selectedThing);
+			});
+			$scope.$watch("shared.selectedThing", function (value) {
+				$scope.selectedProperty = null;
+			});
 
-      /* start loading the main elements */
-      loadSimulationTypes();
-    }
-  ]);
+			/* start loading the main elements */
+			loadSimulationTypes();
+		}
+	]);
 
 </script>

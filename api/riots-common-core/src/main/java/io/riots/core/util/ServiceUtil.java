@@ -1,17 +1,24 @@
 package io.riots.core.util;
 
-import io.riots.core.auth.AuthHeaders;
+import io.riots.api.services.model.interfaces.ObjectIdentifiable;
 import io.riots.api.services.users.User;
+import io.riots.core.auth.AuthHeaders;
 
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.cxf.jaxrs.ext.MessageContext;
 import org.apache.log4j.Logger;
 
@@ -109,8 +116,41 @@ public class ServiceUtil {
 	}
 	public static User assertValidUser(AuthHeaders authHeaders,
 			HttpServletRequest req) {
-		User user = authHeaders.getRequestingUser(req);
-		assertValidUser(user);
-		return user;
+		try {
+			User user = authHeaders.getRequestingUser(req);
+			assertValidUser(user);
+			return user;
+		} catch (RuntimeException e) {
+			LOG.warn("Unable to get user for auth headers " + AuthHeaders.getHeaders(req));
+			throw e;
+		}
 	}
+
+	public static WebApplicationException webappError(int status, String msg) {
+    	Map<String,Object> response = new HashMap<>();
+    	response.put("status", status);
+    	response.put("message", msg);
+    	return new WebApplicationException(Response.status(status)
+    			.entity(response)
+    			.header("Content-Type", MediaType.APPLICATION_JSON)
+    			.build());
+    }
+    public static WebApplicationException forbidden(String msg) {
+    	return webappError(HttpServletResponse.SC_FORBIDDEN, msg);
+    }
+	public static WebApplicationException serverErrror(String msg) {
+    	return webappError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, msg);
+	}
+	public static void assertIdIsNull(ObjectIdentifiable entity) {
+		if(!StringUtils.isEmpty(entity.getId())) {
+			throw serverErrror("'id' should be null. "
+					+ "To update an existing entity, use the HTTP PUT method.");
+		}
+	}
+	public static void assertIdIsNotNull(ObjectIdentifiable entity) {
+		if(StringUtils.isEmpty(entity.getId())) {
+			throw serverErrror("'id' should not be null.");
+		}
+	}
+
 }

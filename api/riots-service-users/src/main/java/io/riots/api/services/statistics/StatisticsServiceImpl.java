@@ -1,19 +1,17 @@
 package io.riots.api.services.statistics;
 
-import io.riots.core.auth.AuthHeaders;
-import io.riots.core.clients.ServiceClientFactory;
 import io.riots.api.services.catalog.CatalogService;
-import io.riots.api.services.statistics.GatewayStatsService;
-import io.riots.api.services.statistics.GatewayStatsService.GatewayStats;
-import io.riots.api.services.statistics.StatisticsService;
 import io.riots.api.services.scenarios.ThingDataService;
 import io.riots.api.services.scenarios.ThingsService;
-import io.riots.api.services.users.UsersService;
+import io.riots.api.services.statistics.GatewayStatsService.GatewayStats;
 import io.riots.api.services.users.PlatformStateStats;
 import io.riots.api.services.users.UsageStats;
 import io.riots.api.services.users.UsageStats.Usage;
 import io.riots.api.services.users.UsageStats.UsagePeriod;
 import io.riots.api.services.users.User;
+import io.riots.core.auth.AuthHeaders;
+import io.riots.core.clients.ServiceClientFactory;
+import io.riots.core.handlers.query.UserQuery;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -40,17 +38,19 @@ public class StatisticsServiceImpl implements StatisticsService {
 	@Autowired
 	HttpServletRequest req;
 
+    @Autowired
+    UserQuery userQuery;
+
 	@Override
     @Timed @ExceptionMetered
     public PlatformStateStats retrieveSystemState() {
-		UsersService users = serviceClientFactory.getUsersServiceClient();
 		GatewayStatsService gateway = serviceClientFactory.getGatewayStatsServiceClient();
 		CatalogService catalog = serviceClientFactory.getCatalogServiceClient();
 		ThingsService things = serviceClientFactory.getThingsServiceClient();
 		ThingDataService thingData = serviceClientFactory.getThingDataServiceClient();
 
 		PlatformStateStats stats = new PlatformStateStats();
-		stats.setNumUsers(users.getNumUsers());
+		stats.setNumUsers(getNumUsers());
 		GatewayStats gwstats = gateway.retrieveStatistics();
 		stats.setNumUsersOnline(gwstats.getUsers().getOnline());
 		/* set total numbers */
@@ -107,7 +107,13 @@ public class StatisticsServiceImpl implements StatisticsService {
 		} while(d1.before(d2));
 		return result;
 	}
-	
+
+    @Override
+    @Timed @ExceptionMetered
+    public long getNumUsers() {
+    	return userQuery.getCount();
+    }
+
 	/* HELPER METHODS */
 
 	private Date rollDate(Date d, UsagePeriod period, int amount) {

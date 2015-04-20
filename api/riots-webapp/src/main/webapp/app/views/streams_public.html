@@ -1,0 +1,196 @@
+<section ng-controller="PubStreamsDetailsController" id="thingTypesSection" hotkey="{s: focusSearchInput}">
+
+	<!-- search input row -->
+	<div style="margin-top: 10px;">
+		<div class="form-group">
+			<div class="col-sm-9">
+				<input ng-model="txtStreamSearch" class="form-control"/>
+			</div>
+			<div class="col-sm-3">
+				<button class="btn btn-primary btn-sm" id="btnPubStreamSearch">
+					<span class="glyphicon glyphicon-search"></span> Search Stream
+				</button>
+			</div>
+		</div>
+	</div>
+
+	<div style="clear: both">
+	</div>
+
+	<!-- search results as grid view -->
+	<div id="searchResults" infinite-scroll='thingTypes.nextPage()'
+			 infinite-scroll-disabled='thingTypes.busy'
+			 infinite-scroll-immediate-check="true" infinite-scroll-distance='0'
+			 class="wrapper wrapper-content">
+
+		<div class="panel panel-info" ng-show="!streams.length && !thingTypes.busy">
+			<div class="panel-heading">
+				<div class="panel-title">
+					<b>No Results</b>
+				</div>
+			</div>
+			<div class="panel-body">
+				There are no streams matching your search criteria.
+			</div>
+		</div>
+
+		<div ng-repeat="thing in streams" ng-init="thingIndex = $index" class="animated fadeIn">
+			<div class="col-sm-12 col-md-6 col-lg-4" style="padding: 12px"
+					 ng-if="streams[thingIndex + columnIndex] != undefined">
+				<div class="thumbnail-riots animated" style="min-height: 250px; padding: 10px;"
+						 ng-class="{thumbnailhalo: hover}"
+						 ng-mouseenter="hover = true"
+						 ng-mouseleave="hover = false"
+						 ng-dblclick="editItem(streams[thingIndex + columnIndex].id)">
+
+					<!-- tags -->
+					<div class="pull-right"
+							 style="margin-bottom: 10px; margin-top: 10px; min-height: 18px;">
+									<span style="cursor: pointer; margin-right: 5px"
+												ng-repeat="tag in streams[thingIndex + columnIndex].tags"
+												class="label label-info label-as-badge"
+												ng-click="selectTag(tag)"> {{tag}} </span>
+					</div>
+
+					<div class="clearfix"></div>
+
+					<!-- organization image -->
+					<div class="logo">
+						<img ng-show="streams[thingIndex + columnIndex].organizationImg"
+								ng-src="{{streams[thingIndex + columnIndex].organizationImg}}"
+								class="img-responsive" style="margin: auto; max-height: 100px"/></slide>
+						<div ng-hide="streams[thingIndex + columnIndex].organizationImg"
+								class="text-center">
+							<img ng-src="img/no_image_available.jpg"
+									 style="max-width: 125px; max-height: 125px;"/>
+						</div>
+					</div>
+
+					<!-- content -->
+					<div class="caption">
+						<h4>{{streams[thingIndex + columnIndex].name}}</h4>
+
+						<div class="thing-type-box" style="margin-top: 10px"
+								 id="{{streams[thingIndex + columnIndex].id}}_description">
+							{{streams[thingIndex + columnIndex].description}}
+						</div>
+
+						<div class="row">
+							<div class="col-sm-4">
+								Organization:
+							</div>
+							<div class="col-sm-8">
+								{{streams[thingIndex + columnIndex].organizationName}}
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-4">
+								Price:
+							</div>
+							<div class="col-sm-8">
+							123
+							</div>
+						</div>
+
+						<!-- collapse/expand description -->
+						<div class="pull-right" style="margin-bottom: 10px; margin-top: 5px" ng-show="hover">
+							<div id="{{streams[thingIndex + columnIndex].id}}_expand" style="float: left">
+								<a ng-click="showMore(streams[thingIndex + columnIndex].id)" role="button">
+									<span class="fa fa-lg fa-angle-double-down"></span>
+								</a>
+							</div>
+							<div id="{{streams[thingIndex + columnIndex].id}}_collapse" class="invisible">
+								<a ng-click="showLess(streams[thingIndex + columnIndex].id)" role="button">
+									<span class="fa fa-lg fa-angle-double-up"></span>
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div ng-show='thingTypes.busy'>Loading data...</div>
+</section>
+<script type="text/javascript">
+
+var app = angular.module("app");
+app.controller('PubStreamsDetailsController',
+		function ($scope, $http, $compile, $routeParams, $log, $location) {
+	AppController($scope, $http, $compile);
+
+	$scope.THING_TYPE = THING_TYPE;
+	$scope.txtStreamSearch = "*";
+	$scope.ORGANIZATION_ID = ORGANIZATION_ID;
+
+	$scope.propAutocomp = {options: {
+		html: true,
+		focusOpen: true,
+		valueList: [],
+		source: function (request, response) {
+			response($scope.propAutocomp.options.valueList);
+		}
+	}};
+
+	var loadStreams = function() {
+		var opts = {
+			query: $scope.txtStreamSearch
+		};
+		riots.streams(opts, function(streams) {
+			$scope.streams = streams;
+			$.each(streams, function(idx,el) {
+				el.formatTime = function() {
+					return formatDate(el[CREATION_DATE]);
+				};
+				if(el[ORGANIZATION_ID]) {
+					riox.organization(el[ORGANIZATION_ID], function(org) {
+						el.organizationName = org.name;
+						console.log("org", el);
+						if(org[IMAGE_DATA] && org[IMAGE_DATA][0]) {
+							el.organizationImg = org[IMAGE_DATA][0].href;
+						}
+					});
+				}
+			});
+		});
+	};
+
+	var requestStream = function() {
+		if(!$scope.selectedStream) {
+			return;
+		};
+		var req = {};
+		if($scope.selectedStream.identity == "USER") {
+			req[USER_ID] = "USER";
+		}
+		req[STREAM_ID] = $scope.selectedStream.id;
+		req[ORGANIZATION_ID] = $scope.selectedStream[ORGANIZATION_ID];
+		riots.stream.request(req, function() {
+			$scope.growlInfo(M.SUC_PERM_REQUESTED);
+		});
+	};
+
+	var searchStreams = function() {
+		loadStreams();
+	};
+
+	/* register event handlers */
+	$scope.addClickHandler("btnPubStreamSearch", searchStreams);
+	$scope.addClickHandler("btnPubStreamRequest", requestStream);
+	$scope.$watch("selectedStream", function() {
+		if(!$scope.selectedStream) return;
+		if(!$scope.selectedStream.identity) {
+			$scope.selectedStream.identity = "USER";
+		}
+		if(!$scope.userOrgs) {
+			riox.organizations(function(orgs) {
+				$scope.userOrgs = orgs;
+			});
+		}
+	});
+
+	/* render main elements */
+	loadStreams();
+});
+
+</script>

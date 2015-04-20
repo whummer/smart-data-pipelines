@@ -1,22 +1,20 @@
 package io.riots.boot.starters;
 
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchAutoConfiguration;
-import org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchDataAutoConfiguration;
 import org.springframework.boot.autoconfigure.jms.activemq.ActiveMQAutoConfiguration;
 import org.springframework.boot.autoconfigure.jmx.JmxAutoConfiguration;
 import org.springframework.cloud.netflix.archaius.ArchaiusAutoConfiguration;
 import org.springframework.cloud.netflix.ribbon.RibbonAutoConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
 
 /**
  * Created by omoser on 19/01/15.

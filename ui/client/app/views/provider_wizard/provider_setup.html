@@ -1,0 +1,63 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="jumbotron">
+				<h3>Riox Provider Setup</h3>
+				<p>The wizard below will guide you through your provider setup process.</p>
+			</div>
+		</div>
+
+	</div>
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox" style="overflow: visible">
+				<div class="ibox-title">
+					<h5>Create new Data Resource</h5>
+				</div>
+				<div class="ibox-content wizard">
+					<p ng-show="debug">
+						<strong>Data from ng-model.</strong><br/>
+						<code>{{resourceData}}</code><br/>
+						<strong>Logo</strong><br/>
+						<code>{{logo.name}}</code><br/>
+						<strong>Security Enabled</strong><br/>
+						<code>{{resourceData.securityEnabled}}</code>
+					</p>
+					<div class="steps clearfix">
+						<ul>
+							<li ui-sref-active="current">
+								<a ui-sref=".semantics" class="btn-default"><span>1</span> Describe your Data</a>
+							</li>
+							<li ui-sref-active="current">
+								<a ui-sref=".connector_setup" class="btn-default"><span>2</span> Connector Setup</a>
+							</li>
+							<li ui-sref-active="current">
+								<a ui-sref=".data_retention" class="btn-default"><span>3</span> Security &amp; Data Retention</a>
+							</li>
+							<li ui-sref-active="current">
+								<a ui-sref=".deployment" class="btn-default"><span>4</span> Deployment</a>
+							</li>
+						</ul>
+					</div>
+
+					<div class="wizard" style="overflow: visible">
+						<div class="content" style="overflow: visible">
+
+							<form name="resourceForm" ng-submit="processForm()" class="p-lg form form-horizontal" novalidate>
+
+								<!-- our nested state views will be injected here -->
+								<div id="form-views" ui-view></div>
+							</form>
+
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+
+

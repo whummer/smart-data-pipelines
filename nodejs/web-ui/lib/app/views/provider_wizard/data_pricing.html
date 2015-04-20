@@ -1,0 +1,17 @@
+<fieldset class="animated fadeIn" ng-controller="pricingCtrl">
+	<h2>Configure Pricing for your Data Resource or individual Data Items</h2>
+
+	<!-- todo why does the filter expression not work? -->
+	<div class="row" ng-repeat="dataItem in resourceData.dataItems | filter: {enabled:true}">
+		<div class="form-group" ng-show="dataItem.enabled">
+			<label for="{{dataItem.name}}" class="col-sm-3 control-label">{{dataItem.name}}</label>
+			<div class="col-sm-5">
+				<div id="{{dataItem.name}}" ng-model="dataItem.pricing" ion-range-slider
+						 range-options="pricingSliderOptions"></div>
+			</div>
+		</div>
+	</div>
+
+	<a ui-sref="provider.wizard.data_items" class="btn btn-default">Previous</a>
+	<a ui-sref="provider.wizard.deployment" class="btn btn-primary">Next</a>
+</fieldset>

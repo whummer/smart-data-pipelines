@@ -24,6 +24,7 @@ public class Constants {
 	 * Make sure to keep this in sync with riots-api.js !
 	 */
 
+	public static final String ID = "id";
 	public static final String NAME = "name";
 	public static final String CREATION_DATE = "creation-date";
 	public static final String CREATOR_ID = "creator-id";
@@ -44,5 +45,10 @@ public class Constants {
 	public static final String USER_ID = "user-id";
 	public static final String START_TIME = "start-time";
 	public static final String END_TIME = "end-time";
+	public static final String TRIGGER_PROPERTY_NAME = "triggerProperty";
+	public static final String RESULT_PROPERTY_NAME = "resultProperty";
+	public static final String TYPE = "type";
+	public static final String STREAM_ID = "stream-id";
+	public static final String ORGANIZATION_ID = "organization-id";
 
 }

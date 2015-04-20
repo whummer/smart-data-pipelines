@@ -11,7 +11,6 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.*;
 
 @SpringBootApplication
-
 @EnableAutoConfiguration
 @EnableDiscoveryClient
 @ComponentScan(
@@ -34,11 +33,6 @@ public class WebappServiceStarter extends SpringBootServletInitializer {
 	    filterRegBean.addInitParameter("confPath", "/urlrewrite.xml");
 	    return filterRegBean;
 	}
-
-//	@Bean
-//	public CORSFilter corsFilter() {
-//		return new CORSFilter();
-//	}
 
 	public static void main(String[] args) {
     	ServiceStarter.setDefaultSystemProps();

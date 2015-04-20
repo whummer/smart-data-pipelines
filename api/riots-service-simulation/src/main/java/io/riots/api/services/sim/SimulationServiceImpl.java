@@ -1,5 +1,7 @@
 package io.riots.api.services.sim;
 
+import io.riots.api.services.scenarios.PropertyValue;
+import io.riots.core.auth.AuthHeaders;
 import io.riots.core.handlers.command.PropertySimulationCommand;
 import io.riots.core.handlers.command.SimulationCommand;
 import io.riots.core.handlers.command.SimulationTypeCommand;
@@ -7,14 +9,13 @@ import io.riots.core.handlers.query.Paged;
 import io.riots.core.handlers.query.PropertySimulationQuery;
 import io.riots.core.handlers.query.SimulationQuery;
 import io.riots.core.handlers.query.SimulationTypeQuery;
-import io.riots.core.util.ServiceUtil;
-import io.riots.core.auth.AuthHeaders;
 import io.riots.core.sim.PropertyValueGenerator;
 import io.riots.core.sim.SimulationManager;
 import io.riots.core.sim.traffic.TrafficSimulatorMatsim;
-import io.riots.api.services.scenarios.PropertyValue;
+import io.riots.core.util.ServiceUtil;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -23,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.jaxrs.ext.MessageContext;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,12 +81,23 @@ public class SimulationServiceImpl implements SimulationService {
 
     @Override
     @Timed @ExceptionMetered
-    public List<Simulation> listSimulations(int page, int size) {
-    	List<Simulation> result = simulationQuery.query(new Paged(page, size));
+    public List<Simulation> listSimulations(String thingId, String propertyName, int page, int size) {
+		if (size == 0) {
+			size = 100;
+		}
+
+		List<Simulation> result = new ArrayList<>();
+
+		if (StringUtils.isNotBlank(thingId) && StringUtils.isNotBlank(propertyName)) {
+			result.add(simulationQuery.findByThingIdAndPropertyName(thingId, propertyName));
+		} else {
+			result = simulationQuery.query(new Paged(page, size));
+		}
         return result;
     }
 
-    @Override
+
+	@Override
     @Timed @ExceptionMetered
     public Simulation create(Simulation item) {
     	item.setCreatorId(authHeaders.getRequestingUser(req).getId());
@@ -231,4 +244,18 @@ public class SimulationServiceImpl implements SimulationService {
 //        return true;
 //    }
 
+    
+//    public static void main(String[] args) {
+//
+//		/* Vienna */
+//		double lat = 48.2063, lon = 16.3710;
+//		double vicinity = 0.005;
+//		int numVehicles = 1;
+//
+//		TrafficTraces traces = TrafficSimulatorMatsim.generateTraces(
+//				numVehicles, lat, lon, vicinity, 1000, 1);
+//		for(TrafficTrace t : traces.traces) {
+//			System.out.println(t);
+//		}
+//	}
 }

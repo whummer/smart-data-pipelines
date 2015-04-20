@@ -40,6 +40,21 @@
             <version>${project.version}</version>
         </dependency>
 
+		<!-- send email messages -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-email</artifactId>
+			<version>1.3.3</version>
+		</dependency>
+		
+		<!-- in-memory MongoDB mocking -->
+		<dependency>
+			<groupId>com.github.fakemongo</groupId>
+			<artifactId>fongo</artifactId>
+			<version>1.5.10</version>
+			<scope>test</scope>
+		</dependency>
+
     </dependencies>
 
     <build>

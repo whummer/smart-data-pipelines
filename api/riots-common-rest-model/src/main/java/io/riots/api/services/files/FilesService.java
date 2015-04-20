@@ -1,5 +1,7 @@
 package io.riots.api.services.files;
 
+import java.io.InputStream;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -17,10 +19,8 @@ import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
 
-import java.io.InputStream;
-
 /**
- * Implements the simple file clients with a file-based backend
+ * Interface for a simple file service.
  *
  * @author riox
  */
@@ -42,9 +42,9 @@ public interface FilesService {
 			+ "by the API and cannot be controlled. Upon successful creation, HTTP 201 and a Location header for the"
 			+ " created file is returned.")
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "Malformed file provided. See error message for details") })	
-	public String upload(@Multipart(value = "name") String name,
+	public String upload(@Multipart(value = "name", required = false) String name,
 			@Multipart(value = "filedata") Attachment attr);
-	
+
 	@POST
 	@Path("/")
 	@Consumes({ MediaType.APPLICATION_JSON })
@@ -53,7 +53,7 @@ public interface FilesService {
 			+ " created file is returned.")
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "Malformed file provided. See error message for details") })	
 	public String create(FileData data);
-	
+
 	@DELETE
 	@Path("/{id}")
 	@Consumes({ MediaType.APPLICATION_JSON })

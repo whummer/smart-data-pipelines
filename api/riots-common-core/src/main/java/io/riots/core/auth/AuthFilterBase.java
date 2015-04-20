@@ -1,11 +1,16 @@
 package io.riots.core.auth;
 
-import io.riots.core.auth.AuthHeaders.AuthInfo;
-import io.riots.core.auth.AuthHeaders.AuthRequestInfo;
-import io.riots.core.clients.ServiceClientFactory;
 import io.riots.api.services.applications.Application;
+import io.riots.api.services.users.AuthInfo;
+import io.riots.api.services.users.AuthInfoExternal;
+import io.riots.api.services.users.AuthToken;
 import io.riots.api.services.users.Role;
 import io.riots.api.services.users.User;
+import io.riots.api.services.users.UsersService;
+import io.riots.api.services.users.UsersService.UserActiveStatus;
+import io.riots.core.auth.AuthHeaders.AuthRequestInfo;
+import io.riots.core.clients.ServiceClientFactory;
+import io.riots.core.model.ModelCache;
 
 import java.io.IOException;
 import java.net.HttpCookie;
@@ -50,8 +55,8 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
 
     protected static final long EXPIRY_TIMEOUT_MS = 1000 * 60 * 30; /* 30 minutes token timeout */
     protected static final long INACTIVITY_TIMEOUT_MS = 1000 * 60 * 10; /* 10 minutes inactivity timeout */
+    protected static final Map<String, AuthInfo> TOKENS = new ConcurrentHashMap<String, AuthInfo>();
     private static final Logger LOG = Logger.getLogger(AuthFilterBase.class);
-    private static final Map<String, AuthInfo> tokens = new ConcurrentHashMap<String, AuthInfo>();
 
     /**
      * if auth info is encoded in Websocket header, use this delimiter
@@ -93,6 +98,7 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
             "^(/app)?/views/dialogs\\.html$",
             "^(/app)?/views/login\\.html$",
             "^(/app)?/views/login_form\\.html$",
+            "^(/app)?/views/login_signup\\.html$",
             "^(/app)?/views/login_result\\.html$",
             "^(/app)?/views/terms_of_service\\.html$",
             "^(/app)?/views/menu\\.html$",
@@ -129,6 +135,8 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
             "^(/api/v.)?/files.*$",
             /* allow access to login/auth API */
             "^/api/v./users/login/?$",
+            "^/api/v./users/signup/?$",
+            "^/api/v./users/activate/?$",
 
             /* Eureka URLs for gateway */
             "^/health$",
@@ -249,12 +257,12 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
             /*
              * attempt to get token from cache
              */
-        	String tokenID = requestInfo.getTokenKey();
-            AuthInfo info = tokens.get(tokenID);
+        	String tokenID = requestInfo.getTokenHashKey();
+            AuthInfo info = TOKENS.get(tokenID);
             boolean doVerify = true;
             if (info != null) {
                 if (info.isExpired()) {
-                    tokens.remove(tokenID);
+                    TOKENS.remove(tokenID);
                     info = null;
                 } else {
                     doVerify = false;
@@ -264,22 +272,18 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
 			/* start the actual verification of the auth credentials */
             if (doVerify) {
 
-                AuthInfo newInfo = null;
+            	AuthInfo newInfo = null;
+            	ServiceClientFactory fac = getClientFactory();
+            	UsersService users = fac.getUsersServiceClient(AuthHeaders.INTERNAL_CALL);
 
                 try {
     				if(requestInfo.isOAuthBased()) {
 
-                    	AuthNetwork authNetwork = AuthNetwork.get(requestInfo.network);
-    	            	newInfo = authNetwork.verifyAccessToken(requestInfo.token);
-		            	newInfo.accessToken = requestInfo.token;
-
-    		            /* make sure we have a valid userId in the auth info */
-		            	User user = findUserByEmail(newInfo.email);
-		            	if(user == null) {
-		                    response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-		            		return false;
+		            	AuthInfoExternal ext = users.getInfoForAuthToken(
+		            			new AuthToken(requestInfo.network, requestInfo.token));
+		            	if(ext != null) {
+		            		newInfo = new AuthInfo(ext);
 		            	}
-		            	newInfo.userID = user.getId();
 
 	            	} else if(requestInfo.isRiotsBased()) {
 
@@ -291,7 +295,6 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
                     LOG.warn(msg + ": " + e);
                     response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                     throw new RuntimeException(msg, e);
-//                    return false;
 				}
 
             	if(newInfo == null) {
@@ -299,18 +302,27 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
                     return false;
             	}
 
-	            newInfo.expiry = new Date(new Date().getTime() + AuthFilterBase.EXPIRY_TIMEOUT_MS);
-
 				/* set user roles in AuthInfo */
 	            fillInRoles(newInfo);
 
+            	/* check whether account is active! */
+            	UserActiveStatus status = users.getActiveStatus(
+            			newInfo.getId() != null ? newInfo.getId() : newInfo.getEmail());
+            	if(!newInfo.isAdmin() && !status.active) {
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    return false;
+            	}
+
+            	/* set expiry time */
+	            newInfo.setExpiry(new Date(new Date().getTime() + AuthFilterBase.EXPIRY_TIMEOUT_MS));
+
 				/* store the AuthInfo in a map */
-                tokens.put(tokenID, newInfo);
+                TOKENS.put(tokenID, newInfo);
             }
 
 			/* get auth token and set activity timestamp */
             if(info == null) {
-            	info = tokens.get(tokenID);
+            	info = TOKENS.get(tokenID);
             }
             AuthHeaders.THREAD_AUTH_INFO.get().set(info);
             info.setActiveNow();
@@ -330,14 +342,30 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
         return true;
     }
 
-    protected abstract User findUserByEmail(String email);
+    /**
+     * Abstract method to get client factory (which is injected into subclasses).
+     * @return
+     */
+    protected abstract ServiceClientFactory getClientFactory();
+
+	protected User findUserByEmail(String email) {
+		User user = (User) ModelCache.USERS.get(email);
+		if(user != null) {
+			return user;
+		}
+		ServiceClientFactory fac = getClientFactory();
+		UsersService users = fac.getUsersServiceClient(AuthHeaders.INTERNAL_CALL);
+		user = users.findByEmail(email);
+		ModelCache.USERS.put(email, user);
+		return user;
+	}
 
 	private boolean authorize(String uriPath, AuthInfo authInfo) {
     	for(String pattern : requiredRoleForResources.keySet()) {
     		String role = requiredRoleForResources.get(pattern);
     		if(uriPath.matches(pattern)) {
-    			if(!authInfo.roles.contains(role)) {
-    				LOG.info("Access denied: User '" + authInfo.email + 
+    			if(!authInfo.hasRole(role)) {
+    				LOG.info("Access denied: User '" + authInfo.getEmail() + 
     						"' misses required role '" + role + 
     						"' for resource: " + uriPath);
     				return false;
@@ -392,7 +420,7 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
                     	info.token = secondPart;
                     }
             	} else {
-            		/* interpret as <userId>:<appKey> token */
+            		/* interpret as <userId>~<appKey> token */
             		info.userId = firstPart;
             		info.appKey = secondPart;
             	}
@@ -404,7 +432,10 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
         return info;
     }
 
-    protected abstract AuthInfo authenticateRiotsApp(String userId, String appId);
+    protected AuthInfo authenticateRiotsApp(String userId, String appKey) {
+		ServiceClientFactory fac = getClientFactory();
+		return authenticateRiotsApp(fac, userId, appKey);
+    }
 
     /**
      * Returns a valid AuthInfo token for the given parameters, 
@@ -423,8 +454,8 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
 			}
 			AuthInfo info = new AuthInfo();
 			if(app.isAuthorized(user)) {
-				info.userID = userId;
-				info.email = user.getEmail();
+				info.setUserID(userId);
+				info.setEmail(user.getEmail());
 				return info;
 			}
 		} catch (Exception e) {
@@ -436,17 +467,17 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
 
 	void setAuthInfoHeaders(HttpServletRequest request, AuthInfo authInfo) {
     	/* append additional infos to request */
-        request.setAttribute(AuthHeaders.HEADER_AUTH_EMAIL, authInfo.email);
-        request.setAttribute(AuthHeaders.HEADER_AUTH_USER_ID, authInfo.userID);
+        request.setAttribute(AuthHeaders.HEADER_AUTH_EMAIL, authInfo.getEmail());
+        request.setAttribute(AuthHeaders.HEADER_AUTH_USER_ID, authInfo.getUserID());
     }
 	static void readAuthInfoHeaders(HttpServletRequest request, AuthInfo authInfo) {
     	/* append additional infos to request */
 		String email = request.getHeader(AuthHeaders.HEADER_AUTH_EMAIL);
 		if(email != null) 
-			authInfo.email = email;
+			authInfo.setEmail(email);
 		String userID = request.getHeader(AuthHeaders.HEADER_AUTH_USER_ID);
 		if(userID != null) 
-			authInfo.userID = userID;
+			authInfo.setUserID(userID);
     }
 
 	/* HELPER METHODS */
@@ -457,10 +488,10 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
     		info.addRoles(Role.ROLES);
     		return;
     	}
-    	if(info.email == null)
+    	if(info.getEmail() == null)
     		return;
     	for (UserRoleMapping m : userRoleMappings) {
-            if (info.email.matches(m.userPattern)) {
+            if (info.getEmail().matches(m.userPattern)) {
             	info.addRole(m.role);
             }
         }
@@ -493,15 +524,15 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
         if (!force && Math.random() < 0.95) {
             return;
         }
-        synchronized (tokens) {
-            for (String id : new HashSet<String>(tokens.keySet())) {
-                AuthInfo token = tokens.get(id);
-                if (token.expiry.before(new Date())) {
-                    tokens.remove(id);
+        synchronized (TOKENS) {
+            for (String id : new HashSet<String>(TOKENS.keySet())) {
+                AuthInfo token = TOKENS.get(id);
+                if (token.getExpiry().before(new Date())) {
+                    TOKENS.remove(id);
                 }
             }
         }
-        LOG.debug("Cleaned up. Remaining tokens: " + tokens.size());
+        LOG.debug("Cleaned up. Remaining tokens: " + TOKENS.size());
     }
 
     private boolean isUnprotected(String path) {
@@ -525,13 +556,17 @@ public abstract class AuthFilterBase implements Filter, AuthenticationEntryPoint
     public static long getOnlineUsersCount() {
     	/* TODO maybe cache this number for performance reasons */
     	long count = 0;
-    	for(AuthInfo i : tokens.values()) {
-    		if(i.isCurrentlyActive()) {
+    	for(AuthInfo i : TOKENS.values()) {
+    		if(isCurrentlyActive(i)) {
     			count ++;
     		}
     	}
         return count;
     }
+	public static boolean isCurrentlyActive(AuthInfo i) {
+		return (System.currentTimeMillis() - i.getLastActiveTime())
+				< AuthFilterBase.INACTIVITY_TIMEOUT_MS;
+	}
 
     public void init(FilterConfig filterConfig) {
     }

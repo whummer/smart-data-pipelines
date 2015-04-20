@@ -1,0 +1,108 @@
+<div class="container">
+	<div class="row">
+		<div class="col-sm-12">
+			<h1>Consumed Data Streams</h1>
+		</div>
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="ibox float-e-margins">
+					<div class="ibox-title">
+						<h5>Streams Overview</h5>
+					</div>
+					<div class="ibox-content">
+						<div>
+							<div class="row">
+								<div class="col-sm-9 m-b-xs"></div>
+								<div class="col-sm-3">
+									<div class="input-group">
+										<input type="text" placeholder="Search"
+											class="input-sm form-control"> <span
+											class="input-group-btn">
+											<button type="button" class="btn btn-sm btn-primary">Go!</button>
+										</span>
+									</div>
+								</div>
+							</div>
+							<div class="table-responsive">
+								<table class="table table-striped">
+									<thead>
+										<tr>
+											<th>#</th>
+											<th>Name</th>
+											<th>Publisher</th>
+											<th>Description</th>
+											<th>Status</th>
+											<th>Action</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr ng-repeat="n in streams" ng-class="{ 'font-bold' : n.id == selectedStream.id }">
+											<td>1</td>
+											<td><a ui-sref="{streamId: n.id}">{{n.name}}</a></td>
+											<td>{{n.organization.name}}</td>
+											<td>{{trim(n.description, 100)}}</td>
+											<td>{{n.status}}</td>
+											<td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		
+		<div class="row" ng-show="selectedStream">
+			<div class="col-lg-12">
+				<div class="ibox float-e-margins">
+					<div class="ibox-title">
+						<h5>Stream Details</h5>
+					</div>
+					<div class="ibox-content">
+
+						<!-- organization image -->
+						<div class="logo">
+							<img ng-show="selectedStream.organizationImg" class="img-responsive" style="margin: auto; max-height: 100px" 
+								ng-src="{{selectedStream.organizationImg}}">
+							<div ng-hide="selectedStream.organizationImg" class="text-center">
+								<img ng-src="img/no_image_available.png" src="img/no_image_available.png">
+							</div>
+						</div>
+	
+						<!-- content -->
+						<div class="caption ng-binding">
+							<h4 class="ng-binding">Car Data</h4>
+							<hr>
+							<b>Publisher:</b> {{selectedStream.organization.name}}
+							<hr>
+							This data stream contains live vehicle data, including location, fuel level. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna...
+							
+							{{selectedStream.pricing.billingUnit}}
+						</div>
+
+						<div ng-init="thePrice = selectedStream.pricing" class="caption ng-binding">
+							<hr>
+							<b>Price:</b>
+							<span ng-show="selectedStream.pricing.billingUnit == 'event' || selectedStream.pricing.billingUnit == 'day'">
+							{{selectedStream.pricing.unitPrice}} €
+							<span style="font-weight: normal;">
+								<span ng-show="selectedStream.pricing.billingUnit == 'event'">per data point</span>
+								<span ng-show="selectedStream.pricing.billingUnit == 'day'">per day</span>
+							</span>
+							</span>
+							<div ng-show="selectedStream.pricing.billingUnit == 'free'" style="line-height: 40px;">
+							free of charge
+							</div>
+							<div ng-show="selectedStream.pricing.billingUnit == 'on_request'" style="line-height: 40px;">
+							request price
+							</div>
+						</div>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

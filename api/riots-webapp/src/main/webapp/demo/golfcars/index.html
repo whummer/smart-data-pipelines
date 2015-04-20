@@ -1,100 +1,466 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html ng-app="demo">
 <head>
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css"/>
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.8/angular.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
-	<script type="text/javascript" src="/demo/golfcars/main.js"></script>
+
+	<!-- PACE progress bar -->
+	<link rel="stylesheet" href="pace.css"/>
+	<script type="application/javascript" src="pace.min.js"></script>
+	<!--
+	  - STYLE SHEETS
+	  -->
+
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css"/>
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css"/>
+
+	<!-- Font awesome -->
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+	<!-- FancyBox -->
+	<link href="/styles/ext/plugins/fancybox/jquery.fancybox.css" rel="stylesheet">
+
+	<!-- Chosen Plugin -->
+	<link href="/styles/ext/plugins/chosen/chosen.css" rel="stylesheet">
+
+	<!-- Dropzone style -->
+	<link href="/styles/ext/plugins/dropzone/basic.css" rel="stylesheet">
+	<link href="/styles/ext/plugins/dropzone/dropzone.css" rel="stylesheet">
+
+	<!-- noUiSlider for Range Slider-->
+	<link href="/styles/ext/plugins/nouslider/jquery.nouislider.css" rel="stylesheet">
+
+	<!-- DataPicker -->
+	<link href="/styles/ext/plugins/datapicker/angular-datapicker.css" rel="stylesheet">
+
+	<!-- Ion Range Slider -->
+	<link href="/styles/ext/plugins/ionRangeSlider/ion.rangeSlider.css" rel="stylesheet">
+	<link href="/styles/ext/plugins/ionRangeSlider/ion.rangeSlider.skinFlat.css" rel="stylesheet">
+
+	<!-- ui Tree -->
+	<link href="/styles/ext/plugins/uiTree/angular-ui-tree.min.css" rel="stylesheet">
+
+	<!-- iCheck -->
+	<link href="/styles/ext/plugins/iCheck/custom.css" rel="stylesheet">
+
+	<!-- colorpicker -->
+	<link href="/styles/ext/plugins/colorpicker/colorpicker.css" rel="stylesheet">
+
+	<!-- Main Inspinia CSS files -->
+	<link href="animate.css" rel="stylesheet">
+	<link href="style.css" rel="stylesheet">
+
+	<!-- demo css -->
+	<link href="demo.css" rel="stylesheet"/>
+
+	<!--
+		- JAVA SCRIPT STUFF
+		-->
+
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.8/angular.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
 
 	<!-- riots API dependencies -->
+	<script type="application/javascript" src="/scripts/ext/jsKnob/angular-knob.js"></script>
+	<script type="application/javascript" src="/scripts/ext/jsKnob/jquery.knob.js"></script>
+	<script type="application/javascript" src="/scripts/ext/colorpicker/bootstrap-colorpicker-module.js"></script>
+	<script type="text/javascript" src="/demo/golfcars/main.js"></script>
+
 	<script>
-	window.RIOTS_USER_ID = "Please insert";
-	window.RIOTS_APP_KEY = "Please insert";
+		window.RIOTS_USER_ID = "54cfa5b0bee88c0d9b4d157a";
+		window.RIOTS_APP_KEY = "da022e9f-4a5b-4a6b-b2d6-9d1e199447c4";
 	</script>
+
+
+	<script type="application/javascript" src="angular-peity.js"></script>
+	<script type="application/javascript" src="jquery.peity.min.js"></script>
 	<script type="text/javascript" src="/config.js"></script>
 	<script type="text/javascript" src="/scripts/modules/service-calls.js"></script>
 	<script type="text/javascript" src="/api/riots-api.js"></script>
 
-	<title>Demo - Fleet Management</title>
+	<title>Demo - Porsche Fleet Management</title>
 </head>
-<body>
-	<div class="container" ng-controller="MainCtrl">
-		<div style="height: 200px; width: 100%; background-image: linear-gradient(to bottom, rgba(255,0,0,0), rgba(255,255,255,1)), url(/demo/golfcars/carfleet.jpg); background-size: 100%;">
-		</div>
-		<p></p>
-        <div class="panel panel-default">
 
-            <div class="panel-heading">
-                <h2 class="panel-title">
-                	<span class="glyphicon glyphicon-edit"></span>
-                	<b>Fleet Management</b>
-                </h2>
-            </div>
-            <div class="panel-body">
+<body style="background-color: #eeeeee">
 
-				<h2>Configuration</h2>
-				
-				<table><tr>
-					<td>RIOTS_USER_ID</td>
-					<td> = </td>
-					<td><input ng-model="RIOTS_USER_ID" class="form-control"/></td>
-				</tr>
-				<tr>
-					<td>RIOTS_APP_KEY</td>
-					<td> = </td>
-					<td><input ng-model="RIOTS_APP_KEY" class="form-control"/></td>
-				</tr>
-				</table>
+<div class="container" ng-controller="MainCtrl">
 
-				<h2>Available Cars</h2>
-				<button class="btn btn-primary" ng-click="loadThings()">Reload Things</button>
-				<table class="table table-bordered table-hover">
-				<thead><tr>
-					<th>Image</th>
-					<th>Name</th>
-					<th>Location</th>
-					<th>Battery Level</th>
-					<th>Tire Pressure</th>
-					<th>Within Geo Fence</th>
-				</tr></thead>
-				<tr ng-repeat="thing in things">
-					<td><img ng-src="{{thing.img}}" style="height: 30px;"/></td>
-					<td><b>{{thing.name}}</b></td>
-					<td>{{thing.properties['location.latitude']}},{{thing.properties['location.longitude']}}</td>
-					<td>{{thing.properties.batteryPercent}} %</td>
-					<td>{{thing.properties.pressure}} %</td>
-					<td>{{thing.properties.isInCurrentGeoFence}}</td>
-				</tr>
-				</table>
-
-				<h2>Geo Fence</h2>
-				<div>
-					<table><tr>
-						<td>Center (lat/lon):</td>
-						<td><input ng-model="geoFence.center.latitude" disabled="disabled"
-							 class="form-control" style="width: 100px; clear: none;"/></td>
-						<td>,</td>
-						<td><input ng-model="geoFence.center.longitude" disabled="disabled"
-							 class="form-control" style="width: 100px; clear: none;"/></td>
-					</tr>
-					<tr>
-						<td>Radius:</td>
-						<td><input ng-model="diameter" class="form-control" style="width: 100px;"/></td>
-						<td></td>
-						<td>meters</td>
-					</tr>
-					</table>
+	<div class="col-lg-12" style="margin-bottom: 10px">
+		<div class="ibox">
+			<div class="ibox-content">
+				<div class="text-center">
+					<img src="/demo/golfcars/porsche_powered_by_a1.png" class="center-block img-responsive" alt=""/>
 				</div>
-				<button class="btn btn-primary" ng-click="setupGeoFence()">Setup Geo Fence</button>
+			</div>
+		</div>
+	</div>
 
-				<h2>Map View</h2>
-				<div id="worldMap" style="height: 300px;"></div>
-            </div>
-        </div>
-   </div>
+	<div class="col-lg-6">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<span class="fa fa-wrench"></span> <strong>riots Configuration</strong>
+			</div>
+			<div class="ibox-content">
+				<form class="form-horizontal">
+					<div class="form-group">
+						<label for="riotsUserId" class="control-label col-sm-4">riots UserId</label>
+						<div class="col-sm-8">
+							<input id="riotsUserId" ng-model="RIOTS_USER_ID" class="input-sm form-control"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="riotsAppKey" class="control-label col-sm-4">riots AppKey</label>
+						<div class="col-sm-8">
+							<input id="riotsAppKey" ng-model="RIOTS_APP_KEY" class="form-control input-sm"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="riotsAppKey" class="control-label col-sm-4">Remove Triggers</label>
+						<div class="col-sm-8">
+							<label class="switch">
+								<input type="checkbox" ng-model="removeExistingTriggers" class="form-control "/>
+								<i></i>
+							</label>
+						</div>
+					</div>
+				</form>
+
+				<div class="row">
+					<div class="col-sm-12">
+						<button class="btn btn-sm btn-primary pull-right" ng-click="reloadConfiguration(removeExistingTriggers)">
+							<span class="fa fa-refresh"></span> Reload Configuration
+						</button>
+						<button class="btn btn-sm btn-warn pull-right" ng-click="removeAllTriggers()">
+							<span class="fa fa-refresh"></span> Remove All Triggers
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- ACTIVE CARS -->
+	<div class="col-lg-12" ng-if="things.length">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title"><span class="fa fa-car"></span> <strong>Active Cars</strong></div>
+			<div class="ibox-content">
+				<table class="table table-bordered table-hover">
+					<thead>
+					<tr>
+						<th>Image</th>
+						<th>ID</th>
+						<th>Name</th>
+						<th>Location</th>
+						<th>Fuel Level</th>
+						<th>Remaining Mileage</th>
+						<th>Tire Pressure</th>
+						<th>Speed</th>
+						<th>Within Geo Fence</th>
+					</tr>
+					</thead>
+					<tr ng-repeat="vehicle in things">
+						<td><img ng-src="{{vehicle.img}}" style="height: 30px;"/></td>
+						<td style="vertical-align: middle">{{vehicle.id}}</td>
+						<td style="vertical-align: middle"><b>{{vehicle.name}}</b></td>
+						<td style="vertical-align: middle">
+							{{vehicle.properties['location.latitude'] | number : 6 }},
+							{{vehicle.properties['location.longitude'] | number : 6}}
+						</td>
+						<td style="vertical-align: middle">{{vehicle.properties.fuelLevel | number :2}} %</td>
+						<td style="vertical-align: middle">{{(vehicle.properties.mileageRemaining / 1000) | number : 1}} km</td>
+						<td style="vertical-align: middle">{{vehicle.properties.pressure}} %</td>
+						<td style="vertical-align: middle">{{vehicle.properties.speed | number : 2}} m/s</td>
+						<td style="vertical-align: middle">
+							<span ng-repeat="geoFence in vehicle.properties.withinGeoFences">
+								<span class="label" style="color: white; background-color: {{geoFence.config.color}}">
+									{{geoFence.name}}
+								</span>
+								<span ng-show="!$last">&nbsp;&nbsp;</span>
+							</span>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- ACTIVE CARS -->
+	<div class="col-lg-6 col-md-12 col-sm-12" ng-repeat="vehicle in things">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title"><img ng-src="{{vehicle.img}}" style="height: 20px;"/>
+				<strong>{{vehicle.name}}</strong></div>
+			<div class="ibox-content">
+
+				<div class="row">
+					<div class="col-sm-12 col-xs-12">
+						<div id="{{vehicle.id + '_map'}}" style="height: 300px;"></div>
+					</div>
+				</div>
+
+				<div class="row" style="margin-top: 15px">
+					<div class="col-sm-12 col-xs-12 ">
+						<div class="col-sm-4 text-center">
+							<knob id="{{vehicle.id + '_speed'}}"
+										knob-data="{{vehicle.properties.speed}}" class="m-r-sm" data-skin="tron"
+										data-fgColor="#1AB394"
+										data-width="85"
+										data-height="85"
+										data-thickness="0.1"
+										data-max="260"
+										data-angleOffset=-125
+										data-angleArc=250
+										knob-options=""></knob>
+
+						</div>
+						<div class="col-sm-4 text-center">
+							<knob id="{{vehicle.id + '_fuel'}}"
+										knob-data="{{vehicle.properties.fuelLevel}}" class="m-r-sm" data-skin="tron"
+										data-fgColor="#00AC23"
+										data-width="85"
+										data-height="85"
+										data-thickness="0.1"
+										data-angleOffset=-125 data-angleArc=250
+										knob-options=""></knob>
+						</div>
+						<!--<div class="col-sm-4 text-center">
+							<knob
+									id="{{vehicle.id + '_milage'}}"
+									knob-data="{{vehicle.properties.remainingMilage}}" class="m-r-sm" data-skin="tron"
+									data-fgColor="#00AC23"
+									data-width="85"
+									data-height="85"
+									data-thickness="0.1"
+									data-readOnly="true"
+									data-max="{{vehicle.milage}}"
+									data-angleOffset=-125 data-angleArc=250
+									knob-options=""></knob>
+						</div>-->
+
+						<div class="col-sm-4 text-center" style="height: 100%">
+
+							<!--<line-chart id="{{vehicle.id + '_speedchart'}}"
+													data="LineChart.data"
+													options="LineChart.options"></line-chart>-->
+
+							<table style="width: 100%; vertical-align: middle" class="table-bordered">
+								<tr>
+									<td style="vertical-align: middle; padding: 5px; color: #00A000">100%</td>
+									<td style="vertical-align: middle; padding: 5px; color: #00A000">100%</td>
+								</tr>
+								<tr>
+									<td style="vertical-align: middle; padding: 5px; color: #00A000">100%</td>
+									<td style="vertical-align: middle; padding: 5px; color: #00A000">100%</td>
+								</tr>
+								<!--<tr>
+									<td colspan="2"><strong>Tire Pressure</strong></td>
+								</tr>-->
+							</table>
+
+
+							<div>
+
+
+							</div>
+							<!--							<table style="height: 100%; width: 100%; vertical-align: middle" class="table-bordered">
+															<tr>
+																<td style="vertical-align: middle; padding: 10px; color: #00A000 ">100%</td>
+																<td style="vertical-align: middle; padding: 10px; color: #00A000">100%</td>
+															</tr>
+															<tr>
+																<td style="vertical-align: middle; padding: 10px; color: #00A000">100%</td>
+																<td style="vertical-align: middle; padding: 10px; color: #00A000">100%</td>
+															</tr>
+														</table>
+								-->          </div>
+					</div>
+
+					<div class="row text-center">
+						<div class="col-sm-12 col-xs-12 text-center">
+							<div class="col-sm-4 text-center"><strong>Speed (km/h)</strong></div>
+							<div class="col-sm-4 text-center"><strong>Fuel Level (%)</strong></div>
+							<div class="col-sm-4 text-center"><strong>Tire Pressure (%)</strong></div>
+						</div>
+					</div>
+
+					<div class="row" style="margin-top: 20px">
+						<div class="col-sm-4 col-xs-4" style="margin-left: 10px;">
+							<span id="{{vehicle.id + '_speedchart'}}"></span>
+							<p align="center"><strong>Average Speed (km/h)</strong></p>
+						</div>
+
+						<div class="col-sm-4 col-xs-4" style="margin-left: 10px;">
+							<span id="{{vehicle.id + '_updatechart'}}"></span>
+							<p align="center"><strong>Updates/sec: {{vehicle.properties.updateRate | number : 2 }}</strong></p>
+						</div>
+
+						<div class="col-sm-4 col-xs-4">
+							<div ng-show="vehicle.properties.receivedVouchers.length">
+								<span style="padding-left: 10px;"> <strong>Received Vouchers: </strong>
+								<span ng-repeat="voucher in vehicle.properties.receivedVouchers">
+									<img ng-src="{{voucher}}" style="margin-right: 10px; height: 30px; width: 30px"/>
+								</span>
+						</span>
+
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-lg-12">
+		<div class="ibox">
+			<div class="ibox-title"><span class="fa fa-location-arrow"></span> <strong>Map View of Active Cars</strong></div>
+			<div class="ibox-content">
+				<div class="row">
+					<div class="col-sm-12 col-lg-12 col-md-12">
+						<div id="worldMap" style="height: 500px;"></div>
+					</div>
+				</div>
+				<div class="row" style="margin-top: 20px;">
+					<div class="col-xs-12"><h3>Geo Fence Configuration</h3></div>
+				</div>
+				<div class="row">
+					<div class="col-sm-2">
+						Show Inactive Cars
+					</div>
+					<div class="col-sm-10">
+						<label class="switch">
+							<input class="form-control" type="checkbox" ng-model="showInactive"/>
+							<i></i>
+						</label>
+					</div>
+				</div>
+				<div class="row" style="margin-top: 10px">
+					<div class="col-sm-2">
+						Show Loyalty Fences
+					</div>
+					<div class="col-sm-10">
+						<label class="switch">
+							<input class="form-control" type="checkbox" ng-model="showLoyalty"/>
+							<i></i>
+						</label>
+					</div>
+				</div>
+				<div class="row" style="margin-top: 10px">
+					<div class="col-sm-2">
+						Show Vehicle Tooltip
+					</div>
+					<div class="col-sm-10">
+						<label class="switch">
+							<input class="form-control" type="checkbox" ng-model="showTooltips"/>
+							<i></i>
+						</label>
+					</div>
+				</div>
+
+				<div class="row" style="margin-top: 10px">
+					<div class="col-sm-12">
+						<h4>Custom Geofences</h4>
+					</div>
+				</div>
+
+				<div class="row">
+
+					<div class="col-sm-12">
+						<form class="form-inline" role="form">
+
+							<div class="form-group">
+								<label for="name" class="control-label sr-only">Name</label>
+								<input id="name" placeholder="Name for Geofence" ng-model="geoFenceName" class="form-control input-sm"/>
+							</div>
+
+							<div class="form-group">
+								<label for="diameter" class="control-label sr-only">Radius</label>
+								<input id="diameter" placeholder="Enter Diameter" ng-model="diameter" class="form-control input-sm"/>
+							</div>
+
+							<input colorpicker type="text" ng-model="geoFenceColor" placeholder="Color"
+										 class="form-control input-sm"/>
+
+							<input class="form-control input-sm" ng-model="voucherDescription" placeholder="Voucher"/>
+
+							<span ng-repeat="voucher in vouchers">
+								<img ng-src="{{voucher.src}}" style="max-width: 30px; max-height: 30px; cursor: pointer"
+										 ng-click="selectVoucher(voucher)"/>
+							</span>
+
+
+							<div class="form-group">
+								<button class="pull-right btn btn-primary btn-sm" ng-click="setupGeoFence()">Setup Geo
+									Fence
+								</button>
+							</div>
+
+						</form>
+					</div>
+
+				</div>
+
+				<div class="row" style="margin-top: 10px" ng-if="geoFences.length">
+					<div class="col-sm-12">
+						<table class="table table-bordered table-hover">
+							<thead>
+							<tr>
+								<!--<th>Image</th>-->
+								<th>ID</th>
+								<th>Name</th>
+								<th>Center</th>
+								<th>Diameter</th>
+								<th>Associated Vouchers</th>
+								<th>Cars in Range</th>
+								<th class="text-center">Color</th>
+								<th class="text-center">Remove</th>
+							</tr>
+							</thead>
+							<tr ng-repeat="geoFence in geoFences">
+								<td>
+									{{geoFence.id}}
+								</td>
+								<td>
+									{{geoFence.name}}
+								</td>
+								<td>
+									{{geoFence.config.center.latitude | number : 6}}, {{geoFence.config.center.longitude | number : 6}}
+								</td>
+								<td>
+									{{geoFence.config.diameter}}
+								</td>
+
+								<td>
+									<img ng-src="{{geoFence.config.voucher.src}}"
+											 style="max-width: 30px; max-height: 30px"
+											 alt="{{geoFence.config.voucher.id}}"
+											 ng-show="geoFence.config.voucher"/>
+								</td>
+								<td>
+									{{carsInFence(geoFence)}}
+								</td>
+								<td class="text-center">
+									<span style="background-color: {{geoFence.config.color}}">
+										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									</span>
+								</td>
+								<td class="text-center">
+									<button class="btn btn-xs btn-warning" ng-click="removeGeoFence(geoFence)"><span
+											class="fa fa-remove"></span> Clear
+									</button>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+
+
+			</div>
+		</div>
+	</div>
+</div>
+
+
 </body>
 </html>

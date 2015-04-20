@@ -3,7 +3,9 @@ package io.riots.api.services.catalog;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import io.riots.api.services.model.Constants;
+import io.riots.api.services.model.interfaces.ObjectWithImages;
 import io.riots.api.services.scenarios.Thing;
 
 import java.util.*;
@@ -14,7 +16,7 @@ import java.util.*;
  * @author Waldemar Hummer
  * @author riox
  */
-public class ThingType extends HierarchicalObject<String> {
+public class ThingType extends HierarchicalObject<String> implements ObjectWithImages {
 
 	@JsonInclude(Include.NON_EMPTY)
 	private String id;

@@ -1,6 +1,6 @@
 package io.riots.core.auth;
 
-import io.riots.core.auth.AuthHeaders.AuthInfo;
+import io.riots.api.services.users.AuthInfo;
 
 import java.net.URL;
 import java.util.Map;
@@ -33,8 +33,8 @@ public class AuthNetworkFacebook extends AuthNetwork {
             String result = IOUtils.readStringFromStream(new URL(url).openStream());
             @SuppressWarnings("unchecked")
             Map<String, Object> json = JSON.readValue(result, Map.class);
-            newInfo.userName = (String) json.get("name");
-            newInfo.email = (String) json.get("email");
+            newInfo.setName((String) json.get("name"));
+            newInfo.setEmail((String) json.get("email"));
         } catch (Exception e) {
             LOG.warn("Unable to process auth headers: " + e);
             return null;
