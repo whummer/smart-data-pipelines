@@ -73,10 +73,17 @@ gulp.task('services:streams:copy:prod', 'copies streams-service sources to PRODU
 // run service using nodemon
 //
 gulp.task('services:streams:serve', 'serve the streams-service  using nodemon', function () {
-	return nodemon({
+	process.env.PORT = dockerSettings.port;
+	return cp.spawn('nodemon',
+			['app.js'],
+			{env: process.env, cwd: BASE_DIR, stdio: 'inherit'})
+
+	// todo cannot use gulp-nodemon atm since require() returns only a static instance
+	// (see https://github.com/JacksonGariety/gulp-nodemon/issues/6)
+	/*return nodemon({
 		script: BASE_DIR + '/app.js',
 		env: { 'NODE_ENV': 'development' , 'PORT' : dockerSettings.port}
-	});
+	});*/
 });
 
 //
@@ -90,9 +97,9 @@ gulp.task('services:streams:docker:build:test', 'build a Docker image from strea
 });
 
 gulp.task('services:streams:docker:build:prod', 'build a Docker image from streams-service PRODUCTION build', function () {
-	util.log(util.colors.magenta("Building Docker image for TEST..."));
+	util.log(util.colors.magenta("Building Docker image for PRODUCTION..."));
 	runSequence('services:streams:build:prod', 'services:streams:docker:build:prod:dockerfile', 'services:streams:docker:push', function () {
-		util.log(util.colors.magenta("Built Docker image for TEST. Enjoy."));
+		util.log(util.colors.magenta("Built Docker image for PRODUCTION. Enjoy."));
 	});
 });
 

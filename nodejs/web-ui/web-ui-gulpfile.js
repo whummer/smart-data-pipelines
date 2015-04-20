@@ -209,7 +209,7 @@ gulp.task('ui:serve', 'serve the riox-ui src using nodemon', ['ui:inject:dev'], 
 
 
 // livereload browser on client app changes
-gulp.task('ui:livereload', 'servce the riox-ui using nodemon (with livereload)', ['ui:serve'], function () {
+gulp.task('ui:livereload', 'serve the riox-ui using nodemon (with livereload)', ['ui:serve'], function () {
 	livereload();
 	livereload.listen();
 	util.log(livereload);

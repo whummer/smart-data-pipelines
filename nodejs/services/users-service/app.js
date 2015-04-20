@@ -10,7 +10,7 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 var express = require('express');
 var mongoose = require('mongoose');
 var cors = require('cors');
-var config = require('_/config/environment');
+var config = require('./config/environment');
 var util = require('_/util/util');
 
 global.config = config;
@@ -28,7 +28,7 @@ if(config.seedDB) { require('./demodata'); }
 var app = express();
 app.use(cors());
 var server = require('http').createServer(app);
-require('../lib/config/express')(app);
+require('./config/express')(app);
 require('./routes')(app);
 
 // Start server

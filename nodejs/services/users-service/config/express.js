@@ -13,15 +13,15 @@ var methodOverride = require('method-override');
 var cookieParser = require('cookie-parser');
 var errorHandler = require('errorhandler');
 var path = require('path');
+var config = require('./environment');
 var passport = require('passport');
 var session = require('express-session');
 
 function commonConfig(app) {
   app.use(express.static(path.join(config.root, 'static')));
   app.set('appPath', '/');
+  app.use(morgan(':method :url :status :response-time ms - :req'));
   //app.use(morgan('dev'));
-  app.use(morgan('dev'));
-
 }
 
 module.exports = function(app) {
