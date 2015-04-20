@@ -26,14 +26,11 @@ function isAuthenticated() {
     })
     // Attach user to request
     .use(function(req, res, next) {
-//      var query = {id: req.user._id};
-//  	console.log(query, req.user);
       User.findById(req.user._id, function (err, user) {
         if (err) return next(err);
         if (!user) return res.send(401);
 
         req.user = user;
-//        console.log("req.user", req.user);
         next();
       });
     });
@@ -48,7 +45,6 @@ function hasRole(roleRequired) {
   return compose()
     .use(isAuthenticated())
     .use(function meetsRequirements(req, res, next) {
-//    	console.log("config.userRoles", config.userRoles, req.user.role, config.userRoles.indexOf(req.user.role), config.userRoles.indexOf(roleRequired));
       if (config.userRoles.indexOf(req.user.role) >= config.userRoles.indexOf(roleRequired)) {
         next();
       }

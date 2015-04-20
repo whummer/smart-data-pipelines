@@ -14,6 +14,9 @@ var config = require('./config/environment');
 var util = require('_/util/util');
 
 global.config = config;
+if(!global.servicesConfig) {
+	global.servicesConfig = require('_/config/services');
+}
 
 //TODO find better place to configure port for microservices
 config.port = process.env.SERVICE_PORT || 8085;
@@ -36,9 +39,20 @@ require('./config/express')(app);
 require('./routes')(app);
 
 // Start server
-server.listen(config.port, config.ip, function () {
-  console.log('Express server listening on %d, in %s mode', config.port, app.get('env'));
-});
+app.start = function() {
+	if(app.started) return app;
+	server.listen(config.port, config.ip, function () {
+		app.started = true;
+		console.log('Express server listening on %d, in %s mode', config.port, app.get('env'));
+	});
+	return app;
+}
+app.stop = function() {
+	if(!app.started) return;
+	app.started = false;
+	server.close();
+}
+app.start();
 
 // Expose app
 module.exports = app;

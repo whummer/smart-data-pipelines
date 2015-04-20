@@ -4,6 +4,8 @@ var User = require('_/model/user.model');
 var passport = require('passport');
 var config = require('_/config/environment');
 var jwt = require('jsonwebtoken');
+var orgsClient = require('_/api/organizations.client');
+var riox = require('_/api/riox-api');
 
 var validationError = function(res, err) {
   return res.json(422, err);
@@ -37,7 +39,10 @@ exports.create = function (req, res, next) {
   newUser.save(function(err, user) {
     if (err) return validationError(res, err);
     var token = jwt.sign({_id: user._id }, config.secrets.session, { expiresInMinutes: 60*5 });
-    res.json({ token: token });
+    var org = {name: "Default Organization"};
+    riox.add.organization(org, function(org) {
+        res.json({ token: token });
+    });
   });
 };
 
