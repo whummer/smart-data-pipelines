@@ -17,7 +17,7 @@ var passport = require('passport');
 var session = require('express-session');
 
 function commonConfig(app) {
-  app.use(express.static(path.join(config.root, 'static')));
+  app.use(express.static(path.join(global.config.root, 'static')));
   app.set('appPath', '/');
   //app.use(morgan('dev'));
   app.use(morgan('dev'));

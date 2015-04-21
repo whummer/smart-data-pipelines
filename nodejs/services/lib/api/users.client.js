@@ -1,10 +1,13 @@
-var appConfig = require('../../../web-ui/lib/app/config');
 var apiUtil = require('./common');
-var pathPrefix = appConfig.services.users.url;
+
+var pathExpr = "global.servicesConfig.services.users.url";
 var api = {};
 
 /* add API methods */
-api.auth = apiUtil.registerMethod("authLocal", pathPrefix + "/auth/local", "POST");
+api.auth = apiUtil.registerMethod("authLocal", 
+		{pathExpr: pathExpr, replace: ["$", "/auth/local"]}, "POST");
+api.signup = apiUtil.registerMethod("authLocal", 
+		{pathExpr: pathExpr}, "POST");
 
 module.exports = api;
 

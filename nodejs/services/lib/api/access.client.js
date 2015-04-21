@@ -1,9 +1,10 @@
-var appConfig = require('../../../web-ui/lib/app/config');
 var apiUtil = require('./common');
-var pathPrefix = appConfig.services.access.url;
+
+var pathExpr = "global.servicesConfig.services.access.url";
 var api = {};
 
 /* add API methods */
-api.list = apiUtil.registerMethod("access_list", pathPrefix + "/", "GET");
+api.list = apiUtil.registerMethod("access_list", {pathExpr: pathExpr}, "GET");
+api.request = apiUtil.registerMethod("access_request", {pathExpr: pathExpr}, "POST");
 
 module.exports = api;
