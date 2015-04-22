@@ -30,13 +30,14 @@
 					</div>
 				</div>
 			</div>
-			<div class="pull-right" style="margin-right: -18px;">
+			<div class="pull-right" style="margin-right: -5px;">
 				<label for="disableRetention" class="control-label">Disable Retention Completely</label>
 				<input type="checkbox" id="disableRetention" class="form-control"
 							 ng-model="retentionDisabled"
 							 ng-change="retentionEnabled = !retentionDisabled"
 							 ui-switch="{color:'#5C9C4D', size: 'small'}"/>
 			</div>
+			<div class="clearfix"></div>
 		</div>
 	</div>
 
@@ -58,7 +59,7 @@
 			 ng-class="{fadeIn : resourceData.securityEnabled, fadeOut : !resourceData.securityEnabled}"
 			 ng-show="resourceData.securityEnabled">
 
-		<div class="widget dark-grey-widget-bg p-xl" style="margin-left: 18px;margin-right: 18px">
+		<div class="widget dark-grey-widget-bg p-xl" style="margin-left: 18px;margin-right: 18px	">
 			<div class="row" style="margin-top: 10px;">
 				<div class="form-group">
 					<label for="securitySettings" class="col-sm-4  control-label">
@@ -69,13 +70,14 @@
 				</div>
 			</div>
 
-			<div class="pull-right" style="margin-right: -18px;">
+			<div class="pull-right" style="margin-right: -5px;">
 				<label for="disableSecurity" class="control-label">Disable Security Completely</label>
 				<input type="checkbox" id="disableSecurity" class="form-control"
 							 ng-model="resourceData.securityDisabled"
 							 ng-change="resourceData.securityEnabled = !resourceData.securityDisabled"
 							 ui-switch="{color:'#5C9C4D', size: 'small'}"/>
 			</div>
+			<div class="clearfix"></div>
 		</div>
 	</div>
 

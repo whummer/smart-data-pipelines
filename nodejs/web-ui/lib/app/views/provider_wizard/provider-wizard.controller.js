@@ -1,4 +1,4 @@
-function providerWizardCtrl($scope, $log, $http, growl, $state) {
+function providerWizardCtrl($scope, $log, $http, growl, $state, $filter) {
 	$scope.resourceData = {};
 
 	$scope.retentionEnabled = false;
@@ -12,54 +12,42 @@ function providerWizardCtrl($scope, $log, $http, growl, $state) {
 	}
 
 	$scope.connectors = [
-		{name: "HTTP Connector"},
-		{name: "AMQP Connector"},
-		{name: "JMS Connector"},
-		{name: "MQTT Connector"},
-		{name: "SMTP Connector"},
-		{name: "TCP Connector"}
+		{name: "HTTP Connector", type: "http"},
+		{name: "AMQP Connector", type: "amqp"},
+		{name: "JMS Connector", type: "jms"},
+		{name: "MQTT Connector", type : "mqtt"},
+		{name: "SMTP Connector", type : "smtp"},
+		{name: "TCP Connector", type: "tcp"}
 	];
-
-	/*$scope.updateRetentionEnabled = function(retentionEnabled) {
-	 $log.debug("Retention enabled: ", retentionEnabled);
-	 $scope.retentionDisabled = !retentionEnabled;
-	 };
-
-	 $scope.updateRetentionDisabled = function(retentionDisabled) {
-	 $log.debug("Retention disabled: ", retentionDisabled);
-	 $scope.retentionEnabled = !retentionDisabled;
-	 };
-	 */
-
-	/*$scope.$watch("retentionDisabled", function(retentionDisabled){
-	 $log.debug("Switching retentionDisabled to ", retentionDisabled);
-	 if (retentionDisabled) {
-	 $scope.retentionEnabled = !retentionDisabled;
-	 }
-	 });*/
-
-	/*$scope.$watch("retentionEnabled", function(retentionEnabled){
-	 $log.debug("Switching retentionEnabled to ", retentionEnabled);
-	 if (retentionEnabled) {
-	 $scope.retentionDisabled = !retentionEnabled;
-	 } else {
-	 $log.debug("Retention is disabled")
-	 }
-	 });*/
-
-	$scope.$watch("logo", function () {
-		$log.debug("Some logo: ", $scope.logo);
-	});
 
 	$scope.retentionTimeSliderOptions = {
 		values: [
 			"1 Hour", "24 Hours", "3 Days",
 			"1 Week", "2 Weeks", "1 Month",
-			"3 Months", "6 Months", "1 Year",
+			"3 Months", "6 Months", "1 Year"
 		],
 		type: 'single',
-		hasGrid: true
+		hasGrid: true,
+		onChange:updateRetentionTime
 	};
+
+	function updateRetentionTime(slider) {
+		var retentionTimes = [
+			"1h", "24h", "3d", "1w", "2w", "1m", "3m", "6m", "1y"
+		];
+
+		var value = slider.from;
+		$scope.resourceData.retentionTime = retentionTimes[value];
+		$log.debug("Changed retention time to ", $scope.resourceData.retentionTime);
+	}
+
+	function updateSecuritySettings(slider) {
+		var securitySettings = ["tls_in", "tls_in_out", "3des_full", "rsa_2048_full"];
+		var value = slider.from;
+		$scope.resourceData.securitySetting = securitySettings[value];
+		$log.debug("Changed security settings to ", $scope.resourceData.securitySetting);
+
+	}
 
 	$scope.securitySliderOptions = {
 		values: [
@@ -67,20 +55,52 @@ function providerWizardCtrl($scope, $log, $http, growl, $state) {
 			"Encryption: RSA-2048"
 		],
 		type: 'single',
-		hasGrid: true
+		hasGrid: true,
+		onChange: updateSecuritySettings
 	};
 
 	$scope.processForm = function () {
-		$log.debug("Saving new resource: ", $scope.resourceData);
-		$http.post('/resources', $scope.resourceData)
-				.success(function (data, status, headers) {
-					$log.info("Created new resource at '%s'", headers.location);
-					growl.success("Successfully created new resource");
-				})
-				.error(function (data, status) {
-					$log.error("Could not create resource: %s", data);
-				});
+		var r = $scope.resourceData;
+		var dataItems = [];
+		angular.forEach(r.dataItems, function(dataItem) {
+			if (dataItem.enabled) {
+				dataItems.push({name: dataItem.name, price: dataItem.price});
+			}
+		});
+
+		//var dataItems = $filter('filter')(r.dataItems, {"enabled" : "true"});
+		$log.debug("Filtered data items: ", dataItems);
+		$log.debug("Saving new resource: ", r);
+		var dataStream = {
+			"name": r.name,
+			"description": r.description,
+			"sink-config": {
+				"connector": r.connector.type // http, amqp, whatever
+			},
+			"tags" : r.tags,
+			"data-items" : dataItems,
+			"retention-time": r.retentionTime, // e.g. 3h, 2w, 1m, 1y
+			"security": r.securitySetting, // TLS only, full
+			"visible": true
+		};
+
+		riox.add.stream(dataStream, function () {
+			$log.debug("Successfully added new data resource: ", r);
+			growl.success("Added new Data Resource '" + r.name + "'");
+		})
+
 	};
+	//
+
+
+	/*$http.post('/resources', $scope.resourceData)
+	 .success(function (data, status, headers) {
+	 $log.info("Created new resource at '%s'", headers.location);
+	 growl.success("Successfully created new resource");
+	 })
+	 .error(function (data, status) {
+	 $log.error("Could not create resource: %s", data);
+	 });*/
 }
 
 angular.module('rioxApp').controller(providerWizardCtrl);

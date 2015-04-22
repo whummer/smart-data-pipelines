@@ -2,7 +2,6 @@ var fs = require('fs');
 var resolve = require('path').resolve;
 var join = require('path').join;
 var cp = require('child_process');
-var _ = require('lodash');
 
 var service_directories = ['streams-service', 'users-service'];
 var services_directory = 'services';

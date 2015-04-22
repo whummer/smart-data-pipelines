@@ -11,7 +11,8 @@ angular.module('rioxApp', [
   'localytics.directives',        // Chosen select
   'NgSwitchery',
   'angular-growl',
-  'ngAnimate'
+  'ngAnimate',
+  'hljs'
 ])
   .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
     $locationProvider.html5Mode(false);

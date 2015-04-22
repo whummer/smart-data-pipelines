@@ -1399,6 +1399,10 @@ button.dim:active:before {
   top: 7px;
   font-size: 50px;
 }
+.error {
+  color: red;
+  font-weight: 900;
+}
 .overlay-container {
   position: relative;
 }
