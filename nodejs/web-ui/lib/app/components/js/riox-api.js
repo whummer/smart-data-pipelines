@@ -52,7 +52,7 @@ var assertAuth = function() {
 	if(!ok) {
 		console.log(sh.authToken);
 		console.trace();
-		throw "Please provide valid authentication information using RIOTS_USER_ID and RIOTS_APP_KEY global variables.";
+		throw "Please provide valid authentication information.";
 	}
 };
 
@@ -60,17 +60,20 @@ var assertAuth = function() {
 
 sh.activate = function(actKey, callback, errorCallback) {
 	var req = {activationKey: actKey};
-	return riots.callPOST(servicesConfig.services.users.url + "/activate", req, callback, errorCallback);
+	return callPOST(servicesConfig.services.users.url + "/activate", req, callback, errorCallback);
 };
 sh.signup = function(userInfo, callback, errorCallback) {
-	return riots.callPOST(servicesConfig.services.users.url + "/signup", userInfo, callback, errorCallback);
+	return callPOST(servicesConfig.services.users.url + "/signup", userInfo, callback, errorCallback);
+};
+sh.signin = function(userInfo, callback, errorCallback) {
+	return callPOST(servicesConfig.services.users.url + "/auth/local", userInfo, callback, errorCallback);
 };
 sh.auth = function(options, callback, errorCallback) {
 	var authToken = sh.authToken = {};
-	authToken.userId = (options && options.RIOTS_USER_ID) ? options.RIOTS_USER_ID : window.RIOTS_USER_ID;
-	authToken.appKey = (options && options.RIOTS_APP_KEY) ? options.RIOTS_APP_KEY : window.RIOTS_APP_KEY;
-	authToken.network = (options && options.RIOTS_AUTH_NETWORK) ? options.RIOTS_AUTH_NETWORK : window.RIOTS_AUTH_NETWORK;
-	authToken.access_token = (options && options.RIOTS_AUTH_TOKEN) ? options.RIOTS_AUTH_TOKEN : window.RIOTS_AUTH_TOKEN;
+	authToken.userId = (options && options.RIOX_USER_ID) ? options.RIOX_USER_ID : window.RIOX_USER_ID;
+	authToken.appKey = (options && options.RIOX_APP_KEY) ? options.RIOX_APP_KEY : window.RIOX_APP_KEY;
+	authToken.network = (options && options.RIOX_AUTH_NETWORK) ? options.RIOX_AUTH_NETWORK : window.RIOX_AUTH_NETWORK;
+	authToken.access_token = (options && options.RIOX_AUTH_TOKEN) ? options.RIOX_AUTH_TOKEN : window.RIOX_AUTH_TOKEN;
 	assertAuth();
 	var __defaultHeaders = {
 		"Content-Type": "application/json",
@@ -79,7 +82,7 @@ sh.auth = function(options, callback, errorCallback) {
 		"riots-auth-network": authToken.network,
 		"riots-auth-token": authToken.access_token,
 		"authorization": "Bearer " + authToken.access_token
-	}
+	};
 	$.ajaxSetup({
 	    headers: __defaultHeaders
 	});
@@ -128,6 +131,15 @@ sh.me = function(callback, errorCallback) {
 };
 sh.users = sh.get.users = function(callback) {
 	return callGET(servicesConfig.services.users.url, callback);
+};
+sh.user = sh.get.user = function(query, callback) {
+	var url = servicesConfig.services.users.url;
+	if(query.id) {
+		url += "/" + query.id;
+	} else {
+		throw "invalid user query";
+	}
+	return callGET(url, callback);
 };
 sh.actions = sh.get.actions = function(opts, callback) {
 	return callPOST(servicesConfig.services.users.url + "/actions/query", opts, callback);
@@ -191,7 +203,7 @@ sh.streams.provided = function(searchOpts, callback) {
 
 sh.sinks = sh.get.sinks = function(searchOpts, callback) {
 	var url = servicesConfig.services.streamsinks.url;
-	//url += "?creatorId=" + window.RIOTS_USER_ID;
+	//url += "?creatorId=" + window.RIOX_USER_ID;
 	return callGET(url, callback);
 };
 
@@ -519,8 +531,9 @@ function wrapDefaultErrorCallback(errorCallback) {
 	}
 }
 
-var callGET = sh.callGET = function(url, callback, doCacheResults, errorCallback) {
+var callGET = sh.callGET = function(url, options, doCacheResults, errorCallback) {
 	var m = mem();
+	var callback = options.callback ? options.callback : options;
 	if(doCacheResults && m[url]) {
 		if(callback) {
 			setTimeout(function(){
@@ -536,37 +549,41 @@ var callGET = sh.callGET = function(url, callback, doCacheResults, errorCallback
 		}, ttl);
 	}
 	errorCallback = wrapDefaultErrorCallback(errorCallback);
-	invokeGET(null, url,
+	invokeGET(options, url,
 		function(data, status, headers, config) {
 			if(!data) {
 				callback(data);
 				return;
 			}
-			//console.log("data.result", typeof data.result, data.result, Array.isArray(data.result), url);
-			if(Array.isArray(data.result)) {
-				m[url] = data.result;
-			} else if(typeof data.result == "object") {
-				$.extend(entry, data.result);
+			if(typeof data.__result != "undefined") data = data.__result;
+			if(Array.isArray(data)) {
+				m[url] = data;
+			} else if(typeof data == "object") {
+				if(typeof $ != "undefined") {
+					$.extend(entry, data);
+				}
 			} else {
-				m[url] = data.result;
+				m[url] = data;
 			}
 			if(callback) {
-				callback(data.result);
+				callback(data);
 			}
 		}, errorCallback
 	);
 	return entry;
 };
 
-var callPOSTorPUT = function(invokeFunc, url, body, callback, errorCallback) {
+var callPOSTorPUT = function(invokeFunc, url, body, options, errorCallback) {
 	if(typeof body == "object") {
 		body = JSON.stringify(body);
 	}
+	var callback = options.callback ? callback : options;
 	errorCallback = wrapDefaultErrorCallback(errorCallback);
-	invokeFunc(null, url, body,
+	invokeFunc(options, url, body,
 		function(data, status, headers, config) {
 			if(callback) {
-				callback(data.result);
+				if(typeof data.__result != "undefined") data = data.__result;
+				callback(data);
 			}
 		}, errorCallback
 	);
@@ -591,16 +608,17 @@ var callDELETE = sh.callDELETE = function(url, callback) {
 /* "shared memory", used as entity cache */
 
 var mem = sh.mem = function() {
-	if(window.rootScope) {
-		if(!window.rootScope.shared) {
-			window.rootScope.shared = {};
+	var gl = typeof window == "undefined" ? global : window;
+	if(gl.rootScope) {
+		if(!gl.rootScope.shared) {
+			gl.rootScope.shared = {};
 		}
-		return window.rootScope;
+		return gl.rootScope;
 	}
-	if(!window.sharedMem) {
-		window.sharedMem = {};
+	if(!gl.sharedMem) {
+		gl.sharedMem = {};
 	}
-	return window.sharedMem;
+	return gl.sharedMem;
 };
 
 /* WEBSOCKET FUNCTIONS */
@@ -619,7 +637,7 @@ var connectWebsocket = function(onOpenCallback) {
 			this.websocket = ws = new WebSocket(wsURL,
 					authToken.userId + "~" + authToken.appKey);
 		} else {
-			throw "Please provide RIOTS_USER_ID and RIOTS_APP_KEY variables.";
+			throw "Please provide RIOX_USER_ID and RIOX_APP_KEY variables.";
 		}
 	}
 
@@ -647,7 +665,6 @@ sh.subscribe = function(options, callback) {
 		if(options.clientId) {
 			msg.clientId = options.clientId;
 		}
-		console.log("subscribing", msg.thingId, msg.propertyName);
 		ws.send(JSON.stringify(msg));
 	});
 	ws.onmessage = function(msg) {
@@ -710,7 +727,7 @@ if(typeof module != "undefined") {
 	window.riox = sh;
 
 	/* INIT METHODS (must go last) */
-	if(window.RIOTS_USER_ID && window.RIOTS_APP_KEY) {
+	if(window.RIOX_USER_ID && window.RIOX_APP_KEY) {
 		sh.auth();
 	};
 }

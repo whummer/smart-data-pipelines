@@ -12,6 +12,7 @@ var mongoose = require('mongoose');
 var cors = require('cors');
 var config = require('./config/environment');
 var util = require('_/util/util');
+require('_/api/service.calls')
 
 global.config = config;
 if(!global.servicesConfig) {
@@ -22,7 +23,13 @@ if(!global.servicesConfig) {
 config.port = process.env.SERVICE_PORT || 8084;
 
 // Connect to database
-mongoose.connect(config.mongo.uri, config.mongo.options);
+if(process.env.TEST_MODE) {
+	var mockgoose = require('mockgoose');
+	mockgoose(mongoose);
+	mongoose.connect("");
+} else {
+	mongoose.connect(config.mongo.uri, config.mongo.options);
+}
 
 // Populate DB with sample data
 if(config.seedDB) { require('./demodata'); }

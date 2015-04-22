@@ -2,11 +2,11 @@
   "name": "riox",
   "version": "0.0.0",
   "dependencies": {
-    "mockgoose": "2.0.1",
+  },
+  "devDependencies": {
     "superagent": "1.2.0",
     "http-status": "0.1.8"
   },
-  "devDependencies": {},
   "engines": {
     "node": ">=0.10.0"
   },

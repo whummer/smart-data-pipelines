@@ -1,12 +1,12 @@
 'use strict';
 
-var mongoose = require('mongoose');
 var passport = require('passport');
 var config = require('../config/environment');
 var jwt = require('jsonwebtoken');
 var expressJwt = require('express-jwt');
 var compose = require('composable-middleware');
-var User = require('_/model/user.model');
+var riox = require('../../../web-ui/lib/app/components/js/riox-api'); // TODO fix path
+
 var validateJwt = expressJwt({ secret: config.secrets.session });
 
 
@@ -24,16 +24,7 @@ function isAuthenticated() {
       }
       validateJwt(req, res, next);
     })
-    // Attach user to request
-    .use(function(req, res, next) {
-      User.findById(req.user._id, function (err, user) {
-        if (err) return next(err);
-        if (!user) return res.send(401);
-
-        req.user = user;
-        next();
-      });
-    });
+    ;
 }
 
 /**
@@ -45,11 +36,26 @@ function hasRole(roleRequired) {
   return compose()
     .use(isAuthenticated())
     .use(function meetsRequirements(req, res, next) {
-      if (config.userRoles.indexOf(req.user.role) >= config.userRoles.indexOf(roleRequired)) {
-        next();
+      var id = req.user._id;
+      var check = function() {
+    	  if (config.userRoles.indexOf(req.user.role) >= config.userRoles.indexOf(roleRequired)) {
+	        next();
+	      }
+	      else {
+	        res.send(403);
+	      }
       }
-      else {
-        res.send(403);
+      if(req.user.role) {
+    	  check();
+      } else {
+    	  riox.user({id: id}, {
+    		  headers: req.headers,
+    		  callback: function(user) {
+	    		  /* add user role to request */
+    			  req.user.role = user.role;
+	    		  check();
+	    	  }
+    	  });
       }
     });
 }
@@ -59,6 +65,9 @@ function hasRole(roleRequired) {
  */
 function getCurrentUser(req) {
 	var user = req.user;
+	if(user._id && !user.id) {
+		user.id = user._id;
+	}
   return user;
 }
 

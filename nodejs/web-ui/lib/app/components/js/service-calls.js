@@ -66,7 +66,7 @@ var __transformResult = function(data) {
 	if(!data) {
 		return data;
 	}
-	data = '{"result": ' + data + '}';
+	data = '{"__result": ' + data + '}';
 	json = JSON.parse(data);
 	return json;
 }
@@ -74,24 +74,24 @@ var __transformResult = function(data) {
 var __defaultHeaders = {
 	'Content-Type': 'application/json'
 }
-if(window.RIOTS_USER_ID) {
-	__defaultHeaders["riots-auth-user-id"] = window.RIOTS_USER_ID;
+if(window.RIOX_USER_ID) {
+	__defaultHeaders["riots-auth-user-id"] = window.RIOX_USER_ID;
 }
-if(window.RIOTS_APP_KEY) {
-	__defaultHeaders["riots-auth-app-key"] = window.RIOTS_APP_KEY;
+if(window.RIOX_APP_KEY) {
+	__defaultHeaders["riots-auth-app-key"] = window.RIOX_APP_KEY;
 }
-if(window.RIOTS_AUTH_TOKEN) {
-	__defaultHeaders["riots-auth-token"] = window.RIOTS_AUTH_TOKEN;
+if(window.RIOX_AUTH_TOKEN) {
+	__defaultHeaders["riots-auth-token"] = window.RIOX_AUTH_TOKEN;
 }
-if(window.RIOTS_AUTH_NETWORK) {
-	__defaultHeaders["riots-auth-network"] = window.RIOTS_AUTH_NETWORK;
+if(window.RIOX_AUTH_NETWORK) {
+	__defaultHeaders["riots-auth-network"] = window.RIOX_AUTH_NETWORK;
 }
 $.ajaxSetup({
     headers: __defaultHeaders,
     converters: {
         "text json": function(data) {
 			var result = JSON.parse( data + "" );
-			return { result: result };
+			return { __result: result };
 		}
     }
 });
@@ -118,7 +118,7 @@ var __getConfig = function($http) {
 		headers: __defaultHeaders,
 		transformResponse: __transformResult
 	};
-	if(!$http) {
+	if(!$http || !$http.get) {
 		if(window.rootScope) {
 			$http = rootScope.http;
 		} else {

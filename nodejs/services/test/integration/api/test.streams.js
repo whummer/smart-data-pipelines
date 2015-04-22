@@ -2,8 +2,6 @@
 
 var assert = require('assert');
 var superagent = require('superagent');
-var mongoose = require('mongoose');
-var mockgoose = require('mockgoose');
 var status = require('http-status');
 var test = require('../util/testutil');
 
@@ -12,8 +10,6 @@ var app = {};
 describe('/streams', function() {
 
 	before(function(done) {
-		/* get auth token */
-		mockgoose(mongoose);
 		/* start streams service */
 		app.streams = { port : 3000 };
 		process.env.SERVICE_PORT = app.streams.port;
