@@ -2,23 +2,30 @@
 	<h2>Configure Data Retention Times and Security</h2>
 
 	<!-- data retention settings -->
-	<div class="row" ng-hide="retentionEnabled">
+	<div class="row" ng-hide="resourceData.retentionEnabled">
 		<div class="form-group">
 			<label for="retentionEnabled" class="col-sm-4 control-label">Enable
 				Data Retention for this Resource <i class="fa fa-question-circle"> </i></label>
 			<div class="col-sm-4">
-				<!--ng-change="retentionDisabled = !retentionEnabled"-->
-				<input type="checkbox" id="retentionEnabled" class="form-control"
-							 ng-change="updateRetentionEnabled(retentionEnabled)"
-							 ng-model="retentionEnabled"
-							 ui-switch="{color:'#5C9C4D', size: 'small'}"/>
+
+				<label class="switch">
+					<input type="checkbox" id="retentionEnabled" class="form-control"
+								 ng-change="resourceData.retentionDisabled = !resourceData.retentionEnabled"
+								 ng-model="resourceData.retentionEnabled"><i></i>
+				</label>
+
+				<!--<input type="checkbox" id="retentionEnabled" class="form-control"
+							 ng-model="resourceData.retentionEnabled"
+							 ng-change="resourceData.retentionDisabled = !resourceData.retentionEnabled"
+							 ui-switch="{color:'#5C9C4D', size: 'small'}"/>-->
 			</div>
 		</div>
 	</div>
 
+
 	<div class="row animated"
-			 ng-class="{fadeIn : retentionEnabled, fadeOut : !retentionEnabled}"
-			 ng-show="retentionEnabled">
+			 ng-class="{fadeIn : resourceData.retentionEnabled, fadeOut : !resourceData.retentionEnabled}"
+			 ng-show="resourceData.retentionEnabled">
 
 		<div class="widget dark-grey-widget-bg p-xl" style="margin-left: 18px;margin-right: 18px">
 			<div class="row" style="margin-top: 10px;">
@@ -32,10 +39,19 @@
 			</div>
 			<div class="pull-right" style="margin-right: -5px;">
 				<label for="disableRetention" class="control-label">Disable Retention Completely</label>
-				<input type="checkbox" id="disableRetention" class="form-control"
+
+				<label class="switch">
+					<input type="checkbox" id="disableRetention" class="form-control"
+								 ng-change="resourceData.retentionEnabled = !resourceData.retentionDisabled"
+								 ng-model="resourceData.retentionDisabled"><i></i>
+				</label>
+
+
+
+				<!--<input type="checkbox" id="disableRetention" class="form-control"
 							 ng-model="retentionDisabled"
 							 ng-change="retentionEnabled = !retentionDisabled"
-							 ui-switch="{color:'#5C9C4D', size: 'small'}"/>
+							 ui-switch="{color:'#5C9C4D', size: 'small'}"/>-->
 			</div>
 			<div class="clearfix"></div>
 		</div>
@@ -48,9 +64,15 @@
 				Enable Data Security and Encryption for this Resource <i class="fa fa-question-circle"> </i>
 			</label>
 			<div class="col-sm-4">
-				<input type="checkbox" id="enableSecurity" class="js-switch form-control"
+				<!--<input type="checkbox" id="enableSecurity" class="js-switch form-control"
 							 ui-switch="{color:'#5C9C4D', size: 'small'}"
-							 ng-model="resourceData.securityEnabled"/>
+							 ng-model="resourceData.securityEnabled"/>-->
+
+				<label class="switch">
+					<input type="checkbox" id="enableSecurity" class="form-control"
+								 ng-change="resourceData.securityDisabled = !resourceData.securityEnabled"
+								 ng-model="resourceData.securityEnabled"><i></i>
+				</label>
 			</div>
 		</div>
 	</div>
@@ -70,12 +92,19 @@
 				</div>
 			</div>
 
-			<div class="pull-right" style="margin-right: -5px;">
+			<div class="pull-right" style="margin-right: -5px;" ng-hide="resourceData.securityDisabled">
 				<label for="disableSecurity" class="control-label">Disable Security Completely</label>
-				<input type="checkbox" id="disableSecurity" class="form-control"
+				<!--<input type="checkbox" id="disableSecurity" class="form-control"
 							 ng-model="resourceData.securityDisabled"
 							 ng-change="resourceData.securityEnabled = !resourceData.securityDisabled"
-							 ui-switch="{color:'#5C9C4D', size: 'small'}"/>
+							 ui-switch="{color:'#5C9C4D', size: 'small'}"/>-->
+
+				<label class="switch">
+					<input type="checkbox" id="disableSecurity" class="form-control"
+								 ng-change="resourceData.securityEnabled = !resourceData.securityDisabled"
+								 ng-model="resourceData.securityDisabled"><i></i>
+				</label>
+
 			</div>
 			<div class="clearfix"></div>
 		</div>

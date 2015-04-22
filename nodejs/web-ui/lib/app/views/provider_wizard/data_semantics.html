@@ -35,6 +35,25 @@
 
 	<div class="row">
 		<div class="form-group">
+			<label for="logoDropzone" class="col-sm-3 control-label">
+				Do you want a custom logo for your Data Resource?
+			</label>
+			<div class="col-sm-5">
+
+				<label class="switch">
+					<input type="checkbox" id="customLogo" class="form-control" ng-model="resourceData.customLogo"><i></i>
+				</label>
+
+				<!--<input type="checkbox" id="retentionEnabled" class="form-control"
+							 ng-model="customLogo"
+							 ui-switch="{color:'#5C9C4D', size: 'small'}"/>-->
+			</div>
+		</div>
+	</div>
+
+	<div class="row animated" ng-show="resourceData.customLogo"
+			 ng-class="{fadeIn: resourceData.customLogo, fadeOut: !resourceData.customLogo}">
+		<div class="form-group">
 			<label for="logoDropzone" class="col-sm-3 control-label">Choose a Resource Logo</label>
 			<div class="col-sm-5">
 				<div type="file" class="dropzone" drop-zone id="logoDropzone" ng-model="logo"/>
@@ -47,7 +66,7 @@
 		<div class="form-group" style="overflow: visible;">
 			<label for="resourceDescription" class="col-sm-3 control-label">Choose some related Resource Tags</label>
 			<div class="col-sm-5">
-				<select multiple chosen  ng-model="resourceData.tags" style="width:100%;; overflow: visible;">
+				<select multiple chosen ng-model="resourceData.tags" style="width:100%;; overflow: visible;">
 					<option value="car">car</option>
 					<option value="speed">speed</option>
 					<option value="temperature">temperature</option>

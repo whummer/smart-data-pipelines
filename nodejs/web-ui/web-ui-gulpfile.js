@@ -42,13 +42,16 @@ var paths = {
 	scripts: [SRC_DIR + '/app/**/*.js', '!' + SRC_DIR + '/app/**/*.spec.js'],
 
 	// glob for all LESS files (required for file watching)
-	less: [SRC_DIR + '/app/styles/less/*.less'],
+	less: [SRC_DIR + '/app/**/*.less'],
+
+	// glob for LESS files in views directory
+	less_in_views : SRC_DIR + '/app/views/**/*.less',
 
 	// glob for all CSS files
-	css: [SRC_DIR + '/app/styles/css/**/*.css'],
+	css: [SRC_DIR + '/app/styles/css/**/*.css', SRC_DIR + '/app/views/**/*.css', SRC_DIR + '/app/app.css'],
 
 	// "main" LESS file (the one that imports all other less files)
-	less_main: [SRC_DIR + '/app/app.less'],
+	less_main: SRC_DIR + '/app/app.less',
 
 	// images (for optimization by imagemin)
 	images: SRC_DIR + '/app/components/img/**/*',
@@ -118,7 +121,7 @@ gulp.task('ui:less', 'compiles LESS to CSS',  function () {
 
 function less2css(target) {
 	util.log('Compiling LESS files to CSS (' + util.colors.magenta(paths.less_main) + ')');
-	return gulp.src(paths.less_main)
+	return gulp.src([paths.less_main, paths.less_in_views])
 			.pipe(less())
 			.pipe(gulp.dest(target));
 }
@@ -214,6 +217,7 @@ gulp.task('ui:livereload', 'serve the riox-ui using nodemon (with livereload)', 
 	livereload.listen();
 	util.log(livereload);
 	var all_build_files = SRC_DIR + '/app/**/*';
+	gulp.watch(paths.less, ['ui:inject:dev']);
 	return gulp.watch(all_build_files, function (whatChanged) {
 		if (whatChanged.type == 'changed') {
 			util.log("Updated: ", whatChanged.path);

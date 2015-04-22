@@ -1550,6 +1550,34 @@ button.dim:active:before {
 label.text-cell {
   margin-bottom: 0px;
 }
+/* iOS style switches from http://jsfiddle.net/ProLoser/bM4C9/ */
+.switch input {
+  display: none;
+}
+.switch i {
+  display: inline-block;
+  cursor: pointer;
+  padding-right: 10px;
+  transition: all ease 0.2s;
+  -webkit-transition: all ease 0.2s;
+  border-radius: 20px;
+  box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.5), inset 0 0 30px white;
+}
+.switch i:before {
+  display: block;
+  content: '';
+  width: 20px;
+  height: 20px;
+  border-radius: 20px;
+  background: white;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+.switch :checked + i {
+  padding-right: 0;
+  padding-left: 10px;
+  box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.5), inset 0 0 30px rgba(92, 156, 77, 0.78);
+  -webkit-box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.5), inset 0 0 30px rgba(92, 156, 77, 0.78);
+}
 /* TOOGLE SWICH */
 .onoffswitch {
   position: relative;

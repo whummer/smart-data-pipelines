@@ -1,5 +1,7 @@
-function providerWizardCtrl($scope, $log, $http, growl, $state, $filter) {
-	$scope.resourceData = {};
+function providerWizardCtrl($scope, $log, growl, $state, $location) {
+	$scope.resourceData = {
+		connector : {name: "HTTP Connector", type: "http"}
+	};
 
 	$scope.retentionEnabled = false;
 	$scope.retentionDisabled = false;
@@ -61,6 +63,10 @@ function providerWizardCtrl($scope, $log, $http, growl, $state, $filter) {
 
 	$scope.processForm = function () {
 		var r = $scope.resourceData;
+
+		// todo find out wht the filter does not work
+		//var dataItems = $filter('filter')(r.dataItems, {"enabled" : "true"});
+
 		var dataItems = [];
 		angular.forEach(r.dataItems, function(dataItem) {
 			if (dataItem.enabled) {
@@ -84,23 +90,15 @@ function providerWizardCtrl($scope, $log, $http, growl, $state, $filter) {
 			"visible": true
 		};
 
+		// todo add error handling here
 		riox.add.stream(dataStream, function () {
 			$log.debug("Successfully added new data resource: ", r);
 			growl.success("Added new Data Resource '" + r.name + "'");
+			$location.path("#/streams/provided");
 		})
 
 	};
-	//
 
-
-	/*$http.post('/resources', $scope.resourceData)
-	 .success(function (data, status, headers) {
-	 $log.info("Created new resource at '%s'", headers.location);
-	 growl.success("Successfully created new resource");
-	 })
-	 .error(function (data, status) {
-	 $log.error("Could not create resource: %s", data);
-	 });*/
 }
 
 angular.module('rioxApp').controller(providerWizardCtrl);

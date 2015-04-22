@@ -2,6 +2,10 @@
   "name": "riox-streams-service",
   "version": "0.0.1",
   "dependencies": {
+    "amqp": "^0.2.4",
+    "port-finder": "^0.12.4",
+    "portfinder": "^0.4.0",
+    "request": "^2.55.0"
   },
   "devDependencies": {},
   "engines": {
