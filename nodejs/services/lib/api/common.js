@@ -24,23 +24,49 @@ x.addMethod = function(apiObj, name, path, method) {
 	apiObj[name] = x.registerMethod(name, path, method);
 }
 
+var updateClient = function(name, path, method) {
+	var pathOrig = path;
+	var pathBuilt = null;
+	if(path.pathExpr) {
+		pathBuilt = eval(path.pathExpr);
+		if(path.replace) {
+			pathBuilt = pathBuilt.replace(path.replace[0], path.replace[1]);
+		}
+	}
+	if(client.methods[name]) {
+		/* client already exists. check for updated path */
+		if(!path.pathExpr) return;
+		if(pathBuilt == client.methods[name].__path) {
+			return;
+		}
+	}
+	if(!path.pathExpr) {
+		client.registerMethod(name, path, method);
+	} else {
+		path = pathBuilt;
+		client.registerMethod(name, path, method);
+		client.methods[name].__pathExpr = pathOrig;
+	}
+	client.methods[name].__path = path;
+}
+
 x.registerMethod = function(name, path, method, preprocessor) {
-	client.registerMethod(name, path, method);
-	//console.log("registerMethod!", path);
+	
 	return function(payload, config, callback) {
-		//console.log("invoke", name, body, path, config);
-		//console.log("!!", path);
-		//console.trace();
+
+		/* make sure we always have an up-to-date client,
+		 * in case the service URL changes in the config. */
+		updateClient(name, path, method);
+
 		if(typeof callback == "undefined") {
 			callback = config;
 			config = payload;
 			payload = null;
 		}
 		if(preprocessor) {
-			preprocessor(payload, config);
+			payload = preprocessor(payload, config);
 		}
 		var args = x.getArgs(payload, config);
-//		console.log("args", name, args);
 		return client.methods[name](args, callback).
 			on('error', function(err){
 			    console.log('request error', err);

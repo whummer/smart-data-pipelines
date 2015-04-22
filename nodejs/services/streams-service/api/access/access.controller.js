@@ -19,7 +19,8 @@ exports.index = function(req, res, next) {
 			return res.send(500, err);
 		res.json(200, list);
 	});
-}
+};
+
 exports.getByStream = function(req, res, next) {
 	var user = auth.getCurrentUser(req);
 	var query = {
@@ -38,7 +39,8 @@ exports.getByStream = function(req, res, next) {
 		//console.log("stream", obj);
 		res.json(obj);
 	});
-}
+};
+
 exports.show = function(req, res, next) {
 	var id = req.params.id;
 
@@ -49,11 +51,11 @@ exports.show = function(req, res, next) {
 			return res.send(404);
 		res.json(obj);
 	});
-}
+};
 
 exports.destroy = function(req, res, next) {
 	// TODO
-}
+};
 
 exports.create = function(req, res, next) {
 	var access = req.body;
@@ -63,13 +65,12 @@ exports.create = function(req, res, next) {
 		return;
 	}
 	streamsServiceAPI.get(streamId, req, function(stream) {
-		console.log(stream);
 		access.created = access.changed = new Date().getTime();
 		var user = auth.getCurrentUser(req);
 		access.requestorId = user.id;
-		StreamAccess.create(access, function(access) {
+		StreamAccess.create(access, function() {
 			res.json(200, access);
 		});
 	});
-}
+};
  
