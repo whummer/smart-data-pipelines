@@ -228,6 +228,17 @@ gulp.task('ui:serve', 'serve the riox-ui src using nodemon', function () {
 	});
 });
 
+// run app using node directly (avoid livereload)
+gulp.task('ui:serve:nolivereload', 'serve the riox-ui src using node', function () {
+	runSequence('ui:bower', 'ui:node_modules', 'ui:inject:dev');
+
+	var exec = require('child_process').exec;
+	process.env.NODE_ENV = 'development';
+	process.env.PORT = 8080;
+	var incl = "../" + SRC_DIR + "/server.js";
+	require(incl);
+});
+
 
 // livereload browser on client app changes
 gulp.task('ui:livereload', 'serve the riox-ui using nodemon (with livereload)', ['ui:serve'], function () {
