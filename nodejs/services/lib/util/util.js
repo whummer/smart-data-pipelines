@@ -7,6 +7,6 @@ x.genShortUUID = global.genShortUUID = function() {
     /* trim to the last 12 chars */
     id = id.substring(id.length - 12);
     return id;
-}
+};
 
 module.exports = x;
