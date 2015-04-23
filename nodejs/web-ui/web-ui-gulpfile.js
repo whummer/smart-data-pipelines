@@ -5,6 +5,7 @@
 var gulp = require('gulp-help')(require('gulp')),
 		nodemon = require('gulp-nodemon'),
 		bowerFiles = require('main-bower-files'),
+		install = require('gulp-install'),
 		less = require('gulp-less'),
 		path = require('path'),
 		inject = require('gulp-inject'),
@@ -207,12 +208,19 @@ gulp.task('ui:bower', 'install bower dependencies', function() {
 });
 
 //
+// install node modules
+//
+gulp.task('ui:node_modules', 'install required node modules', function() {
+	return gulp.src([BASE_DIR + "/package.json"]).pipe(install());
+});
+
+//
 // serve DEV task for development
 //
 
 //run app using nodemon
 gulp.task('ui:serve', 'serve the riox-ui src using nodemon', function () {
-	runSequence('ui:bower', 'ui:inject:dev');
+	runSequence('ui:bower', 'ui:node_modules', 'ui:inject:dev');
 
 	return nodemon({
 		script: SRC_DIR + '/server.js', options: '-i ' + SRC_DIR + "/*",
