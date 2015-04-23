@@ -5,9 +5,13 @@
        xsi:schemaLocation="http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 	
-    <bean id="messageProcessor" class="io.riox.analytics.MovingAverage">
-        <constructor-arg index="0" value="${items}"/>
-        <constructor-arg index="1" value="${itemPath}"/>        
+    <bean id="messageProcessor" class="io.riox.analytics.GeofenceDetector">
+        <constructor-arg index="0" value="${latitude}"/>
+        <constructor-arg index="1" value="${longitude}"/>        
+        <constructor-arg index="2" value="${radius}"/>
+        <constructor-arg index="3" value="${latPath}"/>
+        <constructor-arg index="4" value="${longPath}"/>
+                
     </bean>
 
 

@@ -1,5 +1,6 @@
 package io.riox.analytics;
 
+import org.json.simple.JSONObject;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -38,7 +39,8 @@ public class MovingAverageIntegrationTests {
      * Start the single node container, binding random unused ports, etc. to not conflict with any other instances
      * running on this host. Configure the ModuleRegistry to include the project module.
      */
-    @BeforeClass
+    @SuppressWarnings("unused")
+	@BeforeClass
     public static void setUp() {
 
         RandomConfigurationSupport randomConfigSupport = new RandomConfigurationSupport();
@@ -65,7 +67,7 @@ public class MovingAverageIntegrationTests {
 
         String streamName = "testMovingAverage";
 
-        chain = chain(application, streamName, moduleName);
+        chain = chain(application, streamName, moduleName + " --itemPath=measurement");
 
         List<Tuple> inputData = new ArrayList<Tuple>();
         for (int i = 0; i < 10; i++) {
@@ -75,7 +77,7 @@ public class MovingAverageIntegrationTests {
         for (Tuple tuple: inputData) {
             chain.sendPayload(tuple);
         }
-        assertResults(chain, 14.5D);
+        assertResults(chain, 1, new Double[] { 14.5D });
     }
 
     @Test
@@ -83,25 +85,85 @@ public class MovingAverageIntegrationTests {
 
         String streamName = "testMovingAverageJson";
 
-        chain = chain(application, streamName, moduleName + " --inputType=application/x-xd-tuple");
+        chain = chain(application, streamName, moduleName + " --inputType=application/x-xd-tuple --itemPath=measurement");
         List<String> jsonData = createJsonData(10);
         for (String json : jsonData) {
             chain.sendPayload(json);
         }
-        assertResults(chain, 14.5D);
+        assertResults(chain, 1, new Double[] { 14.5D });
     }
     
     @Test
-    public void testItemsWithJson() throws IOException {
+    public void testItemsWithFlatJson() throws IOException {
 
         String streamName = "testMovingAverageJson";
 
-        chain = chain(application, streamName, moduleName + " --inputType=application/x-xd-tuple --items=5");
+        chain = chain(application, streamName, moduleName + " --inputType=application/x-xd-tuple --items=5 --itemPath=measurement");
         List<String> jsonData = createJsonData(10);
         for (String json : jsonData) {
             chain.sendPayload(json);
         }
-        assertResults2(chain, 2, new Double[] { 12.0D, 17.0D });
+        assertResults(chain, 2, new Double[] { 12.0D, 17.0D });
+    }
+    
+    
+    @Test
+    public void testItemsWithComplexJson() throws IOException {
+
+        String streamName = "testMovingAverageJson";
+
+        chain = chain(application, streamName, moduleName + " --inputType=application/x-xd-tuple --items=5 --itemPath=car-data.speed");
+        List<String> jsonData = createComplexJsonData(10);
+        for (String json : jsonData) {
+            chain.sendPayload(json);
+        }
+        assertResults(chain, 2, new Double[] { 12.0D, 17.0D });
+    }
+    
+    @Test
+    public void testItemsWithComplexJson2() throws IOException {
+
+        String streamName = "testMovingAverageJson";
+
+        chain = chain(application, streamName, moduleName + " --inputType=application/x-xd-tuple --items=5 --itemPath=car-data.fluid-levels.brake");
+        List<String> jsonData = createComplexJsonData(10);
+        for (String json : jsonData) {
+            chain.sendPayload(json);
+        }
+        assertResults(chain, 2, new Double[] { 0.9D, 0.9D });
+    }
+    
+
+    /**
+     * Tests a more complex path where the final element does not exist.
+     */
+    @Test
+    public void testItemsWithNonExistingPath() throws IOException {
+
+        String streamName = "testMovingAverageJson";
+
+        chain = chain(application, streamName, moduleName + " --inputType=application/x-xd-tuple --items=5 --itemPath=car-data.fluid-levels.doesnotexist");
+        List<String> jsonData = createComplexJsonData(10);
+        for (String json : jsonData) {
+            chain.sendPayload(json);
+        }
+        assertResults(chain, 2, new Double[] { Double.NaN, Double.NaN });
+    }
+    
+    /**
+     * Tests a more complex path where the some path element in the middle does not exist.
+     */
+    @Test
+    public void testItemsWithNonExistingPath2() throws IOException {
+
+        String streamName = "testMovingAverageJson";
+
+        chain = chain(application, streamName, moduleName + " --inputType=application/x-xd-tuple --items=5 --itemPath=car-data.doesnotexist.brake");
+        List<String> jsonData = createComplexJsonData(10);
+        for (String json : jsonData) {
+            chain.sendPayload(json);
+        }
+        assertResults(chain, 2, new Double[] { Double.NaN, Double.NaN });
     }
 
 	private List<String> createJsonData(int items) {
@@ -112,19 +174,34 @@ public class MovingAverageIntegrationTests {
         }
 		return jsonData;
 	}
-
-    private void assertResults(SingleNodeProcessingChain chain, double expectedValue) {
-        Tuple tuple = (Tuple)chain.receivePayload(RECEIVE_TIMEOUT);
-        assertEquals(expectedValue, tuple.getDouble(MovingAverage.KEY), 0);
-    }
+	
+	@SuppressWarnings("unchecked")
+	private List<String> createComplexJsonData(int items) {
+		List<String> jsonData = new ArrayList<String>();
+        for (int i = 0; i < items; i++) {
+            String measurement = Integer.toString(i+10);
+            
+            JSONObject json = new JSONObject();
+            JSONObject carData = new JSONObject();
+            JSONObject fluidLevels = new JSONObject();
+            
+            json.put("id", i);
+            json.put("car-data", carData);
+            carData.put("speed", measurement);                       
+            carData.put("fluid-levels", fluidLevels);
+            fluidLevels.put("brake", "0.9");
+            fluidLevels.put("windscreen", 0.4);           
+            jsonData.add(json.toJSONString());
+        }
+		return jsonData;
+	}
     
-    
-    private void assertResults2(SingleNodeProcessingChain chain, int items, Double[] expected) {
+    private void assertResults(SingleNodeProcessingChain chain, int items, Double[] expected) {
         List<Tuple> outputData = new ArrayList<Tuple>();
         for (int i = 0; i < items; i++) {
             Tuple tuple = (Tuple)chain.receivePayload(RECEIVE_TIMEOUT);
             outputData.add(tuple);
-            System.out.println("output Tuple = [ + " + tuple + "]");
+            System.out.println("assertResults: output Tuple = [ + " + tuple + "]");
         }
         
         for (int i = 0; i < expected.length; i++) {

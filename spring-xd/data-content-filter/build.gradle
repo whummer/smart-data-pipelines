@@ -12,10 +12,10 @@ buildscript {
 apply from: '../modules-parent/build.gradle'
 apply plugin: 'spring-xd-module'
 
-group = 'io.riox.analytics'
+group = 'io.riox.transform'
 version = '1.0.0.BUILD-SNAPSHOT'
 
-description = "Moving average module using RxJava"
+description = "Removes unwanted items from the payload"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8

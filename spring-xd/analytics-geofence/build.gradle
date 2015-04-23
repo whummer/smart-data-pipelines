@@ -15,7 +15,7 @@ apply plugin: 'spring-xd-module'
 group = 'io.riox.analytics'
 version = '1.0.0.BUILD-SNAPSHOT'
 
-description = "Moving average module using RxJava"
+description = "Geofence analytics"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8

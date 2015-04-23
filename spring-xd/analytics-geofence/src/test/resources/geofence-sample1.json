@@ -1,0 +1,49 @@
+[
+	{
+		"address": 
+		{
+			"street": "Geblergasse 34",
+			"zip": "1170",
+			"city": "Vienna",
+			"country": "Austria"
+		},
+
+		"geolocation": 
+		{
+			"lat": 48.216449,
+			"long": 16.336665
+		}
+	},
+
+	{
+		"address": 
+		{
+			"street": "Josefstaedter Strasse 14",
+			"zip": "1080",
+			"city": "Vienna",
+			"country": "Austria"
+		},
+
+		"geolocation": 
+		{
+			"lat": 48.209593,
+			"long": 16.352925
+		}
+	},
+
+	{
+		"address": 
+		{
+			"street": "Medwedweg 11",
+			"zip": "1110",
+			"city": "Vienna",
+			"country": "Austria"
+		},
+
+		"geolocation": 
+		{
+			"lat": 48.182964,
+			"long": 16.415519
+		}
+	}
+]
