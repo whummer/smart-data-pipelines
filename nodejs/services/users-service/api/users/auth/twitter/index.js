@@ -2,21 +2,17 @@
 
 var express = require('express');
 var passport = require('passport');
-var auth = require('../auth.service');
+var auth = require('_/auth/auth.service');
 
 var router = express.Router();
 
 router
-  .get('/', passport.authenticate('google', {
+  .get('/', passport.authenticate('twitter', {
     failureRedirect: '/signup',
-    scope: [
-      'https://www.googleapis.com/auth/userinfo.profile',
-      'https://www.googleapis.com/auth/userinfo.email'
-    ],
     session: false
   }))
 
-  .get('/callback', passport.authenticate('google', {
+  .get('/callback', passport.authenticate('twitter', {
     failureRedirect: '/signup',
     session: false
   }), auth.setTokenCookie);

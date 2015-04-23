@@ -1,6 +1,6 @@
 var DataStream = require('./api/streams/datastream.model');
-var orgsClient = require('_/api/organizations.client');
-var usersClient = require('_/api/users.client');
+//var orgsClient = require('_/api/organizations.client');
+var riox = require('../../web-ui/lib/app/components/js/riox-api');
 
 var LOREM = " Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum";
 var demoData = [
@@ -126,25 +126,35 @@ var token = null;
 var orgs = [];
 
 function findOrgs(callback) {
-	usersClient.auth(global.adminUser, {}, function(tok) {
+	riox.signin(global.adminUser, function(tok) {
 		token = {authorization: "Bearer " + tok.token};
-		orgsClient.list({headers: token}, function(list) {
-			list.forEach(function(o) {
-				index = o.name == "City of Vienna" ? 0 : 
-						o.name == "BMW" ? 1 : 
-						o.name == "Mercedes" ? 2 : 3; 
-				orgs[index] = o;
-			});
-			callback();
+		riox.organizations({
+			headers: token, 
+			callback: function(list) {
+				list.forEach(function(o) {
+					index = o.name == "City of Vienna" ? 0 : 
+							o.name == "BMW" ? 1 : 
+							o.name == "Mercedes" ? 2 : 3; 
+					orgs[index] = o;
+				});
+				callback();
+			}
 		});
 	});
 }
 
 
-setTimeout(function() {
-	DataStream.find({}, function(err, list) {
-		if (!list || !list.length) {
-			findOrgs(insertStreams);
-		}
-	});
-}, 1000);
+function doInsert(callback) {
+	setTimeout(function() {
+		DataStream.find({}, function(err, list) {
+			if (!list || !list.length) {
+				findOrgs(function() {
+					insertStreams();
+					if(callback) callback();
+				});
+			}
+		});
+	}, 500);
+}
+
+module.exports = doInsert;

@@ -5,6 +5,7 @@ var cp = require('child_process');
 
 var service_directories = ['streams-service', 'users-service'];
 var services_directory = 'services';
+var services_test_directory = 'services/test';
 var web_ui_directory = 'web-ui';
 
 function preinstall_dir(base, dir) {
@@ -32,9 +33,10 @@ function preinstall_dir(base, dir) {
 preinstall_dir('..', web_ui_directory);
 
 //preinstall services
-preinstall_dir('..', services_directory, '../lib');
+//preinstall_dir('..', services_directory, '../lib');
+preinstall_dir('..', services_test_directory);
 
 // preinstall service directories
-//_.forEach(service_directories, function (service_dir) {
-//	preinstall_dir('../services', service_dir);
-//});
+service_directories.forEach(function (service_dir) {
+	preinstall_dir('../services', service_dir);
+});

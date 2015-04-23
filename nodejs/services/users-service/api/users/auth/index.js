@@ -2,7 +2,7 @@
 
 var express = require('express');
 var passport = require('passport');
-var User = require('_/model/user.model');
+var User = require('../user.model');
 
 // Passport Configuration
 require('./local/passport').setup(User, global.config);

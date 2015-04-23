@@ -2,8 +2,6 @@
 
 var assert = require('assert');
 var superagent = require('superagent');
-var mongoose = require('mongoose');
-var mockgoose = require('mockgoose');
 var status = require('http-status');
 
 var app = {};
@@ -52,7 +50,6 @@ var initClientProxy = function(proxy) {
 }
 
 app.auth = function(email, pass, callback) {
-	mockgoose(mongoose);
 
 	services.users = { port: 3001 }
 	services.organizations = { port: 3001 }

@@ -2,8 +2,24 @@
   "name": "riox-users-service",
   "version": "0.0.1",
   "dependencies": {
+    "cors": "~2.5.3",
+    "lodash": "~2.4.1",
+    "method-override": "~1.0.0",
+    "mongoose": "~4.0.0",
+    "morgan": "~1.0.0",
+    "node-rest-client": "^1.5.0",
+    "node-uuid": "^1.4.3",
+    "passport": "~0.2.0",
+    "passport-facebook": "latest",
+    "passport-google-oauth": "latest",
+    "passport-local": "~0.1.6",
+    "passport-twitter": "latest"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "mockgoose": "2.0.1",
+    "superagent": "1.2.0",
+    "http-status": "0.1.8"
+  },
   "engines": {
     "node": ">=0.10.0"
   },

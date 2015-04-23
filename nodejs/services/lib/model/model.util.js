@@ -1,5 +1,7 @@
 var log = global.log || console;
 
+/* TODO whu: deprecated/REMOVE? */
+
 var mongoose = require('mongoose');
 
 function ModelUtil() {	
