@@ -54,7 +54,6 @@ sh.invokeGET = function(options, url, callback, errorCallback) {
 }
 
 sh.invokePOST = function(options, url, body, callback, errorCallback) {
-	console.log("POST", url);
 	args = __getConfig(options, body);
 	return client.post(url, args, function(data, response) {
 		if(callback) {

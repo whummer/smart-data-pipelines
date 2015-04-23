@@ -12,6 +12,7 @@ var mongoose = require('mongoose');
 var cors = require('cors');
 var config = require('./config/environment');
 var util = require('_/util/util');
+require('_/api/service.calls')
 
 global.config = config;
 if(!global.servicesConfig) {
@@ -21,15 +22,19 @@ if(!global.servicesConfig) {
 //TODO find better place to configure port for microservices
 config.port = process.env.SERVICE_PORT || 8085;
 
-// Connect to database
-try {
+//Connect to database
+if(process.env.TEST_MODE) {
+	var mockgoose = require('mockgoose');
+	mockgoose(mongoose);
+	mongoose.connect("");
+} else {
 	mongoose.connect(config.mongo.uri, config.mongo.options);
-} catch(e) {
-	console.log("Mongo connection already established.")
 }
 
 // Populate DB with sample data
-if(config.seedDB) { require('./demodata'); }
+if(config.seedDB) { 
+	require('./demodata')();
+}
 
 // Setup server
 var app = express();

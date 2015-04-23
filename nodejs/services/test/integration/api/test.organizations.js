@@ -2,8 +2,6 @@
 
 var assert = require('assert');
 var superagent = require('superagent');
-var mongoose = require('mongoose');
-var mockgoose = require('mockgoose');
 var status = require('http-status');
 var test = require('../util/testutil');
 
@@ -12,8 +10,6 @@ var app = {};
 describe('/organizations', function() {
 
 	before(function(done) {
-		/* get auth token */
-		mockgoose(mongoose);
 		/* start streams service */
 		app.organizations = { port : 3000 };
 		app.organizations.url = "http://localhost:" + app.organizations.port + "/api/v1/streams";
