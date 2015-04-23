@@ -21,6 +21,7 @@ var gulp = require('gulp-help')(require('gulp')),
 		sourcemaps = require('gulp-sourcemaps'),
 		imagemin = require('gulp-imagemin'),
 		runSequence = require('run-sequence'),
+		bower = require('gulp-bower'),
 		es = require('event-stream');
 
 //var $ = require('gulp-load-plugins')();
@@ -199,11 +200,20 @@ gulp.task('ui:imagemin', 'optimize image size', function () {
 });
 
 //
+// install bower files
+//
+gulp.task('ui:bower', 'install bower dependencies', function() {
+	return bower({cwd: BASE_DIR}).pipe(gulp.dest("lib/"));
+});
+
+//
 // serve DEV task for development
 //
 
 //run app using nodemon
-gulp.task('ui:serve', 'serve the riox-ui src using nodemon', ['ui:inject:dev'], function () {
+gulp.task('ui:serve', 'serve the riox-ui src using nodemon', function () {
+	runSequence('ui:bower', 'ui:inject:dev');
+
 	return nodemon({
 		script: SRC_DIR + '/server.js', options: '-i ' + SRC_DIR + "/*",
 		env: { 'NODE_ENV': 'development' , 'PORT' : 8080}
