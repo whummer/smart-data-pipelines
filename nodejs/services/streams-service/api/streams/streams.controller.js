@@ -72,12 +72,13 @@ exports.create = function (req, res, next) {
 				return;
 			}
 
-			var streamDefinition = "http --port=" + freePort + "| rabbit --exchange='" + exchangeId + "'\"";
-			var streamId = exchangeId;
+			var streamDefinition = "http --port=" + freePort + "| rabbit --vhost=riox --exchange=" + exchangeId;
+			var streamId = dataStream.name;
 			springxd.createStream(streamId, streamDefinition);
 		});
 	});
 };
+
 
 // todo move this somewhere else
 function createExchangeId(dataStream) {
