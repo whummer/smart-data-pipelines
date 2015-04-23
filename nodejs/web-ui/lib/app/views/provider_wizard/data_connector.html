@@ -1,0 +1,33 @@
+<fieldset class="animated fadeIn">
+	<h2>Connector Setup</h2>
+
+	<div class="row">
+		<div class="form-group">
+			<label for="connector" class="col-sm-3  control-label">
+				Pick a Connector for this Resource
+				<i tooltip-placement="top"
+					 tooltip="To expose your data via riox, you have to choose a connector technology. Go ask your tech staff."
+																						 class="fa fa-question-circle" style="margin-left: 5px"/></label>
+			<div class="col-sm-4">
+				<select id="connector" name="connector" required ng-model="resourceData.connector"
+								class="form-control m-b"
+								ng-options="connector.name for connector in connectors track by connector.type"
+								data-placeholder="Select">
+				</select>
+			</div>
+
+			<div class="col-sm-4">
+				<div class="connector-icon-bg big-icon">
+					<label for="connector" class="control-label col-sm-3 animated fadeIn"
+								 ng-show="resourceForm.$submitted || resourceForm.resourceName.$touched">
+						<div class="text-danger " ng-show="resourceForm.connector.$error.required">Please choose a
+							connector technology</div>
+					</label>
+				</div>
+			</div>
+		</div>
+	</div>
+	<a ui-sref="provider.wizard.semantics" class="btn btn-default">Previous</a>
+	<!--ng-disabled="resourceForm.$invalid || resourceForm.$pristine"-->
+	<a ui-sref="provider.wizard.data_retention" class="btn btn-primary">Next</a>
+</fieldset>

@@ -41,6 +41,19 @@ var all = {
     }
   },
 
+  // RabbitMQ connection options
+  rabbitmq : {
+    host : 'localhost',
+    port: 5672,
+    vhost: 'riox',
+    user: 'guest',
+    pass: 'guest'
+  },
+
+  springxd : {
+    url : 'http://localhost:9393'
+  },
+
   facebook: {
     clientID:     process.env.FACEBOOK_ID || 'id',
     clientSecret: process.env.FACEBOOK_SECRET || 'bd3a056db300ed5fefdd068cd88d15d4',

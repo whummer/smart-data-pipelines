@@ -17,6 +17,10 @@
   },
   "devDependencies": {
     "mockgoose": "2.0.1"
+    "amqp": "^0.2.4",
+    "port-finder": "^0.12.4",
+    "portfinder": "^0.4.0",
+    "request": "^2.55.0"
   },
   "engines": {
     "node": ">=0.10.0"

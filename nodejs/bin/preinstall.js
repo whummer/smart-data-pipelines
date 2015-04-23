@@ -8,8 +8,7 @@ var services_directory = 'services';
 var services_test_directory = 'services/test';
 var web_ui_directory = 'web-ui';
 
-function preinstall_dir(base, dir, libLink) {
-	if(!libLink) libLink = '../../lib';
+function preinstall_dir(base, dir) {
 	var preinstallDirectory = resolve(__dirname, join(base, dir));
 	console.log('Preinstalling node modules in ', preinstallDirectory);
 	if (!fs.existsSync(join(preinstallDirectory, 'package.json'))) {
@@ -21,7 +20,7 @@ function preinstall_dir(base, dir, libLink) {
 		var nodeModulesDir = join(preinstallDirectory, 'node_modules');
 		if (!fs.existsSync(join(nodeModulesDir, "/_"))) {
 			console.log("Creating _ link in node_modules directory: ", nodeModulesDir);
-			cp.exec('ln -sf ' + libLink + ' _', {env: process.env, cwd: nodeModulesDir}, function (error, stdout, stderr) {
+			cp.exec('ln -sf ../../lib _', {env: process.env, cwd: nodeModulesDir}, function (error, stdout, stderr) {
 				if (error) {
 					console.log("Cannot create _ link in " + nodeModulesDir + ": ", stderr);
 				}
@@ -30,7 +29,7 @@ function preinstall_dir(base, dir, libLink) {
 	});
 }
 
-//preinstall web-ui
+// preinstall web-ui
 preinstall_dir('..', web_ui_directory);
 
 //preinstall services

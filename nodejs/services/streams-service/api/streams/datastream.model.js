@@ -48,12 +48,30 @@ var template = {
 	/**
 	 * Stream sink config.
 	 */
-	"sink-id": String,
+	"sink-config": {
+		"connector" : String // http, amqp, whatever
+	},
+
+	// e.g. 3h, 2w, 1m, 1y
+	"retention-time" : String,
+
+	// TLS only, full
+	"security" : String,
+
+	// tags (e.g., speed, temperature)
+	"tags" : [String],
+
+	"spring-xd-config" : {
+		"stream-definition" : String
+	},
+
+	"data-items" : [{name: String, price: String, _id: false}],
+
 	/**
 	 * Whether this stream is publicly visible, searchable, queryable.
 	 */
 	"visible": Boolean
-}
+};
 
 var DataStreamSchema = new Schema(template);
 DataStreamSchema.set('toJSON', { virtuals: true });
