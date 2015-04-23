@@ -63,7 +63,7 @@ sh.activate = function(actKey, callback, errorCallback) {
 	return callPOST(servicesConfig.services.users.url + "/activate", req, callback, errorCallback);
 };
 sh.signup = function(userInfo, callback, errorCallback) {
-	return callPOST(servicesConfig.services.users.url + "/signup", userInfo, callback, errorCallback);
+	return callPOST(servicesConfig.services.users.url + "/", userInfo, callback, errorCallback);
 };
 sh.signin = function(userInfo, callback, errorCallback) {
 	return callPOST(servicesConfig.services.users.url + "/auth/local", userInfo, callback, errorCallback);
@@ -552,7 +552,7 @@ var callGET = sh.callGET = function(url, options, doCacheResults, errorCallback)
 	invokeGET(options, url,
 		function(data, status, headers, config) {
 			if(!data) {
-				callback(data);
+				callback(data, status, headers, config);
 				return;
 			}
 			if(typeof data.__result != "undefined") data = data.__result;
@@ -566,7 +566,7 @@ var callGET = sh.callGET = function(url, options, doCacheResults, errorCallback)
 				m[url] = data;
 			}
 			if(callback) {
-				callback(data);
+				callback(data, status, headers, config);
 			}
 		}, errorCallback
 	);
@@ -583,7 +583,7 @@ var callPOSTorPUT = function(invokeFunc, url, body, options, errorCallback) {
 		function(data, status, headers, config) {
 			if(callback) {
 				if(typeof data.__result != "undefined") data = data.__result;
-				callback(data);
+				callback(data, status, headers, config);
 			}
 		}, errorCallback
 	);

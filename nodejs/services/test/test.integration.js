@@ -1,7 +1,8 @@
 'use strict';
 
-require('_/api/service.calls');
 process.env.TEST_MODE = true;
+process.env.NODE_ENV = "test";
+require('_/api/service.calls');
 
 require('./integration/api/test.streams');
 require('./integration/api/test.streamaccess');

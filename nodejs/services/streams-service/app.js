@@ -14,7 +14,6 @@ var config = require('./config/environment');
 var util = require('_/util/util');
 require('_/api/service.calls')
 
-global.config = config;
 if(!global.servicesConfig) {
 	global.servicesConfig = require('_/config/services');
 }
