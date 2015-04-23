@@ -4,17 +4,19 @@
 
 var amqp = require('amqp');
 
-exports.createExchange = function(name) {
+exports.createExchange = function(name, callback) {
 	var connection = rabbitConnection();
 	connection.on('ready', function () {
 		connection.exchange(name, {type: 'fanout'}, function (e) {
 			console.log('Successfully created exchange: ', e);
 			connection.disconnect();
+			if (callback)
+				callback();
 		});
 	});
 };
 
-exports.bindQueueToExchange = function(queueName, exchangeName) {
+exports.bindQueueToExchange = function(queueName, exchangeName, callback) {
 	var connection = rabbitConnection();
 	connection.on('ready', function () {
 		connection.queue(queueName, function (q) {
@@ -22,6 +24,8 @@ exports.bindQueueToExchange = function(queueName, exchangeName) {
 			q.bind(exchangeName, '', function() {
 				console.log('Successfully bound queue ' + queueName + ' to exchange ' + exchangeName);
 				connection.disconnect();
+				if (callback)
+					callback();
 			});
 		});
 	});

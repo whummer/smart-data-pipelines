@@ -60,6 +60,8 @@ exports.create = function (req, res, next) {
 
 		res.json(obj);
 
+		// todo handle rollbacks accordingly (ie.e when exchange cannot be created, rollback the stream creation)
+
 		// create the rabbitmq exchage in the background
 		var exchangeId = createExchangeId(dataStream);
 		rabbitmq.createExchange(exchangeId);
@@ -73,7 +75,7 @@ exports.create = function (req, res, next) {
 			}
 
 			var streamDefinition = "http --port=" + freePort + "| rabbit --vhost=riox --exchange=" + exchangeId;
-			var streamId = dataStream.name;
+			var streamId = dataStream.name + '_' + exchangeId;
 			springxd.createStream(streamId, streamDefinition);
 		});
 	});
