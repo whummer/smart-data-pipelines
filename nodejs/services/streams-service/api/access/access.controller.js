@@ -60,7 +60,6 @@ exports.destroy = function(req, res, next) {
 exports.create = function(req, res, next) {
 	var access = req.body;
 	var streamId = access.streamId;
-	console.log("streamId", streamId);
 	if(!streamId) {
 		res.json(500, {error: "streamId is required"});
 		return;
