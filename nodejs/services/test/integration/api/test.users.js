@@ -4,7 +4,7 @@ var assert = require('assert');
 var superagent = require('superagent');
 var status = require('http-status');
 var test = require('../util/testutil');
-var riox = require('_/../../web-ui/lib/app/components/js/riox-api');
+var riox = require('riox-shared/lib/api/riox-api');
 
 var app = {};
 
