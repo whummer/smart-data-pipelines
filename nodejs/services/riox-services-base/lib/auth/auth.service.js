@@ -5,7 +5,7 @@ var config = require('../config/environment');
 var jwt = require('jsonwebtoken');
 var expressJwt = require('express-jwt');
 var compose = require('composable-middleware');
-var riox = require('riox-services-base/lib/api/riox-api');
+var riox = require('riox-shared/lib/api/riox-api');
 
 var validateJwt = expressJwt({ secret: config.secrets.session });
 

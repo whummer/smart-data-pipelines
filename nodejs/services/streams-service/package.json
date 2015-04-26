@@ -19,6 +19,7 @@
     "passport-local": "~0.1.6",
     "passport-twitter": "latest",
 
+    "riox-shared": "../../riox-shared",
     "riox-services-base": "../riox-services-base"
   },
   "devDependencies": {

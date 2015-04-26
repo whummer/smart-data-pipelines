@@ -1,1 +1,0 @@
-../../../../web-ui/lib/app/components/js/riox-api.js

@@ -4,7 +4,7 @@ var User = require('./user.model');
 var passport = require('passport');
 var config = require('riox-services-base/lib/config/environment');
 var jwt = require('jsonwebtoken');
-var riox = require('riox-services-base/lib/api/riox-api');
+var riox = require('riox-shared/lib/api/riox-api');
 
 var validationError = function(res, err) {
   return res.json(422, err);

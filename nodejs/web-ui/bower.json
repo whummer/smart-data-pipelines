@@ -33,7 +33,9 @@
     "animate.css": "~3.2.6",
     "jquery-wizard": "~1.1.2",
     "angular-chosen-localytics": "~1.0.7",
-    "angular-highlightjs": "~0.4.1"
+    "angular-highlightjs": "~0.4.1",
+
+    "riox-shared": "../riox-shared"
   },
   "devDependencies": {
     "angular-mocks": ">=1.2.*",
