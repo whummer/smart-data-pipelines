@@ -3,12 +3,13 @@
  */
 
 var amqp = require('amqp');
+var config = require('../../config/environment');
 
 exports.createExchange = function(name, callback) {
 	var connection = rabbitConnection();
 	connection.on('ready', function () {
 		connection.exchange(name, {type: 'fanout'}, function (e) {
-			console.log('Successfully created exchange: ', e);
+			//console.log('Successfully created exchange: ', e);
 			connection.disconnect();
 			if (callback)
 				callback();
@@ -32,5 +33,5 @@ exports.bindQueueToExchange = function(queueName, exchangeName, callback) {
 };
 
 function rabbitConnection() {
-	return amqp.createConnection({host: global.config.rabbitmq.host, vhost : global.config.rabbitmq.vhost});
+	return amqp.createConnection({host: config.rabbitmq.host, vhost : config.rabbitmq.vhost});
 }

@@ -11,10 +11,10 @@ describe('/organizations', function() {
 
 	before(function(done) {
 		/* start streams service */
-		app.organizations = { port : 3000 };
-		app.organizations.url = "http://localhost:" + app.organizations.port + "/api/v1/streams";
+		app.organizations = { port : 3001 };
+		app.organizations.url = "http://localhost:" + app.organizations.port + "/api/v1/organizations";
 		process.env.SERVICE_PORT = app.organizations.port;
-		app.organizations.server = require('../../../streams-service/app.js').start();
+		app.organizations.server = require('../../../users-service/app.js').start();
 		/* get auth token */
 		test.authDefault(done);
 	});
@@ -23,30 +23,15 @@ describe('/organizations', function() {
 		app.organizations.server.stop();
 	});
 
-	it('updates a users own organization', function(done) {
-		
-		test.user1.get(app.streams.url).end(function(err, res) {
+	it("updates a user's own organization, only its own", function(done) {
+		test.user1.get(app.organizations.url + "/own").end(function(err, res) {
 			assert.ifError(err);
 			assert.equal(res.status, status.OK);
-			done();
-		});
-	});
-
-	it('adds a stream and returns the newly added stream', function(done) {
-		test.user1.get(app.streams.url).end(function(err, res) {
-			assert.ifError(err);
-			var numStreams = res.body.length;
-			assert.equal(res.status, status.OK);
-			test.user1.post(app.streams.url).send(
-					{name: "testStream123"}
-				).end(function(err, res) {
-				assert.ifError(err);
-				assert.equal(res.status, status.OK);
-				test.user1.get(app.streams.url).end(function(err, res) {
+			var org = res.body;
+			test.user2.put(app.organizations.url + "/" + org.id).send(org).end(function(err, res) {
+				assert.equal(false, !err);
+				test.user1.put(app.organizations.url + "/" + org.id).send(org).end(function(err, res) {
 					assert.ifError(err);
-					assert.equal(res.status, status.OK);
-					var numStreamsNew = res.body.length;
-					assert.equal(numStreams + 1, numStreamsNew)
 					done();
 				});
 			});
@@ -54,7 +39,7 @@ describe('/organizations', function() {
 	});
 
 	it('returns 401 if no authorization provided', function(done) {
-		superagent.get(app.streams.url).end(function(err, res) {
+		superagent.get(app.organizations.url).end(function(err, res) {
 			assert.equal(res.status, status.UNAUTHORIZED);
 			done();
 		});

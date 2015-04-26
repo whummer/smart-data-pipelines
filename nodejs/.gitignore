@@ -49,3 +49,7 @@ public
 /server/config/local.env.js
 
 /web-ui/lib/index.html
+
+# whu: TODO check why those are always generated
+/lib/
+/web-ui/lib/app/provider_wizard/*.css

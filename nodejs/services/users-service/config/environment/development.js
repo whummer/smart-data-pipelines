@@ -1,6 +1,6 @@
 'use strict';
 
-var appConfig = require("_/config/services.js");
+var appConfig = require("riox-services-base/lib/config/services.js");
 
 /* set global admin user */
 global.adminUser = {email: "riox", password: "riox", role: "admin"};
