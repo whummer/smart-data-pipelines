@@ -2,10 +2,9 @@
 
 var User = require('./user.model');
 var passport = require('passport');
-var config = require('_/config/environment');
+var config = require('riox-services-base/lib/config/environment');
 var jwt = require('jsonwebtoken');
-var orgsClient = require('_/api/organizations.client');
-var riox = require('_/../../web-ui/lib/app/components/js/riox-api');
+var riox = require('riox-services-base/../../web-ui/lib/app/components/js/riox-api'); // TODO
 
 var validationError = function(res, err) {
   return res.json(422, err);

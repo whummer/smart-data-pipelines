@@ -3,7 +3,7 @@
 var express = require('express');
 var mongoose = require('mongoose');
 var controller = require('./access.controller');
-var auth = require('_/auth/auth.service');
+var auth = require('riox-services-base/lib/auth/auth.service');
 var StreamAccess = require('./streamaccess.model');
 
 /* define routes */

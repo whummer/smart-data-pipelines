@@ -3,8 +3,8 @@
 var StreamAccess = require('./streamaccess.model');
 var passport = require('passport');
 var jwt = require('jsonwebtoken');
-var auth = require('_/auth/auth.service');
-var streamsServiceAPI = require('_/api/streams.client');
+var auth = require('riox-services-base/lib/auth/auth.service');
+var riox = require('riox-services-base/../../web-ui/lib/app/components/js/riox-api'); // TODO fix path
 
 exports.index = function(req, res, next) {
 	var user = auth.getCurrentUser(req);
@@ -60,17 +60,20 @@ exports.destroy = function(req, res, next) {
 exports.create = function(req, res, next) {
 	var access = req.body;
 	var streamId = access.streamId;
+	console.log("streamId", streamId);
 	if(!streamId) {
 		res.json(500, {error: "streamId is required"});
 		return;
 	}
-	streamsServiceAPI.get(streamId, req, function(stream) {
-		access.created = access.changed = new Date().getTime();
-		var user = auth.getCurrentUser(req);
-		access.requestorId = user.id;
-		StreamAccess.create(access, function() {
-			res.json(200, access);
-		});
+	riox.stream(streamId, {
+		callback: function(stream) {
+			access.created = access.changed = new Date().getTime();
+			var user = auth.getCurrentUser(req);
+			access.requestorId = user.id;
+			StreamAccess.create(access, function() {
+				res.json(200, access);
+			});
+		}, headers: req.headers
 	});
 };
  

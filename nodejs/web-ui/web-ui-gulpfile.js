@@ -223,8 +223,11 @@ gulp.task('ui:serve', 'serve the riox-ui src using nodemon', function () {
 	runSequence('ui:bower', 'ui:node_modules', 'ui:inject:dev');
 
 	return nodemon({
-		script: SRC_DIR + '/server.js', options: '-i ' + SRC_DIR + "/*",
-		env: { 'NODE_ENV': 'development' , 'PORT' : 8080}
+		script: SRC_DIR + '/server.js', verbose: true,
+		watch: ["web-ui/lib"],
+        ignore: ["lib/", "web-ui/node_modules", "node_modules", 
+                 "web-ui/lib/bower_components", "services/**/node_modules"],
+		env: { NODE_ENV: "development" , PORT : 8080}
 	});
 });
 

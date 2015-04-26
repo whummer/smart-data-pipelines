@@ -1,7 +1,7 @@
 'use strict';
 
 var Organization = require('./organization.model');
-var config = require('_/config/environment');
+var config = require('../../config/environment');
 var jwt = require('jsonwebtoken');
 
 var validationError = function(res, err) {

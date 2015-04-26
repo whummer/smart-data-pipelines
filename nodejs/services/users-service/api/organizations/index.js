@@ -2,8 +2,8 @@
 
 var express = require('express');
 var controller = require('./organizations.controller');
-var config = require('_/config/environment');
-var auth = require('_/auth/auth.service');
+var config = require('../../config/environment');
+var auth = require('riox-services-base/lib/auth/auth.service');
 
 var router = express.Router();
 

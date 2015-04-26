@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "main": "server/app.js",
   "dependencies": {
-    "serve-favicon": "~2.0.1"
+    "serve-favicon": "~2.0.1",
+    "event-stream": "3.3.0"
   },
   "devDependencies": {
     "gulp": "^3.8.11",

@@ -1,6 +1,6 @@
 'use strict';
 
-var appConfig = require("_/config/services.js");
+var appConfig = require("riox-services-base/lib/config/services.js");
 
 // Test specific configuration
 // ===========================

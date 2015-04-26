@@ -2,6 +2,7 @@
   "name": "riox",
   "version": "0.0.0",
   "dependencies": {
+    "riox-services-base": "../riox-services-base"
   },
   "devDependencies": {
     "superagent": "1.2.0",

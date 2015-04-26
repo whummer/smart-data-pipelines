@@ -61,6 +61,7 @@ app.auth = function(email, pass, callback) {
 	services.organizations.url = global.servicesConfig.services.organizations.url = 
 		"http://localhost:" + services.users.port + "/api/v1/organizations";
 	/* do login */
+	console.log("services.users.url", services.users.url);
 	attemptLogin(email, pass, callback);
 }
 
@@ -70,6 +71,7 @@ app.authDefault = function(callback) {
 		return;
 	}
 
+	console.log("testutils 1");
 	app.auth("user1", "user1", function(res) {
 		app.user1 = {
 			tokenHeaders : {
@@ -78,6 +80,7 @@ app.authDefault = function(callback) {
 		};
 		initClientProxy(app.user1);
 
+		console.log("testutils 2");
 		app.auth("user2", "user2", function(res) {
 			app.user2 = {
 				tokenHeaders : {
@@ -86,6 +89,7 @@ app.authDefault = function(callback) {
 			};
 			initClientProxy(app.user2);
 
+			console.log("testutils callback");
 			if(callback) callback();
 		});
 	});
