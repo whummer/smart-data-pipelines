@@ -204,7 +204,7 @@ gulp.task('ui:imagemin', 'optimize image size', function () {
 // install bower files
 //
 gulp.task('ui:bower', 'install bower dependencies', function() {
-	return bower({cwd: BASE_DIR}).pipe(gulp.dest(BASE_DIR + "/lib/"));
+	return bower({cwd: BASE_DIR}).pipe(gulp.dest(BASE_DIR + "/lib/bower_components"));
 });
 
 //
@@ -223,25 +223,13 @@ gulp.task('ui:serve', 'serve the riox-ui src using nodemon', function () {
 	runSequence('ui:bower', 'ui:node_modules', 'ui:inject:dev');
 
 	return nodemon({
-		script: SRC_DIR + '/server.js', verbose: true,
+		script: SRC_DIR + '/server.js', verbose: false,
 		watch: ["web-ui/lib"],
         ignore: ["lib/", "web-ui/node_modules", "node_modules", 
                  "web-ui/lib/bower_components", "services/**/node_modules"],
 		env: { NODE_ENV: "development" , PORT : 8080}
 	});
 });
-
-// run app using node directly (avoid livereload)
-gulp.task('ui:serve:nolivereload', 'serve the riox-ui src using node', function () {
-	runSequence('ui:bower', 'ui:node_modules', 'ui:inject:dev');
-
-	var exec = require('child_process').exec;
-	process.env.NODE_ENV = 'development';
-	process.env.PORT = 8080;
-	var incl = "../" + SRC_DIR + "/server.js";
-	require(incl);
-});
-
 
 // livereload browser on client app changes
 gulp.task('ui:livereload', 'serve the riox-ui using nodemon (with livereload)', ['ui:serve'], function () {
