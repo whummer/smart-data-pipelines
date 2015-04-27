@@ -11,7 +11,11 @@ var express = require('express');
 var mongoose = require('mongoose');
 var cors = require('cors');
 var util = require('./util/util');
-require('riox-services-base/lib/api/service.calls')
+
+// todo ask wh why we would need to reference this via riox-service-base
+//require('riox-services-base/lib/api/service.calls')
+require('./api/service.calls');
+
 
 if(!global.servicesConfig) {
 	global.servicesConfig = require('./config/services');
@@ -22,8 +26,11 @@ var app = express();
 app.use(cors());
 
 // Start server
-app.start = function(config, routes) {
-	if(app.started) return app;
+app.start = function(config, routes, serviceName) {
+	if(app.started) {
+		console.log("Service " + serviceName + " already started");
+		return app;
+	}
 
 	if(config) app.__config = config;
 	if(routes) app.__routes = routes;
@@ -35,6 +42,7 @@ app.start = function(config, routes) {
 
 	// Connect to database
 	if(process.env.TEST_MODE) {
+		console.log("Using TEST mode")
 		var mockgoose = require('mockgoose');
 		mockgoose(mongoose);
 		mongoose.connect("");
