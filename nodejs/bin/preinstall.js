@@ -3,7 +3,7 @@ var resolve = require('path').resolve;
 var join = require('path').join;
 var cp = require('child_process');
 
-var service_directories = ['streams-service', 'users-service', 'riox-services-base'];
+var service_directories = ['streams-service', 'users-service', 'riox-services-base', 'analytics-service'];
 var services_test_directory = 'services/test';
 var web_ui_directory = 'web-ui';
 

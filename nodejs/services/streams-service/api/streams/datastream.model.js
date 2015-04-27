@@ -42,7 +42,7 @@ var template = {
 	/**
 	 * Permission type (e.g., auto, manual, negotiation)
 	 */
-	permit : {
+	"permit" : {
 		type : {type: String}
 	},
 	/**

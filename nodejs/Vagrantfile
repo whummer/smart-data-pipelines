@@ -5,11 +5,13 @@
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  
+
   # Every Vagrant virtual environment requires a box to build off of.
   config.vm.box = "https://cloud-images.ubuntu.com/vagrant/utopic/current/utopic-server-cloudimg-amd64-vagrant-disk1.box"
 
-  
+  # Enable shared folder with more permissions
+  # config.vm.synced_folder ".", "/vagrant",mount_options: ["dmode=777","fmode=777"]
+
   # RabbitMQ
   config.vm.network "forwarded_port", guest: 5672, host: 5672
   config.vm.network "forwarded_port", guest: 15672, host: 15672
@@ -20,8 +22,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Spring XD
   config.vm.network "forwarded_port", guest: 9393, host: 9393
 
-  # Ports for spring data streams 
-  (8000..8100).each{ |port|  config.vm.network "forwarded_port", guest: port, host: port }
+  # Ports for spring data streams
+  (8000..8079).each{ |port|  config.vm.network "forwarded_port", guest: port, host: port }
 
   config.vm.provider :virtualbox do |vb|
       vb.auto_nat_dns_proxy = false
@@ -32,11 +34,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.provision "docker" do |d|
     d.run "mongodb", image: "mongo", cmd: "mongod --smallfiles", args: "-p 27017:27017", daemonize: true
-    d.run "rabbitmq", image: "rabbitmq:3.5.1-management", args: "-p 27017:27017", args: "-p 5672:5672 -p 15672:15672", daemonize: true
+    d.run "rabbitmq", image: "rabbitmq:3.5.1-management",
+                      args: "-p 27017:27017", args: "-p 5672:5672 -p 15672:15672", daemonize: true
     d.run "springxd-singlenode", image: "springxd/singlenode", args: "-p 9393:9393",  daemonize: true
   end
 
-  config.vm.provision "shell",
-    inline: "curl -i -u guest:guest -H \"content-type:application/json\" -XPUT http://localhost:15672/api/vhosts/riox"
+  config.vm.provision "shell", path: "./bin/config-rabbitmq.sh"
 
 end

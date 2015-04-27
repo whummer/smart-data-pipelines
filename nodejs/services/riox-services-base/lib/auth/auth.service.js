@@ -23,8 +23,7 @@ function isAuthenticated() {
         req.headers.authorization = 'Bearer ' + req.query.access_token;
       }
       validateJwt(req, res, next);
-    })
-    ;
+    });
 }
 
 /**
@@ -72,6 +71,17 @@ function getCurrentUser(req) {
 }
 
 /**
+ * Gets the current user of this request.
+ */
+function getCurrentUserDetails(req, callback) {
+	var user = getCurrentUser(req);
+	riox.user({id: user.id}, {
+		  headers: req.headers,
+		  callback: callback
+	});
+}
+
+/**
  * Returns a jwt token signed by the app secret
  */
 function signToken(id) {
@@ -93,3 +103,4 @@ exports.hasRole = hasRole;
 exports.signToken = signToken;
 exports.setTokenCookie = setTokenCookie;
 exports.getCurrentUser = getCurrentUser;
+exports.getCurrentUserDetails = getCurrentUserDetails;
