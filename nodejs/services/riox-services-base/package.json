@@ -24,11 +24,11 @@
     "passport-google-oauth": "latest",
     "passport-local": "~0.1.6",
     "passport-twitter": "latest",
-
     "riox-shared": "../../riox-shared"
   },
   "devDependencies": {
-    "connect-livereload": "^0.5.3" 
+    "connect-livereload": "^0.5.3",
+    "mockgoose": "^2.0.1"
   },
   "engines": {
     "node": ">=0.10.0"

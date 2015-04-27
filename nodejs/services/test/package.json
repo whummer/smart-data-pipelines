@@ -6,6 +6,7 @@
     "riox-services-base": "../riox-services-base"
   },
   "devDependencies": {
+    "mockgoose": "^2.0.1",
     "superagent": "1.2.0",
     "http-status": "0.1.8"
   },
