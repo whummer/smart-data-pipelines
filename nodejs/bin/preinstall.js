@@ -7,7 +7,8 @@ var service_directories = ['streams-service', 'users-service', 'riox-services-ba
 var services_test_directory = 'services/test';
 var web_ui_directory = 'web-ui';
 
-const USE_LINK_LOCAL = true;
+const LINK_DEPS = false;
+const USE_LINK_LOCAL = false;
 const PRUNE_NODE_DIRS = false;
 
 if (USE_LINK_LOCAL) {
@@ -56,10 +57,13 @@ function install_node_modules(preinstallDirectory) {
 		}
 
 		console.log('Finished node_modules install in dir: ', preinstallDirectory);
-		if (USE_LINK_LOCAL) {
-			link_lib_with_linklocal(preinstallDirectory);
-		} else {
-			link_lib_with_lodash(preinstallDirectory);
+
+		if (LINK_DEPS) {
+			if (USE_LINK_LOCAL) {
+				link_lib_with_linklocal(preinstallDirectory);
+			} else {
+				link_lib_with_lodash(preinstallDirectory);
+			}
 		}
 	});
 }
@@ -87,7 +91,7 @@ function link_lib_with_lodash(preinstallDirectory) {
 // preinstall web-ui
 preinstall_dir('..', web_ui_directory);
 
-//preinstall services
+// preinstall services test
 preinstall_dir('..', services_test_directory);
 
 // preinstall service directories
