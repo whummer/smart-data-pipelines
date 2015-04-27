@@ -10,6 +10,7 @@ var app = {};
 describe('/stream/access', function() {
 
 	before(function(done) {
+		this.timeout(5000);
 		/* start streams/access service */
 		app.access = { port : 3000 };
 		app.streams = { port : 3000 };
@@ -27,9 +28,13 @@ describe('/stream/access', function() {
 	});
 
 	it('adds a stream and requests access to the newly added stream', function(done) {
-		test.user1.post(app.streams.url).send(
-				{name: "testStream456"}
-			).end(function(err, res) {
+
+		var newStream = {
+				"name": "testStream456",
+				"sink-config": { connector: "http" }
+		}
+
+		test.user1.post(app.streams.url).send(newStream).end(function(err, res) {
 			var streamId = res.body.id;
 			assert.ifError(err);
 			assert.equal(res.status, status.OK);

@@ -5,7 +5,6 @@
 'use strict';
 
 var express = require('express');
-var favicon = require('serve-favicon');
 var morgan = require('morgan');
 var compression = require('compression');
 var bodyParser = require('body-parser');
@@ -13,17 +12,10 @@ var methodOverride = require('method-override');
 var cookieParser = require('cookie-parser');
 var errorHandler = require('errorhandler');
 var path = require('path');
-var config = require('./environment');
 var passport = require('passport');
 var session = require('express-session');
 
-function commonConfig(app) {
-  app.use(express.static(path.join(config.root, 'static')));
-  app.set('appPath', '/');
-  app.use(morgan('dev'));
-}
-
-module.exports = function(app) {
+module.exports = function(app, config) {
   var env = app.get('env');
 
   //app.set('views', config.root + '/app/views');
@@ -45,14 +37,20 @@ module.exports = function(app) {
   //   saveUninitialized: true,
   //   store: new mongoStore({ mongoose_connection: mongoose.connection })
   // }));
-  
+
+  function commonConfig(app) {
+	  app.use(express.static(path.join(config.root, 'static')));
+	  app.set('appPath', '/');
+	  app.use(morgan('dev'));
+  }
+
   if ('production' === env) {
     commonConfig(app);
   }
 
   if ('development' === env || 'test' === env) {
-    app.use(require('connect-livereload')());
     commonConfig(app);
     app.use(errorHandler()); // Error handler - has to be last
   }
+
 };

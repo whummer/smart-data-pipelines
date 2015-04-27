@@ -2,10 +2,10 @@
 
 var User = require('./user.model');
 var passport = require('passport');
-var config = require('_/config/environment');
+var config = require('riox-services-base/lib/config/environment');
 var jwt = require('jsonwebtoken');
-var orgsClient = require('_/api/organizations.client');
-var riox = require('_/../../web-ui/lib/app/components/js/riox-api');
+var riox = require('riox-shared/lib/api/riox-api');
+var auth = require('riox-services-base/lib/auth/auth.service');
 
 var validationError = function(res, err) {
   return res.json(422, err);
@@ -100,9 +100,38 @@ exports.me = function(req, res, next) {
     _id: userId
   }, '-salt -hashedPassword', function(err, user) { // don't ever give out the password or salt
     if (err) return next(err);
-    if (!user) return res.json(401);
+    if (!user) return res.send(401);
     res.json(user);
   });
+};
+
+/**
+ * Update my info.
+ */
+exports.saveMe = function(req, res, next) {
+	var user = auth.getCurrentUser(req);
+	var userId = req.user._id;
+	if(userId != user.id) {
+		return res.send(422);
+	}
+	var newUser = new User(req.body);
+	User.findOne({
+	    _id: userId
+	}, '-salt -hashedPassword', function(err, existingUser) { // don't ever give out the password or salt
+	    if (err) return next(err);
+	    if (!existingUser) return res.send(404);
+	    if(existingUser.email != newUser.email) return res.json(422); // don't allow email updates here
+
+	    /* copy user info */
+	    existingUser.address = newUser.address;
+	    existingUser.firstname = newUser.firstname;
+	    existingUser.lastname = newUser.lastname;
+
+	    existingUser.save(function(err, userResult) {
+	    	if(err) return res.send(401);
+		    res.json(userResult);
+	    });
+	});
 };
 
 /**

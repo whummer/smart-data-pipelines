@@ -4,8 +4,8 @@ var DataStream = require('./datastream.model');
 var passport = require('passport');
 var jwt = require('jsonwebtoken');
 var mongoose = require('mongoose');
-var accessServiceAPI = require('_/api/access.client');
-var auth = require('_/auth/auth.service');
+var auth = require('riox-services-base/lib/auth/auth.service');
+var riox = require('riox-shared/lib/api/riox-api');
 var rabbitmq = require('./rabbitmq.service');
 var springxd = require('./springxd.service');
 var portfinder = require('portfinder');
@@ -36,13 +36,18 @@ exports.listProvided = function (req, res) {
 
 exports.listConsumed = function (req, res) {
 	var user = auth.getCurrentUser(req);
-	accessServiceAPI.list(null, req, function (data, response) {
-		var ids = [];
-		data.forEach(function (el) {
-			ids.push(el.streamId);
-		});
-		var query = {_id: {$in: ids}};
-		return list(query, req, res);
+	var query = {};
+	riox.access(query, {
+		callback: function (data, response) {
+			console.log("data", data);
+			var ids = [];
+			data.forEach(function (el) {
+				ids.push(el.streamId);
+			});
+			var query = {_id: {$in: ids}};
+			return list(query, req, res);
+		},
+		headers: req.headers
 	});
 };
 
@@ -52,6 +57,7 @@ exports.create = function (req, res, next) {
 	if (dataStream['sink-config'].connector != "http") {
 		res.json(500, {"description": "Unsupported Connector-Type. Only HTTP is supported at the moment"});
 		next();
+		return;
 	}
 
 	dataStream.save(function (err, obj) {

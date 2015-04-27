@@ -47,6 +47,10 @@ var initClientProxy = function(proxy) {
 		return superagent.post(url).set("authorization",
 				proxy.tokenHeaders.authorization);
 	}
+	proxy.put = function(url) {
+		return superagent.put(url).set("authorization",
+				proxy.tokenHeaders.authorization);
+	}
 }
 
 app.auth = function(email, pass, callback) {
@@ -64,13 +68,23 @@ app.auth = function(email, pass, callback) {
 	attemptLogin(email, pass, callback);
 }
 
+var getUserId = function(userObj, callback) {
+	userObj.get(services.users.url + "/me").end(
+		function(err, res) {
+			assert.ifError(err);
+			assert.equal(res.status, status.OK);
+			userObj.user = res.body;
+			callback(res);
+		});
+}
+
 app.authDefault = function(callback) {
 	if(app.user1 && app.user2) {
 		if(callback) callback();
 		return;
 	}
 
-	app.auth("user1", "user1", function(res) {
+	app.auth("user1@test.com", "user1", function(res) {
 		app.user1 = {
 			tokenHeaders : {
 				authorization : "Bearer " + res.body.token
@@ -78,7 +92,7 @@ app.authDefault = function(callback) {
 		};
 		initClientProxy(app.user1);
 
-		app.auth("user2", "user2", function(res) {
+		app.auth("user2@test.com", "user2", function(res) {
 			app.user2 = {
 				tokenHeaders : {
 					authorization : "Bearer " + res.body.token
@@ -86,7 +100,12 @@ app.authDefault = function(callback) {
 			};
 			initClientProxy(app.user2);
 
-			if(callback) callback();
+			getUserId(app.user1, function() {
+				getUserId(app.user2, function() {
+					if(callback) callback();
+				});
+			});
+
 		});
 	});
 }
