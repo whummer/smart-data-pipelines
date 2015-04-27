@@ -21,6 +21,6 @@ if(config.seedDB) { require("./demodata"); }
 
 // start server
 var routes = require("./routes");
-starter.start(config, routes);
+starter.start(config, routes, "streams-service");
 
 module.exports = starter;
