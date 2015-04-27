@@ -2,7 +2,7 @@
 
 var express = require('express');
 var passport = require('passport');
-var auth = require('_/auth/auth.service');
+var auth = require('riox-services-base/lib/auth/auth.service');
 
 var router = express.Router();
 

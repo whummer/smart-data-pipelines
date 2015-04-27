@@ -2,8 +2,11 @@
   "name": "riox",
   "version": "0.0.0",
   "main": "server/app.js",
+  "dependencies": {
+    "serve-favicon": "~2.0.1",
+    "event-stream": "3.3.0"
+  },
   "devDependencies": {
-    "event-stream": "^3.3.0",
     "gulp": "^3.8.11",
     "gulp-angular-filesort": "^1.1.1",
     "gulp-bower": "0.0.10",
@@ -24,7 +27,8 @@
     "gulp-util": "^3.0.4",
     "jsonwebtoken": "^0.3.0",
     "main-bower-files": "^2.6.2",
-    "run-sequence": "^1.0.2"
+    "run-sequence": "^1.0.2",
+    "superagent": "^1.2.0"
   },
   "engines": {
     "node": ">=0.10.0"

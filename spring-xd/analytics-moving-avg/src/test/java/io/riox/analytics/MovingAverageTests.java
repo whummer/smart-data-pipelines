@@ -27,7 +27,7 @@ public class MovingAverageTests {
 	public void simpleAverage() throws InterruptedException {
 		final Subject<Tuple, Tuple> subject = PublishSubject.create();
 
-		Processor<Tuple, Tuple> processor = new MovingAverage(10);
+		Processor<Tuple, Tuple> processor = new MovingAverage(10, "measurement");
 		Observable<Tuple> outputStream = processor.process(subject);
 
 		// Assert that we received the moving_avg

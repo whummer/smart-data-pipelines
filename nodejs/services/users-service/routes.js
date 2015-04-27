@@ -4,7 +4,7 @@
 
 'use strict';
 
-var errors = require('_/errors');
+var errors = require('riox-services-base/lib/errors');
 
 module.exports = function(app) {
 

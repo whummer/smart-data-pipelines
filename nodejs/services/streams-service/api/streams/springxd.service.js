@@ -2,9 +2,10 @@
 
 // plain http request client for application/x-www-form-urlencoded request (stream creation)
 var request = require('request');
+var config = require('../../config/environment');
 
 exports.createStream = function (streamName, streamDefinition, callback) {
-	var xdUrl = global.config.springxd.url + "/streams/definitions";
+	var xdUrl = config.springxd.url + "/streams/definitions";
 	console.log("Using XD URL: ", xdUrl);
 	console.log('Creating XD stream "' + streamName + '" with definition: ' + streamDefinition);
 	request.post(xdUrl, {form: {name: streamName, definition: streamDefinition}},
