@@ -204,7 +204,7 @@ gulp.task('ui:imagemin', 'optimize image size', function () {
 // install bower files
 //
 gulp.task('ui:bower', 'install bower dependencies', function() {
-	return bower({cwd: BASE_DIR}).pipe(gulp.dest(BASE_DIR + "lib/"));
+	return bower({cwd: BASE_DIR}).pipe(gulp.dest(BASE_DIR + "/lib/"));
 });
 
 //
