@@ -1,0 +1,35 @@
+{
+  "name": "riox-files-service",
+  "version": "0.0.1",
+  "dependencies": {
+    "amqp": "^0.2.4",
+    "port-finder": "^0.12.4",
+    "portfinder": "^0.4.0",
+    "request": "^2.55.0",
+    "cors": "~2.5.3",
+    "lodash": "~2.4.1",
+    "method-override": "~1.0.0",
+    "mongoose": "~4.0.0",
+    "morgan": "~1.0.0",
+    "node-rest-client": "^1.5.0",
+    "node-uuid": "^1.4.3",
+    "passport": "~0.2.0",
+    "passport-facebook": "latest",
+    "passport-google-oauth": "latest",
+    "passport-local": "~0.1.6",
+    "passport-twitter": "latest",
+
+    "riox-shared": "../../riox-shared",
+    "riox-services-base": "../riox-services-base"
+  },
+  "devDependencies": {
+    "mockgoose": "2.0.1"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "scripts": {
+    "start": "node app.js"
+  },
+  "private": true
+}
