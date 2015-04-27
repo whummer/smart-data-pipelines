@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "main": "server/app.js",
   "dependencies": {
-    "serve-favicon": "~2.0.1",
-    "event-stream": "3.3.0"
+    "event-stream": "3.3.0",
+    "serve-favicon": "~2.0.1"
   },
   "devDependencies": {
     "gulp": "^3.8.11",
@@ -27,6 +27,7 @@
     "gulp-util": "^3.0.4",
     "jsonwebtoken": "^0.3.0",
     "main-bower-files": "^2.6.2",
+    "mockgoose": "^2.0.1",
     "run-sequence": "^1.0.2",
     "superagent": "^1.2.0"
   },
