@@ -10,10 +10,11 @@ var app = {};
 describe('/streams', function() {
 
 	before(function(done) {
+		this.timeout(5000);
 		/* start streams service */
 		app.streams = { port : 3000 };
 		process.env.SERVICE_PORT = app.streams.port;
-		app.streams.server = require('../../../streams-service/app.js').start();
+		app.streams.server = require('../../../streams-service/app.js');
 		/* set URLs */
 		app.streams.url = global.servicesConfig.services.streams.url = 
 			"http://localhost:" + app.streams.port + "/api/v1/streams";
@@ -38,9 +39,13 @@ describe('/streams', function() {
 			assert.ifError(err);
 			var numStreams = res.body.length;
 			assert.equal(res.status, status.OK);
-			test.user1.post(app.streams.url).send(
-					{name: "testStream123"}
-				).end(function(err, res) {
+			
+			var newStream = {
+					"name": "testStream123",
+					"sink-config": { connector: "http" }
+			}
+			
+			test.user1.post(app.streams.url).send(newStream).end(function(err, res) {
 				assert.ifError(err);
 				assert.equal(res.status, status.OK);
 				test.user1.get(app.streams.url).end(function(err, res) {
