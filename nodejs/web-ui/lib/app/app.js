@@ -12,7 +12,8 @@ angular.module('rioxApp', [
 	'NgSwitchery',
 	'angular-growl',
 	'ngAnimate',
-	'hljs'
+	'hljs',
+	'ngFileUpload'
 ])
 		.config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider, growlProvider) {
 			$locationProvider.html5Mode(false);
