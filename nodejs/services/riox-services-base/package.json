@@ -2,6 +2,7 @@
   "name": "riox-services-base",
   "version": "0.0.0",
   "dependencies": {
+    "mongoose": "~4.0.0",
     "body-parser": "~1.5.0",
     "composable-middleware": "^0.3.0",
     "compression": "~1.0.1",

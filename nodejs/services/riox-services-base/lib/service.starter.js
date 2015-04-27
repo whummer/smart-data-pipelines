@@ -11,7 +11,11 @@ var express = require('express');
 var mongoose = require('mongoose');
 var cors = require('cors');
 var util = require('./util/util');
-require('riox-services-base/lib/api/service.calls')
+
+// todo ask wh why we would need to reference this via riox-service-base
+//require('riox-services-base/lib/api/service.calls')
+require('./api/service.calls');
+
 
 if(!global.servicesConfig) {
 	global.servicesConfig = require('./config/services');
