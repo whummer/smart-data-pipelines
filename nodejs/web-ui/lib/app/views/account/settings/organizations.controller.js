@@ -68,7 +68,7 @@ app.controller('OrganizationController',
             var file = files[i];
             var url = fileServiceURL + '/upload';
             //console.log("url", url, file, XMLHttpRequest, XMLHttpRequest.prototype);
-            $upload.upload({
+            Upload.upload({
                 url: url,
                 file: file,
                 fileFormDataName: 'filedata',

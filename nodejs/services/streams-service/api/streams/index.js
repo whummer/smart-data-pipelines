@@ -14,4 +14,13 @@ router.get('/:id', auth.isAuthenticated(), controller.show);
 router.post('/', auth.isAuthenticated(), controller.create);
 router.put('/:id', auth.isAuthenticated(), controller.update);
 
+// creates a stream source
+//router.post('/sources');
+
+// creates a stream processing element
+//router.post('/processors');
+
+// creates a stream sink
+//router.post('/sinks');
+
 module.exports = router;

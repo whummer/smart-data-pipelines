@@ -38,7 +38,13 @@
 <script src="/bower_components/jquery/dist/jquery.js"></script>
 
 <!-- ng-file-upload shim -->
-<script src="/bower_components/ng-file-upload/angular-file-upload-shim.js"></script>
+<script>
+/*  Note, pace has some conflicts with ng-file-upload (both mess with 
+	XMLHttpRequest object), hence we need to apply a little patch here */
+window.__patch__setRequestHeader = true;
+</script>
+<!-- <script src="/bower_components/ng-file-upload/angular-file-upload-shim.js"></script> -->
+<script src="/app/components/js/angular-file-upload-shim.js"></script>
 
 <!-- bower:js -->
 <!-- endinject -->

@@ -42,9 +42,14 @@
 				</div>
 			</div>
 			<div style="float: left">
-				<div ng-file-drop ng-file-select ng-model="files" class="drop-box" 
-			        drag-over-class="dragover" ng-multiple="true" allow-dir="false"
-			        accept="'image/*'" ng-show="!orgInfo.main[IMAGE_DATA][0].href">Drop image here</div>
+				<div ngf-select="" ngf-drop="" ng-model="files" ng-model-rejected="rejFiles" 
+						ngf-multiple="multiple" ngf-accept="accept" accept="image/*" ngf-disabled="disabled" 
+						ngf-capture="capture" ngf-drag-over-class="{accept:'dragover', reject:'dragover-err', delay:100}" 
+						ngf-min-size="minSize" ngf-max-size="maxSize" 
+						class="drop-box ng-pristine ng-valid" ngf-drop-available="dropAvailable"
+						ng-show="!orgInfo.main[IMAGE_DATA][0].href">
+						Drop image here
+				</div>
 				<div class="col-sm-8" ng-show="orgInfo.main[IMAGE_DATA][0].href">
 					<img ng-src="{{orgInfo.main[IMAGE_DATA][0].href}}" style="max-height: 70px; max-width: 100px;"/>
 				</div>
