@@ -3,7 +3,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var crypto = require('crypto');
-var authTypes = ['github', 'twitter', 'facebook', 'google'];
 
 var OrganizationSchema = new Schema({
 
@@ -16,6 +15,11 @@ var OrganizationSchema = new Schema({
 	 * Image(s).
 	 */
 	"image-data": [{
+		"_id": false,
+		"id": false,
+		/**
+		 * Image HREF.
+		 */
 		href: String
 	}],
 	/**

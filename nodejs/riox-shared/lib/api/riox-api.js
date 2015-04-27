@@ -397,7 +397,7 @@ sh.save.app = function(app, callback, errorCallback) {
 	return callPUT(servicesConfig.services.apps.url, app, callback, errorCallback);
 };
 sh.save.organization = function(organization, callback, errorCallback) {
-	return callPUT(servicesConfig.services.organizations.url, organization, callback, errorCallback);
+	return callPUT(servicesConfig.services.organizations.url + "/" + organization.id, organization, callback, errorCallback);
 };
 sh.save.thing = function(thing, callback, errorCallback) {
 	return callPUT(servicesConfig.services.things.url, thing, callback, errorCallback);

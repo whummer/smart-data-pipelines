@@ -6,6 +6,9 @@ function consumerWizardCtrl($scope) {
 		alert('Wizard completed');
 	};
 	$scope.trim = window.trim;
+	
+	/* constants */
+	var STATUS_REQUESTED = "REQUESTED";
 
 	/* load streams */
 	var loadStreams = function() {
@@ -40,16 +43,16 @@ function consumerWizardCtrl($scope) {
 	$scope.requestAccess = function () {
 		if (!$scope.formData.streamAccess || !$scope.formData.streamAccess.status) {
 			var streamAccess = {
-				status: "requested",
+				status: STATUS_REQUESTED,
 				streamId: $scope.formData.selectedStream.id
 			};
 			riox.save.access(streamAccess, function(streamAccess) {
 				$scope.formData.streamAccess = streamAccess;
-				$scope.formData.streamAccess.status = "requested";
+				$scope.formData.streamAccess.status = STATUS_REQUESTED;
 				$scope.loadAccessStatus();
 			});
 		} else {
-			$scope.formData.streamAccess.status = "requested";
+			$scope.formData.streamAccess.status = STATUS_REQUESTED;
 		}
 	};
 

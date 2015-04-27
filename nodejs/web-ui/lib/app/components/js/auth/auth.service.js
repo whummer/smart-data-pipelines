@@ -120,6 +120,9 @@ angular.module('rioxApp')
        * @return {Object} user
        */
       getCurrentUser: function() {
+    	if(currentUser._id && !currentUser.id) {
+    		currentUser.id = currentUser._id;
+    	}
         return currentUser;
       },
 

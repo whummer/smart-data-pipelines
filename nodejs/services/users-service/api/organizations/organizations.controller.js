@@ -1,9 +1,15 @@
 'use strict';
 
 var Organization = require('./organization.model');
+var Membership = require('./membership.model');
 var auth = require('riox-services-base/lib/auth/auth.service');
 var config = require('../../config/environment');
 var jwt = require('jsonwebtoken');
+
+/* constants */
+var CREATOR_ID = "creator-id";
+var NAME = "name";
+var ORGANIZATION_ID = "organization-id";
 
 var validationError = function(res, err) {
 	return res.json(422, err);
@@ -24,7 +30,7 @@ exports.index = function(req, res) {
 exports.create = function(req, res, next) {
 	var user = auth.getCurrentUser(req);
 	var newOrg = req.body;
-	newOrg["creator-id"] = user.id;
+	newOrg[CREATOR_ID] = user.id;
 	var newObj = new Organization(newOrg);
 	newObj.save(function(err, obj) {
 		if (err)
@@ -48,7 +54,7 @@ exports.update = function(req, res) {
 			return next(err);
 		if (!list || !list.length)
 			return res.send(404);
-		if (list[0]["creator-id"] != user.id)
+		if (list[0][CREATOR_ID] != user.id)
 			return res.send(401);
 		obj.save(orgId, function(err, obj) {
 			if (err)
@@ -58,37 +64,48 @@ exports.update = function(req, res) {
 	});
 };
 
-exports.getOwn = function(req, res, next) {
+exports.getOwnAll = function(req, res, next) {
 	var user = auth.getCurrentUser(req);
-	var query = {"creator-id": user.id};
-	Organization.find(query, function(err, obj) {
-		if (err)
-			return next(err);
-		if (obj.length) {
-			res.json(obj[0]);
-		} else {
-			var newObj = new Organization({
-				"name": "Default Organization",
-				"creator-id": user.id
+	findOrCreateDefault(user.id, function(org) {
+		var result = [org];
+		var query = {member: user.id};
+		Membership.find(query, function(err, list) {
+			if (err)
+				return next(err);
+			var ids = [];
+			list.forEach(function(el) {
+				ids.push(el[ORGANIZATION_ID]);
 			});
-			newObj.save(function(err, obj) {
+			query = {id: {$in: ids} };
+			Organization.find(query, function(err, list) {
 				if (err)
-					return validationError(res, err);
-				res.json(obj);
+					return next(err);
+				list.forEach(function(el) {
+					result.push(el);
+				});
+				res.json(result);
 			});
-		}
+		});
+	}, function(error) {
+		return next(error);
+	});
+}
+
+exports.getOwnDefault = function(req, res, next) {
+	var user = auth.getCurrentUser(req);
+	findOrCreateDefault(user.id, function(org) {
+		res.json(org);
+	}, function(error) {
+		return next(error);
 	});
 };
 
 exports.show = function(req, res, next) {
 	var id = req.params.id;
-	var query = {_id: id};
-	Organization.find(query, function(err, obj) {
-		if (err)
-			return next(err);
-		if (!obj || !obj.length)
-			return res.send(401);
-		res.json(obj[0]);
+	findSingle(id, function(org) {
+		res.json(org);
+	}, function(error) {
+		next(error);
 	});
 };
 
@@ -99,3 +116,93 @@ exports.destroy = function(req, res) {
 		return res.send(204);
 	});
 };
+
+exports.updateMembership = function(req, res, next) {
+	var mem = req.body;
+	auth.getCurrentUserDetails(req, function(user) {
+		var query = {_id: mem.id};
+		Membership.find(query, function(err, list) {
+			if (err)
+				return next(err);
+			if (!list || !list.length) {
+				return next(404);
+			}
+			var existingMem = list[0];
+			/* check permissions */
+			if(existingMem.member != user.email &&
+					existingMem.member != user.id &&
+					existingMem[CREATOR_ID] != user.id) {
+				return next(401);
+			}
+			/* copy info to existing entity */
+			existingMem.status = mem.status;
+
+			existingMem.save(function(err, updated) {
+				if (err)
+					return next(err);
+				res.json(updated);
+			});
+		});
+	});
+};
+
+exports.invite = function(req, res, next) {
+	var user = auth.getCurrentUser(req);
+	var inv = req.body;
+	inv[CREATOR_ID] = user.id;
+	/* check for existing invite */
+	var query = {};
+	query[ORGANIZATION_ID] = inv[ORGANIZATION_ID];
+	query["invitee"] = inv["invitee"];
+	query[CREATOR_ID] =inv[CREATOR_ID];
+	Membership.find(query, function(err, list) {
+		if (err)
+			return next(err);
+		if (!list || !list.length) {
+			/* save new */
+			var newMem = new Membership(inv);
+			newMem.status = Membership.STATUS_PENDING;
+			newMem.save(function(err, result) {
+				res.json(result);
+			});
+		} else {
+			/* return existing */
+			var mem = list[0];
+			res.json(mem);
+		}
+	});
+};
+
+/* HELPER METHODS */
+
+var findSingle = function(id, callback, errorCallback) {
+	var query = {_id: id};
+	Organization.find(query, function(err, obj) {
+		if (err)
+			return errorCallback(err);
+		if (!obj || !obj.length)
+			return errorCallback(404);
+		callback(obj[0]);
+	});
+}
+
+var findOrCreateDefault = function(userId, callback, errorCallback) {
+	var query = {CREATOR_ID: userId};
+	Organization.find(query, function(err, obj) {
+		if (err)
+			return errorCallback(err);
+		if (obj.length) {
+			callback(obj[0]);
+		} else {
+			var newObj = {};
+			newObj[NAME] = "Default Organization";
+			newObj[CREATOR_ID] = userId;
+			var newObj = new Organization(newObj);
+			newObj.save(function(err, obj) {
+				if (err)
+					return errorCallback(err);
+				callback(obj);
+			});
+		}
+	});
+}

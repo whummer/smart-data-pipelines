@@ -30,8 +30,34 @@ angular.module('rioxApp')
     	}
     };
 
-	$scope.checkAuthTimeout = function() {
-		
+    /* common util methods */
+    $scope.range = function(from, to, step) {
+		if(!step) step = 1;
+		var result = [];
+		for(var i = from; i <= to; i += step) {
+			result.push(i);
+		}
+		return result;
 	};
-    
+	$scope.dateFormat = "yyyy-MM-dd hh:mm:ss";
+	$scope.formatTime = $scope.formatTime = function(timestamp) {
+		if(!timestamp) {
+			return null;
+		}
+		return formatDate(timestamp);
+	};
+	$scope.formatCoords = function(loc) {
+		if(!loc)
+			return "";
+		var result = loc.latitude.toFixed(4) +
+			"," + loc.longitude.toFixed(4);
+		return result;
+	};
+	$scope.formatNumber = function(number, numDecimals) {
+		if(typeof numDecimals == "undefined") {
+			numDecimals = 2;
+		}
+		return number.toFixed(numDecimals);
+	};
+
   });
