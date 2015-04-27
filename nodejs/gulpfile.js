@@ -51,7 +51,6 @@ function cleanBowerDir(dir) {
 	cleanDir(dir + "/bower_components");
 }
 function cleanDir(dir) {
-	console.log(dir);
 	if(fs.existsSync(dir)) {
 		console.log("Cleaning directory", dir);
 		gulp.src(dir, {read: false}).pipe(clean());
