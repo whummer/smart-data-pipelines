@@ -8,7 +8,7 @@
 process.env.NODE_ENV = process.env.NODE_ENV || "development";
 
 // configure port for microservices
-process.env.SERVICE_PORT = process.env.SERVICE_PORT || 8086;
+process.env.SERVICE_PORT = process.env.SERVICE_PORT || 8087;
 
 // load config
 var config = require("./config/environment");

@@ -41,6 +41,21 @@ describe('/organizations', function() {
 		});
 	});
 
+	it("does not create the default organization twice", function(done) {
+		test.user1.get(app.organizations.url + "/default").end(function(err, res) {
+			assert.ifError(err);
+			assert.equal(res.status, status.OK);
+			var org1 = res.body;
+			test.user1.get(app.organizations.url + "/default").end(function(err, res) {
+				assert.ifError(err);
+				assert.equal(res.status, status.OK);
+				var org2 = res.body;
+				assert.equal(org1.id, org2.id);
+				done();
+			});
+		});
+	});
+
 	it("retrieves a user's organizations", function(done) {
 		test.user1.get(app.organizations.url + "/").end(function(err, res) {
 			assert.ifError(err);

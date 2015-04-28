@@ -6,6 +6,13 @@ var appConfig = {
 	bowerRootPath: "/bower_components",
 	services: {
 		core: { url: "http://localhost:8080/api/v1" },
+
+		users: { url: "http://localhost:8084/api/v1/users" },
+		organizations: { url: "http://localhost:8084/api/v1/organizations" },
+		streams: { url: "http://localhost:8085/api/v1/streams" },
+		access: { url: "http://localhost:8085/api/v1/access" },
+		files: { url: "http://localhost:8087/api/v1/files" },
+
 		apps: { url: "http://localhost:8080/api/v1/apps" },
 		thingTypes: { url: "http://localhost:8080/api/v1/catalog/thing-types" },
 		manufacturers: { url: "http://localhost:8080/api/v1/catalog/manufacturers" },
@@ -20,14 +27,8 @@ var appConfig = {
 		simulationTypes: { url: "http://localhost:8080/api/v1/simulations/types" },
 		ratings: { url: "http://localhost:8080/api/v1/ratings" },
 		stats: { url: "http://localhost:8080/api/v1/stats" },
-		files: { url: "http://localhost:8080/api/v1/files" },
 		billing: { url: "http://localhost:8080/api/v1/billing" },
 		semanticTypes: { url: "http://localhost:8080/api/v1/semantic-types" },
-
-		users: { url: "http://localhost:8084/api/v1/users" },
-		organizations: { url: "http://localhost:8084/api/v1/organizations" },
-		streams: { url: "http://localhost:8085/api/v1/streams" },
-		access: { url: "http://localhost:8085/api/v1/access" },
 
 		websocket: { url: "ws://platform.riots.io:8085/websocket" }
 	},

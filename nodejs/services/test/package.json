@@ -15,7 +15,10 @@
     "mime-types": "2.0.10",
     "async": "0.9.0",
     "http-status": "0.1.8",
-    "mongoose": "^4.0.2"
+    "mongoose": "^4.0.2",
+    "tmp": "0.0.25",
+    "request": "2.55.0",
+    "http-status": "0.1.8"
   },
   "engines": {
     "node": ">=0.10.0"
