@@ -1,7 +1,7 @@
 
 var app = angular.module("rioxApp");
 app.controller('OrganizationController',
-		function ($scope, Upload) {
+		function ($scope, Upload, growl) {
 
 	$scope.CREATOR_ID = CREATOR_ID;
 	$scope.IMAGE_DATA = IMAGE_DATA;
@@ -18,7 +18,7 @@ app.controller('OrganizationController',
 		delete main.imageUrl;
 		main[IMAGE_DATA] = [ { href: url } ];
 		riots.save.organization(main, function() {
-			$scope.growlInfo("Organization details saved successfully.");
+			growl.success("Organization details saved successfully.");
 			loadOrgs();
 		});
 	}

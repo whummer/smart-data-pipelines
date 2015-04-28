@@ -51,6 +51,10 @@ var initClientProxy = function(proxy) {
 		return superagent.put(url).set("authorization",
 				proxy.tokenHeaders.authorization);
 	}
+	proxy.head = function(url) {
+		return superagent.head(url).set("authorization",
+				proxy.tokenHeaders.authorization);
+	}
 }
 
 app.auth = function(email, pass, callback) {

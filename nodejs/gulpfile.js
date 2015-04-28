@@ -8,10 +8,12 @@ var gulpFiles = {
 	ui : require('./web-ui/web-ui-gulpfile'),
 	streamService : require('./services/streams-service/streams-service-gulpfile'),
 	usersService : require('./services/users-service/users-service-gulpfile'),
-  analyticsService : require('./services/analytics-service/analytics-service-gulpfile')
+	analyticsService : require('./services/analytics-service/analytics-service-gulpfile'),
+	filesService : require('./services/files-service/files-service-gulpfile')
 }
 
 gulp.task('riox', 'start riox nodejs infrastructure', function() {
-	runSequence('ui:livereload', 'services:streams:serve', 'services:users:serve', 'services:analytics:serve');
+	runSequence('ui:livereload', 'services:streams:serve', 'services:users:serve', 
+			'services:analytics:serve', 'services:files:serve');
 	//runSequence('ui:serve:nolivereload', 'services:streams:serve', 'services:users:serve');
 });

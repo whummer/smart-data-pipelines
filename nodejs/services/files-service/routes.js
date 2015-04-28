@@ -9,8 +9,7 @@ var errors = require('riox-services-base/lib/errors');
 module.exports = function(app) {
 
   /* API routes */
-  app.use('/api/v1/streams', require('./api/streams'));
-  app.use('/api/v1/access', require('./api/access'));
+  app.use('/api/v1/files', require('./api/files'));
 
   // All undefined asset or api routes should return a 404
   app.route('/:url(api|auth|components|app|bower_components|assets)/*')

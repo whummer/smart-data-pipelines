@@ -7,6 +7,10 @@
   },
   "devDependencies": {
     "superagent": "1.2.0",
+    "tmp": "0.0.25",
+    "request": "2.55.0",
+    "uploader": "0.0.4",
+    "fileupload": "0.3.0",
     "http-status": "0.1.8"
   },
   "engines": {

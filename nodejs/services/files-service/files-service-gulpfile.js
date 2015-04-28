@@ -1,5 +1,5 @@
 /**
- * Created by omoser on 16/04/15.
+ * Created by whummer
  */
 
 var gulp = require('gulp'),
@@ -19,7 +19,7 @@ var gulp = require('gulp'),
 // build path configuration
 //
 var LIB_DIR = 'services/lib';
-var BASE_DIR = 'services/streams-service';
+var BASE_DIR = 'services/files-service';
 var BUILD_DIR = BASE_DIR + '/build';
 var BUILD_DIR_TEST = BUILD_DIR + '/test';
 var BUILD_DIR_PROD = BUILD_DIR + '/production';
@@ -35,15 +35,15 @@ var dockerSettings = {
 //
 // clean output directories
 //
-gulp.task('services:streams:clean', 'remove build directories', function () {
+gulp.task('services:files:clean', 'remove build directories', function () {
 	return gulp.src(BUILD_DIR, {read: false}).pipe(clean());
 });
 
 //
 // Build tasks for TEST and PROD
 //
-gulp.task('services:streams:build:test', 'copies streams-service sources to TEST build dir', function () {
-	runSequence('services:streams:copy:src:test', 'services:streams:copy:lib:test');
+gulp.task('services:files:build:test', 'copies files-service sources to TEST build dir', function () {
+	runSequence('services:files:copy:src:test', 'services:files:copy:lib:test');
 });
 
 function copySrc(target) {
@@ -55,16 +55,16 @@ function copyLib(target) {
 	return gulp.src([LIB_DIR + '/**/*'])
 			.pipe(gulp.dest(target + '/lib'));
 }
-gulp.task('services:streams:copy:src:test', 'copies stream service sources to TEST build dir', function () {
+gulp.task('services:files:copy:src:test', 'copies stream service sources to TEST build dir', function () {
 	copySrc(BUILD_DIR_TEST);
 });
 
-gulp.task('services:streams:copy:lib:test', 'copies stream service libraries to TEST build dir', function () {
+gulp.task('services:files:copy:lib:test', 'copies stream service libraries to TEST build dir', function () {
 	copyLib(BUILD_DIR_TEST);
 });
 
 
-gulp.task('services:streams:copy:prod', 'copies streams-service sources to PRODUCTION build dir', function () {
+gulp.task('services:files:copy:prod', 'copies files-service sources to PRODUCTION build dir', function () {
 	return gulp.src([BASE_DIR + '/**', '!' + BASE_DIR + "/build"])
 			.pipe(gulp.dest(BUILD_DIR_PROD));
 });
@@ -72,7 +72,7 @@ gulp.task('services:streams:copy:prod', 'copies streams-service sources to PRODU
 //
 // run service using nodemon
 //
-gulp.task('services:streams:serve', 'serve the streams-service  using nodemon', function () {
+gulp.task('services:files:serve', 'serve the files-service  using nodemon', function () {
 	process.env.PORT = dockerSettings.port;
 	return cp.spawn('nodemon',
 			['app.js'],
@@ -89,25 +89,25 @@ gulp.task('services:streams:serve', 'serve the streams-service  using nodemon', 
 //
 // Docker tasks
 //
-gulp.task('services:streams:docker:build:test', 'build a Docker image from streams-service TEST build', function () {
+gulp.task('services:files:docker:build:test', 'build a Docker image from files-service TEST build', function () {
 	util.log(util.colors.magenta("Building Docker image for TEST..."));
-	runSequence('services:streams:build:test', 'services:streams:docker:build:test:dockerfile', 'services:streams:docker:push', function () {
+	runSequence('services:files:build:test', 'services:files:docker:build:test:dockerfile', 'services:files:docker:push', function () {
 		util.log(util.colors.magenta("Built Docker image for TEST. Enjoy."));
 	});
 });
 
-gulp.task('services:streams:docker:build:prod', 'build a Docker image from streams-service PRODUCTION build', function () {
+gulp.task('services:files:docker:build:prod', 'build a Docker image from files-service PRODUCTION build', function () {
 	util.log(util.colors.magenta("Building Docker image for PRODUCTION..."));
-	runSequence('services:streams:build:prod', 'services:streams:docker:build:prod:dockerfile', 'services:streams:docker:push', function () {
+	runSequence('services:files:build:prod', 'services:files:docker:build:prod:dockerfile', 'services:files:docker:push', function () {
 		util.log(util.colors.magenta("Built Docker image for PRODUCTION. Enjoy."));
 	});
 });
 
-gulp.task('services:streams:docker:build:test:dockerfile', 'prepare a Dockerfile for streams service  (TEST)', function () {
+gulp.task('services:files:docker:build:test:dockerfile', 'prepare a Dockerfile for files service  (TEST)', function () {
 	return prepareDockerfile('test');
 })
 
-gulp.task('services:streams:docker:build:prod:dockerfile', 'prepare a Dockerfile for streams service (PRODUCTION)', function () {
+gulp.task('services:files:docker:build:prod:dockerfile', 'prepare a Dockerfile for files service (PRODUCTION)', function () {
 	return prepareDockerfile('production');
 });
 
@@ -121,7 +121,7 @@ function prepareDockerfile(env) {
 			.pipe(gulp.dest(dockerfileDest));
 }
 
-gulp.task('services:streams:docker:push', function () {
+gulp.task('services:files:docker:push', function () {
 	var _cwd = path.resolve(BASE_DIR + '/../..');
 	var absoluteBuildDir = path.resolve(BUILD_DIR_TEST); // todo make for PROD too
 	util.log('Executing docker build-push in dir ', _cwd);
