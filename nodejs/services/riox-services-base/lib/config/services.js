@@ -13,7 +13,6 @@ var appConfig = {
 		things: { url: "http://localhost:8080/api/v1/things" },
 		thingData: { url: "http://localhost:8080/api/v1/things" },
 		triggers: { url: "http://localhost:8080/api/v1/triggers" },
-		streamsinks: { url: "http://localhost:8080/api/v1/stream-sinks" },
 		simulations: { url: "http://localhost:8080/api/v1/simulations" },
 		simulationProps: { url: "http://localhost:8080/api/v1/simulations/properties" },
 		simulationDevices: { url: "http://localhost:8080/api/v1/simulations/devices" },
@@ -27,6 +26,9 @@ var appConfig = {
 		users: { url: "http://localhost:8084/api/v1/users" },
 		organizations: { url: "http://localhost:8084/api/v1/organizations" },
 		streams: { url: "http://localhost:8085/api/v1/streams" },
+		streamsources: { url: "http://localhost:8085/api/v1/streams/sources" },
+		streamsinks: { url: "http://localhost:8085/api/v1/streams/sinks" },
+		streamprocessors: { url: "http://localhost:8085/api/v1/streams/processors" },
 		access: { url: "http://localhost:8085/api/v1/access" },
 
 		websocket: { url: "ws://platform.riots.io:8085/websocket" }

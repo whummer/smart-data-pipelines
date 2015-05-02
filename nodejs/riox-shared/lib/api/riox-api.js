@@ -70,10 +70,10 @@ sh.signin = function(userInfo, callback, errorCallback) {
 };
 sh.auth = function(options, callback, errorCallback) {
 	var authToken = sh.authToken = {};
-	authToken.userId = (options && options.RIOX_USER_ID) ? options.RIOX_USER_ID : window.RIOX_USER_ID;
-	authToken.appKey = (options && options.RIOX_APP_KEY) ? options.RIOX_APP_KEY : window.RIOX_APP_KEY;
-	authToken.network = (options && options.RIOX_AUTH_NETWORK) ? options.RIOX_AUTH_NETWORK : window.RIOX_AUTH_NETWORK;
-	authToken.access_token = (options && options.RIOX_AUTH_TOKEN) ? options.RIOX_AUTH_TOKEN : window.RIOX_AUTH_TOKEN;
+	authToken.userId = (options && options.RIOX_USER_ID) ? options.RIOX_USER_ID : (typeof window != "undefined") ? window.RIOX_USER_ID : undefined;
+	authToken.appKey = (options && options.RIOX_APP_KEY) ? options.RIOX_APP_KEY : (typeof window != "undefined") ? window.RIOX_APP_KEY : undefined;
+	authToken.network = (options && options.RIOX_AUTH_NETWORK) ? options.RIOX_AUTH_NETWORK : (typeof window != "undefined") ? window.RIOX_AUTH_NETWORK : undefined;
+	authToken.access_token = (options && options.RIOX_AUTH_TOKEN) ? options.RIOX_AUTH_TOKEN : (typeof window != "undefined") ? window.RIOX_AUTH_TOKEN : undefined;
 	assertAuth();
 	var __defaultHeaders = {
 		"Content-Type": "application/json",
@@ -177,20 +177,24 @@ sh.thing = sh.get.thing = function(id, callback, errorCallback) {
 sh.triggers = sh.get.triggers = function(callback, errorCallback) {
 	return callGET(servicesConfig.services.triggers.url, callback, errorCallback);
 };
-sh.streams = sh.get.streams = function(searchOpts, callback, errorCallback) {
-	var url = servicesConfig.services.streams.url;
+
+sh.stream = {};
+sh.streams = {};
+sh.get.streams = {};
+sh.streams.sources = sh.get.streams.sources = function(searchOpts, callback, errorCallback) {
+	var url = servicesConfig.services.streams.url + "/sources";
 	if(searchOpts && typeof searchOpts.query != "undefined") {
 		url += "/query";
 		return callPOST(url, searchOpts, callback, errorCallback);
 	}
 	return callGET(url, callback, errorCallback);
 };
-sh.stream = sh.get.stream = function(id, callback, errorCallback) {
+sh.streams.source = sh.get.streams.source = function(id, callback, errorCallback) {
 	if(!id) {
 		if(callback) callback(null);
 		return null;
 	}
-	return callGET(servicesConfig.services.streams.url + "/" + id, callback, errorCallback);
+	return callGET(servicesConfig.services.streams.url + "/sources/" + id, callback, errorCallback);
 };
 sh.streams.consumed = function(searchOpts, callback, errorCallback) {
 	var url = servicesConfig.services.streams.url + "/consumed";
@@ -349,7 +353,7 @@ var buildQueryURL = function(baseURL, opts) {
 
 sh.add = {};
 
-sh.add.thingType = function(thingType, callback, errorCallback) {
+  sh.add.thingType = function(thingType, callback, errorCallback) {
 	return callPOST(servicesConfig.services.thingTypes.url, thingType, callback, errorCallback);
 };
 sh.add.app = function(app, callback, errorCallback) {
@@ -367,14 +371,8 @@ sh.add.trigger = function(trigger, callback, errorCallback) {
 	}
 	return callPOST(servicesConfig.services.triggers.url, trigger, callback, errorCallback);
 };
-sh.add.stream = function(stream, callback, errorCallback) {
-	return callPOST(servicesConfig.services.streams.url, stream, callback, errorCallback);
-};
 sh.add.organization = function(organization, callback, errorCallback) {
 	return callPOST(servicesConfig.services.organizations.url, organization, callback, errorCallback);
-};
-sh.add.sink = function(sink, callback, errorCallback) {
-	return callPOST(servicesConfig.services.streamsinks.url, sink, callback, errorCallback);
 };
 sh.add.data = function(opts, dataItem, callback, errorCallback) {
 	var url = servicesConfig.services.thingData.url + "/" +
@@ -382,6 +380,21 @@ sh.add.data = function(opts, dataItem, callback, errorCallback) {
                       opts[PROPERTY_NAME];
 	return callPOST(url, dataItem, callback, errorCallback);
 };
+
+sh.add.streams = {};
+sh.add.stream = function(stream, callback, errorCallback) {
+	return callPOST(servicesConfig.services.streams.url, stream, callback, errorCallback);
+};
+sh.add.streams.source = function(source, callback, errorCallback) {
+	return callPOST(servicesConfig.services.streamsources.url, source, callback, errorCallback);
+};
+sh.add.streams.sink = function(sink, callback, errorCallback) {
+	return callPOST(servicesConfig.services.streamsinks.url, sink, callback, errorCallback);
+};
+sh.add.streams.processor = function(processor, callback, errorCallback) {
+	return callPOST(servicesConfig.services.streamprocessors.url, processor, callback, errorCallback);
+};
+
 
 /* methods for PUTting data */
 
@@ -408,8 +421,10 @@ sh.save.simulationType = function(simType, callback, errorCallback) {
 sh.save.trigger = function(trigger, callback, errorCallback) {
 	return callPUT(servicesConfig.services.triggers.url, trigger, callback, errorCallback);
 };
-sh.save.stream = function(stream, callback, errorCallback) {
-	return callPUT(servicesConfig.services.streams.url, stream, callback, errorCallback);
+
+sh.save.streams = {};
+sh.save.streams.source = function(stream, callback, errorCallback) {
+	return callPUT(servicesConfig.services.streams.url + "/sources", stream, callback, errorCallback);
 };
 sh.save.sink = function(sink, callback, errorCallback) {
 	return callPUT(servicesConfig.services.streamsinks.url, sink, callback, errorCallback);
@@ -506,6 +521,12 @@ sh.stream.restrictions.save = function(restr, callback, errorCallback) {
 	var url = servicesConfig.services.streams.url + "/" + restr[STREAM_ID] + "/restrictions";
 	return callPUT(url, restr, callback, errorCallback);
 };
+sh.stream.apply = function(req, callback, errorCallback) {
+	var id = req[STREAM_ID];
+	if(!id) throw "Invalid stream id.";
+	var url = servicesConfig.services.streams.url + "/" + id + "/apply";
+	return callPOST(url, req, callback, errorCallback);
+};
 
 
 /* methods for simulation control */
@@ -578,7 +599,7 @@ var callPOSTorPUT = function(invokeFunc, url, body, options, errorCallback) {
 	if(typeof body == "object") {
 		body = JSON.stringify(body);
 	}
-	var callback = options.callback ? callback : options;
+	var callback = options.callback ? options.callback : options;
 	errorCallback = wrapDefaultErrorCallback(errorCallback);
 	invokeFunc(options, url, body,
 		function(data, status, headers, config) {

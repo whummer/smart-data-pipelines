@@ -12,6 +12,7 @@ process.env.SERVICE_PORT = process.env.SERVICE_PORT || 8084;
 
 // load config
 var config = require("./config/environment");
+global.config = require("riox-services-base/lib/config/merge")(global.config, config);
 
 // require service starter
 var starter = require("riox-services-base/lib/service.starter");

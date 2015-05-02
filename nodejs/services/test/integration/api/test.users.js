@@ -4,6 +4,7 @@ var assert = require('assert');
 var superagent = require('superagent');
 var status = require('http-status');
 var test = require('../util/testutil');
+var starters = require('../util/service.starters');
 var riox = require('riox-shared/lib/api/riox-api');
 
 var app = {};
@@ -11,11 +12,8 @@ var app = {};
 describe('/users', function() {
 
 	before(function(done) {
-		/* start streams service */
-		app.users = { port : 3001 };
-		app.users.url = "http://localhost:" + app.users.port + "/api/v1/users";
-		process.env.SERVICE_PORT = app.users.port;
-		app.users.server = require('../../../users-service/app.js').start();
+		/* start service(s) */
+		app.users = starters.startUsersService();
 		/* get auth token */
 		test.authDefault(done);
 	});

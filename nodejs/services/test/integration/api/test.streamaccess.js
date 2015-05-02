@@ -4,21 +4,16 @@ var assert = require('assert');
 var superagent = require('superagent');
 var status = require('http-status');
 var test = require('../util/testutil');
+var starters = require('../util/service.starters');
 
 var app = {};
 
 describe('/stream/access', function() {
 
 	before(function(done) {
-		this.timeout(5000);
-		/* start streams/access service */
-		app.access = { port : 3000 };
-		app.streams = { port : 3000 };
-		process.env.SERVICE_PORT = app.access.port;
-		app.access.server = require('../../../streams-service/app.js').start();
-		/* set URLs */
-		app.access.url = global.servicesConfig.services.access.url = "http://localhost:" + app.access.port + "/api/v1/access";
-		app.streams.url = global.servicesConfig.services.streams.url = "http://localhost:" + app.streams.port + "/api/v1/streams";
+		/* start service(s) */
+		app.streams = starters.startStreamsService();
+		app.access = starters.startStreamsAccessService();
 		/* get auth token */
 		test.authDefault(done);
 	});

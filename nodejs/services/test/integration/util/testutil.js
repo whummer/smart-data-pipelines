@@ -75,8 +75,20 @@ var getUserId = function(userObj, callback) {
 			assert.equal(res.status, status.OK);
 			userObj.user = res.body;
 			callback(res);
-		});
-}
+		}
+	);
+};
+
+var getUserOrgs = function(userObj, callback) {
+	userObj.get(services.organizations.url + "/default").end(
+		function(err, res) {
+			assert.ifError(err);
+			assert.equal(res.status, status.OK);
+			userObj.orgs = { default: res.body };
+			callback(res);
+		}
+	);
+};
 
 app.authDefault = function(callback) {
 	if(app.user1 && app.user2) {
@@ -102,7 +114,11 @@ app.authDefault = function(callback) {
 
 			getUserId(app.user1, function() {
 				getUserId(app.user2, function() {
-					if(callback) callback();
+					getUserOrgs(app.user1, function() {
+						getUserOrgs(app.user2, function() {
+							if(callback) callback();
+						});
+					});
 				});
 			});
 

@@ -4,6 +4,7 @@ var assert = require('assert');
 var superagent = require('superagent');
 var status = require('http-status');
 var test = require('../util/testutil');
+var starters = require('../util/service.starters');
 
 var app = {};
 /* constants */
@@ -13,11 +14,8 @@ var STATUS_CONFIRMED = "CONFIRMED";
 describe('/organizations', function() {
 
 	before(function(done) {
-		/* start streams service */
-		app.organizations = { port : 3001 };
-		app.organizations.url = "http://localhost:" + app.organizations.port + "/api/v1/organizations";
-		process.env.SERVICE_PORT = app.organizations.port;
-		app.organizations.server = require('../../../users-service/app.js').start();
+		/* start service(s) */
+		app.organizations = starters.startOrganizationsService();
 		/* get auth token */
 		test.authDefault(done);
 	});

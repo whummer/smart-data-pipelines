@@ -17,4 +17,7 @@ router.post('/', controller.create);
 router.use('/auth', require('./auth'));
 router.post('/auth', controller.auth);
 
+/* make sure we have the user account for internal calls available */
+controller.insertInternalCallUser();
+
 module.exports = router;

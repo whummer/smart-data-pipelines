@@ -2,7 +2,8 @@
 
 var User = require('./user.model');
 var passport = require('passport');
-var config = require('riox-services-base/lib/config/environment');
+var mongoose = require('mongoose');
+var config = require('../../config/environment');
 var jwt = require('jsonwebtoken');
 var riox = require('riox-shared/lib/api/riox-api');
 var auth = require('riox-services-base/lib/auth/auth.service');
@@ -38,10 +39,20 @@ exports.create = function (req, res, next) {
   newUser.role = 'user';
   newUser.save(function(err, user) {
     if (err) return validationError(res, err);
-    var token = jwt.sign({_id: user._id }, config.secrets.session, { expiresInMinutes: 60*5 });
+
+    var token = auth.signToken(user._id);
+    var headers = auth.getHeaderFromToken(token);
+
     var org = {name: "Default Organization"};
-    riox.add.organization(org, function(org) {
-        res.json({ token: token });
+    //var token = auth.getInternalCallToken();
+    riox.add.organization(org, {
+    	callback: function(org) {
+    		res.json({ token: token });
+    	},
+    	headers: headers
+    },
+    function(error) {
+    	res.json(500, error);
     });
   });
 };
@@ -100,7 +111,7 @@ exports.me = function(req, res, next) {
     _id: userId
   }, '-salt -hashedPassword', function(err, user) { // don't ever give out the password or salt
     if (err) return next(err);
-    if (!user) return res.send(401);
+    if (!user) return res.send(404);
     res.json(user);
   });
 };
@@ -133,6 +144,28 @@ exports.saveMe = function(req, res, next) {
 	    });
 	});
 };
+
+
+exports.insertInternalCallUser = function() {
+	var id = mongoose.Types.ObjectId(auth.INTERNAL_USER_ID);
+	var query = { _id: id };
+	User.findOne(query, function(err, user) {
+	    if (err) return next(err);
+	    if (!user)  {
+	    	console.log("Creating internal/admin user");
+	    	var newUser = new User({
+	    		_id: id,
+	    		name: "root",
+	    		password: "does not matter because user is deactivated",
+	    		deactivated: true,
+	    		role: "internal"
+	    	});
+	    	newUser.save(function(err, userResult) {
+		    	if(err) console.log("ERROR: Could not save user!"); // TODO handle this error
+		    });
+	    };
+	});
+}
 
 /**
  * Authentication callback
