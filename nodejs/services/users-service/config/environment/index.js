@@ -34,5 +34,7 @@ var config = {
 
 };
 
-
-module.exports = merge(commonConfig, config);
+/* load env. config */
+var envConfig = require("./" + process.env.NODE_ENV + ".js");
+/* merge configs */
+module.exports = merge(merge(commonConfig, config), envConfig);
