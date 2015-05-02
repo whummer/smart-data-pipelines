@@ -59,7 +59,8 @@ exports.applyByStream = function(stream, callback, errorCallback) {
 		var port = 9001;
 		var sourceTopic = "producer-" + stream[SOURCE_ID];
 		var sinkTopic = "consumer-" + stream[SINK_ID];
-		var streamDefinition = "k1: kafka --zkconnect=" + cfg.zookeeper + ":2181 --topic=" + sourceTopic + 
+		var mimeType = "text/plain";
+		var streamDefinition = "k1: kafka --zkconnect=" + cfg.zookeeper + ":2181 --topic=" + sourceTopic + " --outputType=" + mimeType +
 				" | transform | " +
 
 				// TODO add analytics processors here

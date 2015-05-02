@@ -97,8 +97,11 @@ var applyByStreamSource = exports.applyByStreamSource = function(source, callbac
 		// create the SpringXD stream
 		var port = 9000;
 		var path = "/" + source[ORGANIZATION_ID] + "/" + source.id;
+//		var mimeType = "application/x-xd-tuple";
+//		var mimeType = "application/json";
+//		var mimeType = "text/plain";
 		var streamDefinition = "riox-http --port=" + port + " --path=" + path + " | " +
-			"kafka --topic=" + topicName + " --brokerList=" + cfg.kafka + ":9092";
+			"kafka --topic=" + topicName + " --brokerList=" + cfg.kafka + ":9092"; // + " --inputType=" + mimeType;
 		//var streamId = streamSource.name + '_' + exchangeId;
 		springxd.createStream(xdStreamId, streamDefinition, function(stream) {
 			console.log("stream " + xdStreamId + " created!");

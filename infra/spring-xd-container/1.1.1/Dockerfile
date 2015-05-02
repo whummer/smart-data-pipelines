@@ -9,6 +9,6 @@ USER springxd
 EXPOSE 9000
 EXPOSE 9001
 EXPOSE 9002
-ENV JAVA_OPTS="-XX:PermSize=128M -XX:MaxPermSize=256M"
+ENV JAVA_OPTS="-XX:PermSize=128M -XX:MaxPermSize=512M"
 
 CMD ["/opt/spring-xd/start"]

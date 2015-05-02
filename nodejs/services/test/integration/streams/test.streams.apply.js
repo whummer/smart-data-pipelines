@@ -94,7 +94,7 @@ describe('streams.flow', function() {
 			var ws = new WebSocket(url);
 			app.receivedMessages = [];
 			ws.on('message', function(data, flags) {
-				//console.log("msg -> ", data);
+				console.log("msg -> ", data);
 				app.receivedMessages.push(data);
 			});
 			resolve();
@@ -103,7 +103,7 @@ describe('streams.flow', function() {
 		var sendMessages = function(resolve, reject) {
 			var url = "http://" + objs.ips.source + ":9000/" + 
 				objs.source[ORGANIZATION_ID] + "/" + objs.source.id;
-			app.numMessages = 100;
+			app.numMessages = 10;
 			var i = 0;
 			for(; i < app.numMessages; i ++) {
 				//console.log("posting data item to", url);

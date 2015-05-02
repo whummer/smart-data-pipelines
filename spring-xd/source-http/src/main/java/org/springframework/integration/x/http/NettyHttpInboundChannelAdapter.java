@@ -24,6 +24,7 @@ import static org.jboss.netty.handler.codec.http.HttpResponseStatus.OK;
 import static org.jboss.netty.handler.codec.http.HttpResponseStatus.REQUEST_ENTITY_TOO_LARGE;
 import static org.jboss.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
 import java.security.KeyStore;
@@ -124,7 +125,7 @@ public class NettyHttpInboundChannelAdapter extends MessageProducerSupport {
 
 	private Map<String, Object> pathsToProducers;
 
-	static class SenderEntry {
+	class SenderEntry {
 		public Object senderEntity;
 		public Method senderMethod;
 	}
@@ -271,6 +272,7 @@ public class NettyHttpInboundChannelAdapter extends MessageProducerSupport {
 		}
 		Map<String, Object> pathToProducer = getPathsToProducers();
 		pathToProducer.remove(path);
+		System.gc();
 	}
 
 	private SSLContext initializeSSLContext() throws Exception {
@@ -368,8 +370,13 @@ public class NettyHttpInboundChannelAdapter extends MessageProducerSupport {
 			return false;
 		}
 		try {
-			Method method = (Method)sender.getClass().getDeclaredField("senderMethod").get(sender);
-			Object entity = sender.getClass().getDeclaredField("senderEntity").get(sender);
+			Field f = sender.getClass().getDeclaredField("senderMethod");
+			f.setAccessible(true);
+			Method method = (Method) f.get(sender);
+			method.setAccessible(true);
+			Field f1 = sender.getClass().getDeclaredField("senderEntity");
+			f1.setAccessible(true);
+			Object entity = f1.get(sender);
 			method.invoke(entity, message);
 			return true;
 		} catch (Exception e) {
@@ -396,7 +403,7 @@ public class NettyHttpInboundChannelAdapter extends MessageProducerSupport {
 			if (!System.getProperties().containsKey(KEY_MODULE_STATE)) {
 				System.getProperties()
 						.put(KEY_MODULE_STATE,
-								new ConcurrentHashMap<Integer, Map<String, SenderEntry>>());
+								new ConcurrentHashMap<Integer, Map<String, Object>>());
 			}
 			Map<Integer, Map<String, Object>> map = (Map<Integer, Map<String, Object>>) System
 					.getProperties().get(KEY_MODULE_STATE);
