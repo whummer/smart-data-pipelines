@@ -22,4 +22,4 @@ server.listen(config.port, config.ip, function () {
 });
 
 // Expose app
-exports = module.exports = app;
+module.exports = app;

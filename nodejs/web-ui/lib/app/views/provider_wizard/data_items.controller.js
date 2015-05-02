@@ -1,14 +1,13 @@
 function dataItemsExtractorCtrl($scope, $log, $http, growl, $state) {
-	$log.debug("Inside dataItemsExtractorCtrl");
 
 	$scope.extractDataItems = function () {
 		try {
 			var payloadObject = angular.fromJson($scope.resourceData.payload);
-			$scope.parsedPayload = angular.toJson(payloadObject, true);
+			$scope.resourceData.parsedPayload = angular.toJson(payloadObject, true);
 			var flattened = flattenJson(payloadObject);
 			$log.debug("Got flattened payload data: ", flattened);
 			$scope.resourceData.extractedItems = flattened;
-			angular.element("#payloadArea").hide();
+			//angular.element("#payloadArea").hide();
 		} catch (e) {
 			$log.error("Cannot parse input: ", e);
 			$scope.error = "Your input is invalid. Please provide a valid JSON or XML document.";
@@ -16,13 +15,13 @@ function dataItemsExtractorCtrl($scope, $log, $http, growl, $state) {
 	};
 
 	$scope.resetDataItems = function() {
-		$scope.createDataItems = false;
+		$scope.resourceData.createDataItems = false;
 		$scope.resourceData.payload = null;
 		$scope.resourceData.dataItems = null;
 		$scope.resourceData.extractedItems = null;
-		$scope.parsedPayload = null;
+		$scope.resourceData.parsedPayload = null;
 		$scope.error = false;
-		angular.element("#payloadArea").show();
+		//angular.element("#payloadArea").show();
 	};
 
 	// http://stackoverflow.com/questions/19098797/fastest-way-to-flatten-un-flatten-nested-json-objects

@@ -13,6 +13,7 @@ angular.module('rioxApp', [
 	'angular-growl',
 	'ngAnimate',
 	'hljs',
+		'ui.ace',
 	'ngFileUpload'
 ])
 		.config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider, growlProvider) {

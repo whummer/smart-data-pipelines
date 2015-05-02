@@ -17,3 +17,4 @@ require('./integration/api/test.organizations');
 
 /* Streams integration tests */
 require('./integration/streams/test.streams.apply');
+require('./integration/api/test.files');

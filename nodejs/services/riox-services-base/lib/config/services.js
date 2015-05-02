@@ -19,7 +19,6 @@ var appConfig = {
 		simulationTypes: { url: "http://localhost:8080/api/v1/simulations/types" },
 		ratings: { url: "http://localhost:8080/api/v1/ratings" },
 		stats: { url: "http://localhost:8080/api/v1/stats" },
-		files: { url: "http://localhost:8080/api/v1/files" },
 		billing: { url: "http://localhost:8080/api/v1/billing" },
 		semanticTypes: { url: "http://localhost:8080/api/v1/semantic-types" },
 
@@ -30,6 +29,7 @@ var appConfig = {
 		streamsinks: { url: "http://localhost:8085/api/v1/streams/sinks" },
 		streamprocessors: { url: "http://localhost:8085/api/v1/streams/processors" },
 		access: { url: "http://localhost:8085/api/v1/access" },
+                files: { url: "http://localhost:8087/api/v1/files" },
 
 		websocket: { url: "ws://platform.riots.io:8085/websocket" }
 	},
