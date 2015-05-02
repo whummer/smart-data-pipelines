@@ -10,10 +10,6 @@ var portfinder = require('portfinder');
 var containers = require('riox-services-base/lib/util/containers.util');
 var springxd = require('riox-services-base/lib/util/springxd.util');
 
-/* constants - TODO import */
-var ORGANIZATION_ID = "organization-id";
-var SINK_CONFIG = "sink-config";
-
 
 var validationError = function (res, err) {
 	return res.json(422, err);

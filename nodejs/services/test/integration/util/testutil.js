@@ -3,6 +3,7 @@
 var assert = require('assert');
 var superagent = require('superagent');
 var status = require('http-status');
+var starters = require('./service.starters');
 
 var app = {};
 var services = {};
@@ -54,16 +55,9 @@ var initClientProxy = function(proxy) {
 }
 
 app.auth = function(email, pass, callback) {
-
-	services.users = { port: 3001 }
-	services.organizations = { port: 3001 }
-	process.env.SERVICE_PORT = services.users.port;
-	services.users.server = require('../../../users-service/app.js');
-	/* set URLs */
-	services.users.url = global.servicesConfig.services.users.url = 
-		"http://localhost:" + services.users.port + "/api/v1/users";
-	services.organizations.url = global.servicesConfig.services.organizations.url = 
-		"http://localhost:" + services.users.port + "/api/v1/organizations";
+	/* start services */
+	services.users = starters.startUsersService();
+	services.organizations = starters.startOrganizationsService();
 	/* do login */
 	attemptLogin(email, pass, callback);
 }

@@ -3,25 +3,45 @@
  */
 
 /* define array index names for model properties */
-var NAME = "name";
-var CREATION_DATE = "creation-date";
-var CREATOR_ID = "creator-id";
-var THING_TYPE = "thing-type";
-var THING_ID = "thing-id";
-var THINGS = "things";
-var PROPERTIES = "properties";
-var PROPERTY_ID = "property-id";
-var PROPERTY_NAME = "property";
-var PROPERTY_VALUE = "value";
-var PROPERTY_TYPE = "data-type";
-var TIMESTAMP = "timestamp";
-var IMAGE_DATA = "image-data";
-var SIMULATION_ID = "simulation-id";
-var START_TIME = "start-time";
-var END_TIME = "end-time";
-var USER_ID = "user-id";
-var STREAM_ID = "stream-id";
-var ORGANIZATION_ID = "organization-id";
+
+var shareHook = (typeof window != "undefined") ? window : global;
+
+shareHook.ID = "id";
+shareHook.NAME = "name";
+shareHook.DESCRIPTION = "description";
+shareHook.CREATION_DATE = "creation-date";
+shareHook.CREATOR_ID = "creator-id";
+shareHook.OWNER_ID = "owner-id";
+shareHook.THING_TYPE = "thing-type";
+shareHook.THING_ID = "thing-id";
+shareHook.THINGS = "things";
+shareHook.PROPERTIES = "properties";
+shareHook.PROPERTY_ID = "property-id";
+shareHook.PROPERTY_NAME = "property";
+shareHook.PROPERTY_VALUE = "value";
+shareHook.PROPERTY_TYPE = "data-type";
+shareHook.TIMESTAMP = "timestamp";
+shareHook.IMAGE_DATA = "image-data";
+shareHook.SIMULATION_ID = "simulation-id";
+shareHook.START_TIME = "start-time";
+shareHook.END_TIME = "end-time";
+shareHook.USER_ID = "user-id";
+shareHook.STREAM_ID = "stream-id";
+shareHook.SOURCE_ID = "source-id";
+shareHook.SINK_ID = "sink-id";
+shareHook.ORGANIZATION_ID = "organization-id";
+shareHook.PROCESSORS = "processors";
+shareHook.REQUESTOR_ID = "requestor-id";
+shareHook.CONNECTOR = "connector";
+shareHook.STATUS = "status";
+shareHook.CREATED = "created";
+shareHook.CHANGED = "changed";
+shareHook.STATUS_REQUESTED = "REQUESTED";
+shareHook.STATUS_PENDING = "PENDING";
+shareHook.STATUS_CONFIRMED = "CONFIRMED";
+shareHook.STATUS_PERMITTED = "PERMITTED";
+shareHook.STATUS_DENIED = "DENIED";
+
 
 (function() {
 

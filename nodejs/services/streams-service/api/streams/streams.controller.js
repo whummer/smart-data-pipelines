@@ -20,6 +20,7 @@ var validationError = function (res, err) {
 };
 
 function list(query, req, res) {
+	console.log()
 	Stream.find(query, function (err, list) {
 		if (err)
 			return res.send(500, err);

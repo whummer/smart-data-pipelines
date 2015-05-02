@@ -18,8 +18,8 @@ describe('/users', function() {
 		test.authDefault(done);
 	});
 
-	after(function() {
-		app.users.server.stop();
+	after(function(done) {
+		app.users.server.stop(done);
 	});
 
 	it('can signup and signin if valid data are provided', function(done) {
@@ -46,9 +46,9 @@ describe('/users', function() {
 			assert.equal(false, !result.token);
 			assert.equal(statusCode, status.OK);
 			riox.signin(userIncorrect, function(result, statusCode) {
-				assert.equal(true, !result.token);
-				assert.notEqual(statusCode, status.OK);
-				done();
+				done(new Error("Access should be denied"));
+			}, function(error) {
+				done(); // error expected
 			});
 		});
 	});
@@ -59,9 +59,9 @@ describe('/users', function() {
 			assert.equal(false, !result.token);
 			assert.equal(statusCode, status.OK);
 			riox.signup(user, function(result, statusCode) {
-				assert.notEqual(statusCode, status.OK);
-				assert.equal(true, !result.token);
-				done();
+				done(new Error("Duplicate signup should be denied"));
+			}, function(error) {
+				done(); // error expected
 			});
 		});
 	});

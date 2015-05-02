@@ -5,11 +5,9 @@ var superagent = require('superagent');
 var status = require('http-status');
 var test = require('../util/testutil');
 var starters = require('../util/service.starters');
+var riox = require('riox-shared/lib/api/riox-api');
 
 var app = {};
-/* constants */
-var STATUS_PENDING = "PENDING";
-var STATUS_CONFIRMED = "CONFIRMED";
 
 describe('/organizations', function() {
 
@@ -20,8 +18,8 @@ describe('/organizations', function() {
 		test.authDefault(done);
 	});
 
-	after(function() {
-		app.organizations.server.stop();
+	after(function(done) {
+		app.organizations.server.stop(done);
 	});
 
 	it("creates and updates a user's default organization", function(done) {

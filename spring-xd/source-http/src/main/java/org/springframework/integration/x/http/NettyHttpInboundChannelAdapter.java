@@ -83,6 +83,7 @@ import org.springframework.util.StringUtils;
  * @author Jennifer Hickey
  * @author Gary Russell
  * @author Marius Bogoevici
+ * @author Waldemar Hummer
  */
 public class NettyHttpInboundChannelAdapter extends MessageProducerSupport {
 
@@ -121,11 +122,11 @@ public class NettyHttpInboundChannelAdapter extends MessageProducerSupport {
 
 	private static final String DEFAULT_PATH = "/";
 
-	private Map<String, SenderEntry> pathsToProducers;
+	private Map<String, Object> pathsToProducers;
 
-	private static class SenderEntry {
-		Object senderEntity;
-		Method senderMethod;
+	static class SenderEntry {
+		public Object senderEntity;
+		public Method senderMethod;
 	}
 
 	/* end whu */
@@ -268,7 +269,7 @@ public class NettyHttpInboundChannelAdapter extends MessageProducerSupport {
 		if (bootstrap != null) {
 			bootstrap.shutdown();
 		}
-		Map<String, SenderEntry> pathToProducer = getPathsToProducers();
+		Map<String, Object> pathToProducer = getPathsToProducers();
 		pathToProducer.remove(path);
 	}
 
@@ -361,9 +362,15 @@ public class NettyHttpInboundChannelAdapter extends MessageProducerSupport {
 
 	private boolean sendMessageToResponsibleSender(HttpRequest request,
 			Message<?> message) {
-		SenderEntry sender = getResponsibleSender(request);
+		Object sender = getResponsibleSender(request);
+		if (sender == null) {
+			logger.warn("Cannot find inbound HTTP channel for path: " + request.getUri());
+			return false;
+		}
 		try {
-			sender.senderMethod.invoke(sender.senderEntity, message);
+			Method method = (Method)sender.getClass().getDeclaredField("senderMethod").get(sender);
+			Object entity = sender.getClass().getDeclaredField("senderEntity").get(sender);
+			method.invoke(entity, message);
 			return true;
 		} catch (Exception e) {
 			logger.warn("Exception when sending message", e);
@@ -371,9 +378,9 @@ public class NettyHttpInboundChannelAdapter extends MessageProducerSupport {
 		return false;
 	}
 
-	private SenderEntry getResponsibleSender(HttpRequest request) {
-		SenderEntry result = null;
-		Map<String, SenderEntry> map = getPathsToProducers();
+	private Object getResponsibleSender(HttpRequest request) {
+		Object result = null;
+		Map<String, Object> map = getPathsToProducers();
 		String uri = request.getUri();
 		result = map.get(uri);
 		if (result == null) {
@@ -391,10 +398,10 @@ public class NettyHttpInboundChannelAdapter extends MessageProducerSupport {
 						.put(KEY_MODULE_STATE,
 								new ConcurrentHashMap<Integer, Map<String, SenderEntry>>());
 			}
-			Map<Integer, Map<String, SenderEntry>> map = (Map<Integer, Map<String, SenderEntry>>) System
+			Map<Integer, Map<String, Object>> map = (Map<Integer, Map<String, Object>>) System
 					.getProperties().get(KEY_MODULE_STATE);
 			if (!map.containsKey(port)) {
-				map.put(port, new ConcurrentHashMap<String, SenderEntry>());
+				map.put(port, new ConcurrentHashMap<String, Object>());
 			}
 			pathsToProducers = map.get(port);
 			if (pathsToProducers.containsKey(path)) {
@@ -421,7 +428,7 @@ public class NettyHttpInboundChannelAdapter extends MessageProducerSupport {
 		throw new RuntimeException("Cannot find message sender method.");
 	}
 
-	private Map<String, SenderEntry> getPathsToProducers() {
+	private Map<String, Object> getPathsToProducers() {
 		return pathsToProducers;
 	}
 

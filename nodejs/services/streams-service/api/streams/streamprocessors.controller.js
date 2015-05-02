@@ -10,10 +10,6 @@ var portfinder = require('portfinder');
 var containers = require('riox-services-base/lib/util/containers.util');
 var springxd = require('riox-services-base/lib/util/springxd.util');
 
-/* constants - TODO import */
-var SOURCE_ID = "source-id";
-var SINK_ID = "sink-id";
-
 var validationError = function (res, err) {
 	return res.json(422, err);
 };
@@ -62,9 +58,9 @@ exports.applyByStream = function(stream, callback, errorCallback) {
 		// create the SpringXD stream
 		var port = 9001;
 		var sourceTopic = "producer-" + stream[SOURCE_ID];
-		var sinkTopic = "consumer-" + stream[SOURCE_ID];
+		var sinkTopic = "consumer-" + stream[SINK_ID];
 		var streamDefinition = "k1: kafka --zkconnect=" + cfg.zookeeper + ":2181 --topic=" + sourceTopic + 
-				" | " +
+				" | transform | " +
 
 				// TODO add analytics processors here
 

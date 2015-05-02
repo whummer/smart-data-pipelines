@@ -4,38 +4,37 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var template = {
-
-	"_id": { type: String, default: genShortUUID},
-	/**
-	 * Name.
-	 */
-	"name": String,
-	/**
-	 * Creator.
-	 */
-	"creator-id": String,
-	/**
-	 * Creation Date.
-	 */
-	"creation-date": Date,
-	/**
-	 * Description.
-	 */
-	"description": String,
-
-	/**
-	 * Source of this stream.
-	 */
-	"source-id": String,
-	/**
-	 * List of IDs of StreamProcessors of this stream.
-	 */
-	"processors": [ String ],
-	/**
-	 * Sink of this stream.
-	 */
-	"sink-id": String
+	"_id": { type: String, default: genShortUUID}
 };
+/**
+ * Name.
+ */
+template[NAME] = String;
+/**
+ * Creator.
+ */
+template[CREATOR_ID] = String;
+/**
+ * Creation Date.
+ */
+template[CREATION_DATE] = Date;
+/**
+ * Description.
+ */
+template[DESCRIPTION] = Date;
+/**
+ * Source of this stream.
+ */
+template[SOURCE_ID] = String;
+/**
+ * List of IDs of StreamProcessors of this stream.
+ */
+template[PROCESSORS] = String;
+/**
+ * Sink of this stream.
+ */
+template[SINK_ID] = String;
+
 
 var Stream = new Schema(template);
 Stream.set('toJSON', { virtuals: true });

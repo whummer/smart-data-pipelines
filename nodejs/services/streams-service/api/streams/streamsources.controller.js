@@ -13,10 +13,6 @@ var containers = require('riox-services-base/lib/util/containers.util');
 var portfinder = require('portfinder');
 var path = require('path');
 
-/* constants - TODO import */
-var ORGANIZATION_ID = "organization-id";
-var SINK_CONFIG = "sink-config";
-
 var validationError = function (res, err) {
 	return res.json(422, err);
 };
@@ -43,7 +39,6 @@ exports.createStreamSource = function (req, res, next) {
 
 	if (!streamSource.connector || streamSource.connector.type != "http") {
 		return validationError(res, {"description": "Unsupported Connector-Type. Only HTTP is supported at the moment"});
-		return;
 	}
 	if (!streamSource[ORGANIZATION_ID]) {
 		return validationError(res, {"description": "Please provide a valid organization for this source."});

@@ -44,7 +44,7 @@ describe('streams.flow', function() {
 		};
 	}
 
-	it('creates stream source, sink, and processor', function(done) {
+	it('creates stream source, sink, processor; and run flow e2e', function(done) {
 		this.timeout(1000*60*2); // high timeout for long-running test
 
 		var objs = {
@@ -53,14 +53,14 @@ describe('streams.flow', function() {
 
 		var addSource = function(resolve, reject) {
 			var source = objs.source = { "name": "source1" };
-			source.connector = {type: "http"};
+			source[CONNECTOR] = {type: "http"};
 			source[ORGANIZATION_ID] = test.user1.orgs.default.id;
 			riox.add.streams.source(source, wrap(resolve), reject);
 		};
 
 		var addSink = function(resolve, reject) {
 			var sink = objs.sink = {name: "sink1"};
-			sink.connector = {type: "websocket"};
+			sink[CONNECTOR] = {type: "websocket"};
 			sink[ORGANIZATION_ID] = test.user2.orgs.default.id;
 			riox.add.streams.sink(sink, wrap(resolve), reject);
 		};
@@ -90,10 +90,11 @@ describe('streams.flow', function() {
 		var registerWebsocket = function(resolve, reject) {
 			var url = "ws://" + objs.ips.sink + ":9001/" + 
 				objs.sink[ORGANIZATION_ID] + "/" + objs.sink.id;
-			console.log(url);
+			console.log("subscribing to websocket ", url);
 			var ws = new WebSocket(url);
 			app.receivedMessages = [];
 			ws.on('message', function(data, flags) {
+				//console.log("msg -> ", data);
 				app.receivedMessages.push(data);
 			});
 			resolve();
@@ -102,15 +103,34 @@ describe('streams.flow', function() {
 		var sendMessages = function(resolve, reject) {
 			var url = "http://" + objs.ips.source + ":9000/" + 
 				objs.source[ORGANIZATION_ID] + "/" + objs.source.id;
-			console.log(url);
-			superagent.post(url).send({foo: "bar"}).end(function() {
-				console.log("sent");
-				resolve();
-			});
+			app.numMessages = 100;
+			var i = 0;
+			for(; i < app.numMessages; i ++) {
+				//console.log("posting data item to", url);
+				superagent.post(url).send({foo: "bar"}).
+				end(function(err, res) {});
+			}
+			resolve();
+		};
+
+		var awaitMessages = function(resolve, reject) {
+			var func = function(retries) {
+				if(retries < 0) {
+					return reject("Did not receive all websocket messages: " + app.receivedMessages.length);
+				}
+				if(app.receivedMessages.length >= app.numMessages) {
+					return resolve(app.receivedMessages);
+				}
+				setTimeout(function() {
+					func(retries - 1);
+				}, 1000);
+			};
+			func(5);
 		};
 
 		new Promise(addSource).
 		then(function(source) {
+//			console.log("added source", source);
 			objs.source = source;
 			objs.stream[SOURCE_ID] = source.id;
 			return new Promise(addSink);
@@ -122,7 +142,7 @@ describe('streams.flow', function() {
 		}).
 		then(function(processor1) {
 			objs.processor1 = processor1;
-			objs.stream.processors = [processor1.id];
+			objs.stream[PROCESSORS] = [processor1.id];
 			return new Promise(addStream);
 		}).
 		then(function(stream) {
@@ -143,11 +163,13 @@ describe('streams.flow', function() {
 			return new Promise(registerWebsocket);
 		}).
 		then(function(websocket) {
-			console.log("configured websocket");
+//			console.log("configured websocket");
 			return new Promise(sendMessages);
 		}).
 		then(function(messages) {
-			console.log("messages sent");
+			return new Promise(awaitMessages);
+		}).
+		then(function(messages) {
 			done();
 		},
 		function(err) {

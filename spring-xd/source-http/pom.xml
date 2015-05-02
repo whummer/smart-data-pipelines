@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.riox</groupId>
-	<artifactId>xd-source-html</artifactId>
+	<artifactId>xd-source-http</artifactId>
 	<parent>
 		<groupId>org.springframework.xd</groupId>
 		<artifactId>spring-xd-module-parent</artifactId>
