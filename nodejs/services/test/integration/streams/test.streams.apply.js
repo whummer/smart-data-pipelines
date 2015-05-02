@@ -88,7 +88,8 @@ describe('streams.flow', function() {
 		};
 
 		var registerWebsocket = function(resolve, reject) {
-			var url = "ws://" + objs.ips.sink + ":9001/foo";
+			var url = "ws://" + objs.ips.sink + ":9001/" + 
+				objs.sink[ORGANIZATION_ID] + "/" + objs.sink.id;
 			console.log(url);
 			var ws = new WebSocket(url);
 			app.receivedMessages = [];
@@ -99,9 +100,10 @@ describe('streams.flow', function() {
 		};
 
 		var sendMessages = function(resolve, reject) {
-			var url = "http://" + objs.ips.source + ":9000/foo";
+			var url = "http://" + objs.ips.source + ":9000/" + 
+				objs.source[ORGANIZATION_ID] + "/" + objs.source.id;
 			console.log(url);
-			superagent.post().send({foo: "bar"}).end(function() {
+			superagent.post(url).send({foo: "bar"}).end(function() {
 				console.log("sent");
 				resolve();
 			});
@@ -141,11 +143,11 @@ describe('streams.flow', function() {
 			return new Promise(registerWebsocket);
 		}).
 		then(function(websocket) {
-			console.log("configured websocket", websocket);
+			console.log("configured websocket");
 			return new Promise(sendMessages);
 		}).
 		then(function(messages) {
-			console.log(messages.lenth + " messages sent");
+			console.log("messages sent");
 			done();
 		},
 		function(err) {
