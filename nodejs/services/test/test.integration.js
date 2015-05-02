@@ -14,7 +14,7 @@ require('./integration/api/test.streams');
 require('./integration/api/test.streamaccess');
 require('./integration/api/test.users');
 require('./integration/api/test.organizations');
+require('./integration/api/test.files');
 
 /* Streams integration tests */
 require('./integration/streams/test.streams.apply');
-require('./integration/api/test.files');
