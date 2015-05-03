@@ -24,7 +24,7 @@ angular.module('rioxApp')
 	var loadStreamDetails = function() {
 		var id = $stateParams.streamId;
 		if(!id) return;
-		riox.stream(id, function(stream) {
+		riox.streams.source(id, function(stream) {
 			$scope.$apply(function() {
 				$scope.selectedStream = stream;
 				$scope.prepareStream(stream);
@@ -40,7 +40,7 @@ angular.module('rioxApp')
 			});
 		});
 	}
-	
+
 	/* load main elements */
 	loadStreams();
 	loadStreamDetails();

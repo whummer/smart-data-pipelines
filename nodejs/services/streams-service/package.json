@@ -21,8 +21,10 @@
     "passport-google-oauth": "latest",
     "passport-local": "~0.1.6",
     "passport-twitter": "latest",
+
     "riox-shared": "../../riox-shared",
-    "riox-services-base": "../riox-services-base"
+    "riox-services-base": "../riox-services-base",
+    "kafka-node": "0.2.26"
   },
   "devDependencies": {
   },

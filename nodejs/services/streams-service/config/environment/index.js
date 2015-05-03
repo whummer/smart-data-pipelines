@@ -1,7 +1,8 @@
 'use strict';
 
 var path = require('path');
-var _ = require('lodash');
+var merge = require('riox-services-base/lib/config/merge');
+var commonConfig = require('riox-services-base/lib/config');
 
 function requiredProcessEnv(name) {
   if(!process.env[name]) {
@@ -12,8 +13,7 @@ function requiredProcessEnv(name) {
 
 // All configurations will extend these options
 // ============================================
-var all = {
-  env: process.env.NODE_ENV,
+var config = {
 
   // Root path of server
   root: path.normalize(__dirname + '/../../..'),
@@ -23,14 +23,6 @@ var all = {
 
   // Should we populate the DB with sample data?
   seedDB: false,
-
-  // Secret for session, you will want to change this and make it an environment variable
-  secrets: {
-    session: 'riox-secret'
-  },
-
-  // List of user roles
-  userRoles: ['guest', 'user', 'admin'],
 
   // MongoDB connection options
   mongo: {
@@ -54,28 +46,13 @@ var all = {
     url : 'http://localhost:9393'
   },
 
-  facebook: {
-    clientID:     process.env.FACEBOOK_ID || 'id',
-    clientSecret: process.env.FACEBOOK_SECRET || 'bd3a056db300ed5fefdd068cd88d15d4',
-    callbackURL:  (process.env.DOMAIN || '') + '/auth/facebook/callback'
-  },
-
-  twitter: {
-    clientID:     process.env.TWITTER_ID || 'id',
-    clientSecret: process.env.TWITTER_SECRET || 'secretTwitter',
-    callbackURL:  (process.env.DOMAIN || '') + '/auth/twitter/callback'
-  },
-
-  google: {
-    clientID:     process.env.GOOGLE_ID || 'id',
-    clientSecret: process.env.GOOGLE_SECRET || 'secretGoogle',
-    callbackURL:  (process.env.DOMAIN || '') + '/auth/google/callback'
+  kafka : {
+    url : 'http://localhost:9092'
   }
 
 };
 
-// Export the config object based on the NODE_ENV
-// ==============================================
-module.exports = _.merge(
-  all,
-  require('./' + process.env.NODE_ENV + '.js') || {});
+/* load env. config */
+var envConfig = require("./" + process.env.NODE_ENV + ".js");
+/* merge configs */
+module.exports = merge(merge(commonConfig, config), envConfig);

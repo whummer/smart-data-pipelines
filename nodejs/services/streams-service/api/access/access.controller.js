@@ -8,12 +8,11 @@ var riox = require('riox-shared/lib/api/riox-api');
 
 exports.index = function(req, res, next) {
 	var user = auth.getCurrentUser(req);
-	var query = { $or: 
-		[
-			{ownerId: user.id},
-			{requestorId: user.id}
-		]
-	};
+	var crit1 = {}, crit2 = {};
+	crit1[OWNER_ID] = user.id;
+	crit2[REQUESTOR_ID] = user.id;
+	var query = { $or: [crit1, crit2] };
+
 	StreamAccess.find(query, function(err, list) {
 		if (err)
 			return res.send(500, err);
@@ -21,22 +20,20 @@ exports.index = function(req, res, next) {
 	});
 };
 
-exports.getByStream = function(req, res, next) {
+exports.getBySource = function(req, res, next) {
 	var user = auth.getCurrentUser(req);
+	var crit1 = {}, crit2 = {};
+	crit1[OWNER_ID] = user.id;
+	crit2[REQUESTOR_ID] = user.id;
 	var query = {
-			streamId: req.params.streamId,
-			$or: 
-				[
-					{ownerId: user.id},
-					{requestorId: user.id}
-				]
+			$or: [crit1, crit2]
 	};
+	query[SOURCE_ID] = req.params.sourceId;
 	return StreamAccess.find(query, function(err, obj) {
 		if (err)
 			return next(err);
 		if (!obj)
 			return res.send(404);
-		//console.log("stream", obj);
 		res.json(obj);
 	});
 };
@@ -44,7 +41,7 @@ exports.getByStream = function(req, res, next) {
 exports.show = function(req, res, next) {
 	var id = req.params.id;
 
-	DataStream.findById(id, function(err, obj) {
+	StreamAccess.findById(id, function(err, obj) {
 		if (err)
 			return next(err);
 		if (!obj)
@@ -59,20 +56,19 @@ exports.destroy = function(req, res, next) {
 
 exports.create = function(req, res, next) {
 	var access = req.body;
-	var streamId = access.streamId;
-	if(!streamId) {
-		res.json(500, {error: "streamId is required"});
+	var sourceId = access[SOURCE_ID];
+	if(!sourceId) {
+		res.json(422, {error: SOURCE_ID + " is required"});
 		return;
 	}
-	riox.stream(streamId, {
-		callback: function(stream) {
+	riox.streams.source(sourceId, {
+		callback: function(source) {
 			access.created = access.changed = new Date().getTime();
 			var user = auth.getCurrentUser(req);
-			access.requestorId = user.id;
+			access[REQUESTOR_ID] = user.id;
 			StreamAccess.create(access, function() {
 				res.json(200, access);
 			});
 		}, headers: req.headers
 	});
 };
- 

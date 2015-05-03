@@ -4,26 +4,22 @@ var assert = require('assert');
 var superagent = require('superagent');
 var status = require('http-status');
 var test = require('../util/testutil');
+var starters = require('../util/service.starters');
+var riox = require('riox-shared/lib/api/riox-api');
 
 var app = {};
-/* constants */
-var STATUS_PENDING = "PENDING";
-var STATUS_CONFIRMED = "CONFIRMED";
 
 describe('/organizations', function() {
 
 	before(function(done) {
-		/* start streams service */
-		app.organizations = { port : 3001 };
-		app.organizations.url = "http://localhost:" + app.organizations.port + "/api/v1/organizations";
-		process.env.SERVICE_PORT = app.organizations.port;
-		app.organizations.server = require('../../../users-service/app.js').start();
+		/* start service(s) */
+		app.organizations = starters.startOrganizationsService();
 		/* get auth token */
 		test.authDefault(done);
 	});
 
-	after(function() {
-		app.organizations.server.stop();
+	after(function(done) {
+		app.organizations.server.stop(done);
 	});
 
 	it("creates and updates a user's default organization", function(done) {
@@ -37,6 +33,21 @@ describe('/organizations', function() {
 					assert.ifError(err);
 					done();
 				});
+			});
+		});
+	});
+
+	it("does not create the default organization twice", function(done) {
+		test.user1.get(app.organizations.url + "/default").end(function(err, res) {
+			assert.ifError(err);
+			assert.equal(res.status, status.OK);
+			var org1 = res.body;
+			test.user1.get(app.organizations.url + "/default").end(function(err, res) {
+				assert.ifError(err);
+				assert.equal(res.status, status.OK);
+				var org2 = res.body;
+				assert.equal(org1.id, org2.id);
+				done();
 			});
 		});
 	});
