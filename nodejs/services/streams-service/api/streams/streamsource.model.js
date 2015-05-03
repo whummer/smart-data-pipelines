@@ -73,8 +73,8 @@ var template = {
 	"visible": Boolean
 };
 
-var DataStreamSchema = new Schema(template);
-DataStreamSchema.set('toJSON', { virtuals: true });
-DataStreamSchema.set('toObject', { virtuals: true });
+var StreamSource = new Schema(template);
+StreamSource.set('toJSON', { virtuals: true });
+StreamSource.set('toObject', { virtuals: true });
 
-module.exports = mongoose.model('DataStream', DataStreamSchema);
+module.exports = mongoose.model('StreamSource', StreamSource);

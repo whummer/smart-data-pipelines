@@ -1,4 +1,4 @@
-var DataStream = require('./api/streams/datastream.model');
+var DataStream = require('./api/streams/streamsource.model.js');
 var riox = require('riox-shared/lib/api/riox-api');
 
 var LOREM = " Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum";
@@ -128,12 +128,12 @@ function findOrgs(callback) {
 	riox.signin(global.adminUser, function(tok) {
 		token = {authorization: "Bearer " + tok.token};
 		riox.organizations({
-			headers: token, 
+			headers: token,
 			callback: function(list) {
 				list.forEach(function(o) {
-					index = o.name == "City of Vienna" ? 0 : 
-							o.name == "BMW" ? 1 : 
-							o.name == "Mercedes" ? 2 : 3; 
+					index = o.name == "City of Vienna" ? 0 :
+							o.name == "BMW" ? 1 :
+							o.name == "Mercedes" ? 2 : 3;
 					orgs[index] = o;
 				});
 				callback();

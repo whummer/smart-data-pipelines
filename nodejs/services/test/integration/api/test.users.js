@@ -11,11 +11,13 @@ var app = {};
 describe('/users', function() {
 
 	before(function(done) {
-		/* start streams service */
+
+    /* start streams service */
 		app.users = { port : 3001 };
 		app.users.url = "http://localhost:" + app.users.port + "/api/v1/users";
 		process.env.SERVICE_PORT = app.users.port;
-		app.users.server = require('../../../users-service/app.js').start();
+    app.users.server = require('../../../users-service/app.js').start();
+    console.log("server: ", app.users.server);
 		/* get auth token */
 		test.authDefault(done);
 	});

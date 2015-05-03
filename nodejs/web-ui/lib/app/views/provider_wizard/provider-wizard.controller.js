@@ -91,7 +91,7 @@ function providerWizardCtrl($scope, $log, growl, $state, $location) {
 		};
 
 		// todo add error handling here
-		riox.add.stream(dataStream, function () {
+		riox.add.streams.source(dataStream, function () {
 			$log.debug("Successfully added new data resource: ", r);
 			growl.success("Added new Data Resource '" + r.name + "'");
 			$location.path("#/streams/provided");

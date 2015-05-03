@@ -13,7 +13,8 @@ var STATUS_CONFIRMED = "CONFIRMED";
 describe('/organizations', function() {
 
 	before(function(done) {
-		/* start streams service */
+
+    /* start streams service */
 		app.organizations = { port : 3001 };
 		app.organizations.url = "http://localhost:" + app.organizations.port + "/api/v1/organizations";
 		process.env.SERVICE_PORT = app.organizations.port;

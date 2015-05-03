@@ -8,7 +8,7 @@ var riox = require('riox-shared/lib/api/riox-api');
 
 exports.index = function(req, res, next) {
 	var user = auth.getCurrentUser(req);
-	var query = { $or: 
+	var query = { $or:
 		[
 			{ownerId: user.id},
 			{requestorId: user.id}
@@ -25,7 +25,7 @@ exports.getByStream = function(req, res, next) {
 	var user = auth.getCurrentUser(req);
 	var query = {
 			streamId: req.params.streamId,
-			$or: 
+			$or:
 				[
 					{ownerId: user.id},
 					{requestorId: user.id}
@@ -75,4 +75,3 @@ exports.create = function(req, res, next) {
 		}, headers: req.headers
 	});
 };
- 

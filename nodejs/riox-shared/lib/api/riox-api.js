@@ -177,20 +177,24 @@ sh.thing = sh.get.thing = function(id, callback, errorCallback) {
 sh.triggers = sh.get.triggers = function(callback, errorCallback) {
 	return callGET(servicesConfig.services.triggers.url, callback, errorCallback);
 };
-sh.streams = sh.get.streams = function(searchOpts, callback, errorCallback) {
-	var url = servicesConfig.services.streams.url;
+
+sh.stream = {};
+sh.streams = {};
+sh.get.streams = {};
+sh.streams.sources = sh.get.streams.sources = function(searchOpts, callback, errorCallback) {
+	var url = servicesConfig.services.streams.url + "/sources";
 	if(searchOpts && typeof searchOpts.query != "undefined") {
 		url += "/query";
 		return callPOST(url, searchOpts, callback, errorCallback);
 	}
 	return callGET(url, callback, errorCallback);
 };
-sh.stream = sh.get.stream = function(id, callback, errorCallback) {
+sh.streams.source = sh.get.streams.source = function(id, callback, errorCallback) {
 	if(!id) {
 		if(callback) callback(null);
 		return null;
 	}
-	return callGET(servicesConfig.services.streams.url + "/" + id, callback, errorCallback);
+	return callGET(servicesConfig.services.streams.url + "/sources/" + id, callback, errorCallback);
 };
 sh.streams.consumed = function(searchOpts, callback, errorCallback) {
 	var url = servicesConfig.services.streams.url + "/consumed";
@@ -349,7 +353,7 @@ var buildQueryURL = function(baseURL, opts) {
 
 sh.add = {};
 
-sh.add.thingType = function(thingType, callback, errorCallback) {
+  sh.add.thingType = function(thingType, callback, errorCallback) {
 	return callPOST(servicesConfig.services.thingTypes.url, thingType, callback, errorCallback);
 };
 sh.add.app = function(app, callback, errorCallback) {
@@ -367,8 +371,10 @@ sh.add.trigger = function(trigger, callback, errorCallback) {
 	}
 	return callPOST(servicesConfig.services.triggers.url, trigger, callback, errorCallback);
 };
-sh.add.stream = function(stream, callback, errorCallback) {
-	return callPOST(servicesConfig.services.streams.url, stream, callback, errorCallback);
+
+sh.add.streams = {};
+sh.add.streams.source = function(stream, callback, errorCallback) {
+	return callPOST(servicesConfig.services.streams.url + "/sources", stream, callback, errorCallback);
 };
 sh.add.organization = function(organization, callback, errorCallback) {
 	return callPOST(servicesConfig.services.organizations.url, organization, callback, errorCallback);
@@ -408,8 +414,10 @@ sh.save.simulationType = function(simType, callback, errorCallback) {
 sh.save.trigger = function(trigger, callback, errorCallback) {
 	return callPUT(servicesConfig.services.triggers.url, trigger, callback, errorCallback);
 };
-sh.save.stream = function(stream, callback, errorCallback) {
-	return callPUT(servicesConfig.services.streams.url, stream, callback, errorCallback);
+
+sh.save.streams = {};
+sh.save.streams.source = function(stream, callback, errorCallback) {
+	return callPUT(servicesConfig.services.streams.url + "/sources", stream, callback, errorCallback);
 };
 sh.save.sink = function(sink, callback, errorCallback) {
 	return callPUT(servicesConfig.services.streamsinks.url, sink, callback, errorCallback);

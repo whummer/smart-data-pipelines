@@ -10,7 +10,6 @@ var app = {};
 describe('/stream/access', function() {
 
 	before(function(done) {
-		this.timeout(5000);
 		/* start streams/access service */
 		app.access = { port : 3000 };
 		app.streams = { port : 3000 };

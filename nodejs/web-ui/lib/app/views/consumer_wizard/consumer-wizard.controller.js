@@ -6,13 +6,13 @@ function consumerWizardCtrl($scope) {
 		alert('Wizard completed');
 	};
 	$scope.trim = window.trim;
-	
+
 	/* constants */
 	var STATUS_REQUESTED = "REQUESTED";
 
 	/* load streams */
 	var loadStreams = function() {
-		riox.streams({}, function(streams) {
+		riox.streams.sources({}, function(streams) {
 			$scope.$apply(function() {
 				$scope.streams = streams;
 				$.each(streams, function(idx, el) {
