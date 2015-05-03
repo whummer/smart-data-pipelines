@@ -29,7 +29,7 @@ var appConfig = {
 		streamsinks: { url: "http://localhost:8085/api/v1/streams/sinks" },
 		streamprocessors: { url: "http://localhost:8085/api/v1/streams/processors" },
 		access: { url: "http://localhost:8085/api/v1/access" },
-                files: { url: "http://localhost:8087/api/v1/files" },
+		files: { url: "http://localhost:8087/api/v1/files" },
 
 		websocket: { url: "ws://platform.riots.io:8085/websocket" }
 	},

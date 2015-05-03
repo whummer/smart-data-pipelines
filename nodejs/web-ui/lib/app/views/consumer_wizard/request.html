@@ -4,46 +4,46 @@
     <div class="row">
         <div class="col-lg-8">
 			<div class="form-group">
-				<label class="col-lg-5 text-cell">Stream Name</label>
+				<label class="col-lg-5 text-cell">Data Source Name</label>
 				<div class="col-lg-7 text-cell">
-					{{formData.selectedStream.name}}
+					{{formData.selectedSource.name}}
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="col-lg-5 text-cell">Publisher</label>
 				<div class="col-lg-7 text-cell">
-					{{formData.selectedStream.organization.name}}
+					{{formData.selectedSource.organization.name}}
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="col-lg-5 text-cell">Access Status</label>
 				<div class="col-lg-7 text-cell">
-					<div ng-show="formData.selectedStream.permit.type == 'auto'" >
-					Access to this stream is automatically granted.
+					<div ng-show="formData.selectedSource.permit.type == 'auto'" >
+					Access to this source is automatically granted.
 					</div>
-					<div ng-show="formData.selectedStream.permit.type == 'manual'" >
-						<div ng-show="!formData.streamAccess">
+					<div ng-show="formData.selectedSource.permit.type == 'manual'" >
+						<div ng-show="!formData.sourceAccess">
 							loading ...
 						</div>
-						<div ng-show="formData.streamAccess && !formData.streamAccess.status">
+						<div ng-show="formData.sourceAccess && !formData.sourceAccess.status">
 							Access permission required. <a ng-click="requestAccess()">Request access now</a>.
 						</div>
-						<div ng-show="formData.streamAccess.status == 'requested'">
+						<div ng-show="formData.sourceAccess.status == riox.STATUS_REQUESTED">
 							Request sent. Awaiting access permission.
 						</div>
-						<div ng-show="formData.streamAccess.status == 'granted'">
-							Access to this stream has been granted.
+						<div ng-show="formData.sourceAccess.status == riox.STATUS_PERMITTED">
+							Access to this data source has been granted.
 						</div>
-						<div ng-show="formData.streamAccess.status == 'denied'">
-							This stream is currently inaccessible.
+						<div ng-show="formData.sourceAccess.status == riox.STATUS_DENIED">
+							This data source is currently inaccessible.
 						</div>
 					</div>
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="col-lg-5 text-cell">Pricing</label>
-				<div class="col-lg-7 text-cell">
-					<div class="price text-cell" ng-init="thePrice=formData.selectedStream.pricing">
+				<div class="col-lg-7 text-cell" data-ng-alias="thePrice = formData.selectedSource.pricing">
+					<div class="price text-cell">
 						<div ng-show="thePrice.billingUnit == 'event' || thePrice.billingUnit == 'day'" style="margin: auto;">
 						{{thePrice.unitPrice}} €
 						<span style="font-weight: normal;">

@@ -13,8 +13,9 @@ angular.module('rioxApp', [
 	'angular-growl',
 	'ngAnimate',
 	'hljs',
-		'ui.ace',
-	'ngFileUpload'
+	'ui.ace',
+	'ngFileUpload',
+	'ng-alias'
 ])
 		.config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider, growlProvider) {
 			$locationProvider.html5Mode(false);

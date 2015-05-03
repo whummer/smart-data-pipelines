@@ -2,47 +2,6 @@
  * @author whummer
  */
 
-/* define array index names for model properties */
-
-var shareHook = (typeof window != "undefined") ? window : global;
-
-shareHook.ID = "id";
-shareHook.NAME = "name";
-shareHook.DESCRIPTION = "description";
-shareHook.CREATION_DATE = "creation-date";
-shareHook.CREATOR_ID = "creator-id";
-shareHook.OWNER_ID = "owner-id";
-shareHook.THING_TYPE = "thing-type";
-shareHook.THING_ID = "thing-id";
-shareHook.THINGS = "things";
-shareHook.PROPERTIES = "properties";
-shareHook.PROPERTY_ID = "property-id";
-shareHook.PROPERTY_NAME = "property";
-shareHook.PROPERTY_VALUE = "value";
-shareHook.PROPERTY_TYPE = "data-type";
-shareHook.TIMESTAMP = "timestamp";
-shareHook.IMAGE_DATA = "image-data";
-shareHook.SIMULATION_ID = "simulation-id";
-shareHook.START_TIME = "start-time";
-shareHook.END_TIME = "end-time";
-shareHook.USER_ID = "user-id";
-shareHook.STREAM_ID = "stream-id";
-shareHook.SOURCE_ID = "source-id";
-shareHook.SINK_ID = "sink-id";
-shareHook.ORGANIZATION_ID = "organization-id";
-shareHook.PROCESSORS = "processors";
-shareHook.REQUESTOR_ID = "requestor-id";
-shareHook.CONNECTOR = "connector";
-shareHook.STATUS = "status";
-shareHook.CREATED = "created";
-shareHook.CHANGED = "changed";
-shareHook.STATUS_REQUESTED = "REQUESTED";
-shareHook.STATUS_PENDING = "PENDING";
-shareHook.STATUS_CONFIRMED = "CONFIRMED";
-shareHook.STATUS_PERMITTED = "PERMITTED";
-shareHook.STATUS_DENIED = "DENIED";
-
-
 (function() {
 
 /* CONFIGURATIONS */
@@ -53,11 +12,57 @@ shareHook.STATUS_DENIED = "DENIED";
  *  	if false, re-use a single websocket connection (TODO implement)
  */
 var openConnectionPerRequest = true;
+var ttl = 15000;
 
 /* END OF CONFIGURATIONS */
 
+/* Global riox object to hook all methods onto */
 var sh = {};
-var ttl = 15000;
+
+/* GLOBAL CONSTANTS: names for model properties */
+var g = {};
+
+g.ID = "id";
+g.NAME = "name";
+g.DESCRIPTION = "description";
+g.CREATION_DATE = "creation-date";
+g.CREATOR_ID = "creator-id";
+g.OWNER_ID = "owner-id";
+g.THING_TYPE = "thing-type";
+g.THING_ID = "thing-id";
+g.THINGS = "things";
+g.PROPERTIES = "properties";
+g.PROPERTY_ID = "property-id";
+g.PROPERTY_NAME = "property";
+g.PROPERTY_VALUE = "value";
+g.PROPERTY_TYPE = "data-type";
+g.TIMESTAMP = "timestamp";
+g.IMAGE_DATA = "image-data";
+g.SIMULATION_ID = "simulation-id";
+g.START_TIME = "start-time";
+g.END_TIME = "end-time";
+g.USER_ID = "user-id";
+g.STREAM_ID = "stream-id";
+g.SOURCE_ID = "source-id";
+g.SINK_ID = "sink-id";
+g.ORGANIZATION_ID = "organization-id";
+g.PROCESSORS = "processors";
+g.REQUESTOR_ID = "requestor-id";
+g.CONNECTOR = "connector";
+g.STATUS = "status";
+g.CREATED = "created";
+g.CHANGED = "changed";
+g.STATUS_REQUESTED = "REQUESTED";
+g.STATUS_PENDING = "PENDING";
+g.STATUS_CONFIRMED = "CONFIRMED";
+g.STATUS_PERMITTED = "PERMITTED";
+g.STATUS_DENIED = "DENIED";
+
+var shareHook = (typeof window != "undefined") ? window : global;
+for(key in g) {
+	shareHook[key] = sh[key] = g[key];
+}
+
 
 /* initialize authentication info */
 sh.login = function(options, callback, errorCallback) {
@@ -463,10 +468,10 @@ sh.save.access = function(access, callback, errorCallback) {
 	if(access.id) {
 		url += "/" + access.id;
 		return callPUT(url, access, callback, errorCallback);
-	} else if(access.streamId) {
+	} else if(access[SOURCE_ID]) {
 		return callPOST(url, access, callback, errorCallback);
 	} else {
-		throw "Missing either 'id' or 'streamId' of stream access entity";
+		throw "Missing either '" + ID + "' or '" + SOURCE_ID + "' of stream access entity";
 	}
 };
 
