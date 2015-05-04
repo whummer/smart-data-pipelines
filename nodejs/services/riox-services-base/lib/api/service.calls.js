@@ -39,7 +39,10 @@ var __getConfig = function(opts, body) {
 sh.invokeGET = function(options, url, callback, errorCallback) {
 	args = __getConfig(options);
 	return client.get(url, args, function(data, response) {
-		if(callback) {
+		if(response.statusCode >= 400 && response.statusCode < 600) {
+			/* error */
+			errorCallback(data, response.statusCode, response.headers, response);
+		} else if(callback) {
 			callback(data, response.statusCode, response.headers, response);
 		}
 	}).
@@ -56,7 +59,10 @@ sh.invokeGET = function(options, url, callback, errorCallback) {
 sh.invokePOST = function(options, url, body, callback, errorCallback) {
 	args = __getConfig(options, body);
 	return client.post(url, args, function(data, response) {
-		if(callback) {
+		if(response.statusCode >= 400 && response.statusCode < 600) {
+			/* error */
+			errorCallback(data, response.statusCode, response.headers, response);
+		} else if(callback) {
 			callback(data, response.statusCode, response.headers, response);
 		}
 	}).
@@ -81,7 +87,10 @@ sh.invokePOSTandGET = function($http, url, body, callback) {
 sh.invokePUT = function($http, url, body, callback) {
 	args = __getConfig(options, body);
 	return client.put(url, args, function(data, response) {
-		if(callback) {
+		if(response.statusCode >= 400 && response.statusCode < 600) {
+			/* error */
+			errorCallback(data, response.statusCode, response.headers, response);
+		} else if(callback) {
 			callback(data, response.statusCode, response.headers, response);
 		}
 	}).

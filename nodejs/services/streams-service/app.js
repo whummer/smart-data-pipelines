@@ -7,11 +7,11 @@
 // Set default node environment to development
 process.env.NODE_ENV = process.env.NODE_ENV || "development";
 
-// configure port for microservices
-process.env.SERVICE_PORT = process.env.SERVICE_PORT || 8085;
-
 // load config
+var riox = require('riox-shared/lib/api/riox-api');
 var config = require("./config/environment");
+config.port = process.env.SERVICE_PORT || 8085;
+global.config = require("riox-services-base/lib/config/merge")(global.config, config);
 
 // require service starter
 var starter = require("riox-services-base/lib/service.starter");
@@ -21,6 +21,6 @@ if(config.seedDB) { require("./demodata"); }
 
 // start server
 var routes = require("./routes");
-starter.start(config, routes, "streams-service");
+var server = starter.start(config, routes, "streams-service");
 
-module.exports = starter;
+module.exports = server;

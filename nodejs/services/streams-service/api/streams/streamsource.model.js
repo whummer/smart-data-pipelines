@@ -48,8 +48,8 @@ var template = {
 	/**
 	 * Stream sink config.
 	 */
-	"sink-config": {
-		"connector" : String // http, amqp, whatever
+	"connector": {
+		"type": { type: String } // http, amqp, whatever
 	},
 
 	// e.g. 3h, 2w, 1m, 1y

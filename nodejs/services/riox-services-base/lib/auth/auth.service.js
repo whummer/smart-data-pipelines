@@ -1,7 +1,7 @@
 'use strict';
 
 var passport = require('passport');
-var config = require('../config/environment');
+var config = require('../config');
 var jwt = require('jsonwebtoken');
 var expressJwt = require('express-jwt');
 var compose = require('composable-middleware');
@@ -9,6 +9,7 @@ var riox = require('riox-shared/lib/api/riox-api');
 
 var validateJwt = expressJwt({ secret: config.secrets.session });
 
+var INTERNAL_USER_ID = "000000000000000000000000"; // Mongodb ObjectId format
 
 /**
  * Attaches the user object to the request if authenticated
@@ -20,7 +21,8 @@ function isAuthenticated() {
     .use(function(req, res, next) {
       // allow access_token to be passed through query parameter as well
       if(req.query && req.query.hasOwnProperty('access_token')) {
-        req.headers.authorization = 'Bearer ' + req.query.access_token;
+    	  var header = getHeaderFromToken(req.query.access_token);
+    	  req.headers.authorization = header.authorization;
       }
       validateJwt(req, res, next);
     });
@@ -71,7 +73,7 @@ function getCurrentUser(req) {
 }
 
 /**
- * Gets the current user of this request.
+ * Gets details of the current user of this request.
  */
 function getCurrentUserDetails(req, callback) {
 	var user = getCurrentUser(req);
@@ -81,11 +83,23 @@ function getCurrentUserDetails(req, callback) {
 	});
 }
 
+function getInternalCallTokenHeader() {
+	return getTokenHeaderForUserId(INTERNAL_USER_ID);
+}
+
 /**
  * Returns a jwt token signed by the app secret
  */
-function signToken(id) {
-  return jwt.sign({ _id: id }, config.secrets.session, { expiresInMinutes: 60*10 });
+function signToken(userId) {
+	return jwt.sign({ _id: userId }, config.secrets.session, { expiresInMinutes: 60*10 });
+}
+
+function getTokenHeaderForUserId(userId) {
+	return getHeaderFromToken(signToken(userId));
+}
+
+function getHeaderFromToken(token) {
+	return { authorization: 'Bearer ' + token };
 }
 
 /**
@@ -104,3 +118,10 @@ exports.signToken = signToken;
 exports.setTokenCookie = setTokenCookie;
 exports.getCurrentUser = getCurrentUser;
 exports.getCurrentUserDetails = getCurrentUserDetails;
+
+exports.getInternalCallTokenHeader = getInternalCallTokenHeader;
+exports.getTokenHeaderForUserId = getTokenHeaderForUserId;
+exports.signToken = signToken;
+exports.getHeaderFromToken = getHeaderFromToken;
+
+exports.INTERNAL_USER_ID = INTERNAL_USER_ID;

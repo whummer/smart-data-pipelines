@@ -1,31 +1,33 @@
 'use strict';
 
 var express = require('express');
-var controller = require('./streams.controller');
+var streamsCtrl = require('./streams.controller');
+var sinksCtrl = require('./streamsinks.controller');
+var sourcesCtrl = require('./streamsources.controller');
+var procCtrl = require('./streamprocessors.controller');
 var auth = require('riox-services-base/lib/auth/auth.service');
 
 var router = express.Router();
 
-router.get('/provided', auth.isAuthenticated(), controller.listProvided);
-router.get('/consumed', auth.isAuthenticated(), controller.listConsumed);
+/* METHODS FOR STREAMS */
+router.get('/provided', auth.isAuthenticated(), streamsCtrl.listProvided);
+router.get('/consumed', auth.isAuthenticated(), streamsCtrl.listConsumed);
+router.post('/', auth.isAuthenticated(), streamsCtrl.createStream);
+router.post('/:id/apply', auth.isAuthenticated(), streamsCtrl.applyStreamConfig);
 
-router.get('/sources', auth.isAuthenticated(), controller.indexStreamSource);
-router.get('/sources/:id', auth.isAuthenticated(), controller.showStreamSource);
-router.delete('/sources/:id', auth.hasRole('admin'), controller.destroyStreamSource);
+/* METHODS FOR STREAM SOURCES */
+router.get('/sources', auth.isAuthenticated(), sourcesCtrl.indexStreamSource);
+router.get('/sources/:id', auth.isAuthenticated(), sourcesCtrl.showStreamSource);
+router.delete('/sources/:id', auth.hasRole('admin'), sourcesCtrl.destroyStreamSource);
+router.post('/sources', auth.isAuthenticated(), sourcesCtrl.createStreamSource);
+router.post('/sources/apply', auth.isAuthenticated(), sourcesCtrl.applyStreamSource);
+router.put('/sources/:id', auth.isAuthenticated(), sourcesCtrl.updateStreamSource);
 
-// creates a stream source
-router.post('/sources', auth.isAuthenticated(), controller.createStreamSource);
+/* METHODS FOR STREAM SINKS */
+router.post('/sinks', auth.isAuthenticated(), sinksCtrl.createStreamSink);
 
-// update an existing stream source
-router.put('/sources/:id', auth.isAuthenticated(), controller.updateStreamSource);
+/* METHODS FOR STREAM PROCESSORS */
+router.post('/processors', auth.isAuthenticated(), procCtrl.createStreamProcessor);
 
-// creates a stream processing element
-//router.post('/processors', auth.isAuthenticated(), controller.updateStreamSource);;
-
-
-
-
-// creates a stream sink
-//router.post('/sinks');
 
 module.exports = router;

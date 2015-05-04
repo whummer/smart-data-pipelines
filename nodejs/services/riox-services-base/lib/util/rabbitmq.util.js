@@ -3,7 +3,6 @@
  */
 
 var amqp = require('amqp');
-var config = require('../../config/environment');
 
 exports.createExchange = function(name, callback) {
 	var connection = rabbitConnection();
@@ -21,7 +20,7 @@ exports.bindQueueToExchange = function(queueName, exchangeName, callback) {
 	var connection = rabbitConnection();
 	connection.on('ready', function () {
 		connection.queue(queueName, function (q) {
-			console.log('Successfully create new queue: ', q);
+			console.log('Successfully create new queue: ', q.name);
 			q.bind(exchangeName, '', function() {
 				console.log('Successfully bound queue ' + queueName + ' to exchange ' + exchangeName);
 				connection.disconnect();

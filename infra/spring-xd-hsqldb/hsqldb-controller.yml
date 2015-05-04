@@ -1,0 +1,23 @@
+kind: ReplicationController
+apiVersion: v1beta1
+id: hsqldb
+namespace: default
+labels:
+  name: hsqldb
+desiredState:
+  replicas: 1
+  replicaSelector:
+    name: hsqldb
+  podTemplate:
+    labels:
+      name: hsqldb
+    desiredState:
+      manifest:
+        version: v1beta2
+        id: hsqldb
+        dnsPolicy: "Default"  # Don't use cluster DNS.
+        containers:
+          - name: zookeeper
+            image: riox/springxd-hsqldb:1.1.1
+            ports: 
+              - containerPort: 9101

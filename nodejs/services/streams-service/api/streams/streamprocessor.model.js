@@ -45,4 +45,4 @@ var StreamProcessor = new Schema(template);
 StreamProcessor.set('toJSON', { virtuals: true });
 StreamProcessor.set('toObject', { virtuals: true });
 
-module.exports = mongoose.model('StreamSource', StreamProcessor);
+module.exports = mongoose.model('StreamProcessor', StreamProcessor);
