@@ -3,6 +3,7 @@
 var assert = require('assert');
 var superagent = require('superagent');
 var status = require('http-status');
+var starters = require('./service.starters');
 
 var app = {};
 var services = {};
@@ -51,19 +52,16 @@ var initClientProxy = function(proxy) {
 		return superagent.put(url).set("authorization",
 				proxy.tokenHeaders.authorization);
 	}
+	proxy.head = function(url) {
+		return superagent.head(url).set("authorization",
+				proxy.tokenHeaders.authorization);
+	}
 }
 
 app.auth = function(email, pass, callback) {
-
-	services.users = { port: 3001 }
-	services.organizations = { port: 3001 }
-	process.env.SERVICE_PORT = services.users.port;
-	services.users.server = require('../../../users-service/app.js');
-	/* set URLs */
-	services.users.url = global.servicesConfig.services.users.url = 
-		"http://localhost:" + services.users.port + "/api/v1/users";
-	services.organizations.url = global.servicesConfig.services.organizations.url = 
-		"http://localhost:" + services.users.port + "/api/v1/organizations";
+	/* start services */
+	services.users = starters.startUsersService();
+	services.organizations = starters.startOrganizationsService();
 	/* do login */
 	attemptLogin(email, pass, callback);
 }
@@ -75,8 +73,20 @@ var getUserId = function(userObj, callback) {
 			assert.equal(res.status, status.OK);
 			userObj.user = res.body;
 			callback(res);
-		});
-}
+		}
+	);
+};
+
+var getUserOrgs = function(userObj, callback) {
+	userObj.get(services.organizations.url + "/default").end(
+		function(err, res) {
+			assert.ifError(err);
+			assert.equal(res.status, status.OK);
+			userObj.orgs = { default: res.body };
+			callback(res);
+		}
+	);
+};
 
 app.authDefault = function(callback) {
 	if(app.user1 && app.user2) {
@@ -102,7 +112,11 @@ app.authDefault = function(callback) {
 
 			getUserId(app.user1, function() {
 				getUserId(app.user2, function() {
-					if(callback) callback();
+					getUserOrgs(app.user1, function() {
+						getUserOrgs(app.user2, function() {
+							if(callback) callback();
+						});
+					});
 				});
 			});
 

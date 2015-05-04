@@ -14,10 +14,7 @@ var cookieParser = require('cookie-parser');
 var errorHandler = require('errorhandler');
 var path = require('path');
 var config = require('./environment');
-// var passport = require('passport');
 var session = require('express-session');
-// var mongoStore = require('connect-mongo')(session);
-// var mongoose = require('mongoose');
 
 function setupDefaults(app) {
  app.use(express.static(config.root));
@@ -52,7 +49,6 @@ module.exports = function(app) {
   }
 
   if ('development' === env || 'test' === env) {
-    console.log('ConfigRoot: ', config.root);
     setupDefaults(app);
     app.use(morgan('dev'));
     app.use(errorHandler()); // Error handler - has to be last

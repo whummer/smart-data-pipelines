@@ -3,13 +3,13 @@
 var Organization = require('./organization.model');
 var Membership = require('./membership.model');
 var auth = require('riox-services-base/lib/auth/auth.service');
-var config = require('../../config/environment');
-var jwt = require('jsonwebtoken');
+var ObjectId = require('mongoose').Types.ObjectId; 
 
 /* constants */
 var CREATOR_ID = "creator-id";
 var NAME = "name";
 var ORGANIZATION_ID = "organization-id";
+var IMAGE_DATA = "image-data";
 
 var validationError = function(res, err) {
 	return res.json(422, err);
@@ -47,16 +47,21 @@ exports.update = function(req, res) {
 	if(orgId != obj.id) {
 		return validationError(res, err);
 	}
-	// check if this is the org's owner
 	var query = {_id: orgId};
 	Organization.find(query, function(err, list) {
 		if (err)
 			return next(err);
 		if (!list || !list.length)
 			return res.send(404);
-		if (list[0][CREATOR_ID] != user.id)
+		var existing = list[0];
+		// check if this is the org's owner
+		if (existing[CREATOR_ID] != user.id)
 			return res.send(401);
-		obj.save(orgId, function(err, obj) {
+		/* copy info to existing entity */
+		existing[IMAGE_DATA] = obj[IMAGE_DATA];
+		existing[NAME] = obj[NAME];
+
+		existing.save(function(err, obj) {
 			if (err)
 				return validationError(res, err);
 			res.json(obj);
@@ -187,12 +192,13 @@ var findSingle = function(id, callback, errorCallback) {
 }
 
 var findOrCreateDefault = function(userId, callback, errorCallback) {
-	var query = {CREATOR_ID: userId};
-	Organization.find(query, function(err, obj) {
+	var query = {}
+	query[CREATOR_ID] = userId;
+	Organization.find(query, function(err, list) {
 		if (err)
 			return errorCallback(err);
-		if (obj.length) {
-			callback(obj[0]);
+		if (list.length) {
+			callback(list[0]);
 		} else {
 			var newObj = {};
 			newObj[NAME] = "Default Organization";

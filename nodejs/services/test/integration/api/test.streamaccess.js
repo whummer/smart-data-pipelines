@@ -4,45 +4,44 @@ var assert = require('assert');
 var superagent = require('superagent');
 var status = require('http-status');
 var test = require('../util/testutil');
+var starters = require('../util/service.starters');
+var riox = require('riox-shared/lib/api/riox-api');
 
 var app = {};
 
 describe('/stream/access', function() {
 
 	before(function(done) {
-		this.timeout(5000);
-		/* start streams/access service */
-		app.access = { port : 3000 };
-		app.streams = { port : 3000 };
-		process.env.SERVICE_PORT = app.access.port;
-		app.access.server = require('../../../streams-service/app.js').start();
-		/* set URLs */
-		app.access.url = global.servicesConfig.services.access.url = "http://localhost:" + app.access.port + "/api/v1/access";
-		app.streams.url = global.servicesConfig.services.streams.url = "http://localhost:" + app.streams.port + "/api/v1/streams";
+		/* start service(s) */
+		app.streams = starters.startStreamsService();
+		app.access = starters.startStreamsAccessService();
 		/* get auth token */
 		test.authDefault(done);
 	});
 
-	after(function() {
-		app.access.server.stop();
+	after(function(done) {
+		app.access.server.stop(function() {
+			app.streams.server.stop(done);
+		});
 	});
 
-	it('adds a stream and requests access to the newly added stream', function(done) {
+	it('adds a stream source and requests access to the newly added source', function(done) {
 
-		var newStream = {
-				"name": "testStream456",
-				"sink-config": { connector: "http" }
-		}
+		var newSource = {};
+		newSource[NAME] = "testStream456";
+		newSource[ORGANIZATION_ID] = test.user1.orgs.default.id;
+		newSource[CONNECTOR] = { "type": "http" };
 
-		test.user1.post(app.streams.url).send(newStream).end(function(err, res) {
-			var streamId = res.body.id;
+		test.user1.post(app.streams.sources.url).send(newSource).end(function(err, res) {
+			var sourceId = res.body.id;
 			assert.ifError(err);
 			assert.equal(res.status, status.OK);
 			test.user1.get(app.access.url).end(function(err, res) {
 				assert.ifError(err);
 				assert.equal(res.status, status.OK);
 				assert.equal(0, res.body.length);
-				var accessRequest = {streamId : streamId};
+				var accessRequest = {};
+				accessRequest[SOURCE_ID] = sourceId;
 				//console.log("accessRequest", accessRequest);
 				test.user2.
 				post(app.access.url).
@@ -50,8 +49,8 @@ describe('/stream/access', function() {
 					assert.ifError(err);
 					//console.log("err", err, res);
 					assert.equal(res.status, status.OK);
-					assert.equal(streamId, res.body.streamId);
-					assert.equal(true, res.body.requestorId.length > 0);
+					assert.equal(sourceId, res.body[SOURCE_ID]);
+					assert.equal(true, res.body[REQUESTOR_ID].length > 0);
 					done();
 				});
 			});

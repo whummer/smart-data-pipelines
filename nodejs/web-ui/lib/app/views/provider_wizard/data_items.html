@@ -8,51 +8,29 @@
 	</p>
 
 	<p>If you want to provide the data as it is to your consumers, skip this step
-
 	</p>
 
-	<a ng-click="createDataItems = true" ng-hide="createDataItems" class="btn btn-primary">
+	<a ng-click="resourceData.createDataItems = true" ng-hide="resourceData.createDataItems" class="btn btn-primary">
 		Create Data Items
 	</a>
 
-	<a ui-sref="provider.wizard.data_pricing" ng-hide="createDataItems" class="btn btn-primary">
+	<a ui-sref="provider.wizard.data_pricing" ng-hide="resourceData.createDataItems" class="btn btn-primary">
 		Skip
 	</a>
 
-	<div id="payloadArea" class="row" ng-show="createDataItems">
+	<!-- todo move this in less file -->
+	<style>
+		.ace_editor { height: 200px;}
+	</style>
 
-		<div class="col-sm-12" >
-				<textarea id="resourcePayload" ng-keyup="extractDataItems();" rows="10" name="resourcePayload" placeholder=""
-									class="form-control"
-									ng-model="resourceData.payload" required></textarea>
-
-			<!--<div class="form-group">
-				&lt;!&ndash;<label for="resourcePayload" class="col-sm-3 control-label">Sample Payload (e.g. JSON or XML)</label>&ndash;&gt;
-				<div class="col-sm-8">
-					<textarea id="resourcePayload" rows="10" name="resourcePayload" placeholder="" class="form-control"
-										ng-model="resourceData.payload" required></textarea>
-					<a ng-click="extractDataItems();" style="margin-top: 10px;;" class="btn btn-primary pull-right"
-						 ng-hide="extractedItems"
-						 ng-disabled="!resourceData.payload.length">
-						Extract Data Items
-					</a>
-				</div>
-
-			</div>-->
-
-		</div>
+	<div id="payloadArea" class="row" ng-show="resourceData.createDataItems" style="padding-right:34px;">
+		<div style="margin-left: 16px;" class="col-sm-12" ui-ace="{mode:'json'}"
+				 ng-model="resourceData.payload"></div>
 	</div>
 
-	<div class="error">
+	<div class="row" ng-show="resourceData.extractedItems && resourceData.parsedPayload">
 
-	</div>
-
-	<div hljs ng-show="parsedPayload" class="animated fadeIn" source="parsedPayload">
-	</div>
-
-	<div class="row" ng-show="resourceData.extractedItems && parsedPayload">
-
-		<div class="widget dark-grey-widget-bg p-xl animated fadeIn" style="margin-left: 18px;margin-right: 18px">
+		<div class="widget dark-grey-widget-bg p-xl animated fadeIn" style="margin-left: 16px; margin-right: 16px">
 			<h3>Please pick and describe your individual data items</h3><br/>
 
 			<div class="row" style="margin-bottom: 10px; margin-top:15px">
@@ -78,18 +56,6 @@
 									 ng-model="resourceData.dataItems[property].description"
 									 placeholder="enter description for data item '{{property}}'"/>
 					</div>
-					<!--todo add select for data item tags-->
-					<!--<div class="col-sm-4" ng-show="resourceData.dataItems[property].enabled">
-						<select multiple chosen ng-model="resourceData.dataItems[property].tags" style="overflow: visible;">
-							<option value="car">id</option>
-							<option value="speed">speed</option>
-							<option value="temperature">temperature</option>
-							<option value="pressure">pressure</option>
-							<option value="acceleration">acceleration</option>
-							<option value="altitude">altitude</option>
-							<option value="humidity">humidity</option>
-						</select>
-					</div>-->
 				</div>
 			</div>
 
@@ -102,14 +68,24 @@
 			<div ng-show="error"><span class="error">{{error}}</span></div>
 		</div>
 		<div class="col-sm-6">
-			<a ng-show="createDataItems" class="btn btn-primary pull-right" ng-click="resetDataItems()" style="margin-top: 10px;">
+
+
+			<a ng-show="resourceData.createDataItems" class="btn btn-primary pull-right" ng-click="extractDataItems()"
+				 style="margin-left: 10px; margin-top: 10px;">
+				Extract Data Items
+			</a>
+
+
+			&nbsp;
+			<a ng-show="resourceData.createDataItems" class="btn btn-primary pull-right " ng-click="resetDataItems()"
+				 style="margin-right: 10px; margin-top: 10px;">
 				Reset
 			</a>
 		</div>
 	</div>
 
 
-	<div class="row" ng-show="createDataItems" style="margin-top: 10px">
+	<div class="row" ng-show="resourceData.createDataItems" style="margin-top: 10px">
 		<div class="col-sm-12">
 			<button ui-sref="provider.wizard.data_retention" class="btn btn-primary">
 				Previous

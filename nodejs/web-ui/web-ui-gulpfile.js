@@ -149,6 +149,7 @@ function injectResources(indexLocation, cssLocation, ignorePath, minified) {
 	// todo om: check how we can do this right (not explicitly filtering those)
 	var jqueryFilter = gulpFilter(['**', '!jquery.js']);
 	var vectorMapFilter = gulpFilter(['**', '!**/jquery-jvectormap*.js']);
+	var aceFilter = gulpFilter(['**', '!**/ace.js']);
 
 	var scripts = minified ? paths.minified_js : paths.scripts;
 
@@ -162,6 +163,7 @@ function injectResources(indexLocation, cssLocation, ignorePath, minified) {
 					cssFiles, // compiled less files
 					gulp.src(paths.css), // plain CSS files
 					gulp.src(scripts)
+							.pipe(aceFilter)
 							.pipe(vectorMapFilter)
 							.pipe(angular_filesort())), {ignorePath: ignorePath}))
 

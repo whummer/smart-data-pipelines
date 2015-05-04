@@ -1,0 +1,15 @@
+zookeeper: 
+  image: riox/springxd-zookeeper:1.1.1
+  ports: 
+    - "2181:2181"
+
+kafka:
+  image: riox/kafka
+  ports:
+    - "9092"
+  links: 
+    - zookeeper:zookeeper
+  environment:
+    KAFKA_ADVERTISED_HOST_NAME: 172.17.42.1
+  volumes:
+    - /var/run/docker.sock:/var/run/docker.sock

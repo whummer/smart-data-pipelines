@@ -17,15 +17,15 @@ angular.module('rioxApp').controller('StreamsConsumedCtrl', function ($scope, Au
 	var loadStream = function() {
 		var id = $stateParams.streamId;
 		if(!id) return;
-		riox.stream(id, function(stream) {
+		riox.streams.source(id, function(stream) {
 			$scope.$apply(function() {
 				$scope.selectedStream = stream;
 				$scope.prepareStream(stream);
 			});
 		});
 	};
-	
+
 	/* load main elements */
 	loadStream();
-	
+
 });

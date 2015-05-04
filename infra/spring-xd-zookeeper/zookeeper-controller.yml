@@ -1,0 +1,23 @@
+kind: ReplicationController
+apiVersion: v1beta1
+id: zookeeper
+namespace: default
+labels:
+  name: zookeeper
+desiredState:
+  replicas: 1
+  replicaSelector:
+    name: zookeeper
+  podTemplate:
+    labels:
+      name: zookeeper
+    desiredState:
+      manifest:
+        version: v1beta2
+        id: zookeeper
+        dnsPolicy: "Default"  # Don't use cluster DNS.
+        containers:
+          - name: zookeeper
+            image: riox/springxd-zookeeper:1.1.1
+            ports: 
+              - containerPort: 2181
