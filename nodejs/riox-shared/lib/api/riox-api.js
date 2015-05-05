@@ -112,13 +112,11 @@ sh.auth = function(options, callback, errorCallback) {
 	    headers: __defaultHeaders
 	});
 	var funcSuccess = function(result) {
-		console.log("Authentication successful.", result);
 		if(callback) {
 			callback(result);
 		}
 	};
 	var funcError = function(result) {
-		console.log("Authentication error.");
 		if(errorCallback) {
 			errorCallback(result);
 		}

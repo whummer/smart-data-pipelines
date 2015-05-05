@@ -16,8 +16,16 @@ var validationError = function(res, err) {
  * Authentication request
  */
 exports.auth = function(req, res) {
-	console.log(req.body);
-	res.json(200, {}); // TODO check token
+	if(req.body.network == "riox" && req.body.token) {
+		auth.validateToken(req.body.token, function(err, valid) {
+			if(err) {
+				return res.json(401, { error: "Permission denied." });
+			}
+			return res.json(200, req.body);
+		});
+	} else {
+		res.json(422, { error: "Invalid auth details" });
+	}
 };
 
 /**

@@ -9,7 +9,7 @@ angular.module('rioxApp').controller('StreamsConsumedCtrl', function ($scope, Au
 	riox.streams.consumed({}, function(streams) {
 		$scope.$apply(function() {
 			$scope.streams = streams;
-			$scope.prepareStreams($scope.streams);
+			$scope.prepareStreamSources($scope.streams);
 		});
 	});
 
@@ -20,7 +20,7 @@ angular.module('rioxApp').controller('StreamsConsumedCtrl', function ($scope, Au
 		riox.streams.source(id, function(stream) {
 			$scope.$apply(function() {
 				$scope.selectedStream = stream;
-				$scope.prepareStream(stream);
+				$scope.prepareStreamSource(stream);
 			});
 		});
 	};
