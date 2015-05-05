@@ -12,6 +12,7 @@ var kafka = require('riox-services-base/lib/util/kafka.util');
 var containers = require('riox-services-base/lib/util/containers.util');
 var portfinder = require('portfinder');
 var path = require('path');
+var log = require('winston');
 
 var validationError = function (res, err) {
 	return res.json(422, err);
@@ -35,14 +36,16 @@ exports.indexStreamSource = function (req, res) {
 
 
 exports.createStreamSource = function (req, res, next) {
-	var streamSource = new StreamSource(req.body);
+  log.info('Creating stream-source: ', req.body);
+  var streamSource = new StreamSource(req.body);
 
 	if (!streamSource.connector || streamSource.connector.type != "http") {
+    log.warn('Non HTTP connector not supported');
 		return validationError(res, {"description": "Unsupported Connector-Type. Only HTTP is supported at the moment"});
 	}
 	if (!streamSource[ORGANIZATION_ID]) {
+    log.warn('No valid organization given for data resource ', streamSource.name);
 		return validationError(res, {"description": "Please provide a valid organization for this source."});
-		return;
 	}
 
 	streamSource.save(function (err, obj) {

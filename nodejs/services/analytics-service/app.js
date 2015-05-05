@@ -24,3 +24,4 @@ var routes = require("./routes");
 var server = starter.start(config, routes, "analytics-service");
 
 module.exports = server;
+

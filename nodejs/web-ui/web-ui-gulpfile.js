@@ -227,7 +227,7 @@ gulp.task('ui:serve', 'serve the riox-ui src using nodemon', function () {
 	return nodemon({
 		script: SRC_DIR + '/server.js', verbose: false,
 		watch: ["web-ui/lib"],
-        ignore: ["lib/", "web-ui/node_modules", "node_modules", 
+        ignore: ["lib/", "web-ui/node_modules", "node_modules",
                  "web-ui/lib/bower_components", "services/**/node_modules"],
 		env: { NODE_ENV: "development" , PORT : 8080}
 	});
@@ -237,7 +237,6 @@ gulp.task('ui:serve', 'serve the riox-ui src using nodemon', function () {
 gulp.task('ui:livereload', 'serve the riox-ui using nodemon (with livereload)', ['ui:serve'], function () {
 	livereload();
 	livereload.listen();
-	util.log(livereload);
 	var all_build_files = SRC_DIR + '/app/**/*';
 	gulp.watch(paths.less, ['ui:inject:dev']);
 	return gulp.watch(all_build_files, function (whatChanged) {

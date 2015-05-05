@@ -11,12 +11,17 @@ var express = require('express');
 var mongoose = require('mongoose');
 var cors = require('cors');
 var util = require('./util/util');
+var log = require('winston');
 
 require('./api/service.calls');
 
 if(!global.servicesConfig) {
 	global.servicesConfig = require('./config/services');
 }
+
+
+// configure winston logger
+log.remove(log.transports.Console).add(log.transports.Console, {timestamp: true, debugStdout : true, colorize: true});
 
 var start = function(config, routes, serviceName) {
 
@@ -58,7 +63,7 @@ var start = function(config, routes, serviceName) {
 		routes(expressApp);
 
 		server.listen(config.port, config.ip, function () {
-			console.log('Express server listening on %d, in %s mode', config.port, expressApp.get('env'));
+			log.info('Service ' + serviceName + ' listening on %d, in %s mode', config.port, expressApp.get('env'));
 		});
 		app.started = true;
 		return app;

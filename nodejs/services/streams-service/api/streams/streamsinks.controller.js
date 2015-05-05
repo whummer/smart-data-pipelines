@@ -9,6 +9,7 @@ var riox = require('riox-shared/lib/api/riox-api');
 var portfinder = require('portfinder');
 var containers = require('riox-services-base/lib/util/containers.util');
 var springxd = require('riox-services-base/lib/util/springxd.util');
+var log = require('winston');
 
 
 var validationError = function (res, err) {
@@ -29,6 +30,7 @@ exports.indexStreamSink = function (req, res) {
 
 exports.createStreamSink = function (req, res, next) {
 	var streamSink = new StreamSink(req.body);
+  log.debug('Creating stream-sink: ', streamSink);
 
 	streamSink.save(function (err, obj) {
 		if (err)
@@ -105,7 +107,7 @@ var applyByStreamSink = exports.applyByStreamSink = function(sink, callback, err
 //		var mimeType = "application/x-xd-tuple";
 //		var mimeType = "application/json";
 		var mimeType = "text/plain";
-		var streamDefinition = "kafka --zkconnect=" + cfg.zookeeper + ":2181 --topic=" + topicName + 
+		var streamDefinition = "kafka --zkconnect=" + cfg.zookeeper + ":2181 --topic=" + topicName +
 				" --outputType=" + mimeType + " | " + "websocket --port=" + port + " --path=" + path;
 
 		springxd.createStream(xdStreamId, streamDefinition, function(stream) {

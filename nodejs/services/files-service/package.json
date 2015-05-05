@@ -22,6 +22,7 @@
     "passport-local": "~0.1.6",
     "passport-twitter": "latest",
     "multer": "0.1.8",
+    "winston": "^1.0.0",
 
     "riox-shared": "../../riox-shared",
     "riox-services-base": "../riox-services-base"
