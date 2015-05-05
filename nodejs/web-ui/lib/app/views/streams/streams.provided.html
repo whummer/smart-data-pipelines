@@ -1,13 +1,13 @@
 <div class="container">
 	<div class="row">
 		<div class="col-sm-12">
-			<h1>Provided Data Streams</h1>
+			<h1>Provided Data Stream Sources</h1>
 		</div>
 		<div class="row">
 			<div class="col-lg-12">
 				<div class="ibox float-e-margins">
 					<div class="ibox-title">
-						<h5>Streams Overview</h5>
+						<h5>Stream Sources Overview</h5>
 					</div>
 					<div class="ibox-content">
 						<div>
@@ -35,9 +35,9 @@
 										</tr>
 									</thead>
 									<tbody>
-										<tr ng-repeat="n in streams" ng-class="{ 'font-bold' : n.id == selectedStream.id }">
-											<td>{{streams.indexOf(n) + 1}}</td>
-											<td><a ui-sref="{streamId: n.id}">{{n.name}}</a></td>
+										<tr ng-repeat="n in sources" ng-class="{ 'font-bold' : n.id == selectedSource.id }">
+											<td>{{sources.indexOf(n) + 1}}</td>
+											<td><a ui-sref="{sourceId: n.id}">{{n.name}}</a></td>
 											<td>{{trim(n.description, 100)}}</td>
 											<td>{{n.consumers.length}}</td>
 											<td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
@@ -51,7 +51,7 @@
 			</div>
 		</div>
 
-		<div class="row" ng-show="selectedStream">
+		<div class="row" ng-show="selectedSource">
 			<div class="col-lg-5">
 				<div class="ibox float-e-margins">
 					<div class="ibox-title">
@@ -61,36 +61,36 @@
 
 						<!-- organization image -->
 						<div class="logo">
-							<img ng-show="selectedStream.organizationImg" class="img-responsive" style="margin: auto; max-height: 100px" 
-								ng-src="{{selectedStream.organizationImg}}">
-							<div ng-hide="selectedStream.organizationImg" class="text-center">
+							<img ng-show="selectedSource.organizationImg" class="img-responsive" style="margin: auto; max-height: 100px" 
+								ng-src="{{selectedSource.organizationImg}}">
+							<div ng-hide="selectedSource.organizationImg" class="text-center">
 								<img ng-src="app/components/img/no_image_available.png" style="margin: auto; max-height: 100px">
 							</div>
 						</div>
 
 						<!-- content -->
 						<div class="caption ng-binding">
-							<h4 class="ng-binding">{{selectedStream.name}}</h4>
+							<h4 class="ng-binding">{{selectedSource.name}}</h4>
 							<hr>
-							<b>Publisher:</b> {{selectedStream.organization.name}}
+							<b>Publisher:</b> {{selectedSource.organization.name}}
 							<hr>
-							{{selectedStream.description}}
+							{{selectedSource.description}}
 						</div>
 
-						<div ng-init="thePrice = selectedStream.pricing" class="caption ng-binding">
+						<div ng-init="thePrice = selectedSource.pricing" class="caption ng-binding">
 							<hr>
 							<b>Price:</b>
-							<span ng-show="selectedStream.pricing.billingUnit == 'event' || selectedStream.pricing.billingUnit == 'day'">
-							{{selectedStream.pricing.unitPrice}} €
+							<span ng-show="selectedSource.pricing.billingUnit == 'event' || selectedSource.pricing.billingUnit == 'day'">
+							{{selectedSource.pricing.unitPrice}} €
 							<span style="font-weight: normal;">
-								<span ng-show="selectedStream.pricing.billingUnit == 'event'">per data point</span>
-								<span ng-show="selectedStream.pricing.billingUnit == 'day'">per day</span>
+								<span ng-show="selectedSource.pricing.billingUnit == 'event'">per data point</span>
+								<span ng-show="selectedSource.pricing.billingUnit == 'day'">per day</span>
 							</span>
 							</span>
-							<div ng-show="selectedStream.pricing.billingUnit == 'free'" style="line-height: 40px;">
+							<div ng-show="selectedSource.pricing.billingUnit == 'free'" style="line-height: 40px;">
 							free of charge
 							</div>
-							<div ng-show="selectedStream.pricing.billingUnit == 'on_request'" style="line-height: 40px;">
+							<div ng-show="selectedSource.pricing.billingUnit == 'on_request'" style="line-height: 40px;">
 							request price
 							</div>
 						</div>
@@ -103,7 +103,7 @@
 					<div class="ibox-title">
 						<h5>Stream Consumers</h5>
 					</div>
-					<div class="ibox-content" ng-show="selectedStream.consumers.length">
+					<div class="ibox-content" ng-show="selectedSource.consumers.length">
 						<div class="table-responsive">
 							<table class="table table-striped">
 								<thead>
@@ -116,8 +116,8 @@
 									</tr>
 								</thead>
 								<tbody>
-									<tr ng-repeat="c in selectedStream.consumers" ng-class="{ 'font-bold' : c.id == selectedConsumer.id }">
-										<td>{{selectedStream.consumers.indexOf(c) + 1}}</td>
+									<tr ng-repeat="c in selectedSource.consumers" ng-class="{ 'font-bold' : c.id == selectedConsumer.id }">
+										<td>{{selectedSource.consumers.indexOf(c) + 1}}</td>
 										<td>{{c.requestorId}}</td>
 										<td>{{c.price}}</td>
 										<td>{{c.status}}</td>
@@ -127,7 +127,7 @@
 							</table>
 						</div>
 					</div>
-					<div class="ibox-content" ng-show="!selectedStream.consumers.length">
+					<div class="ibox-content" ng-show="!selectedSource.consumers.length">
 						Currently there are no consumers for this stream.
 					</div>
 				</div>

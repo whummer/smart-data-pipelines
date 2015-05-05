@@ -2,7 +2,7 @@ var log = global.log || console;
 
 /* TODO whu: deprecated/REMOVE? */
 
-var mongoose = require('mongoose');
+var mongoose = global.mongoose || require('mongoose');
 
 function ModelUtil() {	
 }

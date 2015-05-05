@@ -65,7 +65,7 @@ angular.module('rioxApp')
       logout: function() {
         $cookieStore.remove('token');
         currentUser = {};
-        configureRioxApiAuth("__invalid__");
+        riox.auth.reset();
       },
 
       /**

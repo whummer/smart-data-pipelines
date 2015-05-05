@@ -1,9 +1,10 @@
 'use strict';
 
+var mongoose = global.mongoose || require('mongoose');
 var Organization = require('./organization.model');
 var Membership = require('./membership.model');
 var auth = require('riox-services-base/lib/auth/auth.service');
-var ObjectId = require('mongoose').Types.ObjectId; 
+var ObjectId = mongoose.Types.ObjectId;
 
 /* constants */
 var CREATOR_ID = "creator-id";

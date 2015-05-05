@@ -2,9 +2,6 @@
 
 var Stream = require('./stream.model.js');
 var passport = require('passport');
-var jwt = require('jsonwebtoken');
-var mongoose = require('mongoose');
-var auth = require('riox-services-base/lib/auth/auth.service');
 var riox = require('riox-shared/lib/api/riox-api');
 var portfinder = require('portfinder');
 var sourcesCtrl = require('./streamsources.controller');
@@ -23,30 +20,6 @@ function list(query, req, res) {
 		res.json(200, list);
 	});
 }
-
-exports.listProvided = function (req, res) {
-  var user = auth.getCurrentUser(req);
-  var query = {ownerId: user.id};
-  query = {}; // TODO remove! (testing only)
-  return list(query, req, res);
-};
-
-exports.listConsumed = function (req, res) {
-  var user = auth.getCurrentUser(req);
-  var query = {};
-  riox.access(query, {
-    callback: function (data, response) {
-      console.log("data", data);
-      var ids = [];
-      data.forEach(function (el) {
-        ids.push(el.streamId);
-      });
-      var query = {_id: {$in: ids}};
-      return list(query, req, res);
-    },
-    headers: req.headers
-  });
-};
 
 exports.createStream = function (req, res, next) {
 	var stream = new Stream(req.body);

@@ -2,9 +2,6 @@
 
 var StreamSink = require('./streamsink.model.js');
 var passport = require('passport');
-var jwt = require('jsonwebtoken');
-var mongoose = require('mongoose');
-var auth = require('riox-services-base/lib/auth/auth.service');
 var riox = require('riox-shared/lib/api/riox-api');
 var portfinder = require('portfinder');
 var containers = require('riox-services-base/lib/util/containers.util');

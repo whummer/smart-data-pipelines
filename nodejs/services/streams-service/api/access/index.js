@@ -1,7 +1,6 @@
 'use strict';
 
 var express = require('express');
-var mongoose = require('mongoose');
 var controller = require('./access.controller');
 var auth = require('riox-services-base/lib/auth/auth.service');
 var StreamAccess = require('./streamaccess.model');

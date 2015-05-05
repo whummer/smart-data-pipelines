@@ -2,7 +2,7 @@
 
 var User = require('./user.model');
 var passport = require('passport');
-var mongoose = require('mongoose');
+var mongoose = global.mongoose || require('mongoose');
 var config = require('../../config/environment');
 var jwt = require('jsonwebtoken');
 var riox = require('riox-shared/lib/api/riox-api');
@@ -161,7 +161,7 @@ exports.insertInternalCallUser = function() {
 	User.findOne(query, function(err, user) {
 	    if (err) return next(err);
 	    if (!user)  {
-	    	console.log("Creating internal/admin user");
+	    	//console.log("Creating internal/admin user");
 	    	var newUser = new User({
 	    		_id: id,
 	    		name: "root",

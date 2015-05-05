@@ -2,11 +2,8 @@
 
 var StreamSource = require('./streamsource.model.js');
 var passport = require('passport');
-var jwt = require('jsonwebtoken');
-var mongoose = require('mongoose');
 var auth = require('riox-services-base/lib/auth/auth.service');
 var riox = require('riox-shared/lib/api/riox-api');
-var rabbitmq = require('riox-services-base/lib/util/rabbitmq.util');
 var springxd = require('riox-services-base/lib/util/springxd.util');
 var kafka = require('riox-services-base/lib/util/kafka.util');
 var containers = require('riox-services-base/lib/util/containers.util');
@@ -26,14 +23,32 @@ function list(query, req, res) {
 	});
 }
 
-///
-/// METHODS FOR  '/streams/sources'
-///
-
 exports.indexStreamSource = function (req, res) {
 	return list({}, req, res);
 };
 
+exports.listProvided = function (req, res) {
+  var user = auth.getCurrentUser(req);
+  var query = {ownerId: user.id};
+  query = {}; // TODO remove! (testing only)
+  return list(query, req, res);
+};
+
+exports.listConsumed = function (req, res) {
+  var user = auth.getCurrentUser(req);
+  var query = {};
+  riox.access(query, {
+    callback: function (data, response) {
+      var ids = [];
+      data.forEach(function (el) {
+        ids.push(el[SOURCE_ID]);
+      });
+      var query = {_id: {$in: ids}};
+      return list(query, req, res);
+    },
+    headers: req.headers
+  });
+};
 
 exports.createStreamSource = function (req, res, next) {
   log.info('Creating stream-source: ', req.body);

@@ -121,18 +121,27 @@ sh.auth = function(options, callback, errorCallback) {
 			errorCallback(result);
 		}
 	};
-	if(authToken.appKey) {
-		riox.app({
-			appKey: authToken.appKey
-		}, funcSuccess, funcError);
-	} else {
-		var authToken = {
-				network: authToken.network,
-				token: authToken.access_token
-		};
-		callPOST(servicesConfig.services.users.url + "/auth", authToken, funcSuccess, funcError);
+	if(!options.dontInvokeService) {
+		if(authToken.appKey) {
+			riox.app({
+				appKey: authToken.appKey
+			}, funcSuccess, funcError);
+		} else {
+			var authToken = {
+					network: authToken.network,
+					token: authToken.access_token
+			};
+			callPOST(servicesConfig.services.users.url + "/auth", authToken, funcSuccess, funcError);
+		}
 	}
 };
+sh.signout = sh.auth.reset = function(options, callback, errorCallback) {
+	sh.auth({
+		RIOX_AUTH_NETWORK: "riox",
+		RIOX_AUTH_TOKEN: "__invalid__",
+		dontInvokeService: true
+	});
+}
 
 /* methods for GETting data */
 
@@ -295,8 +304,8 @@ sh.access = sh.get.access = function(query, callback, errorCallback) {
 		callback = query;
 		query = {};
 	}
-	var streamId = query.streamId;
-	var url = servicesConfig.services.access.url + (streamId ? ("/stream/" + streamId) : "");
+	var sourceId = query[SOURCE_ID];
+	var url = servicesConfig.services.access.url + (sourceId ? ("/source/" + sourceId) : "");
 	return callGET(url, callback, errorCallback);
 };
 sh.usage = sh.get.usage = function(callback, errorCallback) {

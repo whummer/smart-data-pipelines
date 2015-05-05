@@ -1,6 +1,6 @@
 'use strict';
 
-var mongoose = require('mongoose');
+var mongoose = global.mongoose || require('mongoose');
 var Schema = mongoose.Schema;
 
 
@@ -16,7 +16,11 @@ template[SOURCE_ID] = String;
  */
 template[OWNER_ID] = String;
 /**
- * ID of the user who requests access.
+ * ID of the organization who requests access.
+ *
+ * Note that only the requesting organization is visible to 
+ * the owner, i.e., the identity of the actual user behind 
+ * this organization is not revealed.
  */
 template[REQUESTOR_ID] = String;
 /**

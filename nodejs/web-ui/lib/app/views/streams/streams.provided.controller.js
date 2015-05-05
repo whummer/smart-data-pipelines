@@ -4,45 +4,48 @@ angular.module('rioxApp')
 .controller('StreamsProvidedCtrl', function ($scope, Auth, $location, $window, $stateParams) {
 
 	$scope.trim = window.trim;
-	$scope.selectedStream = null;
+	$scope.selectedSource = null;
 	$scope.consumers = null;
 
-	/* load streams */
-	var loadStreams = function() {
-		riox.streams.provided({}, function(streams) {
+	/* load stream sources */
+	var loadStreamSources = function() {
+		riox.streams.provided({}, function(sources) {
 			$scope.$apply(function() {
-				$scope.streams = streams;
-				$scope.prepareStreamSources($scope.streams);
-				$.each(streams, function(idx,el) {
+				$scope.sources = sources;
+				$scope.prepareStreamSources(sources);
+				$.each(sources, function(idx,el) {
 					loadStreamConsumers(el);
 				});
 			});
 		});
 	};
 
-	/* load stream details */
-	var loadStreamDetails = function() {
-		var id = $stateParams.streamId;
+	/* load stream source details */
+	var loadSourceDetails = function() {
+		var id = $stateParams.sourceId;
 		if(!id) return;
-		riox.streams.source(id, function(stream) {
+		riox.streams.source(id, function(source) {
 			$scope.$apply(function() {
-				$scope.selectedStream = stream;
-				$scope.prepareStreamSource(stream);
-				loadStreamConsumers(stream);
+				$scope.selectedSource = source;
+				$scope.prepareStreamSource(source);
+				loadStreamConsumers(source);
 			});
 		});
 	}
-	var loadStreamConsumers = function(stream) {
-		if(stream.consumers) return;
-		riox.access({streamId: stream.id}, function(accesses) {
+	var loadStreamConsumers = function(source) {
+		if(source.consumers) return;
+		var query = {};
+		query[SOURCE_ID] = source.id;
+		riox.access(query, function(accesses) {
+			console.log(accesses);
 			$scope.$apply(function() {
-				stream.consumers = accesses;
+				source.consumers = accesses;
 			});
 		});
 	}
 
 	/* load main elements */
-	loadStreams();
-	loadStreamDetails();
+	loadStreamSources();
+	loadSourceDetails();
 
 });

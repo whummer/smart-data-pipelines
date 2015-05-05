@@ -1,6 +1,6 @@
 'use strict';
 
-var mongoose = require('mongoose');
+var mongoose = global.mongoose || require('mongoose');
 var Schema = mongoose.Schema;
 
 var template = {

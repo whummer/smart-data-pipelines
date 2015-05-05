@@ -35,15 +35,16 @@ angular.module('rioxApp').controller(
 
 	$scope.loadAccessStatus = function (callback) {
 		var query = {};
-		query[STREAM_ID] = $scope.formData.selectedSource.id;
+		query[SOURCE_ID] = $scope.formData.selectedSource.id;
 		riox.access(query, function (access) {
+			console.log(access[0][SOURCE_ID], query);
 			if(access[0]) {
 				$scope.formData.sourceAccess = access[0];
 			} else {
 				$scope.formData.sourceAccess = {};
 			}
 			if (callback) {
-				callback();
+				callback(access);
 			}
 		});
 	};
