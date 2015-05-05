@@ -1,11 +1,11 @@
-<fieldset ng-controller="analyticsCtrl">
+<div ng-controller="analyticsCtrl">
   <h2>Analytics</h2>
   <h4>Select the analytics module you want to apply</h4>
 
   <div class="row" style="margin-top: 20px">
 
     <div class="form-group">
-      <label for="analyticsModule" class="col-sm-5 control-label">
+      <label for="analyticsModule" class="col-sm-3 control-label">
         Pick an Analytics Module
       </label>
 
@@ -19,25 +19,24 @@
     </div>
   </div>
 
+  <h4 ng-show="formData.selectedAnalyticsModule" style="margin-top: 20px;">Configure Module Inputs</h4>
 
-  <div class="row" ng-show="formData.selectedAnalyticsModule">
-
-    <h4>Configure Module Inputs</h4>
-    <div class="form-group" ng-repeat="input in formData.selectedAnalyticsModule.input">
-      <label for="{{input.key}}" class="col-sm-5 control-label">
-        {{input.description}}
+  <div class="row" ng-show="formData.selectedAnalyticsModule" ng-repeat="input in formData.selectedAnalyticsModule.input">
+    <div class="form-group">
+      <label for="{{input.key}}" class="col-sm-3 control-label">
+        {{input.key}}
       </label>
-
       <div class="col-sm-4">
-        <input id="{{input.key}}" ng-model="formData.selectedAnalyticsModule.config[input.key]"/>
+        <input id="{{input.key}}" name="{{input.key}}" class="form-control"
+               ng-model="formData.selectedAnalyticsModule.config[input.key]"/>
+      </div>
+      <div class="col-sm-4">
+        {{input.description}}
       </div>
     </div>
-
-
   </div>
-
 
   <a ui-sref="consumer.wizard.billing" class="btn btn-default">Previous</a>
   <a ui-sref="consumer.wizard.confirm" class="btn btn-primary">Next</a>
 
-</fieldset>
+</div>
