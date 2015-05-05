@@ -74,7 +74,6 @@ function providerWizardCtrl($scope, $log, growl, $state, $location, $q) {
       }
     });
 
-    //var dataItems = $filter('filter')(r.dataItems, {"enabled" : "true"});
     $log.debug("Filtered data items: ", dataItems);
     $log.debug("Saving new resource: ", r);
     var dataStream = {
@@ -85,34 +84,32 @@ function providerWizardCtrl($scope, $log, growl, $state, $location, $q) {
       },
       "organization-id": 'Default Organization',
       "tags": r.tags,
-      "data-items": dataItems,
       "retention-time": r.retentionTime, // e.g. 3h, 2w, 1m, 1y
       "security": r.securitySetting, // TLS only, full
       "visible": true
     };
 
-    /*var addStreamSource = function (defaultOrganization) {
+    // todo billingUnit and unitSize are currently not used
+    if (dataItems.length) {
+      dataStream["data-items"] = dataItems;
+    } else {
+      dataStream.pricing = {
+        unitPrice: r.defaultPricing
+      };
+    }
+
+    var addStreamSource = function (defaultOrganization) {
       $log.debug('Loaded default organization: ', defaultOrganization);
       dataStream['organization-id'] = defaultOrganization.id;
       riox.add.streams.source(dataStream, function () {
-        $log.debug("Successfully added new data resource: ", r);
-        growl.success("Added new Data Resource '" + r.name + "'");
+        $log.debug("Successfully added new data resource: ", dataStream);
+        growl.success("Added new Data Resource '" + dataStream.name + "'");
         $location.path("#/streams/provided");
       })
-    };*/
+    };
 
     var organizationPromise = $scope.loadDefaultOrganization();
-    $log.debug("Promose: ", organizationPromise);
-    organizationPromise.then(
-      function (defaultOrganization) {
-        $log.debug('Loaded default organization: ', defaultOrganization);
-        dataStream['organization-id'] = defaultOrganization.id;
-        riox.add.streams.source(dataStream, function () {
-          $log.debug("Successfully added new data resource: ", r);
-          growl.success("Added new Data Resource '" + r.name + "'");
-          $location.path("#/streams/provided");
-        })
-      },
+    organizationPromise.then(addStreamSource,
       function (reason) {
         growl.error('Cannot load default organization: ' + reason);
         $log.error('Cannot load default orgaization: ' + reason);
