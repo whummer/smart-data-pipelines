@@ -305,10 +305,7 @@ sh.access = sh.get.access = function(query, callback, errorCallback) {
 		query = {};
 	}
 	var sourceId = query[SOURCE_ID];
-	var consumerId = query[REQUESTOR_ID];
-	var url = servicesConfig.services.access.url + 
-			(sourceId ? ("/source/" + sourceId) : "") + 
-			(consumerId ? ("/consumer/" + consumerId) : "");
+	var url = servicesConfig.services.access.url + (sourceId ? ("/source/" + sourceId) : "");
 	return callGET(url, callback, errorCallback);
 };
 sh.usage = sh.get.usage = function(callback, errorCallback) {

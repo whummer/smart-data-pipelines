@@ -111,7 +111,7 @@ angular.module('rioxApp')
 			controller: "StreamsCtrl"
 		})
 		.state('consumer.wizard', {
-			url: "/wizard",
+			url: "/wizard?debug",
 			templateUrl: "app/views/consumer_wizard/consumer_setup.html",
 			controller: consumerWizardCtrl
 		})
@@ -129,6 +129,14 @@ angular.module('rioxApp')
 			url: '/billing',
 			templateUrl: 'app/views/consumer_wizard/billing.html',
 			authenticate: true
+		})
+    .state('consumer.wizard.analytics', {
+			url: '/analytics',
+			templateUrl: 'app/views/consumer_wizard/analytics.html'
+		})
+    .state('consumer.wizard.connector', {
+			url: '/connector',
+			templateUrl: 'app/views/consumer_wizard/connector.html'
 		})
 		.state('consumer.wizard.confirm', {
 			url: '/confirm',

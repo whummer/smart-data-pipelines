@@ -6,7 +6,11 @@ function consumerWizardCtrl($scope, $stateParams, $state) {
 
 	$scope.selectItem = function(sourceId) {
 		$state.go("consumer.wizard.request", {sourceId: sourceId});
-	}
+	};
+
+  if ($state.params.debug) {
+    $scope.debug = true;
+  }
 
 	/* load sources */
 	var loadSources = function() {

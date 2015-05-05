@@ -83,4 +83,25 @@ angular.module('rioxApp')
     };
 
 
+    $scope.loadDefaultOrganization = function () {
+      var deferred = $q.defer();
+      riox.organizations(function (orgs) {
+        angular.forEach(orgs, function (org) {
+          var userInfo = $scope.getCurrentUser();
+          if (userInfo) {
+            if (org[CREATOR_ID] == userInfo.id) {
+              deferred.resolve(org);
+            }
+          } else {
+            $log("Cannot determine user info from scope");
+            deferred.reject("Unable to determine userInfo from scope.")
+          }
+        });
+
+        deferred.reject("No default organization found");
+      });
+
+      return deferred.promise;
+    }
+
   });

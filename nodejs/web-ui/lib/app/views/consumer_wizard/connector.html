@@ -1,0 +1,20 @@
+<fieldset class="animated fadeIn" ng-controller="consumerConnectorCtrl">
+	<h2>Connector Setup</h2>
+
+	<div class="row">
+		<div class="form-group">
+			<label for="connector" class="col-sm-3  control-label">
+				Pick a Connector for this Resource
+				</label>
+			<div class="col-sm-4">
+				<select id="connector" name="connector" required ng-model="formData.connector"
+								class="form-control m-b"
+								ng-options="connector.name for connector in connectors track by connector.type"
+								data-placeholder="Select">
+				</select>
+			</div>
+		</div>
+	</div>
+	<!--ng-disabled="resourceForm.$invalid || resourceForm.$pristine"-->
+	<a ui-sref="consumer.wizard.analytics" class="btn btn-primary">Next</a>
+</fieldset>
