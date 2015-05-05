@@ -2,13 +2,13 @@
 
 angular.module('rioxApp').controller('StreamsCtrl', function ($scope, Auth, $stateParams) {
 
-	$scope.prepareStreams = function(list) {
+	$scope.prepareStreamSources = function(list) {
 		angular.forEach(list, function(el) {
-			$scope.prepareStream(el);
+			$scope.prepareStreamSource(el);
 		});
 	};
 
-	$scope.prepareStream = function(el) {
+	$scope.prepareStreamSource = function(el) {
 		if(el[ORGANIZATION_ID]) {
 			riox.organization(el[ORGANIZATION_ID], function(org) {
 				if(org[IMAGE_DATA] && org[IMAGE_DATA][0]) {
