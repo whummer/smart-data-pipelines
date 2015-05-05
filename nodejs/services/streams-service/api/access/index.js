@@ -8,7 +8,7 @@ var StreamAccess = require('./streamaccess.model');
 /* define routes */
 var router = express.Router();
 router.get('/', auth.isAuthenticated(), controller.index);
-router.delete('/:id', auth.hasRole('admin'), controller.destroy);
+router.delete('/:id', auth.isAuthenticated(), controller.destroy);
 router.get('/:id', auth.isAuthenticated(), controller.show);
 router.get('/source/:sourceId', auth.isAuthenticated(), controller.getBySource);
 router.post('/', auth.isAuthenticated(), controller.create);

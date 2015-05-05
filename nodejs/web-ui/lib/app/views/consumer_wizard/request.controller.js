@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('rioxApp').controller(
-'ConsumerRequestCtrl', function ($scope, Auth, $stateParams) {
+'ConsumerRequestCtrl', function ($scope, Auth, $stateParams, $state) {
 
 	$scope.riox = riox;
 
@@ -18,15 +18,27 @@ angular.module('rioxApp').controller(
 		});
 	};
 
+	$scope.revokeRequest = function () {
+		showConfirmDialog("Are you sure that you want to revoke the access request?", function () {
+			riox.delete.access($scope.formData.sourceAccess, function(result) {
+				console.log("deleted");
+			});
+        });
+	};
+
 	$scope.requestAccess = function () {
 		if (!$scope.formData.sourceAccess || !$scope.formData.sourceAccess.status) {
 			var sourceAccess = {}
 			sourceAccess[STATUS] = STATUS_REQUESTED;
 			sourceAccess[SOURCE_ID] = $scope.formData.selectedSource.id;
+			sourceAccess[REQUESTOR_ID] = $scope.selectedOrg;
+			console.log("requesting access");
 			riox.save.access(sourceAccess, function(sourceAccess) {
 				$scope.formData.sourceAccess = sourceAccess;
 				$scope.formData.sourceAccess.status = STATUS_REQUESTED;
-				$scope.loadAccessStatus();
+				$scope.$apply(function() {
+					$scope.loadAccessStatus();
+				});
 			});
 		} else {
 			$scope.formData.sourceAccess.status = STATUS_REQUESTED;
@@ -37,7 +49,6 @@ angular.module('rioxApp').controller(
 		var query = {};
 		query[SOURCE_ID] = $scope.formData.selectedSource.id;
 		riox.access(query, function (access) {
-			console.log(access[0][SOURCE_ID], query);
 			if(access[0]) {
 				$scope.formData.sourceAccess = access[0];
 			} else {
@@ -49,7 +60,17 @@ angular.module('rioxApp').controller(
 		});
 	};
 
+	var loadUserInfos = function() {
+		var user = $scope.userInfo = $scope.getCurrentUser();
+		if(!user.organizations) {
+			riox.organizations(function(orgs) {
+				user.organizations = orgs;
+			});
+		}
+	}
+
 	/* load main elements */
 	loadSource();
+	loadUserInfos();
 
 });

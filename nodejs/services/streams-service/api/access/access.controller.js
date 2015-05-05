@@ -51,24 +51,57 @@ exports.show = function(req, res, next) {
 };
 
 exports.destroy = function(req, res, next) {
-	// TODO
+	var id = req.params.id;
+	/* find entity */
+	StreamAccess.findById(id, function(err, obj) {
+		if (err) return next(err);
+		if (!obj) return res.send(404);
+
+		/* check if user is permitted */
+		var user = auth.getCurrentUser(req);
+		riox.organizations({
+			callback: function(orgs) {
+				var found = false;
+				orgs.forEach(function(org) {
+					if(obj[REQUESTOR_ID] == org.id ||
+							obj[REQUESTOR_ID] == user.id) {
+						console.log("permitted");
+						found = true;
+						StreamAccess.remove(id, function(err, obj) {
+							if (err) return res.send(500, err);
+							return res.send(204);
+						});
+					}
+				});
+				if(!found) {
+					return res.send(401);
+				}
+			},
+			headers: req.headers
+		});
+	});
+
 };
 
 exports.create = function(req, res, next) {
+	var user = auth.getCurrentUser(req);
 	var access = req.body;
 	var sourceId = access[SOURCE_ID];
 	if(!sourceId) {
 		res.json(422, {error: SOURCE_ID + " is required"});
 		return;
 	}
+	if(!access[REQUESTOR_ID]) {
+		access[REQUESTOR_ID] = user.id; // TODO lookup organization ID.
+	}
 	riox.streams.source(sourceId, {
 		callback: function(source) {
 			access.created = access.changed = new Date().getTime();
-			var user = auth.getCurrentUser(req);
-			access[REQUESTOR_ID] = user.id;
 			StreamAccess.create(access, function() {
 				res.json(200, access);
 			});
 		}, headers: req.headers
+	}, function() {
+		res.json(404, {message: "Cannot find entity with ID " + sourceId });
 	});
 };

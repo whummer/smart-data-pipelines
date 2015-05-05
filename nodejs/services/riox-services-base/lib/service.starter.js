@@ -8,13 +8,15 @@
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 var express = require('express');
-var mongoose = global.mongoose || require('mongoose');
 var cors = require('cors');
 var util = require('./util/util');
 var log = require('winston');
-
 require('./api/service.calls');
 
+var mongoose = global.mongoose || require('mongoose');
+if(!global.mongoose) {
+	global.mongoose = mongoose;
+}
 if(!global.servicesConfig) {
 	global.servicesConfig = require('./config/services');
 }
@@ -48,22 +50,19 @@ var start = function(config, routes, serviceName) {
 		}
 
 		// Connect to database
-		if(!global.mongoose) {
-			global.mongoose = mongoose;
-		}
 		if(process.env.TEST_MODE) {
 			if(!mongoose.__mockgooseHasBeenApplied) {
 				console.log("Using TEST mode (mockgoose)");
 				var mockgoose = require('mockgoose');
-				mockgoose(mongoose); //
+				mockgoose(mongoose);
 				mongoose.connect("");
 				mongoose.__mockgooseHasBeenApplied = true;
 			}
 		} else {
-			if(!mongoose.__mongooseHasBeenConnected) {
+//			if(!mongoose.__mongooseHasBeenConnected) {
 				mongoose.connect(config.mongo.uri, config.mongo.options);
-				mongoose.__mongooseHasBeenConnected = true;
-			}
+//				mongoose.__mongooseHasBeenConnected = true;
+//			}
 		}
 
 		var server = app.server = require('http').createServer(expressApp);

@@ -26,11 +26,9 @@
     "gulp-uglify": "^1.2.0",
     "gulp-util": "^3.0.4",
     "jsonwebtoken": "^0.3.0",
-    "main-bower-files": "^2.6.2",
-    "mockgoose": "^2.0.1",
+    "main-bower-files": "^2.6.2", 
     "run-sequence": "^1.0.2",
-    "superagent": "^1.2.0",
-    "mongoose": "~4.0.0"
+    "superagent": "^1.2.0"
   },
   "engines": {
     "node": ">=0.10.0"

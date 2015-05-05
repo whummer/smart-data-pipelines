@@ -525,6 +525,10 @@ sh.delete.driver = function(opts, callback, errorCallback) {
 			opts[THING_ID] + "/" + opts[PROPERTY_NAME];
 	return callGET(url, callback, errorCallback);
 };
+sh.delete.access = function(access, callback, errorCallback) {
+	var url = servicesConfig.services.access.url + "/" + access.id;
+	return callDELETE(url, callback, errorCallback);
+};
 
 
 /* methods for accessing streams */
@@ -649,8 +653,10 @@ var callPUT = sh.callPUT = function(url, body, callback, errorCallback) {
 	return callPOSTorPUT(invokePUT, url, body, callback, errorCallback);
 };
 
-var callDELETE = sh.callDELETE = function(url, callback, errorCallback) {
-	return invokeDELETE(null, url,
+var callDELETE = sh.callDELETE = function(url, options, errorCallback) {
+	var callback = options.callback ? options.callback : options;
+	errorCallback = wrapDefaultErrorCallback(errorCallback);
+	return invokeDELETE(options, url,
 		function(data, status, headers, config) {
 			if(callback) {
 				callback(data, status, headers, config);

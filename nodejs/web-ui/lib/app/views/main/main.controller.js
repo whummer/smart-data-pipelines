@@ -22,13 +22,34 @@ angular.module('rioxApp')
     };
 
     riox.defaultErrorCallback = function (p1, p2, p3, p4) {
-      if (p1.status == 401) {
+      if (p1 == 401 || p1.status == 401) {
         //console.log("inv error", p1, p2, p3, p4);
         showConfirmDialog("Access denied. Please log in.", function () {
           $scope.logout();
         });
       }
     };
+
+    $scope.loadDefaultOrganization = function () {
+      var deferred = $q.defer();
+      riots.organizations(function (orgs) {
+        angular.forEach(orgs, function (org) {
+          var userInfo = $scope.getCurrentUser();
+          if (userInfo) {
+            if (org[CREATOR_ID] == userInfo.id) {
+              deferred.resolve(org);
+            }
+          } else {
+            $log("Cannot determine user info from scope");
+            deferred.reject("Unable to determine userInfo from scope.")
+          }
+        });
+
+        deferred.reject("No default organization found");
+      });
+
+      return deferred.promise;
+    }
 
     /* common util methods */
     $scope.range = function (from, to, step) {
@@ -60,30 +81,5 @@ angular.module('rioxApp')
       return number.toFixed(numDecimals);
     };
 
-
-    $scope.loadDefaultOrganization = function () {
-
-      var deferred = $q.defer();
-
-      riots.organizations(function (orgs) {
-        angular.forEach(orgs, function (org) {
-          var userInfo = $scope.getCurrentUser();
-          if (userInfo) {
-            if (org[CREATOR_ID] == userInfo.id) {
-              deferred.resolve(org);
-            }
-          } else {
-            $log("Cannot determine user info from scope");
-            deferred.reject("Unable to determine userInfo from scope.")
-          }
-        });
-
-        deferred.reject("No default organization found");
-      });
-
-      return deferred.promise;
-
-
-    }
 
   });
