@@ -15,7 +15,6 @@ admin:
     - "zookeeper:zookeeper"
     - "hsqldb:hsqldb"
     - "redis:redis"
-    - "rabbitmq:rabbitmq"
   ports:
     - "9393:9393"
 
@@ -25,7 +24,6 @@ container:
     - "zookeeper:zookeeper"
     - "hsqldb:hsqldb"
     - "redis:redis"
-    - "rabbitmq:rabbitmq"
     - "kafka:kafka"
 
 hsqldb:
@@ -39,19 +37,11 @@ mongo:
   ports:
     - "27017:27017"
 
-rabbitmq:
-  image: rabbitmq:3.5.1-management
-  ports:
-    - "5672:5672"
-    - "15672:15672"
-
 kafka:
   image: riox/kafka
   ports:
     - "9092"
   links:
     - zookeeper:zookeeper
-#  environment:
-#    KAFKA_ADVERTISED_HOST_NAME: 192.168.59.3
   volumes:
     - /var/run/docker.sock:/var/run/docker.sock

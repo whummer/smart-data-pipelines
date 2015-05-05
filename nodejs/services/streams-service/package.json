@@ -24,8 +24,7 @@
 
     "riox-shared": "../../riox-shared",
     "riox-services-base": "../riox-services-base",
-    "kafka-node": "0.2.26",
-    "dockerode": "2.1.2"
+    "kafka-node": "0.2.26"
   },
   "devDependencies": {
   },

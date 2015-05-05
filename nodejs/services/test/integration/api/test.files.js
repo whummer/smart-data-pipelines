@@ -4,6 +4,7 @@ var assert = require('assert');
 var superagent = require('superagent');
 var status = require('http-status');
 var test = require('../util/testutil');
+var starters = require('../util/service.starters');
 var fs = require('fs');
 var tmp = require('tmp');
 var request = require('request');
@@ -15,12 +16,7 @@ describe('/files', function() {
 
 	before(function(done) {
 		/* start streams service */
-		app.files = {
-			port : 3004
-		};
-		app.files.url = "http://localhost:" + app.files.port + "/api/v1/files";
-		process.env.SERVICE_PORT = app.files.port;
-		app.files.server = require('../../../files-service/app.js').start();
+		app.files = starters.startFilesService();
 		/* get auth token */
 		test.authDefault(done);
 	});

@@ -25,6 +25,7 @@
     "passport-twitter": "latest",
     "merge": "1.2.0",
     "promise": "^7.0.1",
+    "dockerode": "2.1.2",
     "riox-shared": "../../riox-shared"
   },
   "devDependencies": {

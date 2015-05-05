@@ -1,30 +1,22 @@
 kind: ReplicationController
 apiVersion: v1beta1
-id: springxd
+id: kafka
 namespace: default
 labels:
-  name: springxd
+  name: kafka
 desiredState:
   replicas: 1
   replicaSelector:
-    name: springxd
+    name: kafka
   podTemplate:
     labels:
-      name: springxd
+      name: kafka
     desiredState:
       manifest:
         version: v1beta2
-        id: springxd
+        id: kafka
         dnsPolicy: "Default"  # Don't use cluster DNS.
         containers:
-          - name: zookeeper
-            image: riox/springxd-zookeeper:1.1.1
-            ports: 
-              - containerPort: 2181
-          - name: redis
-            image: redis            
-            ports:
-              - containerPort: 6379
           - name: kafka
             image: riox/kafka
             ports:

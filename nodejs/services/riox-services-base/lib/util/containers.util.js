@@ -5,13 +5,16 @@ var promise = require('promise');
 var docker = new Docker();
 var x = exports;
 
-x.listContainers = function(callback) {
+x.listContainers = function(callback, errorCallback) {
 	docker.listContainers(function (err, containers) {
+		if(err) {
+			return errorCallback("Error listing docker containers:", err);
+		}
 		callback(containers);
 	});	
 }
 
-x.findContainers = function(name, callback) {
+x.findContainers = function(name, callback, errorCallback) {
 	x.listContainers(function(containers) {
 		var result = [];
 		var found = null;
@@ -21,10 +24,10 @@ x.findContainers = function(name, callback) {
 			}
 		});
 		callback(result);
-	});
+	}, errorCallback);
 };
 
-x.findContainersArray = function(names, callback) {
+x.findContainersArray = function(names, callback, errorCallback) {
 	x.listContainers(function(containers) {
 		var result = [];
 		var found = null;
@@ -36,20 +39,20 @@ x.findContainersArray = function(names, callback) {
 			});
 		});
 		callback(result);
-	});
+	}, errorCallback);
 };
 
-x.findContainer = function(name, callback) {
+x.findContainer = function(name, callback, errorCallback) {
 	x.findContainers(name, function(result) {
 		if(result.length > 1) {
 			console.log("WARN: multiple containers found for name '" + name + "'");
 		} else {
 			callback(result[0]);
 		}
-	});
+	}, errorCallback);
 };
 
-x.getContainersIPs = function(names, callback) {
+x.getContainersIPs = function(names, callback, errorCallback) {
 	x.findContainersArray(names, function(containers) {
 		var result = [];
 		var prom = new Promise(function(resolve){resolve()});
@@ -59,36 +62,39 @@ x.getContainersIPs = function(names, callback) {
 					x.getIPForContainerID(container.Id, function(ip) {
 						result[idx] = ip;
 						resolve();
-					});
+					}, errorCallback);
 				};
 				return new Promise(func);
 			});
 		})
 		prom.then(function() {
 			callback(result);
-		});
-	});
+		}, errorCallback);
+	}, errorCallback);
 }
 
-x.getContainerIP = function(name, callback) {
+x.getContainerIP = function(name, callback, errorCallback) {
 	x.findContainer(name, function(container) {
 		if(!container) return callback(null);
-		x.getIPForContainerID(container.Id, callback);
-	});
+		x.getIPForContainerID(container.Id, callback, errorCallback);
+	}, errorCallback);
 };
 
-x.getIPForContainerID = function(id, callback) {
+x.getIPForContainerID = function(id, callback, errorCallback) {
 	if(!id) return callback(null);
 	var proxy = docker.getContainer(id);
 	proxy.inspect(function (err, data) {
-		if(err) return callback(null);
+		if(err) return errorCallback(err);
 		var result = data.NetworkSettings.IPAddress;
 		callback(result);
 	});
 };
 
-x.getHostPort = function(containerId, port, callback) {
+x.getHostPort = function(containerId, port, callback, errorCallback) {
 	proxy.inspect(function (err, data) {
+		if(err) {
+			return errorCallback(err);
+		}
 		var bindings = data.NetworkSettings.Ports;
 		var binding = bindings[port] ? bindings[port] : bindings[port + "/tcp"];
 		var hostPort = binding[0].HostPort;

@@ -6,6 +6,7 @@ var fs = require('fs');
 var x = exports;
 
 function getBaseURL() {
+	if(x.endpointURL) return x.endpointURL;
 	return config.springxd.url;
 }
 function getStreamsURL() {
@@ -253,7 +254,8 @@ x.findContainersOfDeployedModules = function(names, callback, errorCallback) {
 	}, errorCallback);
 };
 
-/* deprecated */
+/* TODO: deprecated (modules are only uploaded to the admin container, 
+ * NOT the individual Spring XD "worker" containers). */
 
 x.uploadModule = function(type, name, file, callback, errorCallback) {
 	var url = getModulesURL() + "/" + type + "/" + name;

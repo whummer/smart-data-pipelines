@@ -11,10 +11,6 @@ var sourcesCtrl = require('./streamsources.controller');
 var sinksCtrl = require('./streamsinks.controller');
 var procsCtrl = require('./streamprocessors.controller');
 
-/* constants - TODO import */
-var SOURCE_ID = "source-id";
-var SINK_ID = "sink-id";
-
 var validationError = function (res, err) {
 	return res.json(422, err);
 };
@@ -27,10 +23,6 @@ function list(query, req, res) {
 		res.json(200, list);
 	});
 }
-
-///
-/// METHODS FOR  '/streams'
-///
 
 exports.listProvided = function (req, res) {
   var user = auth.getCurrentUser(req);
@@ -85,10 +77,12 @@ exports.applyStreamConfig = function (req, res, next) {
 var applyStream = function(stream, callback, errorCallback) {
 
 	var applySource = function(resolve, reject) {
+		console.log("streams.applySource");
 		sourcesCtrl.applyByStreamSourceId(stream[SOURCE_ID], resolve, reject);
 	};
 
 	var applySink = function(resolve, reject) {
+		console.log("streams.applySink");
 		sinksCtrl.applyByStreamSinkId(stream[SINK_ID], resolve, reject);
 	};
 

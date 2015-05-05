@@ -7,16 +7,11 @@ var test = require('../util/testutil');
 var starters = require('../util/service.starters');
 var riox = require('riox-shared/lib/api/riox-api');
 var springxd = require('riox-services-base/lib/util/springxd.util');
+var containers = require('riox-services-base/lib/util/containers.util');
 var promise = require('promise');
 var WebSocket = require('ws');
 
 var app = {};
-/* constants - TODO import */
-var SOURCE_ID = "source-id";
-var SINK_ID = "sink-id";
-var STREAM_ID = "stream-id";
-var ORGANIZATION_ID = "organization-id";
-var SINK_CONFIG = "sink-config";
 
 describe('streams.flow', function() {
 
@@ -78,6 +73,10 @@ describe('streams.flow', function() {
 			var req = {};
 			req[STREAM_ID] = objs.stream.id;
 			riox.stream.apply(req, wrap(resolve), reject);
+		};
+
+		var findSpringXDContainer = function(resolve, reject) {
+			containers.getContainersIPs(["springxd-admin"], resolve, reject);
 		};
 
 		var findDeployedModules = function(resolve, reject) {
@@ -151,6 +150,12 @@ describe('streams.flow', function() {
 			return new Promise(applyConfig);
 		}).
 		then(function(config) {
+			console.log("configured/started stream", objs.stream);
+			return new Promise(findSpringXDContainer);
+		}).
+		then(function(conts) {
+			console.log("spring", conts);
+			springxd.endpointURL = "http://" + conts[0] + ":9393";
 //			console.log("configured/started stream", objs.stream.id);
 			return new Promise(findDeployedModules);
 		}).

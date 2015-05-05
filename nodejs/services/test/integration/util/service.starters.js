@@ -39,7 +39,7 @@ x.startUsersService = function() {
 		process.env.SERVICE_PORT = services.users.port;
 		services.users.server = require('../../../users-service/app.js');
 	}
-	if(!services.users.started)
+	if(!services.users.server.started)
 		services.users.server.start();
 	return services.users;
 }
@@ -52,7 +52,20 @@ x.startOrganizationsService = function() {
 		process.env.SERVICE_PORT = services.organizations.port;
 		services.organizations.server = require('../../../users-service/app.js');
 	}
-	if(!services.organizations.started)
+	if(!services.organizations.server.started)
 		services.organizations.server.start();
 	return services.organizations;
+}
+
+x.startFilesService = function() {
+	if(!services.files) {
+		services.files = { port : 3004 };
+		services.files.url = global.servicesConfig.services.files.url =
+			"http://localhost:" + services.files.port + "/api/v1/files";
+		process.env.SERVICE_PORT = services.files.port;
+		services.files.server = require('../../../files-service/app.js');
+	}
+	if(!services.files.server.started)
+		services.files.server.start();
+	return services.files;
 }
