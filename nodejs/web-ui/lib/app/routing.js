@@ -128,6 +128,10 @@ angular.module('rioxApp')
 			url: '/analytics',
 			templateUrl: 'app/views/consumer_wizard/analytics.html'
 		})
+    .state('consumer.wizard.connector', {
+			url: '/connector',
+			templateUrl: 'app/views/consumer_wizard/connector.html'
+		})
 		.state('consumer.wizard.confirm', {
 			url: '/confirm',
 			templateUrl: 'app/views/consumer_wizard/confirm.html'
