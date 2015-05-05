@@ -17,7 +17,7 @@ app.controller('OrganizationController',
 		delete main.status;
 		delete main.imageUrl;
 		main[IMAGE_DATA] = [ { href: url } ];
-		riots.save.organization(main, function() {
+		riox.save.organization(main, function() {
 			growl.success("Organization details saved successfully.");
 			loadOrgs();
 		});
@@ -38,7 +38,7 @@ app.controller('OrganizationController',
 
 	var loadOrgs = function() {
 		$scope.orgInfo = {};
-		riots.organizations(function(orgs) {
+		riox.organizations(function(orgs) {
 			$scope.orgInfo.orgs = orgs;
 			$scope.orgInfo.additional = [];
 			$.each(orgs, function(idx, el) {

@@ -12,7 +12,7 @@ angular.module('rioxApp')
 		riox.streams.provided({}, function(streams) {
 			$scope.$apply(function() {
 				$scope.streams = streams;
-				$scope.prepareStreams($scope.streams);
+				$scope.prepareStreamSources($scope.streams);
 				$.each(streams, function(idx,el) {
 					loadStreamConsumers(el);
 				});
@@ -27,7 +27,7 @@ angular.module('rioxApp')
 		riox.streams.source(id, function(stream) {
 			$scope.$apply(function() {
 				$scope.selectedStream = stream;
-				$scope.prepareStream(stream);
+				$scope.prepareStreamSource(stream);
 				loadStreamConsumers(stream);
 			});
 		});

@@ -26,32 +26,31 @@
     <div class="results">
     	
     	<div ng-repeat="thing in sources" ng-init="thingIndex = $index" class="animated fadeIn">
-			<div class="col-sm-12 col-md-6 col-lg-4" style="padding: 15px"
-					 ng-if="sources[thingIndex + columnIndex] != undefined">
-				<div class="thumbnail-riots animated" style="padding: 13px;"
+			<div class="col-sm-12 col-md-6 col-lg-4" style="padding: 15px" ng-alias="source = sources[thingIndex + columnIndex]">
+				<div class="thumbnail-riox animated" style="padding: 13px;"
 						 ng-class="{thumbnailhalo: hover || formData.selectedSource == thing}"
 						 ng-mouseenter="hover = true"
 						 ng-mouseleave="hover = false"
 						 ng-click="formData.selectedSource = thing"
-						 ng-dblclick="selectItem(sources[thingIndex + columnIndex].id)">
+						 ng-dblclick="selectItem(source.id)">
 
 					<!-- tags -->
 					<div class="pull-right"
 							 style="margin-bottom: 10px; margin-top: 10px;">
 									<span style="cursor: pointer; margin-right: 5px"
-												ng-repeat="tag in sources[thingIndex + columnIndex].tags"
+												ng-repeat="tag in stream.tags"
 												class="label label-info label-as-badge"
 												ng-click="selectTag(tag)"> {{tag}} </span>
 					</div>
 
-					<div class="clearfix" ng-show="sources[thingIndex + columnIndex].tags.length"></div>
+					<div class="clearfix" ng-show="stream.tags.length"></div>
 
 					<!-- organization image -->
 					<div class="logo">
-						<img ng-show="sources[thingIndex + columnIndex].organizationImg"
-								ng-src="{{sources[thingIndex + columnIndex].organizationImg}}"
+						<img ng-show="source.organizationImg"
+								ng-src="{{source.organizationImg}}"
 								class="img-responsive" style="margin: auto; max-height: 100px"/></slide>
-						<div ng-hide="sources[thingIndex + columnIndex].organizationImg"
+						<div ng-hide="source.organizationImg"
 								class="text-center">
 							<img ng-src="app/components/img/no_image_available.png"/>
 						</div>
@@ -59,14 +58,14 @@
 
 					<!-- content -->
 					<div class="caption">
-						<h4>{{sources[thingIndex + columnIndex].name}}</h4>
+						<h4>{{source.name}}</h4>
 						<hr/>
-						<b>Publisher:</b> {{sources[thingIndex + columnIndex].organization.name}}
+						<b>Publisher:</b> {{source.organization.name}}
 						<hr/>
-						{{trim(sources[thingIndex + columnIndex].description, 200)}}
+						{{trim(source.description, 200)}}
 					</div>
 					
-					<div class="price" ng-init="thePrice = sources[thingIndex + columnIndex].pricing">
+					<div class="price" ng-alias="thePrice = source.pricing">
 						<div ng-show="thePrice.billingUnit == 'event' || thePrice.billingUnit == 'day'" style="margin: auto;">
 						{{thePrice.unitPrice}} €
 						<span style="font-weight: normal;">

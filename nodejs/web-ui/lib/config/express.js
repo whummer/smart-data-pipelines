@@ -18,7 +18,7 @@ var session = require('express-session');
 
 function setupDefaults(app) {
  app.use(express.static(config.root));
- app.set('appPath', '');
+ app.set('appPath', path.resolve("."));
 }
 
 module.exports = function(app) {
@@ -57,7 +57,7 @@ module.exports = function(app) {
   if ('development' === env ) {
     //app.use(require('connect-livereload')());
     app.use(express.static(path.join(config.root, 'lib')));
-    app.set('appPath', 'lib');
+    app.set('appPath', path.resolve(__dirname + "/../"));
   }
     
 };

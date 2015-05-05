@@ -75,16 +75,16 @@ var __defaultHeaders = {
 	'Content-Type': 'application/json'
 }
 if(window.RIOX_USER_ID) {
-	__defaultHeaders["riots-auth-user-id"] = window.RIOX_USER_ID;
+	__defaultHeaders["riox-auth-user-id"] = window.RIOX_USER_ID;
 }
 if(window.RIOX_APP_KEY) {
-	__defaultHeaders["riots-auth-app-key"] = window.RIOX_APP_KEY;
+	__defaultHeaders["riox-auth-app-key"] = window.RIOX_APP_KEY;
 }
 if(window.RIOX_AUTH_TOKEN) {
-	__defaultHeaders["riots-auth-token"] = window.RIOX_AUTH_TOKEN;
+	__defaultHeaders["riox-auth-token"] = window.RIOX_AUTH_TOKEN;
 }
 if(window.RIOX_AUTH_NETWORK) {
-	__defaultHeaders["riots-auth-network"] = window.RIOX_AUTH_NETWORK;
+	__defaultHeaders["riox-auth-network"] = window.RIOX_AUTH_NETWORK;
 }
 $.ajaxSetup({
     headers: __defaultHeaders,

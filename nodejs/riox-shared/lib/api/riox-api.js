@@ -102,29 +102,27 @@ sh.auth = function(options, callback, errorCallback) {
 	assertAuth();
 	var __defaultHeaders = {
 		"Content-Type": "application/json",
-		"riots-auth-user-id": authToken.userId,
-		"riots-auth-app-key": authToken.appKey,
-		"riots-auth-network": authToken.network,
-		"riots-auth-token": authToken.access_token,
+		"riox-auth-user-id": authToken.userId,
+		"riox-auth-app-key": authToken.appKey,
+		"riox-auth-network": authToken.network,
+		"riox-auth-token": authToken.access_token,
 		"authorization": "Bearer " + authToken.access_token
 	};
 	$.ajaxSetup({
 	    headers: __defaultHeaders
 	});
 	var funcSuccess = function(result) {
-		console.log("Authentication successful.", result);
 		if(callback) {
 			callback(result);
 		}
 	};
 	var funcError = function(result) {
-		console.log("Authentication error.");
 		if(errorCallback) {
 			errorCallback(result);
 		}
 	};
 	if(authToken.appKey) {
-		riots.app({
+		riox.app({
 			appKey: authToken.appKey
 		}, funcSuccess, funcError);
 	} else {
@@ -770,7 +768,6 @@ var clone = function(obj) {
 if(typeof module != "undefined") {
 	module.exports = sh;
 } else if(typeof window != "undefined") {
-	window.riots = sh;
 	window.riox = sh;
 
 	/* INIT METHODS (must go last) */

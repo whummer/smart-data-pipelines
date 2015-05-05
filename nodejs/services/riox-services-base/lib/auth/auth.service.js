@@ -88,6 +88,13 @@ function getInternalCallTokenHeader() {
 }
 
 /**
+ * Validate a token
+ */
+function validateToken(token, callback) {
+	return jwt.verify(token, config.secrets.session, callback);
+}
+
+/**
  * Returns a jwt token signed by the app secret
  */
 function signToken(userId) {
@@ -123,5 +130,6 @@ exports.getInternalCallTokenHeader = getInternalCallTokenHeader;
 exports.getTokenHeaderForUserId = getTokenHeaderForUserId;
 exports.signToken = signToken;
 exports.getHeaderFromToken = getHeaderFromToken;
+exports.validateToken = validateToken;
 
 exports.INTERNAL_USER_ID = INTERNAL_USER_ID;

@@ -29,20 +29,20 @@ var appConfig = servicesConfig = {
 		access: { url: "http://localhost:8085/api/v1/access" },
 		files: { url: "http://localhost:8087/api/v1/files" },
 
-		websocket: { url: "ws://platform.riots.io:8085/websocket" }
+		websocket: { url: "ws://platform.riox.io:8085/websocket" }
 	},
 	auth: {
 		github: {
 			client_id: "49dfffa20fdaf8c5529d",
-			redirect_uri: "http://platform.riots.io:8080/auth/github/callback"
+			redirect_uri: "http://platform.riox.io:8080/auth/github/callback"
 		},
 		google: {
 			client_id: "1050661890767-kbb3fu29ss0d6rpj37doi4tca1opvc38.apps.googleusercontent.com",
-			redirect_uri: "http://platform.riots.io:8080/auth/google/callback"
+			redirect_uri: "http://platform.riox.io:8080/auth/google/callback"
 		},
 		facebook: {
 			client_id: "543561462440557",
-			redirect_uri: "http://platform.riots.io:8080/auth/facebook/callback"
+			redirect_uri: "http://platform.riox.io:8080/auth/facebook/callback"
 		},
 	}
 };
