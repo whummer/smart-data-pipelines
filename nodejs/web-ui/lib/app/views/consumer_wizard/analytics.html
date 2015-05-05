@@ -1,0 +1,43 @@
+<fieldset ng-controller="analyticsCtrl">
+  <h2>Analytics</h2>
+  <h4>Select the analytics module you want to apply</h4>
+
+  <div class="row" style="margin-top: 20px">
+
+    <div class="form-group">
+      <label for="analyticsModule" class="col-sm-5 control-label">
+        Pick an Analytics Module
+      </label>
+
+      <div class="col-sm-4">
+        <select id="analyticsModule" name="connector" required ng-model="formData.selectedAnalyticsModule"
+                class="form-control "
+                ng-options="module.name for module in analyticsModules track by module._id"
+                ng-placeholder="Select">
+        </select>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="row" ng-show="formData.selectedAnalyticsModule">
+
+    <h4>Configure Module Inputs</h4>
+    <div class="form-group" ng-repeat="input in formData.selectedAnalyticsModule.input">
+      <label for="{{input.key}}" class="col-sm-5 control-label">
+        {{input.description}}
+      </label>
+
+      <div class="col-sm-4">
+        <input id="{{input.key}}" ng-model="formData.selectedAnalyticsModule.config[input.key]"/>
+      </div>
+    </div>
+
+
+  </div>
+
+
+  <a ui-sref="consumer.wizard.billing" class="btn btn-default">Previous</a>
+  <a ui-sref="consumer.wizard.confirm" class="btn btn-primary">Next</a>
+
+</fieldset>

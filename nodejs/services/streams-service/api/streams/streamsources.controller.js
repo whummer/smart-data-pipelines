@@ -87,6 +87,7 @@ var applyByStreamSource = exports.applyByStreamSource = function(source, callbac
 	var cfg = {};
 
 	var findContainers = function(resolve, reject) {
+    console.log("Trying to find container")
 		containers.getContainersIPs(["zookeeper", "kafka", "springxd-admin"], resolve, reject);
 	};
 
@@ -96,6 +97,7 @@ var applyByStreamSource = exports.applyByStreamSource = function(source, callbac
 
 	var createStream = function(resolve, reject) {
 		// create the SpringXD stream
+    console.log("About to create stream:");
 		var port = 9000;
 		var path = "/" + source[ORGANIZATION_ID] + "/" + source.id;
 		var streamDefinition = "riox-http --port=" + port + " --path=" + path + " | " +
