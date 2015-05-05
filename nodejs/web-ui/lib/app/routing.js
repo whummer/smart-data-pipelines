@@ -3,13 +3,12 @@
 angular.module('rioxApp')
 .config(function ($stateProvider, $urlRouterProvider) {
 
-	$urlRouterProvider.otherwise("/index/main");
+	$urlRouterProvider.otherwise("/main");
 
 	$stateProvider
 
 	/* main index */
 		.state('index', {
-			url: "/index",
 			templateUrl: "app/views/common/content.html"
 		})
 		.state('index.main', {
@@ -41,6 +40,11 @@ angular.module('rioxApp')
 			url: '/signup',
 			templateUrl: 'app/views/account/signup/signup.html',
 			controller: 'SignupCtrl'
+		})
+		.state('index.auth.facebook.callback', {
+			url: '/auth/facebook/callback',
+			templateUrl: 'app/views/account/callback/index.html',
+			controller: 'CallbackCtrl'
 		})
 
 	// provider wizard/setup

@@ -9,7 +9,7 @@ angular.module('rioxApp')
     var configureRioxApiAuth = function(token) {
     	/* configure riox API */
     	riox.auth({
-      	  RIOX_AUTH_NETWORK: "riots",
+      	  RIOX_AUTH_NETWORK: "riox",
       	  RIOX_AUTH_TOKEN: token
         });
     }

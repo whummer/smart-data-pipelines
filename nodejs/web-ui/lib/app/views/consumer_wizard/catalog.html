@@ -27,19 +27,19 @@
     	
     	<div ng-repeat="thing in sources" ng-init="thingIndex = $index" class="animated fadeIn">
 			<div class="col-sm-12 col-md-6 col-lg-4" style="padding: 15px"
-					 ng-if="sources[thingIndex + columnIndex] != undefined">
-				<div class="thumbnail-riots animated" style="padding: 13px;"
+					 ng-if="sources[thingIndex + columnIndex] != undefined" ng-alias="source = sources[thingIndex + columnIndex]">
+				<div class="thumbnail-riox animated" style="padding: 13px;"
 						 ng-class="{thumbnailhalo: hover || formData.selectedSource == thing}"
 						 ng-mouseenter="hover = true"
 						 ng-mouseleave="hover = false"
 						 ng-click="formData.selectedSource = thing"
-						 ng-dblclick="selectItem(sources[thingIndex + columnIndex].id)">
+						 ng-dblclick="selectItem(source.id)">
 
 					<!-- tags -->
 					<div class="pull-right"
 							 style="margin-bottom: 10px; margin-top: 10px;">
 									<span style="cursor: pointer; margin-right: 5px"
-												ng-repeat="tag in sources[thingIndex + columnIndex].tags"
+												ng-repeat="tag in source.tags"
 												class="label label-info label-as-badge"
 												ng-click="selectTag(tag)"> {{tag}} </span>
 					</div>

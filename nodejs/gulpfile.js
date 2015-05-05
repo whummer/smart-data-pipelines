@@ -14,7 +14,7 @@ var gulpFiles = {
 	filesService : require('./services/files-service/files-service-gulpfile')
 }
 var nodeDirs = [".", "services/test",
-                "services/users-service", "services/streams-service", "services/analytics-service",
+                "services/users-service", "services/streams-service", "services/analytics-service", "services/files-service",
                 "services/riox-services-base", "web-ui"];
 var bowerDirs = ["web-ui/lib"];
 

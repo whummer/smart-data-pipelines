@@ -16,6 +16,7 @@ var validationError = function(res, err) {
  * Authentication request
  */
 exports.auth = function(req, res) {
+	console.log(req.body);
 	res.json(200, {}); // TODO check token
 };
 
