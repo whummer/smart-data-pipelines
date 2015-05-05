@@ -64,11 +64,14 @@
 			<div class="form-group" ng-show="formData.sourceAccess && !formData.sourceAccess.status">
 				<label class="col-lg-5 text-cell">Your Organization</label>
 				<div class="col-lg-7 text-cell">
-					<select ng-options="item.name for item in userInfo.organizations track by item.id" 
-							ng-model="selectedOrg" class="form-control">
-					</select>
+					{{getCurrentOrganization().name}}
+<!-- 					<input ng-model="selectedOrg.name" disabled="disabled"/> -->
+<!-- 					<select ng-options="item.name for item in userInfo.organizations track by item.id"  -->
+<!-- 							ng-model="selectedOrg" class="form-control"> -->
+<!-- 					</select> -->
 				</div>
 			</div>
+			<hr/>
 			<div class="form-group" ng-show="formData.sourceAccess && !formData.sourceAccess.status">
 				<label class="col-lg-5 text-cell">Request Access</label>
 				<div class="col-lg-7 text-cell">

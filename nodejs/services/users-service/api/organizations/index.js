@@ -10,7 +10,7 @@ var router = express.Router();
 router.get('/all', auth.hasRole('admin'), controller.index);
 router.get('/', auth.isAuthenticated(), controller.getOwnAll);
 router.get('/default', auth.isAuthenticated(), controller.getOwnDefault);
-router.get('/:id', auth.isAuthenticated(), controller.show);
+router.get('/:id', /* auth.isAuthenticated() ,*/ controller.show);
 router.delete('/:id', auth.hasRole('admin'), controller.destroy);
 router.post('/', auth.isAuthenticated(), controller.create);
 router.put('/membership', auth.isAuthenticated(), controller.updateMembership);

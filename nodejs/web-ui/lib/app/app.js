@@ -53,7 +53,7 @@ angular.module('rioxApp', [
 			// Redirect to login if route requires auth and you're not logged in
 			$rootScope.$on('$stateChangeStart', function (event, next) {
 				Auth.isLoggedInAsync(function (loggedIn) {
-					if (next.authenticate && !loggedIn) {
+					if (!loggedIn && (next.authenticate || (next.data && next.data.authenticate))) {
 						$location.path('/login');
 					}
 				});

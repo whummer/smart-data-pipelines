@@ -23,8 +23,9 @@ exports.index = function(req, res, next) {
 exports.getBySource = function(req, res, next) {
 	var user = auth.getCurrentUser(req);
 	var crit1 = {}, crit2 = {};
+	var requestorId = req.params.organizationId;
 	crit1[OWNER_ID] = user.id;
-	crit2[REQUESTOR_ID] = user.id;
+	crit2[REQUESTOR_ID] = requestorId ? requestorId : user.id;
 	var query = {
 			$or: [crit1, crit2]
 	};

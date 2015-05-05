@@ -10,7 +10,8 @@ var router = express.Router();
 router.get('/', auth.isAuthenticated(), controller.index);
 router.delete('/:id', auth.isAuthenticated(), controller.destroy);
 router.get('/:id', auth.isAuthenticated(), controller.show);
-router.get('/source/:sourceId', auth.isAuthenticated(), controller.getBySource);
 router.post('/', auth.isAuthenticated(), controller.create);
+router.get('/source/:sourceId', auth.isAuthenticated(), controller.getBySource);
+router.get('/source/:sourceId/consumer/:organizationId', auth.isAuthenticated(), controller.getBySource);
 
 module.exports = router;

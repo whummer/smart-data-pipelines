@@ -37,7 +37,6 @@ angular.module('rioxApp')
 		var query = {};
 		query[SOURCE_ID] = source.id;
 		riox.access(query, function(accesses) {
-			console.log(accesses);
 			$scope.$apply(function() {
 				source.consumers = accesses;
 			});

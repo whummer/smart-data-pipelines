@@ -10,6 +10,7 @@ var riox = require('riox-shared/lib/api/riox-api');
 var validateJwt = expressJwt({ secret: config.secrets.session });
 
 var INTERNAL_USER_ID = "000000000000000000000000"; // Mongodb ObjectId format
+var expiresInMinutes = 60*24*3; // 3 days expiration time
 
 /**
  * Attaches the user object to the request if authenticated
@@ -98,7 +99,8 @@ function validateToken(token, callback) {
  * Returns a jwt token signed by the app secret
  */
 function signToken(userId) {
-	return jwt.sign({ _id: userId }, config.secrets.session, { expiresInMinutes: 60*10 });
+	return jwt.sign({ _id: userId }, config.secrets.session, 
+			{ expiresInMinutes: expiresInMinutes });
 }
 
 function getTokenHeaderForUserId(userId) {

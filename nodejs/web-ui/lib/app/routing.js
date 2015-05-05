@@ -51,7 +51,11 @@ angular.module('rioxApp')
 		.state('provider', {
 			abstract: true,
 			templateUrl: "app/views/common/content.html",
-			url: "/providers"
+			url: "/providers",
+			data: {
+				/* this flag in this 'data' bag is propagated to all child-states */
+				authenticate: true
+			}
 		})
 		.state('provider.wizard', {
 			url: "/wizard?debug",
@@ -118,15 +122,18 @@ angular.module('rioxApp')
 		.state('consumer.wizard.request', {
 			url: '/request/{sourceId}',
 			templateUrl: 'app/views/consumer_wizard/request.html',
-			controller: 'ConsumerRequestCtrl'
+			controller: 'ConsumerRequestCtrl',
+			authenticate: true
 		})
 		.state('consumer.wizard.billing', {
 			url: '/billing',
-			templateUrl: 'app/views/consumer_wizard/billing.html'
+			templateUrl: 'app/views/consumer_wizard/billing.html',
+			authenticate: true
 		})
 		.state('consumer.wizard.confirm', {
 			url: '/confirm',
-			templateUrl: 'app/views/consumer_wizard/confirm.html'
+			templateUrl: 'app/views/consumer_wizard/confirm.html',
+			authenticate: true
 		})
 
 	// general

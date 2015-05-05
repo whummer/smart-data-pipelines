@@ -31,8 +31,7 @@ angular.module('rioxApp').controller(
 			var sourceAccess = {}
 			sourceAccess[STATUS] = STATUS_REQUESTED;
 			sourceAccess[SOURCE_ID] = $scope.formData.selectedSource.id;
-			sourceAccess[REQUESTOR_ID] = $scope.selectedOrg;
-			console.log("requesting access");
+			sourceAccess[REQUESTOR_ID] = $scope.getCurrentOrganization().id;
 			riox.save.access(sourceAccess, function(sourceAccess) {
 				$scope.formData.sourceAccess = sourceAccess;
 				$scope.formData.sourceAccess.status = STATUS_REQUESTED;
@@ -48,6 +47,7 @@ angular.module('rioxApp').controller(
 	$scope.loadAccessStatus = function (callback) {
 		var query = {};
 		query[SOURCE_ID] = $scope.formData.selectedSource.id;
+		query[REQUESTOR_ID] = $scope.getCurrentOrganization().id;
 		riox.access(query, function (access) {
 			if(access[0]) {
 				$scope.formData.sourceAccess = access[0];
@@ -60,17 +60,7 @@ angular.module('rioxApp').controller(
 		});
 	};
 
-	var loadUserInfos = function() {
-		var user = $scope.userInfo = $scope.getCurrentUser();
-		if(!user.organizations) {
-			riox.organizations(function(orgs) {
-				user.organizations = orgs;
-			});
-		}
-	}
-
 	/* load main elements */
 	loadSource();
-	loadUserInfos();
 
 });

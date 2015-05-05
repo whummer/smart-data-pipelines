@@ -6,13 +6,14 @@ angular.module('rioxApp')
     $scope.isLoggedIn = Auth.isLoggedIn;
     $scope.isAdmin = Auth.isAdmin;
     $scope.getCurrentUser = Auth.getCurrentUser;
+    $scope.getCurrentOrganization = Auth.getCurrentOrganization;
 
     $scope.logout = function () {
       Auth.logout();
       $state.go('index.login');
-      //$location.path('/login');
-      /* important: make sure to reload the entire page, to
-       * reset all controllers, state information, etc.
+      /* 
+       * important: make sure to reload the entire page, to
+       * reset all controllers, flush state information, etc.
        */
       $window.location.reload();
     };

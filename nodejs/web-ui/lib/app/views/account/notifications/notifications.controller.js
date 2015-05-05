@@ -7,7 +7,6 @@ function($scope, User, Auth) {
 
 	$scope.load = function() {
 		var query = {};
-		console.log("query", query);
 		$scope.notifications = [];
 		riox.access(query, function(accesses) {
 //			console.log(accesses);
