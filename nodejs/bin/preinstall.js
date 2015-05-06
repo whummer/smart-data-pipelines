@@ -2,9 +2,16 @@ var fs = require('fs');
 var resolve = require('path').resolve;
 var join = require('path').join;
 var cp = require('child_process');
-var localConfigFile = (process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME']) + "/.riox";
+var localConfigFile = (process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME']) + "/.rioxrc";
 var localConfig = !fs.existsSync(localConfigFile) ? {} : JSON.parse(fs.readFileSync(localConfigFile));
-console.log(localConfig)
+
+if (localConfig.build) {
+  console.log("Using localconfig from " + localConfigFile + ":");
+  console.log(">>>>>>>>>>>>>>>>>>>>");
+  console.log(JSON.stringify(localConfig, null, 2));
+  console.log("<<<<<<<<<<<<<<<<<<<<");
+  console.log("\n");
+}
 
 var service_directories = ['streams-service', 'users-service', 'riox-services-base', 'analytics-service', 'files-service'];
 var services_test_directory = 'services/test';
