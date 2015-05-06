@@ -236,13 +236,15 @@ sh.streams.provided = function(searchOpts, callback, errorCallback) {
 	var url = servicesConfig.services.streams.url + "/provided";
 	return callGET(url, callback, errorCallback);
 };
-
 sh.sinks = sh.get.sinks = function(searchOpts, callback, errorCallback) {
 	var url = servicesConfig.services.streamsinks.url;
 	//url += "?creatorId=" + window.RIOX_USER_ID;
 	return callGET(url, callback, errorCallback);
 };
-
+sh.analytics = sh.get.analytics = function (callback, errorCallback) {
+	var url = servicesConfig.services.analytics.url;
+	return callGET(url, callback, errorCallback);
+};
 sh.manufacturers = sh.get.manufacturers = function(callback, errorCallback) {
 	return callGET(servicesConfig.services.manufacturers.url, callback, errorCallback);
 };

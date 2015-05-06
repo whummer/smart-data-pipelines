@@ -49,13 +49,48 @@ angular.module('rioxApp', [
 			};
 		})
 
-		.run(function ($rootScope, $location, Auth) {
-			// Redirect to login if route requires auth and you're not logged in
-			$rootScope.$on('$stateChangeStart', function (event, next) {
-				Auth.isLoggedInAsync(function (loggedIn) {
-					if (!loggedIn && (next.authenticate || (next.data && next.data.authenticate))) {
-						$location.path('/login');
-					}
-				});
-			});
-		});
+		.run(function ($rootScope, $state, Auth) {
+		    $rootScope.$on('$stateChangeStart', function (event, toState, toParams) {
+
+	        	var authRequired = toState.authenticate || (toState.data && toState.data.authenticate);
+		        if($rootScope.stateChangeBypass || toState.name === 'index.login' || !authRequired) {
+		            $rootScope.stateChangeBypass = false;
+		            return;
+		        }
+
+		        event.preventDefault();
+		        Auth.isLoggedInAsync(function(user) {
+		            if (user) {
+		                $rootScope.stateChangeBypass = true;
+		                $state.go(toState, toParams);
+		            } else {
+		                $state.go('index.login');
+		            }
+		        });
+
+		    });
+		}
+				
+//				function ($rootScope, $location, Auth, $urlRouter, $state) {
+//			var bypass = false
+//			$rootScope.$on('$stateChangeStart', function (event, state, params) {
+//				if (bypass) { bypass = false; return; }
+//		        event.preventDefault();
+//		        console.log(state);
+//				Auth.isLoggedInAsync(function (loggedIn) {
+//					console.log("loggedIn", loggedIn, params);
+//					if (!loggedIn && (state.authenticate || (state.data && state.data.authenticate))) {
+//						bypass = true;
+//						console.log("goto login");
+//						return $state.go("index.login");
+//						//return $location.path('/login');
+//					}
+//					bypass = true;
+////					$urlRouter.sync();
+//					$state.go(state, params);
+//				});
+//			});
+//		}
+				
+		
+		);

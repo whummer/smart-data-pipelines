@@ -9,6 +9,7 @@ angular.module('rioxApp').controller(
 	var loadSource = function() {
 		var id = $stateParams.sourceId;
 		if(!id) return;
+		console.log("loading stream source in controller");
 		riox.streams.source(id, function(source) {
 			$scope.$apply(function() {
 				$scope.formData.selectedSource = source;

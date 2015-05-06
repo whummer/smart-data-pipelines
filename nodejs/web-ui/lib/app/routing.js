@@ -20,7 +20,8 @@ angular.module('rioxApp')
 		.state('index.dashboard', {
 			url: '/dashboard',
 			templateUrl: 'app/views/account/dashboard/dashboard.html',
-			data: {pageTitle: 'riox.io - dashboard'}
+			data: {pageTitle: 'riox.io - dashboard'},
+			authenticate: true
 		})
 		.state('index.settings', {
 			url: '/settings',
@@ -132,11 +133,13 @@ angular.module('rioxApp')
 		})
     .state('consumer.wizard.analytics', {
 			url: '/analytics',
-			templateUrl: 'app/views/consumer_wizard/analytics.html'
+			templateUrl: 'app/views/consumer_wizard/analytics.html',
+			authenticate: true
 		})
     .state('consumer.wizard.connector', {
 			url: '/connector',
-			templateUrl: 'app/views/consumer_wizard/connector.html'
+			templateUrl: 'app/views/consumer_wizard/connector.html',
+			authenticate: true
 		})
 		.state('consumer.wizard.confirm', {
 			url: '/confirm',
@@ -148,7 +151,8 @@ angular.module('rioxApp')
 		.state('index.notifications', {
 			url: "/notifications",
 			templateUrl: "app/views/account/notifications/notifications.html",
-			controller: "NotificationsCtrl"
+			controller: "NotificationsCtrl",
+			authenticate: true
 		})
 
 	// streams
@@ -156,7 +160,11 @@ angular.module('rioxApp')
 			abstract: true,
 			templateUrl: "app/views/common/content.html",
 			url: "/streams",
-			controller: "StreamsCtrl"
+			controller: "StreamsCtrl",
+			data: {
+				/* this flag in this 'data' bag is propagated to all child-states */
+				authenticate: true
+			}
 		})
 		.state('streams.provided', {
 			url: "/provided/{sourceId}",

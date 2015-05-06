@@ -40,12 +40,21 @@ angular.module('rioxApp')
     }
 
     if($cookieStore.get('token')) {
-    	configureRioxApiAuth($cookieStore.get('token'), function() {
-        	User.get(function(res) {
-        		currentUser = res;
-        		loadOrganization();
-        	});
-    	});
+		currentUser = User.get();
+        var deferred = $q.defer();
+        var oldPromise = currentUser.$promise;
+		currentUser.$promise = deferred.promise;
+		oldPromise.then(
+			function(user) {
+	    		return $q(function(resolve, reject) {
+	    			configureRioxApiAuth($cookieStore.get('token'), function(token) {
+	    				loadOrganization(function() {
+	            			deferred.resolve();
+	            		});
+	            	});
+	    		});
+			}
+		);
     }
 
     return {
