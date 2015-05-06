@@ -31,16 +31,16 @@
                 <a ui-sref=".request" class="btn-default"><span>2</span> Request Access</a>
               </li>
               <li ui-sref-active="current">
-                <a ui-sref=".billing" class="btn-default"><span>3</span> Billing</a>
+                <a ui-sref=".billing" class="btn-default" ng-class="{ disabled : __accessNotGranted = !isAccessGranted()}"><span>3</span> Billing</a>
               </li>
               <li ui-sref-active="current">
-                <a ui-sref=".connector" class="btn-default"><span>4</span> Connector</a>
+                <a ui-sref=".connector" class="btn-default" ng-class="{ disabled : __accessNotGranted}"><span>4</span> Connector</a>
               </li>
               <li ui-sref-active="current">
-                <a ui-sref=".analytics" class="btn-default"><span>5</span> Analytics</a>
+                <a ui-sref=".analytics" class="btn-default" ng-class="{ disabled : __accessNotGranted}"><span>5</span> Analytics</a>
               </li>
               <li ui-sref-active="current">
-                <a ui-sref=".confirm" class="btn-default"><span>6</span> Confirmation</a>
+                <a ui-sref=".confirm" class="btn-default" ng-class="{ disabled : __accessNotGranted}}"><span>6</span> Confirmation</a>
               </li>
             </ul>
           </div>

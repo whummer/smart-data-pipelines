@@ -16,7 +16,7 @@ var demoData = [
 			unitPrice: 123.4
 		},
 		permit : {
-			type : "manual"
+			type : PERMIT_MODE_MANUAL
 		}
 	},
 	{
@@ -30,7 +30,7 @@ var demoData = [
 			unitPrice: 0.0012
 		},
 		permit : {
-			type : "manual"
+			type : PERMIT_MODE_MANUAL
 		}
 	},
 	{
@@ -42,7 +42,7 @@ var demoData = [
 			billingUnit: "free"
 		},
 		permit : {
-			type : "manual"
+			type : PERMIT_MODE_MANUAL
 		}
 	},
 	{
@@ -54,7 +54,7 @@ var demoData = [
 			billingUnit: "free"
 		},
 		permit : {
-			type : "auto"
+			type : PERMIT_MODE_AUTO
 		}
 	},
 	{
@@ -68,7 +68,7 @@ var demoData = [
 			unitPrice: 0.0025
 		},
 		permit : {
-			type : "auto"
+			type : PERMIT_MODE_AUTO
 		}
 	},
 	{
@@ -82,7 +82,7 @@ var demoData = [
 			unitPrice: 0.0018
 		},
 		permit : {
-			type : "auto"
+			type : PERMIT_MODE_AUTO
 		}
 	},
 	{
@@ -96,7 +96,7 @@ var demoData = [
 			unitPrice: 0.0012
 		},
 		permit : {
-			type : "auto"
+			type : PERMIT_MODE_AUTO
 		}
 	},
 	{
@@ -109,7 +109,7 @@ var demoData = [
 			unitPrice: 0.0018
 		},
 		permit : {
-			type : "auto"
+			type : PERMIT_MODE_AUTO
 		}
 	} ];
 

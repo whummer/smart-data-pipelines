@@ -1,16 +1,17 @@
-
 function consumerWizardCtrl($scope, $stateParams, $state) {
 	$scope.resourceData = {};
 	$scope.formData = {};
 	$scope.trim = window.trim;
 
 	$scope.selectItem = function(sourceId) {
-		$state.go("consumer.wizard.request", {sourceId: sourceId});
+		$state.go("consumer.wizard.request", {
+			sourceId : sourceId
+		});
 	};
 
-  if ($state.params.debug) {
-    $scope.debug = true;
-  }
+	if ($state.params.debug) {
+		$scope.debug = true;
+	}
 
 	/* load sources */
 	var loadSources = function() {
@@ -24,24 +25,17 @@ function consumerWizardCtrl($scope, $stateParams, $state) {
 		});
 	}
 
-	$scope.producersAutocomp = {
-		options: {
-			html: true,
-			focusOpen: true,
-			valueList: [
-				{id: 1, label: "BMW"},
-				{id: 2, label: "Volkswagen"},
-				{id: 3, label: "Smart City Vienna"}
-			],
-			source: function (request, response) {
-				console.log(request);
-				response($scope.producersAutocomp.options.valueList);
-			}
-		}
+	$scope.isAccessGranted = function() {
+		var src = $scope.formData.selectedSource;
+		if(!src) return false;
+		if(src[PERMIT_MODE][TYPE] == PERMIT_MODE_AUTO) return true;
+		var access = $scope.formData.sourceAccess;
+		if(!access) return false;
+		if(access.STATUS_PERMITTED) return true;
+		return false;
 	};
 
 	/* load main elements */
-
 	loadSources();
 
 }

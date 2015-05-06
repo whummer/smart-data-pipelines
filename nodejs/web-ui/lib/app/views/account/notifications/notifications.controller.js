@@ -16,6 +16,8 @@ function($scope, User, Auth) {
 				el.time = formatDate(el.changed);
 				el.unresolved = el.status == "requested";
 				console.log(el);
+				el.link = "streams.provided({sourceId: '" + el[SOURCE_ID] + "', " +
+						"organizationId: " + el[ORGANIZATION_ID] + "})";
 				$scope.notifications.push(el);
 			});
 		});

@@ -21,9 +21,11 @@ angular.module('rioxApp')
      * Load organizations of current user.
      */
     var loadOrganization = function(callback) {
-  	  if(!currentUser) return;
-  	  if(!currentUser.id) currentUser.id = currentUser._id;
-      currentOrganization = {};
+  	  if(!currentUser || (!currentUser.id && !currentUser._id)) return;
+  	  if(!currentUser.id) {
+  		  currentUser.id = currentUser._id;
+  	  }
+  	  currentOrganization = {};
   	  riox.organizations(function(orgs) {
   		  currentUser.organizations = orgs;
   		  orgs.forEach(function(org) {

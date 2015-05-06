@@ -35,13 +35,17 @@
 					</div>
 				</div>
 			</div>
-			<div class="form-group">
+			<div class="form-group" ng-show="formData.selectedSource.permit.type == 'auto'">
 				<label class="col-lg-5 text-cell">Access Status</label>
 				<div class="col-lg-7 text-cell">
-					<div ng-show="formData.selectedSource.permit.type == 'auto'" >
 					Access to this source is automatically granted.
-					</div>
-					<div ng-show="formData.selectedSource.permit.type == 'manual'" >
+				</div>
+			</div>
+
+			<div ng-show="formData.selectedSource.permit.type == 'manual'" >
+				<div class="form-group">
+					<label class="col-lg-5 text-cell">Access Status</label>
+					<div class="col-lg-7 text-cell">
 						<div ng-show="!formData.sourceAccess">
 							loading ...
 						</div>
@@ -60,22 +64,18 @@
 						</div>
 					</div>
 				</div>
-			</div>
-			<div class="form-group" ng-show="formData.sourceAccess && !formData.sourceAccess.status">
-				<label class="col-lg-5 text-cell">Your Organization</label>
-				<div class="col-lg-7 text-cell">
-					{{getCurrentOrganization().name}}
-<!-- 					<input ng-model="selectedOrg.name" disabled="disabled"/> -->
-<!-- 					<select ng-options="item.name for item in userInfo.organizations track by item.id"  -->
-<!-- 							ng-model="selectedOrg" class="form-control"> -->
-<!-- 					</select> -->
+				<div class="form-group" ng-show="formData.sourceAccess && !formData.sourceAccess.status">
+					<label class="col-lg-5 text-cell">Your Organization</label>
+					<div class="col-lg-7 text-cell">
+						{{getCurrentOrganization().name}}
+					</div>
 				</div>
-			</div>
-			<hr/>
-			<div class="form-group" ng-show="formData.sourceAccess && !formData.sourceAccess.status">
-				<label class="col-lg-5 text-cell">Request Access</label>
-				<div class="col-lg-7 text-cell">
-					<a class="btn btn-primary" ng-click="requestAccess()">Request access now</a>.
+				<hr/>
+				<div class="form-group" ng-show="formData.sourceAccess && !formData.sourceAccess.status">
+					<label class="col-lg-5 text-cell">Request Access</label>
+					<div class="col-lg-7 text-cell">
+						<a class="btn btn-primary" ng-click="requestAccess()">Request access now</a>.
+					</div>
 				</div>
 			</div>
         </div>

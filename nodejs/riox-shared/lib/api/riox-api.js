@@ -28,6 +28,7 @@ g.DESCRIPTION = "description";
 g.CREATION_DATE = "creation-date";
 g.CREATOR_ID = "creator-id";
 g.OWNER_ID = "owner-id";
+g.TYPE = "type";
 g.THING_TYPE = "thing-type";
 g.THING_ID = "thing-id";
 g.THINGS = "things";
@@ -44,12 +45,14 @@ g.END_TIME = "end-time";
 g.USER_ID = "user-id";
 g.STREAM_ID = "stream-id";
 g.SOURCE_ID = "source-id";
+g.PROCESSOR_ID = "processor-id";
 g.SINK_ID = "sink-id";
 g.ORGANIZATION_ID = "organization-id";
 g.PROCESSORS = "processors";
 g.REQUESTOR_ID = "requestor-id";
 g.CONNECTOR = "connector";
 g.STATUS = "status";
+g.TAGS = "tags";
 g.CREATED = "created";
 g.CHANGED = "changed";
 g.STATUS_REQUESTED = "REQUESTED";
@@ -57,6 +60,19 @@ g.STATUS_PENDING = "PENDING";
 g.STATUS_CONFIRMED = "CONFIRMED";
 g.STATUS_PERMITTED = "PERMITTED";
 g.STATUS_DENIED = "DENIED";
+g.PERMIT_MODE = "permit";
+g.PERMIT_MODE_AUTO = "auto";
+g.PERMIT_MODE_MANUAL = "manual";
+g.VISIBLE = "visible";
+g.INPUT = "input";
+g.OUTPUT = "output";
+g.PAYLOAD = "payload";
+g.KEY = "key";
+g.VALUE_TYPE = "value-type";
+g.SECURITY = "security";
+g.RETENTION_TIME = "retention-time";
+g.DATA_ITEMS = "data-items";
+g.PRICING = "pricing";
 
 var shareHook = (typeof window != "undefined") ? window : global;
 for(key in g) {
@@ -307,7 +323,10 @@ sh.access = sh.get.access = function(query, callback, errorCallback) {
 		query = {};
 	}
 	var sourceId = query[SOURCE_ID];
-	var url = servicesConfig.services.access.url + (sourceId ? ("/source/" + sourceId) : "");
+	var consumerId = query[REQUESTOR_ID];
+	var url = servicesConfig.services.access.url + 
+			(sourceId ? ("/source/" + sourceId) : "") + 
+			(consumerId ? ("/consumer/" + consumerId) : "");
 	return callGET(url, callback, errorCallback);
 };
 sh.usage = sh.get.usage = function(callback, errorCallback) {

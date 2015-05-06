@@ -69,28 +69,4 @@ angular.module('rioxApp', [
 		        });
 
 		    });
-		}
-				
-//				function ($rootScope, $location, Auth, $urlRouter, $state) {
-//			var bypass = false
-//			$rootScope.$on('$stateChangeStart', function (event, state, params) {
-//				if (bypass) { bypass = false; return; }
-//		        event.preventDefault();
-//		        console.log(state);
-//				Auth.isLoggedInAsync(function (loggedIn) {
-//					console.log("loggedIn", loggedIn, params);
-//					if (!loggedIn && (state.authenticate || (state.data && state.data.authenticate))) {
-//						bypass = true;
-//						console.log("goto login");
-//						return $state.go("index.login");
-//						//return $location.path('/login');
-//					}
-//					bypass = true;
-////					$urlRouter.sync();
-//					$state.go(state, params);
-//				});
-//			});
-//		}
-				
-		
-		);
+		});

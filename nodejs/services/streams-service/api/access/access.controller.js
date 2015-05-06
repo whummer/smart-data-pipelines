@@ -8,15 +8,28 @@ var riox = require('riox-shared/lib/api/riox-api');
 
 exports.index = function(req, res, next) {
 	var user = auth.getCurrentUser(req);
-	var crit1 = {}, crit2 = {};
-	crit1[OWNER_ID] = user.id;
-	crit2[REQUESTOR_ID] = user.id;
-	var query = { $or: [crit1, crit2] };
 
-	StreamAccess.find(query, function(err, list) {
-		if (err)
-			return res.send(500, err);
-		res.json(200, list);
+	riox.organizations({
+		headers: req.headers,
+		callback: function(orgs) {
+			orgs.push(user); // for now, also consider the user ID
+
+			var query = { $or: [] };
+
+			orgs.forEach(function(org) {
+				var crit1 = {}, crit2 = {};
+				crit1[OWNER_ID] = org.id;
+				crit2[REQUESTOR_ID] = org.id;
+				query.$or.push(crit1);
+				query.$or.push(crit2);
+			});
+
+			StreamAccess.find(query, function(err, list) {
+				if (err)
+					return res.send(500, err);
+				res.json(200, list);
+			});
+		}
 	});
 };
 
@@ -24,12 +37,12 @@ exports.getBySource = function(req, res, next) {
 	var user = auth.getCurrentUser(req);
 	var crit1 = {}, crit2 = {};
 	var requestorId = req.params.organizationId;
-	crit1[OWNER_ID] = user.id;
-	crit2[REQUESTOR_ID] = requestorId ? requestorId : user.id;
-	var query = {
-			$or: [crit1, crit2]
-	};
+	var query = {};
+	if(requestorId) {
+		crit2[REQUESTOR_ID] = requestorId;
+	}
 	query[SOURCE_ID] = req.params.sourceId;
+	// TODO check if this user has access to this source!
 	return StreamAccess.find(query, function(err, obj) {
 		if (err)
 			return next(err);
@@ -66,7 +79,6 @@ exports.destroy = function(req, res, next) {
 				orgs.forEach(function(org) {
 					if(obj[REQUESTOR_ID] == org.id ||
 							obj[REQUESTOR_ID] == user.id) {
-						console.log("permitted");
 						found = true;
 						StreamAccess.remove(id, function(err, obj) {
 							if (err) return res.send(500, err);

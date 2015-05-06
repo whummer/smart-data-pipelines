@@ -1425,6 +1425,9 @@ button.dim:active:before {
   -moz-border-radius: 0px;
   border-radius: 0px;
 }
+.wizard > .steps a.disabled {
+  display: none;
+}
 .wizard > .steps .current a,
 .wizard > .steps .current a:hover,
 .wizard > .steps .current a:active {

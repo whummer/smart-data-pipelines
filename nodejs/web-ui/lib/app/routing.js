@@ -118,7 +118,8 @@ angular.module('rioxApp')
 		})
 		.state('consumer.wizard.catalog', {
 			url: '/catalog',
-			templateUrl: 'app/views/consumer_wizard/catalog.html'
+			templateUrl: 'app/views/consumer_wizard/catalog.html',
+			controller: "StreamsCatalogCtrl"
 		})
 		.state('consumer.wizard.request', {
 			url: '/request/{sourceId}',
@@ -168,6 +169,11 @@ angular.module('rioxApp')
 		})
 		.state('streams.provided', {
 			url: "/provided/{sourceId}",
+			templateUrl: "app/views/streams/streams.provided.html",
+			controller: "StreamsProvidedCtrl"
+		})
+		.state('streams.provided.consumer', {
+			url: "/consumer/{organizationId}",
 			templateUrl: "app/views/streams/streams.provided.html",
 			controller: "StreamsProvidedCtrl"
 		})
