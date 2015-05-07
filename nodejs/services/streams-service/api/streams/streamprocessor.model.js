@@ -33,31 +33,33 @@ template[DESCRIPTION] = String;
  */
 template[VISIBLE] = Boolean;
 /**
- * Source ID - the id of the source element where the data is coming from.
+ * Source ID - the id of the source element where the data is coming from. // TODO needed here?
  */
 template[SOURCE_ID] = String;
+/**
+ * Type of this processor (e.g., geo_fence, average_func, ...).
+ */
+template[TYPE] = String;
 /**
  * Processor payload (input and output definitions).
  */
 template[PAYLOAD] = {};
 /**
- * Input payload parameters/values.
+ * Input payload values.
  */
 var inputItem = {};
 template[PAYLOAD][INPUT] = [inputItem];
 inputItem["_id"] = inputItem[ID] = false;
 inputItem[KEY] = String;
-inputItem[DESCRIPTION] = String;
-inputItem[VALUE_TYPE] = String;
+inputItem[VALUE] = String;
 /**
- * Output payload parameters/values.
+ * Output payload values.
  */
 var outputItem = {};
 template[PAYLOAD][OUTPUT] = [outputItem];
 outputItem["_id"] = outputItem[ID] = false;
 outputItem[KEY] = String;
-outputItem[DESCRIPTION] = String;
-outputItem[VALUE_TYPE] = String;
+outputItem[VALUE] = String;
 
 /* export schema */
 
