@@ -3,6 +3,7 @@
 var StreamSink = require('./streamsink.model.js');
 var passport = require('passport');
 var riox = require('riox-shared/lib/api/riox-api');
+var auth = require('riox-services-base/lib/auth/auth.service');
 var portfinder = require('portfinder');
 var containers = require('riox-services-base/lib/util/containers.util');
 var springxd = require('riox-services-base/lib/util/springxd.util');
@@ -13,16 +14,21 @@ var validationError = function (res, err) {
 	return res.json(422, err);
 };
 
-function list(query, req, res) {
+var listSinks = function(query, req, res) {
 	StreamSink.find(query, function (err, list) {
-		if (err)
+		if (err) {
 			return res.send(500, err);
+		}
 		res.json(200, list);
 	});
-}
+};
 
 exports.indexStreamSink = function (req, res) {
-	return list({}, req, res);
+	var user = auth.getCurrentUser(req);
+	var query = {};
+	var list = user.getOrganizationIDs();
+	query[ORGANIZATION_ID] = { "$in" : list };
+	return listSinks(query, req, res);
 };
 
 exports.createStreamSink = function (req, res, next) {

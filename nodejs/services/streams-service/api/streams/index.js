@@ -24,10 +24,10 @@ router.post('/sources/apply', auth.isAuthenticated(), sourcesCtrl.applyStreamSou
 router.put('/sources/:id', auth.isAuthenticated(), sourcesCtrl.updateStreamSource);
 
 /* METHODS FOR STREAM SINKS */
+router.get('/sinks', auth.isAuthenticated(), auth.fetchOrgs(), sinksCtrl.indexStreamSink);
 router.post('/sinks', auth.isAuthenticated(), sinksCtrl.createStreamSink);
 
 /* METHODS FOR STREAM PROCESSORS */
 router.post('/processors', auth.isAuthenticated(), procCtrl.createStreamProcessor);
-
 
 module.exports = router;

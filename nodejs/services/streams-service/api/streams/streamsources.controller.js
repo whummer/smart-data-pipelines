@@ -24,7 +24,8 @@ function list(query, req, res) {
 }
 
 exports.indexStreamSource = function (req, res) {
-	return list({}, req, res);
+	var query = {};
+	return list(query, req, res);
 };
 
 exports.listProvided = function (req, res) {
