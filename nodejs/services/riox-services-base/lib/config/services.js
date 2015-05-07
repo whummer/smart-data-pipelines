@@ -4,22 +4,7 @@
 var appConfig = {
 	services: {
 		core: { url: "http://localhost:8080/api/v1" },
-		apps: { url: "http://localhost:8080/api/v1/apps" },
-		thingTypes: { url: "http://localhost:8080/api/v1/catalog/thing-types" },
-		manufacturers: { url: "http://localhost:8080/api/v1/catalog/manufacturers" },
-		drivers: { url: "http://localhost:8080/api/v1/drivers" },
-		things: { url: "http://localhost:8080/api/v1/things" },
-		thingData: { url: "http://localhost:8080/api/v1/things" },
-		triggers: { url: "http://localhost:8080/api/v1/triggers" },
-		simulations: { url: "http://localhost:8080/api/v1/simulations" },
-		simulationProps: { url: "http://localhost:8080/api/v1/simulations/properties" },
-		simulationDevices: { url: "http://localhost:8080/api/v1/simulations/devices" },
-		simulationTypes: { url: "http://localhost:8080/api/v1/simulations/types" },
-		ratings: { url: "http://localhost:8080/api/v1/ratings" },
-		stats: { url: "http://localhost:8080/api/v1/stats" },
 		billing: { url: "http://localhost:8080/api/v1/billing" },
-		semanticTypes: { url: "http://localhost:8080/api/v1/semantic-types" },
-
 		users: { url: "http://localhost:8084/api/v1/users" },
 		organizations: { url: "http://localhost:8084/api/v1/organizations" },
 		streams: { url: "http://localhost:8085/api/v1/streams" },
@@ -28,8 +13,10 @@ var appConfig = {
 		streamprocessors: { url: "http://localhost:8085/api/v1/streams/processors" },
 		access: { url: "http://localhost:8085/api/v1/access" },
 		files: { url: "http://localhost:8087/api/v1/files" },
+		notifications: { url: "http://localhost:8084/api/v1/notifications" },
+	    analytics: { url: "http://localhost:8086/api/v1/analytics" },
 
-		websocket: { url: "ws://platform.riox.io:8085/websocket" }
+		websocket: { url: "ws://platform.riox.io:9001/" }
 	},
 	auth: {
 		github: {

@@ -70,12 +70,6 @@ dataItem["_id"] = dataItem[ID] = false;
 dataItem[NAME] = String;
 dataItem[PRICING] = String;
 /**
- * Spring XD config
- */
-template["spring-xd-config"] = {
-	"stream-definition" : String // TODO whu: discuss if we need this here
-};
-/**
  * Whether this stream is publicly visible, searchable, queryable.
  */
 template[VISIBLE] = Boolean;

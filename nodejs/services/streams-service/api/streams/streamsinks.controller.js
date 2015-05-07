@@ -101,8 +101,6 @@ var applyByStreamSink = exports.applyByStreamSink = function(sink, callback, err
 		// create the SpringXD stream
 		var port = 9001;
 		var path = "/" + sink[ORGANIZATION_ID] + "/" + sink.id;
-//		var mimeType = "application/x-xd-tuple";
-//		var mimeType = "application/json";
 		var mimeType = "text/plain";
 		var streamDefinition = "kafka --zkconnect=" + cfg.zookeeper + ":2181 --topic=" + topicName +
 				" --outputType=" + mimeType + " | " + "websocket --port=" + port + " --path=" + path;

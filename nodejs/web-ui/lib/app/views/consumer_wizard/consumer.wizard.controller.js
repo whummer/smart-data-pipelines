@@ -28,10 +28,10 @@ function consumerWizardCtrl($scope, $stateParams, $state) {
 	$scope.isAccessGranted = function() {
 		var src = $scope.formData.selectedSource;
 		if(!src) return false;
-		if(src[PERMIT_MODE][TYPE] == PERMIT_MODE_AUTO) return true;
+		if(src[PERMIT_MODE] && src[PERMIT_MODE][TYPE] == PERMIT_MODE_AUTO) return true;
 		var access = $scope.formData.sourceAccess;
 		if(!access) return false;
-		if(access.STATUS_PERMITTED) return true;
+		if(access[STATUS] == STATUS_PERMITTED) return true;
 		return false;
 	};
 

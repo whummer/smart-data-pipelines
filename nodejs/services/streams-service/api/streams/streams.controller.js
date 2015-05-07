@@ -50,12 +50,10 @@ exports.applyStreamConfig = function (req, res, next) {
 var applyStream = function(stream, callback, errorCallback) {
 
 	var applySource = function(resolve, reject) {
-		console.log("streams.applySource");
 		sourcesCtrl.applyByStreamSourceId(stream[SOURCE_ID], resolve, reject);
 	};
 
 	var applySink = function(resolve, reject) {
-		console.log("streams.applySink");
 		sinksCtrl.applyByStreamSinkId(stream[SINK_ID], resolve, reject);
 	};
 
@@ -78,12 +76,5 @@ var applyStream = function(stream, callback, errorCallback) {
 		errorCallback(error);
 	});
 
-};
-
-var applyStreamSource = function(source, callback) {
-	springxd.listStreams(null, function(list) {
-		console.log(list);
-		callback(list);
-	});
 };
 

@@ -4,13 +4,6 @@ var mongoose = global.mongoose || require('mongoose');
 var Organization = require('./organization.model');
 var Membership = require('./membership.model');
 var auth = require('riox-services-base/lib/auth/auth.service');
-var ObjectId = mongoose.Types.ObjectId;
-
-/* constants */
-var CREATOR_ID = "creator-id";
-var NAME = "name";
-var ORGANIZATION_ID = "organization-id";
-var IMAGE_DATA = "image-data";
 
 var validationError = function(res, err) {
 	return res.json(422, err);
@@ -167,7 +160,7 @@ exports.invite = function(req, res, next) {
 		if (!list || !list.length) {
 			/* save new */
 			var newMem = new Membership(inv);
-			newMem.status = Membership.STATUS_PENDING;
+			newMem.status = STATUS_PENDING;
 			newMem.save(function(err, result) {
 				res.json(result);
 			});

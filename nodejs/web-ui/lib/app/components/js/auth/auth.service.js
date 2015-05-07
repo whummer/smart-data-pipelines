@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('rioxApp')
-  .factory('Auth', function Auth($location, $rootScope, $http, User, $cookieStore, $q) {
+  .factory('Auth', function Auth($location, $rootScope, $http, User, $cookieStore, Notifications, $q) {
 
     var currentUser = {};
     var currentOrganization = {};
@@ -86,6 +86,7 @@ angular.module('rioxApp')
           User.get(function(user) {
         	  currentUser = user;
         	  return configureRioxApiAuth(data.token, function() {
+        		  Notifications.loadNotifications();
             	  loadOrganization(cb);
               });
           });

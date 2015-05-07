@@ -60,7 +60,7 @@
 			return null;
 		}
 		if(!format) {
-			format = "yyyy-MM-dd hh:mm:ss";
+			format = "yyyy-MM-dd HH:mm:ss";
 		}
 		if(typeof date == "string") {
 			date = new Date(date);

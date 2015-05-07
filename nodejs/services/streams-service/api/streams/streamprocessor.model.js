@@ -5,7 +5,8 @@ var Schema = mongoose.Schema;
 
 
 var template = {}
-template["_id"] = { type: String, default: genShortUUID},
+template["_id"] = { type: String, default: genShortUUID};
+
 
 /**
  * Name.
@@ -35,16 +36,6 @@ template[VISIBLE] = Boolean;
  * Source ID - the id of the source element where the data is coming from.
  */
 template[SOURCE_ID] = String;
-/**
- * Type - valid types: "analytics", ....
- */
-//TODO discuss this - it is kept generic because as of today we only really have analytics functions
-//as processing elements.
-template[TYPE] = String;
-/**
- * Processor ID.
- */
-template[PROCESSOR_ID] = String; // whu: TODO needed?
 /**
  * Processor payload (input and output definitions).
  */

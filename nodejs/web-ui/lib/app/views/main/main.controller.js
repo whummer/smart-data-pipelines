@@ -1,8 +1,10 @@
 'use strict';
 
 angular.module('rioxApp')
-  .controller('MainCtrl', function ($scope, $http, $location, $window, $state, Auth, $q) {
+  .controller('MainCtrl', function ($scope, $rootScope, $http, $location, $window, $state, Auth, Notifications, $q) {
 
+	/* variable for globally shared state (e.g., notifications) */
+	$rootScope.shared = $rootScope.shared || {};
     $scope.isLoggedIn = Auth.isLoggedIn;
     $scope.isAdmin = Auth.isAdmin;
     $scope.getCurrentUser = Auth.getCurrentUser;
@@ -52,7 +54,14 @@ angular.module('rioxApp')
       return deferred.promise;
     }
 
-    /* common util methods */
+    /* expose riox model constants to root $scope */
+
+    for(key in riox.CONSTANTS) {
+    	$scope[key] = riox.CONSTANTS[key];
+    }
+
+    /* COMMON UTIL METHODS */
+
     $scope.range = function (from, to, step) {
       if (!step) step = 1;
       var result = [];

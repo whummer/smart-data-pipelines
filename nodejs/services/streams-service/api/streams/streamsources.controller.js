@@ -30,6 +30,7 @@ exports.indexStreamSource = function (req, res) {
 exports.listProvided = function (req, res) {
   var user = auth.getCurrentUser(req);
   var query = {ownerId: user.id};
+  query[OWNER_ID] = user.id;
   query = {}; // TODO remove! (testing only)
   return list(query, req, res);
 };
@@ -51,16 +52,16 @@ exports.listConsumed = function (req, res) {
 };
 
 exports.createStreamSource = function (req, res, next) {
-  log.info('Creating stream-source: ', req.body);
   var streamSource = new StreamSource(req.body);
 
 	if (!streamSource.connector || streamSource.connector.type != "http") {
-    log.warn('Non HTTP connector not supported');
 		return validationError(res, {"description": "Unsupported Connector-Type. Only HTTP is supported at the moment"});
 	}
 	if (!streamSource[ORGANIZATION_ID]) {
-    log.warn('No valid organization given for data resource ', streamSource.name);
-		return validationError(res, {"description": "Please provide a valid organization for this source."});
+		return validationError(res, {"description": "Please provide a valid " + ORGANIZATION_ID + " for this source."});
+	}
+	if (!streamSource[PERMIT_MODE]) {
+		return validationError(res, {"description": "Please provide a valid " + PERMIT_MODE + " for this source."});
 	}
 
 	streamSource.save(function (err, obj) {
@@ -179,11 +180,3 @@ StreamSource.findByIdAndRemove(req.params.id, function (err, obj) {
 });
 };
 
-///
-/// UTIL METHODS
-///
-
-//todo move this somewhere else
-function createExchangeId(dataStream) {
-	return dataStream._id;
-}

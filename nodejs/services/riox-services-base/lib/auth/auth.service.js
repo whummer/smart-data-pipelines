@@ -63,6 +63,54 @@ function hasRole(roleRequired) {
 }
 
 /**
+ * Fetches the organization memberships of the requesting user.
+ */
+function fetchOrgs() {
+
+  return compose()
+    .use(isAuthenticated())
+    .use(function meetsRequirements(req, res, next) {
+      if(!req.user.organizations) {
+    	  riox.organizations({
+    		  headers: req.headers,
+    		  callback: function(orgs) {
+	    		  /* add user organizations to request */
+    			  req.user.organizations = orgs;
+    			  /* add convenience functions.
+    			   * TODO wh: performance could be improved: don't 
+    			   * always create these functions on the fly */
+    			  req.user.hasOrganization = function(org) {
+    				  var id = org.id ? org.id : org;
+    				  var found = false;
+    				  this.organizations.forEach(function(o1) {
+    					  if(o1.id == id) found = true;
+    				  });
+    				  return found;
+    			  };
+    			  req.user.getOrganizationIDs = function(org) {
+    				  var result = [];
+    				  this.organizations.forEach(function(o1) {
+    					  result.push(o1.id);
+    				  });
+    				  return result;
+    			  };
+    			  req.user.getDefaultOrganization = function() {
+    				  var result = null;
+    				  this.organizations.forEach(function(org) {
+    					  if(org[CREATOR_ID] == user.id) result = org;
+    				  });
+    				  return result;
+    			  };
+    			  next();
+	    	  }
+    	  }, function() {
+    		  res.send(500);
+    	  });
+      }
+    });
+}
+
+/**
  * Gets the current user of this request.
  */
 function getCurrentUser(req) {
@@ -70,7 +118,7 @@ function getCurrentUser(req) {
 	if(user._id && !user.id) {
 		user.id = user._id;
 	}
-  return user;
+	return user;
 }
 
 /**
@@ -123,7 +171,7 @@ function setTokenCookie(req, res) {
 
 exports.isAuthenticated = isAuthenticated;
 exports.hasRole = hasRole;
-exports.signToken = signToken;
+exports.fetchOrgs = fetchOrgs;
 exports.setTokenCookie = setTokenCookie;
 exports.getCurrentUser = getCurrentUser;
 exports.getCurrentUserDetails = getCurrentUserDetails;

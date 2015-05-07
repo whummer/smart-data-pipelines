@@ -50,6 +50,7 @@ angular.module('rioxApp', [
 		})
 
 		.run(function ($rootScope, $state, Auth) {
+
 		    $rootScope.$on('$stateChangeStart', function (event, toState, toParams) {
 
 	        	var authRequired = toState.authenticate || (toState.data && toState.data.authenticate);

@@ -168,12 +168,7 @@ angular.module('rioxApp')
 			}
 		})
 		.state('streams.provided', {
-			url: "/provided/{sourceId}",
-			templateUrl: "app/views/streams/streams.provided.html",
-			controller: "StreamsProvidedCtrl"
-		})
-		.state('streams.provided.consumer', {
-			url: "/consumer/{organizationId}",
+			url: "/provided/{sourceId}/{organizationId}",
 			templateUrl: "app/views/streams/streams.provided.html",
 			controller: "StreamsProvidedCtrl"
 		})

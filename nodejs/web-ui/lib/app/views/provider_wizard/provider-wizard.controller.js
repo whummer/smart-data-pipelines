@@ -1,7 +1,8 @@
 function providerWizardCtrl($scope, $log, growl, $state, $location, $q) {
-  $scope.resourceData = {
-    connector: {name: "HTTP Connector", type: "http"}
-  };
+  /* initialize defaults */
+  var r = $scope.resourceData = {}
+  r[CONNECTOR] = {name: "HTTP Connector", type: "http"};
+  r[PERMIT_MODE] = {type: PERMIT_MODE_MANUAL};
 
   $scope.retentionEnabled = false;
   $scope.retentionDisabled = false;
@@ -88,6 +89,7 @@ function providerWizardCtrl($scope, $log, growl, $state, $location, $q) {
       "security": r.securitySetting, // TLS only, full
       "visible": true
     };
+    dataStream[PERMIT_MODE] = r[PERMIT_MODE];
 
     // todo billingUnit and unitSize are currently not used
     if (dataItems.length) {
@@ -99,8 +101,8 @@ function providerWizardCtrl($scope, $log, growl, $state, $location, $q) {
     }
 
     var addStreamSource = function (defaultOrganization) {
-      $log.debug('Loaded default organization: ', defaultOrganization);
-      dataStream['organization-id'] = defaultOrganization.id;
+      dataStream[ORGANIZATION_ID] = defaultOrganization.id;
+      $log.debug("Adding new data resource: ", dataStream);
       riox.add.streams.source(dataStream, function () {
         $log.debug("Successfully added new data resource: ", dataStream);
         growl.success("Added new Data Resource '" + dataStream.name + "'");

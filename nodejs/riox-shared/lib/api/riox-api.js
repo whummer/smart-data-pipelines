@@ -20,7 +20,7 @@ var ttl = 15000;
 var sh = {};
 
 /* GLOBAL CONSTANTS: names for model properties */
-var g = {};
+var g = sh.CONSTANTS = {};
 
 g.ID = "id";
 g.NAME = "name";
@@ -29,6 +29,8 @@ g.CREATION_DATE = "creation-date";
 g.CREATOR_ID = "creator-id";
 g.OWNER_ID = "owner-id";
 g.TYPE = "type";
+g.TYPE_ACCESS_REQUEST = "ACCESS_REQUEST";
+g.TYPE_ACCESS_UPDATE = "ACCESS_UPDATE";
 g.THING_TYPE = "thing-type";
 g.THING_ID = "thing-id";
 g.THINGS = "things";
@@ -50,24 +52,34 @@ g.SINK_ID = "sink-id";
 g.ORGANIZATION_ID = "organization-id";
 g.PROCESSORS = "processors";
 g.REQUESTOR_ID = "requestor-id";
+g.RECIPIENT_ID = "recipient-id";
 g.CONNECTOR = "connector";
-g.STATUS = "status";
+g.MEMBER = "member";
 g.TAGS = "tags";
+g.TEXT = "text";
+g.PARAMS = "params";
 g.CREATED = "created";
 g.CHANGED = "changed";
+g.STATUS = "status";
 g.STATUS_REQUESTED = "REQUESTED";
 g.STATUS_PENDING = "PENDING";
 g.STATUS_CONFIRMED = "CONFIRMED";
 g.STATUS_PERMITTED = "PERMITTED";
 g.STATUS_DENIED = "DENIED";
+g.STATUS_REJECTED = "REJECTED";
+g.STATUS_UNKNOWN = "UNKNOWN";
+g.STATUS_UNREAD = "UNREAD";
+g.STATUS_READ = "READ";
+g.STATUS_DELETED = "DELETED";
 g.PERMIT_MODE = "permit";
-g.PERMIT_MODE_AUTO = "auto";
-g.PERMIT_MODE_MANUAL = "manual";
+g.PERMIT_MODE_AUTO = "AUTO";
+g.PERMIT_MODE_MANUAL = "MANUAL";
 g.VISIBLE = "visible";
 g.INPUT = "input";
 g.OUTPUT = "output";
 g.PAYLOAD = "payload";
 g.KEY = "key";
+g.VALUE = "value";
 g.VALUE_TYPE = "value-type";
 g.SECURITY = "security";
 g.RETENTION_TIME = "retention-time";
@@ -151,6 +163,9 @@ sh.auth = function(options, callback, errorCallback) {
 		}
 	}
 };
+sh.isAuth = function() {
+	return sh.authToken && sh.authToken.access_token && sh.authToken.access_token != "__invalid__";
+}
 sh.signout = sh.auth.reset = function(options, callback, errorCallback) {
 	sh.auth({
 		RIOX_AUTH_NETWORK: "riox",
@@ -272,12 +287,14 @@ sh.simulationTypes = sh.get.simulationTypes = function(callback, errorCallback) 
 	var maxResults = 100;
 	return callGET(servicesConfig.services.simulationTypes.url + "?page=0&size=" + maxResults, callback, errorCallback);
 };
+sh.notifications = sh.get.notifications = function(opts, callback, errorCallback) {
+	return callGET(servicesConfig.services.notifications.url, callback, errorCallback);
+};
 
 sh.simulations = sh.get.simulations = function(callback, errorCallback) {
 	var maxResults = 100;
 	return callGET(servicesConfig.services.simulations.url + "?page=0&size=" + maxResults, callback, errorCallback);
 };
-
 sh.simulationByThingIdAndPropertyName = sh.get.simulationByThingIdAndPropertyName = function(opts, callback, errorCallback) {
 	var maxResults = 100;
 	var thingId = opts.thingId;
@@ -427,6 +444,9 @@ sh.add.trigger = function(trigger, callback, errorCallback) {
 sh.add.organization = function(organization, callback, errorCallback) {
 	return callPOST(servicesConfig.services.organizations.url, organization, callback, errorCallback);
 };
+sh.add.notification = function(notification, callback, errorCallback) {
+	return callPOST(servicesConfig.services.notifications.url, notification, callback, errorCallback);
+};
 sh.add.data = function(opts, dataItem, callback, errorCallback) {
 	var url = servicesConfig.services.thingData.url + "/" +
                       opts[THING_ID] + "/" +
@@ -473,6 +493,9 @@ sh.save.simulationType = function(simType, callback, errorCallback) {
 };
 sh.save.trigger = function(trigger, callback, errorCallback) {
 	return callPUT(servicesConfig.services.triggers.url, trigger, callback, errorCallback);
+};
+sh.save.notification = function(notification, callback, errorCallback) {
+	return callPUT(servicesConfig.services.notifications.url, notification, callback, errorCallback);
 };
 
 sh.save.streams = {};
@@ -550,6 +573,11 @@ sh.delete.access = function(access, callback, errorCallback) {
 	var url = servicesConfig.services.access.url + "/" + access.id;
 	return callDELETE(url, callback, errorCallback);
 };
+sh.delete.notification = function(notification, callback, errorCallback) {
+	var id = notification.id ? notification.id : notification;
+	var url = servicesConfig.services.notifications.url + "/" + id;
+	return callDELETE(url, callback, errorCallback);
+};
 
 
 /* methods for accessing streams */
@@ -585,6 +613,18 @@ sh.stream.apply = function(req, callback, errorCallback) {
 	return callPOST(url, req, callback, errorCallback);
 };
 
+/* methods for stream access permissions */
+
+sh.access.enable = function(access, callback, errorCallback) {
+	var id = access.id ? access.id : access;
+	var url = servicesConfig.services.access.url + "/" + id + "/enable";
+	return callPOST(url, {}, callback, errorCallback);
+};
+sh.access.disable = function(access, callback, errorCallback) {
+	var id = access.id ? access.id : access;
+	var url = servicesConfig.services.access.url + "/" + id + "/disable";
+	return callPOST(url, {}, callback, errorCallback);
+};
 
 /* methods for simulation control */
 
@@ -614,7 +654,7 @@ var callGET = sh.callGET = function(url, options, errorCallback) {
 	var m = mem();
 	var callback = options.callback ? options.callback : options;
 	if(options.doCacheResults && m[url]) {
-		if(callback) {
+		if(typeof callback == "function") {
 			setTimeout(function(){
 				callback(m[url]);
 			}, 0);
@@ -644,7 +684,7 @@ var callGET = sh.callGET = function(url, options, errorCallback) {
 			} else {
 				m[url] = data;
 			}
-			if(callback) {
+			if(typeof callback == "function") {
 				callback(data, status, headers, config);
 			}
 		}, errorCallback
@@ -660,7 +700,7 @@ var callPOSTorPUT = function(invokeFunc, url, body, options, errorCallback) {
 	errorCallback = wrapDefaultErrorCallback(errorCallback);
 	invokeFunc(options, url, body,
 		function(data, status, headers, config) {
-			if(callback) {
+			if(typeof callback == "function") {
 				if(typeof data.__result != "undefined") data = data.__result;
 				callback(data, status, headers, config);
 			}
@@ -679,7 +719,7 @@ var callDELETE = sh.callDELETE = function(url, options, errorCallback) {
 	errorCallback = wrapDefaultErrorCallback(errorCallback);
 	return invokeDELETE(options, url,
 		function(data, status, headers, config) {
-			if(callback) {
+			if(typeof callback == "function") {
 				callback(data, status, headers, config);
 			}
 		}, errorCallback

@@ -3,12 +3,10 @@
 angular.module('rioxApp').controller('StreamsCtrl', function ($scope, Auth, $stateParams, $q) {
 
 	$scope.prepareStreamSources = function(list) {
-		var promise = $q.resolve(1);
-		console.log(angular.noop);
+		var promise = $q.when(1);
 		angular.forEach(list, function(el) {
-			promise = promise.then(function(resolve, reject) {
+			promise = promise.then(function() {
 				return $q(function(resolve, reject) {
-					console.log("start prepareStreamSource");
 					$scope.prepareStreamSource(el, resolve);
 				});
 			});
@@ -23,7 +21,6 @@ angular.module('rioxApp').controller('StreamsCtrl', function ($scope, Auth, $sta
 					el.organizationImg = org[IMAGE_DATA][0].href;
 				}
 				el.organization = org;
-				console.log("prepareStreamSource", org);
 				if(callback) callback();
 			});
 		} else {

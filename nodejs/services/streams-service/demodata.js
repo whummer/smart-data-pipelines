@@ -132,7 +132,6 @@ function findOrgs(callback) {
 		riox.organizations.all({
 			headers: token,
 			callback: function(list) {
-				console.log(list);
 				list.forEach(function(o) {
 					index = o.name == "City of Vienna" ? 0 :
 							o.name == "BMW" ? 1 :

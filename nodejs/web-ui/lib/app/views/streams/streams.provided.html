@@ -37,7 +37,7 @@
 									<tbody>
 										<tr ng-repeat="n in sources" ng-class="{ 'font-bold' : n.id == selectedSource.id }">
 											<td>{{sources.indexOf(n) + 1}}</td>
-											<td><a ui-sref="{sourceId: n.id}">{{n.name}}</a></td>
+											<td><a ui-sref="{sourceId: n.id, organizationId: null}">{{n.name}}</a></td>
 											<td>{{trim(n.description, 100)}}</td>
 											<td>{{n.consumers.length}}</td>
 											<td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
@@ -98,6 +98,7 @@
 					</div>
 				</div>
 			</div>
+
 			<div class="col-lg-7">
 				<div class="ibox float-e-margins">
 					<div class="ibox-title">
@@ -112,16 +113,23 @@
 										<th>User</th>
 										<th>Price</th>
 										<th>Status</th>
-										<th>Action</th>
+										<th>Enabled</th>
+<!-- 										<th>Action</th> -->
 									</tr>
 								</thead>
 								<tbody>
-									<tr ng-repeat="c in selectedSource.consumers" ng-class="{ 'font-bold' : c.id == selectedConsumer.id }">
+									<tr ng-repeat="c in selectedSource.consumers" ng-alias="c.enabled = (c[STATUS] == STATUS_PERMITTED)"
+											ng-class="{ 'font-bold' : c.id == selectedConsumer.id }">
 										<td>{{selectedSource.consumers.indexOf(c) + 1}}</td>
-										<td>{{c.requestorId}}</td>
+										<td>{{c.requestorOrg.name}}</td>
 										<td>{{c.price}}</td>
 										<td>{{c.status}}</td>
-										<td><a ui-sref="streams.provided({streamId: selectedSource.id})">details</a></td>
+										<td>
+											<input ui-switch="{color:'#5C9C4D', size: 'small'}"
+											 ng-model="c.enabled" ng-change="updatePermission(c, selectedSource)"
+											 type="checkbox" class="form-control"/>
+										</td>
+<!-- 										<td><a ui-sref="streams.provided({streamId: selectedSource.id, organizationId: c[REQUESTOR_ID]})">details</a></td> -->
 									</tr>
 								</tbody>
 							</table>

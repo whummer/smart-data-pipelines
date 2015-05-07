@@ -35,19 +35,30 @@ exports.index = function(req, res, next) {
 
 exports.getBySource = function(req, res, next) {
 	var user = auth.getCurrentUser(req);
+	if(!req.params.sourceId) {
+		res.json(422, {error: "Source ID is required in request path."});
+		return;
+	}
+	var query = {};
 	var crit1 = {}, crit2 = {};
 	var requestorId = req.params.organizationId;
-	var query = {};
 	if(requestorId) {
 		crit2[REQUESTOR_ID] = requestorId;
 	}
 	query[SOURCE_ID] = req.params.sourceId;
-	// TODO check if this user has access to this source!
+	/*  make sure that the user has access to this access request, i.e.,
+		user must be either 1) the owner, or 2) the requestor. */
+	var list = user.getOrganizationIDs().concat(user.id);
+	var isOwner = {}; isOwner[OWNER_ID] = { "$in": list };
+	var isRequestor = {}; isRequestor[REQUESTOR_ID] = { "$in": list };
+	query["$or"] = [isOwner, isRequestor];
+//	console.log(JSON.stringify(query));
 	return StreamAccess.find(query, function(err, obj) {
 		if (err)
 			return next(err);
 		if (!obj)
 			return res.send(404);
+//		console.log(obj);
 		res.json(obj);
 	});
 };
@@ -73,24 +84,12 @@ exports.destroy = function(req, res, next) {
 
 		/* check if user is permitted */
 		var user = auth.getCurrentUser(req);
-		riox.organizations({
-			callback: function(orgs) {
-				var found = false;
-				orgs.forEach(function(org) {
-					if(obj[REQUESTOR_ID] == org.id ||
-							obj[REQUESTOR_ID] == user.id) {
-						found = true;
-						StreamAccess.remove(id, function(err, obj) {
-							if (err) return res.send(500, err);
-							return res.send(204);
-						});
-					}
-				});
-				if(!found) {
-					return res.send(401);
-				}
-			},
-			headers: req.headers
+		if(user[ID] != obj[REQUESTOR_ID] && !user.hasOrganization(obj[REQUESTOR_ID])) {
+			return res.send(401);
+		}
+		StreamAccess.remove(id, function(err, obj) {
+			if (err) return res.send(500, err);
+			return res.send(204);
 		});
 	});
 
@@ -105,16 +104,80 @@ exports.create = function(req, res, next) {
 		return;
 	}
 	if(!access[REQUESTOR_ID]) {
-		access[REQUESTOR_ID] = user.id; // TODO lookup organization ID.
+		res.json(422, {error: REQUESTOR_ID + " is required"});
+		return;
+	}
+	if(access[REQUESTOR_ID] != user.id) {
+		if(!user.hasOrganization(access[REQUESTOR_ID])) {
+			return res.json(401, {error: "Invalid " + REQUESTOR_ID});
+		}
 	}
 	riox.streams.source(sourceId, {
 		callback: function(source) {
-			access.created = access.changed = new Date().getTime();
+			access[CREATED] = access[CHANGED] = new Date().getTime();
+			access[OWNER_ID] = source[ORGANIZATION_ID];
+			access[STATUS] = STATUS_REQUESTED;
 			StreamAccess.create(access, function() {
 				res.json(200, access);
+				/* Create notification (asynchronously). */
+				createNotification(req, TYPE_ACCESS_REQUEST, access);
 			});
 		}, headers: req.headers
 	}, function() {
 		res.json(404, {message: "Cannot find entity with ID " + sourceId });
 	});
+};
+
+var createNotification = function(req, type, access) {
+	var notif = {};
+	notif[TYPE] = type;
+	if(type == TYPE_ACCESS_REQUEST) {
+		notif[TEXT] = "User requested access to stream source #" + access[SOURCE_ID];
+		notif[RECIPIENT_ID] = access[OWNER_ID];
+	} else if(type == TYPE_ACCESS_UPDATE) {
+		notif[TEXT] = "Access to stream source #" + access[SOURCE_ID] + " has been " + 
+			(access[STATUS] == STATUS_PERMITTED ? "enabled" : "disabled");
+		notif[RECIPIENT_ID] = access[REQUESTOR_ID];
+	}
+	notif[STATUS] = STATUS_UNREAD;
+	notif[PARAMS] = {};
+	notif[PARAMS][SOURCE_ID] = access[SOURCE_ID];
+	notif[PARAMS][REQUESTOR_ID] = access[REQUESTOR_ID];
+	riox.add.notification(notif, {
+		headers: req.headers
+	});
+}
+
+exports.enableAccess = function(req, res, next) {
+	updatePermission(req, res, true);
+};
+
+exports.disableAccess = function(req, res, next) {
+	updatePermission(req, res, false);
+};
+
+var updatePermission = function(req, res, allowed) {
+	var user = auth.getCurrentUser(req);
+	var id = req.params.id;
+	if(!id) return;
+	StreamAccess.findById(id, function(err, obj) {
+		if (err)
+			return next(err);
+		if (!obj)
+			return res.send(404);
+		executeAsOwner(user, obj, function() {
+			obj[STATUS] = allowed ? STATUS_PERMITTED : STATUS_DENIED;
+			obj.save(function(err, obj) {
+				createNotification(req, TYPE_ACCESS_UPDATE, obj);
+				res.json(obj);
+			});
+		}, function(error) {
+			return res.send(401, {error: error});
+		});
+	});
+};
+
+var executeAsOwner = function(user, source, callback, errorCallback) {
+	// TODO check if this user is the source owner
+	callback();
 };
