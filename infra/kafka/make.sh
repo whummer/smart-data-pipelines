@@ -32,7 +32,7 @@ echo "Using tag: $TAG"
 
 IMAGE="riox/kafka"
 
-(cd $TAG && docker build -t $IMAGE:$VERSION .)
+(cd $TAG && docker build -t $IMAGE:$TAG .)
 if [ ! -z $PUSH_IMAGE ]; then
-	docker push $IMAGE:$VERSION
+	docker push $IMAGE:$TAG
 fi

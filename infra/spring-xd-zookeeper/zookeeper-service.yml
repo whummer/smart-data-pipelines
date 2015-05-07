@@ -1,7 +1,6 @@
 kind: Service
 apiVersion: v1beta1
 id: zookeeper
-namespace: default
 # the port that this service should serve on
 port: 2181
 # just like the selector in the replication controller,

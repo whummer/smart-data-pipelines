@@ -1,21 +1,21 @@
 kind: ReplicationController
 apiVersion: v1beta2
-id: hsqldb
+id: xd-admin
 labels:
-  name: hsqldb
+  name: xd-admin
 desiredState:
   replicas: 1
   replicaSelector:
-    name: hsqldb
+    name: xd-admin
   podTemplate:
     labels:
-      name: hsqldb
+      name: xd-admin
     desiredState:
       manifest:
         version: v1beta2
-        id: hsqldb
+        id: xd-admin
         containers:
-          - name: hsqldb
-            image: riox/springxd-hsqldb:1.1.1
+          - name: xd-admin
+            image: riox/springxd-admin:1.1.1
             ports: 
-              - containerPort: 9101
+              - containerPort: 9393

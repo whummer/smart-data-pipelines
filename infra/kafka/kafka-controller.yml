@@ -1,7 +1,6 @@
 kind: ReplicationController
-apiVersion: v1beta1
+apiVersion: v1beta2
 id: kafka
-namespace: default
 labels:
   name: kafka
 desiredState:
@@ -15,11 +14,8 @@ desiredState:
       manifest:
         version: v1beta2
         id: kafka
-        dnsPolicy: "Default"  # Don't use cluster DNS.
         containers:
           - name: kafka
             image: riox/kafka
             ports:
-              - containerPort: 9092
-            volumes:
-              - /var/run/docker.sock:/var/run/docker.sock
+              - containerPort: 9092            

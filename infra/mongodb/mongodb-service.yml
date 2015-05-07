@@ -1,0 +1,7 @@
+kind: Service
+apiVersion: v1beta2
+id: mongo
+port: 27017
+containerPort: 27017
+selector:
+  name: mongo

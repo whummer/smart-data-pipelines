@@ -1,0 +1,7 @@
+kind: Service
+apiVersion: v1beta2
+id: xd-admin
+port: 9393
+selector:
+  name: xd-admin
+containerPort: 9393
