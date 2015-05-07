@@ -5,50 +5,45 @@ var merge = require('riox-services-base/lib/config/merge');
 var commonConfig = require('riox-services-base/lib/config');
 
 function requiredProcessEnv(name) {
-  if(!process.env[name]) {
-    throw new Error('You must set the ' + name + ' environment variable');
-  }
-  return process.env[name];
+	if (!process.env[name]) {
+		throw new Error('You must set the ' + name + ' environment variable');
+	}
+	return process.env[name];
 }
 
 // All configurations will extend these options
 // ============================================
 var config = {
 
-  // Root path of server
-  root: path.normalize(__dirname + '/../../..'),
+	// Root path of server
+	root: path.normalize(__dirname + '/../../..'),
 
-  // Server port
-  port: process.env.PORT || 9000,
+	logging: {
+		level: 'debug'
+	},
 
-  // Should we populate the DB with sample data?
-  seedDB: false,
+	// Server port
+	port: process.env.PORT || 9000,
 
-  // MongoDB connection options
-  mongo: {
-    options: {
-      db: {
-        safe: true
-      }
-    }
-  },
+	// Should we populate the DB with sample data?
+	seedDB: false,
 
-  // RabbitMQ connection options
-  rabbitmq : {
-    host : 'localhost',
-    port: 5672,
-    vhost: 'riox',
-    user: 'guest',
-    pass: 'guest'
-  },
+	// MongoDB connection options
+	mongo: {
+		options: {
+			db: {
+				safe: true
+			}
+		}
+	},
 
-  springxd : {
-    url : 'http://localhost:9393'
-  },
+	springxd: {
+		url: 'http://localhost:9393'
+	},
 
-  kafka : {
-    url : 'http://localhost:9092'
-  }
+	kafka: {
+		url: 'http://localhost:9092'
+	}
 
 };
 
