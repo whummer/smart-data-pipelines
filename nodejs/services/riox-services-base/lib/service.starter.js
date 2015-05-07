@@ -14,24 +14,21 @@ var log = require('winston');
 require('./api/service.calls');
 
 var mongoose = global.mongoose || require('mongoose');
-if(!global.mongoose) {
+if (!global.mongoose) {
 	global.mongoose = mongoose;
 }
-if(!global.servicesConfig) {
+if (!global.servicesConfig) {
 	global.servicesConfig = require('./config/services');
 }
 
 
-// configure winston logger
-log.remove(log.transports.Console).add(log.transports.Console, {timestamp: true, debugStdout : true, colorize: true});
-
-var start = function(config, routes, serviceName) {
+var start = function (config, routes, serviceName) {
 
 	var app = {};
 
-	app.start = function(config, routes, serviceName) {
+	app.start = function (config, routes, serviceName) {
 
-		if(app.started) {
+		if (app.started) {
 			return app;
 		}
 
@@ -39,19 +36,19 @@ var start = function(config, routes, serviceName) {
 		var expressApp = app.expressApp = express();
 		expressApp.use(cors());
 
-		if(config) app.__config = config;
-		if(routes) app.__routes = routes;
+		if (config) app.__config = config;
+		if (routes) app.__routes = routes;
 		config = app.__config;
 		routes = app.__routes;
 
 		// configure port for microservices
-		if(!config.port && process.env.SERVICE_PORT) {
+		if (!config.port && process.env.SERVICE_PORT) {
 			config.port = process.env.SERVICE_PORT;
 		}
 
 		// Connect to database
-		if(process.env.TEST_MODE) {
-			if(!mongoose.__mockgooseHasBeenApplied) {
+		if (process.env.TEST_MODE) {
+			if (!mongoose.__mockgooseHasBeenApplied) {
 				console.log("Using TEST mode (mockgoose)");
 				var mockgoose = require('mockgoose');
 				mockgoose(mongoose);
@@ -60,10 +57,21 @@ var start = function(config, routes, serviceName) {
 			}
 		} else {
 //			if(!mongoose.__mongooseHasBeenConnected) {
-				mongoose.connect(config.mongo.uri, config.mongo.options);
+			mongoose.connect(config.mongo.uri, config.mongo.options);
 //				mongoose.__mongooseHasBeenConnected = true;
 //			}
 		}
+
+		// configure winston logger
+		if (log) {
+			log.remove(log.transports.Console).add(log.transports.Console, {
+				level: 'debug',
+				timestamp: true,
+				debugStdout: true,
+				colorize: true
+			});
+		}
+
 
 		var server = app.server = require('http').createServer(expressApp);
 		var expressConfig = require("./config/express");
@@ -77,8 +85,8 @@ var start = function(config, routes, serviceName) {
 		return app;
 	};
 
-	app.stop = function(callback) {
-		if(!app.started) return callback();
+	app.stop = function (callback) {
+		if (!app.started) return callback();
 		app.started = false;
 		//console.log("closing server", app.__config.port);
 		app.server.close(callback);
