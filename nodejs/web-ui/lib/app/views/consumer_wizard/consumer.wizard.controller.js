@@ -11,9 +11,15 @@ function consumerWizardCtrl($scope, $state, Formatter) {
 	                "consumer.wizard.confirm"];
 	$scope.state = $state;
 
-	$scope.selectItem = function(sourceId) {
+
+	// use websocket connector per default
+	$scope.formData.connector = {
+		type: 'ws'
+	};
+
+	$scope.selectItem = function (sourceId) {
 		$state.go("consumer.wizard.request", {
-			sourceId : sourceId
+			sourceId: sourceId
 		});
 	};
 
@@ -22,24 +28,24 @@ function consumerWizardCtrl($scope, $state, Formatter) {
 	}
 
 	/* load sources */
-	var loadSources = function() {
-		riox.streams.sources({}, function(sources) {
-			$scope.$apply(function() {
+	var loadSources = function () {
+		riox.streams.sources({}, function (sources) {
+			$scope.$apply(function () {
 				$scope.sources = sources;
-				$.each(sources, function(idx, el) {
+				$.each(sources, function (idx, el) {
 					$scope.prepareStreamSource(el);
 				});
 			});
 		});
 	}
 
-	$scope.isAccessGranted = function() {
+	$scope.isAccessGranted = function () {
 		var src = $scope.formData.selectedSource;
-		if(!src) return false;
-		if(src[PERMIT_MODE] && src[PERMIT_MODE][TYPE] == PERMIT_MODE_AUTO) return true;
+		if (!src) return false;
+		if (src[PERMIT_MODE] && src[PERMIT_MODE][TYPE] == PERMIT_MODE_AUTO) return true;
 		var access = $scope.formData.sourceAccess;
-		if(!access) return false;
-		if(access[STATUS] == STATUS_PERMITTED) return true;
+		if (!access) return false;
+		if (access[STATUS] == STATUS_PERMITTED) return true;
 		return false;
 	};
 

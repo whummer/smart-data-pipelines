@@ -3,27 +3,16 @@
  */
 
 
-angular.module('rioxApp').controller('ConsumerConnectorCtrl', 
-function consumerConnectorCtrl($scope, $stateParams) {
-	$scope.connectors = [ {
-		name : "HTTP Connector",
-		type : "http"
-	}, {
-		name : "AMQP Connector",
-		type : "amqp"
-	}, {
-		name : "JMS Connector",
-		type : "jms"
-	}, {
-		name : "MQTT Connector",
-		type : "mqtt"
-	}, {
-		name : "SMTP Connector",
-		type : "smtp"
-	}, {
-		name : "TCP Connector",
-		type : "tcp"
-	} ];
+var consumerConnectorCtrl = function consumerConnectorCtrl($scope) {
+	$scope.connectors = [
+		{name: "Websocket Connector", type: "ws"},
+		{name: "TCP Connector", type: "tcp"},
+		{name: "AMQP Connector", type: "amqp"},
+		{name: "JMS Connector", type: "jms"},
+		{name: "MQTT Connector", type: "mqtt"},
+		{name: "SMTP Connector", type: "smtp"}
 
-	$scope.checkIfSourceSelected($stateParams); // call to parent controller
-});
+	];
+}
+
+angular.module('rioxApp').controller('ConsumerConnectorCtrl', consumerConnectorCtrl);

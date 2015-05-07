@@ -31,15 +31,18 @@
 											<th>Name</th>
 											<th>Description</th>
 											<th>Consumers</th>
+											<th>Permit</th>
 											<th>Action</th>
 										</tr>
 									</thead>
+
 									<tbody>
 										<tr ng-repeat="n in sources" ng-class="{ 'font-bold' : n.id == selectedSource.id }">
 											<td>{{sources.indexOf(n) + 1}}</td>
 											<td><a ui-sref="{sourceId: n.id, organizationId: null}">{{n.name}}</a></td>
 											<td>{{trim(n.description, 100)}}</td>
 											<td>{{n.consumers.length}}</td>
+											<td>{{n[PERMIT_MODE][TYPE]}}</td>
 											<td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
 										</tr>
 									</tbody>
@@ -61,7 +64,7 @@
 
 						<!-- organization image -->
 						<div class="logo">
-							<img ng-show="selectedSource.organizationImg" class="img-responsive" style="margin: auto; max-height: 100px" 
+							<img ng-show="selectedSource.organizationImg" class="img-responsive" style="margin: auto; max-height: 100px"
 								ng-src="{{selectedSource.organizationImg}}">
 							<div ng-hide="selectedSource.organizationImg" class="text-center">
 								<img ng-src="app/components/img/no_image_available.png" style="margin: auto; max-height: 100px">

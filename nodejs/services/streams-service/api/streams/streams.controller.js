@@ -3,7 +3,6 @@
 var Stream = require('./stream.model.js');
 var passport = require('passport');
 var riox = require('riox-shared/lib/api/riox-api');
-var portfinder = require('portfinder');
 var sourcesCtrl = require('./streamsources.controller');
 var sinksCtrl = require('./streamsinks.controller');
 var procsCtrl = require('./streamprocessors.controller');
@@ -35,7 +34,7 @@ exports.applyStreamConfig = function (req, res, next) {
 	var streamId = req.params.id;
 	var config = req.body;
 	var query = {};
-	Stream.find(query, function (err, list) {		
+	Stream.find(query, function (err, list) {
 		if (err)
 			return validationError(res, err);
 		var stream = list[0];
