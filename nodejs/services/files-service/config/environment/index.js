@@ -4,78 +4,85 @@ var path = require('path');
 var _ = require('lodash');
 
 function requiredProcessEnv(name) {
-  if(!process.env[name]) {
-    throw new Error('You must set the ' + name + ' environment variable');
-  }
-  return process.env[name];
+	if (!process.env[name]) {
+		throw new Error('You must set the ' + name + ' environment variable');
+	}
+	return process.env[name];
 }
 
 // All configurations will extend these options
 // ============================================
 var all = {
-  env: process.env.NODE_ENV,
+	env: process.env.NODE_ENV,
 
-  // Root path of server
-  root: path.normalize(__dirname + '/../../..'),
+	// Root path of server
+	root: path.normalize(__dirname + '/../../..'),
 
-  // Server port
-  port: process.env.PORT || 9000,
+	logging: {
+		level: 'debug',
+		timestamp: true,
+		debugStdout: true,
+		colorize: true
+	},
 
-  // Should we populate the DB with sample data?
-  seedDB: false,
+	// Server port
+	port: process.env.PORT || 9000,
 
-  // Secret for session, you will want to change this and make it an environment variable
-  secrets: {
-    session: 'riox-secret'
-  },
+	// Should we populate the DB with sample data?
+	seedDB: false,
 
-  // List of user roles
-  userRoles: ['guest', 'user', 'admin'],
+	// Secret for session, you will want to change this and make it an environment variable
+	secrets: {
+		session: 'riox-secret'
+	},
 
-  // MongoDB connection options
-  mongo: {
-    options: {
-      db: {
-        safe: true
-      }
-    }
-  },
+	// List of user roles
+	userRoles: ['guest', 'user', 'admin'],
 
-  // RabbitMQ connection options
-  rabbitmq : {
-    host : 'localhost',
-    port: 5672,
-    vhost: 'riox',
-    user: 'guest',
-    pass: 'guest'
-  },
+	// MongoDB connection options
+	mongo: {
+		options: {
+			db: {
+				safe: true
+			}
+		}
+	},
 
-  springxd : {
-    url : 'http://localhost:9393'
-  },
+	// RabbitMQ connection options
+	rabbitmq: {
+		host: 'localhost',
+		port: 5672,
+		vhost: 'riox',
+		user: 'guest',
+		pass: 'guest'
+	},
 
-  facebook: {
-    clientID:     process.env.FACEBOOK_ID || 'id',
-    clientSecret: process.env.FACEBOOK_SECRET || 'bd3a056db300ed5fefdd068cd88d15d4',
-    callbackURL:  (process.env.DOMAIN || '') + '/auth/facebook/callback'
-  },
+	springxd: {
+		url: 'http://localhost:9393'
+	},
 
-  twitter: {
-    clientID:     process.env.TWITTER_ID || 'id',
-    clientSecret: process.env.TWITTER_SECRET || 'secretTwitter',
-    callbackURL:  (process.env.DOMAIN || '') + '/auth/twitter/callback'
-  },
+	facebook: {
+		clientID: process.env.FACEBOOK_ID || 'id',
+		clientSecret: process.env.FACEBOOK_SECRET || 'bd3a056db300ed5fefdd068cd88d15d4',
+		callbackURL: (process.env.DOMAIN || '') + '/auth/facebook/callback'
+	},
 
-  google: {
-    clientID:     process.env.GOOGLE_ID || 'id',
-    clientSecret: process.env.GOOGLE_SECRET || 'secretGoogle',
-    callbackURL:  (process.env.DOMAIN || '') + '/auth/google/callback'
-  }
+	twitter: {
+		clientID: process.env.TWITTER_ID || 'id',
+		clientSecret: process.env.TWITTER_SECRET || 'secretTwitter',
+		callbackURL: (process.env.DOMAIN || '') + '/auth/twitter/callback'
+	},
+
+	google: {
+		clientID: process.env.GOOGLE_ID || 'id',
+		clientSecret: process.env.GOOGLE_SECRET || 'secretGoogle',
+		callbackURL: (process.env.DOMAIN || '') + '/auth/google/callback'
+	}
 
 };
 
 // Export the config object based on the NODE_ENV
 // ==============================================
 module.exports = _.merge(
-  all,
-  require('./' + process.env.NODE_ENV + '.js') || {});
+	all,
+	require('./' + process.env.NODE_ENV + '.js') || {});

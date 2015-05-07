@@ -15,7 +15,7 @@ var validationError = function (res, err) {
 };
 
 function list(query, req, res) {
-	var fetchXdInfo = req.query.fetchxdinfo || true;
+	var fetchXdInfo = req.query.fetchxdinfo || false;
 	log.info("Listing streamsources. Fetch XD info: ", fetchXdInfo);
 
 	StreamSource.find(query, function (err, list) {

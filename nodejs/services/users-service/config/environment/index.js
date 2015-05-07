@@ -16,7 +16,10 @@ var config = {
 	env: process.env.NODE_ENV,
 
 	logging: {
-		level: 'debug'
+		level: 'debug',
+		timestamp: true,
+		debugStdout: true,
+		colorize: true
 	},
 
 	// Root path of server

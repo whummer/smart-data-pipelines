@@ -63,15 +63,10 @@ var start = function (config, routes, serviceName) {
 		}
 
 		// configure winston logger
-		if (log) {
-			log.remove(log.transports.Console).add(log.transports.Console, {
-				level: 'debug',
-				timestamp: true,
-				debugStdout: true,
-				colorize: true
-			});
+		if (log && config.logging) {
+			console.log("Using winston config: ", config.logging);
+			log.remove(log.transports.Console).add(log.transports.Console, config.logging);
 		}
-
 
 		var server = app.server = require('http').createServer(expressApp);
 		var expressConfig = require("./config/express");

@@ -19,7 +19,10 @@ var config = {
 	root: path.normalize(__dirname + '/../../..'),
 
 	logging: {
-		level: 'debug'
+		level: 'debug',
+		timestamp: true,
+		debugStdout: true,
+		colorize: true
 	},
 
 	// Server port
