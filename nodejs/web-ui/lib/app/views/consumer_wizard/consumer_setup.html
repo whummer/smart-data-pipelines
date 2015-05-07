@@ -22,25 +22,30 @@
             <strong>Data from ng-model.</strong><br/>
             <textarea style="width: 100%;" rows="5">{{formData}}</textarea><br/>
           </p>
+          {{current}}
           <div class="steps clearfix">
             <ul>
               <li ui-sref-active="current">
                 <a ui-sref=".catalog" class="btn-default"><span>1</span> Find Stream in Catalog</a>
               </li>
               <li ui-sref-active="current">
-                <a ui-sref=".request" class="btn-default"><span>2</span> Request Access</a>
+                <button ui-sref=".request" class="btn-default" ng-disabled="isAfterCurrent('.request')">
+                		<span>2</span> Request Access</button>
+              </li>
+<!--               <li ui-sref-active="current"> -->
+<!--                 <a ui-sref=".billing" class="btn-default" ng-class="{ disabled : __accessNotGranted = !isAccessGranted()}"><span>3</span> Billing</a> -->
+<!--               </li> -->
+              <li ui-sref-active="current">
+                <button ui-sref=".connector" class="btn-default" ng-disabled="isAfterCurrent('.connector')" 
+                	ng-class="{ disabled : __accessNotGranted = !isAccessGranted()}"><span>3</span> Connector</button>
               </li>
               <li ui-sref-active="current">
-                <a ui-sref=".billing" class="btn-default" ng-class="{ disabled : __accessNotGranted = !isAccessGranted()}"><span>3</span> Billing</a>
+                <button ui-sref=".analytics" class="btn-default" ng-disabled="isAfterCurrent('.analytics')" 
+                	ng-class="{ disabled : __accessNotGranted}"><span>4</span> Analytics</button>
               </li>
               <li ui-sref-active="current">
-                <a ui-sref=".connector" class="btn-default" ng-class="{ disabled : __accessNotGranted}"><span>4</span> Connector</a>
-              </li>
-              <li ui-sref-active="current">
-                <a ui-sref=".analytics" class="btn-default" ng-class="{ disabled : __accessNotGranted}"><span>5</span> Analytics</a>
-              </li>
-              <li ui-sref-active="current">
-                <a ui-sref=".confirm" class="btn-default" ng-class="{ disabled : __accessNotGranted}"><span>6</span> Confirmation</a>
+                <button ui-sref=".confirm" class="btn-default" ng-disabled="isAfterCurrent('.confirm')" 
+                	ng-class="{ disabled : __accessNotGranted}"><span>5</span> Confirmation</button>
               </li>
             </ul>
           </div>

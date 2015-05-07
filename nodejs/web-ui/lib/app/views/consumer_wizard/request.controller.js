@@ -60,6 +60,8 @@ angular.module('rioxApp').controller(
 		});
 	};
 
+	$scope.checkIfSourceSelected($stateParams); // call to parent controller
+
 	/* load main elements */
 	loadSource();
 

@@ -19,19 +19,7 @@
 				<label class="col-lg-5 text-cell">Pricing</label>
 				<div class="col-lg-7 text-cell" data-ng-alias="thePrice = formData.selectedSource[PRICING]">
 					<div class="price text-cell">
-						<div ng-show="thePrice.billingUnit == 'event' || thePrice.billingUnit == 'day'" style="margin: auto;">
-						{{thePrice.unitPrice}} €
-						<span style="font-weight: normal;">
-							<span ng-show="thePrice.billingUnit == 'event'">per data point</span>
-							<span ng-show="thePrice.billingUnit == 'day'">per day</span>
-						</span>
-						</div>
-						<div ng-show="thePrice.billingUnit == 'free'" style="line-height: 40px;">
-						free of charge
-						</div>
-						<div ng-show="thePrice.billingUnit == 'on_request'" style="line-height: 40px;">
-						request price
-						</div>
+						{{format.pricing(formData.selectedSource[PRICING])}}
 					</div>
 				</div>
 			</div>
@@ -80,5 +68,5 @@
 			</div>
         </div>
     </div>
-    <a ui-sref="consumer.wizard.billing" class="btn btn-primary">Next</a>
+    <a ng-click="nextStep()" class="btn btn-primary">Next</a>
 </fieldset>

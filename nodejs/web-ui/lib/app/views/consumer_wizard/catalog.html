@@ -65,20 +65,8 @@
 						{{trim(source.description, 200)}}
 					</div>
 					
-					<div class="price" ng-alias="thePrice = source.pricing">
-						<div ng-show="thePrice.billingUnit == 'event' || thePrice.billingUnit == 'day'" style="margin: auto;">
-						{{thePrice.unitPrice}} €
-						<span style="font-weight: normal;">
-							<span ng-show="thePrice.billingUnit == 'event'">per data point</span>
-							<span ng-show="thePrice.billingUnit == 'day'">per day</span>
-						</span>
-						</div>
-						<div ng-show="thePrice.billingUnit == 'free'" style="line-height: 40px;">
-						free of charge
-						</div>
-						<div ng-show="thePrice.billingUnit == 'on_request'" style="line-height: 40px;">
-						request price
-						</div>
+					<div class="price">
+						{{format.pricing(source.pricing)}}
 					</div>
 				</div>
 			</div>
@@ -87,8 +75,7 @@
 		<div class="clearfix"></div>
 		<div class="selection" ng-show="formData.selectedSource">
 			Selected Data Source: {{formData.selectedSource.name}} ({{formData.selectedSource.organization.name}})
-			<a ui-sref="consumer.wizard.request" ng-click="loadAccessStatus()" 
-				class="btn btn-primary" style="float: right">Next</a>
+			<a ng-click="loadAccessStatus(); nextStep()" class="btn btn-primary" style="float: right">Next</a>
 		</div>
 		
     </div>

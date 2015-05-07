@@ -140,11 +140,13 @@ angular.module('rioxApp')
     .state('consumer.wizard.connector', {
 			url: '/connector',
 			templateUrl: 'app/views/consumer_wizard/connector.html',
+			controller: 'ConsumerConnectorCtrl',
 			authenticate: true
 		})
 		.state('consumer.wizard.confirm', {
 			url: '/confirm',
 			templateUrl: 'app/views/consumer_wizard/confirm.html',
+			controller: 'ConsumerConfirmCtrl',
 			authenticate: true
 		})
 
