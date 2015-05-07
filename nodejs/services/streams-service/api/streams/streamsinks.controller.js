@@ -5,7 +5,7 @@ var passport = require('passport');
 var riox = require('riox-shared/lib/api/riox-api');
 var containers = require('riox-services-base/lib/util/containers.util');
 var springxd = require('riox-services-base/lib/util/springxd.util');
-var log = require('winston');
+var log = global.log || require('winston');
 
 
 var validationError = function (res, err) {

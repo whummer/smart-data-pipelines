@@ -8,7 +8,7 @@ var springxd = require('riox-services-base/lib/util/springxd.util');
 var kafka = require('riox-services-base/lib/util/kafka.util');
 var containers = require('riox-services-base/lib/util/containers.util');
 var path = require('path');
-var log = require('winston');
+var log = global.log || require('winston');
 
 var validationError = function (res, err) {
 	return res.json(422, err);

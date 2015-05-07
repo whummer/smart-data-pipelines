@@ -2,7 +2,7 @@
 
 var request = require('request');
 var fs = require('fs');
-var log = require('winston');
+var log = global.log || require('winston');
 
 var x = exports;
 

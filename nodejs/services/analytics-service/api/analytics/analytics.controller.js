@@ -3,7 +3,7 @@
 var AnalyticsFunction = require('./analytics.model.js');
 var config = require('../../config/environment');
 
-var log = require('winston');
+var log = global.log || require('winston');
 
 var validationError = function(res, err) {
 	return res.json(422, err);
