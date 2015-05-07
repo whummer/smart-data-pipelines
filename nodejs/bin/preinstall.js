@@ -2,15 +2,23 @@ var fs = require('fs');
 var resolve = require('path').resolve;
 var join = require('path').join;
 var cp = require('child_process');
-var localConfigFile = (process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME']) + "/.riox";
+var localConfigFile = (process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME']) + "/.rioxrc";
 var localConfig = !fs.existsSync(localConfigFile) ? {} : JSON.parse(fs.readFileSync(localConfigFile));
+
+if (localConfig.build) {
+  console.log("Using localconfig from " + localConfigFile + ":");
+  console.log(">>>>>>>>>>>>>>>>>>>>");
+  console.log(JSON.stringify(localConfig, null, 2));
+  console.log("<<<<<<<<<<<<<<<<<<<<");
+  console.log("\n");
+}
 
 var service_directories = ['streams-service', 'users-service', 'riox-services-base', 'analytics-service', 'files-service'];
 var services_test_directory = 'services/test';
 var web_ui_directory = 'web-ui';
 
-const LINK_DEPS = localConfig.build.linklocal || false;
-const USE_LINK_LOCAL = localConfig.build.linklocal || false;
+const LINK_DEPS = (localConfig.build && localConfig.build.linklocal) || false;
+const USE_LINK_LOCAL = (localConfig.build && localConfig.build.linklocal) || false;
 const PRUNE_NODE_DIRS = false;
 
 if (USE_LINK_LOCAL) {
