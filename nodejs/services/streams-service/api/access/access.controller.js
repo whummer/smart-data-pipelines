@@ -6,6 +6,8 @@ var jwt = require('jsonwebtoken');
 var auth = require('riox-services-base/lib/auth/auth.service');
 var riox = require('riox-shared/lib/api/riox-api');
 
+var log = global.log || require('winston');
+
 exports.index = function(req, res, next) {
 	var user = auth.getCurrentUser(req);
 
@@ -135,7 +137,7 @@ var createNotification = function(req, type, access) {
 		notif[TEXT] = "User requested access to stream source #" + access[SOURCE_ID];
 		notif[RECIPIENT_ID] = access[OWNER_ID];
 	} else if(type == TYPE_ACCESS_UPDATE) {
-		notif[TEXT] = "Access to stream source #" + access[SOURCE_ID] + " has been " + 
+		notif[TEXT] = "Access to stream source #" + access[SOURCE_ID] + " has been " +
 			(access[STATUS] == STATUS_PERMITTED ? "enabled" : "disabled");
 		notif[RECIPIENT_ID] = access[REQUESTOR_ID];
 	}

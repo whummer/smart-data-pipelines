@@ -22,7 +22,8 @@ var all = {
 		level: 'debug',
 		timestamp: true,
 		debugStdout: true,
-		colorize: true
+		colorize: true,
+		requestLogging : true
 	},
 
 	// Server port
@@ -46,15 +47,6 @@ var all = {
 				safe: true
 			}
 		}
-	},
-
-	// RabbitMQ connection options
-	rabbitmq: {
-		host: 'localhost',
-		port: 5672,
-		vhost: 'riox',
-		user: 'guest',
-		pass: 'guest'
 	},
 
 	springxd: {

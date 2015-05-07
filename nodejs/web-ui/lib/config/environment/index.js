@@ -19,7 +19,11 @@ var all = {
 	root: path.normalize(__dirname + '/../..'),
 
 	logging: {
-		level: 'debug'
+		level: 'debug',
+		timestamp: true,
+		debugStdout: true,
+		colorize: true,
+		requestLogging : true
 	},
 
 	// Server port

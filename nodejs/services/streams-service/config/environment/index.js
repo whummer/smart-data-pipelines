@@ -22,7 +22,8 @@ var config = {
 		level: 'debug',
 		timestamp: true,
 		debugStdout: true,
-		colorize: true
+		colorize: true,
+		requestLogging : true
 	},
 
 	// Server port

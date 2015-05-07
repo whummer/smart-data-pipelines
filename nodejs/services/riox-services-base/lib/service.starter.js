@@ -10,6 +10,7 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 var express = require('express');
 var cors = require('cors');
 var util = require('./util/util');
+var expressWinston = require('express-winston');
 var log = global.log = require('winston');
 
 require('./api/service.calls');
@@ -65,12 +66,19 @@ var start = function (config, routes, serviceName) {
 
 		// configure winston logger
 		if (log) {
-			log.remove(log.transports.Console).add(log.transports.Console, {
-				level: 'debug',
-				timestamp: true,
-				debugStdout: true,
-				colorize: true
-			});
+			log.remove(log.transports.Console).add(log.transports.Console, config.logging);
+
+			if (config.logging.requestLogging) {
+				expressApp.use(expressWinston.logger({
+					transports: [
+						new log.transports.Console({
+							json: true,
+							colorize: true
+						})
+					]
+				}));
+			}
+
 		}
 
 
@@ -78,6 +86,9 @@ var start = function (config, routes, serviceName) {
 		var expressConfig = require("./config/express");
 		expressConfig(expressApp, config);
 		routes(expressApp);
+
+
+
 
 		server.listen(config.port, config.ip, function () {
 			log.info('Service ' + serviceName + ' listening on %d, in %s mode', config.port, expressApp.get('env'));
