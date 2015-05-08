@@ -30,5 +30,5 @@ if [ ! -z "$NO_TIMEOUT" ]; then
 fi
 
 #docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock riox/riox-tests bash -c "cd services && mocha $ARGS"
-docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v `pwd`:/code riox/nodejs-base bash -c "cd services && NODE_PATH=/usr/local/lib/node_modules/ mocha $ARGS"
+docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v `pwd`:/code riox/nodejs-base bash -c "cd services && mocha $ARGS"
 

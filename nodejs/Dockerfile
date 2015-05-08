@@ -25,4 +25,7 @@ RUN apt-get install -y --force-yes vim nano less
 # clean up
 RUN rm -rf /code
 
+# set environment (for lookup of global node modules)
+ENV NODE_PATH /usr/local/lib/node_modules/
+
 CMD ["/bin/bash"]
