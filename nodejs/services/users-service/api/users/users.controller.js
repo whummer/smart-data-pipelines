@@ -4,7 +4,6 @@ var User = require('./user.model');
 var passport = require('passport');
 var mongoose = require('mongoose');
 var config = require('../../config/environment');
-var jwt = require('jsonwebtoken');
 var riox = require('riox-shared/lib/api/riox-api');
 var auth = require('riox-services-base/lib/auth/auth.service');
 
