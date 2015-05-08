@@ -1,28 +1,38 @@
 <fieldset class="animated fadeIn" ng-controller="pricingCtrl">
-	<h2>Configure Pricing for your Data Resource or individual Data Items</h2>
+	<h2>Configure Pricing for your Data Resource or individual Data
+		Items</h2>
 
 	<!-- todo why does the filter expression not work? -->
-	<div class="row" ng-repeat="dataItem in resourceData.dataItems | filter: {enabled:true}">
+	<div class="row"
+		ng-repeat="dataItem in resourceData.dataItems | filter: {enabled:true}">
 		<div class="form-group" ng-show="dataItem.enabled">
 			<label for="{{dataItem.name}}" class="col-sm-3 control-label">{{dataItem.name}}</label>
 			<div class="col-sm-5">
-				<div id="{{dataItem.name}}" ion-range-slider range-options="pricingSliderOptions"></div>
+				<div id="{{dataItem.name}}" ion-range-slider
+					range-options="pricingSliderOptions"></div>
 			</div>
 		</div>
 	</div>
 
-  <div class="row" ng-hide="resourceData.dataItems">
-    <div class="form-group">
-      <label for="defaultPricing" class="col-sm-4 control-label">Name your price for Data Resource
-        {{resourceData.name}}</label>
-      <div class="col-sm-5">
-        <div id="defaultPricing" ion-range-slider range-options="pricingSliderOptions"></div>
-      </div>
-    </div>
-
-
-  </div>
-
+	<div class="row" ng-hide="resourceData.dataItems">
+		<div class="form-group">
+			<label for="defaultPricing" class="col-sm-4 control-label">Name
+				your price for Data Resource {{resourceData.name}}</label>
+			<div class="col-sm-1">
+				<input ui-switch="{color:'#5C9C4D', size: 'small'}" ng-model="priceSliderEnabled"
+						 type="checkbox" class="form-control" ng-init="priceSliderEnabled = true"/>
+			</div>
+			<div class="col-sm-5">
+				<div ng-show="priceSliderEnabled">
+					<div id="defaultPricing" ion-range-slider
+						range-options="pricingSliderOptions"></div>
+				</div>
+				<div ng-show="!priceSliderEnabled">
+					Price will be determined individually for each data consumer. (Switch toggle to change)
+				</div>
+			</div>
+		</div>
+	</div>
 
 	<a ui-sref="provider.wizard.data_items" class="btn btn-default">Previous</a>
 	<a ui-sref="provider.wizard.deployment" class="btn btn-primary">Next</a>
