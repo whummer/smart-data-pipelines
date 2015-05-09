@@ -5,7 +5,6 @@ var passport = require('passport');
 var auth = require('riox-services-base/lib/auth/auth.service');
 var riox = require('riox-shared/lib/api/riox-api');
 var springxd = require('riox-services-base/lib/util/springxd.util');
-var kafka = require('riox-services-base/lib/util/kafka.util');
 var containers = require('riox-services-base/lib/util/containers.util');
 var portfinder = require('portfinder');
 var path = require('path');

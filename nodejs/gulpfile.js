@@ -5,6 +5,7 @@ var gulp = require('gulp-help')(require('gulp'));
 var clean = require('gulp-clean');
 var runSequence = require('run-sequence');
 var fs = require('fs');
+var cp = require('child_process');
 
 var gulpFiles = {
 	ui : require('./web-ui/web-ui-gulpfile'),
@@ -45,6 +46,44 @@ gulp.task('deps:clean:local', 'clean all local riox modules from all node_module
 		});
 	});
 });
+
+gulp.task('deps:install:global', 'parse all dependencies and devDependencies from package.json files and run npm install -g on them.', function() {
+	var deps = {};
+	nodeDirs.forEach(function(dir) {
+		var f = JSON.parse(fs.readFileSync(dir + "/package.json"));
+		for(var dep in f.dependencies) {
+			var version = f.dependencies[dep];
+			addDepToHash(deps, dep, version);
+		}
+		for(var dep in f.devDependencies) {
+			var version = f.devDependencies[dep];
+			addDepToHash(deps, dep, version);
+		}
+	});
+	var str = "npm install -g";
+	for(var key in deps) {
+		str += " " + key + "@" + deps[key];
+	}
+	console.log("Running:", str);
+	cp.exec(str, {env: process.env}, function (error, stdout, stderr) {
+		if (error) {
+			console.log("Cannot install node modules.", error);
+		}
+	});
+});
+
+function addDepToHash(deps, dep, version) {
+	if(version.indexOf("./") >= 0) {
+		/* local module path -> ignore! */
+		console.log("INFO: Ignoring local module dependency '" + dep + "' with path '" + version + "'");
+		return;
+	}
+	if(deps[dep] && deps[dep] != version) {
+		console.log("WARN: Overwriting version of '" + dep + "' from '" + 
+				deps[dep] + "' to '" + version + "'");
+	}
+	deps[dep] = version;
+}
 
 function cleanNodeDir(dir) {
 	cleanDir(dir + "/node_modules");

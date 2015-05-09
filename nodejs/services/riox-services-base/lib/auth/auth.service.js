@@ -1,6 +1,5 @@
 'use strict';
 
-var passport = require('passport');
 var config = require('../config');
 var jwt = require('jsonwebtoken');
 var expressJwt = require('express-jwt');

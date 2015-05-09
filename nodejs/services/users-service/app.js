@@ -23,4 +23,8 @@ if(config.seedDB) { require("./demodata"); }
 var routes = require("./routes");
 var server = starter.start(config, routes, "users-service");
 
+// initialize passport
+var passport = require("passport");
+server.expressApp.use(passport.initialize());
+
 module.exports = server;

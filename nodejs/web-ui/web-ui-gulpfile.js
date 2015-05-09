@@ -2,27 +2,27 @@
 // require gulp and plugins
 //
 var gulp = require('gulp-help')(require('gulp')),
-  nodemon = require('gulp-nodemon'),
-  bowerFiles = require('main-bower-files'),
-  install = require('gulp-install'),
-  less = require('gulp-less'),
-  path = require('path'),
-  inject = require('gulp-inject'),
-  angular_filesort = require('gulp-angular-filesort'),
-  cp = require('child_process'),
-  rename = require('gulp-rename'),
-  replace = require('gulp-replace'),
-  clean = require('gulp-clean'),
-  util = require('gulp-util'),
-  uglify = require('gulp-uglify'),
-  concat = require('gulp-concat'),
-  livereload = require('gulp-livereload'),
-  gulpFilter = require('gulp-filter'),
-  sourcemaps = require('gulp-sourcemaps'),
-  imagemin = require('gulp-imagemin'),
-  runSequence = require('run-sequence'),
-  bower = require('gulp-bower'),
-  es = require('event-stream');
+		nodemon = require('gulp-nodemon'),
+		bowerFiles = require('main-bower-files'),
+		install = require('gulp-install'),
+		less = require('gulp-less'),
+		path = require('path'),
+		inject = require('gulp-inject'),
+		angular_filesort = require('gulp-angular-filesort'),
+		cp = require('child_process'),
+		rename = require('gulp-rename'),
+		replace = require('gulp-replace'),
+		clean = require('gulp-clean'),
+		util = require('gulp-util'),
+		uglify = require('gulp-uglify'),
+		concat = require('gulp-concat'),
+		livereload = require('gulp-livereload'),
+		gulpFilter = require('gulp-filter'),
+		sourcemaps = require('gulp-sourcemaps'),
+//		imagemin = require('gulp-imagemin'), // TODO pulls 140+ MB of dependencies..
+		runSequence = require('run-sequence'),
+		bower = require('gulp-bower'),
+		es = require('event-stream');
 
 //var $ = require('gulp-load-plugins')();
 

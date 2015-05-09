@@ -19,6 +19,7 @@ var web_ui_directory = 'web-ui';
 
 const LINK_DEPS = (localConfig.build && localConfig.build.linklocal) || false;
 const USE_LINK_LOCAL = (localConfig.build && localConfig.build.linklocal) || false;
+const DO_INSTALL_NPM = false; // disabled in the new testing mode (deps in containers)
 const PRUNE_NODE_DIRS = false;
 
 if (USE_LINK_LOCAL) {
@@ -38,12 +39,17 @@ function preinstall_dir(base, dir) {
 		return;
 	}
 
-	if (PRUNE_NODE_DIRS) {
-		prune_node_directories(preinstallDirectory, function() {
-			install_node_modules(preinstallDirectory)
-		});
+	if(DO_INSTALL_NPM) {
+		if (PRUNE_NODE_DIRS) {
+			prune_node_directories(preinstallDirectory, function() {
+				install_node_modules(preinstallDirectory)
+			});
+		} else {
+			install_node_modules(preinstallDirectory);
+		}
 	} else {
-		install_node_modules(preinstallDirectory);
+		// only link local modules
+		link_local_modules(preinstallDirectory);
 	}
 }
 
@@ -65,17 +71,19 @@ function install_node_modules(preinstallDirectory) {
 			console.log("Cannot install node modules in directory '" + preinstallDirectory + "': ", error);
 			return;
 		}
-
 		console.log('Finished node_modules install in dir: ', preinstallDirectory);
-
-		if (LINK_DEPS) {
-			if (USE_LINK_LOCAL) {
-				link_lib_with_linklocal(preinstallDirectory);
-			} else {
-				link_lib_with_lodash(preinstallDirectory);
-			}
-		}
+		link_deps(preinstallDirectory);
 	});
+}
+
+function link_local_modules(preinstallDirectory) {
+	if (LINK_DEPS) {
+		if (USE_LINK_LOCAL) {
+			link_lib_with_linklocal(preinstallDirectory);
+		} else {
+			link_lib_with_lodash(preinstallDirectory);
+		}
+	}
 }
 
 function link_lib_with_linklocal(preinstallDirectory) {

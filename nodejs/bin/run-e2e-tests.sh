@@ -1,5 +1,7 @@
 #!/bin/bash
 
+ARGS=""
+
 while [[ $# > 0 ]]
 do
 	key="$1"
@@ -10,24 +12,23 @@ do
 	    ;;
 	    --no-timeouts)
 	    NO_TIMEOUT="true"
-	    shift
-	    ;;   
+	    ;;
 	    *)
 	    # unknown option
+	    ARGS=$ARGS" "$1
 	    ;;
 	esac
 	shift
 done
 
-ARGS=""
-
 if [ ! -z "$TIMEOUT" ]; then
-	ARGS="--timeout "$TIMEOUT
+	ARGS="--timeout "$TIMEOUT" "$ARGS
 fi
 
 if [ ! -z "$NO_TIMEOUT" ]; then
-	ARGS="--no-timeouts"
+	ARGS="--no-timeouts "$ARGS
 fi
 
+#docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock riox/riox-tests bash -c "cd services && mocha $ARGS"
+docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v `pwd`:/code riox/nodejs-base bash -c "cd services && mocha $ARGS"
 
-docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock riox/riox-tests bash -c "cd services && mocha $ARGS"
