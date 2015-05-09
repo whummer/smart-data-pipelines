@@ -1,9 +1,10 @@
 'use strict';
 
-angular.module('rioxApp').controller('StreamsConsumedCtrl', function ($scope, Auth, $stateParams) {
+angular.module('rioxApp').controller('StreamsConsumedCtrl', function ($scope, Auth, $stateParams, Formatter) {
 
 	$scope.trim = window.trim;
-	$scope.selectedStream = null;
+	$scope.selectedSource = null;
+	$scope.format = Formatter;
 
 	/* load streams */
 	riox.streams.consumed({}, function(streams) {
@@ -15,12 +16,12 @@ angular.module('rioxApp').controller('StreamsConsumedCtrl', function ($scope, Au
 
 	/* load stream details */
 	var loadStream = function() {
-		var id = $stateParams.streamId;
+		var id = $stateParams.sourceId;
 		if(!id) return;
-		riox.streams.source(id, function(stream) {
+		riox.streams.source(id, function(source) {
 			$scope.$apply(function() {
-				$scope.selectedStream = stream;
-				$scope.prepareStreamSource(stream);
+				$scope.selectedSource = source;
+				$scope.prepareStreamSource(source);
 			});
 		});
 	};
