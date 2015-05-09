@@ -7,6 +7,16 @@ angular.module('rioxApp').controller(
 
 	$scope.checkIfSourceSelected($stateParams); // call to parent controller
 
+	$scope.getSelectedAnalyticsName = function() {
+		if(!$scope.formData.selectedAnalyticsModule) {
+			$scope.formData.selectedAnalyticsModule = $scope.DFLT_ANALYTICS_FUNCTION;
+		}
+		if($scope.formData.selectedAnalyticsModule.id) {
+			return "Function '" + $scope.formData.selectedAnalyticsModule.name + "'";
+		}
+		return $scope.formData.selectedAnalyticsModule.name;
+	}
+
 	$scope.finish = function() {
 		var data = $scope.formData;
 		var sink = {};
