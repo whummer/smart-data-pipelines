@@ -10,11 +10,8 @@ var errors = require('riox-services-base/lib/util/errors');
 var log = global.log || require('winston');
 
 
-var validationError = function (res, err) {
-	return res.json(422, err);
-};
 
-function list(query, req, res) {
+function list(query, req, res, next) {
 	StreamSink.find(query, function (err, list) {
 		if (err) {
 			return next(errors.InternalError("Cannot list stream sinks", err));
@@ -24,8 +21,8 @@ function list(query, req, res) {
 	});
 }
 
-exports.indexStreamSink = function (req, res) {
-	return list({}, req, res);
+exports.indexStreamSink = function (req, res, next) {
+	return list({}, req, res, next);
 };
 
 exports.createStreamSink = function (req, res, next) {
@@ -153,4 +150,13 @@ var applyByStreamSink = exports.applyByStreamSink = function (sink, callback, er
 			callback({result: stream});
 		});
 
+};
+
+
+//
+// helper functions
+//
+
+var validationError = function (err, next) {
+	return next(errors.UnprocessableEntity("You passed a broken object", err));
 };

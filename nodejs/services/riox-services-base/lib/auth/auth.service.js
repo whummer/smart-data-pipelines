@@ -21,7 +21,6 @@ function isAuthenticated() {
 		log.debug("Authentication is disabled");
 		return compose().use(function(req,res,next) {
 			next();
-
 		});
 	}
 
