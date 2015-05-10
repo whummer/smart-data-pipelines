@@ -45,13 +45,13 @@ module.exports = function(app) {
   if ('production' === env) {
     app.use(favicon(path.join(config.root, 'public', 'favicon.ico')));
     setupDefaults(app);
-    app.use(morgan('dev'));
+    //app.use(morgan('dev'));
   }
 
   if ('development' === env || 'test' === env) {
     setupDefaults(app);
-    app.use(morgan('dev'));
-    app.use(errorHandler()); // Error handler - has to be last
+    //app.use(morgan('dev'));
+    //app.use(errorHandler()); // Error handler - has to be last
   }
 
   if ('development' === env ) {
@@ -59,5 +59,5 @@ module.exports = function(app) {
     app.use(express.static(path.join(config.root, 'lib')));
     app.set('appPath', path.resolve(__dirname + "/../"));
   }
-    
+
 };

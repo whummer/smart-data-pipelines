@@ -6,60 +6,69 @@ var jwt = require('jsonwebtoken');
 var expressJwt = require('express-jwt');
 var compose = require('composable-middleware');
 var riox = require('riox-shared/lib/api/riox-api');
+var log = global.log || require('winston');
 
-var validateJwt = expressJwt({ secret: config.secrets.session });
+var validateJwt = expressJwt({secret: config.secrets.session});
 
 var INTERNAL_USER_ID = "000000000000000000000000"; // Mongodb ObjectId format
-var expiresInMinutes = 60*24*3; // 3 days expiration time
+var expiresInMinutes = 60 * 24 * 3; // 3 days expiration time
 
 /**
  * Attaches the user object to the request if authenticated
  * Otherwise returns 403
  */
 function isAuthenticated() {
-  return compose()
-    // Validate jwt
-    .use(function(req, res, next) {
-      // allow access_token to be passed through query parameter as well
-      if(req.query && req.query.hasOwnProperty('access_token')) {
-    	  var header = getHeaderFromToken(req.query.access_token);
-    	  req.headers.authorization = header.authorization;
-      }
-      validateJwt(req, res, next);
-    });
+	if (config.auth.disable) {
+		log.debug("Authentication is disabled");
+		return compose().use(function(req,res,next) {
+			next();
+
+		});
+	}
+
+	return compose()
+		// Validate jwt
+		.use(function (req, res, next) {
+			// allow access_token to be passed through query parameter as well
+			if (req.query && req.query.hasOwnProperty('access_token')) {
+				var header = getHeaderFromToken(req.query.access_token);
+				req.headers.authorization = header.authorization;
+			}
+			validateJwt(req, res, next);
+		});
 }
 
 /**
  * Checks if the user role meets the minimum requirements of the route
  */
 function hasRole(roleRequired) {
-  if (!roleRequired) throw new Error('Required role needs to be set');
+	if (!roleRequired) throw new Error('Required role needs to be set');
 
-  return compose()
-    .use(isAuthenticated())
-    .use(function meetsRequirements(req, res, next) {
-      var id = req.user._id;
-      var check = function() {
-    	  if (config.userRoles.indexOf(req.user.role) >= config.userRoles.indexOf(roleRequired)) {
-	        next();
-	      }
-	      else {
-	        res.send(403);
-	      }
-      }
-      if(req.user.role) {
-    	  check();
-      } else {
-    	  riox.user({id: id}, {
-    		  headers: req.headers,
-    		  callback: function(user) {
-	    		  /* add user role to request */
-    			  req.user.role = user.role;
-	    		  check();
-	    	  }
-    	  });
-      }
-    });
+	return compose()
+		.use(isAuthenticated())
+		.use(function meetsRequirements(req, res, next) {
+			var id = req.user._id;
+			var check = function () {
+				if (config.userRoles.indexOf(req.user.role) >= config.userRoles.indexOf(roleRequired)) {
+					next();
+				}
+				else {
+					res.send(403);
+				}
+			}
+			if (req.user.role) {
+				check();
+			} else {
+				riox.user({id: id}, {
+					headers: req.headers,
+					callback: function (user) {
+						/* add user role to request */
+						req.user.role = user.role;
+						check();
+					}
+				});
+			}
+		});
 }
 
 /**
@@ -67,47 +76,47 @@ function hasRole(roleRequired) {
  */
 function fetchOrgs() {
 
-  return compose()
-    .use(isAuthenticated())
-    .use(function meetsRequirements(req, res, next) {
-      if(!req.user.organizations) {
-    	  riox.organizations({
-    		  headers: req.headers,
-    		  callback: function(orgs) {
-	    		  /* add user organizations to request */
-    			  req.user.organizations = orgs;
-    			  /* add convenience functions.
-    			   * TODO wh: performance could be improved: don't 
-    			   * always create these functions on the fly */
-    			  req.user.hasOrganization = function(org) {
-    				  var id = org.id ? org.id : org;
-    				  var found = false;
-    				  this.organizations.forEach(function(o1) {
-    					  if(o1.id == id) found = true;
-    				  });
-    				  return found;
-    			  };
-    			  req.user.getOrganizationIDs = function(org) {
-    				  var result = [];
-    				  this.organizations.forEach(function(o1) {
-    					  result.push(o1.id);
-    				  });
-    				  return result;
-    			  };
-    			  req.user.getDefaultOrganization = function() {
-    				  var result = null;
-    				  this.organizations.forEach(function(org) {
-    					  if(org[CREATOR_ID] == user.id) result = org;
-    				  });
-    				  return result;
-    			  };
-    			  next();
-	    	  }
-    	  }, function() {
-    		  res.send(500);
-    	  });
-      }
-    });
+	return compose()
+		.use(isAuthenticated())
+		.use(function meetsRequirements(req, res, next) {
+			if (!req.user.organizations) {
+				riox.organizations({
+					headers: req.headers,
+					callback: function (orgs) {
+						/* add user organizations to request */
+						req.user.organizations = orgs;
+						/* add convenience functions.
+						 * TODO wh: performance could be improved: don't
+						 * always create these functions on the fly */
+						req.user.hasOrganization = function (org) {
+							var id = org.id ? org.id : org;
+							var found = false;
+							this.organizations.forEach(function (o1) {
+								if (o1.id == id) found = true;
+							});
+							return found;
+						};
+						req.user.getOrganizationIDs = function (org) {
+							var result = [];
+							this.organizations.forEach(function (o1) {
+								result.push(o1.id);
+							});
+							return result;
+						};
+						req.user.getDefaultOrganization = function () {
+							var result = null;
+							this.organizations.forEach(function (org) {
+								if (org[CREATOR_ID] == user.id) result = org;
+							});
+							return result;
+						};
+						next();
+					}
+				}, function () {
+					res.send(500);
+				});
+			}
+		});
 }
 
 /**
@@ -115,7 +124,7 @@ function fetchOrgs() {
  */
 function getCurrentUser(req) {
 	var user = req.user;
-	if(user._id && !user.id) {
+	if (user._id && !user.id) {
 		user.id = user._id;
 	}
 	return user;
@@ -127,8 +136,8 @@ function getCurrentUser(req) {
 function getCurrentUserDetails(req, callback) {
 	var user = getCurrentUser(req);
 	riox.user({id: user.id}, {
-		  headers: req.headers,
-		  callback: callback
+		headers: req.headers,
+		callback: callback
 	});
 }
 
@@ -147,8 +156,8 @@ function validateToken(token, callback) {
  * Returns a jwt token signed by the app secret
  */
 function signToken(userId) {
-	return jwt.sign({ _id: userId }, config.secrets.session, 
-			{ expiresInMinutes: expiresInMinutes });
+	return jwt.sign({_id: userId}, config.secrets.session,
+		{expiresInMinutes: expiresInMinutes});
 }
 
 function getTokenHeaderForUserId(userId) {
@@ -156,17 +165,17 @@ function getTokenHeaderForUserId(userId) {
 }
 
 function getHeaderFromToken(token) {
-	return { authorization: 'Bearer ' + token };
+	return {authorization: 'Bearer ' + token};
 }
 
 /**
  * Set token cookie directly for oAuth strategies
  */
 function setTokenCookie(req, res) {
-  if (!req.user) return res.json(404, { message: 'Something went wrong, please try again.'});
-  var token = signToken(req.user._id, req.user.role);
-  res.cookie('token', JSON.stringify(token));
-  res.redirect('/');
+	if (!req.user) return res.json(404, {message: 'Something went wrong, please try again.'});
+	var token = signToken(req.user._id, req.user.role);
+	res.cookie('token', JSON.stringify(token));
+	res.redirect('/');
 }
 
 exports.isAuthenticated = isAuthenticated;

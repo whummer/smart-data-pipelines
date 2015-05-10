@@ -10,8 +10,11 @@ var auth = require('riox-services-base/lib/auth/auth.service');
 var router = express.Router();
 
 /* METHODS FOR STREAMS */
+router.get('/', auth.isAuthenticated(), streamsCtrl.listAll);
+
 router.get('/provided', auth.isAuthenticated(), sourcesCtrl.listProvided);
 router.get('/consumed', auth.isAuthenticated(), sourcesCtrl.listConsumed);
+
 router.post('/', auth.isAuthenticated(), streamsCtrl.createStream);
 router.post('/:id/apply', auth.isAuthenticated(), streamsCtrl.applyStreamConfig);
 

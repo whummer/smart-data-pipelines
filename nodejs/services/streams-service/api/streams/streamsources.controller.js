@@ -8,19 +8,18 @@ var springxd = require('riox-services-base/lib/util/springxd.util');
 var kafka = require('riox-services-base/lib/util/kafka.util');
 var containers = require('riox-services-base/lib/util/containers.util');
 var path = require('path');
+var errors = require('riox-services-base/lib/util/errors');
+
 var log = global.log || require('winston');
 
-var validationError = function (res, err) {
-	return res.json(422, err);
-};
 
-function list(query, req, res) {
+function list(query, req, res, next) {
 	var fetchXdInfo = req.query.fetchxdinfo || false;
 	log.info("Listing streamsources. Fetch XD info: ", fetchXdInfo);
 
 	StreamSource.find(query, function (err, list) {
 		if (err) {
-			return res.send(500, err);
+			return next(errors.InternalError("Unable to list stream sources", err));
 		}
 
 		if (fetchXdInfo) {
@@ -31,28 +30,29 @@ function list(query, req, res) {
 				response.push(streamSource);
 				xdInfoPromises.push(
 					new Promise(function (resolve, reject) {
-							var streamSourceId = "producer-" + streamSource._id;
-							log.info("Fetching XD information for stream: ", streamSourceId);
-							springxd.findStream(streamSourceId,
-								function (streamInfo) {
-									if (!streamInfo) {
-										log.info("No XD info for stream '" + streamSourceId + "'");
-									} else {
-										log.info("Found streamInfo for ID '" + streamSourceId + "': ", streamInfo);
-										streamSource.deployed = streamInfo.deployed;
-									}
+						var streamSourceId = "producer-" + streamSource._id;
+						log.info("Fetching XD information for stream: ", streamSourceId);
+						springxd.findStream(streamSourceId,
+							function (streamInfo) {
+								if (!streamInfo) {
+									log.info("No XD info for stream '" + streamSourceId + "'");
+									streamSource.deployed = false;
+								} else {
+									log.info("Found streamInfo for ID '" + streamSourceId + "': ", streamInfo);
+									streamSource.deployed = streamInfo.deployed;
+								}
 
-									resolve();
-								},
-								function (err) {
-									log.error("Cannot get XD info for stream '" + streamSourceId + "': ", err);
-									reject(err);
-								});
-						}));
+								resolve();
+							},
+							function (err) {
+								log.error("Cannot get XD info for stream '" + streamSourceId + "': ", err);
+								reject(err);
+							});
+					}));
 			});
 
 			log.info("About to resolve: ", xdInfoPromises);
-			Promise.all(xdInfoPromises).then(function(result) {
+			Promise.all(xdInfoPromises).then(function (result) {
 				log.info("Resolved: ", result);
 				res.json(200, response);
 			});
@@ -66,19 +66,19 @@ function list(query, req, res) {
 }
 
 
-exports.indexStreamSource = function (req, res) {
-	return list({}, req, res);
+exports.indexStreamSource = function (req, res, next) {
+	return list({}, req, res, next);
 };
 
-exports.listProvided = function (req, res) {
+exports.listProvided = function (req, res, next) {
 	var user = auth.getCurrentUser(req);
 	var query = {ownerId: user.id};
 	query[OWNER_ID] = user.id;
 	query = {}; // TODO remove! (testing only)
-	return list(query, req, res);
+	return list(query, req, res, next);
 };
 
-exports.listConsumed = function (req, res) {
+exports.listConsumed = function (req, res, next) {
 	var user = auth.getCurrentUser(req);
 	var query = {};
 	riox.access(query, {
@@ -88,7 +88,7 @@ exports.listConsumed = function (req, res) {
 				ids.push(el[SOURCE_ID]);
 			});
 			var query = {_id: {$in: ids}};
-			return list(query, req, res);
+			return list(query, req, res, next);
 		},
 		headers: req.headers
 	});
@@ -98,18 +98,20 @@ exports.createStreamSource = function (req, res, next) {
 	var streamSource = new StreamSource(req.body);
 
 	if (!streamSource.connector || streamSource.connector.type != "http") {
-		return validationError(res, {"description": "Unsupported Connector-Type. Only HTTP is supported at the moment"});
+		return validationError("Unsupported Connector-Type. Only HTTP is supported at the moment", next);
 	}
 	if (!streamSource[ORGANIZATION_ID]) {
-		return validationError(res, {"description": "Please provide a valid " + ORGANIZATION_ID + " for this source."});
+		return validationError("Please provide a valid " + ORGANIZATION_ID + " for this source.", next);
 	}
 	if (!streamSource[PERMIT_MODE]) {
-		return validationError(res, {"description": "Please provide a valid " + PERMIT_MODE + " for this source."});
+		return validationError("Please provide a valid " + PERMIT_MODE + " for this source.", next);
 	}
 
 	streamSource.save(function (err, obj) {
-		if (err)
-			return validationError(res, err);
+		if (err) {
+			return validationError(err, next);
+		}
+
 		res.json(obj);
 	});
 };
@@ -118,21 +120,27 @@ exports.applyStreamSource = function (req, res, next) {
 	var sourceId = req.params.id;
 	applyByStreamSourceId(sourceId, function (result) {
 		res.json(result);
-	}, function (result) {
-		res.json(500, result);
+	}, function (error) {
+		next(error)
 	});
 };
 
 var applyByStreamSourceId = exports.applyByStreamSourceId = function (id, callback, errorCallback) {
-	log.info("Applyin stream-source by id: ", id);
+	log.debug("Applying stream-source by id: ", id);
 	StreamSource.findById(id, function (err, obj) {
 		if (err)
-			return next(err);
+			return errorCallback(errors.InternalError("Cannot apply stream-source", err));
+
 		if (!obj)
-			return errorCallback(404);
-		applyByStreamSource(obj, function (result, errorCallback) {
-			callback(result);
-		}, errorCallback);
+			return errorCallback(errors.NotFoundError("No such stream-source: " + id));
+
+		applyByStreamSource(
+			obj,
+			function (result) {
+				callback(result);
+			},
+			errorCallback
+		);
 	});
 };
 
@@ -147,7 +155,7 @@ var applyByStreamSource = exports.applyByStreamSource = function (source, callba
 	var cfg = {};
 
 	var findContainers = function (resolve, reject) {
-		console.log("Trying to find container");
+		log.debug("Trying to find container");
 		containers.getContainersIPs(["zookeeper", "kafka", "springxd-admin"], resolve, reject);
 	};
 
@@ -157,7 +165,7 @@ var applyByStreamSource = exports.applyByStreamSource = function (source, callba
 
 	var createStream = function (resolve, reject) {
 		// create the SpringXD stream
-		console.log("About to create stream:");
+		log.info("About to create stream:");
 		var port = 9000;
 		var path = "/" + source[ORGANIZATION_ID] + "/" + source.id;
 		var streamDefinition = "riox-http --port=" + port + " --path=" + path + " | " +
@@ -189,17 +197,19 @@ var applyByStreamSource = exports.applyByStreamSource = function (source, callba
 			cfg.stream = stream;
 			callback({result: stream});
 		}, function (error) {
-			console.log("Error:", error);
+			log.error("Cannot apply stream-source:", error);
 			errorCallback(error);
 		});
 
 };
 
-exports.updateStreamSource = function (req, res) {
+exports.updateStreamSource = function (req, res, next) {
 	var streamSource = new StreamSource(req.body);
 	streamSource.save(req.params.id, function (err, obj) {
-		if (err)
-			return validationError(res, err);
+		if (err) {
+			return validationError(err, next);
+		}
+
 		res.json(obj);
 	});
 };
@@ -208,19 +218,29 @@ exports.showStreamSource = function (req, res, next) {
 	var id = req.params.id;
 
 	StreamSource.findById(id, function (err, obj) {
-		if (err)
-			return next(err);
-		if (!obj)
-			return res.send(404);
+		if (err) {
+			return next(errors.InternalError("Cannot lookup stream source", err));
+		}
+
+		if (!obj) {
+			return next(errors.NotFoundError("No such stream-source: " + id));
+		}
+
 		res.json(obj);
 	});
 };
 
 exports.destroyStreamSource = function (req, res) {
-	StreamSource.findByIdAndRemove(req.params.id, function (err, obj) {
-		if (err)
-			return res.send(500, err);
+	var streamId = req.param.id;
+	StreamSource.findByIdAndRemove(streamId, function (err) {
+		if (err) {
+			return next(erros.InternalError("Cannot remove stream with id " + streamId, err));
+		}
+
 		return res.send(204);
 	});
 };
 
+var validationError = function (err, next) {
+	return next(errors.UnprocessableEntity("You passed a broken object", err));
+};

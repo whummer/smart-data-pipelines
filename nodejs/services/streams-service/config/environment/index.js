@@ -23,7 +23,11 @@ var config = {
 		timestamp: true,
 		debugStdout: true,
 		colorize: true,
-		requestLogging : true
+		requestLogging : {
+			logAllRequests : true,
+			logMeta : false,
+			logErrorRequests : true
+		}
 	},
 
 	// Server port

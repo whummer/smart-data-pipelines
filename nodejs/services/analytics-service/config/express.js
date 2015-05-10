@@ -21,7 +21,6 @@ function commonConfig(app) {
   app.use(express.static(path.join(config.root, 'static')));
   app.set('appPath', '/');
   //app.use(morgan('dev'));
-  app.use(morgan('dev'));
 
 }
 
@@ -45,13 +44,13 @@ module.exports = function(app) {
   //   saveUninitialized: true,
   //   store: new mongoStore({ mongoose_connection: mongoose.connection })
   // }));
-  
+
   if ('production' === env) {
     commonConfig(app);
   }
 
   if ('development' === env || 'test' === env) {
     commonConfig(app);
-    app.use(errorHandler()); // Error handler - has to be last
+    //app.use(errorHandler()); // Error handler - has to be last
   }
 };
