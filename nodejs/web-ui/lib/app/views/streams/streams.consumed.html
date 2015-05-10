@@ -36,13 +36,13 @@
 										</tr>
 									</thead>
 									<tbody>
-										<tr ng-repeat="n in streams" ng-class="{ 'font-bold' : n.id == selectedStream.id }">
+										<tr ng-repeat="n in streams" ng-class="{ 'font-bold' : n.id == selectedSource.id }">
 											<td>{{streams.indexOf(n) + 1}}</td>
-											<td><a ui-sref="{streamId: n.id}">{{n.name}}</a></td>
+											<td><a ui-sref="{sourceId: n.id}">{{n[NAME]}}</a></td>
 											<td>{{n.organization.name}}</td>
-											<td>{{trim(n.description, 100)}}</td>
-											<td>{{n.status}}</td>
-											<td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+											<td>{{trim(n[DESCRIPTION], 100)}}</td>
+											<td>{{n[STATUS]}}</td>
+											<td><a ui-sref="consumer.wizard.request({sourceId: n.id})">details</a></td>
 										</tr>
 									</tbody>
 								</table>
@@ -53,7 +53,7 @@
 			</div>
 		</div>
 
-		<div class="row" ng-show="selectedStream">
+		<div class="row" ng-show="selectedSource">
 			<div class="col-lg-12">
 				<div class="ibox float-e-margins">
 					<div class="ibox-title">
@@ -63,38 +63,26 @@
 
 						<!-- organization image -->
 						<div class="logo">
-							<img ng-show="selectedStream.organizationImg" class="img-responsive" style="margin: auto; max-height: 100px" 
-								ng-src="{{selectedStream.organizationImg}}">
-							<div ng-hide="selectedStream.organizationImg" class="text-center">
+							<img ng-show="selectedSource.organizationImg" class="img-responsive" style="margin: auto; max-height: 100px" 
+								ng-src="{{selectedSource.organizationImg}}">
+							<div ng-hide="selectedSource.organizationImg" class="text-center">
 								<img ng-src="app/components/img/no_image_available.png" src="img/no_image_available.png">
 							</div>
 						</div>
 	
 						<!-- content -->
 						<div class="caption ng-binding">
-							<h4 class="ng-binding">{{selectedStream.name}}</h4>
+							<h4 class="ng-binding">{{selectedSource.name}}</h4>
 							<hr>
-							<b>Publisher:</b> {{selectedStream.organization.name}}
+							<b>Publisher:</b> {{selectedSource.organization.name}}
 							<hr>
-							{{selectedStream.description}}
+							{{selectedSource.description}}
 						</div>
 
-						<div ng-init="thePrice = selectedStream.pricing" class="caption ng-binding">
+						<div ng-init="thePrice = selectedSource.pricing" class="caption ng-binding">
 							<hr>
 							<b>Price:</b>
-							<span ng-show="selectedStream.pricing.billingUnit == 'event' || selectedStream.pricing.billingUnit == 'day'">
-							{{selectedStream.pricing.unitPrice}} €
-							<span style="font-weight: normal;">
-								<span ng-show="selectedStream.pricing.billingUnit == 'event'">per data point</span>
-								<span ng-show="selectedStream.pricing.billingUnit == 'day'">per day</span>
-							</span>
-							</span>
-							<div ng-show="selectedStream.pricing.billingUnit == 'free'" style="line-height: 40px;">
-							free of charge
-							</div>
-							<div ng-show="selectedStream.pricing.billingUnit == 'on_request'" style="line-height: 40px;">
-							request price
-							</div>
+							{{format.pricing(selectedSource.pricing)}}
 						</div>
 
 					</div>

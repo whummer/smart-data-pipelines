@@ -13,14 +13,10 @@ template[NAME] = String;
 /**
  * Image(s).
  */
-template[IMAGE_DATA] = [{
-	"_id": false,
-	"id": false,
-	/**
-	 * Image HREF.
-	 */
-	href: String
-}];
+var imageEntry = {};
+template[IMAGE_DATA] = [imageEntry]
+imageEntry["_id"] = imageEntry[ID] = false;
+imageEntry[HREF]= String;
 /**
  * Creator.
  */

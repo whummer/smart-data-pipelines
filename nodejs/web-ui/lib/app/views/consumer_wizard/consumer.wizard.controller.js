@@ -4,6 +4,8 @@ function consumerWizardCtrl($scope, $state, Formatter) {
 	$scope.trim = window.trim;
 	$scope.format = Formatter;
 
+	/* defaults */
+	$scope.DFLT_ANALYTICS_FUNCTION = {name: "-- None (forward data as is) --"};
 	$scope.steps = ["consumer.wizard.catalog", 
 	                "consumer.wizard.request",
 	                "consumer.wizard.connector",

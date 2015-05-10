@@ -7,6 +7,7 @@ function analyticsCtrl($scope, $log, $http, $stateParams) {
 	$scope.loadAnalyticsModules = function() {
 		riox.analytics(function(analytics) {
 			$log.debug("Loaded analytics functions: ", analytics);
+			analytics.unshift($scope.DFLT_ANALYTICS_FUNCTION);
 			$scope.analyticsModules = analytics;
 		});
 	};

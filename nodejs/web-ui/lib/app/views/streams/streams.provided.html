@@ -83,19 +83,7 @@
 						<div ng-init="thePrice = selectedSource.pricing" class="caption ng-binding">
 							<hr>
 							<b>Price:</b>
-							<span ng-show="selectedSource.pricing.billingUnit == 'event' || selectedSource.pricing.billingUnit == 'day'">
-							{{selectedSource.pricing.unitPrice}} €
-							<span style="font-weight: normal;">
-								<span ng-show="selectedSource.pricing.billingUnit == 'event'">per data point</span>
-								<span ng-show="selectedSource.pricing.billingUnit == 'day'">per day</span>
-							</span>
-							</span>
-							<div ng-show="selectedSource.pricing.billingUnit == 'free'" style="line-height: 40px;">
-							free of charge
-							</div>
-							<div ng-show="selectedSource.pricing.billingUnit == 'on_request'" style="line-height: 40px;">
-							request price
-							</div>
+							{{format.pricing(selectedSource.pricing)}}
 						</div>
 
 					</div>

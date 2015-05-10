@@ -85,6 +85,7 @@
 	g.RETENTION_TIME = "retention-time";
 	g.DATA_ITEMS = "data-items";
 	g.PRICING = "pricing";
+	g.HREF = "href";
 
 	var shareHook = (typeof window != "undefined") ? window : global;
 	for (key in g) {
