@@ -116,32 +116,20 @@ x.listStreams = function (streamName, callback, errorCallback) {
 	);
 };
 
-x.findStream = function (xdStreamId, callback, errorCallback) {
-	var url = getStreamsURL() + '/' + xdStreamId;
-	console.log("Using URL: ", url);
-	request.get(url, function (error, response) {
-		if (error) {
-			if (errorCallback) {
-				errorCallback(error);
-				return;
+x.findStream = function(xdStreamId, callback, errorCallback) {
+	x.listStreams(null, function(list) {
+		var found = false;
+		list.forEach(function(el) {
+			if(xdStreamId == el.name) {
+				found = true;
+				callback(el);
+				return el;
 			}
-		}
-
-		// no such stream definition
-		if (response.statusCode == 404) {
+		});
+		if(!found) {
 			callback(null);
-			return;
 		}
-
-		var stream = response.toJSON().body;
-		if (typeof body == "string") {
-			stream = JSON.parse(body);
-		} else {
-			errorCallback("Unexpected response: ", response);
-		}
-
-		callback(stream);
-	});
+	}, errorCallback);
 };
 
 x.listModules = function (callback, errorCallback) {

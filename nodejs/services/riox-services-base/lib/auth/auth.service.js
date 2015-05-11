@@ -17,12 +17,12 @@ var expiresInMinutes = 60 * 24 * 3; // 3 days expiration time
  * Otherwise returns 403
  */
 function isAuthenticated() {
-	if (config.auth.disable) {
+	/*if (config.auth.disable) {
 		log.debug("Authentication is disabled");
 		return compose().use(function(req,res,next) {
 			next();
 		});
-	}
+	}*/
 
 	return compose()
 		// Validate jwt

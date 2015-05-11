@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "main": "server/app.js",
   "dependencies": {
-    "event-stream": "3.3.0",
+    "event-stream": "3.3.0"
   },
   "devDependencies": {
     "gulp": "^3.8.11",

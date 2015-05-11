@@ -14,7 +14,7 @@ var log = global.log || require('winston');
 
 function list(query, req, res, next) {
 	var fetchXdInfo = req.query.fetchxdinfo || false;
-	log.info("Listing streamsources. Fetch XD info: ", fetchXdInfo);
+	log.debug("Listing streamsources. Fetch XD info: ", fetchXdInfo);
 
 	StreamSource.find(query, function (err, list) {
 		if (err) {
@@ -146,8 +146,8 @@ var applyByStreamSourceId = exports.applyByStreamSourceId = function (id, callba
 	});
 };
 
-var applyByStreamSource = exports.applyByStreamSource = function (source, callback, errorCallback) {
-	if (!source.id || !source[ORGANIZATION_ID]) {
+var applyByStreamSource = exports.applyByStreamSource = function(source, callback, errorCallback) {
+	if(!source.id || !source[ORGANIZATION_ID]) {
 		return errorCallback("Please provide valid source id and source organization id");
 	}
 
@@ -156,25 +156,15 @@ var applyByStreamSource = exports.applyByStreamSource = function (source, callba
 
 	var cfg = {};
 
-	var findContainers = function (resolve, reject) {
-		log.debug("Trying to find container");
-		containers.getContainersIPs(["zookeeper", "kafka", "springxd-admin"], resolve, reject);
-	};
-
-	var findStream = function (resolve, reject) {
 	var findStream = function(resolve, reject) {
 		springxd.findStream(xdStreamId, resolve, reject);
 	};
 
-	var createStream = function (resolve, reject) {
+	var createStream = function(resolve, reject) {
 		// create the SpringXD stream
-		log.info("About to create stream:");
 
 		var port = 9000;
 		var path = "/" + source[ORGANIZATION_ID] + "/" + source.id;
-		var streamDefinition = "riox-http --port=" + port + " --path=" + path + " | " +
-			"kafka --topic=" + topicName + " --brokerList=" + cfg.kafka + ":9092";
-		springxd.createStream(xdStreamId, streamDefinition, function (stream) {
 		var streamDefinition = "riox-http --port=" + port + " --path=" + path +
 			" | " + "kafka --topic=" + topicName +
 			" --brokerList=" + config.kafka.hostname + ":" + config.kafka.port;
@@ -185,41 +175,17 @@ var applyByStreamSource = exports.applyByStreamSource = function (source, callba
 		});
 	};
 
-	new Promise(findContainers).
-		then(function (conts) {
-			cfg.zookeeper = conts[0];
-			cfg.kafka = conts[1];
-			cfg.springxd = conts[2];
-			springxd.endpointURL = "http://" + cfg.springxd + ":9393";
-			if (!cfg.zookeeper) {
-				return errorCallback("Zookeeper instance not found.");
-			}
-			if (!cfg.kafka) {
-				return errorCallback("Kafka instance not found.");
-			}
-			return new Promise(findStream);
-		}).
-		then(function (stream) {
+	new Promise(findStream).
+		then(function(stream) {
 			return stream ? stream : new Promise(createStream);
 		}).
-		then(function (stream) {
+		then(function(stream) {
 			cfg.stream = stream;
-			callback({result: stream});
-		}, function (error) {
-			log.error("Cannot apply stream-source:", error);
+			callback({ result: stream });
+		}, function(error) {
+			console.log("Error:", error);
 			errorCallback(error);
 		});
-	new Promise(findStream).
-	then(function(stream) {
-		return stream ? stream : new Promise(createStream);
-	}).
-	then(function(stream) {
-		cfg.stream = stream;
-		callback({ result: stream });
-	}, function(error) {
-		console.log("Error:", error);
-		errorCallback(error);
-	});
 
 };
 

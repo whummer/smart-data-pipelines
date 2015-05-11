@@ -24,7 +24,7 @@ var config = {
 		debugStdout: true,
 		colorize: true,
 		requestLogging : {
-			logAllRequests : true,
+			logAllRequests : false,
 			logMeta : false,
 			logErrorRequests : true
 		}

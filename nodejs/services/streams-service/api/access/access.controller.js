@@ -4,6 +4,7 @@ var StreamAccess = require('./streamaccess.model');
 var passport = require('passport');
 var auth = require('riox-services-base/lib/auth/auth.service');
 var riox = require('riox-shared/lib/api/riox-api');
+var util = require('util');
 
 var log = global.log || require('winston');
 
@@ -99,12 +100,15 @@ exports.destroy = function(req, res, next) {
 exports.create = function(req, res, next) {
 	var user = auth.getCurrentUser(req);
 	var access = req.body;
+
+	log.info("Creating new access request: ", util.inspect(access));
 	var sourceId = access[SOURCE_ID];
 	if(!sourceId) {
 		res.json(422, {error: SOURCE_ID + " is required"});
 		return;
 	}
 	if(!access[REQUESTOR_ID]) {
+		log.error(REQUESTOR_ID + " is missing");
 		res.json(422, {error: REQUESTOR_ID + " is required"});
 		return;
 	}
