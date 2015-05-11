@@ -53,3 +53,6 @@ public
 # whu: TODO check why those are always generated
 /lib/
 /web-ui/lib/app/provider_wizard/*.css
+
+# Kubernetes stuff
+/kubernetes/

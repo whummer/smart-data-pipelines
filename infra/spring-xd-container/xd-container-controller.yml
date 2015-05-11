@@ -1,0 +1,22 @@
+kind: ReplicationController
+apiVersion: v1beta2
+id: xd-container
+labels:
+  name: xd-container
+desiredState:
+  replicas: 1
+  replicaSelector:
+    name: xd-container
+  podTemplate:
+    labels:
+      name: xd-container
+    desiredState:
+      manifest:
+        version: v1beta2
+        id: xd-container
+        containers:
+          - name: xd-container
+            image: riox/springxd-container:1.1.1
+            ports: 
+              - containerPort: 9000
+              - containerPort: 9001

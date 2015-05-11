@@ -32,27 +32,26 @@ var config = {
       }
     }
   },
-
-  // RabbitMQ connection options
-  rabbitmq : {
-    host : 'localhost',
-    port: 5672,
-    vhost: 'riox',
-    user: 'guest',
-    pass: 'guest'
-  },
-
-  springxd : {
-    url : 'http://localhost:9393'
-  },
-
+  
   kafka : {
-    url : 'http://localhost:9092'
+    hostname: "kafka.dev.riox.internal",
+    port: 9092
+  },
+
+  zookeeper: {
+    hostname: "zookeeper.dev.riox.internal",
+    port: 2181
+  }, 
+
+  xdadmin: {
+    hostname: "xd-admin.dev.riox.internal",
+    port: 9393
   }
 
 };
 
 /* load env. config */
 var envConfig = require("./" + process.env.NODE_ENV + ".js");
+
 /* merge configs */
 module.exports = merge(merge(commonConfig, config), envConfig);

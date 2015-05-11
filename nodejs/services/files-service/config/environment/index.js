@@ -41,15 +41,6 @@ var all = {
     }
   },
 
-  // RabbitMQ connection options
-  rabbitmq : {
-    host : 'localhost',
-    port: 5672,
-    vhost: 'riox',
-    user: 'guest',
-    pass: 'guest'
-  },
-
   springxd : {
     url : 'http://localhost:9393'
   },

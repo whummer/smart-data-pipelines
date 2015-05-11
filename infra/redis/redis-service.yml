@@ -1,0 +1,7 @@
+kind: Service
+apiVersion: v1beta2
+id: redis
+port: 6379
+containerPort: 6379
+selector:
+  name: redis

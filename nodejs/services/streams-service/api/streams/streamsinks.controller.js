@@ -2,12 +2,9 @@
 
 var StreamSink = require('./streamsink.model.js');
 var passport = require('passport');
-var jwt = require('jsonwebtoken');
 var mongoose = require('mongoose');
 var auth = require('riox-services-base/lib/auth/auth.service');
 var riox = require('riox-shared/lib/api/riox-api');
-var portfinder = require('portfinder');
-var containers = require('riox-services-base/lib/util/containers.util');
 var springxd = require('riox-services-base/lib/util/springxd.util');
 
 
@@ -89,10 +86,6 @@ var applyByStreamSink = exports.applyByStreamSink = function(sink, callback, err
 
 	var cfg = {};
 
-	var findContainers = function(resolve, reject) {
-		containers.getContainersIPs(["zookeeper", "kafka"], resolve);
-	};
-
 	var findStream = function(resolve, reject) {
 		springxd.findStream(xdStreamId, resolve, reject);
 	};
@@ -105,8 +98,10 @@ var applyByStreamSink = exports.applyByStreamSink = function(sink, callback, err
 //		var mimeType = "application/x-xd-tuple";
 //		var mimeType = "application/json";
 		var mimeType = "text/plain";
-		var streamDefinition = "kafka --zkconnect=" + cfg.zookeeper + ":2181 --topic=" + topicName + 
-				" --outputType=" + mimeType + " | " + "websocket --port=" + port + " --path=" + path;
+		var streamDefinition = "kafka --zkconnect=" +
+		    config.zookeeper.hostname + ":" + config.zookeeper.port +  
+				" --topic=" + topicName + " --outputType=" + mimeType + 
+				" | " + "websocket --port=" + port + " --path=" + path;
 
 		springxd.createStream(xdStreamId, streamDefinition, function(stream) {
 			console.log("consumer stream " + xdStreamId + " created!");
@@ -115,18 +110,7 @@ var applyByStreamSink = exports.applyByStreamSink = function(sink, callback, err
 
 	};
 
-	new Promise(findContainers).
-	then(function(conts) {
-		cfg.zookeeper = conts[0];
-		cfg.kafka = conts[1];
-		if(!cfg.zookeeper) {
-			return errorCallback("Zookeeper instance not found.");
-		}
-		if(!cfg.kafka) {
-			return errorCallback("Kafka instance not found.");
-		}
-		return new Promise(findStream);
-	}).
+	new Promise(findStream).
 	then(function(stream) {
 		return stream ? stream : new Promise(createStream);
 	}).

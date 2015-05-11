@@ -2,16 +2,12 @@
 
 var StreamSource = require('./streamsource.model.js');
 var passport = require('passport');
-var jwt = require('jsonwebtoken');
 var mongoose = require('mongoose');
 var auth = require('riox-services-base/lib/auth/auth.service');
 var riox = require('riox-shared/lib/api/riox-api');
-var rabbitmq = require('riox-services-base/lib/util/rabbitmq.util');
 var springxd = require('riox-services-base/lib/util/springxd.util');
-var kafka = require('riox-services-base/lib/util/kafka.util');
-var containers = require('riox-services-base/lib/util/containers.util');
-var portfinder = require('portfinder');
 var path = require('path');
+
 
 var validationError = function (res, err) {
 	return res.json(422, err);
@@ -83,40 +79,26 @@ var applyByStreamSource = exports.applyByStreamSource = function(source, callbac
 
 	var cfg = {};
 
-	var findContainers = function(resolve, reject) {
-		containers.getContainersIPs(["zookeeper", "kafka", "springxd-admin"], resolve, reject);
-	};
-
 	var findStream = function(resolve, reject) {
 		springxd.findStream(xdStreamId, resolve, reject);
 	};
 
 	var createStream = function(resolve, reject) {
 		// create the SpringXD stream
+
 		var port = 9000;
 		var path = "/" + source[ORGANIZATION_ID] + "/" + source.id;
-		var streamDefinition = "riox-http --port=" + port + " --path=" + path + " | " +
-			"kafka --topic=" + topicName + " --brokerList=" + cfg.kafka + ":9092";
+		var streamDefinition = "riox-http --port=" + port + " --path=" + path + 
+			" | " + "kafka --topic=" + topicName + 
+			" --brokerList=" + config.kafka.hostname + ":" + config.kafka.port;
+
 		springxd.createStream(xdStreamId, streamDefinition, function(stream) {
 			console.log("stream " + xdStreamId + " created!");
 			resolve(stream);
 		});
 	};
 
-	new Promise(findContainers).
-	then(function(conts) {
-		cfg.zookeeper = conts[0];
-		cfg.kafka = conts[1];
-		cfg.springxd = conts[2];
-		springxd.endpointURL = "http://" + cfg.springxd + ":9393";
-		if(!cfg.zookeeper) {
-			return errorCallback("Zookeeper instance not found.");
-		}
-		if(!cfg.kafka) {
-			return errorCallback("Kafka instance not found.");
-		}
-		return new Promise(findStream);
-	}).
+	new Promise(findStream).
 	then(function(stream) {
 		return stream ? stream : new Promise(createStream);
 	}).
