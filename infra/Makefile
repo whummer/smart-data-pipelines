@@ -29,7 +29,7 @@ push-images:
 	(cd spring-xd-zookeeper && make push)
 	
 deploy-k8s:
-	fig -f k8s.yml up -d
+	docker-compose -f k8s.yml up -d
 
 deploy-k8s-dns:	
 	(cd k8s-dns && make deploy)
