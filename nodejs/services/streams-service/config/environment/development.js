@@ -18,5 +18,7 @@ module.exports = {
     callbackURL:  appConfig.auth.facebook.redirect_uri
   },
 
-  seedDB: true
+  seedDB: true 
+
+
 };

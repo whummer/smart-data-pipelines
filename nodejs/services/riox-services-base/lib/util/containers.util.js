@@ -8,12 +8,11 @@ var x = exports;
 x.listContainers = function(callback, errorCallback) {
 	docker.listContainers(function (err, containers) {
 		if(err) {
-			console.log("Docker error: ", err);
 			return errorCallback("Error listing docker containers:", err);
 		}
 		callback(containers);
 	});
-};
+}
 
 x.findContainers = function(name, callback, errorCallback) {
 	x.listContainers(function(containers) {

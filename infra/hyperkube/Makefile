@@ -1,15 +1,14 @@
-# build the hyperkube image.
-
 VERSION=v0.16.2
-
-build:
-	curl -O https://storage.googleapis.com/kubernetes-release/release/${VERSION}/bin/linux/amd64/hyperkube
-	docker build -t riox/hyperkube:${VERSION} .
-
-push:
-	docker push riox/hyperkube:${VERSION}
+IMAGE=riox/hyperkube
 
 all: clean build push
+
+build:
+	wget -nc https://storage.googleapis.com/kubernetes-release/release/${VERSION}/bin/linux/amd64/hyperkube
+	docker build -t ${IMAGE}:${VERSION} .
+
+push:
+	docker push ${IMAGE}:${VERSION}
 
 clean:
 	rm hyperkube

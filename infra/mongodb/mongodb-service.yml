@@ -5,3 +5,7 @@ port: 27017
 containerPort: 27017
 selector:
   name: mongo
+
+# For the reverse proxy config
+#annotations:
+#  "kubernetesReverseproxy": "{\"hosts\": [{\"host\": \"mongo.dev.riox.internal\", \"port\": \"27017\"}]}"

@@ -4,7 +4,7 @@ id: xd-container
 labels:
   name: xd-container
 desiredState:
-  replicas: 2
+  replicas: 1
   replicaSelector:
     name: xd-container
   podTemplate:

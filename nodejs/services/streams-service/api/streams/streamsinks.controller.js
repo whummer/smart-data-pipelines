@@ -2,14 +2,13 @@
 
 var StreamSink = require('./streamsink.model.js');
 var passport = require('passport');
+var mongoose = require('mongoose');
+var auth = require('riox-services-base/lib/auth/auth.service');
 var riox = require('riox-shared/lib/api/riox-api');
-var containers = require('riox-services-base/lib/util/containers.util');
 var springxd = require('riox-services-base/lib/util/springxd.util');
 var errors = require('riox-services-base/lib/util/errors');
 
 var log = global.log || require('winston');
-
-
 
 function list(query, req, res, next) {
 	StreamSink.find(query, function (err, list) {
@@ -95,8 +94,8 @@ var applyByStreamSinkId = exports.applyByStreamSinkId = function (id, callback, 
 	});
 };
 
-var applyByStreamSink = exports.applyByStreamSink = function (sink, callback, errorCallback) {
-	if (!sink.id || !sink[ORGANIZATION_ID]) {
+var applyByStreamSink = exports.applyByStreamSink = function(sink, callback, errorCallback) {
+	if(!sink.id || !sink[ORGANIZATION_ID]) {
 		return errorCallback("Please provide valid id and organization id");
 	}
 
@@ -105,22 +104,22 @@ var applyByStreamSink = exports.applyByStreamSink = function (sink, callback, er
 
 	var cfg = {};
 
-	var findContainers = function (resolve, reject) {
-		containers.getContainersIPs(["zookeeper", "kafka"], resolve);
-	};
-
-	var findStream = function (resolve, reject) {
+	var findStream = function(resolve, reject) {
 		springxd.findStream(xdStreamId, resolve, reject);
 	};
 
-	var createStream = function (resolve, reject) {
+	var createStream = function(resolve, reject) {
 
 		// create the SpringXD stream
 		var port = 9001;
 		var path = "/" + sink[ORGANIZATION_ID] + "/" + sink.id;
+//		var mimeType = "application/x-xd-tuple";
+//		var mimeType = "application/json";
 		var mimeType = "text/plain";
-		var streamDefinition = "kafka --zkconnect=" + cfg.zookeeper + ":2181 --topic=" + topicName +
-			" --outputType=" + mimeType + " | " + "websocket --port=" + port + " --path=" + path;
+		var streamDefinition = "kafka --zkconnect=" +
+		    config.zookeeper.hostname + ":" + config.zookeeper.port +
+				" --topic=" + topicName + " --outputType=" + mimeType +
+				" | " + "websocket --port=" + port + " --path=" + path;
 
 		springxd.createStream(xdStreamId, streamDefinition, function (stream) {
 			log.info("consumer stream " + xdStreamId + " created!");
@@ -129,34 +128,13 @@ var applyByStreamSink = exports.applyByStreamSink = function (sink, callback, er
 
 	};
 
-	new Promise(findContainers).
-		then(function (conts) {
-			cfg.zookeeper = conts[0];
-			cfg.kafka = conts[1];
-			if (!cfg.zookeeper) {
-				return errorCallback("Zookeeper instance not found.");
-			}
-			if (!cfg.kafka) {
-				return errorCallback("Kafka instance not found.");
-			}
+	new Promise(findStream).
+	then(function(stream) {
+		return stream ? stream : new Promise(createStream);
+	}).
+	then(function(stream) {
+		cfg.stream = stream;
+		callback({ result: stream });
+	});
 
-			return new Promise(findStream);
-		}).
-		then(function (stream) {
-			return stream ? stream : new Promise(createStream);
-		}).
-		then(function (stream) {
-			cfg.stream = stream;
-			callback({result: stream});
-		});
-
-};
-
-
-//
-// helper functions
-//
-
-var validationError = function (err, next) {
-	return next(errors.UnprocessableEntity("You passed a broken object", err));
 };

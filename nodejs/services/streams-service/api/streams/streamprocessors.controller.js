@@ -4,7 +4,6 @@ var StreamProcessor = require('./streamprocessor.model.js');
 var passport = require('passport');
 var auth = require('riox-services-base/lib/auth/auth.service');
 var riox = require('riox-shared/lib/api/riox-api');
-var containers = require('riox-services-base/lib/util/containers.util');
 var springxd = require('riox-services-base/lib/util/springxd.util');
 var errors = require('riox-services-base/lib/util/errors');
 
@@ -50,27 +49,24 @@ exports.applyByStream = function (stream, callback, errorCallback) {
 
 	var xdStreamId = "processors-" + stream["id"];
 
-	var findContainers = function (resolve, reject) {
-		containers.getContainersIPs(["zookeeper", "kafka"], resolve);
-	};
-
-	var findStream = function (resolve, reject) {
+	var findStream = function(resolve, reject) {
 		springxd.findStream(xdStreamId, resolve, reject);
 	};
 
-	var createStream = function (resolve, reject) {
+	var createStream = function(resolve, reject) {
 
 		// create the SpringXD stream
 		var port = 9001;
 		var sourceTopic = "producer-" + stream[SOURCE_ID];
 		var sinkTopic = "consumer-" + stream[SINK_ID];
 		var mimeType = "text/plain";
-		var streamDefinition = "k1: kafka --zkconnect=" + cfg.zookeeper + ":2181 --topic=" + sourceTopic + " --outputType=" + mimeType +
-			" | transform | " +
+		var streamDefinition = "k1: kafka --zkconnect=" + config.zookeeper.hostname +
+				":" + config.zookeeper.port  + " --topic=" + sourceTopic + " --outputType=" + mimeType +
+				" | transform | " +
 
 				// TODO add analytics processors here
 
-			"k2: kafka --topic=" + sinkTopic + " --brokerList=" + cfg.kafka + ":9092";
+				"k2: kafka --topic=" + sinkTopic + " --brokerList=" + config.kafka.hostname + ":" + config.kafka.port;
 
 		springxd.createStream(xdStreamId, streamDefinition, function (stream) {
 			log.debug("processors stream " + xdStreamId + " created!");
@@ -79,25 +75,14 @@ exports.applyByStream = function (stream, callback, errorCallback) {
 
 	};
 
-	new Promise(findContainers).
-		then(function (conts) {
-			cfg.zookeeper = conts[0];
-			cfg.kafka = conts[1];
-			if (!cfg.zookeeper) {
-				return errorCallback("Zookeeper instance not found.");
-			}
-			if (!cfg.kafka) {
-				return errorCallback("Kafka instance not found.");
-			}
-			return new Promise(findStream);
-		}).
-		then(function (stream) {
-			return stream ? stream : new Promise(createStream);
-		}).
-		then(function (stream) {
-			cfg.stream = stream;
-			callback({result: stream});
-		});
+	new Promise(findStream).
+	then(function(stream) {
+		return stream ? stream : new Promise(createStream);
+	}).
+	then(function(stream) {
+		cfg.stream = stream;
+		callback({ result: stream });
+	});
 };
 
 exports.updateStreamProcessor = function (req, res) {

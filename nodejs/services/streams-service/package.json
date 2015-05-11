@@ -2,7 +2,6 @@
   "name": "riox-streams-service",
   "version": "0.0.1",
   "dependencies": {
-
     "request": "^2.55.0",
     "cors": "~2.5.3",
     "express": "~4.0.0",
@@ -16,8 +15,7 @@
     "winston": "^1.0.0",
 
     "riox-shared": "../../riox-shared",
-    "riox-services-base": "../riox-services-base",
-    "kafka-node": "0.2.26"
+    "riox-services-base": "../riox-services-base"
   },
   "devDependencies": {
   },

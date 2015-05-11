@@ -7,8 +7,7 @@ var log = global.log || require('winston');
 var x = exports;
 
 function getBaseURL() {
-	if (x.endpointURL) return x.endpointURL;
-	return config.springxd.url;
+	return "http://" + config.xdadmin.hostname + ":" + config.xdadmin.port;
 }
 function getStreamsURL() {
 	return getBaseURL() + "/streams/definitions";

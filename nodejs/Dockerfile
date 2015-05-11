@@ -1,4 +1,4 @@
-FROM riox/nodejs:0.12.2
+FROM node:0.12.2
 MAINTAINER riox
 
 ADD . /code
@@ -19,8 +19,7 @@ RUN gulp ui:bower
 RUN gulp deps:install:global
 
 # install some commonly used tools inside the container
-RUN apt-get update -y
-RUN apt-get install -y --force-yes vim nano less
+RUN apt-get update -y && apt-get install -y --force-yes vim nano less
 
 # clean up
 RUN rm -rf /code

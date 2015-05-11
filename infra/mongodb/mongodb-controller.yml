@@ -22,4 +22,4 @@ desiredState:
             command: [
                 "mongod",
                 "--smallfiles"
-            ]            
+            ]

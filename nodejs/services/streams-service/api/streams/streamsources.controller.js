@@ -64,6 +64,9 @@ function list(query, req, res, next) {
 	});
 }
 
+///
+/// METHODS FOR  '/streams/sources'
+///
 
 exports.indexStreamSource = function (req, res, next) {
 	return list({}, req, res, next);
@@ -159,17 +162,24 @@ var applyByStreamSource = exports.applyByStreamSource = function (source, callba
 	};
 
 	var findStream = function (resolve, reject) {
+	var findStream = function(resolve, reject) {
 		springxd.findStream(xdStreamId, resolve, reject);
 	};
 
 	var createStream = function (resolve, reject) {
 		// create the SpringXD stream
 		log.info("About to create stream:");
+
 		var port = 9000;
 		var path = "/" + source[ORGANIZATION_ID] + "/" + source.id;
 		var streamDefinition = "riox-http --port=" + port + " --path=" + path + " | " +
 			"kafka --topic=" + topicName + " --brokerList=" + cfg.kafka + ":9092";
 		springxd.createStream(xdStreamId, streamDefinition, function (stream) {
+		var streamDefinition = "riox-http --port=" + port + " --path=" + path +
+			" | " + "kafka --topic=" + topicName +
+			" --brokerList=" + config.kafka.hostname + ":" + config.kafka.port;
+
+		springxd.createStream(xdStreamId, streamDefinition, function(stream) {
 			console.log("stream " + xdStreamId + " created!");
 			resolve(stream);
 		});
@@ -199,6 +209,17 @@ var applyByStreamSource = exports.applyByStreamSource = function (source, callba
 			log.error("Cannot apply stream-source:", error);
 			errorCallback(error);
 		});
+	new Promise(findStream).
+	then(function(stream) {
+		return stream ? stream : new Promise(createStream);
+	}).
+	then(function(stream) {
+		cfg.stream = stream;
+		callback({ result: stream });
+	}, function(error) {
+		console.log("Error:", error);
+		errorCallback(error);
+	});
 
 };
 

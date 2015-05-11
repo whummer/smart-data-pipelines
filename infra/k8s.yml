@@ -17,3 +17,6 @@ proxy:
   net: "host"
   privileged: true
   command: /hyperkube proxy --master=http://127.0.0.1:8080 --v=2
+
+# reserve proxy
+#docker run --net=host -d -e CONFD_ETCD_NODE=127.0.0.1:4001 -t -p 80:80 darkgaro/kubernetes-reverseproxy

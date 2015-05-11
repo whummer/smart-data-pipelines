@@ -7,7 +7,6 @@ var test = require('../util/testutil');
 var starters = require('../util/service.starters');
 var riox = require('riox-shared/lib/api/riox-api');
 var springxd = require('riox-services-base/lib/util/springxd.util');
-var containers = require('riox-services-base/lib/util/containers.util');
 var promise = require('promise');
 var WebSocket = require('ws');
 
@@ -75,10 +74,6 @@ describe('streams.flow', function() {
 			riox.stream.apply(req, wrap(resolve), reject);
 		};
 
-		var findSpringXDContainer = function(resolve, reject) {
-			containers.getContainersIPs(["springxd-admin"], resolve, reject);
-		};
-
 		var findDeployedModules = function(resolve, reject) {
 			var names = [];
 			names.push("producer-" + objs.source.id + ".source.riox-http");
@@ -129,34 +124,31 @@ describe('streams.flow', function() {
 
 		new Promise(addSource).
 		then(function(source) {
-//			console.log("added source", source);
+			// console.log("added source", source);
 			objs.source = source;
 			objs.stream[SOURCE_ID] = source.id;
 			return new Promise(addSink);
 		}).
 		then(function(sink) {
+			// console.log("added sink", sink);
 			objs.sink = sink;
 			objs.stream[SINK_ID] = sink.id;
 			return new Promise(addProcessor);
 		}).
 		then(function(processor1) {
+			// console.log("added processor", processor1);
 			objs.processor1 = processor1;
 			objs.stream[PROCESSORS] = [processor1.id];
 			return new Promise(addStream);
 		}).
 		then(function(stream) {
-//			console.log("got stream", stream.id);
+			// console.log("got stream", stream.id);
 			objs.stream = stream;
 			return new Promise(applyConfig);
 		}).
-		then(function(config) {
-			console.log("configured/started stream", objs.stream);
-			return new Promise(findSpringXDContainer);
-		}).
 		then(function(conts) {
-			console.log("spring", conts);
-			springxd.endpointURL = "http://" + conts[0] + ":9393";
-//			console.log("configured/started stream", objs.stream.id);
+			// console.log("spring", conts);
+			console.log("configured/started stream", objs.stream.id);
 			return new Promise(findDeployedModules);
 		}).
 		then(function(modules) {
@@ -164,11 +156,11 @@ describe('streams.flow', function() {
 				source: modules[0].attributes.ip,
 				sink: modules[1].attributes.ip
 			};
-//			console.log("deployed modules", modules);
+			// console.log("deployed modules", modules);
 			return new Promise(registerWebsocket);
 		}).
 		then(function(websocket) {
-//			console.log("configured websocket");
+			console.log("configured websocket");
 			return new Promise(sendMessages);
 		}).
 		then(function(messages) {

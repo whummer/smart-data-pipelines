@@ -15,7 +15,6 @@ echo "SPRING_REDIS_HOST: ${SPRING_REDIS_HOST}"
 export SPRING_REDIS_PORT=$REDIS_PORT_6379_TCP_PORT
 echo "SPRING_REDIS_PORT: ${SPRING_REDIS_PORT}"
 
-
 # determine all KAFKA hosts and ports from the docker injected env vars
 hosts=`env | grep KAFKA_PORT_.*_TCP_ADDR`
 for i in $hosts; do
