@@ -9,10 +9,10 @@ var app = {};
 var services = {};
 
 var attemptLogin = function(email, pass, callback) {
-	superagent.post(services.users.url + "/auth/local").send(
+	var url = services.users.url + "/auth/local";
+	superagent.post(url).send(
 			{email: email, password: pass}
 		).
-		//set('Accept', 'application/json').
 		end(
 		function(err, res) {
 			if(err && err.status == 401) {

@@ -2,7 +2,6 @@
   "name": "riox-files-service",
   "version": "0.0.1",
   "dependencies": {
-    "amqp": "^0.2.4",
     "request": "^2.55.0",
     "cors": "~2.5.3",
     "express": "~4.0.0",
@@ -14,11 +13,13 @@
     "node-rest-client": "^1.5.0",
     "node-uuid": "^1.4.3",
     "multer": "0.1.8",
+    "winston": "^1.0.0",
 
     "riox-shared": "../../riox-shared",
     "riox-services-base": "../riox-services-base"
   },
   "devDependencies": {
+    "mockgoose": "2.0.1"
   },
   "engines": {
     "node": ">=0.10.0"

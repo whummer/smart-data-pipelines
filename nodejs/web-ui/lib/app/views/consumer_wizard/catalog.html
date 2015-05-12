@@ -1,17 +1,17 @@
 <fieldset>
-    <h2>Catalog of Data Streams</h2>
+    <h2>Catalog of Data Sources</h2>
 
     <div class="row">
         <div class="col-lg-6">
             <div class="form-group">
                 <label>Keywords</label>
-                <input id="streamName" ng-model="formData.streamName" name="streamName" class="form-control" />
+                <input id="sourceName" ng-model="formData.sourceName" name="sourceName" class="form-control" />
             </div>
         </div>
         <div class="col-lg-6">
             <div class="form-group">
                 <label>Producer</label>
-                <input id="streamProducer" class="form-control"
+                <input id="sourceProducer" class="form-control"
 						data-ng-model="formData.producer" ui-autocomplete="producersAutocomp"/>
             </div>
         </div>
@@ -25,33 +25,32 @@
     </div>
     <div class="results">
     	
-    	<div ng-repeat="thing in streams" ng-init="thingIndex = $index" class="animated fadeIn">
-			<div class="col-sm-12 col-md-6 col-lg-4" style="padding: 15px"
-					 ng-if="streams[thingIndex + columnIndex] != undefined">
-				<div class="thumbnail-riots animated" style="padding: 13px;"
-						 ng-class="{thumbnailhalo: hover || formData.selectedStream == thing}"
+    	<div ng-repeat="thing in sources" ng-init="thingIndex = $index" class="animated fadeIn">
+			<div class="col-sm-12 col-md-6 col-lg-4" style="padding: 15px" ng-alias="source = sources[thingIndex + columnIndex]">
+				<div class="thumbnail-riox animated" style="padding: 13px;"
+						 ng-class="{thumbnailhalo: hover || formData.selectedSource == thing}"
 						 ng-mouseenter="hover = true"
 						 ng-mouseleave="hover = false"
-						 ng-click="formData.selectedStream = thing"
-						 ng-dblclick="editItem(streams[thingIndex + columnIndex].id)">
+						 ng-click="formData.selectedSource = thing"
+						 ng-dblclick="selectItem(source.id)">
 
 					<!-- tags -->
 					<div class="pull-right"
 							 style="margin-bottom: 10px; margin-top: 10px;">
 									<span style="cursor: pointer; margin-right: 5px"
-												ng-repeat="tag in streams[thingIndex + columnIndex].tags"
+												ng-repeat="tag in stream.tags"
 												class="label label-info label-as-badge"
 												ng-click="selectTag(tag)"> {{tag}} </span>
 					</div>
 
-					<div class="clearfix" ng-show="streams[thingIndex + columnIndex].tags.length"></div>
+					<div class="clearfix" ng-show="stream.tags.length"></div>
 
 					<!-- organization image -->
 					<div class="logo">
-						<img ng-show="streams[thingIndex + columnIndex].organizationImg"
-								ng-src="{{streams[thingIndex + columnIndex].organizationImg}}"
+						<img ng-show="source.organizationImg"
+								ng-src="{{source.organizationImg}}"
 								class="img-responsive" style="margin: auto; max-height: 100px"/></slide>
-						<div ng-hide="streams[thingIndex + columnIndex].organizationImg"
+						<div ng-hide="source.organizationImg"
 								class="text-center">
 							<img ng-src="app/components/img/no_image_available.png"/>
 						</div>
@@ -59,37 +58,24 @@
 
 					<!-- content -->
 					<div class="caption">
-						<h4>{{streams[thingIndex + columnIndex].name}}</h4>
+						<h4>{{source.name}}</h4>
 						<hr/>
-						<b>Publisher:</b> {{streams[thingIndex + columnIndex].organization.name}}
+						<b>Publisher:</b> {{source.organization.name}}
 						<hr/>
-						{{trim(streams[thingIndex + columnIndex].description, 200)}}
+						{{trim(source.description, 200)}}
 					</div>
 					
-					<div class="price" ng-init="thePrice = streams[thingIndex + columnIndex].pricing">
-						<div ng-show="thePrice.billingUnit == 'event' || thePrice.billingUnit == 'day'" style="margin: auto;">
-						{{thePrice.unitPrice}} €
-						<span style="font-weight: normal;">
-							<span ng-show="thePrice.billingUnit == 'event'">per data point</span>
-							<span ng-show="thePrice.billingUnit == 'day'">per day</span>
-						</span>
-						</div>
-						<div ng-show="thePrice.billingUnit == 'free'" style="line-height: 40px;">
-						free of charge
-						</div>
-						<div ng-show="thePrice.billingUnit == 'on_request'" style="line-height: 40px;">
-						request price
-						</div>
+					<div class="price">
+						{{format.pricing(source.pricing)}}
 					</div>
 				</div>
 			</div>
 		</div>
 		
 		<div class="clearfix"></div>
-		<div class="selection" ng-show="formData.selectedStream">
-			Selected Stream: {{formData.selectedStream.name}} ({{formData.selectedStream.organization.name}})
-			<a ui-sref="consumer.wizard.request" ng-click="loadAccessStatus()" 
-				class="btn btn-primary" style="float: right">Next</a>
+		<div class="selection" ng-show="formData.selectedSource">
+			Selected Data Source: {{formData.selectedSource.name}} ({{formData.selectedSource.organization.name}})
+			<a ng-click="loadAccessStatus(); nextStep()" class="btn btn-primary" style="float: right">Next</a>
 		</div>
 		
     </div>

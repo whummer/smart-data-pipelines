@@ -32,6 +32,8 @@ angular.module('rioxApp')
     };
 
     $scope.loginOauth = function(provider) {
-      $window.location.href = '/auth/' + provider;
+    	var url = appConfig.services.users.url + "/auth/" + provider;
+    	console.log(url);
+    	$window.location.href = url;
     };
   });

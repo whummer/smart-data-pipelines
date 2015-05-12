@@ -1,21 +1,30 @@
 'use strict';
 
-angular.module('rioxApp').controller('StreamsCtrl', function ($scope, Auth, $stateParams) {
+angular.module('rioxApp').controller('StreamsCtrl', function ($scope, Auth, $stateParams, $q) {
 
-	$scope.prepareStreams = function(list) {
+	$scope.prepareStreamSources = function(list) {
+		var promise = $q.when(1);
 		angular.forEach(list, function(el) {
-			$scope.prepareStream(el);
+			promise = promise.then(function() {
+				return $q(function(resolve, reject) {
+					$scope.prepareStreamSource(el, resolve);
+				});
+			});
 		});
+		return promise;
 	};
 
-	$scope.prepareStream = function(el) {
+	$scope.prepareStreamSource = function(el, callback) {
 		if(el[ORGANIZATION_ID]) {
 			riox.organization(el[ORGANIZATION_ID], function(org) {
 				if(org[IMAGE_DATA] && org[IMAGE_DATA][0]) {
 					el.organizationImg = org[IMAGE_DATA][0].href;
 				}
 				el.organization = org;
+				if(callback) callback();
 			});
+		} else {
+			if(callback) callback();
 		}
 	}
 

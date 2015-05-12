@@ -2,6 +2,7 @@
 
 var request = require('request');
 var fs = require('fs');
+var log = global.log || require('winston');
 
 var x = exports;
 
@@ -24,17 +25,17 @@ function getContainersURL() {
 	return getBaseURL() + "/runtime/containers";
 }
 
-x.waitForStreamStatus = function(streamName, callback, errorCallback, retries) {
-	if(typeof retries == "undefined") {
+x.waitForStreamStatus = function (streamName, callback, errorCallback, retries) {
+	if (typeof retries == "undefined") {
 		retries = 5;
 	}
-	if(retries < 0) {
-		if(errorCallback) errorCallback("Failed to wait for stream status (timeout).");
+	if (retries < 0) {
+		if (errorCallback) errorCallback("Failed to wait for stream status (timeout).");
 		return;
 	}
-	setTimeout(function() {
-		x.findStream(streamName, function(stream) {
-			if(stream && stream.status == "deploying") {
+	setTimeout(function () {
+		x.findStream(streamName, function (stream) {
+			if (stream && stream.status == "deploying") {
 				x.waitForStreamStatus(streamName, callback, errorCallback, retries - 1);
 			} else {
 				callback(stream);
@@ -49,13 +50,13 @@ x.createStream = function (streamName, streamDefinition, callback, errorCallback
 	request.post(url, {form: {name: streamName, definition: streamDefinition}},
 		function (error, response, body) {
 			if (error) {
-				if(errorCallback) errorCallback();
+				if (errorCallback) errorCallback();
 				return;
 			}
-			x.waitForStreamStatus(streamName, function(stream) {
-				if(stream.status == "deployed") {
+			x.waitForStreamStatus(streamName, function (stream) {
+				if (stream.status == "deployed") {
 					callback(stream);
-				} else if(stream.status == "failed") {
+				} else if (stream.status == "failed") {
 					console.log("unable to create stream (deploy failed). re-deploying!");
 					x.redeployStream(streamName, callback, errorCallback);
 				}
@@ -67,12 +68,12 @@ x.createStream = function (streamName, streamDefinition, callback, errorCallback
 x.undeployStream = function (streamName, callback, errorCallback) {
 	var url = getStreamDeploymentsURL() + "/" + streamName;
 	request.del(url, function (error, response, body) {
-		if(error) {
-			if(errorCallback) errorCallback();
+		if (error) {
+			if (errorCallback) errorCallback();
 			return;
 		}
 		var waitSec = 3000;
-		setTimeout(function() {
+		setTimeout(function () {
 			callback(body);
 		}, waitSec);
 	});
@@ -80,8 +81,8 @@ x.undeployStream = function (streamName, callback, errorCallback) {
 x.deployStream = function (streamName, callback, errorCallback) {
 	var url = getStreamDeploymentsURL() + "/" + streamName;
 	request.post(url, function (error, response, body) {
-		if(error) {
-			if(errorCallback) errorCallback();
+		if (error) {
+			if (errorCallback) errorCallback();
 			return;
 		}
 		x.waitForStreamStatus(streamName, callback, errorCallback);
@@ -89,7 +90,7 @@ x.deployStream = function (streamName, callback, errorCallback) {
 };
 
 x.redeployStream = function (streamName, callback, errorCallback) {
-	x.undeployStream(streamName, function() {
+	x.undeployStream(streamName, function () {
 		x.deployStream(streamName, callback, errorCallback);
 	}, errorCallback);
 };
@@ -99,15 +100,15 @@ x.listStreams = function (streamName, callback, errorCallback) {
 	request.get(url + "?size=10000",
 		function (error, response) {
 			if (error) {
-				if(errorCallback) errorCallback(error);
+				if (errorCallback) errorCallback(error);
 				return;
 			}
 			var body = response.toJSON().body;
-			if(typeof body == "string") {
+			if (typeof body == "string") {
 				body = JSON.parse(body);
 			}
 			var list = [];
-			if(body._embedded && body._embedded.streamDefinitionResourceList) {
+			if (body._embedded && body._embedded.streamDefinitionResourceList) {
 				list = body._embedded.streamDefinitionResourceList;
 			}
 			callback(list);
@@ -131,20 +132,20 @@ x.findStream = function(xdStreamId, callback, errorCallback) {
 	}, errorCallback);
 };
 
-x.listModules = function(callback, errorCallback) {
+x.listModules = function (callback, errorCallback) {
 	var url = getModulesURL();
 	request.get(url + "?size=10000",
 		function (error, response) {
 			if (error) {
-				if(errorCallback) errorCallback(error);
+				if (errorCallback) errorCallback(error);
 				return;
 			}
 			var body = response.toJSON().body;
-			if(typeof body == "string") {
+			if (typeof body == "string") {
 				body = JSON.parse(body);
 			}
 			var list = [];
-			if(body._embedded && body._embedded.moduleDefinitionResourceList) {
+			if (body._embedded && body._embedded.moduleDefinitionResourceList) {
 				list = body._embedded.moduleDefinitionResourceList;
 			}
 			callback(list);
@@ -152,24 +153,24 @@ x.listModules = function(callback, errorCallback) {
 	);
 };
 
-x.findModule = function(type, name, callback, errorCallback) {
-	x.listModules(function(list) {
-		list.forEach(function(mod) {
-			if(mod.type == type && mod.name == name)
+x.findModule = function (type, name, callback, errorCallback) {
+	x.listModules(function (list) {
+		list.forEach(function (mod) {
+			if (mod.type == type && mod.name == name)
 				return callback(mod);
 		});
 		callback(null);
 	}, errorCallback);
 };
 
-x.findDeployedModules = function(names, callback, errorCallback) {
-	x.listDeployedModules(function(mods) {
+x.findDeployedModules = function (names, callback, errorCallback) {
+	x.listDeployedModules(function (mods) {
 		var result = [];
-		mods.forEach(function(mod) {
-			names.forEach(function(name, idx) {
-				if(mod.moduleId && mod.moduleId.match(name)) {
+		mods.forEach(function (mod) {
+			names.forEach(function (name, idx) {
+				if (mod.moduleId && mod.moduleId.match(name)) {
 					result[idx] = mod;
-				} else if(!result[idx]) {
+				} else if (!result[idx]) {
 					result[idx] = null;
 				}
 			});
@@ -178,20 +179,20 @@ x.findDeployedModules = function(names, callback, errorCallback) {
 	}, errorCallback);
 };
 
-x.listDeployedModules = function(callback, errorCallback) {
+x.listDeployedModules = function (callback, errorCallback) {
 	var url = getRuntimeModulesURL();
 	request.get(url + "?size=10000",
 		function (error, response) {
 			if (error) {
-				if(errorCallback) errorCallback(error);
+				if (errorCallback) errorCallback(error);
 				return;
 			}
 			var body = response.toJSON().body;
-			if(typeof body == "string") {
+			if (typeof body == "string") {
 				body = JSON.parse(body);
 			}
 			var list = [];
-			if(body._embedded && body._embedded.moduleMetadataResourceList) {
+			if (body._embedded && body._embedded.moduleMetadataResourceList) {
 				list = body._embedded.moduleMetadataResourceList;
 			}
 			callback(list);
@@ -199,20 +200,20 @@ x.listDeployedModules = function(callback, errorCallback) {
 	);
 };
 
-x.listContainers = function(callback, errorCallback) {
+x.listContainers = function (callback, errorCallback) {
 	var url = getContainersURL();
 	request.get(url + "?size=10000",
 		function (error, response) {
 			if (error) {
-				if(errorCallback) errorCallback(error);
+				if (errorCallback) errorCallback(error);
 				return;
 			}
 			var body = response.toJSON().body;
-			if(typeof body == "string") {
+			if (typeof body == "string") {
 				body = JSON.parse(body);
 			}
 			var list = [];
-			if(body._embedded && body._embedded.detailedContainerResourceList) {
+			if (body._embedded && body._embedded.detailedContainerResourceList) {
 				list = body._embedded.detailedContainerResourceList;
 			}
 			callback(list);
@@ -220,11 +221,11 @@ x.listContainers = function(callback, errorCallback) {
 	);
 };
 
-x.findContainer = function(containerId, callback, errorCallback) {
-	x.listContainers(function(list) {
+x.findContainer = function (containerId, callback, errorCallback) {
+	x.listContainers(function (list) {
 		var result = null;
-		list.forEach(function(cont) {
-			if(cont.containerId && cont.containerId.match(containerId)) {
+		list.forEach(function (cont) {
+			if (cont.containerId && cont.containerId.match(containerId)) {
 				result = cont;
 			}
 		});
@@ -232,14 +233,16 @@ x.findContainer = function(containerId, callback, errorCallback) {
 	}, errorCallback);
 };
 
-x.findContainersOfDeployedModules = function(names, callback, errorCallback) {
-	x.findDeployedModules(names, function(mods) {
+x.findContainersOfDeployedModules = function (names, callback, errorCallback) {
+	x.findDeployedModules(names, function (mods) {
 		var result = [];
-		var prom = new Promise(function(resolve){resolve()});
-		mods.forEach(function(mod, idx) {
-			prom = prom.then(function(resolve, reject) {
-				var func = function(resolve, reject) {
-					x.findContainer(mod.containerId, function(cont) {
+		var prom = new Promise(function (resolve) {
+			resolve()
+		});
+		mods.forEach(function (mod, idx) {
+			prom = prom.then(function (resolve, reject) {
+				var func = function (resolve, reject) {
+					x.findContainer(mod.containerId, function (cont) {
 						result[idx] = cont;
 						resolve(cont);
 					});
@@ -247,16 +250,16 @@ x.findContainersOfDeployedModules = function(names, callback, errorCallback) {
 				return new Promise(func);
 			});
 		})
-		prom.then(function() {
+		prom.then(function () {
 			callback(result);
 		});
 	}, errorCallback);
 };
 
-/* TODO: deprecated (modules are only uploaded to the admin container, 
+/* TODO: deprecated (modules are only uploaded to the admin container,
  * NOT the individual Spring XD "worker" containers). */
 
-x.uploadModule = function(type, name, file, callback, errorCallback) {
+x.uploadModule = function (type, name, file, callback, errorCallback) {
 	var url = getModulesURL() + "/" + type + "/" + name;
 	console.log("upload file " + file + " to URL " + url);
 	var options = {
@@ -266,7 +269,7 @@ x.uploadModule = function(type, name, file, callback, errorCallback) {
 		url: url,
 		callback: function (error, response) {
 			if (error) {
-				if(errorCallback) errorCallback(error);
+				if (errorCallback) errorCallback(error);
 				return;
 			}
 			console.log(response);
@@ -280,9 +283,9 @@ x.uploadModule = function(type, name, file, callback, errorCallback) {
 };
 
 x.findPorts = function (callback, errorCallback) {
-	x.listStreams(function(streams) {
+	x.listStreams(function (streams) {
 		var ports = [];
-		streams.forEach(function(str) {
+		streams.forEach(function (str) {
 			console.log("=--> ", str)
 			// TODO
 		});

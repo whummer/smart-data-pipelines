@@ -3,6 +3,8 @@
 var AnalyticsFunction = require('./analytics.model.js');
 var config = require('../../config/environment');
 
+var log = global.log || require('winston');
+
 var validationError = function(res, err) {
 	return res.json(422, err);
 };
@@ -19,23 +21,20 @@ function listFunctions(query, req, res) {
 	});
 }
 
-
 function createAnalyticsElement(query, req, res) {
-
 }
 
 exports.index = function(req, res) {
-	return list_functions({}, req, res);
+  var query = {};
+  if (req.query.name) {
+    query = {name: req.query.name};
+  }
+
+  log.info("Listing analytics function. Using query: ", query);
+	return listFunctions(query, req, res);
 };
 
-//exports.create = function(req, res, next) {
-//	var newObj = new Organization(req.body);
-//	newObj.save(function(err, obj) {
-//		if (err)
-//			return validationError(res, err);
-//		res.json(obj);
-//	});
-//};
+
 //
 //exports.update = function(req, res) {
 //	var obj = new Organization(req.body);

@@ -75,7 +75,7 @@ gulp.task('services:analytics:copy:prod', 'copies analytics-service sources to P
 gulp.task('services:analytics:serve', 'serve the analytics-service  using nodemon', function () {
 	process.env.PORT = dockerSettings.port;
 	return cp.spawn('nodemon',
-			['app.js'],
+			['-L', '-V', '-e', '*.js', 'app.js'],
 			{env: process.env, cwd: BASE_DIR, stdio: 'inherit'})
 
 	// todo cannot use gulp-nodemon atm since require() returns only a static instance

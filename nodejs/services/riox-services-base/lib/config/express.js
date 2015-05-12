@@ -29,7 +29,7 @@ module.exports = function(app, config) {
   function commonConfig(app) {
 	  app.use(express.static(path.join(config.root, 'static')));
 	  app.set('appPath', '/');
-	  app.use(morgan('dev'));
+	  //app.use(morgan('dev'));
   }
 
   if ('production' === env) {
@@ -38,7 +38,7 @@ module.exports = function(app, config) {
 
   if ('development' === env || 'test' === env) {
     commonConfig(app);
-    app.use(errorHandler()); // Error handler - has to be last
+    //app.use(errorHandler()); // Error handler - has to be last
   }
 
 };

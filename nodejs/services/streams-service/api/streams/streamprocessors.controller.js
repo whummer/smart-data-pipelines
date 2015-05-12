@@ -2,19 +2,23 @@
 
 var StreamProcessor = require('./streamprocessor.model.js');
 var passport = require('passport');
-var mongoose = require('mongoose');
 var auth = require('riox-services-base/lib/auth/auth.service');
 var riox = require('riox-shared/lib/api/riox-api');
 var springxd = require('riox-services-base/lib/util/springxd.util');
+var errors = require('riox-services-base/lib/util/errors');
 
-var validationError = function (res, err) {
-	return res.json(422, err);
-};
+var log = global.log;
 
+//
+// route implementations
+//
 function list(query, req, res) {
+	log.debug("Listing stream-processors");
 	StreamProcessor.find(query, function (err, list) {
-		if (err)
-			return res.send(500, err);
+		if (err) {
+			return next(errors.InternalError("Cannot list stream-processors", err));
+		}
+
 		res.json(200, list);
 	});
 }
@@ -24,17 +28,20 @@ exports.indexStreamProcessor = function (req, res) {
 };
 
 exports.createStreamProcessor = function (req, res, next) {
+	log.debug("Creating stream-processor: ", req.body);
 	var streamProcessor = new StreamProcessor(req.body);
 
 	streamProcessor.save(function (err, obj) {
-		if (err)
-			return validationError(res, err);
-		res.json(obj);
+		if (err) {
+			return validationError(err, next);
+		}
+
+		res.json(200, obj);
 	});
 };
 
-exports.applyByStream = function(stream, callback, errorCallback) {
-	if(!stream[SOURCE_ID] || !stream[SINK_ID]) {
+exports.applyByStream = function (stream, callback, errorCallback) {
+	if (!stream[SOURCE_ID] || !stream[SINK_ID]) {
 		return errorCallback("Please provide a valid stream with " + SOURCE_ID + " and " + SINK_ID);
 	}
 
@@ -53,16 +60,16 @@ exports.applyByStream = function(stream, callback, errorCallback) {
 		var sourceTopic = "producer-" + stream[SOURCE_ID];
 		var sinkTopic = "consumer-" + stream[SINK_ID];
 		var mimeType = "text/plain";
-		var streamDefinition = "k1: kafka --zkconnect=" + config.zookeeper.hostname + 
+		var streamDefinition = "k1: kafka --zkconnect=" + config.zookeeper.hostname +
 				":" + config.zookeeper.port  + " --topic=" + sourceTopic + " --outputType=" + mimeType +
 				" | transform | " +
 
-				// TODO add analytics processors here 
+				// TODO add analytics processors here
 
 				"k2: kafka --topic=" + sinkTopic + " --brokerList=" + config.kafka.hostname + ":" + config.kafka.port;
 
-		springxd.createStream(xdStreamId, streamDefinition, function(stream) {
-			console.log("processors stream " + xdStreamId + " created!");
+		springxd.createStream(xdStreamId, streamDefinition, function (stream) {
+			log.debug("processors stream " + xdStreamId + " created!");
 			resolve(stream);
 		});
 
@@ -79,31 +86,46 @@ exports.applyByStream = function(stream, callback, errorCallback) {
 };
 
 exports.updateStreamProcessor = function (req, res) {
-  var streamProcessor = new StreamProcessor(req.body);
-  streamProcessor.save(req.params.id, function (err, obj) {
-    if (err)
-      return validationError(res, err);
-    res.json(obj);
-  });
+	var streamProcessor = new StreamProcessor(req.body);
+	streamProcessor.save(req.params.id, function (err, obj) {
+		if (err) {
+			return validationError(err, next);
+		}
+
+		res.json(obj);
+	});
 };
 
 exports.showStreamProcessor = function (req, res, next) {
-  var id = req.params.id;
+	var id = req.params.id;
+	StreamProcessor.findById(id, function (err, obj) {
+		if (err) {
+			return next(errors.InternalError("Cannot find stream-processor with ID " + id, err));
+		}
 
-  StreamProcessor.findById(id, function (err, obj) {
-    if (err)
-      return next(err);
-    if (!obj)
-      return res.send(404);
-    //console.log("stream", obj);
-    res.json(obj);
-  });
+		if (!obj) {
+			return next(errors.NotFoundError("Cannot find stream-processor with ID " + id));
+		}
+
+		res.json(obj);
+	});
 };
 
 exports.destroyStreamProcessor = function (req, res) {
-  StreamProcessor.findByIdAndRemove(req.params.id, function (err, obj) {
-    if (err)
-      return res.send(500, err);
-    return res.send(204);
-  });
+	var streamId = req.params.id;
+	StreamProcessor.findByIdAndRemove(streamId, function (err) {
+		if (err) {
+			return next(errors.InternalError("Cannot remove stream with ID " + streamId, err));
+		}
+
+		return res.send(204);
+	});
+};
+
+
+//
+// helpers
+//
+var validationError = function (err, next) {
+	return next(errors.UnprocessableEntity("You passed a broken object", err));
 };

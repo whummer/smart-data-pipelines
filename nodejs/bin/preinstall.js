@@ -72,7 +72,7 @@ function install_node_modules(preinstallDirectory) {
 			return;
 		}
 		console.log('Finished node_modules install in dir: ', preinstallDirectory);
-		link_deps(preinstallDirectory);
+		link_lib_with_linklocal(preinstallDirectory);
 	});
 }
 
@@ -87,10 +87,15 @@ function link_local_modules(preinstallDirectory) {
 }
 
 function link_lib_with_linklocal(preinstallDirectory) {
-	cp.exec('linklocal -r', {env: process.env, cwd: preinstallDirectory}, function(error, stdout, stderr) {
+	cp.exec('linklocal unlink -r', {env: process.env, cwd: preinstallDirectory}, function(error, stdout, stderr) {		
 		if (error) {
-			console.log("Cannot linklocal modules in '" + preinstallDirectory + "': ", error);
+			console.log("Cannot linklocal unlink modules in '" + preinstallDirectory + "': ", error);
 		}
+		cp.exec('linklocal -r', {env: process.env, cwd: preinstallDirectory}, function(error, stdout, stderr) {
+			if (error) {
+				console.log("Cannot linklocal modules in '" + preinstallDirectory + "': ", error);
+			}
+		});
 	});
 }
 

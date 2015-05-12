@@ -55,10 +55,17 @@ describe('/streams', function() {
 		});
 	});
 
-	it('returns 401 if no authorization provided', function(done) {
+	it('returns 200/401 (for sources/sinks) if no authorization provided', function(done) {
 		superagent.get(app.streams.sources.url).end(function(err, res) {
-			assert.equal(res.status, status.UNAUTHORIZED);
-			done();
+			assert.equal(res.status, status.OK);
+			superagent.get(app.streams.sinks.url).end(function(err, res) {
+				assert.equal(res.status, status.UNAUTHORIZED);
+				test.user1.get(app.streams.sinks.url).end(function(err, res) {
+					assert.equal(res.status, status.OK);
+					done();
+				});
+			});
 		});
 	});
+
 });

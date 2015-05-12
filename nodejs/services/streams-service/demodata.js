@@ -1,5 +1,7 @@
-var DataStream = require('./api/streams/streamsource.model.js');
+var StreamSource = require('./api/streams/streamsource.model.js');
 var riox = require('riox-shared/lib/api/riox-api');
+var riox = require('riox-shared/lib/api/riox-api-admin')(riox);
+
 
 var LOREM = " Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum";
 var demoData = [
@@ -14,7 +16,7 @@ var demoData = [
 			unitPrice: 123.4
 		},
 		permit : {
-			type : "manual"
+			type : PERMIT_MODE_MANUAL
 		}
 	},
 	{
@@ -28,7 +30,7 @@ var demoData = [
 			unitPrice: 0.0012
 		},
 		permit : {
-			type : "manual"
+			type : PERMIT_MODE_MANUAL
 		}
 	},
 	{
@@ -40,7 +42,7 @@ var demoData = [
 			billingUnit: "free"
 		},
 		permit : {
-			type : "manual"
+			type : PERMIT_MODE_MANUAL
 		}
 	},
 	{
@@ -52,7 +54,7 @@ var demoData = [
 			billingUnit: "free"
 		},
 		permit : {
-			type : "auto"
+			type : PERMIT_MODE_AUTO
 		}
 	},
 	{
@@ -66,7 +68,7 @@ var demoData = [
 			unitPrice: 0.0025
 		},
 		permit : {
-			type : "auto"
+			type : PERMIT_MODE_AUTO
 		}
 	},
 	{
@@ -80,7 +82,7 @@ var demoData = [
 			unitPrice: 0.0018
 		},
 		permit : {
-			type : "auto"
+			type : PERMIT_MODE_AUTO
 		}
 	},
 	{
@@ -94,7 +96,7 @@ var demoData = [
 			unitPrice: 0.0012
 		},
 		permit : {
-			type : "auto"
+			type : PERMIT_MODE_AUTO
 		}
 	},
 	{
@@ -107,16 +109,16 @@ var demoData = [
 			unitPrice: 0.0018
 		},
 		permit : {
-			type : "auto"
+			type : PERMIT_MODE_AUTO
 		}
 	} ];
 
-function insertStreams() {
+function insertStreamSources() {
 	demoData.forEach(function(el) {
-		var org = orgs[el["organization-id"]];
+		var org = orgs[el[ORGANIZATION_ID]];
 		//console.log("org", org, org.id, org._id);
-		el["organization-id"] = orgs[el["organization-id"]]._id;
-		var newObj = new DataStream(el);
+		el[ORGANIZATION_ID] = orgs[el[ORGANIZATION_ID]]._id;
+		var newObj = new StreamSource(el);
 		newObj.save();
 	});
 }
@@ -127,7 +129,7 @@ var orgs = [];
 function findOrgs(callback) {
 	riox.signin(global.adminUser, function(tok) {
 		token = {authorization: "Bearer " + tok.token};
-		riox.organizations({
+		riox.organizations.all({
 			headers: token,
 			callback: function(list) {
 				list.forEach(function(o) {
@@ -142,13 +144,12 @@ function findOrgs(callback) {
 	});
 }
 
-
 function doInsert(callback) {
 	setTimeout(function() {
-		DataStream.find({}, function(err, list) {
+		StreamSource.find({}, function(err, list) {
 			if (!list || !list.length) {
 				findOrgs(function() {
-					insertStreams();
+					insertStreamSources();
 					if(callback) callback();
 				});
 			}

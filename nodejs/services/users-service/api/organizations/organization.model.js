@@ -1,36 +1,32 @@
 'use strict';
 
-var mongoose = require('mongoose');
+var mongoose = global.mongoose || require('mongoose');
 var Schema = mongoose.Schema;
-var crypto = require('crypto');
 
-var OrganizationSchema = new Schema({
+var template = {};
+template["_id"] = { type: String, default: genShortUUID};
 
-	"_id": { type: String, default: genShortUUID},
-	/**
-	 * Name.
-	 */
-	"name": String,
-	/**
-	 * Image(s).
-	 */
-	"image-data": [{
-		"_id": false,
-		"id": false,
-		/**
-		 * Image HREF.
-		 */
-		href: String
-	}],
-	/**
-	 * Creator.
-	 */
-	"creator-id": String,
-	/**
-	 * Creation Date.
-	 */
-	"creation-date": Date
-});
+/**
+ * Name.
+ */
+template[NAME] = String;
+/**
+ * Image(s).
+ */
+var imageEntry = {};
+template[IMAGE_DATA] = [imageEntry]
+imageEntry["_id"] = imageEntry[ID] = false;
+imageEntry[HREF]= String;
+/**
+ * Creator.
+ */
+template[CREATOR_ID] = String;
+/**
+ * Creation Date.
+ */
+template[CREATION_DATE] = Date;
+
+var OrganizationSchema = new Schema(template);
 
 OrganizationSchema.set('toJSON', { virtuals: true });
 OrganizationSchema.set('toObject', { virtuals: true });

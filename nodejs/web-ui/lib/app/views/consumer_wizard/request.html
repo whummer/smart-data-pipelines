@@ -4,63 +4,69 @@
     <div class="row">
         <div class="col-lg-8">
 			<div class="form-group">
-				<label class="col-lg-5 text-cell">Stream Name</label>
+				<label class="col-lg-5 text-cell">Data Source Name</label>
 				<div class="col-lg-7 text-cell">
-					{{formData.selectedStream.name}}
+					{{formData.selectedSource.name}}
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="col-lg-5 text-cell">Publisher</label>
 				<div class="col-lg-7 text-cell">
-					{{formData.selectedStream.organization.name}}
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-lg-5 text-cell">Access Status</label>
-				<div class="col-lg-7 text-cell">
-					<div ng-show="formData.selectedStream.permit.type == 'auto'" >
-					Access to this stream is automatically granted.
-					</div>
-					<div ng-show="formData.selectedStream.permit.type == 'manual'" >
-						<div ng-show="!formData.streamAccess">
-							loading ...
-						</div>
-						<div ng-show="formData.streamAccess && !formData.streamAccess.status">
-							Access permission required. <a ng-click="requestAccess()">Request access now</a>.
-						</div>
-						<div ng-show="formData.streamAccess.status == 'requested'">
-							Request sent. Awaiting access permission.
-						</div>
-						<div ng-show="formData.streamAccess.status == 'granted'">
-							Access to this stream has been granted.
-						</div>
-						<div ng-show="formData.streamAccess.status == 'denied'">
-							This stream is currently inaccessible.
-						</div>
-					</div>
+					{{formData.selectedSource.organization.name}}
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="col-lg-5 text-cell">Pricing</label>
+				<div class="col-lg-7 text-cell" data-ng-alias="thePrice = formData.selectedSource[PRICING]">
+					<div class="price text-cell">
+						{{format.pricing(formData.selectedSource[PRICING])}}
+					</div>
+				</div>
+			</div>
+			<div class="form-group" ng-show="formData.selectedSource[PERMIT_MODE][TYPE] == PERMIT_MODE_AUTO">
+				<label class="col-lg-5 text-cell">Access Status</label>
 				<div class="col-lg-7 text-cell">
-					<div class="price text-cell" ng-init="thePrice=formData.selectedStream.pricing">
-						<div ng-show="thePrice.billingUnit == 'event' || thePrice.billingUnit == 'day'" style="margin: auto;">
-						{{thePrice.unitPrice}} €
-						<span style="font-weight: normal;">
-							<span ng-show="thePrice.billingUnit == 'event'">per data point</span>
-							<span ng-show="thePrice.billingUnit == 'day'">per day</span>
-						</span>
+					Access to this source is automatically granted.
+				</div>
+			</div>
+
+			<div ng-show="formData.selectedSource[PERMIT_MODE][TYPE] == PERMIT_MODE_MANUAL" >
+				<div class="form-group">
+					<label class="col-lg-5 text-cell">Access Status</label>
+					<div class="col-lg-7 text-cell">
+						<div ng-show="!formData.sourceAccess">
+							loading ...
 						</div>
-						<div ng-show="thePrice.billingUnit == 'free'" style="line-height: 40px;">
-						free of charge
+						<div ng-show="formData.sourceAccess.status == riox.STATUS_REQUESTED">
+							Request sent. Awaiting access permission. 
+							(<a ng-click="revokeRequest()">Revoke</a>).
 						</div>
-						<div ng-show="thePrice.billingUnit == 'on_request'" style="line-height: 40px;">
-						request price
+						<div ng-show="formData.sourceAccess.status == riox.STATUS_PERMITTED">
+							Access to this data source has been granted.
 						</div>
+						<div ng-show="formData.sourceAccess.status == riox.STATUS_DENIED">
+							This data source is currently inaccessible.
+						</div>
+						<div ng-show="formData.sourceAccess && !formData.sourceAccess.status">
+							Access permission required.
+						</div>
+					</div>
+				</div>
+				<div class="form-group" ng-show="formData.sourceAccess && !formData.sourceAccess.status">
+					<label class="col-lg-5 text-cell">Your Organization</label>
+					<div class="col-lg-7 text-cell">
+						{{getCurrentOrganization().name}}
+					</div>
+				</div>
+				<hr/>
+				<div class="form-group" ng-show="formData.sourceAccess && !formData.sourceAccess.status">
+					<label class="col-lg-5 text-cell">Request Access</label>
+					<div class="col-lg-7 text-cell">
+						<a class="btn btn-primary" ng-click="requestAccess()">Request access now</a>.
 					</div>
 				</div>
 			</div>
         </div>
     </div>
-    <a ui-sref="consumer.wizard.billing" class="btn btn-primary">Next</a>
+    <a ng-click="nextStep()" class="btn btn-primary">Next</a>
 </fieldset>

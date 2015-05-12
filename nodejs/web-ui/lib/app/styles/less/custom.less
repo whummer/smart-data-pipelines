@@ -15,13 +15,18 @@
   color: #fff;
 }
 
+
+.wizard > .steps button,
 .wizard > .steps a,
 .wizard > .steps a:hover,
 .wizard > .steps a:active {
   display: block;
-  width: auto;
+  width: 95%;
+  text-align: left;
   margin: 0 0.5em 0.5em;
   padding: 8px;
+  cursor: pointer;
+  border: none;
   text-decoration: none;
 
   -webkit-border-radius: @wizard-border-radius;
@@ -29,6 +34,18 @@
   border-radius: @wizard-border-radius;
 }
 
+.wizard > .steps button[disabled] {
+	cursor: not-allowed;
+}
+
+.cursorNotAllowed, .wizard > .steps button.cursorNotAllowed {
+}
+
+.wizard > .steps .disabled {
+	display: none;
+}
+
+.wizard > .steps .current button,
 .wizard > .steps .current a,
 .wizard > .steps .current a:hover,
 .wizard > .steps .current a:active {
@@ -115,7 +132,7 @@
 
 /* thumbnail halos */
 
-.thumbnail-riots {
+.thumbnail-riox {
   background: #fdfdff;
   border-radius: 6px;
   border: 1px solid #aaaaaa;
@@ -134,12 +151,12 @@
   outline: 0 none;
 }
 
-.thumbnail-riots hr {
+.thumbnail-riox hr {
   margin-top: 3px;
   margin-bottom: 3px;
 }
 
-.thumbnail-riots .price {
+.thumbnail-riox .price {
   position: absolute;
   bottom: 10px;
   right: 10px;
@@ -152,20 +169,23 @@
   border: 1px solid #aaaaaa;
   height: 40px;
   width: 100px;
+  padding: 3px;
+  display: block;
+  vertical-align: middle;
 }
 
-.thumbnail-riots .caption {
+.thumbnail-riox .caption {
   margin-bottom: 40px;
 }
 
-.thumbnail-riots .publisher {
+.thumbnail-riox .publisher {
 }
 
-.thumbnail-riots .logo {
+.thumbnail-riox .logo {
   float: right;
 }
 
-.thumbnail-riots .logo img {
+.thumbnail-riox .logo img {
   max-width: 75px;
   max-height: 75px;
 }

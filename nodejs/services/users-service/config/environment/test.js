@@ -5,6 +5,6 @@
 module.exports = {
   // MongoDB connection options
   mongo: {
-    uri: 'mongodb://localhost/riox-test'
+    uri: 'mongodb://mongo.dev.riox.internal/riox-test'
   }
 };

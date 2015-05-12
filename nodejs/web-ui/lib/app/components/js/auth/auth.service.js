@@ -1,23 +1,62 @@
 'use strict';
 
 angular.module('rioxApp')
-  .factory('Auth', function Auth($location, $rootScope, $http, User, $cookieStore, $q) {
+  .factory('Auth', function Auth($location, $rootScope, $http, User, $cookieStore, Notifications, $q) {
+
+    var currentUser = {};
+    var currentOrganization = {};
 
     /**
      * Set auth headers for riox JS API.
      */
-    var configureRioxApiAuth = function(token) {
+    var configureRioxApiAuth = function(token, callback) {
     	/* configure riox API */
     	riox.auth({
-      	  RIOX_AUTH_NETWORK: "riots",
+      	  RIOX_AUTH_NETWORK: "riox",
       	  RIOX_AUTH_TOKEN: token
-        });
+        }, callback);
+    };
+
+    /**
+     * Load organizations of current user.
+     */
+    var loadOrganization = function(callback) {
+  	  if(!currentUser || (!currentUser.id && !currentUser._id)) return;
+  	  if(!currentUser.id) {
+  		  currentUser.id = currentUser._id;
+  	  }
+  	  currentOrganization = {};
+  	  riox.organizations(function(orgs) {
+  		  currentUser.organizations = orgs;
+  		  orgs.forEach(function(org) {
+  			 if(org[OWNER_ID] == currentUser.id) {
+  				 org.defaultOrganization = org;
+  			 }
+  		  });
+  		  if(!currentOrganization.id) {
+  			  currentOrganization = orgs[0];
+  		  }
+  		  $rootScope.$apply();
+  		  if(typeof callback == "function") callback();
+  	  }, callback);
     }
 
-    var currentUser = {};
     if($cookieStore.get('token')) {
-    	currentUser = User.get();
-    	configureRioxApiAuth($cookieStore.get('token'));
+		currentUser = User.get();
+        var deferred = $q.defer();
+        var oldPromise = currentUser.$promise;
+		currentUser.$promise = deferred.promise;
+		oldPromise.then(
+			function(user) {
+	    		return $q(function(resolve, reject) {
+	    			configureRioxApiAuth($cookieStore.get('token'), function(token) {
+	    				loadOrganization(function() {
+	            			deferred.resolve();
+	            		});
+	            	});
+	    		});
+			}
+		);
     }
 
     return {
@@ -43,10 +82,14 @@ angular.module('rioxApp')
         }).
         success(function(data) {
           $cookieStore.put('token', data.token);
-          currentUser = User.get();
           deferred.resolve(data);
-          configureRioxApiAuth(data.token);
-          return cb();
+          User.get(function(user) {
+        	  currentUser = user;
+        	  return configureRioxApiAuth(data.token, function() {
+        		  Notifications.loadNotifications();
+            	  loadOrganization(cb);
+              });
+          });
         }).
         error(function(err) {
           this.logout();
@@ -65,7 +108,8 @@ angular.module('rioxApp')
       logout: function() {
         $cookieStore.remove('token');
         currentUser = {};
-        configureRioxApiAuth("__invalid__");
+        riox.auth.reset();
+        loadOrganization();
       },
 
       /**
@@ -125,6 +169,17 @@ angular.module('rioxApp')
     	}
         return currentUser;
       },
+
+      /**
+       * Get currently selected organization the user operates under.
+       */
+      getCurrentOrganization: function() {
+      	return currentOrganization;
+      },
+      setCurrentOrganization: function(org) {
+    	return currentOrganization = org;
+      },
+      loadOrganization: loadOrganization,
 
       /**
        * Check if a user is logged in

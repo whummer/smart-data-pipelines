@@ -13,8 +13,9 @@ angular.module('rioxApp', [
 	'angular-growl',
 	'ngAnimate',
 	'hljs',
-		'ui.ace',
-	'ngFileUpload'
+	'ui.ace',
+	'ngFileUpload',
+	'ng-alias'
 ])
 		.config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider, growlProvider) {
 			$locationProvider.html5Mode(false);
@@ -48,13 +49,25 @@ angular.module('rioxApp', [
 			};
 		})
 
-		.run(function ($rootScope, $location, Auth) {
-			// Redirect to login if route requires auth and you're not logged in
-			$rootScope.$on('$stateChangeStart', function (event, next) {
-				Auth.isLoggedInAsync(function (loggedIn) {
-					if (next.authenticate && !loggedIn) {
-						$location.path('/login');
-					}
-				});
-			});
+		.run(function ($rootScope, $state, Auth) {
+
+		    $rootScope.$on('$stateChangeStart', function (event, toState, toParams) {
+
+	        	var authRequired = toState.authenticate || (toState.data && toState.data.authenticate);
+		        if($rootScope.stateChangeBypass || toState.name === 'index.login' || !authRequired) {
+		            $rootScope.stateChangeBypass = false;
+		            return;
+		        }
+
+		        event.preventDefault();
+		        Auth.isLoggedInAsync(function(user) {
+		            if (user) {
+		                $rootScope.stateChangeBypass = true;
+		                $state.go(toState, toParams);
+		            } else {
+		                $state.go('index.login');
+		            }
+		        });
+
+		    });
 		});

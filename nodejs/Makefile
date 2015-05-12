@@ -2,16 +2,25 @@ VERSION=latest
 IMAGE=riox/nodejs-base
 TEST_TIMEOUT= # set this to --no-timeouts in case the test times out.
 
-all: build push
+all: build-image push-image
 
-build:
-	docker build -t ${IMAGE}:${VERSION} . 
+install-prereq:
+	npm install -g gulp mocha nodemon	pm2
 
-push:
-	docker push ${IMAGE}:${VERSION}
+install:
+	export NODE_PATH=/usr/local/lib/node_modules/
+	gulp deps:install:global
+	npm install
+	gulp ui:bower
 
 clean:
-	rm -rf `find . -name node-modules`
+	gulp deps:clean:all
+	
+build-image:
+	docker build -t ${IMAGE}:${VERSION} . 
+
+push-image:
+	docker push ${IMAGE}:${VERSION}
 
 run-e2e-test:
 	# We have to provide the DNS flag with our internal K8S DNS server. This way we don't have to actually deploy the 
@@ -22,6 +31,4 @@ run-xd-shell:
 	# Spring XS shell. Connect with "admin config server http://xd-admin.dev.riox.internal:9393"
 	docker run --rm -it --dns=10.0.0.100 -v `pwd`:/code riox/springxd-shell:1.1.1
 
-
-
-.PHONY: build push all clean e2e-test xd-shell
+.PHONY: build push all clean e2e-test xd-shell install

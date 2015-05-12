@@ -39,6 +39,5 @@ module.exports = function(app) {
 
   if ('development' === env || 'test' === env) {
     commonConfig(app);
-    app.use(errorHandler()); // Error handler - has to be last
   }
 };

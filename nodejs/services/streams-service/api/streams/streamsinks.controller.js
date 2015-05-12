@@ -6,73 +6,91 @@ var mongoose = require('mongoose');
 var auth = require('riox-services-base/lib/auth/auth.service');
 var riox = require('riox-shared/lib/api/riox-api');
 var springxd = require('riox-services-base/lib/util/springxd.util');
+var errors = require('riox-services-base/lib/util/errors');
 
+var log = global.log || require('winston');
 
-var validationError = function (res, err) {
-	return res.json(422, err);
-};
-
-function list(query, req, res) {
+function list(query, req, res, next) {
 	StreamSink.find(query, function (err, list) {
-		if (err)
-			return res.send(500, err);
+		if (err) {
+			return next(errors.InternalError("Cannot list stream sinks", err));
+		}
+
 		res.json(200, list);
 	});
 }
 
-exports.indexStreamSink = function (req, res) {
-	return list({}, req, res);
+exports.indexStreamSink = function (req, res, next) {
+	return list({}, req, res, next);
 };
 
 exports.createStreamSink = function (req, res, next) {
+	log.debug('Creating stream-sink: ', req.body);
 	var streamSink = new StreamSink(req.body);
-
 	streamSink.save(function (err, obj) {
-		if (err)
-			return validationError(res, err);
+		if (err) {
+			return validationError(err, next);
+		}
+
 		res.json(obj);
 	});
 };
 
-exports.updateStreamSink = function (req, res) {
-  var streamSink = new StreamSink(req.body);
-  streamSink.save(req.params.id, function (err, obj) {
-    if (err)
-      return validationError(res, err);
-    res.json(obj);
-  });
+exports.updateStreamSink = function (req, res, next) {
+	var streamSink = new StreamSink(req.body);
+	streamSink.save(req.params.id, function (err, obj) {
+		if (err) {
+			return validationError(err, next);
+		}
+
+		res.json(obj);
+	});
 };
 
 exports.showStreamSink = function (req, res, next) {
-  var id = req.params.id;
+	var id = req.params.id;
 
-  StreamSink.findById(id, function (err, obj) {
-    if (err)
-      return next(err);
-    if (!obj)
-      return res.send(404);
-    //console.log("stream", obj);
-    res.json(obj);
-  });
-};
-
-exports.destroyStreamSink = function (req, res) {
-  StreamSink.findByIdAndRemove(req.params.id, function (err, obj) {
-    if (err)
-      return res.send(500, err);
-    return res.send(204);
-  });
-};
-
-var applyByStreamSinkId = exports.applyByStreamSinkId = function(id, callback, errorCallback) {
 	StreamSink.findById(id, function (err, obj) {
-		if (err)
-	    	return next(err);
-		if (!obj)
-			return res.send(404);
-		applyByStreamSink(obj, function(result) {
-			callback(result);
-		}, errorCallback);
+		if (err) {
+			return next(errors.InternalError("Cannot lookup stream sink", err));
+		}
+
+		if (!obj) {
+			return next(errors.NotFoundError("No such stream-sink: " + id))
+		}
+
+		res.json(obj);
+	});
+};
+
+exports.destroyStreamSink = function (req, res, next) {
+	StreamSink.findByIdAndRemove(req.params.id, function (err, obj) {
+		if (err) {
+			return next(errors.InternalError("Cannot destroy stream-sink", err));
+		}
+
+		return res.send(204);
+	});
+};
+
+var applyByStreamSinkId = exports.applyByStreamSinkId = function (id, callback, errorCallback) {
+	StreamSink.findById(id, function (err, obj) {
+		if (err) {
+			return next(errors.InternalError("Cannot apply stream-sink", err));
+		}
+
+		if (!obj) {
+			return next(errors.NotFoundError("Cannot find stream-sink with ID " + id));
+		}
+
+		applyByStreamSink(obj,
+
+			function (result) {
+				callback(result);
+			},
+
+			errorCallback
+		);
 	});
 };
 
@@ -99,12 +117,12 @@ var applyByStreamSink = exports.applyByStreamSink = function(sink, callback, err
 //		var mimeType = "application/json";
 		var mimeType = "text/plain";
 		var streamDefinition = "kafka --zkconnect=" +
-		    config.zookeeper.hostname + ":" + config.zookeeper.port +  
-				" --topic=" + topicName + " --outputType=" + mimeType + 
+		    config.zookeeper.hostname + ":" + config.zookeeper.port +
+				" --topic=" + topicName + " --outputType=" + mimeType +
 				" | " + "websocket --port=" + port + " --path=" + path;
 
-		springxd.createStream(xdStreamId, streamDefinition, function(stream) {
-			console.log("consumer stream " + xdStreamId + " created!");
+		springxd.createStream(xdStreamId, streamDefinition, function (stream) {
+			log.info("consumer stream " + xdStreamId + " created!");
 			resolve(stream);
 		});
 

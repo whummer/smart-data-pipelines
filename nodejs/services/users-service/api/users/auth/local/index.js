@@ -17,8 +17,4 @@ router.post('/', function(req, res, next) {
   })(req, res, next)
 });
 
-router.get('/', function(req, res, next) {
-	console.log("TODO verify"); // TODO
-});
-
 module.exports = router;

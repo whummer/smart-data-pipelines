@@ -12,6 +12,7 @@ router.get('/', /* auth.hasRole('admin'), */ controller.index);
 //router.get('/:id', auth.isAuthenticated(), controller.show);
 //router.delete('/:id', auth.hasRole('admin'), controller.destroy);
 //router.post('/', controller.createAnalyticsElement);
+//
 //router.put('/:id', controller.update);
 
 module.exports = router;

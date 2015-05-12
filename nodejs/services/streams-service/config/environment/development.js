@@ -10,7 +10,7 @@ global.adminUser = {email: "riox", password: "riox", role: "admin"};
 module.exports = {
   // MongoDB connection options
   mongo: {
-    uri: 'mongodb://localhost/riox-dev'
+    uri: 'mongodb://mongo.dev.riox.internal/riox-dev'
   },
 
   facebook: {

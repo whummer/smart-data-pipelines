@@ -6,6 +6,7 @@ var status = require('http-status');
 var test = require('../util/testutil');
 var starters = require('../util/service.starters');
 var riox = require('riox-shared/lib/api/riox-api');
+var util = require('util');
 
 var app = {};
 
@@ -32,6 +33,7 @@ describe('/stream/access', function() {
 		newSource[ORGANIZATION_ID] = test.user1.orgs.default.id;
 		newSource[CONNECTOR] = { "type": "http" };
 
+		//console.log("NEW SOURCE: ", util.inspect(newSource));
 		test.user1.post(app.streams.sources.url).send(newSource).end(function(err, res) {
 			var sourceId = res.body.id;
 			assert.ifError(err);
@@ -42,6 +44,8 @@ describe('/stream/access', function() {
 				assert.equal(0, res.body.length);
 				var accessRequest = {};
 				accessRequest[SOURCE_ID] = sourceId;
+				accessRequest[REQUESTOR_ID] = test.user2.orgs.default.id;
+
 				//console.log("accessRequest", accessRequest);
 				test.user2.
 				post(app.access.url).

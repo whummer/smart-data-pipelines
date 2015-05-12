@@ -12,12 +12,11 @@ var riox = require('riox-shared/lib/api/riox-api');
 var config = require("./config/environment");
 config.port = process.env.SERVICE_PORT || 8085;
 global.config = require("riox-services-base/lib/config/merge")(global.config, config);
-
 // require service starter
 var starter = require("riox-services-base/lib/service.starter");
 
 // Populate DB with sample data
-if(config.seedDB) { require("./demodata"); }
+if(config.seedDB) { require("./demodata")(); }
 
 // start server
 var routes = require("./routes");

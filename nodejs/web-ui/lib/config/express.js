@@ -18,7 +18,7 @@ var session = require('express-session');
 
 function setupDefaults(app) {
  app.use(express.static(config.root));
- app.set('appPath', '');
+ app.set('appPath', path.resolve("."));
 }
 
 module.exports = function(app) {
@@ -45,19 +45,19 @@ module.exports = function(app) {
   if ('production' === env) {
     app.use(favicon(path.join(config.root, 'public', 'favicon.ico')));
     setupDefaults(app);
-    app.use(morgan('dev'));
+    //app.use(morgan('dev'));
   }
 
   if ('development' === env || 'test' === env) {
     setupDefaults(app);
-    app.use(morgan('dev'));
-    app.use(errorHandler()); // Error handler - has to be last
+    //app.use(morgan('dev'));
+    //app.use(errorHandler()); // Error handler - has to be last
   }
 
   if ('development' === env ) {
     //app.use(require('connect-livereload')());
     app.use(express.static(path.join(config.root, 'lib')));
-    app.set('appPath', 'lib');
+    app.set('appPath', path.resolve(__dirname + "/../"));
   }
-    
+
 };

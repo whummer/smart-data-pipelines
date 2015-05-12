@@ -1,45 +1,67 @@
 'use strict';
 
-var mongoose = require('mongoose');
+var mongoose = global.mongoose || require('mongoose');
 var Schema = mongoose.Schema;
 
 
-var template = {
+var template = {}
+template["_id"] = { type: String, default: genShortUUID};
 
-	"_id": { type: String, default: genShortUUID},
-	"name": String,
-	"creator-id": String,
-	"creation-date": Date,
-	"organization-id": String,
-	"description": String,
-  "visible": Boolean,
 
-  "source-id" : String, // the id of the source element where the data is coming from
+/**
+ * Name.
+ */
+template[NAME] = String;
+/**
+ * Creation date.
+ */
+template[CREATION_DATE] = Date;
+/**
+ * ID of the creating user.
+ */
+template[CREATOR_ID] = String;
+/**
+ * Id of the owning organization.
+ */
+template[ORGANIZATION_ID] = String;
+/**
+ * Description of this processor.
+ */
+template[DESCRIPTION] = String;
+/**
+ * Visibility.
+ */
+template[VISIBLE] = Boolean;
+/**
+ * Source ID - the id of the source element where the data is coming from. // TODO needed here?
+ */
+template[SOURCE_ID] = String;
+/**
+ * Type of this processor (e.g., geo_fence, average_func, ...).
+ */
+template[TYPE] = String;
+/**
+ * Processor payload (input and output definitions).
+ */
+template[PAYLOAD] = {};
+/**
+ * Input payload values.
+ */
+var inputItem = {};
+template[PAYLOAD][INPUT] = [inputItem];
+inputItem["_id"] = inputItem[ID] = false;
+inputItem[KEY] = String;
+inputItem[VALUE] = String;
+/**
+ * Output payload values.
+ */
+var outputItem = {};
+template[PAYLOAD][OUTPUT] = [outputItem];
+outputItem["_id"] = outputItem[ID] = false;
+outputItem[KEY] = String;
+outputItem[VALUE] = String;
 
-  // Valid types: "analytics", ...
-  "type": String,
-
-  // TODO discuss this - it is kept generic because as of today we only really have analytics functions
-  // as processing elements.
-
-  "processor-id" : String,
-  "processor-payload": {
-      "input": [{
-        _id: false,
-        id: false,
-        key: String,
-        description: String,
-        "value-type": String
-      }],
-      "output": [{
-        _id: false,
-        id: false,
-        key: String,
-        description: String,
-        "value-type": String
-      }]
-  }
-};
+/* export schema */
 
 var StreamProcessor = new Schema(template);
 StreamProcessor.set('toJSON', { virtuals: true });

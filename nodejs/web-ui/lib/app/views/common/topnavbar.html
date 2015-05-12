@@ -6,7 +6,7 @@
 				style="height: 30px; margin-top: 8px; margin-left: 25px; margin-right: 25px" /></a>
 		</div>
 		<div class="navbar-collapse collapse" id="navbar">
-			<ul class="nav navbar-nav navbar-top-links" ng-show="isLoggedIn()">
+			<ul class="nav navbar-nav navbar-top-links" ng-show="__loggedIn = isLoggedIn()">
 				<li><a ui-sref="index.dashboard"> <i class="fa fa-dashboard"></i>
 					Dashboard
 				</a></li>
@@ -19,18 +19,19 @@
 						<li><a ui-sref="streams.consumed">Streams We Consume</a></li>
 					</ul>
 				</li>
-				<li class="dropdown"><a ui-sref="index.notifications"><i class="fa fa-bell"></i>
-					Notifications</a></li>
 			</ul>
 			<ul class="nav navbar-top-links navbar-right">
-				<li ng-hide="isLoggedIn()" ng-class="{active: isActive('/signup')}"><a
+				<li ng-show="__loggedIn" class="dropdown" ng-class="{active: isActive('/notifications')}">
+						<a ui-sref="index.notifications"><i class="fa fa-bell"></i> {{shared.notifications.unreadDisplay}}
+					</a></li>
+				<li ng-hide="__loggedIn" ng-class="{active: isActive('/signup')}"><a
 					ui-sref="index.signup">Sign up</a></li>
-				<li ng-hide="isLoggedIn()" ng-class="{active: isActive('/login')}"><a
+				<li ng-hide="__loggedIn" ng-class="{active: isActive('/login')}"><a
 					ui-sref="index.login">Login</a></li>
-				<li ng-show="isLoggedIn()" ng-class="{active: isActive('/settings')}"><a
-					ui-sref="index.settings">User: {{ getCurrentUser().name }} 
+				<li ng-show="__loggedIn" ng-class="{active: isActive('/settings')}"><a
+					ui-sref="index.settings">User: {{ getCurrentOrganization().name }} 
 						<span class="glyphicon glyphicon-cog" style="margin-left: 10px;"></span></a></li>
-				<li ng-show="isLoggedIn()" ng-class="{active: isActive('/logout')}"><a
+				<li ng-show="__loggedIn" ng-class="{active: isActive('/logout')}"><a
 					ng-click="logout()"> Logout <i class="fa fa-sign-out" style="margin-left: 10px;"></i></a></li>
 			</ul>
 		</div>

@@ -12,6 +12,7 @@
     "morgan": "~1.0.0",
     "node-rest-client": "^1.5.0",
     "node-uuid": "^1.4.3",
+    "winston": "^1.0.0",
 
     "riox-shared": "../../riox-shared",
     "riox-services-base": "../riox-services-base"

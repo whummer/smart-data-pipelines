@@ -574,7 +574,7 @@ table.table-mail tr td {
   color: #ffffff;
 }
 .translucent-black-widget-bg {
-  background-color: rgba(39, 39, 39, 0.5);
+  background-color: rgba(39, 39, 39, 0.75);
   color: white;
 }
 .dark-grey-widget-bg {
@@ -594,7 +594,7 @@ table.table-mail tr td {
   color: #ffffff;
 }
 .nav-top {
-  background-color: rgba(39, 39, 39, 0.5);
+  background-color: rgba(39, 39, 39, 0.75);
 }
 .yellow-bg {
   background-color: #f8ac59;
@@ -1413,18 +1413,29 @@ button.dim:active:before {
   width: 100%;
   color: #fff;
 }
+.wizard > .steps button,
 .wizard > .steps a,
 .wizard > .steps a:hover,
 .wizard > .steps a:active {
   display: block;
-  width: auto;
+  width: 95%;
+  text-align: left;
   margin: 0 0.5em 0.5em;
   padding: 8px;
+  cursor: pointer;
+  border: none;
   text-decoration: none;
   -webkit-border-radius: 0px;
   -moz-border-radius: 0px;
   border-radius: 0px;
 }
+.wizard > .steps button[disabled] {
+  cursor: not-allowed;
+}
+.wizard > .steps .disabled {
+  display: none;
+}
+.wizard > .steps .current button,
 .wizard > .steps .current a,
 .wizard > .steps .current a:hover,
 .wizard > .steps .current a:active {
@@ -1500,7 +1511,7 @@ button.dim:active:before {
   margin-left: 10px;
 }
 /* thumbnail halos */
-.thumbnail-riots {
+.thumbnail-riox {
   background: #fdfdff;
   border-radius: 6px;
   border: 1px solid #aaaaaa;
@@ -1517,11 +1528,11 @@ button.dim:active:before {
   box-shadow: rgba(74, 150, 173, 0.07) 0px 1px 1px 0px inset, rgba(74, 150, 173, 0.6) 0px 0px 7.99704838px 0px;
   outline: 0 none;
 }
-.thumbnail-riots hr {
+.thumbnail-riox hr {
   margin-top: 3px;
   margin-bottom: 3px;
 }
-.thumbnail-riots .price {
+.thumbnail-riox .price {
   position: absolute;
   bottom: 10px;
   right: 10px;
@@ -1534,14 +1545,17 @@ button.dim:active:before {
   border: 1px solid #aaaaaa;
   height: 40px;
   width: 100px;
+  padding: 3px;
+  display: block;
+  vertical-align: middle;
 }
-.thumbnail-riots .caption {
+.thumbnail-riox .caption {
   margin-bottom: 40px;
 }
-.thumbnail-riots .logo {
+.thumbnail-riox .logo {
   float: right;
 }
-.thumbnail-riots .logo img {
+.thumbnail-riox .logo img {
   max-width: 75px;
   max-height: 75px;
 }
@@ -3614,13 +3628,13 @@ body.mini-navbar .navbar-default .nav > li > .nav-second-level li a {
   transition: all 0.5s;
 }
 .navbar-fixed-top {
-  background: rgba(39, 39, 39, 0.5);
+  background: rgba(39, 39, 39, 0.75);
   transition-duration: 0.5s;
   border-bottom: 1px solid #e7eaec !important;
 }
 .navbar-fixed-top,
 .navbar-static-top {
-  background: rgba(39, 39, 39, 0.5);
+  background: rgba(39, 39, 39, 0.75);
 }
 .fixed-nav #wrapper {
   margin-top: 60px;

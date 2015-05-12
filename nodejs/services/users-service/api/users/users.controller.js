@@ -2,7 +2,7 @@
 
 var User = require('./user.model');
 var passport = require('passport');
-var mongoose = require('mongoose');
+var mongoose = global.mongoose || require('mongoose');
 var config = require('../../config/environment');
 var riox = require('riox-shared/lib/api/riox-api');
 var auth = require('riox-services-base/lib/auth/auth.service');
@@ -15,7 +15,16 @@ var validationError = function(res, err) {
  * Authentication request
  */
 exports.auth = function(req, res) {
-	res.json(200, {}); // TODO check token
+	if(req.body.network == "riox" && req.body.token) {
+		auth.validateToken(req.body.token, function(err, valid) {
+			if(err) {
+				return res.json(401, { error: "Permission denied." });
+			}
+			return res.json(200, req.body);
+		});
+	} else {
+		res.json(422, { error: "Invalid auth details" });
+	}
 };
 
 /**
@@ -151,7 +160,7 @@ exports.insertInternalCallUser = function() {
 	User.findOne(query, function(err, user) {
 	    if (err) return next(err);
 	    if (!user)  {
-	    	console.log("Creating internal/admin user");
+	    	//console.log("Creating internal/admin user");
 	    	var newUser = new User({
 	    		_id: id,
 	    		name: "root",
