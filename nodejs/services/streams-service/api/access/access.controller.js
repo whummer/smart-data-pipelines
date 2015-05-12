@@ -21,7 +21,7 @@ exports.index = function (req, res, next) {
 
 			orgs.forEach(function (org) {
 				var crit1 = {}, crit2 = {};
-				crit1[OWNER_ID] = org.id;
+				crit1[PROVIDER_ID] = org.id;
 				crit2[REQUESTOR_ID] = org.id;
 				query.$or.push(crit1);
 				query.$or.push(crit2);
@@ -56,10 +56,8 @@ exports.getBySource = function (req, res, next) {
 	/*  make sure that the user has access to this access request, i.e.,
 	 user must be either 1) the owner, or 2) the requestor. */
 	var list = user.getOrganizationIDs().concat(user.id);
-	var isOwner = {};
-	isOwner[OWNER_ID] = {"$in": list};
-	var isRequestor = {};
-	isRequestor[REQUESTOR_ID] = {"$in": list};
+	var isOwner = {}; isOwner[PROVIDER_ID] = { "$in": list };
+	var isRequestor = {}; isRequestor[REQUESTOR_ID] = { "$in": list };
 	query["$or"] = [isOwner, isRequestor];
 //	console.log(JSON.stringify(query));
 	return StreamAccess.find(query, function (err, obj) {
@@ -154,7 +152,7 @@ exports.create = function (req, res, next) {
 	riox.streams.source(sourceId, {
 		callback: function (source) {
 			access[CREATED] = access[CHANGED] = new Date().getTime();
-			access[OWNER_ID] = source[ORGANIZATION_ID];
+			access[PROVIDER_ID] = source[ORGANIZATION_ID];
 			access[STATUS] = STATUS_REQUESTED;
 			StreamAccess.create(access, function () {
 				res.json(200, access);
@@ -173,8 +171,8 @@ var createNotification = function (req, type, access) {
 	notif[TYPE] = type;
 	if (type == TYPE_ACCESS_REQUEST) {
 		notif[TEXT] = "User requested access to stream source #" + access[SOURCE_ID];
-		notif[RECIPIENT_ID] = access[OWNER_ID];
-	} else if (type == TYPE_ACCESS_UPDATE) {
+		notif[RECIPIENT_ID] = access[PROVIDER_ID];
+	} else if(type == TYPE_ACCESS_UPDATE) {
 		notif[TEXT] = "Access to stream source #" + access[SOURCE_ID] + " has been " +
 			(access[STATUS] == STATUS_PERMITTED ? "enabled" : "disabled");
 		notif[RECIPIENT_ID] = access[REQUESTOR_ID];

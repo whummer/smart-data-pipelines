@@ -27,10 +27,10 @@
 	g.DESCRIPTION = "description";
 	g.CREATION_DATE = "creation-date";
 	g.CREATOR_ID = "creator-id";
-	g.OWNER_ID = "owner-id";
 	g.TYPE = "type";
 	g.TYPE_ACCESS_REQUEST = "ACCESS_REQUEST";
 	g.TYPE_ACCESS_UPDATE = "ACCESS_UPDATE";
+	g.TYPE_CONSENT_UPDATE = "CONSENT_UPDATE";
 	g.THING_TYPE = "thing-type";
 	g.THING_ID = "thing-id";
 	g.THINGS = "things";
@@ -51,7 +51,9 @@
 	g.SINK_ID = "sink-id";
 	g.ORGANIZATION_ID = "organization-id";
 	g.PROCESSORS = "processors";
+	g.PROVIDER_ID = "provider-id";
 	g.REQUESTOR_ID = "requestor-id";
+	g.CONSENTOR_ID = "consentor-id";
 	g.RECIPIENT_ID = "recipient-id";
 	g.CONNECTOR = "connector";
 	g.MEMBER = "member";
@@ -343,6 +345,18 @@
 		var sourceId = query[SOURCE_ID];
 		var consumerId = query[REQUESTOR_ID];
 		var url = servicesConfig.services.access.url +
+			(sourceId ? ("/source/" + sourceId) : "") +
+			(consumerId ? ("/consumer/" + consumerId) : "");
+		return callGET(url, callback, errorCallback);
+	};
+	sh.consents = sh.get.consents = function (query, callback, errorCallback) {
+		if (typeof callback == "undefined") {
+			callback = query;
+			query = {};
+		}
+		var sourceId = query[SOURCE_ID];
+		var consumerId = query[REQUESTOR_ID];
+		var url = servicesConfig.services.consents.url +
 			(sourceId ? ("/source/" + sourceId) : "") +
 			(consumerId ? ("/consumer/" + consumerId) : "");
 		return callGET(url, callback, errorCallback);

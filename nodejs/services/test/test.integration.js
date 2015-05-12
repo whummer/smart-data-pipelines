@@ -12,6 +12,7 @@ beforeEach(function(){
 /* API tests */
 require('./integration/api/test.streams');
 require('./integration/api/test.streamaccess');
+require('./integration/api/test.streamconsents');
 require('./integration/api/test.users');
 require('./integration/api/test.organizations');
 require('./integration/api/test.files');

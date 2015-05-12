@@ -44,6 +44,20 @@ angular.module('rioxApp')
 		return promise;
 	};
 
+	var loadConsents = function(sources) {
+		var promise = $q.when(1);
+		$.each(sources, function(idx,el) {
+			promise = promise.then(function() {
+				return $q(function(resolve, reject) {
+					loadStreamConsents(el).then(function() {
+						resolve(sources);
+					});
+				});
+			});
+		});
+		return promise;
+	};
+
 	/* load stream source details */
 	var loadSourceDetails = function(sources) {
 		var id = $stateParams.sourceId;
@@ -78,6 +92,31 @@ angular.module('rioxApp')
 					return $q(function(resolve, reject) {
 						riox.organization(acc[REQUESTOR_ID], function(org) {
 							acc.requestorOrg = org;
+						});
+						resolve();
+					});
+				});
+			});
+			promise.then(function() {
+				deferred.resolve();
+			});
+		});
+		return deferred.promise;
+	};
+
+	var loadStreamConsents = function(source) {
+		if(source.consents) return;
+		var deferred = $q.defer();
+		var query = {};
+		query[SOURCE_ID] = source.id;
+		riox.consents(query, function(consents) {
+			source.consents = consents;
+			var promise = $q.when(1);
+			consents.forEach(function(cons) {
+				promise = promise.then(function() {
+					return $q(function(resolve, reject) {
+						riox.organization(cons[REQUESTOR_ID], function(org) {
+							cons.requestorOrg = org;
 						});
 						resolve();
 					});

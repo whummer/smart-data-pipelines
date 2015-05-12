@@ -10,17 +10,21 @@ var template = {
 
 
 /**
- * ID of the user who provides this consent.
- */
-template[OWNER_ID] = String;
-/**
  * ID of the stream source that this consent refers to.
  */
 template[SOURCE_ID] = String;
 /**
+ * ID of the user or organization who provides the data stream source.
+ */
+template[PROVIDER_ID] = String;
+/**
  * ID of the organization who requests access.
  */
 template[REQUESTOR_ID] = String;
+/**
+ * ID of the user who has to provide this consent.
+ */
+template[CONSENTOR_ID] = String;
 /**
  * Creation date of this access request.
  */
