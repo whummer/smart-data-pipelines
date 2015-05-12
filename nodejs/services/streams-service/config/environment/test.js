@@ -7,7 +7,7 @@ var appConfig = require("riox-services-base/lib/config/services.js");
 module.exports = {
   // MongoDB connection options
   mongo: {
-    uri: 'mongodb://localhost/riox-test'
+    uri: 'mongodb://mongo.dev.riox.internal/riox-test'
   },
 
   facebook: {

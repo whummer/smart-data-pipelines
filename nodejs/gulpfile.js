@@ -60,7 +60,7 @@ gulp.task('deps:install:global', 'parse all dependencies and devDependencies fro
 			addDepToHash(deps, dep, version);
 		}
 	});
-	var str = "npm install -g";
+	var str = "npm install --ignore-scripts -g";
 	for(var key in deps) {
 		str += " " + key + "@" + deps[key];
 	}

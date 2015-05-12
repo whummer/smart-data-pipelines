@@ -21,7 +21,7 @@ if (!global.mongoose) {
 	global.mongoose = mongoose;
 }
 if (!global.servicesConfig) {
-	global.servicesConfig = ('./config/services');
+	global.servicesConfig = require('./config/services');
 }
 
 

@@ -103,7 +103,10 @@ function handleDeps(dependencies, deps, installed, isDev) {
 	for (var dep in dependencies) {
 		var version = dependencies[dep];
 		if (localModule(version)) {
-			console.log("Skipping local module " + dep);
+			if (verbose) {
+				console.log("Skipping local module " + dep);
+			}
+
 			continue;
 		}
 
@@ -134,7 +137,7 @@ function installGlobalIfNotExists(installed) {
 		handleDeps(f.devDependencies, deps, installed, true);
 	});
 
-	var str = "npm " + (uninstall ? "uninstall" : "install") + " -g";
+	var str = "npm --ignore-scripts " + (uninstall ? "uninstall" : "install") + " -g  ";
 	for (var key in deps) {
 
 		// don't remove gulp in any case

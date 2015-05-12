@@ -14,8 +14,7 @@ var appConfig = {
 		access: { url: "http://localhost:8085/api/v1/access" },
 		files: { url: "http://localhost:8087/api/v1/files" },
 		notifications: { url: "http://localhost:8084/api/v1/notifications" },
-	    analytics: { url: "http://localhost:8086/api/v1/analytics" },
-
+		analytics: { url: "http://localhost:8086/api/v1/analytics" },
 		websocket: { url: "ws://platform.riox.io:9001/" }
 	},
 	auth: {
