@@ -1,0 +1,64 @@
+<div class="container">
+	<div class="row">
+		<div class="col-sm-12">
+			<h1>Consents</h1>
+		</div>
+
+		<div class="row">
+
+			<div class="col-lg-12">
+				<div class="ibox float-e-margins">
+					<div class="ibox-title">
+						<h5>List of Access Consent Configurations</h5>
+					</div>
+					<div class="ibox-content">
+						<div class="row">
+							<div class="col-sm-9 m-b-xs">
+							</div>
+							<div class="col-sm-3">
+								<div class="input-group">
+									<input type="text" placeholder="Search"
+										class="input-sm form-control"> <span
+										class="input-group-btn">
+										<button type="button" class="btn btn-sm btn-primary">
+											Go!</button>
+									</span>
+								</div>
+							</div>
+						</div>
+						<div class="table-responsive">
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th>#</th>
+										<th>Date</th>
+										<th>Type</th>
+										<th>Description</th>
+										<th>Status</th>
+										<th>Action</th>
+									</tr>
+								</thead>
+								<tbody ng-alias="_notifs = shared.notifications.all">
+									<tr ng-repeat="n in _notifs" ng-class="{ 'font-bold' : n[STATUS] == STATUS_UNREAD }">
+										<td>{{_notifs.indexOf(n) + 1}}</td>
+										<td>{{n.time}}</td>
+										<td>{{n.type}}</td>
+										<td>{{n.text}}</td>
+										<td>{{n.statusText}}</td>
+										<td>
+											<a ui-sref="{{n.link}}" title="show details"><i class="fa fa-search text-navy"></i></a>
+											<a ng-click="delete(n)" title="delete"><i class="fa fa-trash text-navy"></i></a>
+											<a ng-click=resolve(n) ng-show="n[STATUS] == STATUS_UNREAD" title="mark resolved"><i class="fa fa-check text-navy"></i></a>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
