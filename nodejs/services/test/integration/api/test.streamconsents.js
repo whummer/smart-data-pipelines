@@ -10,48 +10,47 @@ var util = require('util');
 
 var app = {};
 
-describe('/access', function() {
+describe('/consents', function() {
 
 	before(function(done) {
 		/* start service(s) */
 		app.streams = starters.startStreamsService();
-		app.access = starters.startStreamsAccessService();
+		app.consents = starters.startStreamsConsentsService();
 		/* get auth token */
 		test.authDefault(done);
 	});
 
 	after(function(done) {
-		app.access.server.stop(function() {
+		app.consents.server.stop(function() {
 			app.streams.server.stop(done);
 		});
 	});
 
-	it('adds a stream source and requests access to the newly added source', function(done) {
+	it('adds a stream source, creates a consent requests for the newly added source', function(done) {
 
 		var newSource = {};
 		newSource[NAME] = "testStream456";
 		newSource[ORGANIZATION_ID] = test.user1.orgs.default.id;
 		newSource[CONNECTOR] = { "type": "http" };
 
-		//console.log("NEW SOURCE: ", util.inspect(newSource));
 		test.user1.post(app.streams.sources.url).send(newSource).end(function(err, res) {
 			var sourceId = res.body.id;
 			assert.ifError(err);
 			assert.equal(res.status, status.OK);
-			test.user1.get(app.access.url).end(function(err, res) {
+			test.user1.get(app.consents.url).end(function(err, res) {
+
 				assert.ifError(err);
 				assert.equal(res.status, status.OK);
 				assert.equal(0, res.body.length);
-				var accessRequest = {};
-				accessRequest[SOURCE_ID] = sourceId;
-				accessRequest[REQUESTOR_ID] = test.user2.orgs.default.id;
+				var consent = {};
+				consent[SOURCE_ID] = sourceId;
+				consent[CONSENTOR_ID] = test.user1.orgs.default.id;
+				consent[REQUESTOR_ID] = test.user2.orgs.default.id;
 
-				//console.log("accessRequest", accessRequest);
 				test.user2.
-				post(app.access.url).
-				send(accessRequest).end(function(err, res) {
+				post(app.consents.url).
+				send(consent).end(function(err, res) {
 					assert.ifError(err);
-					//console.log("err", err, res);
 					assert.equal(res.status, status.OK);
 					assert.equal(sourceId, res.body[SOURCE_ID]);
 					assert.equal(true, res.body[REQUESTOR_ID].length > 0);

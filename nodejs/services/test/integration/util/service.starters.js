@@ -31,6 +31,19 @@ x.startStreamsAccessService = function() {
 	return services.access;
 }
 
+x.startStreamsConsentsService = function() {
+	if(!services.consents) {
+		services.consents = { port : 3000 };
+		services.consents.url = global.servicesConfig.services.consents.url =
+			"http://localhost:" + services.consents.port + "/api/v1/consents";
+		x.startStreamsService();
+		services.consents.server = services.streams.server;
+	}
+	if(!services.consents.server.started)
+		services.consents.server.start();
+	return services.consents;
+}
+
 x.startUsersService = function() {
 	if(!services.users) {
 		services.users = { port : 3001 };

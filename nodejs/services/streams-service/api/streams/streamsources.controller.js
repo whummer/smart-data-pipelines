@@ -73,8 +73,8 @@ exports.indexStreamSource = function (req, res, next) {
 
 exports.listProvided = function (req, res, next) {
 	var user = auth.getCurrentUser(req);
-	var query = {ownerId: user.id};
-	query[OWNER_ID] = user.id;
+	var query = {};
+	query[PROVIDER_ID] = user.id; // TODO: loop over organizations of invoking user
 	query = {}; // TODO remove! (testing only)
 	return list(query, req, res, next);
 };
