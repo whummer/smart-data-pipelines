@@ -3,11 +3,9 @@
 var mongoose = global.mongoose || require('mongoose');
 var Schema = mongoose.Schema;
 
-
 var template = {
 	"_id": { type: String, default: genShortUUID}
 };
-
 
 /**
  * ID of the stream source that this consent refers to.

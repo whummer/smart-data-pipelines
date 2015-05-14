@@ -20,6 +20,11 @@ function list(query, req, res, next) {
 			return next(errors.InternalError("Unable to list stream sources", err));
 		}
 
+		list.forEach(function (streamSource) {
+			/* set endpoint info: */
+			setEndpoint(streamSource);
+		});
+
 		if (fetchXdInfo) {
 			var xdInfoPromises = [];
 			var response = [];
@@ -74,8 +79,17 @@ exports.indexStreamSource = function (req, res, next) {
 exports.listProvided = function (req, res, next) {
 	var user = auth.getCurrentUser(req);
 	var query = {};
-	query[PROVIDER_ID] = user.id; // TODO: loop over organizations of invoking user
-	query = {}; // TODO remove! (testing only)
+	var orgIDs = user.getOrganizationIDs();
+	query[ORGANIZATION_ID] = { "$in": orgIDs };
+	return list(query, req, res, next);
+};
+
+exports.listProvidedByName = function (req, res, next) {
+	var user = auth.getCurrentUser(req);
+	var query = {};
+	var orgIDs = user.getOrganizationIDs();
+	query[ORGANIZATION_ID] = { "$in": orgIDs };
+	query[NAME] = req.params.name;
 	return list(query, req, res, next);
 };
 
@@ -97,6 +111,9 @@ exports.listConsumed = function (req, res, next) {
 
 exports.createStreamSource = function (req, res, next) {
 	var streamSource = new StreamSource(req.body);
+	/* whether or not to create backend stream infrastructure */
+	var doCreateSprinxdStream = true;
+	var doWaitForSprinxdCreation = false;
 
 	if (!streamSource.connector || streamSource.connector.type != "http") {
 		return validationError("Unsupported Connector-Type. Only HTTP is supported at the moment", next);
@@ -107,13 +124,27 @@ exports.createStreamSource = function (req, res, next) {
 	if (!streamSource[PERMIT_MODE]) {
 		return validationError("Please provide a valid " + PERMIT_MODE + " for this source.", next);
 	}
+	// TODO check if ORGANIZATION_ID belongs to calling user!
+
+	/* set endpoint info */
+	setEndpoint(streamSource);
 
 	streamSource.save(function (err, obj) {
 		if (err) {
 			return validationError(err, next);
 		}
-
-		res.json(obj);
+		if(doCreateSprinxdStream) {
+			applyByStreamSourceId(obj.id, function() {
+				if(doWaitForSprinxdCreation) {
+					res.json(obj);
+				}
+			}, function(err) {
+				next("Unable to create stream.", err);
+			});
+		}
+		if(!doWaitForSprinxdCreation) {
+			res.json(obj);
+		}
 	});
 };
 
@@ -127,7 +158,6 @@ exports.applyStreamSource = function (req, res, next) {
 };
 
 var applyByStreamSourceId = exports.applyByStreamSourceId = function (id, callback, errorCallback) {
-	log.debug("Applying stream-source by id: ", id);
 	StreamSource.findById(id, function (err, obj) {
 		if (err)
 			return errorCallback(errors.InternalError("Cannot apply stream-source", err));
@@ -146,7 +176,8 @@ var applyByStreamSourceId = exports.applyByStreamSourceId = function (id, callba
 };
 
 var applyByStreamSource = exports.applyByStreamSource = function(source, callback, errorCallback) {
-	if(!source.id || !source[ORGANIZATION_ID]) {
+	log.debug("Applying stream-source: ", source[ID]);
+	if(!source[ID] || !source[ORGANIZATION_ID]) {
 		return errorCallback("Please provide valid source id and source organization id");
 	}
 
@@ -171,7 +202,7 @@ var applyByStreamSource = exports.applyByStreamSource = function(source, callbac
 		springxd.createStream(xdStreamId, streamDefinition, function(stream) {
 			console.log("stream " + xdStreamId + " created!");
 			resolve(stream);
-		});
+		}, errorCallback);
 	};
 
 	new Promise(findStream).
@@ -190,11 +221,14 @@ var applyByStreamSource = exports.applyByStreamSource = function(source, callbac
 
 exports.updateStreamSource = function (req, res, next) {
 	var streamSource = new StreamSource(req.body);
+	// TODO: check permission
 	streamSource.save(req.params.id, function (err, obj) {
 		if (err) {
 			return validationError(err, next);
 		}
-
+		/* set endpoint info: */
+		setEndpoint(obj);
+		/* return result */
 		res.json(obj);
 	});
 };
@@ -206,11 +240,12 @@ exports.showStreamSource = function (req, res, next) {
 		if (err) {
 			return next(errors.InternalError("Cannot lookup stream source", err));
 		}
-
 		if (!obj) {
 			return next(errors.NotFoundError("No such stream-source: " + id));
 		}
-
+		/* set endpoint info: */
+		setEndpoint(obj);
+		/* return result */
 		res.json(obj);
 	});
 };
@@ -221,10 +256,15 @@ exports.destroyStreamSource = function (req, res) {
 		if (err) {
 			return next(erros.InternalError("Cannot remove stream with id " + streamId, err));
 		}
-
 		return res.send(204);
 	});
 };
+
+var setEndpoint = function(source) {
+	var host = "xd-inbound.dev.riox.internal"; // TODO!
+	source[ENDPOINT] = "http://" + host + ":9000/" +
+		source[ORGANIZATION_ID] + "/" + source[ID];
+}
 
 var validationError = function (err, next) {
 	return next(errors.UnprocessableEntity("You passed a broken object", err));

@@ -15,7 +15,10 @@ function list(query, req, res, next) {
 		if (err) {
 			return next(errors.InternalError("Cannot list stream sinks", err));
 		}
-
+		list.forEach(function(sink) {
+			/* set endpoint info */
+			setEndpoint(sink);
+		});
 		res.json(200, list);
 	});
 }
@@ -25,8 +28,17 @@ exports.indexStreamSink = function (req, res, next) {
 };
 
 exports.createStreamSink = function (req, res, next) {
-	log.debug('Creating stream-sink: ', req.body);
-	var streamSink = new StreamSink(req.body);
+	var sink = req.body;
+	if (!sink[ORGANIZATION_ID]) {
+		console.log(sink);
+		return validationError("Please provide a valid " + ORGANIZATION_ID + " for this sink.", next);
+	}
+	// TODO check if ORGANIZATION_ID belongs to calling user!
+
+	/* set endpoint info */
+	setEndpoint(sink);
+
+	var streamSink = new StreamSink(sink);
 	streamSink.save(function (err, obj) {
 		if (err) {
 			return validationError(err, next);
@@ -78,7 +90,6 @@ var applyByStreamSinkId = exports.applyByStreamSinkId = function (id, callback, 
 		if (err) {
 			return next(errors.InternalError("Cannot apply stream-sink", err));
 		}
-
 		if (!obj) {
 			return next(errors.NotFoundError("Cannot find stream-sink with ID " + id));
 		}
@@ -95,8 +106,9 @@ var applyByStreamSinkId = exports.applyByStreamSinkId = function (id, callback, 
 };
 
 var applyByStreamSink = exports.applyByStreamSink = function(sink, callback, errorCallback) {
-	if(!sink.id || !sink[ORGANIZATION_ID]) {
-		return errorCallback("Please provide valid id and organization id");
+	log.debug("Applying stream-sink: ", sink[ID]);
+	if(!sink[ID] || !sink[ORGANIZATION_ID]) {
+		return errorCallback("Please provide valid stream sink id and organization id");
 	}
 
 	var xdStreamId = "consumer-" + sink.id;
@@ -124,7 +136,7 @@ var applyByStreamSink = exports.applyByStreamSink = function(sink, callback, err
 		springxd.createStream(xdStreamId, streamDefinition, function (stream) {
 			log.info("consumer stream " + xdStreamId + " created!");
 			resolve(stream);
-		});
+		}, errorCallback);
 
 	};
 
@@ -138,3 +150,10 @@ var applyByStreamSink = exports.applyByStreamSink = function(sink, callback, err
 	});
 
 };
+
+
+var setEndpoint = function(source) {
+	var host = "xd-outbound.dev.riox.internal"; // TODO!
+	source[ENDPOINT] = "ws://" + host + ":9001/" +
+		source[ORGANIZATION_ID] + "/" + source[ID];
+}

@@ -41,13 +41,14 @@ exports.createStreamProcessor = function (req, res, next) {
 };
 
 exports.applyByStream = function (stream, callback, errorCallback) {
+	log.debug("Applying stream (e2e, processors): ", stream[ID]);
 	if (!stream[SOURCE_ID] || !stream[SINK_ID]) {
 		return errorCallback("Please provide a valid stream with " + SOURCE_ID + " and " + SINK_ID);
 	}
 
 	var cfg = {};
 
-	var xdStreamId = "processors-" + stream["id"];
+	var xdStreamId = "processors-" + stream[ID];
 
 	var findStream = function(resolve, reject) {
 		springxd.findStream(xdStreamId, resolve, reject);

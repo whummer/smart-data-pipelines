@@ -1,0 +1,64 @@
+<style>
+section.cockpit {
+	background-image: url(/app/img/cockpit.png);
+	background-repeat: no-repeat;
+	width: 541px;
+	height: 291px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-top: -145px;
+	margin-left: -270px;
+}
+div.black {
+	height: 100%;
+	width: 100%;
+	background: #000;
+}
+div.white {
+	margin-left: 72px;
+	margin-right: 70px;
+	margin-top: 35px;
+	height: 225px;
+	background: #eee;
+	display: block;
+	padding: 20px;
+	overflow: auto;
+}
+div.center {
+	margin: auto;
+}
+div.middle {
+	position: absolute;
+	width: 300px;
+	height: 50px;
+	top: 50%;
+	left: 50%;
+	margin-left: -150px;
+	margin-top: -30px;
+	text-align: center;
+}
+</style>
+<div class="black">
+<section class="cockpit">
+<div class="white">
+
+	<div ng-show="request">
+		The service '<b>{{request.service}}</b>' of provider '<b>{{request.consumer}}</b>' requests access 
+		to the following real-time data of your car:
+		<ul>
+			<li ng-repeat="d in request.data"><b>{{d}}</b></li>
+		</ul>
+		Please accept or deny this request.
+		<div class="center">
+			<button class="btn" ng-click="deny()">Deny</button>
+			<button class="btn btn-primary" ng-click="accept()">Accept</button>
+		</div>
+	</div>
+	<div ng-show="!request" class="middle center">
+		<h1>Have a safe trip!</h1>
+	</div>
+
+</div>
+</section>
+</div>

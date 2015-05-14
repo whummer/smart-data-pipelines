@@ -35,6 +35,19 @@ exports.index = function(req, res, next) {
 	});
 };
 
+exports.listByOwner = function(req, res, next) {
+	var id = req.params.userId;
+	var query = {};
+	query[CONSENTOR_ID] = id;
+	StreamConsent.find(query, function(err, obj) {
+		if (err)
+			return next(err);
+		if (!obj)
+			return res.send(404);
+		res.json(obj);
+	});
+};
+
 exports.show = function(req, res, next) {
 	var id = req.params.id;
 

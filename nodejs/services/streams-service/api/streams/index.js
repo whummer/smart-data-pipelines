@@ -12,7 +12,8 @@ var router = express.Router();
 /* METHODS FOR STREAMS */
 router.get('/', auth.isAuthenticated(), streamsCtrl.listAll);
 
-router.get('/provided', auth.isAuthenticated(), sourcesCtrl.listProvided);
+router.get('/provided', auth.isAuthenticated(), auth.fetchOrgs(), sourcesCtrl.listProvided);
+router.get('/provided/by/name/:name', auth.isAuthenticated(), auth.fetchOrgs(), sourcesCtrl.listProvidedByName);
 router.get('/consumed', auth.isAuthenticated(), sourcesCtrl.listConsumed);
 
 router.post('/', auth.isAuthenticated(), streamsCtrl.createStream);
@@ -23,7 +24,7 @@ router.get('/sources', /* auth.isAuthenticated(), */ sourcesCtrl.indexStreamSour
 router.get('/sources/:id', auth.isAuthenticated(), sourcesCtrl.showStreamSource);
 router.delete('/sources/:id', auth.hasRole('admin'), sourcesCtrl.destroyStreamSource);
 router.post('/sources', auth.isAuthenticated(), sourcesCtrl.createStreamSource);
-router.post('/sources/apply', auth.isAuthenticated(), sourcesCtrl.applyStreamSource);
+router.post('/sources/:id/apply', auth.isAuthenticated(), sourcesCtrl.applyStreamSource);
 router.put('/sources/:id', auth.isAuthenticated(), sourcesCtrl.updateStreamSource);
 
 /* METHODS FOR STREAM SINKS */
