@@ -5,20 +5,21 @@ var passport = require('passport');
 var auth = require('riox-services-base/lib/auth/auth.service');
 var riox = require('riox-shared/lib/api/riox-api');
 var util = require('util');
+var errors = require('riox-services-base/lib/util/errors');
 
 var log = global.log || require('winston');
 
-exports.index = function(req, res, next) {
+exports.index = function (req, res, next) {
 	var user = auth.getCurrentUser(req);
 
 	riox.organizations({
 		headers: req.headers,
-		callback: function(orgs) {
+		callback: function (orgs) {
 			orgs.push(user); // for now, also consider the user ID
 
-			var query = { $or: [] };
+			var query = {$or: []};
 
-			orgs.forEach(function(org) {
+			orgs.forEach(function (org) {
 				var crit1 = {}, crit2 = {};
 				crit1[OWNER_ID] = org.id;
 				crit2[REQUESTOR_ID] = org.id;
@@ -26,120 +27,154 @@ exports.index = function(req, res, next) {
 				query.$or.push(crit2);
 			});
 
-			StreamAccess.find(query, function(err, list) {
-				if (err)
-					return res.send(500, err);
+			StreamAccess.find(query, function (err, list) {
+				if (err) {
+					return next(errors.InternalError("Cannot lookup stream-access", err));
+					//return res.send(500, err);
+				}
+
 				res.json(200, list);
 			});
 		}
 	});
 };
 
-exports.getBySource = function(req, res, next) {
+exports.getBySource = function (req, res, next) {
 	var user = auth.getCurrentUser(req);
-	if(!req.params.sourceId) {
-		res.json(422, {error: "Source ID is required in request path."});
-		return;
+	if (!req.params.sourceId) {
+		return next(errors.UnprocessableEntity("Source ID is required in request path"));
+		//res.json(422, {error: "Source ID is required in request path."});
+		//return;
 	}
 	var query = {};
 	var crit1 = {}, crit2 = {};
 	var requestorId = req.params.organizationId;
-	if(requestorId) {
+	if (requestorId) {
 		crit2[REQUESTOR_ID] = requestorId;
 	}
 	query[SOURCE_ID] = req.params.sourceId;
 	/*  make sure that the user has access to this access request, i.e.,
-		user must be either 1) the owner, or 2) the requestor. */
+	 user must be either 1) the owner, or 2) the requestor. */
 	var list = user.getOrganizationIDs().concat(user.id);
-	var isOwner = {}; isOwner[OWNER_ID] = { "$in": list };
-	var isRequestor = {}; isRequestor[REQUESTOR_ID] = { "$in": list };
+	var isOwner = {};
+	isOwner[OWNER_ID] = {"$in": list};
+	var isRequestor = {};
+	isRequestor[REQUESTOR_ID] = {"$in": list};
 	query["$or"] = [isOwner, isRequestor];
 //	console.log(JSON.stringify(query));
-	return StreamAccess.find(query, function(err, obj) {
-		if (err)
-			return next(err);
-		if (!obj)
-			return res.send(404);
+	return StreamAccess.find(query, function (err, obj) {
+		if (err) {
+			return next(errors.InternalError("Cannot lookup stream", err));
+			//return next(err);
+		}
+		if (!obj) {
+			return next(errors.NotFoundError("No such stream-access"));
+			//return res.send(404);
+		}
 //		console.log(obj);
 		res.json(obj);
 	});
 };
 
-exports.show = function(req, res, next) {
+exports.show = function (req, res, next) {
 	var id = req.params.id;
 
-	StreamAccess.findById(id, function(err, obj) {
-		if (err)
-			return next(err);
-		if (!obj)
-			return res.send(404);
+	StreamAccess.findById(id, function (err, obj) {
+		if (err) {
+			return next(errors.InternalError("Cannot lookup stream-access with ID " + id, err));
+			//return next(err);
+		}
+
+		if (!obj) {
+			return next(errors.NotFoundError("No such stream-access: " + id));
+			//return res.send(404);
+		}
+
 		res.json(obj);
 	});
 };
 
-exports.destroy = function(req, res, next) {
+exports.destroy = function (req, res, next) {
 	var id = req.params.id;
 	/* find entity */
-	StreamAccess.findById(id, function(err, obj) {
-		if (err) return next(err);
-		if (!obj) return res.send(404);
+	StreamAccess.findById(id, function (err, obj) {
+		if (err) {
+			return next(errors.InternalError("Cannot lookup stream-access with ID " + id, err));
+		}
+
+		if (!obj) {
+			return next(errors.NotFoundError("No such stream-access: " + id));
+		}
 
 		/* check if user is permitted */
 		var user = auth.getCurrentUser(req);
-		if(user[ID] != obj[REQUESTOR_ID] && !user.hasOrganization(obj[REQUESTOR_ID])) {
-			return res.send(401);
+		if (user[ID] != obj[REQUESTOR_ID] && !user.hasOrganization(obj[REQUESTOR_ID])) {
+			return next(errors.UnauthorizedError());
+			//return res.send(401);
 		}
-		StreamAccess.remove(id, function(err, obj) {
-			if (err) return res.send(500, err);
+
+		StreamAccess.remove(id, function (err, obj) {
+			if (err)  {
+				return next(errors.InternalError("Cannot remove stream-access with ID " + id, err));
+				//return res.send(500, err);
+			}
+
 			return res.send(204);
 		});
 	});
 
 };
 
-exports.create = function(req, res, next) {
+exports.create = function (req, res, next) {
 	var user = auth.getCurrentUser(req);
 	var access = req.body;
 
 	log.info("Creating new access request: ", util.inspect(access));
 	var sourceId = access[SOURCE_ID];
-	if(!sourceId) {
-		res.json(422, {error: SOURCE_ID + " is required"});
-		return;
+	if (!sourceId) {
+		return next(errors.UnprocessableEntity(SOURCE_ID + " is required"));
+		//res.json(422, {error: SOURCE_ID + " is required"});
+		//return;
 	}
-	if(!access[REQUESTOR_ID]) {
-		log.error(REQUESTOR_ID + " is missing");
-		res.json(422, {error: REQUESTOR_ID + " is required"});
-		return;
+
+	if (!access[REQUESTOR_ID]) {
+		return next(errors.UnprocessableEntity(SOURCE_ID + " is required"));
+
+		//log.error(REQUESTOR_ID + " is missing");
+		//res.json(422, {error: REQUESTOR_ID + " is required"});
+		//return;
 	}
-	if(access[REQUESTOR_ID] != user.id) {
-		if(!user.hasOrganization(access[REQUESTOR_ID])) {
-			return res.json(401, {error: "Invalid " + REQUESTOR_ID});
+
+	if (access[REQUESTOR_ID] != user.id) {
+		if (!user.hasOrganization(access[REQUESTOR_ID])) {
+			return next(errors.UnauthorizedError("Invalid " + REQUESTOR_ID));
+			//return res.json(401, {error: "Invalid " + REQUESTOR_ID});
 		}
 	}
 	riox.streams.source(sourceId, {
-		callback: function(source) {
+		callback: function (source) {
 			access[CREATED] = access[CHANGED] = new Date().getTime();
 			access[OWNER_ID] = source[ORGANIZATION_ID];
 			access[STATUS] = STATUS_REQUESTED;
-			StreamAccess.create(access, function() {
+			StreamAccess.create(access, function () {
 				res.json(200, access);
 				/* Create notification (asynchronously). */
 				createNotification(req, TYPE_ACCESS_REQUEST, access);
 			});
 		}, headers: req.headers
-	}, function() {
-		res.json(404, {message: "Cannot find entity with ID " + sourceId });
+	}, function () {
+		next(errors.NotFoundError("Cannot find entity with ID " + sourceId))
+		//res.json(404, {message: "Cannot find entity with ID " + sourceId});
 	});
 };
 
-var createNotification = function(req, type, access) {
+var createNotification = function (req, type, access) {
 	var notif = {};
 	notif[TYPE] = type;
-	if(type == TYPE_ACCESS_REQUEST) {
+	if (type == TYPE_ACCESS_REQUEST) {
 		notif[TEXT] = "User requested access to stream source #" + access[SOURCE_ID];
 		notif[RECIPIENT_ID] = access[OWNER_ID];
-	} else if(type == TYPE_ACCESS_UPDATE) {
+	} else if (type == TYPE_ACCESS_UPDATE) {
 		notif[TEXT] = "Access to stream source #" + access[SOURCE_ID] + " has been " +
 			(access[STATUS] == STATUS_PERMITTED ? "enabled" : "disabled");
 		notif[RECIPIENT_ID] = access[REQUESTOR_ID];
@@ -153,36 +188,44 @@ var createNotification = function(req, type, access) {
 	});
 }
 
-exports.enableAccess = function(req, res, next) {
+exports.enableAccess = function (req, res, next) {
 	updatePermission(req, res, true);
 };
 
-exports.disableAccess = function(req, res, next) {
+exports.disableAccess = function (req, res, next) {
 	updatePermission(req, res, false);
 };
 
-var updatePermission = function(req, res, allowed) {
+var updatePermission = function (req, res, allowed) {
 	var user = auth.getCurrentUser(req);
 	var id = req.params.id;
-	if(!id) return;
-	StreamAccess.findById(id, function(err, obj) {
-		if (err)
-			return next(err);
-		if (!obj)
-			return res.send(404);
-		executeAsOwner(user, obj, function() {
+	if (!id) {
+		return next(errors.UnprocessableEntity("No stream-access ID given"));
+	}
+
+	StreamAccess.findById(id, function (err, obj) {
+		if (err) {
+			return next(errors.InternalError("Cannot lookup stream-access with ID " + id, err));
+		}
+
+		if (!obj) {
+			return next(errors.NotFoundError("No such stream-access: " + id));
+		}
+
+		executeAsOwner(user, obj, function () {
 			obj[STATUS] = allowed ? STATUS_PERMITTED : STATUS_DENIED;
-			obj.save(function(err, obj) {
+			obj.save(function (err, obj) {
 				createNotification(req, TYPE_ACCESS_UPDATE, obj);
 				res.json(obj);
 			});
-		}, function(error) {
-			return res.send(401, {error: error});
+		}, function (error) {
+			return next(errors.UnauthorizedError("Not authorized", error));
+			//return res.send(401, {error: error});
 		});
 	});
 };
 
-var executeAsOwner = function(user, source, callback, errorCallback) {
+var executeAsOwner = function (user, source, callback, errorCallback) {
 	// TODO check if this user is the source owner
 	callback();
 };

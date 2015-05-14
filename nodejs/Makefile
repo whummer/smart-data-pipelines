@@ -2,6 +2,7 @@ VERSION=latest
 IMAGE=riox/nodejs-base
 TEST_TIMEOUT= # set this to --no-timeouts in case the test times out.
 
+all: build-image push-image
 
 NPATH=/usr/local/lib/node_modules/
 ifeq ($(USE_NODENV), true)
@@ -10,16 +11,19 @@ endif
 
 export NODE_PATH=$(NPATH)
 
+install:
+	(cd bin && node handle-global-node-packages.js && cd ..)
+	npm install
+	gulp ui:bower
 
 all: build-image push-image
 
 install-prereq:
 	npm install -g gulp mocha nodemon	pm2
 
-install:
-	gulp deps:install:global
-	npm install
-	gulp ui:bower
+
+uninstall-global:
+	(cd bin && node handle-global-node-packages.js --uninstall && cd ..)
 
 clean:
 	gulp deps:clean:all

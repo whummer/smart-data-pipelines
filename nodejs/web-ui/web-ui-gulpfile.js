@@ -19,12 +19,9 @@ var gulp = require('gulp-help')(require('gulp')),
 		livereload = require('gulp-livereload'),
 		gulpFilter = require('gulp-filter'),
 		sourcemaps = require('gulp-sourcemaps'),
-//		imagemin = require('gulp-imagemin'), // TODO pulls 140+ MB of dependencies..
 		runSequence = require('run-sequence'),
 		bower = require('gulp-bower'),
 		es = require('event-stream');
-
-//var $ = require('gulp-load-plugins')();
 
 //
 // build path configuration
@@ -69,16 +66,8 @@ var paths = {
   // all in one concatenated and minified JS files
   minified_js: BUILD_DIR_PROD + "/app/components/js/riox.all.min.js",
 
-  // Dockerfile template
-  dockerfile: BASE_DIR + "/Dockerfile.tmpl"
 };
 
-//
-// Dockerfile settings
-//
-var dockerSettings = {
-  port: '8080'
-};
 
 //
 // gulp task definitions
@@ -190,7 +179,7 @@ gulp.task('ui:scriptsmin', 'concatenate, minify and uglify JS script sources', f
 //
 // Copy and optimize all static images
 //
-gulp.task('ui:imagemin', 'optimize image size', function () {
+/*gulp.task('ui:imagemin', 'optimize image size', function () {
   return gulp.src(paths.images)
     .pipe(imagemin(
       {
@@ -201,7 +190,7 @@ gulp.task('ui:imagemin', 'optimize image size', function () {
     ))
 
     .pipe(gulp.dest(BUILD_DIR_PROD + '/app/components/img/'));
-});
+});*/
 
 //
 // install bower files
@@ -223,13 +212,14 @@ gulp.task('ui:node_modules', 'install required node modules', function () {
 
 //run app using nodemon
 gulp.task('ui:serve', 'serve the riox-ui src using nodemon', function () {
-  runSequence('ui:bower', 'ui:node_modules', 'ui:inject:dev');
+  //runSequence('ui:bower', 'ui:node_modules', 'ui:inject:dev');
+  runSequence('ui:bower', 'ui:inject:dev');
 
   return nodemon({
     script: SRC_DIR + '/server.js', verbose: false,
     watch: ["web-ui/lib"],
     ignore: ["web-ui/node_modules", "node_modules", "web-ui/lib/bower_components", "services/**/node_modules"],
-    env: {NODE_ENV: "development", PORT: 9000}
+    env: {NODE_PATH: "/opt/boxen/nodenv/versions/v0.12.2/lib/node_modules", NODE_ENV: "development", PORT: 8081}
   });
 });
 
@@ -254,7 +244,8 @@ gulp.task('ui:livereload', 'serve the riox-ui using nodemon (with livereload)', 
 //
 gulp.task('ui:build:prod', 'create a PRODUCTION build of riox-ui', function () {
   util.log(util.colors.green("Running PRODUCTION build (+imagemin)"));
-  runSequence('ui:clean', 'ui:imagemin', 'ui:scriptsmin', 'ui:copy:prod', 'ui:inject:prod');
+  //runSequence('ui:clean', 'ui:imagemin', 'ui:scriptsmin', 'ui:copy:prod', 'ui:inject:prod');
+  runSequence('ui:clean', 'ui:scriptsmin', 'ui:copy:prod', 'ui:inject:prod');
 });
 
 //
@@ -295,41 +286,5 @@ gulp.task('ui:serve:test', 'serve the TEST build of riox-ui (8080)', ['ui:build:
 });
 
 
-//
-// Docker tasks
-//
-gulp.task('ui:docker:build:test', 'build a Docker image from riox-ui TEST build', function () {
-  util.log(util.colors.magenta("Building Docker image for TEST..."));
-  runSequence('ui:build:test', 'ui:docker:build:test:dockerfile', 'ui:docker:push', function () {
-    util.log(util.colors.magenta("Built Docker image for TEST. Enjoy."));
-  });
-});
-
-gulp.task('ui:docker:build:prod', 'build a Docker image from riox-ui PRODUCTION build', function () {
-  util.log(util.colors.magenta("Building Docker image for TEST..."));
-  runSequence('ui:build:prod', 'ui:docker:build:prod:dockerfile', 'ui:docker:push', function () {
-    util.log(util.colors.magenta("Built Docker image for TEST. Enjoy."));
-  });
-});
-
-gulp.task('ui:docker:build:test:dockerfile', 'prepare a Dockerfile for riox-ui (TEST)', function () {
-  return prepareDockerfile('test');
-})
-
-gulp.task('ui:docker:build:prod:dockerfile', 'prepare a Dockerfile for riox-ui (PRODUCTION)', function () {
-  return prepareDockerfile('production');
-});
-
-function prepareDockerfile(env) {
-  return gulp.src(paths.dockerfile)
-    .pipe(replace("%NODE_ENV%", env))
-    .pipe(replace("%PORT%", dockerSettings.port))
-    .pipe(rename("Dockerfile"))
-    .pipe(gulp.dest(BASE_DIR));
-}
-
-gulp.task('ui:docker:push', function () {
-  return cp.spawn('bin/build-push.sh', ['--no-push'], {env: process.env, cwd: BASE_DIR + '/..', stdio: 'inherit'})
-});
 
 

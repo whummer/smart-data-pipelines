@@ -99,5 +99,6 @@ module.exports = extendError;
 
 // some common HTTP errors
 module.exports.InternalError = extendError('InternalError', 500);
+module.exports.UnauthorizedError = extendError('UnauthorizedError', 401);
 module.exports.NotFoundError = extendError('NotFoundError', 404);
 module.exports.UnprocessableEntity = extendError('NotFoundError', 422);
