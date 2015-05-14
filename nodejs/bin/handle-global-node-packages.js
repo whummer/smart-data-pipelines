@@ -137,7 +137,7 @@ function installGlobalIfNotExists(installed) {
 		handleDeps(f.devDependencies, deps, installed, true);
 	});
 
-	var str = "npm --ignore-scripts " + (uninstall ? "uninstall" : "install") + " -g  ";
+	var str = "sudo npm --ignore-scripts " + (uninstall ? "uninstall" : "install") + " -g  ";
 	for (var key in deps) {
 
 		// don't remove gulp in any case
