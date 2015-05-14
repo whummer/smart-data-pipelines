@@ -31,6 +31,19 @@ x.startStreamsAccessService = function() {
 	return services.access;
 }
 
+x.startStreamsConsentsService = function() {
+	if(!services.consents) {
+		services.consents = { port : 3000 };
+		services.consents.url = global.servicesConfig.services.consents.url =
+			"http://localhost:" + services.consents.port + "/api/v1/consents";
+		x.startStreamsService();
+		services.consents.server = services.streams.server;
+	}
+	if(!services.consents.server.started)
+		services.consents.server.start();
+	return services.consents;
+}
+
 x.startUsersService = function() {
 	if(!services.users) {
 		services.users = { port : 3001 };
@@ -69,3 +82,22 @@ x.startFilesService = function() {
 		services.files.server.start();
 	return services.files;
 }
+
+x.startAnalyticsService = function(callback) {
+	var exists = !!services.analytics;
+	if(!exists) {
+		services.analytics = { port : 3005 };
+		services.analytics.url = global.servicesConfig.services.analytics.url =
+			"http://localhost:" + services.analytics.port + "/api/v1/analytics";
+		process.env.SERVICE_PORT = services.analytics.port;
+		services.analytics.server = require('../../../analytics-service/app.js');
+		if(callback) services.analytics.server.startedPromise.then(callback);
+	}
+	if(!services.analytics.server.started)
+		services.analytics.server.start();
+	if(exists && callback) {
+		callback();
+	}
+	return services.analytics;
+}
+

@@ -31,7 +31,10 @@ template[DESCRIPTION] = String;
  */
 template[CONNECTOR] = {};
 template[CONNECTOR][TYPE] = { type: String };
-
+/**
+ * Endpoint (URL) to connect to this sink.
+ */
+template[ENDPOINT] = String;
 
 var StreamSink = new Schema(template);
 StreamSink.set('toJSON', { virtuals: true });

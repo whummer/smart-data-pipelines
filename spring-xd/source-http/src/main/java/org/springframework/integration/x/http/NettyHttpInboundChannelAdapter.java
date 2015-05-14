@@ -22,6 +22,7 @@ import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.CONTENT_LENGT
 import static org.jboss.netty.handler.codec.http.HttpResponseStatus.INTERNAL_SERVER_ERROR;
 import static org.jboss.netty.handler.codec.http.HttpResponseStatus.OK;
 import static org.jboss.netty.handler.codec.http.HttpResponseStatus.REQUEST_ENTITY_TOO_LARGE;
+import static org.jboss.netty.handler.codec.http.HttpResponseStatus.NOT_FOUND;
 import static org.jboss.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 import java.lang.reflect.Field;
@@ -42,12 +43,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.Channel;
+import org.jboss.netty.channel.ChannelDownstreamHandler;
+import org.jboss.netty.channel.ChannelEvent;
 import org.jboss.netty.channel.ChannelFuture;
 import org.jboss.netty.channel.ChannelFutureListener;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ChannelPipeline;
 import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.channel.DefaultChannelPipeline;
+import org.jboss.netty.channel.DownstreamMessageEvent;
 import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelHandler;
@@ -62,6 +66,7 @@ import org.jboss.netty.handler.codec.http.HttpRequest;
 import org.jboss.netty.handler.codec.http.HttpRequestDecoder;
 import org.jboss.netty.handler.codec.http.HttpResponse;
 import org.jboss.netty.handler.codec.http.HttpResponseEncoder;
+import org.jboss.netty.handler.codec.http.HttpResponseStatus;
 import org.jboss.netty.handler.execution.ExecutionHandler;
 import org.jboss.netty.handler.execution.OrderedMemoryAwareThreadPoolExecutor;
 import org.jboss.netty.handler.logging.LoggingHandler;
@@ -352,6 +357,31 @@ public class NettyHttpInboundChannelAdapter extends MessageProducerSupport {
 
 			});
 			pipeline.addLast("executionHandler", executionHandler);
+//			/* begin whu */
+			pipeline.addLast("corsHandlerOut", new ChannelDownstreamHandler() {
+				@Override
+				public void handleDownstream(
+						ChannelHandlerContext ctx,
+						ChannelEvent e) throws Exception {
+					if(e instanceof DownstreamMessageEvent) {
+						DownstreamMessageEvent dme = (DownstreamMessageEvent)e;
+						Object msg = dme.getMessage();
+						if(msg instanceof HttpResponse) {
+							HttpResponse httpMsg = (HttpResponse)msg;
+							httpMsg.addHeader(HttpHeaders.Names.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
+							httpMsg.addHeader(HttpHeaders.Names.ACCESS_CONTROL_ALLOW_HEADERS,
+									"origin, content-type, accept, authorization, x-requested-with");
+							httpMsg.addHeader(HttpHeaders.Names.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
+							httpMsg.addHeader(HttpHeaders.Names.ACCESS_CONTROL_ALLOW_METHODS, 
+									"GET, POST, PUT, DELETE, OPTIONS, HEAD");
+							httpMsg.addHeader(HttpHeaders.Names.ACCESS_CONTROL_MAX_AGE, "1209600");
+							httpMsg.addHeader(HttpHeaders.Names.ACCESS_CONTROL_EXPOSE_HEADERS, "Location");
+						}						
+					}
+					ctx.sendDownstream(e);
+				}
+			});
+			/* end whu */
 			pipeline.addLast("handler", new Handler(messageConverter));
 			return pipeline;
 		}
@@ -362,12 +392,12 @@ public class NettyHttpInboundChannelAdapter extends MessageProducerSupport {
 		sendMessage(message);
 	}
 
-	private boolean sendMessageToResponsibleSender(HttpRequest request,
+	private HttpResponseStatus sendMessageToResponsibleSender(HttpRequest request,
 			Message<?> message) {
 		Object sender = getResponsibleSender(request);
 		if (sender == null) {
 			logger.warn("Cannot find inbound HTTP channel for path: " + request.getUri());
-			return false;
+			return NOT_FOUND;
 		}
 		try {
 			Field f = sender.getClass().getDeclaredField("senderMethod");
@@ -378,11 +408,11 @@ public class NettyHttpInboundChannelAdapter extends MessageProducerSupport {
 			f1.setAccessible(true);
 			Object entity = f1.get(sender);
 			method.invoke(entity, message);
-			return true;
+			return OK;
 		} catch (Exception e) {
 			logger.warn("Exception when sending message", e);
 		}
-		return false;
+		return INTERNAL_SERVER_ERROR;
 	}
 
 	private Object getResponsibleSender(HttpRequest request) {
@@ -412,9 +442,9 @@ public class NettyHttpInboundChannelAdapter extends MessageProducerSupport {
 			}
 			pathsToProducers = map.get(port);
 			if (pathsToProducers.containsKey(path)) {
-				String msg = "Channel for HTTP port " + port + ", path '"
-						+ path + "' already exists.";
+				String msg = "Channel for HTTP port " + port + ", path '" + path + "' already exists.";
 				logger.warn(msg);
+				logger.info("Existing paths for port " + port + ": " + pathsToProducers.keySet());
 				throw new RuntimeException(msg);
 			}
 			SenderEntry e = new SenderEntry();
@@ -475,13 +505,9 @@ public class NettyHttpInboundChannelAdapter extends MessageProducerSupport {
 						logger.debug("Sending message: " + message);
 					}
 					/* start whu */
-					boolean done = sendMessageToResponsibleSender(request,
-							message);
-					if (!done) {
-						logger.error("Message invocation method not found.");
-						response = new DefaultHttpResponse(HTTP_1_1,
-								INTERNAL_SERVER_ERROR);
-					}
+					HttpResponseStatus status = sendMessageToResponsibleSender(
+							request, message);
+					response = new DefaultHttpResponse(HTTP_1_1, status);
 					/* end whu */
 					// sendMessage(message); // commented whu
 				} catch (Exception ex) {

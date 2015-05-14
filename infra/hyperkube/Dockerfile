@@ -6,5 +6,5 @@ COPY hyperkube /hyperkube
 RUN chmod a+rx /hyperkube
 
 
-COPY master-multi.json /etc/kubernetes/manifests-multi/master.json
-COPY master.json /etc/kubernetes/manifests/master.json
+#COPY master-multi.json /etc/kubernetes/manifests-multi/master.json
+#COPY master.json /etc/kubernetes/manifests/master.json

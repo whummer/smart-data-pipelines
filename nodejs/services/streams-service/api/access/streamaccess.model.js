@@ -12,9 +12,9 @@ var template = {
  */
 template[SOURCE_ID] = String;
 /**
- * ID of the user (or organization) who owns this stream.
+ * ID of the user (or organization) who provides this stream.
  */
-template[OWNER_ID] = String;
+template[PROVIDER_ID] = String;
 /**
  * ID of the organization who requests access.
  *

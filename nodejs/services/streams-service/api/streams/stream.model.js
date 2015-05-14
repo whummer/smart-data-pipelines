@@ -27,9 +27,9 @@ template[DESCRIPTION] = Date;
  */
 template[SOURCE_ID] = String;
 /**
- * List of IDs of StreamProcessors of this stream.
+ * List of String IDs of StreamProcessors of this stream.
  */
-template[PROCESSORS] = String;
+template[PROCESSORS] = [String];
 /**
  * Sink of this stream.
  */

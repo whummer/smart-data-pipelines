@@ -49,7 +49,7 @@ public class MovingFunctionTests {
 
 		List<Tuple> events = testSubscriber.getOnNextEvents();
 		assertEquals(1, events.size());
-		assertEquals(14.5, events.get(0).getDouble(MovingFunction.KEY), 0);
+		assertEquals(14.5, events.get(0).getTuple(MovingFunction.RIOX_ANALYTICS).getDouble(MovingFunction.KEY), 0);
 		
 		subscription.unsubscribe();
 
@@ -86,7 +86,7 @@ public class MovingFunctionTests {
 
 		List<Tuple> events = testSubscriber.getOnNextEvents();
 		assertEquals(1, events.size());
-		assertEquals(10, events.get(0).getDouble(MovingFunction.KEY), 0);
+		assertEquals(10, events.get(0).getTuple(MovingFunction.RIOX_ANALYTICS).getDouble(MovingFunction.KEY), 0);
 
 		subscription.unsubscribe();
 
@@ -123,7 +123,7 @@ public class MovingFunctionTests {
 
 		List<Tuple> events = testSubscriber.getOnNextEvents();
 		assertEquals(1, events.size());
-		assertEquals(19, events.get(0).getDouble(MovingFunction.KEY), 0);
+		assertEquals(19, events.get(0).getTuple(MovingFunction.RIOX_ANALYTICS).getDouble(MovingFunction.KEY), 0);
 
 		subscription.unsubscribe();
 
@@ -160,7 +160,7 @@ public class MovingFunctionTests {
 
 		List<Tuple> events = testSubscriber.getOnNextEvents();
 //		assertEquals(1, events.size());
-		assertEquals(145, events.get(0).getDouble(MovingFunction.KEY), 0);
+		assertEquals(145, events.get(0).getTuple(MovingFunction.RIOX_ANALYTICS).getDouble(MovingFunction.KEY), 0);
 
 		subscription.unsubscribe();
 

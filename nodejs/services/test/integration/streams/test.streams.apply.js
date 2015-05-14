@@ -1,12 +1,12 @@
 'use strict';
 
 var assert = require('assert');
+var log = global.log || require('winston');
 var superagent = require('superagent');
 var status = require('http-status');
 var test = require('../util/testutil');
 var starters = require('../util/service.starters');
 var riox = require('riox-shared/lib/api/riox-api');
-var springxd = require('riox-services-base/lib/util/springxd.util');
 var promise = require('promise');
 var WebSocket = require('ws');
 
@@ -59,11 +59,6 @@ describe('streams.flow', function() {
 			riox.add.streams.sink(sink, wrap(resolve), reject);
 		};
 
-		var addProcessor = function(resolve, reject) {
-			var processor1 = objs.processor1 = {name: "processor1"};
-			riox.add.streams.processor(processor1, wrap(resolve), reject);
-		};
-
 		var addStream = function(resolve, reject) {
 			riox.add.stream(objs.stream, wrap(resolve), reject);
 		};
@@ -74,34 +69,34 @@ describe('streams.flow', function() {
 			riox.stream.apply(req, wrap(resolve), reject);
 		};
 
-		var findDeployedModules = function(resolve, reject) {
-			var names = [];
-			names.push("producer-" + objs.source.id + ".source.riox-http");
-			names.push("consumer-" + objs.sink.id + ".sink.websocket");
-			springxd.findContainersOfDeployedModules(names, resolve, reject);
-		};
-
 		var registerWebsocket = function(resolve, reject) {
-			var url = "ws://" + objs.ips.sink + ":9001/" + 
+			var url = "ws://" + config.xdcontainer.outbound.hostname + ":" + config.xdcontainer.outbound.port + "/" +
 				objs.sink[ORGANIZATION_ID] + "/" + objs.sink.id;
-			console.log("subscribing to websocket ", url);
+			log.debug("subscribing to websocket ", url);
 			var ws = new WebSocket(url);
 			app.receivedMessages = [];
+
+			ws.on('open', function open() {
+				log.debug("ws open");
+			});
+			ws.on('error', function error(error) {
+				log.debug("ws error: ", error);
+			});
 			ws.on('message', function(data, flags) {
-				console.log("msg -> ", data);
+				log.debug("msg -> ", data);
 				app.receivedMessages.push(data);
 			});
 			resolve();
 		};
 
 		var sendMessages = function(resolve, reject) {
-			var url = "http://" + objs.ips.source + ":9000/" + 
+			var url = "http://" + config.xdcontainer.inbound.hostname + ":" + config.xdcontainer.inbound.port + "/" +
 				objs.source[ORGANIZATION_ID] + "/" + objs.source.id;
 			app.numMessages = 10;
 			var i = 0;
 			for(; i < app.numMessages; i ++) {
-				//console.log("posting data item to", url);
-				superagent.post(url).send({foo: "bar"}).
+				log.debug("posting data item to", url);
+				superagent.post(url).send({foo: i}).
 				end(function(err, res) {});
 			}
 			resolve();
@@ -119,7 +114,7 @@ describe('streams.flow', function() {
 					func(retries - 1);
 				}, 1000);
 			};
-			func(5);
+			func(20); // wait up to 20 seconds (sometimes takes quite long for messages to arrive)
 		};
 
 		new Promise(addSource).
@@ -133,12 +128,6 @@ describe('streams.flow', function() {
 			// console.log("added sink", sink);
 			objs.sink = sink;
 			objs.stream[SINK_ID] = sink.id;
-			return new Promise(addProcessor);
-		}).
-		then(function(processor1) {
-			// console.log("added processor", processor1);
-			objs.processor1 = processor1;
-			objs.stream[PROCESSORS] = [processor1.id];
 			return new Promise(addStream);
 		}).
 		then(function(stream) {
@@ -146,21 +135,11 @@ describe('streams.flow', function() {
 			objs.stream = stream;
 			return new Promise(applyConfig);
 		}).
-		then(function(conts) {
-			// console.log("spring", conts);
-			console.log("configured/started stream", objs.stream.id);
-			return new Promise(findDeployedModules);
-		}).
-		then(function(modules) {
-			objs.ips = {
-				source: modules[0].attributes.ip,
-				sink: modules[1].attributes.ip
-			};
-			// console.log("deployed modules", modules);
+		then(function() {
 			return new Promise(registerWebsocket);
 		}).
 		then(function(websocket) {
-			console.log("configured websocket");
+			log.debug("configured websocket");
 			return new Promise(sendMessages);
 		}).
 		then(function(messages) {
@@ -170,6 +149,7 @@ describe('streams.flow', function() {
 			done();
 		},
 		function(err) {
+			log.debug("Error: ", err);
 			done(new Error("Error in the flow:", err));
 		});
 

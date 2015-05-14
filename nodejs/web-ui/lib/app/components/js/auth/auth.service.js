@@ -29,7 +29,7 @@ angular.module('rioxApp')
   	  riox.organizations(function(orgs) {
   		  currentUser.organizations = orgs;
   		  orgs.forEach(function(org) {
-  			 if(org[OWNER_ID] == currentUser.id) {
+  			 if(org[CREATOR_ID] == currentUser.id) {
   				 org.defaultOrganization = org;
   			 }
   		  });

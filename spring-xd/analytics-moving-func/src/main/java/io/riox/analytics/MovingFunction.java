@@ -18,7 +18,10 @@ import rx.observables.MathObservable;
  */
 public class MovingFunction implements Processor<Tuple, Tuple> {
 
+	public static final String RIOX_ANALYTICS = "riox-analytics";
 	public static final String KEY = "moving_function";
+	public static final String ITEMS = "items";
+	public static final String FUNCTION = "function";
 
 	enum Function { MAX, MIN, SUM, AVG };
 
@@ -56,7 +59,8 @@ public class MovingFunction implements Processor<Tuple, Tuple> {
 									}
 								}
 				)
-				.map(tuple -> tuple().of(KEY, tuple));
+				.map(tuple -> tuple().of(RIOX_ANALYTICS,
+								tuple().of(KEY, tuple, ITEMS, items, FUNCTION, function.name())));
 	}
 	
 	/**

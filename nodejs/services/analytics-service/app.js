@@ -16,12 +16,15 @@ global.config = require("riox-services-base/lib/config/merge")(global.config, co
 // require service starter
 var starter = require("riox-services-base/lib/service.starter");
 
-// Populate DB with sample data
-if(config.seedDB) { require("./config/analytics_functions"); }
-
 // start server
 var routes = require("./routes");
 var server = starter.start(config, routes, "analytics-service");
+
+// Populate DB with sample data
+if(config.seedDB) {
+	var promise = require("./config/analytics_functions");
+	server.startedPromise = promise;
+}
 
 module.exports = server;
 

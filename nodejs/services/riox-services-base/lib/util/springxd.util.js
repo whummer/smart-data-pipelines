@@ -5,6 +5,9 @@ var fs = require('fs');
 var log = global.log || require('winston');
 
 var x = exports;
+var STATUS_DEPLOYING = "deploying";
+var STATUS_DEPLOYED = "deployed";
+var STATUS_FAILED = "failed";
 
 function getBaseURL() {
 	return "http://" + config.xdadmin.hostname + ":" + config.xdadmin.port;
@@ -30,12 +33,14 @@ x.waitForStreamStatus = function (streamName, callback, errorCallback, retries) 
 		retries = 5;
 	}
 	if (retries < 0) {
-		if (errorCallback) errorCallback("Failed to wait for stream status (timeout).");
+		var msg = "Failed to wait for stream status (timeout).";
+		log.warn(msg);
+		if (errorCallback) errorCallback(msg);
 		return;
 	}
 	setTimeout(function () {
 		x.findStream(streamName, function (stream) {
-			if (stream && stream.status == "deploying") {
+			if (stream && stream.status == STATUS_DEPLOYING) {
 				x.waitForStreamStatus(streamName, callback, errorCallback, retries - 1);
 			} else {
 				callback(stream);
@@ -44,22 +49,33 @@ x.waitForStreamStatus = function (streamName, callback, errorCallback, retries) 
 	}, 3000);
 };
 
+
 x.createStream = function (streamName, streamDefinition, callback, errorCallback) {
 	var url = getStreamsURL();
 	console.log('Creating XD stream "' + streamName + '" with definition: ' + streamDefinition);
 	request.post(url, {form: {name: streamName, definition: streamDefinition}},
 		function (error, response, body) {
-			if (error) {
-				if (errorCallback) errorCallback();
+			if (error || (response.statusCode >= 400 && response.statusCode < 600)) {
+				var error = "Unable to create Spring XD stream (" + response.statusCode + ")" + error;
+				/* maybe the stream already exists -> try to find */
+				x.findStream(streamName, function(stream) {
+					if(stream) {
+						// TODO check if existing stream definition is identical to requested one
+						return callback(stream);
+					}
+					if(errorCallback) errorCallback("Unable to create or find stream", streamName);
+				}, errorCallback);
 				return;
 			}
 			x.waitForStreamStatus(streamName, function (stream) {
-				if (stream.status == "deployed") {
+				if (stream.status == STATUS_DEPLOYED) {
 					callback(stream);
-				} else if (stream.status == "failed") {
-					console.log("unable to create stream (deploy failed). re-deploying!");
+				} else if (stream.status == STATUS_FAILED) {
+					console.log("unable to create stream '" + streamName + "' (deploy failed). re-deploying!");
 					x.redeployStream(streamName, callback, errorCallback);
 				}
+			}, function() {
+				x.redeployStream(streamName, callback, errorCallback);
 			});
 		}
 	);
@@ -72,10 +88,10 @@ x.undeployStream = function (streamName, callback, errorCallback) {
 			if (errorCallback) errorCallback();
 			return;
 		}
-		var waitSec = 3000;
+		var waitMS = 3000;
 		setTimeout(function () {
-			callback(body);
-		}, waitSec);
+			x.waitForStreamStatus(streamName, callback, errorCallback);
+		}, waitMS);
 	});
 };
 x.deployStream = function (streamName, callback, errorCallback) {
@@ -85,14 +101,33 @@ x.deployStream = function (streamName, callback, errorCallback) {
 			if (errorCallback) errorCallback();
 			return;
 		}
-		x.waitForStreamStatus(streamName, callback, errorCallback);
+		x.waitForStreamStatus(streamName, function(stream) {
+			if(stream.status == STATUS_DEPLOYED) {
+				callback(stream);
+			} else {
+				errorCallback(stream);
+			}
+		}, errorCallback);
 	});
 };
 
-x.redeployStream = function (streamName, callback, errorCallback) {
+x.redeployStream = function (streamName, callback, errorCallback, retries) {
+	if (typeof retries == "undefined") {
+		retries = 5;
+	}
+	if (retries < 0) {
+		var msg = "Failed to re-deploy stream '" + streamName + "'.";
+		log.warn(msg);
+		if (errorCallback) errorCallback(msg);
+		return;
+	}
 	x.undeployStream(streamName, function () {
-		x.deployStream(streamName, callback, errorCallback);
-	}, errorCallback);
+		x.deployStream(streamName, callback, function() {
+			x.redeployStream(streamName, callback, errorCallback, retries - 1);
+		});
+	}, function() {
+		x.redeployStream(streamName, callback, errorCallback, retries - 1);
+	});
 };
 
 x.listStreams = function (streamName, callback, errorCallback) {
@@ -261,7 +296,6 @@ x.findContainersOfDeployedModules = function (names, callback, errorCallback) {
 
 x.uploadModule = function (type, name, file, callback, errorCallback) {
 	var url = getModulesURL() + "/" + type + "/" + name;
-	console.log("upload file " + file + " to URL " + url);
 	var options = {
 		headers: {
 			"Content-Type": "application/octet-stream"
@@ -272,7 +306,6 @@ x.uploadModule = function (type, name, file, callback, errorCallback) {
 				if (errorCallback) errorCallback(error);
 				return;
 			}
-			console.log(response);
 			callback(response);
 		},
 	}

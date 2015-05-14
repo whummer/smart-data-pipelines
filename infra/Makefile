@@ -9,8 +9,7 @@ ifeq ($(USE_FIG), true)
 compose = fig
 endif
 
-
-.PHONY: build-images push-images deploy-k8s clean
+.PHONY: build-images push-images deploy-k8s deploy-k8s-dns deploy-services clean
 
 build-push: build-images push-images
 
@@ -37,6 +36,28 @@ push-images:
 deploy-k8s:
 	$(compose) -f k8s.yml up -d
 
+deploy-k8s-ec2:
+	aws cloudformation create-stack --stack-name kubernetes-dev --region eu-central-1 \
+				--template-body file://k8s-ec2-cloudformation.json \
+				--parameters ParameterKey=KeyPair,ParameterValue=riox-ec2 \
+             ParameterKey=SubnetId,ParameterValue=subnet-22b2494b \
+             ParameterKey=SubnetAZ,ParameterValue=eu-central-1a \
+             ParameterKey=VpcId,ParameterValue=vpc-8c6295e5
+
+undeploy-k8s-ec2:
+	aws cloudformation delete-stack --stack-name kubernetes-dev
+
+deploy-k8s-ec2:
+	aws cloudformation create-stack --stack-name kubernetes-dev --region eu-central-1 \
+				--template-body file://k8s-ec2-cloudformation.json \
+				--parameters ParameterKey=KeyPair,ParameterValue=riox-ec2 \
+             ParameterKey=SubnetId,ParameterValue=subnet-22b2494b \
+             ParameterKey=SubnetAZ,ParameterValue=eu-central-1a \
+             ParameterKey=VpcId,ParameterValue=vpc-8c6295e5
+
+undeploy-k8s-ec2:
+	aws cloudformation delete-stack --stack-name kubernetes-dev
+
 deploy-k8s-dns:	
 	(cd k8s-dns && make deploy)
 
@@ -53,14 +74,14 @@ deploy-services:
 	(cd spring-xd-hsqldb && make deploy)
 
 undeploy-services: 
-	(cd spring-xd-zookeeper && make undeploy)
-	(cd mongodb && make undeploy)
-	(cd redis && make undeploy)
-	(cd kafka && make undeploy)
 	(cd spring-xd-admin && make undeploy)
 	(cd spring-xd-container && make undeploy)
+	(cd kafka && make undeploy)
+	(cd spring-xd-zookeeper && make undeploy)
 	(cd spring-xd-hsqldb && make undeploy)
-
+	(cd redis && make undeploy)
+	(cd mongodb && make undeploy)
+	
 # ATTENTION: Use with caution. Stops and removes ALL docker container
 clean:
 	@while [ -z "$$CONTINUE" ]; do \

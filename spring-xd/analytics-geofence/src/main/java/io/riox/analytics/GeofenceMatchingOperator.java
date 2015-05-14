@@ -15,7 +15,8 @@ import rx.Subscriber;
  */
 public final class GeofenceMatchingOperator implements Operator<Tuple, Tuple> {
 
-	private static final String RIOX_ANALYTICS = "riox-analytics";
+	public static final String GEOFENCE = "geofence";
+	public static final String RIOX_ANALYTICS = "riox-analytics";
 
 	private Geofence geofence;
 	private String[] latPath;
@@ -61,9 +62,7 @@ public final class GeofenceMatchingOperator implements Operator<Tuple, Tuple> {
 					tuple.put(name, values.get(i++));
 				}
 				// add result to tuple
-				tuple.put(RIOX_ANALYTICS, TupleBuilder.tuple().of(GeofenceDetector.KEY, match));
-				
-
+				tuple.put(RIOX_ANALYTICS, TupleBuilder.tuple().of(GEOFENCE, geofence.toTuple(), GeofenceDetector.KEY, match));
 				subscriber.onNext(tuple.build());
 			}
 
