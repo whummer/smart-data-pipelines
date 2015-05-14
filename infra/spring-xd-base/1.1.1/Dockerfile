@@ -21,5 +21,10 @@ ADD riox-source-http.jar /opt/spring-xd-${XD_VERSION}/xd/custom-modules/source/r
 ADD riox-sink-websocket.jar /opt/spring-xd-${XD_VERSION}/xd/custom-modules/sink/websocket.jar
 RUN chown -R springxd:springxd /opt/spring-xd-${XD_VERSION}
 
+# make sure that often-used libs are in global XD lib and not in local module lib folders
+# https://jira.spring.io/browse/XD-1440
+RUN mv /opt/spring-xd-${XD_VERSION}/xd/modules/sink/kafka/lib/* /opt/spring-xd-${XD_VERSION}/xd/lib/
+RUN mv /opt/spring-xd-${XD_VERSION}/xd/modules/source/kafka/lib/* /opt/spring-xd-${XD_VERSION}/xd/lib/
+
 USER springxd
 WORKDIR /opt/spring-xd

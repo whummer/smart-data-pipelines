@@ -21,9 +21,11 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -38,9 +40,11 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.integration.channel.DirectChannel;
 import org.springframework.integration.test.util.SocketUtils;
@@ -50,6 +54,7 @@ import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.MessagingException;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.ResponseExtractor;
 import org.springframework.web.client.RestTemplate;
 
 
@@ -181,6 +186,32 @@ public class NettyHttpInboundChannelAdapterTests {
 
 		adapter1.stop();
 		adapter2.stop();
+	}
+
+	private static class HeadersExtractor implements ResponseExtractor<HttpHeaders> {
+		public HttpHeaders extractData(ClientHttpResponse response) throws IOException {
+			return response.getHeaders();
+		}
+	}
+
+	@Test
+	public void testCorsHeadersPresent() throws Exception {
+		DirectChannel channel = new DirectChannel();
+		int port = SocketUtils.findAvailableServerSocket();
+		NettyHttpInboundChannelAdapter adapter = new NettyHttpInboundChannelAdapter(port);
+		adapter.setOutputChannel(channel);
+		adapter.start();
+		RestTemplate template = new RestTemplate();
+		URI uri1 = new URI("http://localhost:" + port + "/test1");
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.TEXT_PLAIN);
+
+		HttpHeaders resHeaders = template.execute(uri1, HttpMethod.OPTIONS, null, new HeadersExtractor());
+		assertTrue(resHeaders.containsKey(org.jboss.netty.handler.codec.http.HttpHeaders.Names.ACCESS_CONTROL_ALLOW_CREDENTIALS));
+		assertTrue(resHeaders.containsKey(org.jboss.netty.handler.codec.http.HttpHeaders.Names.ACCESS_CONTROL_ALLOW_HEADERS));
+		assertEquals(resHeaders.get(org.jboss.netty.handler.codec.http.HttpHeaders.Names.ACCESS_CONTROL_ALLOW_ORIGIN), Arrays.asList("*"));
+
+		adapter.stop();
 	}
 
 	/* end whu */

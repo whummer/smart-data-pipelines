@@ -19,15 +19,17 @@ angular.module('rioxApp').controller(
 
 	$scope.finish = function() {
 		var data = $scope.formData;
-		var sink = {};
-		var stream = {};
-		var processor = {};
+		var cfg = {};
+		cfg.stream = {};
 		var saveSink = function(resolve, reject) {
+			var sink = {};
 			sink[CONNECTOR] = data[CONNECTOR][TYPE];
+			sink[ORGANIZATION_ID] = Auth.getCurrentOrganization().id;
 			riox.add.streams.sink(sink, resolve, reject);
 		};
 		var saveProcessors = function(resolve, reject) {
 			var mod = data.selectedAnalyticsModule;
+			var processor = {};
 			processor[TYPE] = mod._id;
 			processor[PAYLOAD] = {};
 			processor[PAYLOAD][INPUT] = mod[INPUT];
@@ -37,26 +39,29 @@ angular.module('rioxApp').controller(
 			}, reject);
 		};
 		var saveStream = function(resolve, reject) {
-			riox.add.stream(stream, resolve, reject);
+			riox.add.stream(cfg.stream, resolve, reject);
 		};
 		var applyStream = function(resolve, reject) {
 			var req = {};
-			req[STREAM_ID] = stream.id;
-			riox.stream.apply(stream, resolve, reject);
+			req[STREAM_ID] = cfg.stream.id;
+			console.log("applying stream", req, cfg.stream);
+			riox.stream.apply(req, resolve, reject);
 		};
 
 		/* start promise chain */
 		$q(saveSink).
 		then(function(sink) {
-			stream[SOURCE_ID] = data.selectedSource.id;
-			stream[SINK_ID] = sink.id;
+			cfg.stream[SOURCE_ID] = data.selectedSource.id;
+			cfg.stream[SINK_ID] = sink.id;
 			return $q(saveProcessors);
 		}).
 		then(function(processors) {
-			stream[PROCESSORS] = processors;
+			cfg.stream[PROCESSORS] = processors;
 			return $q(saveStream);
 		}).
 		then(function(stream) {
+			cfg.stream = stream;
+			console.log("saved stream", stream);
 			return $q(applyStream);
 		}).
 		then(function(result) {

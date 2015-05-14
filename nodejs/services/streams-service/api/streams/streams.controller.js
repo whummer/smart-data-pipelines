@@ -28,29 +28,24 @@ exports.listAll = function (req, res, next) {
 
 exports.createStream = function (req, res, next) {
 	var stream = new Stream(req.body);
-
 	stream.save(function (err, obj) {
 		if (err) {
 			return validationError(err, next);
 		}
-
 		res.json(obj);
 	});
 };
 
 exports.applyStreamConfig = function (req, res, next) {
-	var query = {};
-	Stream.find(query, function (err, list) {
+	Stream.findById(req.params.id, function (err, obj) {
 		if (err) {
 			return validationError(err, next);
 		}
-
-		var stream = list[0];
-		applyStream(stream, function () {
-			res.json(stream);
+		applyStream(obj, function () {
+			res.json(obj);
 		}, function (error) {
 			log.error("Cannot apply stream: ", error);
-			return next(errors.InternalError("Cannot apply stream: " + stream._id, error));
+			return next(errors.InternalError("Cannot apply stream: " + obj._id, error));
 		});
 	});
 };

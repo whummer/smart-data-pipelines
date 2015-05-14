@@ -119,7 +119,7 @@ describe('streams.flow', function() {
 					func(retries - 1);
 				}, 1000);
 			};
-			func(5);
+			func(20); // wait up to 20 seconds (sometimes takes quite long for messages to arrive)
 		};
 
 		new Promise(addSource).

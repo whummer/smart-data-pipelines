@@ -26,3 +26,5 @@ git.properties
 *.iml
 *.ipr
 rebel.xml
+node_modules/
+bower_components/
