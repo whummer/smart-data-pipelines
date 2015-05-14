@@ -41,32 +41,75 @@ exports.createStreamProcessor = function (req, res, next) {
 };
 
 exports.applyByStream = function (stream, callback, errorCallback) {
+	log.debug("Applying stream (e2e, processors): ", stream[ID]);
+
 	if (!stream[SOURCE_ID] || !stream[SINK_ID]) {
 		return errorCallback("Please provide a valid stream with " + SOURCE_ID + " and " + SINK_ID);
 	}
 
 	var cfg = {};
 
-	var xdStreamId = "processors-" + stream["id"];
+	var xdStreamId = "processors-" + stream[ID];
 
 	var findStream = function(resolve, reject) {
 		springxd.findStream(xdStreamId, resolve, reject);
 	};
 
+
+	/* Loads all processors from the DB given their IDs from the stream. */
+	var findProcessors = function(resolve, reject) {
+		StreamProcessor.find({ _id: { '$in': stream[PROCESSORS] } }, function (err, obj) {
+			if (err) {
+				log.error("Cannot apply stream-processor", err);
+				reject(err);
+			}
+			if (!obj) {
+				//return next(errors.NotFoundError("Cannot find stream-processor with ID " + id));
+				log.error("Cannot find stream-processor with ID " + id, err);
+				reject(err);
+			}
+
+			log.debug("Processor elements: ", obj.length);
+			resolve(obj);
+		});
+	}
+
+
 	var createStream = function(resolve, reject) {
 
 		// create the SpringXD stream
-		var port = 9001;
 		var sourceTopic = "producer-" + stream[SOURCE_ID];
 		var sinkTopic = "consumer-" + stream[SINK_ID];
 		var mimeType = "text/plain";
+		//var mimeType = "application/json";
+
+
+
+		// add kafka stream that is reading from the source topic
 		var streamDefinition = "k1: kafka --zkconnect=" + config.zookeeper.hostname +
-				":" + config.zookeeper.port  + " --topic=" + sourceTopic + " --outputType=" + mimeType +
-				" | transform | " +
+			":" + config.zookeeper.port  + " --topic=" + sourceTopic + " --outputType=" + mimeType;
 
-				// TODO add analytics processors here
+		// add all stream processors
+		cfg.processors.forEach(function(entry) {
+			log.debug("processor data: ", JSON.stringify(entry));
 
-				"k2: kafka --topic=" + sinkTopic + " --brokerList=" + config.kafka.hostname + ":" + config.kafka.port;
+			var definition = entry.type;
+			if(!definition) {
+				/* set default definition (pass-through 'transform') */
+				definition = "transform";
+			}
+			entry[PAYLOAD][INPUT].forEach(function(input) {
+				definition +=  " --" + input[KEY] + "=" + input[VALUE]
+			});
+
+			log.debug("processor definition: ", definition);
+
+			streamDefinition += " | " + definition;
+		});
+
+		// add kafka
+		streamDefinition += " | k2: kafka --topic=" + sinkTopic + " --brokerList=" +
+			config.kafka.hostname + ":" + config.kafka.port + " --inputType=" + mimeType;
 
 		springxd.createStream(xdStreamId, streamDefinition, function (stream) {
 			log.debug("processors stream " + xdStreamId + " created!");
@@ -75,14 +118,18 @@ exports.applyByStream = function (stream, callback, errorCallback) {
 
 	};
 
-	new Promise(findStream).
-	then(function(stream) {
-		return stream ? stream : new Promise(createStream);
-	}).
-	then(function(stream) {
-		cfg.stream = stream;
-		callback({ result: stream });
-	});
+	new Promise(findProcessors).
+		then(function (processors) {
+			cfg.processors = processors;
+			return new Promise(findStream)
+		}).
+		then(function (stream) {
+			return stream ? stream : new Promise(createStream);
+		}).
+		then(function (stream) {
+			cfg.stream = stream;
+			callback({result: stream});
+		});
 };
 
 exports.updateStreamProcessor = function (req, res) {
@@ -91,7 +138,6 @@ exports.updateStreamProcessor = function (req, res) {
 		if (err) {
 			return validationError(err, next);
 		}
-
 		res.json(obj);
 	});
 };
@@ -106,7 +152,6 @@ exports.showStreamProcessor = function (req, res, next) {
 		if (!obj) {
 			return next(errors.NotFoundError("Cannot find stream-processor with ID " + id));
 		}
-
 		res.json(obj);
 	});
 };

@@ -27,10 +27,10 @@
 	g.DESCRIPTION = "description";
 	g.CREATION_DATE = "creation-date";
 	g.CREATOR_ID = "creator-id";
-	g.OWNER_ID = "owner-id";
 	g.TYPE = "type";
 	g.TYPE_ACCESS_REQUEST = "ACCESS_REQUEST";
 	g.TYPE_ACCESS_UPDATE = "ACCESS_UPDATE";
+	g.TYPE_CONSENT_UPDATE = "CONSENT_UPDATE";
 	g.THING_TYPE = "thing-type";
 	g.THING_ID = "thing-id";
 	g.THINGS = "things";
@@ -51,7 +51,9 @@
 	g.SINK_ID = "sink-id";
 	g.ORGANIZATION_ID = "organization-id";
 	g.PROCESSORS = "processors";
+	g.PROVIDER_ID = "provider-id";
 	g.REQUESTOR_ID = "requestor-id";
+	g.CONSENTOR_ID = "consentor-id";
 	g.RECIPIENT_ID = "recipient-id";
 	g.CONNECTOR = "connector";
 	g.MEMBER = "member";
@@ -74,6 +76,7 @@
 	g.PERMIT_MODE = "permit";
 	g.PERMIT_MODE_AUTO = "AUTO";
 	g.PERMIT_MODE_MANUAL = "MANUAL";
+	g.ENDPOINT = "endpoint";
 	g.VISIBLE = "visible";
 	g.INPUT = "input";
 	g.OUTPUT = "output";
@@ -81,6 +84,7 @@
 	g.KEY = "key";
 	g.VALUE = "value";
 	g.VALUE_TYPE = "value-type";
+	g.VALID_VALUES = "valid-values";
 	g.SECURITY = "security";
 	g.RETENTION_TIME = "retention-time";
 	g.DATA_ITEMS = "data-items";
@@ -120,7 +124,14 @@
 		return callPOST(servicesConfig.services.users.url + "/", userInfo, callback, errorCallback);
 	};
 	sh.signin = function (userInfo, callback, errorCallback) {
-		return callPOST(servicesConfig.services.users.url + "/auth/local", userInfo, callback, errorCallback);
+		return callPOST(servicesConfig.services.users.url + "/auth/local", userInfo, function(token) {
+			if(!callback || !callback.dontSetToken) {
+				sh.auth({
+					RIOX_AUTH_NETWORK: "riox",
+					RIOX_AUTH_TOKEN: token.token
+				}, callback, errorCallback);
+			}
+		}, errorCallback);
 	};
 	sh.auth = function (options, callback, errorCallback) {
 		var authToken = sh.authToken = {};
@@ -131,15 +142,18 @@
 		assertAuth();
 		var __defaultHeaders = {
 			"Content-Type": "application/json",
-			"riox-auth-user-id": authToken.userId,
-			"riox-auth-app-key": authToken.appKey,
-			"riox-auth-network": authToken.network,
-			"riox-auth-token": authToken.access_token,
+			// TODO remove
+//			"riox-auth-user-id": authToken.userId,
+//			"riox-auth-app-key": authToken.appKey,
+//			"riox-auth-network": authToken.network,
+//			"riox-auth-token": authToken.access_token,
 			"authorization": "Bearer " + authToken.access_token
 		};
-		$.ajaxSetup({
-			headers: __defaultHeaders
-		});
+		if(typeof $ != "undefined") {
+			$.ajaxSetup({
+				headers: __defaultHeaders
+			});
+		}
 		var funcSuccess = function (result) {
 			if (callback) {
 				callback(result);
@@ -266,11 +280,24 @@
 	};
 	sh.streams.provided = function (searchOpts, callback, errorCallback) {
 		var url = servicesConfig.services.streams.url + "/provided";
+		if(searchOpts[NAME]) {
+			url += "/by/name/" + searchOpts[NAME];
+		}
 		return callGET(url, callback, errorCallback);
 	};
-	sh.sinks = sh.get.sinks = function (searchOpts, callback, errorCallback) {
+	sh.streams.sinks = sh.get.streams.sinks = function (searchOpts, callback, errorCallback) {
 		var url = servicesConfig.services.streamsinks.url;
-		//url += "?creatorId=" + window.RIOX_USER_ID;
+		return callGET(url, callback, errorCallback);
+	};
+	sh.streams.processor = function (id, callback, errorCallback) {
+		if (!id) {
+			if (callback) callback(null);
+			return null;
+		}
+		return callGET(servicesConfig.services.streamprocessors.url + "/" + id, callback, errorCallback);
+	};
+	sh.streams.processors = function (searchOpts, callback, errorCallback) {
+		var url = servicesConfig.services.streamprocessors.url;
 		return callGET(url, callback, errorCallback);
 	};
 	sh.analytics = sh.get.analytics = function (callback, errorCallback) {
@@ -345,6 +372,23 @@
 		var url = servicesConfig.services.access.url +
 			(sourceId ? ("/source/" + sourceId) : "") +
 			(consumerId ? ("/consumer/" + consumerId) : "");
+		return callGET(url, callback, errorCallback);
+	};
+	sh.consents = sh.get.consents = function (query, callback, errorCallback) {
+		if (typeof callback == "undefined") {
+			callback = query;
+			query = {};
+		}
+		var sourceId = query[SOURCE_ID];
+		var consumerId = query[REQUESTOR_ID];
+		var consentorId = query[CONSENTOR_ID];
+		var url = servicesConfig.services.consents.url;
+		if(consentorId) {
+			url = url + "/user/" + consentorId;
+		} else {
+			url += (sourceId ? ("/source/" + sourceId) : "") +
+				(consumerId ? ("/consumer/" + consumerId) : "");
+		}
 		return callGET(url, callback, errorCallback);
 	};
 	sh.usage = sh.get.usage = function (callback, errorCallback) {
@@ -616,6 +660,7 @@
 
 	/* methods for stream access permissions */
 
+	sh.access = sh.access || {};
 	sh.access.enable = function (access, callback, errorCallback) {
 		var id = access.id ? access.id : access;
 		var url = servicesConfig.services.access.url + "/" + id + "/enable";
@@ -624,6 +669,17 @@
 	sh.access.disable = function (access, callback, errorCallback) {
 		var id = access.id ? access.id : access;
 		var url = servicesConfig.services.access.url + "/" + id + "/disable";
+		return callPOST(url, {}, callback, errorCallback);
+	};
+	sh.consent = sh.consent || {};
+	sh.consent.enable = function (consent, callback, errorCallback) {
+		var id = consent.id ? consent.id : consent;
+		var url = servicesConfig.services.consents.url + "/" + id + "/enable";
+		return callPOST(url, {}, callback, errorCallback);
+	};
+	sh.consent.disable = function (consent, callback, errorCallback) {
+		var id = consent.id ? consent.id : consent;
+		var url = servicesConfig.services.consents.url + "/" + id + "/disable";
 		return callPOST(url, {}, callback, errorCallback);
 	};
 
@@ -745,25 +801,29 @@
 
 	/* WEBSOCKET FUNCTIONS */
 
-	var connectWebsocket = function (onOpenCallback) {
+	var connectWebsocket = sh.connectWebsocket = function (options) {
+		var onOpenCallback = options.callback ? options.callback : options;
+		var sendTokenInProtocolUpdate = options.sendTokenInProtocolUpdate;
+		var wsURL = options.url ? options.url : servicesConfig.services.websocket.url;
 		assertAuth();
 		var ws;
 		if (openConnectionPerRequest || !sh.websocket || sh.websocket.readyState > 1) {
-			var wsURL = servicesConfig.services.websocket.url;
 			var authToken = window.authToken ? window.authToken : sh.authToken;
 
-			if (authToken.network && authToken.access_token) {
+			if(!sendTokenInProtocolUpdate) {
+				this.websocket = ws = new WebSocket(wsURL);
+			} else if (authToken.network && authToken.access_token) {
 				this.websocket = ws = new WebSocket(wsURL,
-					authToken.network + "~" + authToken.access_token);
+						authToken.network + "~" + authToken.access_token);
 			} else if (authToken.userId && authToken.appKey) {
 				this.websocket = ws = new WebSocket(wsURL,
-					authToken.userId + "~" + authToken.appKey);
+						authToken.userId + "~" + authToken.appKey);
 			} else {
 				throw "Please provide RIOX_USER_ID and RIOX_APP_KEY variables.";
 			}
 		}
 
-		if (onOpenCallback) {
+		if (typeof onOpenCallback == "function") {
 			if (ws.readyState == 0) {
 				ws.onopen = function () {
 					onOpenCallback(ws);

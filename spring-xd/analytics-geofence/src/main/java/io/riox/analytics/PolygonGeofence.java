@@ -1,5 +1,7 @@
 package io.riox.analytics;
 
+import org.springframework.xd.tuple.Tuple;
+
 public class PolygonGeofence implements Geofence {
 
 	private GeoCoordinates[] coordinates;
@@ -17,6 +19,11 @@ public class PolygonGeofence implements Geofence {
 	public boolean match(double latitude, double longitude) {
 		
 		return false;
+	}
+
+	@Override
+	public Tuple toTuple() {
+		return null;
 	}
 
 }

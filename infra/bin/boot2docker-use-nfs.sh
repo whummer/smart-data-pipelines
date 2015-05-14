@@ -14,6 +14,22 @@ then
   exit -1
 fi
 
+IFACE=en0
+if [ "$1" == "" ] 
+then
+  echo "No interface specified. Using \"en0\" as the default interface to allow NFS access."
+else 
+  echo "Using \"$1\" as the network interface to allow NFS access."
+  IFACE=$1
+fi
+
+OSX_IP=$(ifconfig $IFACE | grep --word-regexp inet | awk '{print $2}')
+if [ "$OSX_IP" == "" ]
+then
+  echo "No IP found. Network interface $IFACE not valid."
+  exit 1;
+fi
+
 # Run command as non root http://stackoverflow.com/a/10220200/96855
 B2D_IP=$(sudo -u ${SUDO_USER} boot2docker ip &> /dev/null)
 
@@ -26,7 +42,6 @@ then
   #exit -1
 fi
 
-OSX_IP=$(ifconfig en1 | grep --word-regexp inet | awk '{print $2}')
 MAP_USER=${SUDO_USER}
 MAP_GROUP=$(sudo -u ${SUDO_USER} id -n -g)
 

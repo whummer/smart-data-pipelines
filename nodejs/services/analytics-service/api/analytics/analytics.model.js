@@ -25,6 +25,8 @@ inputParam[ID] = false;
 inputParam[KEY] = String;
 inputParam[DESCRIPTION] = String;
 inputParam[VALUE_TYPE] = String;
+inputParam[VALID_VALUES] = [];
+
 /**
  * Output parameters.
  */

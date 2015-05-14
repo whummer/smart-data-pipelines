@@ -14,9 +14,13 @@ var validationError = function(res, err) {
  * in ../../config/analytics_functions.js with a seed in ../../app.js.
  */
 function listFunctions(query, req, res) {
-  AnalyticsFunction.find(query, function(err, list) {
-		if (err)
+	log.debug("query:", query);
+	AnalyticsFunction.find(query, function(err, list) {
+		if (err) {
+			log.debug("err:", err);
 			return res.send(500, err);
+		}
+		//log.debug("list: ", list);
 		res.json(200, list);
 	});
 }
@@ -25,25 +29,26 @@ function createAnalyticsElement(query, req, res) {
 }
 
 exports.index = function(req, res) {
-  var query = {};
-  if (req.query.name) {
-    query = {name: req.query.name};
-  }
+	var query = {};
+	if (req.query.name) {
+		query = {name: req.query.name};
+	}
 
-  log.info("Listing analytics function. Using query: ", query);
+	log.info("Listing analytics function. Using query: ", query);
 	return listFunctions(query, req, res);
 };
 
 
-//
-//exports.update = function(req, res) {
-//	var obj = new Organization(req.body);
+//exports.create = function(req, res) {
+//	var obj = new AnalyticsFunction(req.body);
 //	obj.save(req.params.id, function(err, obj) {
 //		if (err)
 //			return validationError(res, err);
 //		res.json(obj);
 //	});
 //};
+
+
 //
 //exports.show = function(req, res, next) {
 //	var id = req.params.id;

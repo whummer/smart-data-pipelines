@@ -73,6 +73,10 @@ dataItem[PRICING] = String;
  * Whether this stream is publicly visible, searchable, queryable.
  */
 template[VISIBLE] = Boolean;
+/**
+ * Stream Source endpoint.
+ */
+template[ENDPOINT] = String;
 
 
 var StreamSource = new Schema(template);

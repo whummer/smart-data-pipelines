@@ -44,6 +44,6 @@ run-e2e-test:
 
 run-xd-shell:
 	# Spring XS shell. Connect with "admin config server http://xd-admin.dev.riox.internal:9393"
-	docker run --rm -it --dns=10.0.0.100 -v `pwd`:/code riox/springxd-shell:1.1.1
+	docker run --rm -it --dns=10.0.0.100 riox/springxd-shell:1.1.1
 
-.PHONY: build push all clean e2e-test xd-shell install
+.PHONY: build push all clean run-e2e-test run-xd-shell install

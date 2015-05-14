@@ -1,6 +1,12 @@
 package io.riox.analytics;
 
+
+import org.springframework.xd.tuple.Tuple;
+import org.springframework.xd.tuple.TupleBuilder;
+
 public class CircularGeofence implements Geofence {
+
+	private final static double EARTH_RADIUS = 6371;
 
 	private double latitude;
 	private double longitude;
@@ -10,7 +16,7 @@ public class CircularGeofence implements Geofence {
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.radius = radius;
-	
+
 		validateRadius(radius);
 		validateLatLong(latitude, longitude);
 	}
@@ -21,7 +27,7 @@ public class CircularGeofence implements Geofence {
 		}
 		if (longitude > 180.0 || longitude < -180.0) {
 			throw new IllegalArgumentException("Invalid longitude: "
-					+ longitude);
+							+ longitude);
 		}
 	}
 
@@ -67,14 +73,20 @@ public class CircularGeofence implements Geofence {
 		double lngDistance = Math.toRadians(getLongitude() - longitude);
 
 		double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
-				+ Math.cos(Math.toRadians(latitude))
-				* Math.cos(Math.toRadians(getLatitude()))
-				* Math.sin(lngDistance / 2) * Math.sin(lngDistance / 2);
+						+ Math.cos(Math.toRadians(latitude))
+						* Math.cos(Math.toRadians(getLatitude()))
+						* Math.sin(lngDistance / 2) * Math.sin(lngDistance / 2);
 		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-	
+
 		return (getRadius() - EARTH_RADIUS * c * 1000) > 0;
 	}
 
-	private final static double EARTH_RADIUS = 6371;
+	@Override
+	public Tuple toTuple() {
+		return TupleBuilder.tuple().of(
+						"latitude", getLatitude(),
+						"longitude", getLongitude(),
+						"radius", getRadius());
+	}
 
 }

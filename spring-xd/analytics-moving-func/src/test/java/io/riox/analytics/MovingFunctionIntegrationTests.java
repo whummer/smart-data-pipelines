@@ -40,7 +40,7 @@ public class MovingFunctionIntegrationTests {
      * running on this host. Configure the ModuleRegistry to include the project module.
      */
     @SuppressWarnings("unused")
-	  @BeforeClass
+    @BeforeClass
     public static void setUp() {
 
         RandomConfigurationSupport randomConfigSupport = new RandomConfigurationSupport();
@@ -120,21 +120,21 @@ public class MovingFunctionIntegrationTests {
         assertResults(chain, 1, new Double[] { 19.0 });
     }
 
-		@Test
-		public void testSumWithJson() throws IOException {
+    @Test
+    public void testSumWithJson() throws IOException {
 
-			String streamName = "testMovingSumJson";
+        String streamName = "testMovingSumJson";
 
-			chain = chain(application, streamName, moduleName + " --inputType=application/x-xd-tuple --itemPath=measurement --function=SUM");
-			List<String> jsonData = createJsonData(10);
-			for (String json : jsonData) {
-				chain.sendPayload(json);
-			}
-			assertResults(chain, 1, new Double[] { 145.0 });
-		}
+        chain = chain(application, streamName, moduleName + " --inputType=application/x-xd-tuple --itemPath=measurement --function=SUM");
+        List<String> jsonData = createJsonData(10);
+        for (String json : jsonData) {
+            chain.sendPayload(json);
+        }
+        assertResults(chain, 1, new Double[] { 145.0 });
+    }
 
 
-	@Test
+    @Test
     public void testItemsWithFlatJson() throws IOException {
 
         String streamName = "testMovingAverageJson";
@@ -146,8 +146,8 @@ public class MovingFunctionIntegrationTests {
         }
         assertResults(chain, 2, new Double[] { 12.0D, 17.0D });
     }
-    
-    
+
+
     @Test
     public void testItemsWithComplexJson() throws IOException {
 
@@ -160,7 +160,7 @@ public class MovingFunctionIntegrationTests {
         }
         assertResults(chain, 2, new Double[] { 12.0D, 17.0D });
     }
-    
+
     @Test
     public void testItemsWithComplexJson2() throws IOException {
 
@@ -173,7 +173,7 @@ public class MovingFunctionIntegrationTests {
         }
         assertResults(chain, 2, new Double[] { 0.9D, 0.9D });
     }
-    
+
 
     /**
      * Tests a more complex path where the final element does not exist.
@@ -190,7 +190,7 @@ public class MovingFunctionIntegrationTests {
         }
         assertResults(chain, 2, new Double[] { Double.NaN, Double.NaN });
     }
-    
+
     /**
      * Tests a more complex path where the some path element in the middle does not exist.
      */
@@ -207,36 +207,36 @@ public class MovingFunctionIntegrationTests {
         assertResults(chain, 2, new Double[] { Double.NaN, Double.NaN });
     }
 
-	private List<String> createJsonData(int items) {
-		List<String> jsonData = new ArrayList<String>();
+    private List<String> createJsonData(int items) {
+        List<String> jsonData = new ArrayList<String>();
         for (int i = 0; i < items; i++) {
             String measurement = Integer.toString(i+10);
             jsonData.add("{\"id\":\"" + i + "\" , \"measurement\" : \"" + measurement + "\"}");
         }
-		return jsonData;
-	}
-	
-	@SuppressWarnings("unchecked")
-	private List<String> createComplexJsonData(int items) {
-		List<String> jsonData = new ArrayList<String>();
+        return jsonData;
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<String> createComplexJsonData(int items) {
+        List<String> jsonData = new ArrayList<String>();
         for (int i = 0; i < items; i++) {
             String measurement = Integer.toString(i+10);
-            
+
             JSONObject json = new JSONObject();
             JSONObject carData = new JSONObject();
             JSONObject fluidLevels = new JSONObject();
-            
+
             json.put("id", i);
             json.put("car-data", carData);
-            carData.put("speed", measurement);                       
+            carData.put("speed", measurement);
             carData.put("fluid-levels", fluidLevels);
             fluidLevels.put("brake", "0.9");
-            fluidLevels.put("windscreen", 0.4);           
+            fluidLevels.put("windscreen", 0.4);
             jsonData.add(json.toJSONString());
         }
-		return jsonData;
-	}
-    
+        return jsonData;
+    }
+
     private void assertResults(SingleNodeProcessingChain chain, int items, Double[] expected) {
         List<Tuple> outputData = new ArrayList<Tuple>();
         for (int i = 0; i < items; i++) {
@@ -244,13 +244,22 @@ public class MovingFunctionIntegrationTests {
             outputData.add(tuple);
             System.out.println("assertResults: output Tuple = [ + " + tuple + "]");
         }
-        
+
         for (int i = 0; i < expected.length; i++) {
-        	Tuple tuple = outputData.get(i);
-            assertEquals(expected[i], tuple.getDouble(MovingFunction.KEY), 0);
-        }       
-        
+            Tuple tuple = outputData.get(i);
+            assertEquals(expected[i], getResultValue(tuple), 0);
+        }
+
     }
-    
-    
+
+		private Double getResultValue(Tuple tuple) {
+			Tuple next = tuple.getTuple(MovingFunction.RIOX_ANALYTICS);
+
+			if (next != null) {
+				return next.getDouble(MovingFunction.KEY);
+			}
+			return Double.NaN;
+		}
+
+
 }

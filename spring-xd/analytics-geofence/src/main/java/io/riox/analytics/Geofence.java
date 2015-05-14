@@ -1,7 +1,10 @@
 package io.riox.analytics;
 
+import org.springframework.xd.tuple.Tuple;
+
 public interface Geofence {
 
-	public abstract boolean match(double latitude, double longitude);
+	boolean match(double latitude, double longitude);
 
+	Tuple toTuple();
 }

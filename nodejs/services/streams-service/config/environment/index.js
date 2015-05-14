@@ -58,6 +58,19 @@ var config = {
 	xdadmin: {
 		hostname: "xd-admin.dev.riox.internal",
 		port: 9393
+	},
+
+	xdcontainer: {
+		inbound: {
+			hostname: "xd-inbound.dev.riox.internal",
+			port: 9000
+		},
+		outbound: {
+			hostname: "xd-outbound.dev.riox.internal",
+			port: 9001
+		}
+
+
 	}
 
 };

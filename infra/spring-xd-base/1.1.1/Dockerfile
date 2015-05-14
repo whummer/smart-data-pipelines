@@ -16,10 +16,18 @@ RUN wget http://repo.spring.io/${XD_BUILD}/org/springframework/xd/spring-xd/${XD
     && chown -R springxd:springxd /opt/spring-xd-${XD_VERSION} \
     && ln -s /opt/spring-xd-${XD_VERSION} /opt/spring-xd
 
-# add custom modules into container filesystem
-ADD riox-source-http.jar /opt/spring-xd-${XD_VERSION}/xd/custom-modules/source/riox-http.jar
-ADD riox-sink-websocket.jar /opt/spring-xd-${XD_VERSION}/xd/custom-modules/sink/websocket.jar
 RUN chown -R springxd:springxd /opt/spring-xd-${XD_VERSION}
+
+# add custom modules into container filesystem
+ADD source-http-singleton.jar /opt/spring-xd-${XD_VERSION}/xd/custom-modules/source/http-singleton.jar
+ADD sink-websocket.jar /opt/spring-xd-${XD_VERSION}/xd/custom-modules/sink/websocket.jar
+ADD analytics-geofence-1.0.0.BUILD-SNAPSHOT.jar /opt/spring-xd-${XD_VERSION}/xd/custom-modules/processor/analytics-geofence.jar
+ADD analytics-moving-functions-1.0.0.BUILD-SNAPSHOT.jar /opt/spring-xd-${XD_VERSION}/xd/custom-modules/processor/analytics-moving-functions.jar
+
+# make sure that often-used libs are in global XD lib and not in local module lib folders
+# https://jira.spring.io/browse/XD-1440
+RUN mv /opt/spring-xd-${XD_VERSION}/xd/modules/sink/kafka/lib/* /opt/spring-xd-${XD_VERSION}/xd/lib/
+RUN mv /opt/spring-xd-${XD_VERSION}/xd/modules/source/kafka/lib/* /opt/spring-xd-${XD_VERSION}/xd/lib/
 
 USER springxd
 WORKDIR /opt/spring-xd

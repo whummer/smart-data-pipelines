@@ -10,7 +10,7 @@ var util = require('util');
 
 var app = {};
 
-describe('/stream/access', function() {
+describe('/access', function() {
 
 	before(function(done) {
 		/* start service(s) */
