@@ -16,7 +16,7 @@ desiredState:
         id: xd-container
         containers:
           - name: xd-container
-            image: riox/springxd-container:1.1.1
+            image: riox/springxd-container:1.1.2
             ports: 
               - containerPort: 9000
               - containerPort: 9001

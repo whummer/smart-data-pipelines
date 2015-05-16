@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+export HSQL_SERVER_HOST=$HSQLDB_PORT_9101_TCP_ADDR
+echo "HSQL_SERVER_HOST: ${HSQL_SERVER_HOST}"
+
+export HSQL_SERVER_PORT=$HSQLDB_PORT_9101_TCP_PORT
+echo "HSQL_SERVER_PORT: ${HSQL_SERVER_PORT}"
+
+export ZK_CLIENT_CONNECT=$ZOOKEEPER_PORT_2181_TCP_ADDR:$ZOOKEEPER_PORT_2181_TCP_PORT
+echo "ZK_CLIENT_CONNECT: ${ZK_CLIENT_CONNECT}"
+
+export SPRING_REDIS_HOST=$REDIS_PORT_6379_TCP_ADDR
+echo "SPRING_REDIS_HOST: ${SPRING_REDIS_HOST}"
+
+export SPRING_REDIS_PORT=$REDIS_PORT_6379_TCP_PORT
+echo "SPRING_REDIS_PORT: ${SPRING_REDIS_PORT}"
+
+# determine all KAFKA hosts and ports from the docker injected env vars
+hosts=`env | grep KAFKA_PORT_.*_TCP_ADDR`
+for i in $hosts; do
+  ip=$( echo $i | awk -F '\=' '{ print $2 }')
+  port=\$$( echo $i | awk -F '\=' '{ print $1 }' | sed "s/TCP_ADDR/TCP_PORT/g" )
+  kafka_hosts=${kafka_hosts}$ip:`echo $(eval echo $port)`,
+done
+
+export XD_TRANSPORT=kafka
+export XD_MESSAGEBUS_KAFKA_BROKERS=${kafka_hosts::-1} 
+echo "XD_MESSAGEBUS_KAFKA_BROKERS: ${XD_MESSAGEBUS_KAFKA_BROKERS}"
+
+export XD_MESSAGEBUS_KAFKA_ZKADDRESS=$ZOOKEEPER_PORT_2181_TCP_ADDR:$ZOOKEEPER_PORT_2181_TCP_PORT
+echo "XD_MESSAGEBUS_KAFKA_ZKADDRESS: ${XD_MESSAGEBUS_KAFKA_ZKADDRESS}"
+
+./xd/bin/xd-container

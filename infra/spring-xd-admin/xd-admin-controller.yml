@@ -16,6 +16,6 @@ desiredState:
         id: xd-admin
         containers:
           - name: xd-admin
-            image: riox/springxd-admin:1.1.1
+            image: riox/springxd-admin:1.1.2
             ports: 
               - containerPort: 9393

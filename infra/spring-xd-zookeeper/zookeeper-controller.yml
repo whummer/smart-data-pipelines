@@ -16,6 +16,6 @@ desiredState:
         id: zookeeper
         containers:
           - name: zookeeper
-            image: riox/springxd-zookeeper:1.1.1
+            image: riox/springxd-zookeeper:1.1.2
             ports: 
               - containerPort: 2181
