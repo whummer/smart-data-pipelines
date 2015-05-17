@@ -360,7 +360,7 @@ public class NettyHttpInboundChannelAdapter extends MessageProducerSupport {
 
 			});
 			pipeline.addLast("executionHandler", executionHandler);
-//			/* begin whu */
+			/* begin whu */
 			pipeline.addLast("corsHandlerOut", new ChannelDownstreamHandler() {
 				@Override
 				public void handleDownstream(
