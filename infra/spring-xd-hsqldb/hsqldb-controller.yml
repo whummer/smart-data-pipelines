@@ -16,6 +16,6 @@ desiredState:
         id: hsqldb
         containers:
           - name: hsqldb
-            image: riox/springxd-hsqldb:1.1.1
+            image: riox/springxd-hsqldb:1.1.2
             ports: 
               - containerPort: 9101

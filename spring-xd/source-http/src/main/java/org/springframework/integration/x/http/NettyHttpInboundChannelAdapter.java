@@ -183,7 +183,6 @@ public class NettyHttpInboundChannelAdapter extends MessageProducerSupport {
 		this.port = port;
 		this.ssl = ssl;
 		this.path = path;
-		initModuleState();
 	}
 
 	/* end whu */
@@ -248,6 +247,9 @@ public class NettyHttpInboundChannelAdapter extends MessageProducerSupport {
 
 	@Override
 	protected void doStart() {
+		/* begin whu */
+		initModuleState();
+		/* end whu */
 		if (this.messageConverter == null) {
 			this.messageConverter = new NettyInboundMessageConverter(
 					getMessageBuilderFactory());
@@ -275,6 +277,7 @@ public class NettyHttpInboundChannelAdapter extends MessageProducerSupport {
 		if (bootstrap != null) {
 			bootstrap.shutdown();
 		}
+		logger.debug("Removing channel adapter from map: " + port + ":" + path);
 		Map<String, Object> pathToProducer = getPathsToProducers();
 		pathToProducer.remove(path);
 		System.gc();
@@ -357,7 +360,7 @@ public class NettyHttpInboundChannelAdapter extends MessageProducerSupport {
 
 			});
 			pipeline.addLast("executionHandler", executionHandler);
-//			/* begin whu */
+			/* begin whu */
 			pipeline.addLast("corsHandlerOut", new ChannelDownstreamHandler() {
 				@Override
 				public void handleDownstream(
@@ -450,6 +453,7 @@ public class NettyHttpInboundChannelAdapter extends MessageProducerSupport {
 			SenderEntry e = new SenderEntry();
 			e.senderMethod = getSenderMethod(this);
 			e.senderEntity = this;
+			logger.debug("Putting channel adapter to map: " + port + ":" + path + " - " + e);
 			pathsToProducers.put(path, e);
 		}
 	}

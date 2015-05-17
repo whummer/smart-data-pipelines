@@ -1,4 +1,4 @@
-VERSION=1.1.1
+VERSION=1.1.2
 IMAGE=riox/springxd-base
 
 all: build push
