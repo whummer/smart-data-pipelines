@@ -14,9 +14,9 @@ deploy:
 	kubectl create -f zookeeper-controller.yml
 	kubectl create -f zookeeper-service.yml
 
-undeploy: 
+undeploy:
 	@echo "Undeploying Zookeeper ..."
-	kubectl resize rc zookeeper --replicas=0
+	kubectl resize rc zookeeper --scale=0
 	kubectl delete -f zookeeper-controller.yml
 	kubectl delete -f zookeeper-service.yml
 

@@ -57,13 +57,13 @@ function list(query, req, res, next) {
 			log.info("About to resolve: ", xdInfoPromises);
 			Promise.all(xdInfoPromises).then(function (result) {
 				log.info("Resolved: ", result);
-				res.json(200, response);
+				res.json(response);
 			});
 
 			log.info("After resolved");
 
 		} else {
-			res.json(200, list);
+			res.json(list);
 		}
 	});
 }

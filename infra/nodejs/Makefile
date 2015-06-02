@@ -4,9 +4,9 @@ IMAGE=riox/nodejs
 all: build push
 
 build:
-	docker build -t ${IMAGE}:${VERSION} .
+	docker build -t ${IMAGE}:${VERSION} ${VERSION}
 
 push:
 	docker push ${IMAGE}:${VERSION}
 
-.PHONY: build push all 
+.PHONY: build push all

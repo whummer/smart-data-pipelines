@@ -24,7 +24,7 @@
 </head>
 
 <!-- here we go -->
-<body ng-app="rioxApp" class="top-navigation">
+<body ng-app="rioxApp" class="">
 
 <!-- growl div (for notifications) -->
 <div growl></div>
@@ -46,6 +46,21 @@ window.__patch__setRequestHeader = true;
 <!-- <script src="/bower_components/ng-file-upload/angular-file-upload-shim.js"></script> -->
 <script src="/app/components/js/angular-file-upload-shim.js"></script>
 
+<!-- Add your site or application content here -->
+<div ng-controller="MainCtrl">
+	<!-- modal div (for notifications) -->
+<!-- 	<div ng-include="'app/views/common/modal.html'"></div> -->
+	<div ng-include="'app/views/common/dialogs.html'"></div>
+
+	<!-- display logo while loading -->
+	<div style="position: absolute; z-index: -1; left: 50%; top: 50%; margin-left: -65px; margin-top: -30px;">
+		<img src="/app/components/img/riox_logo_green3_xs.png" alt="riox" style="width: 130px;"/>
+	</div>
+
+	<!-- main view -->
+	<div ui-view=""></div>
+</div>
+
 <!-- bower:js -->
 <!-- endinject -->
 
@@ -56,16 +71,6 @@ window.__patch__setRequestHeader = true;
 
 <!-- inject:js -->
 <!-- endinject -->
-
-
-<!-- Add your site or application content here -->
-<div ng-controller="MainCtrl">
-	<!-- modal div (for notifications) -->
-<!-- 	<div ng-include="'app/views/common/modal.html'"></div> -->
-	<div ng-include="'app/views/common/dialogs.html'"></div>
-	<!-- main view -->
-	<div ui-view=""></div>
-</div>
 
 
 </body>

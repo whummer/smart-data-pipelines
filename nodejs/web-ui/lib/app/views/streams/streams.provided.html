@@ -39,7 +39,7 @@
 									<tbody>
 										<tr ng-repeat="n in sources" ng-class="{ 'font-bold' : n.id == selectedSource.id }">
 											<td>{{sources.indexOf(n) + 1}}</td>
-											<td><a ui-sref="{sourceId: n.id, organizationId: null}">{{n.name}}</a></td>
+											<td><a ui-sref="streams.provided.single({sourceId: n.id, organizationId: null})">{{n.name}}</a></td>
 											<td>{{trim(n.description, 100)}}</td>
 											<td>{{n.consumers.length}}</td>
 											<td>{{n[PERMIT_MODE][TYPE]}}</td>
@@ -54,121 +54,8 @@
 			</div>
 		</div>
 
-		<div class="row" ng-show="selectedSource">
-			<div class="col-lg-5">
-				<div class="ibox float-e-margins">
-					<div class="ibox-title">
-						<h5>Stream Details</h5>
-					</div>
-					<div class="ibox-content">
+		<!-- load selected source in sub-view -->
+		<div ui-view=""></div>
 
-						<!-- organization image -->
-						<div class="logo">
-							<img ng-show="selectedSource.organizationImg" class="img-responsive" style="margin: auto; max-height: 100px"
-								ng-src="{{selectedSource.organizationImg}}">
-							<div ng-hide="selectedSource.organizationImg" class="text-center">
-								<img ng-src="app/components/img/no_image_available.png" style="margin: auto; max-height: 100px">
-							</div>
-						</div>
-
-						<!-- content -->
-						<div class="caption ng-binding">
-							<h4 class="ng-binding">{{selectedSource.name}}</h4>
-							<hr>
-							<b>Publisher:</b> {{selectedSource.organization.name}}
-							<hr>
-							{{selectedSource.description}}
-						</div>
-
-						<div ng-init="thePrice = selectedSource.pricing" class="caption ng-binding">
-							<hr>
-							<b>Price:</b>
-							{{format.pricing(selectedSource.pricing)}}
-						</div>
-
-					</div>
-				</div>
-			</div>
-
-			<div class="col-lg-7">
-				<div class="ibox float-e-margins">
-					<div class="ibox-title">
-						<h5>Stream Consumers</h5>
-					</div>
-					<div class="ibox-content" ng-show="selectedSource.consumers.length">
-						<div class="table-responsive">
-							<table class="table table-striped">
-								<thead>
-									<tr>
-										<th>#</th>
-										<th>User</th>
-										<th>Price</th>
-										<th>Status</th>
-										<th>Enabled</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr ng-repeat="c in selectedSource.consumers" ng-alias="c.enabled = (c[STATUS] == STATUS_PERMITTED)"
-											ng-class="{ 'font-bold' : c.id == selectedConsumer.id }">
-										<td>{{selectedSource.consumers.indexOf(c) + 1}}</td>
-										<td>{{c.requestorOrg.name}}</td>
-										<td>{{c.price}}</td>
-										<td>{{c.status}}</td>
-										<td>
-											<input ui-switch="{color:'#5C9C4D', size: 'small'}"
-											 ng-model="c.enabled" ng-change="updatePermission(c, selectedSource)"
-											 type="checkbox" class="form-control"/>
-										</td>
-<!-- 										<td><a ui-sref="streams.provided({streamId: selectedSource.id, organizationId: c[REQUESTOR_ID]})">details</a></td> -->
-									</tr>
-								</tbody>
-							</table>
-						</div>
-					</div>
-					<div class="ibox-content" ng-show="!selectedSource.consumers.length">
-						Currently there are no consumers for this stream.
-					</div>
-				</div>
-			</div>
-
-			<div class="col-lg-7">
-				<div class="ibox float-e-margins">
-					<div class="ibox-title">
-						<h5>Data Owner Consents</h5>
-					</div>
-					<div class="ibox-content" ng-show="selectedSource.consents.length">
-						<div class="table-responsive">
-							<table class="table table-striped">
-								<thead>
-									<tr>
-										<th>#</th>
-										<th>User</th>
-										<th>Status</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr ng-repeat="c in selectedSource.consumers" ng-alias="c.enabled = (c[STATUS] == STATUS_PERMITTED)"
-											ng-class="{ 'font-bold' : c.id == selectedConsumer.id }">
-										<td>{{selectedSource.consumers.indexOf(c) + 1}}</td>
-										<td>{{c.requestorOrg.name}}</td>
-										<td>{{c.price}}</td>
-										<td>{{c.status}}</td>
-										<td>
-											<input ui-switch="{color:'#5C9C4D', size: 'small'}"
-											 ng-model="c.enabled" ng-change="updatePermission(c, selectedSource)"
-											 type="checkbox" class="form-control"/>
-										</td>
-<!-- 										<td><a ui-sref="streams.provided({streamId: selectedSource.id, organizationId: c[REQUESTOR_ID]})">details</a></td> -->
-									</tr>
-								</tbody>
-							</table>
-						</div>
-					</div>
-					<div class="ibox-content" ng-show="!selectedSource.consents.length">
-						Currently no user consents registered for this stream.
-					</div>
-				</div>
-			</div>
-		</div>
 	</div>
 </div>

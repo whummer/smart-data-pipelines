@@ -1,28 +1,29 @@
-<div class="row border-bottom">
-	<nav class="navbar navbar-static-top" role="navigation">
-		<div class="navbar-header">
-			<a ui-sref="index.main"><img class="img-responsive"
-				src="app/components/img/riox_logo_green3_xs.png"
-				style="height: 30px; margin-top: 8px; margin-left: 25px; margin-right: 25px" /></a>
-		</div>
-		<div class="navbar-collapse collapse" id="navbar">
-			<ul class="nav navbar-nav navbar-top-links" ng-show="__loggedIn = isLoggedIn()">
-				<li><a ui-sref="index.dashboard"> <i class="fa fa-dashboard"></i>
-					Dashboard
-				</a></li>
-				<li class="dropdown"><a aria-expanded="false" role="button"
-					href="#" class="dropdown-toggle" data-toggle="dropdown"> 
-						<i class="fa fa-exchange"></i> My Streams <span class="caret"></span>
-				</a>
-					<ul role="menu" class="dropdown-menu">
-						<li><a ui-sref="streams.provided">Streams We Provide</a></li>
-						<li><a ui-sref="streams.consumed">Streams We Consume</a></li>
-					</ul>
-				</li>
-			</ul>
-			<ul class="nav navbar-top-links navbar-right">
+<div class="row">
+	<nav class="navbar navbar-static-top border-bottom" role="navigation" id="topnavbar">
+<!-- 		<div class="navbar-header"> -->
+<!-- 			<a ui-sref="index.main"><img class="img-responsive" -->
+<!-- 				src="app/components/img/riox_logo_green3_xs.png" -->
+<!-- 				style="height: 30px; margin-top: 8px; margin-left: 25px; margin-right: 25px" /></a> -->
+<!-- 		</div> -->
+<!-- 		<div class="navbar-collapse collapse" id="navbar"> -->
+<!-- 			<ul class="nav navbar-nav navbar-top-links" ng-show="__loggedIn = isLoggedIn()"> -->
+<!-- 				<li><a ui-sref="index.dashboard"> <i class="fa fa-dashboard"></i> -->
+<!-- 					Dashboard -->
+<!-- 				</a></li> -->
+<!-- 				<li class="dropdown"><a aria-expanded="false" role="button" -->
+<!-- 					href="#" class="dropdown-toggle" data-toggle="dropdown">  -->
+<!-- 						<i class="fa fa-exchange"></i> My Streams <span class="caret"></span> -->
+<!-- 				</a> -->
+<!-- 					<ul role="menu" class="dropdown-menu"> -->
+<!-- 						<li><a ui-sref="streams.provided">Streams We Provide</a></li> -->
+<!-- 						<li><a ui-sref="streams.consumed">Streams We Consume</a></li> -->
+<!-- 					</ul> -->
+<!-- 				</li> -->
+<!-- 			</ul> -->
+			<a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+			<ul class="nav navbar-top-links navbar-right" style="margin-right: 10px;" ng-alias="__loggedIn = isLoggedIn()">
 				<li ng-show="__loggedIn" class="dropdown" ng-class="{active: isActive('/notifications')}">
-						<a ui-sref="index.notifications"><i class="fa fa-bell"></i> {{shared.notifications.unreadDisplay}}
+						<a ui-sref="index.notifications"><span class="fa fa-bell"></span> {{shared.notifications.unreadDisplay}}
 					</a></li>
 				<li ng-hide="__loggedIn" ng-class="{active: isActive('/signup')}"><a
 					ui-sref="index.signup">Sign up</a></li>
@@ -34,7 +35,12 @@
 				<li ng-show="__loggedIn" ng-class="{active: isActive('/logout')}"><a
 					ng-click="logout()"> Logout <i class="fa fa-sign-out" style="margin-left: 10px;"></i></a></li>
 			</ul>
-		</div>
+<!-- 		</div> -->
 	</nav>
 </div>
-
+<script>
+//Close menu in canvas mode
+$('.navbar-minimalize').click( function() {
+    $("body").toggleClass("mini-navbar");
+});
+</script>

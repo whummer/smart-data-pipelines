@@ -12,7 +12,7 @@ function list(query, req, res) {
 	Notification.find(query, function(err, list) {
 		if (err)
 			return res.send(500, err);
-		res.json(200, list);
+		res.json(list);
 	});
 }
 

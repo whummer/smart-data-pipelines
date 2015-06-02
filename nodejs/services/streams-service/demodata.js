@@ -141,6 +141,8 @@ function findOrgs(callback) {
 				callback();
 			}
 		});
+	}, function(e) {
+		console.log("ERROR", e);
 	});
 }
 

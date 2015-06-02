@@ -59,9 +59,9 @@ angular.module('rioxApp')
 	};
 
 	/* load stream source details */
-	var loadSourceDetails = function(sources) {
-		var id = $stateParams.sourceId;
+	var loadSourceDetails = $scope.loadSourceDetails = function(sources, id) {
 		if(!id) return;
+		if(!sources) sources = $scope.sources;
 		var promise = $q(function(resolve, reject) {
 			sources.forEach(function(source) {
 				if(source.id == id) {

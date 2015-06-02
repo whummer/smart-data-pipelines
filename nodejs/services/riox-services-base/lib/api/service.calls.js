@@ -10,8 +10,9 @@ var client = new Client();
 var sh = {};
 
 var __defaultHeaders = {
-	'Content-Type': 'application/json'
-}
+	'Content-Type': 'application/json; charset=utf-8',
+	'Accept': 'application/json; charset=utf-8'
+};
 
 var mergeObjects = function(src, tgt) {
 	for (var attrname in src) {
@@ -36,9 +37,24 @@ var __getConfig = function(opts, body) {
 	return options;
 }
 
+var convertResponseData = function(data) {
+	if(data.toJSON) {
+		try {
+			// looks like this is a Buffer object ("<Buffer 10 12 56 16 ...>")
+			return JSON.parse(data.toString());
+		} catch (e) {
+			/* looks like we were wrong, this is not JSON. */
+			console.log("INFO: Unable to parse response as JSON: ", data.toString());
+			return data.toString();
+		}
+	}
+	return data;
+}
+
 sh.invokeGET = function(options, url, callback, errorCallback) {
 	args = __getConfig(options);
 	return client.get(url, args, function(data, response) {
+		data = convertResponseData(data); // convert data object
 		if(response.statusCode >= 400 && response.statusCode < 600) {
 			/* error */
 			errorCallback(data, response.statusCode, response.headers, response);
@@ -59,6 +75,7 @@ sh.invokeGET = function(options, url, callback, errorCallback) {
 sh.invokePOST = function(options, url, body, callback, errorCallback) {
 	args = __getConfig(options, body);
 	return client.post(url, args, function(data, response) {
+		data = convertResponseData(data); // convert data object
 		if(response.statusCode >= 400 && response.statusCode < 600) {
 			/* error */
 			errorCallback(data, response.statusCode, response.headers, response);
@@ -76,17 +93,19 @@ sh.invokePOST = function(options, url, body, callback, errorCallback) {
     });
 }
 
-sh.invokePOSTandGET = function($http, url, body, callback) {
-	invokePOST($http, url, body, 
-		function(data, status, headers, config){
-		var loc = headers("Location");
-		invokeGET($http, loc, callback);
-	})
+sh.invokePOSTandGET = function(options, url, body, callback) {
+	invokePOST(options, url, body, 
+		function(data, status, headers, config) {
+			var loc = headers("Location");
+			invokeGET(options, loc, callback);
+		}
+	);
 }
 
-sh.invokePUT = function($http, url, body, callback) {
+sh.invokePUT = function(options, url, body, callback, errorCallback) {
 	args = __getConfig(options, body);
 	return client.put(url, args, function(data, response) {
+		data = convertResponseData(data); // convert data object
 		if(response.statusCode >= 400 && response.statusCode < 600) {
 			/* error */
 			errorCallback(data, response.statusCode, response.headers, response);

@@ -237,19 +237,20 @@ ol.unstyled {
 .footer {
   background: none repeat scroll 0 0 white;
   border-top: 1px solid #e7eaec;
-  color: #88be5f;
+  color: #2f4050;
   bottom: 0;
   left: 0;
   padding: 10px 20px;
   position: absolute;
   right: 0;
+  z-index: 1;
 }
 .footer.fixed_full {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 1000;
+  z-index: 1;
   padding: 10px 20px;
   background: white;
   border-top: 1px solid #e7eaec;
@@ -574,7 +575,7 @@ table.table-mail tr td {
   color: #ffffff;
 }
 .translucent-black-widget-bg {
-  background-color: rgba(39, 39, 39, 0.75);
+  background-color: none;
   color: white;
 }
 .dark-grey-widget-bg {
@@ -594,7 +595,7 @@ table.table-mail tr td {
   color: #ffffff;
 }
 .nav-top {
-  background-color: rgba(39, 39, 39, 0.75);
+  background-color: none;
 }
 .yellow-bg {
   background-color: #f8ac59;
@@ -1412,6 +1413,17 @@ button.dim:active:before {
   left: 0;
   width: 100%;
   color: #fff;
+}
+body {
+  background-color: #2f4050;
+}
+#topnavbar .navbar-top-links > li.active {
+  border-left: none;
+  border-top: 4px solid #708d98;
+  background: #293846;
+}
+#topnavbar .navbar-top-links > li.active a {
+  padding-top: 16px;
 }
 .wizard > .steps button,
 .wizard > .steps a,
@@ -3397,7 +3409,7 @@ a.forum-item-title:hover {
   display: inline-block;
 }
 .navbar-top-links li:last-child {
-  margin-right: 40px;
+  margin-right: 0px;
 }
 .navbar-top-links li a {
   padding: 20px 10px;
@@ -3479,7 +3491,7 @@ a.forum-item-title:hover {
 }
 .nav-header {
   padding: 33px 25px;
-  background: url("patterns/header-profile.png") no-repeat;
+  background: url("styles/img/header-profile.png") no-repeat;
 }
 .pace-done .nav-header {
   transition: all 0.5s;
@@ -3628,13 +3640,13 @@ body.mini-navbar .navbar-default .nav > li > .nav-second-level li a {
   transition: all 0.5s;
 }
 .navbar-fixed-top {
-  background: rgba(39, 39, 39, 0.75);
+  background: #2f4050;
   transition-duration: 0.5s;
   border-bottom: 1px solid #e7eaec !important;
 }
 .navbar-fixed-top,
 .navbar-static-top {
-  background: rgba(39, 39, 39, 0.75);
+  background: #2f4050;
 }
 .fixed-nav #wrapper {
   margin-top: 60px;

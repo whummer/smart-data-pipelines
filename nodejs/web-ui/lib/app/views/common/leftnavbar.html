@@ -1,0 +1,39 @@
+<nav class="navbar-default navbar-static-side" role="navigation">
+    <div class="sidebar-collapse">
+        <ul class="nav" id="side-menu">
+            <li class="nav-header">
+                <div class="dropdown profile-element" style="margin: auto;">
+                	<a ui-sref="index.main"><img class="img-responsive"
+				src="app/components/img/riox_logo_green3_xs.png"
+				style="height: 40px; margin-top: 8px; margin: auto;" /></a>
+                </div>
+            </li>
+            <li ng-class="{active: isActive('/dashboard')}">
+                <a href="#/dashboard"><i class="fa fa-dashboard"></i> <span class="nav-label">Dashboard</span></a>
+            </li>
+            <li ng-class="{active: isActive('/streams')}">
+                <a href=""><i class="fa fa-exchange"></i> <span class="nav-label">My Streams</span> <span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level collapse" ng-class="{in: isActive('/streams')}">
+                    <li><a ui-sref="streams.provided">Streams We Provide</a></li>
+                    <li><a ui-sref="streams.consumed">Streams We Consume</a></li>
+                </ul>
+            </li>
+            <li ng-class="{active: isActive('/access')}">
+                <a href="#/access"><i class="fa fa-star"></i> <span class="nav-label">Access Control</span></a>
+            </li>
+            <li ng-class="{active: isActive('/notifications')}">
+                <a href="#/notifications"><i class="fa fa-bell"></i> <span class="nav-label">Notifications</span></a>
+            </li>
+            <li ng-class="{active: isActive('/settings')}">
+                <a href="#/settings"><i class="glyphicon glyphicon-cog"></i> <span class="nav-label">Settings</span></a>
+            </li>
+        </ul>
+
+    </div>
+</nav>
+<script>
+$('#side-menu').metisMenu({
+    toggle: false,
+    activeClass: 'active1'
+});
+</script>

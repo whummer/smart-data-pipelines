@@ -8,7 +8,13 @@ var riox = require('riox-shared/lib/api/riox-api');
 var auth = require('riox-services-base/lib/auth/auth.service');
 
 var validationError = function(res, err) {
-  return res.json(422, err);
+  return customError(res, 422, err);
+};
+var customError = function(res, code, err) {
+	if(!err.error) {
+		err = {error: err};
+	}
+	return res.status(code).json(err);
 };
 
 /**
@@ -18,12 +24,12 @@ exports.auth = function(req, res) {
 	if(req.body.network == "riox" && req.body.token) {
 		auth.validateToken(req.body.token, function(err, valid) {
 			if(err) {
-				return res.json(401, { error: "Permission denied." });
+				return customError(res, 401, "Permission denied.");
 			}
-			return res.json(200, req.body);
+			return res.json(req.body);
 		});
 	} else {
-		res.json(422, { error: "Invalid auth details" });
+		customError(res, 422, "Invalid auth details");
 	}
 };
 
@@ -33,8 +39,8 @@ exports.auth = function(req, res) {
  */
 exports.index = function(req, res) {
   User.find({}, '-salt -hashedPassword', function (err, users) {
-    if(err) return res.send(500, err);
-    res.json(200, users);
+    if(err) return customError(res, 500, err);
+    res.json(users);
   });
 };
 
@@ -60,7 +66,7 @@ exports.create = function (req, res, next) {
     	headers: headers
     },
     function(error) {
-    	res.json(500, error);
+    	customError(res, 500, error);
     });
   });
 };
@@ -84,7 +90,7 @@ exports.show = function (req, res, next) {
  */
 exports.destroy = function(req, res) {
   User.findByIdAndRemove(req.params.id, function(err, user) {
-    if(err) return res.send(500, err);
+    if(err) return customError(res, 500, err);
     return res.send(204);
   });
 };

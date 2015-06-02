@@ -15,6 +15,18 @@
   color: #fff;
 }
 
+body {
+	background-color: @page-bg;
+}
+
+#topnavbar .navbar-top-links > li.active {
+	border-left: none;
+	border-top: 4px solid darken(@provider-bg, 2%);
+	background: darken(@nav-bg, 3%);
+}
+#topnavbar .navbar-top-links > li.active a {
+	padding-top: 16px;
+}
 
 .wizard > .steps button,
 .wizard > .steps a,

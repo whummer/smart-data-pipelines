@@ -132,12 +132,12 @@ angular.module('rioxApp')
 			templateUrl: 'app/views/consumer_wizard/billing.html',
 			authenticate: true
 		})
-    .state('consumer.wizard.analytics', {
+		.state('consumer.wizard.analytics', {
 			url: '/analytics',
 			templateUrl: 'app/views/consumer_wizard/analytics.html',
 			authenticate: true
 		})
-    .state('consumer.wizard.connector', {
+		.state('consumer.wizard.connector', {
 			url: '/connector',
 			templateUrl: 'app/views/consumer_wizard/connector.html',
 			controller: 'ConsumerConnectorCtrl',
@@ -151,11 +151,22 @@ angular.module('rioxApp')
 		})
 
 	// general
+		.state('index.access', {
+			url: "/access",
+			templateUrl: "app/views/access/access.html",
+			controller: "AccessCtrl",
+			authenticate: true
+		})
+
+	// general
 		.state('index.notifications', {
 			url: "/notifications",
 			templateUrl: "app/views/account/notifications/notifications.html",
 			controller: "NotificationsCtrl",
-			authenticate: true
+			data: {
+				/* this flag in this 'data' bag is propagated to all child-states */
+				authenticate: true
+			}
 		})
 
 	// streams
@@ -170,9 +181,14 @@ angular.module('rioxApp')
 			}
 		})
 		.state('streams.provided', {
-			url: "/provided/{sourceId}/{organizationId}",
+			url: "/provided",
 			templateUrl: "app/views/streams/streams.provided.html",
 			controller: "StreamsProvidedCtrl"
+		})
+		.state('streams.provided.single', {
+			url: "/{sourceId}/{organizationId}",
+			templateUrl: "app/views/streams/streams.provided.single.html",
+			controller: "StreamsProvidedSingleCtrl"
 		})
 		.state('streams.consumed', {
 			url: "/consumed/{sourceId}",

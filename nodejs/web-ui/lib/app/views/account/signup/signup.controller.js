@@ -19,7 +19,7 @@ angular.module('rioxApp')
           $location.path('/');
         })
         .catch( function(err) {
-          err = err.data;
+          err = err.data.error;
           $scope.errors = {};
 
           // Update validity of form fields that match the mongoose errors

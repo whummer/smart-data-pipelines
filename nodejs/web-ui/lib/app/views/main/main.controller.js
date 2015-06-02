@@ -17,11 +17,14 @@ angular.module('rioxApp')
        * important: make sure to reload the entire page, to
        * reset all controllers, flush state information, etc.
        */
-      $window.location.reload();
+      setTimeout(function(){
+    	  console.log("Reloading the page...");
+          $window.location.reload(); 
+      }, 100);
     };
 
     $scope.isActive = function (route) {
-      return route === $location.path();
+      return route === $location.path() || $location.path().indexOf(route) == 0;
     };
 
     riox.defaultErrorCallback = function (p1, p2, p3, p4) {
