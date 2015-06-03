@@ -2,7 +2,10 @@
  * global app configurations
  */
 
-var _host = "192.168.0.13";
+var _host = "localhost";
+if(typeof window != "undefined") {
+	_host = window.location.hostname;
+}
 
 var appConfig = servicesConfig = {
 	appRootPath: "/app",

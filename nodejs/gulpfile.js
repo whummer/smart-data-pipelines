@@ -17,7 +17,7 @@ try {
 	}
 } catch(e) {
 	// some dependencies still missing.
-	console.log("Cannot import gulp sub-files, dependencies missing:", e);
+	console.log("Cannot import gulp sub-files:", e, e.stack.split("\n"));
 }
 var nodeDirs = [".", "services/test",
                 "services/users-service", "services/streams-service", "services/analytics-service", "services/files-service",

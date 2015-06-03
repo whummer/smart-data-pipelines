@@ -17,6 +17,9 @@
 
     "riox-shared": "../riox-shared"
   },
+  "devDependencies": {
+    "node-basicauth": "0.0.9"
+  },
   "engines": {
     "node": ">=0.10.0"
   },

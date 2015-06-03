@@ -151,14 +151,6 @@ angular.module('rioxApp')
 		})
 
 	// general
-		.state('index.access', {
-			url: "/access",
-			templateUrl: "app/views/access/access.html",
-			controller: "AccessCtrl",
-			authenticate: true
-		})
-
-	// general
 		.state('index.notifications', {
 			url: "/notifications",
 			templateUrl: "app/views/account/notifications/notifications.html",
@@ -194,6 +186,25 @@ angular.module('rioxApp')
 			url: "/consumed/{sourceId}",
 			templateUrl: "app/views/streams/streams.consumed.html",
 			controller: "StreamsConsumedCtrl"
+		})
+
+	// access control
+		.state('index.access', {
+			url: "/access",
+			templateUrl: "app/views/access/access.html",
+			authenticate: true
+		})
+		.state('index.access.single', {
+			url: "/{sourceId}",
+			templateUrl: "app/views/access/access.single.html",
+			controller: "AccessSingleCtrl"
+		})
+
+	// pricing
+		.state('index.pricing', {
+			url: "/pricing",
+			templateUrl: "app/views/pricing/pricing.html",
+			authenticate: true
 		});
 
 });

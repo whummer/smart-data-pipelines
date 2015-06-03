@@ -9,7 +9,7 @@
                 </div>
             </li>
             <li ng-class="{active: isActive('/dashboard')}">
-                <a href="#/dashboard"><i class="fa fa-dashboard"></i> <span class="nav-label">Dashboard</span></a>
+                <a ui-sref="index.dashboard"><i class="fa fa-dashboard"></i> <span class="nav-label">Dashboard</span></a>
             </li>
             <li ng-class="{active: isActive('/streams')}">
                 <a href=""><i class="fa fa-exchange"></i> <span class="nav-label">My Streams</span> <span class="fa arrow"></span></a>
@@ -19,13 +19,16 @@
                 </ul>
             </li>
             <li ng-class="{active: isActive('/access')}">
-                <a href="#/access"><i class="fa fa-star"></i> <span class="nav-label">Access Control</span></a>
+                <a ui-sref="index.access"><i class="fa fa-lock"></i> <span class="nav-label">Access Control</span></a>
+            </li>
+            <li ng-class="{active: isActive('/pricing')}">
+                <a ui-sref="index.pricing"><i class="fa fa-money"></i> <span class="nav-label">Pricing</span></a>
             </li>
             <li ng-class="{active: isActive('/notifications')}">
-                <a href="#/notifications"><i class="fa fa-bell"></i> <span class="nav-label">Notifications</span></a>
+                <a ui-sref="index.notifications"><i class="fa fa-bell"></i> <span class="nav-label">Notifications</span></a>
             </li>
             <li ng-class="{active: isActive('/settings')}">
-                <a href="#/settings"><i class="glyphicon glyphicon-cog"></i> <span class="nav-label">Settings</span></a>
+                <a ui-sref="index.settings"><i class="glyphicon glyphicon-cog"></i> <span class="nav-label">Settings</span></a>
             </li>
         </ul>
 
