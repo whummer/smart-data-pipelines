@@ -11,19 +11,35 @@
             <li ng-class="{active: isActive('/dashboard')}">
                 <a ui-sref="index.dashboard"><i class="fa fa-dashboard"></i> <span class="nav-label">Dashboard</span></a>
             </li>
-            <li ng-class="{active: isActive('/streams')}">
-                <a href=""><i class="fa fa-exchange"></i> <span class="nav-label">My Streams</span> <span class="fa arrow"></span></a>
-                <ul class="nav nav-second-level collapse" ng-class="{in: isActive('/streams')}">
-                    <li><a ui-sref="streams.provided">Streams We Provide</a></li>
-                    <li><a ui-sref="streams.consumed">Streams We Consume</a></li>
+            <li ng-class="{active: isActive('/apis')}">
+                <a ui-sref="index.apis.list"><i class="fa fa-exchange"></i> <span class="nav-label">My APIs</span> <span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level collapse" ng-class="{in: isActive('/apis')}">
+                    <li ng-class="{active: isActive('/access')}">
+                    	<a ui-sref="index.apis.wizard.basic"><i class="fa fa-magic"></i> <span class="nav-label">Create New API</span></a>
+                    </li>
+<!--                     <li> -->
+<!--                     	<a ui-sref="index.apis.endpoints">API Endpoints</a> -->
+<!--                     </li> -->
+		            <li ng-class="{active: isActive('/access')}" ng-show="shared.selectedAPI">
+		                <a ui-sref="index.apis.interface({sourceId: shared.selectedAPI.id})"><i class="fa fa-list"></i> <span class="nav-label">Data Interfaces</span></a>
+		            </li>
+		            <li ng-class="{active: isActive('/access')}" ng-show="shared.selectedAPI">
+		                <a ui-sref="index.apis.access({sourceId: shared.selectedAPI.id})"><i class="fa fa-lock"></i> <span class="nav-label">Access Control</span></a>
+		            </li>
+		            <li ng-class="{active: isActive('/pricing')}" ng-show="shared.selectedAPI">
+		                <a ui-sref="index.apis.pricing({sourceId: shared.selectedAPI.id})"><i class="fa fa-money"></i> <span class="nav-label">Pricing</span></a>
+		            </li>
                 </ul>
             </li>
-            <li ng-class="{active: isActive('/access')}">
-                <a ui-sref="index.access"><i class="fa fa-lock"></i> <span class="nav-label">Access Control</span></a>
-            </li>
-            <li ng-class="{active: isActive('/pricing')}">
-                <a ui-sref="index.pricing"><i class="fa fa-money"></i> <span class="nav-label">Pricing</span></a>
-            </li>
+<!--             <li ng-class="{active: isActive('/apis')}"> -->
+<!--                 <a ui-sref="index.apis.endpoints"><i class="fa fa-exchange"></i> <span class="nav-label">My APIs</span> </a> -->
+<!--             </li> -->
+<!--             <li ng-class="{active: isActive('/access')}" ng-show="shared.selectedAPI"> -->
+<!--                 <a ui-sref="index.access"><i class="fa fa-lock"></i> <span class="nav-label">Access Control</span></a> -->
+<!--             </li> -->
+<!--             <li ng-class="{active: isActive('/pricing')}" ng-show="shared.selectedAPI"> -->
+<!--                 <a ui-sref="index.pricing"><i class="fa fa-money"></i> <span class="nav-label">Pricing</span></a> -->
+<!--             </li> -->
             <li ng-class="{active: isActive('/notifications')}">
                 <a ui-sref="index.notifications"><i class="fa fa-bell"></i> <span class="nav-label">Notifications</span></a>
             </li>

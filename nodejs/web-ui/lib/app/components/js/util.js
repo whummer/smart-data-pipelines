@@ -9,8 +9,8 @@
 		var trimmed = str.substr(0, length);
 		if(trimmed.length < str.length) {
 			//re-trim if we are in the middle of a word
-			trimmed = trimmed.substr(0, 
-					Math.min(trimmed.length, trimmed.lastIndexOf(" ")));
+			var idx = Math.min(trimmed.length, trimmed.lastIndexOf(" "));
+			if(idx > 0) trimmed = trimmed.substr(0, idx);
 			// add dots
 			trimmed += "...";
 		}

@@ -1,0 +1,61 @@
+<fieldset class="animated fadeIn">
+	<h2>Configure Security</h2>
+
+	<!-- data security settings -->
+	<div class="row" ng-hide="resourceData.securityEnabled">
+		<div class="form-group">
+			<label for="enableSecurity" class="col-sm-4 control-label">
+				Enable Data Security and Encryption for this Resource <i class="fa fa-question-circle"> </i>
+			</label>
+			<div class="col-sm-4">
+				<!--<input type="checkbox" id="enableSecurity" class="js-switch form-control"
+							 ui-switch="{color:'#5C9C4D', size: 'small'}"
+							 ng-model="resourceData.securityEnabled"/>-->
+
+				<label class="switch">
+					<input type="checkbox" id="enableSecurity" class="form-control"
+								 ng-change="resourceData.securityDisabled = !resourceData.securityEnabled"
+								 ng-model="resourceData.securityEnabled"><i></i>
+				</label>
+			</div>
+		</div>
+	</div>
+
+	<div class="row animated slide"
+			 ng-class="{fadeIn : resourceData.securityEnabled, fadeOut : !resourceData.securityEnabled}"
+			 ng-show="resourceData.securityEnabled">
+
+		<div class="widget dark-grey-widget-bg p-xl" style="margin-left: 18px;margin-right: 18px	">
+			<div class="row" style="margin-top: 10px;">
+				<div class="form-group">
+					<label for="securitySettings" class="col-sm-4  control-label">
+						Which security features should be enabled for this resource? <i class="fa fa-question-circle"></i></label>
+					<div class="col-sm-4">
+						<div id="securitySettings" ion-range-slider range-options="securitySliderOptions"></div>
+					</div>
+				</div>
+			</div>
+
+			<div class="pull-right" style="margin-right: -5px;" ng-hide="resourceData.securityDisabled">
+				<label for="disableSecurity" class="control-label">Disable Security Completely</label>
+				<!--<input type="checkbox" id="disableSecurity" class="form-control"
+							 ng-model="resourceData.securityDisabled"
+							 ng-change="resourceData.securityEnabled = !resourceData.securityDisabled"
+							 ui-switch="{color:'#5C9C4D', size: 'small'}"/>-->
+
+				<label class="switch">
+					<input type="checkbox" id="disableSecurity" class="form-control"
+								 ng-change="resourceData.securityEnabled = !resourceData.securityDisabled"
+								 ng-model="resourceData.securityDisabled"><i></i>
+				</label>
+
+			</div>
+			<div class="clearfix"></div>
+		</div>
+	</div>
+
+	<div class="navButtons">
+		<a ng-click="prevStep()" class="btn btn-default">Previous</a>
+		<a ng-click="nextStep()" class="btn btn-primary">Next</a>
+	</div>
+</fieldset>

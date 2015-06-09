@@ -64,11 +64,12 @@ template[TAGS] = [String];
 /**
  * Data items in this stream source, including pricing.
  */
-var dataItem = {};
-template[DATA_ITEMS] = [dataItem];
-dataItem["_id"] = dataItem[ID] = false;
-dataItem[NAME] = String;
-dataItem[PRICING] = String;
+var methodOrDataInterface = {};
+template[DATA_INTERFACES] = [methodOrDataInterface];
+methodOrDataInterface["_id"] = methodOrDataInterface[ID] = false;
+methodOrDataInterface[TYPE] = { type: String, enum: [TYPE_DATA_ITEM, TYPE_METHOD] };
+methodOrDataInterface[NAME] = String;
+methodOrDataInterface[PRICING] = String;
 /**
  * Whether this stream is publicly visible, searchable, queryable.
  */

@@ -1,0 +1,93 @@
+<div class="animated fadeIn" style="overflow: visible;;" ng-controller="dataItemsExtractorCtrl">
+	<h2>Extract individual data items from your Data Resource</h2>
+	<br/>
+
+	<p>In this step, you can use some real data of yours (the data you will send to Riox) to create individual
+		<strong>Data Items</strong>. If you don't want to provide your data as-is to your consumer, now it is the time
+		to create Data Items out of a sample request. Just paste the body of your request into the area below.
+	</p>
+
+	<p>If you want to provide the data as it is to your consumers, skip this step
+	</p>
+
+	<div ng-hide="resourceData.createDataItems">
+		<a ng-click="resourceData.createDataItems = true" ng-hide="resourceData.createDataItems" class="btn btn-primary">
+			Create Data Items
+		</a>
+		<a ng-click="nextStep()" class="btn btn-primary">Skip</a>
+	</div>
+
+	<!-- todo move this in less file -->
+	<style>
+		.ace_editor { height: 200px;}
+	</style>
+
+	<div id="payloadArea" class="row" ng-show="resourceData.createDataItems" style="padding-right:34px;">
+		<div style="margin-left: 16px;" class="col-sm-12" ui-ace="{mode:'json'}"
+				 ng-model="resourceData.payload"></div>
+	</div>
+
+	<div class="row" ng-show="resourceData.extractedItems && resourceData.parsedPayload">
+
+		<div class="widget dark-grey-widget-bg p-xl animated fadeIn" style="margin-left: 16px; margin-right: 16px">
+			<h3>Please pick and describe your individual data items</h3><br/>
+
+			<div class="row" style="margin-bottom: 10px; margin-top:15px">
+				<div class="col-sm-3 text-center"><strong>Data Item Name</strong></div>
+				<div class="col-sm-1 text-center"><strong>Used</strong></div>
+				<div class="col-sm-6 text-center"><strong>Description</strong></div>
+			</div>
+			<div class="row">
+				<div class="form-group" ng-repeat="(property, value) in resourceData.extractedItems"
+						 ng-init="resourceData.dataItems[property].name = property">
+					<label for="item_{{property}}" class="col-sm-3 control-label">{{property}}</label>
+					<div class="col-sm-1">
+						<input id="item_{{property}}"
+									 ui-switch="{color:'#5C9C4D', size: 'small'}"
+									 ng-model="resourceData.dataItems[property].enabled"
+									 type="checkbox"
+									 class="form-control"/>
+
+					</div>
+					<div class="col-sm-6" ng-show="resourceData.dataItems[property].enabled">
+						<input type="text" class="form-control input-sm"
+									 style="color: #676a6c;;"
+									 ng-model="resourceData.dataItems[property].description"
+									 placeholder="enter description for data item '{{property}}'"/>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+
+	<div class="row">
+		<div class="col-sm-6">
+			<div ng-show="error"><span class="error">{{error}}</span></div>
+		</div>
+		<div class="col-sm-6">
+
+			<a ng-show="resourceData.createDataItems" class="btn btn-primary pull-right" ng-click="extractDataItems()"
+				 style="margin-left: 10px; margin-top: 10px;">
+				Extract Data Items
+			</a>
+			&nbsp;
+			<a ng-show="resourceData.createDataItems" class="btn btn-primary pull-right " ng-click="resetDataItems()"
+				 style="margin-right: 10px; margin-top: 10px;">
+				Reset
+			</a>
+		</div>
+	</div>
+
+
+	<div class="row" ng-show="resourceData.createDataItems" style="margin-top: 10px">
+		<div class="navButtons">
+			<a ng-click="prevStep()" class="btn btn-default">Previous</a>
+			<a ng-click="nextStep()" class="btn btn-primary">Next</a>
+		</div>
+	</div>
+
+</div>
+
+

@@ -54,6 +54,7 @@ exports.update = function(req, res) {
 		/* copy info to existing entity */
 		existing[IMAGE_DATA] = obj[IMAGE_DATA];
 		existing[NAME] = obj[NAME];
+		existing[DOMAIN_NAME] = obj[DOMAIN_NAME];
 
 		existing.save(function(err, obj) {
 			if (err)

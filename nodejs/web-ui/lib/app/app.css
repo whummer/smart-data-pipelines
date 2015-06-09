@@ -1417,13 +1417,69 @@ button.dim:active:before {
 body {
   background-color: #2f4050;
 }
+#page-wrapper {
+  z-index: 10;
+}
+#topnavbar .navPath {
+  background: #fff;
+  z-index: 10;
+  position: relative;
+  line-height: 30px;
+  padding-left: 20px;
+  font-size: 14px;
+  height: 30px;
+}
+#topnavbar .navLinks {
+  height: 45px;
+  z-index: 5;
+  position: relative;
+}
+#topnavbar .navLinks .navbar-minimalize {
+  margin-top: 10px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  padding-left: 6px;
+  padding-right: 6px;
+}
+#topnavbar .navbar-top-links li a {
+  padding-top: 12px;
+  padding-bottom: 7px;
+  height: 40px;
+  min-height: 40px;
+}
 #topnavbar .navbar-top-links > li.active {
   border-left: none;
   border-top: 4px solid #708d98;
   background: #293846;
 }
 #topnavbar .navbar-top-links > li.active a {
-  padding-top: 16px;
+  padding-top: 8px;
+  height: 41px;
+}
+body.mini-navbar #side-menu .nav-second-level {
+  width: 200px;
+}
+body.body-small .navbar-right {
+  float: right;
+}
+body.mini-navbar #side-menu .nav-second-level li i {
+  float: left;
+}
+body.mini-navbar #side-menu .nav-second-level .nav-label {
+  display: block;
+}
+body.mini-navbar #side-menu .nav-second-level li a {
+  padding-left: 10px;
+}
+body.mini-navbar #side-menu .nav-second-level {
+  z-index: 100;
+}
+#side-menu li a {
+  font-size: 14px;
+}
+#side-menu .nav-second-level li a {
+  padding-left: 30px;
+  font-size: 14px;
 }
 .wizard > .steps button,
 .wizard > .steps a,

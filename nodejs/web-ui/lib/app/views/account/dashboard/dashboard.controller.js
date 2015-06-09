@@ -26,6 +26,8 @@ function dashboardCtrl($scope, $log) {
 		connectWith: ".connectPanels",
 		handler: ".ibox-title"
 	};
+	
+	$scope.sortableModel = [];
 }
 
 angular.module('rioxApp').controller('dashboardCtrl', dashboardCtrl);

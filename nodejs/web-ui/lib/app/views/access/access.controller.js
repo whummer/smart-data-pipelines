@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('rioxApp')
-.controller('AccessCtrl', function ($scope, Auth) {
+.controller('AccessCtrl', function ($scope, Auth, $stateParams) {
 
 
 	/* load selected consumer */
@@ -65,11 +65,10 @@ angular.module('rioxApp')
 		});
 	}
 
-	/* load main elements */
-	$scope.loadStreamSources().
-		then($scope.prepareStreamSources).
-		then($scope.loadStreamsConsumers).
-		then($scope.loadSourceDetails).
-		then($scope.loadSelectedConsumer);
+	/* register event listeners */
+	$scope.$watch("selectedSource", function(s) {
+		if(!s) return;
+		loadSelectedConsumer();
+	});
 
 });

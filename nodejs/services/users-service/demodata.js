@@ -4,6 +4,7 @@ var User = require('./api/users/user.model');
 var demoOrgs = [
     	{
     		id: "1",
+    		domain : "vienna",
     		name : "City of Vienna",
     		description : "This organization represents the City of Vienna.",
     		"image-data" : [{
@@ -12,6 +13,7 @@ var demoOrgs = [
     	},
     	{
     		id: "2",
+    		domain : "bmw",
     		name : "BMW",
     		description : "This is the BMW organization.",
     		"image-data" : [{
@@ -20,6 +22,7 @@ var demoOrgs = [
     	},
     	{
     		id: "3",
+    		domain : "mercedes",
     		name : "Mercedes",
     		description : "This is Mercedes Benz.",
     		"image-data" : [{
@@ -28,6 +31,7 @@ var demoOrgs = [
     	},
     	{
     		id: "4",
+    		domain : "tesla",
     		name : "Tesla",
     		description : "Tesla Car Company.",
     		"image-data" : [{

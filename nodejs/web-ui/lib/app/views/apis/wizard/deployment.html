@@ -1,0 +1,34 @@
+<div class="animated fadeIn">
+	<h2>Summary and Deployment</h2>
+	<div class="widget p-xl">
+		<div class="row" style="margin-top: 10px;">
+			<dl class="dl-horizontal" style="text-align: left;">
+				<dt>Name</dt>
+				<dd>{{resourceData.name}}</dd>
+				<dt>Description</dt>
+				<dd>{{resourceData.description}}</dd>
+				<dt>Security</dt>
+				<dd>
+					<div ng-show="resourceData.securityEnabled">
+						<span>Data Security is enabled</span>
+						<span class="fa fa-shield text-success"></span>
+					</div>
+					<div ng-hide="resourceData.securityEnabled">
+						<span class="text-danger">Data Security is not enabled</span>
+						<span class="fa fa-shield text-danger"></span>
+					</div>
+				</dd>
+			</dl>
+		</div>
+	</div>
+
+	<fieldset class="m-t-md">
+		<div class="navButtons">
+			<a ng-click="prevStep()" class="btn btn-default">Previous</a>
+			<button ng-click="processForm()" class="btn btn-primary"
+							ng-disabled="resourceForm.$invalid || resourceForm.$pristine">
+				Create Resource
+			</button>
+		</div>
+	</fieldset>
+</div>

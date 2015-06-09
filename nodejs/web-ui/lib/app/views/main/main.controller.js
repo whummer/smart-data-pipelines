@@ -10,6 +10,9 @@ angular.module('rioxApp')
     $scope.getCurrentUser = Auth.getCurrentUser;
     $scope.getCurrentOrganization = Auth.getCurrentOrganization;
 
+    /* navigation path, displayed in top nav bar */
+    $scope.shared.navigationPath = [];
+
     $scope.logout = function () {
       Auth.logout();
       $state.go('index.login');

@@ -60,14 +60,14 @@
 						<h5>Change Passwort</h5>
 					</div>
 					<div class="ibox-content">
-						<form class="form" name="form" ng-submit="changePassword(form)"
+						<form class="form" name="settingsForm" ng-submit="changePassword(form)"
 							novalidate>
 
 							<div class="form-group">
 								<label>Current Password</label> <input type="password"
 									name="password" class="form-control"
 									ng-model="user.oldPassword" mongoose-error />
-								<p class="help-block" ng-show="form.password.$error.mongoose">
+								<p class="help-block" ng-show="settingsForm.password.$error.mongoose">
 									{{ errors.other }}</p>
 							</div>
 
@@ -76,7 +76,7 @@
 									name="newPassword" class="form-control"
 									ng-model="user.newPassword" ng-minlength="3" required />
 								<p class="help-block"
-									ng-show="(form.newPassword.$error.minlength || form.newPassword.$error.required) && (form.newPassword.$dirty || submitted)">
+									ng-show="(settingsForm.newPassword.$error.minlength || settingsForm.newPassword.$error.required) && (settingsForm.newPassword.$dirty || submitted)">
 									Password must be at least 3 characters.</p>
 							</div>
 

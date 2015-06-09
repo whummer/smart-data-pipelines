@@ -3,8 +3,6 @@ var app = angular.module("rioxApp");
 app.controller('OrganizationController',
 		function ($scope, Upload, Auth, growl) {
 
-	$scope.CREATOR_ID = CREATOR_ID;
-	$scope.IMAGE_DATA = IMAGE_DATA;
 	var fileServiceURL = appConfig.services.files.url;
 	var fileServiceURLAbs = resolve(fileServiceURL);
 

@@ -7,9 +7,13 @@ var template = {};
 template["_id"] = { type: String, default: genShortUUID};
 
 /**
- * Name.
+ * Descriptive Name.
  */
 template[NAME] = String;
+/**
+ * Unique name (used as domain name).
+ */
+template[DOMAIN_NAME] = { type: String, unique: true };
 /**
  * Image(s).
  */
