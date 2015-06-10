@@ -1,4 +1,4 @@
-<div class="row" ng-show="selectedSource">
+<div class="row" ng-show="shared.selectedAPI">
 	<div class="col-lg-5">
 		<div class="ibox float-e-margins">
 			<div class="ibox-title">
@@ -8,26 +8,26 @@
 
 				<!-- organization image -->
 				<div class="logo">
-					<img ng-show="selectedSource.organizationImg" class="img-responsive" style="margin: auto; max-height: 100px"
-						ng-src="{{selectedSource.organizationImg}}">
-					<div ng-hide="selectedSource.organizationImg" class="text-center">
+					<img ng-show="shared.selectedAPI.organizationImg" class="img-responsive" style="margin: auto; max-height: 100px"
+						ng-src="{{shared.selectedAPI.organizationImg}}">
+					<div ng-hide="shared.selectedAPI.organizationImg" class="text-center">
 						<img ng-src="app/components/img/no_image_available.png" style="margin: auto; max-height: 100px">
 					</div>
 				</div>
 
 				<!-- content -->
 				<div class="caption ng-binding">
-					<h4 class="ng-binding">{{selectedSource.name}}</h4>
+					<h4 class="ng-binding">{{shared.selectedAPI.name}}</h4>
 <!-- 					<hr> -->
-<!-- 					<b>Publisher:</b> {{selectedSource.organization.name}} -->
+<!-- 					<b>Publisher:</b> {{shared.selectedAPI.organization.name}} -->
 					<hr>
-					{{selectedSource.description}}
+					{{shared.selectedAPI.description}}
 				</div>
 
-				<div ng-init="thePrice = selectedSource.pricing" class="caption ng-binding">
+				<div ng-init="thePrice = shared.selectedAPI.pricing" class="caption ng-binding">
 					<hr>
 					<b>Price:</b>
-					{{format.pricing(selectedSource.pricing)}}
+					{{format.pricing(shared.selectedAPI.pricing)}}
 				</div>
 
 			</div>
@@ -44,7 +44,7 @@
 				<div class="form-group">
 					<label>Endpoint URL</label> 
 					<input class="form-control" name="endpoint" disabled="disabled" 
-						ng-model="selectedSource[ENDPOINT]" mongoose-error />
+						ng-model="shared.selectedAPI[ENDPOINT]" mongoose-error />
 					<p class="help-block" ng-show="endpForm.endpoint.$error.mongoose">
 						{{ errors.other }}</p>
 				</div>

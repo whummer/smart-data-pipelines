@@ -100,15 +100,20 @@ angular.module('rioxApp')
 			}
 		})
 
-	// methods and schemas
+	// data interfaces
 		.state('index.apis.interface', {
 			url: "/{sourceId}/interface",
 			views: {
 				"apiDetails@index.apis": {
-					templateUrl: "app/views/interface/interface.html",
-					controller: "InterfaceCtrl"
+					templateUrl: "app/views/interfaces/interfaces.html",
+					controller: "InterfacesCtrl"
 				}
 			}
+		})
+		.state('index.apis.interface.single', {
+			url: "/{interfaceId}",
+			templateUrl: "app/views/interfaces/interfaces.single.html",
+			controller: "InterfacesSingleCtrl"
 		})
 
 	// pricing

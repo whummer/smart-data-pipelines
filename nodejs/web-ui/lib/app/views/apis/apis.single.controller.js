@@ -12,9 +12,9 @@ angular.module('rioxApp')
 
 	$scope.getNavPath = function() {
 		var path = $scope.$parent.getNavPath();
-		if($scope.selectedSource) {
+		if($scope.shared.selectedAPI) {
 			path.push(
-				{ name: "API '" + $scope.selectedSource.name + "'", sref: false}
+				{ name: "API '" + $scope.shared.selectedAPI.name + "'", sref: false}
 			);
 		}
 		$scope.shared.navigationPath = path;

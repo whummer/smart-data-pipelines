@@ -14,7 +14,10 @@ angular.module('rioxApp')
     	riox.auth({
       	  RIOX_AUTH_NETWORK: "riox",
       	  RIOX_AUTH_TOKEN: token
-        }, callback);
+        }, callback, function() {
+        	/* error occurred */
+        	console.log("error");
+        });
     };
 
     /**

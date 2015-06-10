@@ -1,3 +1,7 @@
+<style type="text/css">
+	.ace_editor { height: 200px;}
+</style>
+
 <div class="animated fadeIn" style="overflow: visible;;" ng-controller="dataItemsExtractorCtrl">
 	<h2>Extract individual data items from your Data Resource</h2>
 	<br/>
@@ -16,11 +20,6 @@
 		</a>
 		<a ng-click="nextStep()" class="btn btn-primary">Skip</a>
 	</div>
-
-	<!-- todo move this in less file -->
-	<style>
-		.ace_editor { height: 200px;}
-	</style>
 
 	<div id="payloadArea" class="row" ng-show="resourceData.createDataItems" style="padding-right:34px;">
 		<div style="margin-left: 16px;" class="col-sm-12" ui-ace="{mode:'json'}"
@@ -61,7 +60,6 @@
 		</div>
 	</div>
 
-
 	<div class="row">
 		<div class="col-sm-6">
 			<div ng-show="error"><span class="error">{{error}}</span></div>
@@ -79,7 +77,6 @@
 			</a>
 		</div>
 	</div>
-
 
 	<div class="row" ng-show="resourceData.createDataItems" style="margin-top: 10px">
 		<div class="navButtons">

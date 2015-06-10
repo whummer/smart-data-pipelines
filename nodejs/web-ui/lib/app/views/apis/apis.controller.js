@@ -23,7 +23,7 @@ angular.module('rioxApp').controller('ApisCtrl',
 		var promise = $q(function(resolve, reject) {
 			sources.forEach(function(source) {
 				if(source.id == id) {
-					$scope.selectedSource = $scope.shared.selectedAPI = source;
+					$scope.shared.selectedAPI = $scope.shared.selectedAPI = source;
 				}
 			});
 			resolve();

@@ -7,8 +7,8 @@ angular.module('rioxApp')
 	/* load selected consumer */
 	var loadSelectedConsumer = function() {
 		var id = $stateParams.organizationId;
-		if(!id || !$scope.selectedSource) return;
-		$scope.selectedSource.consumers.forEach(function(consumer) {
+		if(!id || !$scope.shared.selectedAPI) return;
+		$scope.shared.selectedAPI.consumers.forEach(function(consumer) {
 			if(consumer[REQUESTOR_ID] == id) {
 				$scope.selectedConsumer = consumer;
 			}
@@ -66,7 +66,7 @@ angular.module('rioxApp')
 	}
 
 	/* register event listeners */
-	$scope.$watch("selectedSource", function(s) {
+	$scope.$watch("shared.selectedAPI", function(s) {
 		if(!s) return;
 		loadSelectedConsumer();
 	});

@@ -36,7 +36,7 @@
 										</tr>
 									</thead>
 									<tbody>
-										<tr ng-repeat="n in sources" ng-class="{ 'font-bold' : n.id == selectedSource.id }">
+										<tr ng-repeat="n in sources" ng-class="{ 'font-bold' : n.id == shared.selectedAPI.id }">
 											<td>{{sources.indexOf(n) + 1}}</td>
 											<td><a ui-sref=".single({sourceId: n.id, organizationId: null})">{{n.name}}</a></td>
 											<td>{{trim(n.description, 100)}}</td>

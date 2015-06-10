@@ -221,17 +221,32 @@ var applyByStreamSource = exports.applyByStreamSource = function(source, callbac
 };
 
 exports.updateStreamSource = function (req, res, next) {
+	if(req.body[ID] != req.params.id) {
+		return errorCallback(errors.UnprocessableEntity("Invalid entity IDs."));
+	}
 	var streamSource = new StreamSource(req.body);
-	// TODO: check permission
-	streamSource.save(req.params.id, function (err, obj) {
-		if (err) {
-			return validationError(err, next);
-		}
-		/* set endpoint info: */
-		setEndpoint(obj);
-		/* return result */
-		res.json(obj);
+	StreamSource.findById(req.params.id, function (err, obj) {
+		if (err)
+			return errorCallback(errors.InternalError("Cannot update stream source", err));
+		if (!obj)
+			return errorCallback(errors.NotFoundError("No such stream-source: " + id));
+
+		// TODO: check permission
+
+		/* copy values */
+		obj[NAME] = req.body[NAME];
+		obj[OPERATIONS] = req.body[OPERATIONS];
+		obj[SCHEMAS] = req.body[SCHEMAS];
+
+		obj.save(function (err, obj) {
+			if (err) {
+				return validationError(err, next);
+			}
+			/* return result */
+			res.json(obj);
+		});
 	});
+
 };
 
 exports.showStreamSource = function (req, res, next) {
