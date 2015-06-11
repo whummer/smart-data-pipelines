@@ -111,7 +111,38 @@ var demoData = [
 		permit : {
 			type : PERMIT_MODE_AUTO
 		}
-	} ];
+	}
+];
+
+var rioxAPIs = [
+	{
+		name: "Stream Sources",
+		description: "Get list of stream sources",
+		"organization-id" : 0,
+		operations:
+		[{
+			"name": "Get list of stream sources",
+			"http-method": "GET",
+			"http-resource": "/api/v1/streams/sources"
+		},{
+			"name": "Get single stream source",
+			"http-method": "GET",
+			"http-resource": "/api/v1/streams/sources/*"
+		},{
+			"name": "Add stream source",
+			"http-method": "POST",
+			"http-resource": "/api/v1/streams/sources"
+		},{
+			"name": "Update stream source",
+			"http-method": "PUT",
+			"http-resource": "/api/v1/streams/sources"
+		},{
+			"name": "Delete stream source",
+			"http-method": "DELETE",
+			"http-resource": "/api/v1/streams/sources"
+		}]
+	}
+];
 
 function insertStreamSources() {
 	demoData.forEach(function(el) {
@@ -133,9 +164,10 @@ function findOrgs(callback) {
 			headers: token,
 			callback: function(list) {
 				list.forEach(function(o) {
-					index = o.name == "City of Vienna" ? 0 :
-							o.name == "BMW" ? 1 :
-							o.name == "Mercedes" ? 2 : 3;
+					index = o.domain == "riox" ? 0 :
+							o.domain == "vienna" ? 1 :
+							o.domain == "bmw" ? 2 :
+							o.domain == "mercedes" ? 3 : 3;
 					orgs[index] = o;
 				});
 				callback();

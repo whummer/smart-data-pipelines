@@ -49,6 +49,8 @@ template[PERMIT_MODE][TYPE] = {type: String};
  */
 template[CONNECTOR] = {};
 template[CONNECTOR][TYPE] = {type: String};
+template[CONNECTOR][CERTIFICATE] = {type: String};
+
 /**
  * Retention time, e.g. 3h, 2w, 1m, 1y
  */
@@ -62,28 +64,12 @@ template[SECURITY] = String;
  */
 template[TAGS] = [String];
 /**
- * Data interface definitions.
+ * Data schemas.
  * 
- * operations: [
- * 	{
- * 		"name": "Get Temperature",
- * 		"http-method": "GET",
- * 		"http-path": "/temperature",
- * 		"data-out": [
- * 			{
- * 				"name": "Room Temperature",
- * 				"selector": "room1.temperature",
- * 				"type": "DOUBLE"
- * 			}
- * 		]
- * 	}],
  * schemas: [
  * 	{
- * 		"name": "Location Streaming",
- * 		"options": {
- * 			"type": "WEBSOCKET"
- * 		},
- * 		"data-out": [
+ * 		"name": "Location Stream",
+ * 		"data-items": [
  * 			{
  * 				"name": "Current Location - Latitude",
  * 				"selector": "location.latitude",
@@ -97,7 +83,6 @@ template[TAGS] = [String];
  * 	}
  * ]
  */
-
 var schema = {};
 var dataItem = {};
 schema["_id"] = { type: String, default: genShortUUID };
@@ -114,24 +99,36 @@ SchemaSchema.virtual('id').get(function() {
 });
 template[SCHEMAS] = [SchemaSchema];
 
+/**
+ * operations: [
+ * 	{
+ * 		"name": "Get Temperature",
+ * 		"http-method": "GET",
+ * 		"http-resource": "/temperature",
+ * 		"schema-in": "abc123",
+ * 		"schema-out": "def456"
+ * 	}]
+ */
 var operation = {};
 operation["_id"] = { type: String, default: genShortUUID };
 operation[NAME] = String;
 operation[HTTP_METHOD] = { type: String, enum: ["GET", "PUT", "POST", "DELETE", "HEAD"] };
-operation[HTTP_PATH] = String;
+operation[HTTP_RESOURCE] = String;
 operation[OPTIONS] = Schema.Types.Mixed; // generic options to describe this operations
 operation[PRICING] = String;
+operation[SCHEMA_IN] = String;
+operation[SCHEMA_OUT] = String;
 var OperationSchema = new Schema(operation);
 OperationSchema.virtual('id').get(function() {
     return this._id;
 });
 template[OPERATIONS] = [OperationSchema];
 
-
 /**
  * Whether this stream is publicly visible, searchable, queryable.
  */
 template[VISIBLE] = Boolean;
+
 /**
  * Stream Source endpoint.
  */

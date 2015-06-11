@@ -6,9 +6,6 @@ var Schema = mongoose.Schema;
 var template = {};
 template["_id"] = { type: String, default: genShortUUID};
 
-var CERT_FILE = "cert-file";
-var PK_FILE = "pk-file";
-
 /**
  * Descriptive Name.
  */

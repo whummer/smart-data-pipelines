@@ -20,7 +20,7 @@
 								<tr ng-repeat="n in shared.selectedAPI[OPERATIONS]" ng-class="{ 'font-bold' : n == selectedOperation }">
 									<td><a ui-sref=".single({operationId: n.id})">{{n[NAME]}}</a></td>
 									<td>{{n[HTTP_METHOD]}}</td>
-									<td>{{n[HTTP_PATH]}}</td>
+									<td>{{n[HTTP_RESOURCE]}}</td>
 									<td><a ui-sref=".single({operationId: n.id})">details</a></td>
 								</tr>
 							</tbody>

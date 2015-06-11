@@ -10,13 +10,10 @@ angular.module('rioxApp')
 
 	$scope.addOperation = function() {
 		var copy = $scope.prepareApiObj($scope.shared.selectedAPI);
-		copy[OPERATIONS].push(
-				{
-					name: "New Operation",
-					"http-method": "GET",
-					"http-path": "/new"
-				}
-		);
+		var newOp = {};
+		newOp[NAME] = "New Operation";
+		newOp[HTTP_METHOD] = "GET";
+		newOp[HTTP_RESOURCE] = "/new";
 		riox.save.streams.source(copy, function(saved) {
 			$scope.shared.selectedAPI = saved;
 		});

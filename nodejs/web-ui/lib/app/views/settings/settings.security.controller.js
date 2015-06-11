@@ -4,6 +4,7 @@ angular.module('rioxApp')
 .controller('SettingsSecurityCtrl', function ($scope, growl) {
 
 	$scope.selected = {};
+	$scope.resourceData = {};
 
 	var loadCertificates = function() {
 		delete $scope.selected.cert;
@@ -16,11 +17,13 @@ angular.module('rioxApp')
 		var cert = {};
 		riox.add.certificate(cert, function(cert) {
 			loadCertificates();
-			//$scope.selected.cert = cert;
 		});
 	};
 	$scope.saveCert = function() {
 		if(!$scope.selected.cert) return;
+		$scope.selected.cert[CERT_FILE] = $scope.resourceData.certCRT;
+		$scope.selected.cert[PK_FILE] = $scope.resourceData.certKEY;
+		$scope.selected.cert[NAME] = $scope.resourceData.certName;
 		riox.save.certificate($scope.selected.cert, function(cert) {
 			$scope.selected.cert = cert;
 			growl.info("Certificate details saved.");
@@ -31,6 +34,12 @@ angular.module('rioxApp')
 			loadCertificates();
 			growl.info("Certificate permanently deleted.");
 		});
+	};
+	$scope.selectCert = function(cert) {
+		$scope.selected.cert = cert;
+		$scope.resourceData = {};
+		$scope.resourceData.certCRT = cert[CERT_FILE];
+		$scope.resourceData.certKEY = cert[PK_FILE];
 	};
 
 	/* get nav. bar stack */

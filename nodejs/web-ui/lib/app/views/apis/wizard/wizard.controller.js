@@ -81,6 +81,25 @@ angular.module('rioxApp').controller('ApisWizardCtrl', function ($scope, $log, g
 		onChange: updateSecuritySettings
 	};
 
+	var createNewCertificate = function() {
+		var deferred = $q.defer();
+		if($scope.resourceData.securityEnabled && 
+				$scope.resourceData.certSelect &&
+				$scope.resourceData.certSelect.id == '__new__') {
+			var cert = {};
+			cert[CERT_FILE] = $scope.resourceData.certCRT;
+			cert[PK_FILE] = $scope.resourceData.certKEY;
+			cert[NAME] = $scope.resourceData.certName;
+			riox.add.certificate(cert, function(savedCert){
+				$scope.resourceData.certSelect = savedCert;
+				deferred.resolve(savedCert);
+			});
+		} else {
+			deferred.resolve();
+		}
+		return deferred.promise;
+	};
+
 	//
 	// "submits" the form, ie. creates the data resource via the streams API
 	//
@@ -98,36 +117,40 @@ angular.module('rioxApp').controller('ApisWizardCtrl', function ($scope, $log, g
 		});
 
 		$log.debug("Filtered data items: ", dataItems);
-		$log.debug("Saving new resource: ", r);
-		var dataStream = {
-			"name": r.name,
-			"description": r.description,
-			"connector": {
-				"type": r.connector.type // http, amqp, whatever
-			},
-			"organization-id": 'Default Organization',
-			"tags": r.tags,
-			"retention-time": r.retentionTime, // e.g. 3h, 2w, 1m, 1y
-			"security": r.securitySetting, // TLS only, full
-			"visible": true
-		};
+		var selectedOrganization = null;
 
-		var selectedPermitMode = r.authDisabled ? PERMIT_MODE_AUTO : PERMIT_MODE_MANUAL;
-		dataStream[PERMIT_MODE] = {
-			type : selectedPermitMode
-		};
+		var addStreamSource = function (selectedOrganization) {
+			$log.debug("Saving new resource: ", r);
 
-		// todo billingUnit and unitSize are currently not used
-		if (dataItems.length) {
-			dataStream["data-items"] = dataItems;
-		} else {
-			dataStream.pricing = {
-				unitPrice: r.defaultPricing
+			var connector = {};
+			connector[TYPE] = r.connector.type;
+			connector[CERTIFICATE] = !$scope.resourceData.securityEnabled ? 
+					"default" : $scope.resourceData.certSelect.id;
+	
+			var dataStream = {};
+			dataStream[NAME] = r.name;
+			dataStream[DESCRIPTION] = r.description;
+			dataStream[CONNECTOR] = connector;
+			dataStream[ORGANIZATION_ID] = "TODO"; // default org. filled in a later function call; 
+												// TODO: however, should be made configurable in wizard 
+			dataStream[TAGS] = r.tags;
+			dataStream[VISIBLE] = true;
+	
+			var selectedPermitMode = r.authDisabled ? PERMIT_MODE_AUTO : PERMIT_MODE_MANUAL;
+			dataStream[PERMIT_MODE] = {
+				type : selectedPermitMode
 			};
-		}
 
-		var addStreamSource = function (defaultOrganization) {
-			dataStream[ORGANIZATION_ID] = defaultOrganization.id;
+			// todo billingUnit and unitSize are currently not used
+			if (dataItems.length) {
+				dataStream[DATA_ITEMS] = dataItems;
+			} else {
+				dataStream.pricing = {
+					unitPrice: r.defaultPricing
+				};
+			};
+
+			dataStream[ORGANIZATION_ID] = selectedOrganization.id;
 			$log.debug("Adding new data resource: ", dataStream);
 			riox.add.streams.source(dataStream, function () {
 				growl.success("Added new API '" + dataStream.name + "'");
@@ -140,8 +163,10 @@ angular.module('rioxApp').controller('ApisWizardCtrl', function ($scope, $log, g
 			$log.error('Cannot load default orgaization: ' + reason);
 		};
 
-		// determine the organizatio of the logged in user, then create the stream
-		$scope.loadDefaultOrganization().then(addStreamSource, handleDefaultOrgUnavailable);
+		// add certificate, then determine the organization of the logged in user, then create the stream
+		createNewCertificate().
+			then($scope.loadDefaultOrganization).
+			then(addStreamSource, handleDefaultOrgUnavailable);
 	}
 
 	/* get nav. bar stack */

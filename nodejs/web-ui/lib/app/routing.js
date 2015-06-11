@@ -9,7 +9,7 @@ angular.module('rioxApp')
 
 	/* main index */
 		.state('index', {
-			templateUrl: "app/views/common/content.html"
+			templateUrl: "app/views/layout/content.html"
 		})
 		.state('index.main', {
 			url: "/main",

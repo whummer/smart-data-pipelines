@@ -3,30 +3,32 @@ var User = require('./api/users/user.model');
 
 var demoOrgs = [
     	{
-    		id: "1",
+    		domain : "riox",
+    		name : "Riox",
+    		description : "This organization represents the Riox tenant.",
+    		"image-data" : [{
+    			href: "app/components/img/provider-logos/riox.png"
+    		}]
+    	},{
     		domain : "vienna",
     		name : "City of Vienna",
     		description : "This organization represents the City of Vienna.",
     		"image-data" : [{
-    			href: "app/components/img/provider-logos/smart_city_wien.png",
+    			href: "app/components/img/provider-logos/smart_city_wien.png"
     		}]
-    	},
-    	{
-    		id: "2",
+    	},{
     		domain : "bmw",
     		name : "BMW",
     		description : "This is the BMW organization.",
     		"image-data" : [{
-    			href: "app/components/img/provider-logos/bmw.png",
+    			href: "app/components/img/provider-logos/bmw.png"
     		}]
-    	},
-    	{
-    		id: "3",
+    	},{
     		domain : "mercedes",
     		name : "Mercedes",
     		description : "This is Mercedes Benz.",
     		"image-data" : [{
-    			href: "app/components/img/provider-logos/mercedes.png",
+    			href: "app/components/img/provider-logos/mercedes.png"
     		}]
     	},
     	{

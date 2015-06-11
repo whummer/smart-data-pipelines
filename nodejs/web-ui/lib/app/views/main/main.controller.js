@@ -55,7 +55,7 @@ angular.module('rioxApp')
 
     $scope.loadDefaultOrganization = function () {
       var deferred = $q.defer();
-      riots.organizations(function (orgs) {
+      riox.organizations(function (orgs) {
         angular.forEach(orgs, function (org) {
           var userInfo = $scope.getCurrentUser();
           if (userInfo) {

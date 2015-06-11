@@ -1,16 +1,16 @@
-<fieldset class="animated fadeIn">
+<fieldset class="animated fadeIn" style="">
 	<h2>Configure Security</h2>
 
 	<p>Riox uses transport-level encryption to ensure security of your data and APIs. You may
 	either use the default security configuration, or select your own custom certificate.</p>
 
 	<!-- data security settings -->
-	<div class="row">
+	<div>
 		<div class="form-group">
-			<label for="enableSecurity" class="col-sm-3 control-label">
+			<label for="enableSecurity" class="col-sm-5">
 				Enable Custom Certificate <i class="fa fa-question-circle"> </i>
 			</label>
-			<div class="col-sm-4">
+			<div class="col-sm-7">
 				<label class="switch">
 					<input type="checkbox" id="enableSecurity" class="form-control"
 								 ng-model="resourceData.securityEnabled"><i></i>
@@ -19,56 +19,17 @@
 		</div>
 	</div>
 
-	<div ng-alias="newCert = resourceData.certSelect.id == '__new__'">
-		<div class="row"  ng-show="resourceData.securityEnabled">
+	<div ng-alias="newCert = resourceData.certSelect.id == '__new__'" style="max-width: 500px;">
+		<div ng-show="resourceData.securityEnabled">
 			<div class="form-group">
-				<label for="certSel" class="col-sm-3 control-label">Select Certificate</label>
-				<div class="col-lg-4">
+				<label for="certSel" class="col-lg-5">Select Certificate</label>
+				<div class="col-lg-7">
 					<select id="certSel" class="form-control" ng-model="resourceData.certSelect" 
 						ng-options="n as n.name for n in userCertificates track by n.id"></select>
 				</div>
 			</div>
 			<div ng-show="newCert">
-				<div class="form-group">
-					<label for="certName" class="col-sm-3 control-label">Certificate Name</label>
-					<div class="col-lg-4">
-						<input id="certName" class="form-control" ng-model="resourceData.certName"/>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-sm-3 control-label">Certificate File (*.crt)</label>
-					<div class="col-lg-4">
-						<div ngf-select="" ngf-drop="" ng-model="filesSelectCRT" 
-								ngf-multiple="multiple" ngf-accept="accept"
-								ngf-drag-over-class="{accept:'dragover', reject:'dragover-err', delay:100}" 
-								ngf-min-size="minSize" ngf-max-size="maxSize" class="drop-box" 
-								style="width: 200px; height: 30px; border-width: 2px;" ngf-drop-available="dropAvailable">
-							<span ng-show="!resourceData.certCRT">
-								<i class="fa fa-lock"></i> Drop or select file
-							</span>
-							<span ng-show="resourceData.certCRT">
-								<i class="fa fa-check"></i> File uploaded
-							</span>
-						</div>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-sm-3 control-label">Private Key File (*.key)</label>
-					<div class="col-lg-4">
-						<div ngf-select="" ngf-drop="" ng-model="filesSelectKEY" 
-								ngf-multiple="multiple" ngf-accept="accept" 
-								ngf-drag-over-class="{accept:'dragover', reject:'dragover-err', delay:100}" 
-								ngf-min-size="minSize" ngf-max-size="maxSize" class="drop-box" 
-								style="width: 200px; height: 30px; border-width: 2px;" ngf-drop-available="dropAvailable">
-							<span ng-show="!resourceData.certKEY">
-								<i class="fa fa-lock"></i> Drop or select file
-							</span>
-							<span ng-show="resourceData.certKEY">
-								<i class="fa fa-check"></i> File uploaded
-							</span>
-						</div>
-					</div>
-				</div>
+				<div ng-include="'app/views/shared/certificates.upload.html'"></div>
 			</div>
 		</div>
 		<div class="navButtons">

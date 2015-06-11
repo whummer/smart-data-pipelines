@@ -5,9 +5,6 @@ var Certificate = require('./certificate.model');
 var util = require('riox-services-base/lib/util/util');
 var auth = require('riox-services-base/lib/auth/auth.service');
 
-var CERT_FILE = "cert-file";
-var PK_FILE = "pk-file";
-
 var validationError = function(res, err) {
 	return res.json(422, err);
 };
