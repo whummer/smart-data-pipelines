@@ -5,22 +5,7 @@ var Schema = mongoose.Schema;
 var crypto = require('crypto');
 var authTypes = ['github', 'twitter', 'facebook', 'google'];
 
-var UserSchema = new Schema({
-  name: String,
-  firstname: String,
-  lastname: String,
-  address: {
-	  _id: false,
-	  street: String,
-	  code: String,
-	  city: String,
-	  country: String
-  },
-  email: { type: String, lowercase: true },
-  role: {
-    type: String,
-    default: 'user'
-  },
+var template = {
   hashedPassword: String,
   provider: String,
   salt: String,
@@ -28,7 +13,30 @@ var UserSchema = new Schema({
   twitter: {},
   google: {},
   github: {}
-});
+};
+/** User name (display name). */
+template[NAME] = String;
+/** User's first name. */
+template[FIRSTNAME] = String;
+/** User's last name. */
+template[LASTNAME] = String;
+/** User's last name. */
+template[EMAIL] = { type: String, lowercase: true };
+/** User's address. */
+template[ADDRESS] = {
+		_id: false,
+		street: String,
+		code: String,
+		city: String,
+		country: String
+};
+/** User's role. */
+template[ROLE] = {
+	    type: String,
+		default: 'user'
+};
+
+var UserSchema = new Schema(template);
 
 /**
  * Virtuals

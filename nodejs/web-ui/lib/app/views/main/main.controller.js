@@ -13,6 +13,20 @@ angular.module('rioxApp')
     /* navigation path, displayed in top nav bar */
     $scope.shared.navigationPath = [];
 
+	/* get nav. bar stack */
+	$scope.setNavPath = function(scope) {
+		var path = [];
+		for(var i = 0; scope && i < 10; i ++) {
+			if(typeof scope.getNavPart == "function") {
+				var part = scope.getNavPart();
+				if(part) path.unshift(part);
+			}
+			scope = scope.$parent;
+		}
+		$scope.shared.navigationPath = path;
+		return path;
+	};
+
     $scope.logout = function () {
       Auth.logout();
       $state.go('index.login');

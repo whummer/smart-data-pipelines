@@ -66,7 +66,7 @@
 body {
   font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   background-color: #f3f3f4;
-  font-size: 13px;
+  font-size: 14px;
   color: #676a6c;
   overflow-x: hidden;
 }
@@ -1427,7 +1427,7 @@ body {
   line-height: 30px;
   padding-left: 20px;
   font-size: 14px;
-  height: 30px;
+  height: auto;
 }
 #topnavbar .navLinks {
   height: 45px;

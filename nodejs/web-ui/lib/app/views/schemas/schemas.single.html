@@ -1,0 +1,90 @@
+<div class="row">
+	<div class="col-lg-6">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<h5>Data Schema Items</h5>
+			</div>
+			<div class="ibox-content">
+
+				<!-- DATA SCHEMAS -->
+				<div ng-show="selectedSchema">
+					<div class="row">
+						<div ng-show="selectedSchema[DATA_ITEMS].length">
+							<div class="table-responsive">
+								<table class="table table-striped">
+									<thead>
+										<tr>
+											<th>Name</th>
+											<th>Selector</th>
+											<th>Type</th>
+											<th>Actions</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr ng-repeat="n in selectedSchema[DATA_ITEMS]" ng-class="{ 'font-bold' : n === selectedDataItem.item }">
+											<td><a ng-click="selectedDataItem.item = n">{{n[NAME]}}</a></td>
+											<td>{{n[SELECTOR]}}</td>
+											<td>{{n[TYPE]}}</td>
+											<td><a ng-click="selectedDataItem.item = n" title="edit"><i class="fa fa-edit"></i></a> <a ng-click="" title="remove"><i class="fa fa-remove"></i></a></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div ng-show="!selectedSchema[DATA_ITEMS].length">
+							Currently there are no data items defined for this schema.
+						</div>
+						<div ng-show="selectedDataItem.item">
+							<div class="form-group">
+								<label for="itName" class="col-lg-3">Name</label>
+								<div class="col-lg-9">
+									<input id="itName" class="form-control" ng-model="selectedDataItem.item[NAME]"/>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="itSel" class="col-lg-3">Selector</label>
+								<div class="col-lg-9">
+									<input id="itSel" class="form-control" ng-model="selectedDataItem.item[SELECTOR]"/>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="itType" class="col-lg-3">Data Type</label>
+								<div class="col-lg-9">
+									<select id="itType" class="form-control" 
+										ng-model="selectedDataItem.item[TYPE]"
+										ng-options="n for n in ['String', 'Double']">
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="text-right">
+							<button class="btn btn-primary" ng-click="addDataItem()"><i class="fa fa-plus-circle"></i> Add Data Item</button>
+							<button class="btn btn-primary" ng-click="saveDetails();"><i class="fa fa-save"></i> Save Changes</button>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+	
+	<div class="col-lg-1">
+		<div class="row" style="text-align: center; margin-top: 30px;">
+			<button class="btn btn-primary" ng-click="syncEditor()"><i class="fa fa-exchange"></i></button>
+		</div>
+	</div>
+
+	<div class="col-lg-5">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<h5>Schema Editor</h5>
+			</div>
+			<div class="ibox-content">
+				<div class="row">
+					<div style="height: 200px; width: 90%; margin: auto;" class="col-sm-12" ui-ace="{mode:'json'}"
+						 ng-model="payload"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

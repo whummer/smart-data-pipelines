@@ -1,4 +1,6 @@
-function dataItemsExtractorCtrl($scope, $log, $http, growl, $state) {
+
+angular.module('rioxApp').controller('WizardItemsCtrl', 
+		function($scope, $log, $http, growl, $state) {
 
 	$scope.extractDataItems = function () {
 		try {
@@ -25,6 +27,6 @@ function dataItemsExtractorCtrl($scope, $log, $http, growl, $state) {
 		//angular.element("#payloadArea").show();
 	};
 
-}
+});
 
-angular.module('rioxApp').controller('dataItemsExtractorCtrl', dataItemsExtractorCtrl);
+

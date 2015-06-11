@@ -15,7 +15,7 @@ angular.module('rioxApp').controller('ApisWizardCtrl', function ($scope, $log, g
 	                'index.apis.wizard.security',
 	                'index.apis.wizard.data_access',
 	                'index.apis.wizard.data_items',
-	                'index.apis.wizard.data_pricing',
+//	                'index.apis.wizard.data_pricing',
 	                'index.apis.wizard.deployment'];
 
 	$scope.nextStep = function(numSteps) {
@@ -32,9 +32,6 @@ angular.module('rioxApp').controller('ApisWizardCtrl', function ($scope, $log, g
 		return idx < 1;
 	};
 
-	/*$scope.securityEnabled = false;
-	 $scope.securityDisabled = false;*/
-
 	if ($state.params.debug) {
 		$scope.debug = true;
 	}
@@ -42,11 +39,7 @@ angular.module('rioxApp').controller('ApisWizardCtrl', function ($scope, $log, g
 	$scope.connectors = [
  		{name: "HTTP Connector", type: "http"},
 		{name: "Websocket Connector", type: "ws"},
-		{name: "MQTT Connector", type: "mqtt"},
-//		{name: "AMQP Connector", type: "amqp"},
-//		{name: "JMS Connector", type: "jms"},
-//		{name: "SMTP Connector", type: "smtp"},
-//		{name: "TCP Connector", type: "tcp"}
+		{name: "MQTT Connector", type: "mqtt"}
 	];
 
 	$scope.retentionTimeSliderOptions = {
@@ -137,9 +130,8 @@ angular.module('rioxApp').controller('ApisWizardCtrl', function ($scope, $log, g
 			dataStream[ORGANIZATION_ID] = defaultOrganization.id;
 			$log.debug("Adding new data resource: ", dataStream);
 			riox.add.streams.source(dataStream, function () {
-				$log.debug("Successfully added new data resource: ", dataStream);
-				growl.success("Added new Data Resource '" + dataStream.name + "'");
-				$location.path("/#/streams/provided");
+				growl.success("Added new API '" + dataStream.name + "'");
+				$state.go('index.apis.list');
 			})
 		};
 
@@ -152,4 +144,10 @@ angular.module('rioxApp').controller('ApisWizardCtrl', function ($scope, $log, g
 		$scope.loadDefaultOrganization().then(addStreamSource, handleDefaultOrgUnavailable);
 	}
 
+	/* get nav. bar stack */
+	$scope.getNavPart = function() {
+		return { sref: "index.apis.wizard.basic", name: "Wizard" };
+	}
+	$scope.setNavPath($scope);
+	
 });

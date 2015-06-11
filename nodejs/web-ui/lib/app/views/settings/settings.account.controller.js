@@ -1,8 +1,10 @@
 'use strict';
 
 angular.module('rioxApp')
-.controller('SettingsCtrl', function ($scope, User, Auth) {
+.controller('SettingsAccountCtrl', function ($scope, User, Auth, $window) {
+
 	$scope.errors = {};
+	$scope.ISO_3166_COUNTRIES = ISO_3166_COUNTRIES;
 
 	$scope.changePassword = function(form) {
 		$scope.submitted = true;
@@ -21,7 +23,14 @@ angular.module('rioxApp')
 
 	$scope.saveDetails = function(form) {
 		riox.save.me($scope.user, function(result) {
-			console.log("success", result);
+		      /* 
+		       * important: make sure to reload the entire page, to
+		       * reset all controllers, flush state information, etc.
+		       */
+		      setTimeout(function(){
+		    	  console.log("Reloading the page...");
+		          $window.location.reload(); 
+		      }, 100);
 		});
 	};
 
@@ -32,6 +41,12 @@ angular.module('rioxApp')
 			});
 		});
 	}
+
+	/* get nav. bar stack */
+	$scope.getNavPart = function() {
+		return { sref: "index.settings.account", name: "Account" };
+	}
+	$scope.setNavPath($scope);
 
 	/* load main elements */
 	loadDetails();

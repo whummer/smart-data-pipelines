@@ -15,6 +15,7 @@ angular.module('rioxApp', [
 	'hljs',
 	'ui.ace',
 	'ngFileUpload',
+	'ngTagsInput',
 	'ng-alias'
 ])
 		.config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider, growlProvider) {

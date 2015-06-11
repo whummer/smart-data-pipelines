@@ -2,16 +2,18 @@
 	.ace_editor { height: 200px;}
 </style>
 
-<div class="animated fadeIn" style="overflow: visible;;" ng-controller="dataItemsExtractorCtrl">
-	<h2>Extract individual data items from your Data Resource</h2>
+<div class="animated fadeIn" style="overflow: visible;">
+	<h2>Define Data Items</h2>
 	<br/>
 
-	<p>In this step, you can use some real data of yours (the data you will send to Riox) to create individual
-		<strong>Data Items</strong>. If you don't want to provide your data as-is to your consumer, now it is the time
-		to create Data Items out of a sample request. Just paste the body of your request into the area below.
+	<p>In this step, you can define <strong>Data Items</strong>. Data items allow you to 
+		restrict which consumer can see which portion of the data flowing through your API.
 	</p>
 
-	<p>If you want to provide the data as it is to your consumers, skip this step
+	<p ng-hide="resourceData.createDataItems">If you want to provide the data as it is to your consumers, skip this step.</p>
+
+	<p ng-show="resourceData.createDataItems"><b>Start by extracting data items from a sample message</b>.
+		Simply paste the body of your response message (JSON format) into the area below.
 	</p>
 
 	<div ng-hide="resourceData.createDataItems">
@@ -86,5 +88,3 @@
 	</div>
 
 </div>
-
-

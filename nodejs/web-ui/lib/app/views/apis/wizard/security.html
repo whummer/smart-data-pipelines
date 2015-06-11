@@ -1,61 +1,80 @@
 <fieldset class="animated fadeIn">
 	<h2>Configure Security</h2>
 
+	<p>Riox uses transport-level encryption to ensure security of your data and APIs. You may
+	either use the default security configuration, or select your own custom certificate.</p>
+
 	<!-- data security settings -->
-	<div class="row" ng-hide="resourceData.securityEnabled">
+	<div class="row">
 		<div class="form-group">
-			<label for="enableSecurity" class="col-sm-4 control-label">
-				Enable Data Security and Encryption for this Resource <i class="fa fa-question-circle"> </i>
+			<label for="enableSecurity" class="col-sm-3 control-label">
+				Enable Custom Certificate <i class="fa fa-question-circle"> </i>
 			</label>
 			<div class="col-sm-4">
-				<!--<input type="checkbox" id="enableSecurity" class="js-switch form-control"
-							 ui-switch="{color:'#5C9C4D', size: 'small'}"
-							 ng-model="resourceData.securityEnabled"/>-->
-
 				<label class="switch">
 					<input type="checkbox" id="enableSecurity" class="form-control"
-								 ng-change="resourceData.securityDisabled = !resourceData.securityEnabled"
 								 ng-model="resourceData.securityEnabled"><i></i>
 				</label>
 			</div>
 		</div>
 	</div>
 
-	<div class="row animated slide"
-			 ng-class="{fadeIn : resourceData.securityEnabled, fadeOut : !resourceData.securityEnabled}"
-			 ng-show="resourceData.securityEnabled">
-
-		<div class="widget dark-grey-widget-bg p-xl" style="margin-left: 18px;margin-right: 18px	">
-			<div class="row" style="margin-top: 10px;">
+	<div ng-alias="newCert = resourceData.certSelect.id == '__new__'">
+		<div class="row"  ng-show="resourceData.securityEnabled">
+			<div class="form-group">
+				<label for="certSel" class="col-sm-3 control-label">Select Certificate</label>
+				<div class="col-lg-4">
+					<select id="certSel" class="form-control" ng-model="resourceData.certSelect" 
+						ng-options="n as n.name for n in userCertificates track by n.id"></select>
+				</div>
+			</div>
+			<div ng-show="newCert">
 				<div class="form-group">
-					<label for="securitySettings" class="col-sm-4  control-label">
-						Which security features should be enabled for this resource? <i class="fa fa-question-circle"></i></label>
-					<div class="col-sm-4">
-						<div id="securitySettings" ion-range-slider range-options="securitySliderOptions"></div>
+					<label for="certName" class="col-sm-3 control-label">Certificate Name</label>
+					<div class="col-lg-4">
+						<input id="certName" class="form-control" ng-model="resourceData.certName"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label">Certificate File (*.crt)</label>
+					<div class="col-lg-4">
+						<div ngf-select="" ngf-drop="" ng-model="filesSelectCRT" 
+								ngf-multiple="multiple" ngf-accept="accept"
+								ngf-drag-over-class="{accept:'dragover', reject:'dragover-err', delay:100}" 
+								ngf-min-size="minSize" ngf-max-size="maxSize" class="drop-box" 
+								style="width: 200px; height: 30px; border-width: 2px;" ngf-drop-available="dropAvailable">
+							<span ng-show="!resourceData.certCRT">
+								<i class="fa fa-lock"></i> Drop or select file
+							</span>
+							<span ng-show="resourceData.certCRT">
+								<i class="fa fa-check"></i> File uploaded
+							</span>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label">Private Key File (*.key)</label>
+					<div class="col-lg-4">
+						<div ngf-select="" ngf-drop="" ng-model="filesSelectKEY" 
+								ngf-multiple="multiple" ngf-accept="accept" 
+								ngf-drag-over-class="{accept:'dragover', reject:'dragover-err', delay:100}" 
+								ngf-min-size="minSize" ngf-max-size="maxSize" class="drop-box" 
+								style="width: 200px; height: 30px; border-width: 2px;" ngf-drop-available="dropAvailable">
+							<span ng-show="!resourceData.certKEY">
+								<i class="fa fa-lock"></i> Drop or select file
+							</span>
+							<span ng-show="resourceData.certKEY">
+								<i class="fa fa-check"></i> File uploaded
+							</span>
+						</div>
 					</div>
 				</div>
 			</div>
-
-			<div class="pull-right" style="margin-right: -5px;" ng-hide="resourceData.securityDisabled">
-				<label for="disableSecurity" class="control-label">Disable Security Completely</label>
-				<!--<input type="checkbox" id="disableSecurity" class="form-control"
-							 ng-model="resourceData.securityDisabled"
-							 ng-change="resourceData.securityEnabled = !resourceData.securityDisabled"
-							 ui-switch="{color:'#5C9C4D', size: 'small'}"/>-->
-
-				<label class="switch">
-					<input type="checkbox" id="disableSecurity" class="form-control"
-								 ng-change="resourceData.securityEnabled = !resourceData.securityDisabled"
-								 ng-model="resourceData.securityDisabled"><i></i>
-				</label>
-
-			</div>
-			<div class="clearfix"></div>
 		</div>
-	</div>
-
-	<div class="navButtons">
-		<a ng-click="prevStep()" class="btn btn-default">Previous</a>
-		<a ng-click="nextStep()" class="btn btn-primary">Next</a>
+		<div class="navButtons">
+			<a ng-click="prevStep()" class="btn btn-default">Previous</a>
+			<a ng-click="nextStep()" class="btn btn-primary"
+				ng-disabled="newCert && (!resourceData.certName || !resourceData.certKEY || !resourceData.certCRT)">Next</a>
+		</div>
 	</div>
 </fieldset>

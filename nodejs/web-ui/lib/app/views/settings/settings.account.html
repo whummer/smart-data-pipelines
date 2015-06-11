@@ -15,15 +15,19 @@
 							novalidate>
 							<div class="form-group">
 								<label>Email</label> <input class="form-control"
-									ng-model="user.email" disabled="disabled" mongoose-error />
+									ng-model="user[EMAIL]" disabled="disabled" mongoose-error />
+							</div>
+							<div class="form-group">
+								<label>User Name (Display Name)</label> <input class="form-control"
+									ng-model="user[NAME]" mongoose-error />
 							</div>
 							<div class="form-group">
 								<label>First name</label> <input class="form-control"
-									ng-model="user.firstname" mongoose-error />
+									ng-model="user[FIRSTNAME]" mongoose-error />
 							</div>
 							<div class="form-group">
 								<label>Last name</label> <input class="form-control"
-									ng-model="user.lastname" mongoose-error />
+									ng-model="user[LASTNAME]" mongoose-error />
 							</div>
 							<div class="form-group">
 								<label>Street Address</label> <input class="form-control"
@@ -42,8 +46,10 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<label>Country</label> <input class="form-control"
-									ng-model="user.address.country" mongoose-error />
+								<label>Country</label>
+									<select class="form-control" ng-model="user.address.country"
+										ng-options="key as label for (key, label) in ISO_3166_COUNTRIES"
+										mongoose-error></select>
 							</div>
 
 							<button class="btn btn-lg btn-primary btn-sm" type="submit">Save
@@ -94,7 +100,7 @@
 						<h5>Your Organization</h5>
 					</div>
 					<div class="ibox-content">
-						<div ng-include="'app/views/account/settings/organizations.html'"></div>
+						<div ng-include="'app/views/settings/organizations.html'"></div>
 					</div>
 				</div>
 			</div>

@@ -7,20 +7,16 @@ angular.module('rioxApp')
 		if(!sources) return;
 		// console.log("sources", sources);
 		$scope.loadSourceDetails(sources, $stateParams.sourceId);
-		$scope.getNavPath();
+		$scope.setNavPath($scope);
 	});
 
-	$scope.getNavPath = function() {
-		var path = $scope.$parent.getNavPath();
-		if($scope.shared.selectedAPI) {
-			path.push(
-				{ name: "API '" + $scope.shared.selectedAPI.name + "'", sref: false}
-			);
-		}
-		$scope.shared.navigationPath = path;
-		return path;
-	};
 
-	$scope.getNavPath();
+	/* get nav. bar stack */
+	$scope.getNavPart = function() {
+		if($scope.shared.selectedAPI) {
+			return { name: "API '" + $scope.shared.selectedAPI.name + "'", sref: false};
+		}
+	}
+	$scope.setNavPath($scope);
 
 });

@@ -16,19 +16,32 @@ angular.module('rioxApp')
 			templateUrl: "app/views/main/main.html"
 		})
 
-	// settings and dashboard states
+	// dashboard
 		.state('index.dashboard', {
 			url: '/dashboard',
 			templateUrl: 'app/views/account/dashboard/dashboard.html',
-			data: {pageTitle: 'riox.io - dashboard'},
 			authenticate: true
 		})
+
+	// settings
 		.state('index.settings', {
 			url: '/settings',
-			templateUrl: 'app/views/account/settings/settings.html',
+			templateUrl: 'app/views/settings/settings.html',
 			controller: 'SettingsCtrl',
-			data: {pageTitle: 'riox.io - settings'},
-			authenticate: true
+			data: {
+				/* this flag in this 'data' bag is propagated to all child-states */
+				authenticate: true
+			}
+		})
+		.state('index.settings.account', {
+			url: '/account',
+			templateUrl: 'app/views/settings/settings.account.html',
+			controller: 'SettingsAccountCtrl'
+		})
+		.state('index.settings.security', {
+			url: '/security',
+			templateUrl: 'app/views/settings/settings.security.html',
+			controller: 'SettingsSecurityCtrl'
 		})
 
 	// authentication,
@@ -89,43 +102,6 @@ angular.module('rioxApp')
 			}
 		})
 
-	// access control
-		.state('index.apis.access', {
-			url: "/{sourceId}/access",
-			views: {
-				"apiDetails@index.apis": {
-					templateUrl: "app/views/access/access.single.html",
-					controller: "AccessSingleCtrl"
-				}
-			}
-		})
-
-	// data interfaces
-		.state('index.apis.interface', {
-			url: "/{sourceId}/interface",
-			views: {
-				"apiDetails@index.apis": {
-					templateUrl: "app/views/interfaces/interfaces.html",
-					controller: "InterfacesCtrl"
-				}
-			}
-		})
-		.state('index.apis.interface.single', {
-			url: "/{interfaceId}",
-			templateUrl: "app/views/interfaces/interfaces.single.html",
-			controller: "InterfacesSingleCtrl"
-		})
-
-	// pricing
-		.state('index.apis.pricing', {
-			url: "/{sourceId}/pricing",
-			views: {
-				"apiDetails@index.apis": {
-					templateUrl: "app/views/pricing/pricing.html",
-				}
-			}
-		})
-
 	// APIs wizard/setup
 		.state('index.apis.wizard', {
 			url: "/wizard?debug",
@@ -146,23 +122,79 @@ angular.module('rioxApp')
 		})
 		.state('index.apis.wizard.security', {
 			url: '/security',
-			templateUrl: 'app/views/apis/wizard/security.html'
+			templateUrl: 'app/views/apis/wizard/security.html',
+			controller: 'WizardSecurityCtrl'
 		})
 		.state('index.apis.wizard.data_access', {
 			url: '/access',
 			templateUrl: 'app/views/apis/wizard/data_access.html'
 		})
-		.state('index.apis.wizard.data_pricing', {
-			url: '/pricing',
-			templateUrl: 'app/views/apis/wizard/data_pricing.html'
-		})
+//		.state('index.apis.wizard.data_pricing', {
+//			url: '/pricing',
+//			templateUrl: 'app/views/apis/wizard/data_pricing.html'
+//		})
 		.state('index.apis.wizard.data_items', {
 			url: '/items',
-			templateUrl: 'app/views/apis/wizard/data_items.html'
+			templateUrl: 'app/views/apis/wizard/data_items.html',
+			controller: 'WizardItemsCtrl'
 		})
 		.state('index.apis.wizard.deployment', {
 			url: '/deployment',
 			templateUrl: 'app/views/apis/wizard/deployment.html'
+		})
+
+	// access control
+		.state('index.apis.access', {
+			url: "/{sourceId}/access",
+			views: {
+				"apiDetails@index.apis": {
+					templateUrl: "app/views/access/access.html",
+					controller: "AccessCtrl"
+				}
+			}
+		})
+
+	// operations
+		.state('index.apis.operations', {
+			url: "/{sourceId}/operations",
+			views: {
+				"apiDetails@index.apis": {
+					templateUrl: "app/views/operations/operations.html",
+					controller: "OperationsCtrl"
+				}
+			}
+		})
+		.state('index.apis.operations.single', {
+			url: "/{operationId}",
+			templateUrl: "app/views/operations/operations.single.html",
+			controller: "OperationsSingleCtrl"
+		})
+
+	// schemas
+		.state('index.apis.schemas', {
+			url: "/{sourceId}/schemas",
+			views: {
+				"apiDetails@index.apis": {
+					templateUrl: "app/views/schemas/schemas.html",
+					controller: "SchemasCtrl"
+				}
+			}
+		})
+		.state('index.apis.schemas.single', {
+			url: "/{schemaId}",
+			templateUrl: "app/views/schemas/schemas.single.html",
+			controller: "SchemasSingleCtrl"
+		})
+
+	// pricing
+		.state('index.apis.pricing', {
+			url: "/{sourceId}/pricing",
+			views: {
+				"apiDetails@index.apis": {
+					templateUrl: "app/views/pricing/pricing.html",
+					controller: "PricingCtrl"
+				}
+			}
 		});
 
 	// streams

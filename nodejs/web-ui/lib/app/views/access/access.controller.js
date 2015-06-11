@@ -3,6 +3,10 @@
 angular.module('rioxApp')
 .controller('AccessCtrl', function ($scope, Auth, $stateParams) {
 
+	$scope.$watch("sources", function(sources) {
+		if(!sources) return;
+		$scope.loadSourceDetails(sources, $stateParams.sourceId);
+	});
 
 	/* load selected consumer */
 	var loadSelectedConsumer = function() {
@@ -70,5 +74,11 @@ angular.module('rioxApp')
 		if(!s) return;
 		loadSelectedConsumer();
 	});
+
+	/* get nav. bar stack */
+	$scope.getNavPart = function() {
+		return { sref: "index.apis.access", name: "Access Control" };
+	}
+	$scope.setNavPath($scope);
 
 });

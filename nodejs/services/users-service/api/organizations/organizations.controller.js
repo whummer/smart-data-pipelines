@@ -3,6 +3,7 @@
 var mongoose = global.mongoose || require('mongoose');
 var Organization = require('./organization.model');
 var Membership = require('./membership.model');
+var util = require('riox-services-base/lib/util/util');
 var auth = require('riox-services-base/lib/auth/auth.service');
 
 var validationError = function(res, err) {
@@ -25,6 +26,10 @@ exports.create = function(req, res, next) {
 	var user = auth.getCurrentUser(req);
 	var newOrg = req.body;
 	newOrg[CREATOR_ID] = user.id;
+	/* make sure we have a domain name */
+	if(!newOrg[DOMAIN_NAME]) {
+		newOrg[DOMAIN_NAME] = util.genShortUUID();
+	}
 	var newObj = new Organization(newOrg);
 	newObj.save(function(err, obj) {
 		if (err)

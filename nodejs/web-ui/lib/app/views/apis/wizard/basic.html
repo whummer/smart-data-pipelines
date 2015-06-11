@@ -31,7 +31,7 @@
 <!-- 			</label> -->
 		</div>
 	</div>
-	
+
 <!-- 	<div ng-show="false"> -->
 <!-- 		<div class="row"> -->
 <!-- 			<div class="form-group"> -->
@@ -60,18 +60,9 @@
 		<div class="form-group" style="overflow: visible;">
 			<label for="resourceDescription" class="col-sm-3 control-label">Tags</label>
 			<div class="col-sm-5">
-				<select multiple chosen ng-model="resourceData.tags" style="width:100%; overflow: visible;">
-					<option value="car">car</option>
-					<option value="speed">speed</option>
-					<option value="temperature">temperature</option>
-					<option value="pressure">pressure</option>
-					<option value="acceleration">acceleration</option>
-					<option value="altitude">altitude</option>
-					<option value="humidity">humidity</option>
-					<option value="traffic">traffic</option>
-					<option value="city">city</option>
-					<option value="farming">farming</option>
-				</select>
+				<tags-input ng-model="resourceData.tags">
+<!-- 			        <auto-complete source="loadTags($query)"></auto-complete> -->
+			    </tags-input>
 			</div>
 		</div>
 	</div>
@@ -82,5 +73,3 @@
 		</a>
 	</div>
 </div>
-
-

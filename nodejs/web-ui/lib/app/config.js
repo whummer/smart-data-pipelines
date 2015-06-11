@@ -24,6 +24,7 @@ var appConfig = servicesConfig = {
 		notifications: { url: "http://" + _host + ":8084/api/v1/notifications" },
 	    analytics: { url: "http://" + _host + ":8086/api/v1/analytics" },
 	    consents: { url: "http://" + _host + ":8085/api/v1/consents" },
+		certificates: { url: "http://" + _host + ":8084/api/v1/certificates" },
 
 		websocket: { url: "ws://platform.riox.io:9001/" }
 	}

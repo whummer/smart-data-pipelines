@@ -10,5 +10,6 @@ module.exports = function(app) {
   app.use('/api/v1/users', require('./api/users'));
   app.use('/api/v1/organizations', require('./api/organizations'));
   app.use('/api/v1/notifications', require('./api/notifications'));
+  app.use('/api/v1/certificates', require('./api/certificates'));
 
 };

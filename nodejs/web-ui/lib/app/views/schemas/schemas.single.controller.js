@@ -1,13 +1,13 @@
 'use strict';
 
 angular.module('rioxApp')
-.controller('InterfacesSingleCtrl', function ($scope, Auth, $stateParams, growl) {
+.controller('SchemasSingleCtrl', function ($scope, Auth, $stateParams, growl) {
 
 	$scope.selectedDataItem = {};
 	$scope.payload = "{}";
 
 	$scope.$watch("shared.selectedAPI", function() {
-		$scope.loadSelectedOpOrSchema($stateParams.interfaceId);
+		$scope.loadSelectedSchema($stateParams.schemaId);
 	});
 
 	$scope.addDataItem = function() {
@@ -20,6 +20,7 @@ angular.module('rioxApp')
 
 	$scope.saveDetails = function() {
 		var copy = $scope.prepareApiObj($scope.shared.selectedAPI);
+		$scope.selectedDataItem = {};
 		riox.save.streams.source(copy, function(saved) {
 			$scope.shared.selectedAPI = saved;
 			growl.info("Details have been saved.");
@@ -54,20 +55,20 @@ angular.module('rioxApp')
 			}
 			return false;
 		};
-		var addPathToJSON = function(json, path) {
+		var addPathToJSON = function(json, path, dataType) {
 			if(path.length <= 0) return;
 			var p = path.splice(0, 1)[0];
 			if(p == "") return;
 			if(typeof json[p] == "undefined") {
 				if(path.length <= 0)
-					json[p] = true;
+					json[p] = dataType;
 				else
 					json[p] = {};
 			}
 			if(typeof json[p] != "object" && path.length > 0) {
 				json[p] = {};
 			}
-			addPathToJSON(json[p], path);
+			addPathToJSON(json[p], path, dataType);
 		};
 
 		for(var key in flattened) {
@@ -82,8 +83,9 @@ angular.module('rioxApp')
 		for(var j = 0; j < items.length; j ++) {
 			if(!existsInEditor(items[j])) {
 				if(typeof items[j][SELECTOR] == "undefined") items[j][SELECTOR] = "";
+				if(!items[j][TYPE]) items[j][TYPE] = "String";
 				var path = items[j][SELECTOR].split(/\./g);
-				addPathToJSON(parsedPayload, path);
+				addPathToJSON(parsedPayload, path, items[j][TYPE]);
 				$scope.payload = JSON.stringify(parsedPayload, null, 3);
 			}
 		}

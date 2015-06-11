@@ -14,19 +14,19 @@
             <li ng-class="{active: isActive('/apis')}">
                 <a ui-sref="index.apis.list"><i class="fa fa-exchange"></i> <span class="nav-label">My APIs</span> <span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level collapse" ng-class="{in: isActive('/apis')}">
-                    <li ng-class="{active: isActive('/access')}">
+                    <li>
                     	<a ui-sref="index.apis.wizard.basic"><i class="fa fa-magic"></i> <span class="nav-label">Create New API</span></a>
                     </li>
-<!--                     <li> -->
-<!--                     	<a ui-sref="index.apis.endpoints">API Endpoints</a> -->
-<!--                     </li> -->
-		            <li ng-class="{active: isActive('/access')}" ng-show="shared.selectedAPI">
-		                <a ui-sref="index.apis.interface({sourceId: shared.selectedAPI.id})"><i class="fa fa-list"></i> <span class="nav-label">Data Interfaces</span></a>
+		            <li ng-show="shared.selectedAPI">
+		                <a ui-sref="index.apis.operations({sourceId: shared.selectedAPI.id})"><i class="fa fa-list"></i> <span class="nav-label">Operations</span></a>
 		            </li>
-		            <li ng-class="{active: isActive('/access')}" ng-show="shared.selectedAPI">
+		            <li ng-show="shared.selectedAPI">
+		                <a ui-sref="index.apis.schemas({sourceId: shared.selectedAPI.id})"><i class="fa fa-file-code-o"></i> <span class="nav-label">Data Schemas</span></a>
+		            </li>
+		            <li ng-show="shared.selectedAPI">
 		                <a ui-sref="index.apis.access({sourceId: shared.selectedAPI.id})"><i class="fa fa-lock"></i> <span class="nav-label">Access Control</span></a>
 		            </li>
-		            <li ng-class="{active: isActive('/pricing')}" ng-show="shared.selectedAPI">
+		            <li ng-show="shared.selectedAPI">
 		                <a ui-sref="index.apis.pricing({sourceId: shared.selectedAPI.id})"><i class="fa fa-money"></i> <span class="nav-label">Pricing</span></a>
 		            </li>
                 </ul>
@@ -44,7 +44,12 @@
                 <a ui-sref="index.notifications"><i class="fa fa-bell"></i> <span class="nav-label">Notifications</span></a>
             </li>
             <li ng-class="{active: isActive('/settings')}">
-                <a ui-sref="index.settings"><i class="glyphicon glyphicon-cog"></i> <span class="nav-label">Settings</span></a>
+                <a ui-sref="index.settings.account"><i class="glyphicon glyphicon-cog"></i> <span class="nav-label">Settings</span> <span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level collapse" ng-class="{in: isActive('/settings')}">
+                    <li>
+                    	<a ui-sref="index.settings.security"><i class="fa fa-lock"></i> <span class="nav-label">Security</span></a>
+                    </li>
+		        </ul>
             </li>
         </ul>
 

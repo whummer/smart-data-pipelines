@@ -79,6 +79,21 @@ angular.module('rioxApp').controller('ApisCtrl',
 		return promise;
 	};
 
+
+	/* helper method: prepare the selected API object 
+	 * for sending over the wire: clone and remove 
+	 * fields which do not belong to the domain model */
+	$scope.prepareApiObj = function() {
+		var copy = clone($scope.shared.selectedAPI);
+		/* defaults */
+		if(!copy[OPERATIONS]) copy[OPERATIONS] = [];
+		if(!copy[SCHEMAS]) copy[SCHEMAS] = [];
+		/* clean model */
+		delete copy.organization;
+		delete copy.consumers;
+		return copy;
+	};
+
 	/* helper methods: load stream consumers for a single source */
 	
 	var reloadStreamConsumers = function(source) {
@@ -111,13 +126,10 @@ angular.module('rioxApp').controller('ApisCtrl',
 	};
 
 	/* get nav. bar stack */
-	$scope.getNavPath = function() {
-		var path = [
-			{ sref: "index.apis.list", name: "APIs" }
-		];
-		$scope.shared.navigationPath = path;
-		return path;
-	};
+	$scope.getNavPart = function() {
+		return { sref: "index.apis.list", name: "APIs" };
+	}
+	$scope.setNavPath($scope);
 
 	/* load main elements */
 	$scope.loadStreamSources().

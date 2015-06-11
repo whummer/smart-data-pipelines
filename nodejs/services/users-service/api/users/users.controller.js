@@ -51,6 +51,9 @@ exports.create = function (req, res, next) {
   var newUser = new User(req.body);
   newUser.provider = 'local';
   newUser.role = 'user';
+  if(!newUser[NAME]) {
+	  newUser[NAME] = newUser[FIRSTNAME] + " " + newUser[LASTNAME];
+  }
   newUser.save(function(err, user) {
     if (err) return validationError(res, err);
 
@@ -151,6 +154,7 @@ exports.saveMe = function(req, res, next) {
 	    existingUser.address = newUser.address;
 	    existingUser.firstname = newUser.firstname;
 	    existingUser.lastname = newUser.lastname;
+	    existingUser.name = newUser.name;
 
 	    existingUser.save(function(err, userResult) {
 	    	if(err) return res.send(401);

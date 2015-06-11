@@ -22,12 +22,23 @@ function dashboardCtrl($scope, $log) {
 
 	};
 
+	$scope.sortableModel = [];
 	$scope.sortableOptions = {
 		connectWith: ".connectPanels",
 		handler: ".ibox-title"
 	};
-	
-	$scope.sortableModel = [];
+
+	/* get nav. bar stack */
+	$scope.getNavPath = function() {
+		var path = [
+			{ sref: "index.dashboard", name: "Dashboard" }
+		];
+		$scope.shared.navigationPath = path;
+		return path;
+	};
+
+	/* load main elements */
+	$scope.getNavPath();
 }
 
 angular.module('rioxApp').controller('dashboardCtrl', dashboardCtrl);
