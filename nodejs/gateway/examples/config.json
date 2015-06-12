@@ -1,0 +1,36 @@
+{
+
+	"port" : 8000,
+	"logging" : true,	
+
+	"ssl" : {
+		"key":    "./ssl.key",
+		"cert" :  "./ssl.crt" 
+	},
+
+	"vhosts" : [
+		{
+			"name": "localhost",
+			"target" : "user-service"
+		}
+	],
+
+	"targets" : [
+		{
+				"name" : "user-service",
+				"protocol": "http",
+				"host": "localhost",
+				"port": 3000,
+
+				"routes" : [
+					{
+						"src": "/api/v1/users",
+						"dest" : "/users",
+						"methods" : [ "GET", "POST" ]
+					}					
+				]
+		}
+
+	]
+
+}
