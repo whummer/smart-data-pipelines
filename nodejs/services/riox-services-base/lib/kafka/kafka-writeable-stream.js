@@ -2,7 +2,7 @@ var _ = require('lodash'),
 	util = require('util'),
 	uuid = require('uuid'),
 	kafka = require('kafka-node'),
-	emitter = require('events').Emitter,
+	EventEmitter = require('events').EventEmitter,
 	WritableStream = require('stream').Writable,
 	HighLevelProducer = kafka.HighLevelProducer,
 	log = require('winston');
@@ -24,8 +24,10 @@ var KafkaWritableStream = function (options) {
 			}
 
 			self.topicsReady = true;
+			self.emit('topicsReady');
 		});
 	});
+
 
 	WritableStream.call(this);
 };
@@ -41,27 +43,32 @@ KafkaWritableStream.prototype._write = function (chunk, encoding, done) {
 	var self = this;
 
 	if (!this.topicsReady) {
-		//throw new Error('Topics not ready.');
-
-		var topicsReadyCheck = setInterval(function() {
+		var topicsReadyCheck = setInterval(function () {
 			if (self.topicsReady) {
 				clearInterval(topicsReadyCheck);
-				self.producer.send(payload, function (err, data) {
-					if (err) {
-						log.error('Cannot send chunk: ', err);
-						throw new Error('Cannot send chunk: ' + err);
-					}
-
-					log.debug('Successfully pushed chunk to kafka: ', data);
-					if (done) {
-						done();
-					}
-				});
+				doSend(payload);
+			} else {
+				log.debug('Topics not ready, retrying');
 			}
 		}, 100)
+	} else {
+		doSend(payload);
 	}
 
 
+	function doSend(payload) {
+		self.producer.send(payload, function (err, data) {
+			if (err) {
+				log.error('Cannot send chunk: ', err);
+				throw new Error('Cannot send chunk: ' + err);
+			}
+
+			log.debug('Successfully pushed chunk to kafka: ', data);
+			if (done) {
+				done();
+			}
+		});
+	}
 };
 
 KafkaWritableStream.prototype.createTopic = function (topicId, async) {
