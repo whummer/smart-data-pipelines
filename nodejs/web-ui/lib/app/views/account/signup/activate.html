@@ -1,0 +1,19 @@
+<div class="row col-sm-12">
+	<div class="ibox">
+		<div class="ibox-title">
+			<h5>Account Activation</h5>
+		</div>
+		<div class="ibox-content ">
+			<div ng-show="!activationSuccess && !activationError">
+				Validating ...
+			</div>
+			<div ng-show="activationSuccess">
+				<i class="fa fa-check"></i>Account successfully activated. 
+			</div>
+			<div ng-show="activationError">
+				<i class="fa fa-warning"></i> There was an error activating your account. 
+					Please make sure that the activation link is correct.
+			</div>
+		</div>
+	</div>
+</div>

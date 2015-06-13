@@ -60,6 +60,11 @@ angular.module('rioxApp')
 			templateUrl: 'app/views/account/callback/index.html',
 			controller: 'CallbackCtrl'
 		})
+		.state('index.activate', {
+			url: '/activate/{activationKey}',
+			templateUrl: 'app/views/account/signup/activate.html',
+			controller: 'SignupCtrl'
+		})
 
 	// general
 		.state('index.notifications', {

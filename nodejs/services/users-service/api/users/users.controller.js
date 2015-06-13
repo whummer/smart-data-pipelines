@@ -1,11 +1,14 @@
 'use strict';
 
 var User = require('./user.model');
+var Activation = require('./activation.model');
 var passport = require('passport');
 var mongoose = global.mongoose || require('mongoose');
 var config = require('../../config/environment');
 var riox = require('riox-shared/lib/api/riox-api');
 var auth = require('riox-services-base/lib/auth/auth.service');
+var email = require('./email');
+var uuid = require('uuid');
 
 var validationError = function(res, err) {
   return customError(res, 422, err);
@@ -33,6 +36,20 @@ exports.auth = function(req, res) {
 	}
 };
 
+exports.activate = function(req, res) {
+	var query = {};
+	query[ACTIVATION_KEY] = req.body.activationKey;
+	Activation.find(query, function(err, activation) {
+		if (err || !activation) return validationError(res, err);
+		activation = activation[0];
+		activation[ACTIVATION_DATE] = new Date();
+		activation.save(function(err, activation) {
+			if (err || !activation) return validationError(res, err);
+			return res.json({status: "Account activated."});
+		});
+	});
+};
+
 /**
  * Get list of users
  * restriction: 'admin'
@@ -42,6 +59,20 @@ exports.index = function(req, res) {
     if(err) return customError(res, 500, err);
     res.json(users);
   });
+};
+
+/** 
+ * Send activation mail.
+ */
+var sendActivationMail = exports.sendActivationMail = function(user) {
+	var activation = new Activation();
+	activation[ACTIVATION_KEY] = uuid.v4();
+	activation[USER_ID] = user[ID];
+	activation[CREATION_DATE] = new Date();
+	activation.save(function(err, activation) {
+		if (err || !activation) return validationError(res, err);
+		email.sendActivationMail(user, activation[ACTIVATION_KEY]);
+	});
 };
 
 /**
@@ -55,7 +86,7 @@ exports.create = function (req, res, next) {
 	  newUser[NAME] = newUser[FIRSTNAME] + " " + newUser[LASTNAME];
   }
   newUser.save(function(err, user) {
-    if (err) return validationError(res, err);
+    if (err || !user) return validationError(res, err);
 
     var token = auth.signToken(user._id);
     var headers = auth.getHeaderFromToken(token);
@@ -64,6 +95,9 @@ exports.create = function (req, res, next) {
     //var token = auth.getInternalCallToken();
     riox.add.organization(org, {
     	callback: function(org) {
+    		/* send activation mail */
+    		sendActivationMail(user);
+    		/* send token result */
     		res.json({ token: token });
     	},
     	headers: headers
