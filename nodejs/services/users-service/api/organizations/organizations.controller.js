@@ -115,10 +115,26 @@ exports.show = function(req, res, next) {
 };
 
 exports.destroy = function(req, res) {
+	/* TODO check permissions */
 	Organization.findByIdAndRemove(req.params.id, function(err, obj) {
-		if (err)
-			return res.send(500, err);
+		if (err) return res.send(500, err);
 		return res.send(204);
+	});
+};
+
+exports.listMemberships = function(req, res, next) {
+	var orgId = req.params.id;
+	if(!orgId) return next(404);
+	var user = auth.getCurrentUser(req);
+	/* check permission */
+	if(!user.hasOrganization(orgId)) {
+		return next(401);
+	}
+	var query = {};
+	query[ORGANIZATION_ID] = orgId;
+	Membership.find(query, function(err, list) {
+		if (err) return res.send(500, err);
+		res.json(list);
 	});
 };
 

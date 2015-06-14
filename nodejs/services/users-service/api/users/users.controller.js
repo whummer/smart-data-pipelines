@@ -36,6 +36,30 @@ exports.auth = function(req, res) {
 	}
 };
 
+exports.search = function(req, res) {
+	var q = req.query.q;
+	var or1 = {};
+	var or2 = {};
+	or1[NAME] = q;
+	or2[EMAIL] = q;
+	var or = [or1, or2];
+	var query = {"$or" : or};
+	User.find(query, function(err, users) {
+		if(err) {
+			return customError(res, 500, "Error when searching for users.");
+		}
+		var result = [];
+		users.forEach(function(user) {
+			var u = {};
+			u[ID] = user[ID];
+			u[NAME] = user[NAME];
+			u[EMAIL] = user[EMAIL];
+			result.push(u);
+		});
+		return res.json(result);
+	});
+};
+
 exports.activate = function(req, res) {
 	var query = {};
 	query[ACTIVATION_KEY] = req.body.activationKey;

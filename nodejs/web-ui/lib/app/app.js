@@ -16,7 +16,8 @@ angular.module('rioxApp', [
 	'ui.ace',
 	'ngFileUpload',
 	'ngTagsInput',
-	'ng-alias'
+	'ng-alias',
+	'angucomplete'
 ])
 		.config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider, growlProvider) {
 			$locationProvider.html5Mode(false);

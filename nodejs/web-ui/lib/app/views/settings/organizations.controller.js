@@ -6,16 +6,20 @@ app.controller('OrganizationsController',
 	var fileServiceURL = appConfig.services.files.url;
 	var fileServiceURLAbs = resolve(fileServiceURL);
 
+	$scope.selected = {};
+	$scope.usersServiceURL = appConfig.services.users.url;
+	$scope.emailPattern = /^[a-z]+[a-z0-9._]+@[a-z]+\.[a-z.]{2,5}$/;
+
 	$scope.saveOrganization = function() {
-		var main = $scope.orgInfo.main;
-		if(!main) return;
-		main = clone(main);
-		var url = main.imageUrl;
-		delete main.creatorDisplayName;
-		delete main.status;
-		delete main.imageUrl;
-		main[IMAGE_DATA] = [ { href: url } ];
-		riox.save.organization(main, function() {
+		var org = $scope.selected.organization;
+		if(!org) return;
+		org = clone(org);
+		var url = org.imageUrl;
+		delete org.creatorDisplayName;
+		delete org.status;
+		delete org.imageUrl;
+		org[IMAGE_DATA] = [ { href: url } ];
+		riox.save.organization(org, function() {
 			growl.success("Organization details saved successfully.");
 			loadOrgs();
 			Auth.loadOrganization();
@@ -23,28 +27,64 @@ app.controller('OrganizationsController',
 	}
 
 	$scope.removeMember = function(index) {
-		var main = $scope.orgInfo.main;
+		var main = $scope.selected.organization;
 		if(!main) return;
 		if(!main.members) main.members = [];
 		main.members.splice(index, 1);
 	}
 	$scope.addMember = function() {
-		var main = $scope.orgInfo.main;
-		if(!main) return;
-		if(!main.members) main.members = [];
-		main.members.push("");
+		var org = $scope.selected.organization;
+		if(!org) return;
+		var mem = {};
+		mem[ORGANIZATION_ID] = org[ID];
+		if($scope.newMember) {
+			mem[MEMBER] = $scope.newMember;
+		} else {
+			var email = $("#inputNewMem_value").val();
+			if(!email.match($scope.emailPattern)) {
+				growl.warning("Please select a user from the list, or type a valid email address.");
+				return;
+			}
+			mem[MEMBER] = email;
+		}
+		riox.add.organization.invite(mem, function() {
+			growl.info("Invitation has been sent out.");
+			loadOrgs();
+		});
+//		console.log($("#inputNewMem").val());
 	}
 
 	var loadOrgs = function() {
 		$scope.orgInfo = {};
+		var user = $scope.getCurrentUser();
 		riox.organizations(function(orgs) {
 			$scope.orgInfo.orgs = orgs;
-			// TODO remove?
-//			$.each(orgs, function(idx, el) {
+			$.each(orgs, function(idx, org) {
+				var query = {};
+				query[ID] = org[CREATOR_ID];
+				riox.user(query, function(user) {
+					org.creatorDisplayName = user.name;
+				});
+				if($scope.selected.organization && $scope.selected.organization[ID] == org[ID]) {
+					$scope.selected.organization = org;
+				}
+	   			if(org[IMAGE_DATA] && org[IMAGE_DATA][0]) {
+	   				org.imageUrl = org[IMAGE_DATA][0].href;
+	   			}
+	   			riox.organizations.memberships(org, function(mems) {
+	   				org.memberships = mems;
+	   				mems.forEach(function(mem) {
+	   					if(mem[MEMBER] == user[EMAIL] || mem[MEMBER] == user[ID]) {
+	   						org.membership = mem;
+	   					}
+	   				});
+	   				org[STATUS] = org.membership ? org.membership[STATUS] : "OWNER";
+	   			});
+				// TODO remove?
 //				var userInfo = $scope.getCurrentUser();
 //				if(userInfo) {
 //					if(el[CREATOR_ID] == userInfo.id) {
-//			   			var dfltOrg = $scope.orgInfo.main = el;
+//			   			var dfltOrg = $scope.selected.organization = el;
 //			   			if(!dfltOrg.members) {
 //			   				dfltOrg.members = [];
 //			   			}
@@ -57,7 +97,7 @@ app.controller('OrganizationsController',
 //				} else {
 //					console.warn("Unable to determine userInfo from scope.")
 //				}
-//			});
+			});
 		});
 	}
 
@@ -77,11 +117,17 @@ app.controller('OrganizationsController',
                 //console.log('progress: ' + progressPercentage + '% ' + evt.config.file.name);
             }).success(function (data, status, headers, config) {
                 //console.log('file ' + config.file.name + 'uploaded. Response: ' + data);
-	   			var dfltOrg = $scope.orgInfo.main;
+	   			var selOrg = $scope.selected.organization;
 	   			var id = data.replace(/"/g, "");
-	   			dfltOrg.imageUrl = fileServiceURLAbs + "/" + id;
+	   			selOrg.imageUrl = fileServiceURLAbs + "/" + id;
+	   			$scope.saveOrganization();
             });
         }
+    };
+    
+    $scope.deleteImage = function() {
+    	$scope.selected.organization.imageUrl = null;
+    	$scope.selected.organization[IMAGE_DATA] = [];
     };
 
 	/* register event handlers */
@@ -91,6 +137,12 @@ app.controller('OrganizationsController',
 	        upload(files);
 		}
     });
+
+	/* get nav. bar stack */
+	$scope.getNavPart = function() {
+		return { sref: "index.settings.organizations", name: "Organizations" };
+	}
+	$scope.setNavPath($scope);
 
 	/* load main elements */
 	loadOrgs();

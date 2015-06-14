@@ -419,6 +419,12 @@
 		var url = servicesConfig.services.organizations.url + "/" + orgId + "/memberships";
 		return callGET(url, callback, errorCallback);
 	};
+	sh.organizations.memberships = sh.get.organizations.memberships = function (org, callback, errorCallback) {
+		var orgId = org[ID] ? org[ID] : org;
+		if(typeof orgId != "string") throw "Please provide a valid organization ID.";
+		var url = servicesConfig.services.organizations.url + "/" + orgId + "/memberships";
+		return callGET(url, callback, errorCallback);
+	};
 	sh.organization = sh.get.organization = function (org, callback, errorCallback) {
 		var id = org.id ? org.id : org;
 		var url = servicesConfig.services.organizations.url + "/" + id;

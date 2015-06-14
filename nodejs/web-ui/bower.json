@@ -39,7 +39,8 @@
     "angular-ui-ace": "~0.2.3",
     "ace-builds": "~1.1.9",
     "ng-alias": "https://github.com/whummer/ng-alias.git#master",
-    "ng-tags-input": "2.3.0"
+    "ng-tags-input": "2.3.0",
+    "angucomplete": "#"
   },
   "devDependencies": {
     "angular-mocks": ">=1.2.*",

@@ -12,38 +12,45 @@
 						<th>Status</th>
 						<th>Actions</th>
 					</tr>
-					<tr ng-repeat="org in orgInfo.orgs">
-						<td>{{org.name}}</td>
+					<tr ng-repeat="org in orgInfo.orgs" ng-class="{ 'font-bold' : org == selected.organization }">
+						<td><a ng-click="selected.organization = org">{{org.name}}</a></td>
 						<td>{{org.creatorDisplayName}}</td>
-						<td>{{org.status}}</td>
+						<td>{{org[STATUS]}}</td>
 						<td>
-							<button class="btn btn-primary" ng-show="org.status != 'CONFIRMED'">Confirm Invitation</button>
-							<button class="btn btn-warning" ng-show="org.status == 'CONFIRMED'">Cancel Membership</button>
+							<a class="fa fa-edit" ng-show="org[STATUS] == 'OWNER'"
+									title="Cancel Membership" ng-click="selected.organization = org"></a>
+							<a class="fa fa-check" ng-show="org[STATUS] == STATUS_PENDING"
+									title="Confirm Invitation"></a>
+							<a class="fa fa-remove" ng-show="org[STATUS] == STATUS_CONFIRMED"
+									title="Cancel Membership"></a>
 						</td>
 					</tr>
 				</table>
-				<div ng-show="!orgInfo.orgs.length">
+				<div ng-show="orgInfo.orgs && !orgInfo.orgs.length">
 					You are not currently a member of any organization. Please create a new one.
+				</div>
+				<div ng-show="!orgInfo.orgs">
+					Loading ...
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
 
-<div class="row">
+<div class="row" ng-show="selected.organization" ng-alias="selOrg = selected.organization">
 	<div class="ibox float-e-margins">
 		<div class="ibox-title">
 			<h5>Organization Details</h5>
 		</div>
 		<div class="ibox-content">
 			<div class="row">
-				<div style="float: left; max-width: 380px;">
+				<div style="float: left; max-width: 450px;">
 					<div>
-						<div class="col-sm-4" >
+						<div class="col-sm-4">
 							<label for="inputDomain">Domain</label>
 						</div>
 						<div class="col-sm-5" style="padding-right: 0px">
-							<input id="inputDomain" class="form-control input-sm" data-ng-model="orgInfo.main[DOMAIN_NAME]"/>
+							<input id="inputDomain" class="form-control input-sm" data-ng-model="selOrg[DOMAIN_NAME]"/>
 						</div>
 						<div class="col-sm-3" style="padding-left: 0px">
 							<input class="form-control input-sm" disabled value=".riox.io"/>
@@ -52,13 +59,13 @@
 					<div class="form-group">
 						<label for="inputOrgName" class="col-sm-4 control-label">Name</label>
 						<div class="col-sm-8">
-							<input id="inputOrgName" class="form-control input-sm" data-ng-model="orgInfo.main[NAME]"/>
+							<input id="inputOrgName" class="form-control input-sm" data-ng-model="selOrg[NAME]"/>
 						</div>
 					</div>
 					<div class="form-group">
 						<label for="inputImage" class="col-sm-4 control-label">Image</label>
 						<div class="col-sm-8">
-							<input id="inputImage" class="form-control input-sm" data-ng-model="orgInfo.main.imageUrl"/>
+							<input id="inputImage" class="form-control input-sm" data-ng-model="selOrg.imageUrl"/>
 						</div>
 					</div>
 					<div class="form-group">
@@ -75,11 +82,12 @@
 							ngf-capture="capture" ngf-drag-over-class="{accept:'dragover', reject:'dragover-err', delay:100}" 
 							ngf-min-size="minSize" ngf-max-size="maxSize" 
 							class="drop-box ng-pristine ng-valid" ngf-drop-available="dropAvailable"
-							ng-show="!orgInfo.main[IMAGE_DATA][0].href">
+							ng-show="!selOrg[IMAGE_DATA][0].href">
 							Drop image here
 					</div>
-					<div class="col-sm-8" ng-show="orgInfo.main[IMAGE_DATA][0].href">
-						<img ng-src="{{orgInfo.main[IMAGE_DATA][0].href}}" style="max-height: 70px; max-width: 100px;"/>
+					<div ng-show="selOrg[IMAGE_DATA][0].href">
+						<img ng-src="{{selOrg[IMAGE_DATA][0].href}}" style="max-height: 100px; max-width: 140px;"/>
+						<div><a ng-click="deleteImage()"><i class="fa fa-remove"></i> Delete Image</a></div>
 					</div>
 				</div>
 			</div>
@@ -87,37 +95,62 @@
 	</div>
 </div>
 
-<div class="row">
-	<div class="ibox float-e-margins">
-		<div class="ibox-title">
-			<h5>Organization Members</h5>
+<div class="row" ng-show="selected.organization">
+	<div class="col-lg-7">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<h5>Organization Members</h5>
+			</div>
+			<div class="ibox-content">
+				<div class="table-responsive">
+					<table class="table table-striped" ng-show="selected.organization.memberships.length">
+						<tr>
+							<th>Name</th>
+							<th>Status</th>
+							<th>Actions</th>
+						</tr>
+						<tr ng-repeat="mem in selected.organization.memberships">
+							<td><a ng-click="">{{mem.name}}</a></td>
+							<td>{{mem.status}}</td>
+							<td>
+								<button class="btn btn-primary" ng-click="removeMember(n)">Remove Member</button>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
 		</div>
-		<div class="ibox-content">
-			<div class="table-responsive">
-				<table class="table table-striped" ng-show="orgInfo.orgs.length">
-					<tr>
-						<th>Name</th>
-						<th>Status</th>
-						<th>Actions</th>
-					</tr>
-					<tr ng-repeat="mem in main.members.length">
-						<td>{{mem.name}}</td>
-						<td>{{mem.status}}</td>
-						<td>
-							<button class="btn btn-primary" ng-click="removeMember(n)">Remove Member</button>
-						</td>
-					</tr>
-				</table>
-				<button class="btn btn-info btn-sm pull-right"
-						id="btnAddMember" ng-click="addMember()">Add Member</button>
+	</div>
+	
+	<div class="col-lg-5">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<h5>Invite New Members</h5>
+			</div>
+			<div class="ibox-content">
+				<div class="row">
+					<div class="form-group">
+						<label for="inputNewMem" class="col-sm-4 control-label">Select User</label>
+						<div class="col-sm-8">
+<!-- 							<input id="inputNewMem" class="form-control input-sm" data-ng-model="newMember"/> -->
+							<angucomplete id="inputNewMem"
+					              placeholder="Search members"
+					              pause="400"
+					              selectedobject="newMember"
+					              url="{{usersServiceURL + '/search?q='}}"
+					              titlefield="name,email"
+					              inputclass="form-control form-control-small"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="inputOrgName" class="col-sm-4 control-label"></label>
+						<div class="col-sm-8">
+							<button class="btn btn-primary btn-sm"
+									id="btnAddMember" ng-click="addMember()">Add Member</button>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
 </div>
-
-
-<style type="text/css">
-#actionsTable {
-	height: 300px;
-}
-</style>
