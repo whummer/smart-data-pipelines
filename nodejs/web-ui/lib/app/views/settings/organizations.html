@@ -1,100 +1,121 @@
-<section ng-controller="OrganizationController">
-	<div style="max-width: 600px; padding-left: 15px">
-		<div class="row">
-			<h2 class="heading-ruler">Your Primary Organization:</h2>
-			<div style="float: left; max-width: 380px;">
-				<div>
-					<div class="col-sm-4" >
-						<label for="inputDomain">Domain</label>
-					</div>
-					<div class="col-sm-5" style="padding-right: 0px">
-						<input id="inputDomain" class="form-control input-sm" data-ng-model="orgInfo.main[DOMAIN_NAME]"/>
-					</div>
-					<div class="col-sm-3" style="padding-left: 0px">
-						<input class="form-control input-sm" disabled value=".riox.io"/>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="inputOrgName" class="col-sm-4 control-label">Name</label>
-					<div class="col-sm-8">
-						<input id="inputOrgName" class="form-control input-sm" data-ng-model="orgInfo.main[NAME]"/>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="inputImage" class="col-sm-4 control-label">Image</label>
-					<div class="col-sm-8">
-						<input id="inputImage" class="form-control input-sm" data-ng-model="orgInfo.main.imageUrl"/>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-sm-4 control-label">Members</label>
-					<div class="col-sm-8">
-						<table>
-							<tr ng-repeat="n in range(0, orgInfo.main.members.length - 1)">
-								<td>
-									<div class="input-group">
-										<input class="form-control input-sm"
-											style="width: 100%; margin-bottom: 10px"
-											ng-model="orgInfo.main.members[n]" /> 
-										<span class="input-group-btn">
-											<button class="btn btn-sm btn-warning"
-												style="margin-bottom: 10px" type="button"
-												ng-click="removeMember(n)">
-												<span class="glyphicon glyphicon-remove"></span>&nbsp;
-											</button>
-										</span>
-									</div>
-								</td>
-							</tr>
-						</table>
-						<button class="btn btn-info btn-sm pull-right"
-							id="btnAddMember" ng-click="addMember()">Add Member</button>
-					</div>
-				</div>
-			</div>
-			<div style="float: left">
-				<div ngf-select="" ngf-drop="" ng-model="files" ng-model-rejected="rejFiles" 
-						ngf-multiple="multiple" ngf-accept="accept" accept="image/*" ngf-disabled="disabled" 
-						ngf-capture="capture" ngf-drag-over-class="{accept:'dragover', reject:'dragover-err', delay:100}" 
-						ngf-min-size="minSize" ngf-max-size="maxSize" 
-						class="drop-box ng-pristine ng-valid" ngf-drop-available="dropAvailable"
-						ng-show="!orgInfo.main[IMAGE_DATA][0].href">
-						Drop image here
-				</div>
-				<div class="col-sm-8" ng-show="orgInfo.main[IMAGE_DATA][0].href">
-					<img ng-src="{{orgInfo.main[IMAGE_DATA][0].href}}" style="max-height: 70px; max-width: 100px;"/>
-				</div>
-			</div>
-			<div class="col-md-12">
-				<button class="pull-right btn btn-primary btn-sm" ng-click="saveOrganization()" id="btnSaveOrganization">
-					<span class="glyphicon glyphicon-save"></span> Save Changes</button>
-			</div>
+<div class="row">
+	<div class="ibox float-e-margins">
+		<div class="ibox-title">
+			<h5>Your Organizations</h5>
 		</div>
-		<div class="row">
-			<h2 class="heading-ruler">Additional Organizations:</h2>
-			<table class="table" ng-show="orgInfo.additional.length">
-				<tr>
-					<th>Organization</th>
-					<th>Creator</th>
-					<th>Status</th>
-					<th>Actions</th>
-				</tr>
-				<tr ng-repeat="org in orgInfo.additional">
-					<td>{{org.name}}</td>
-					<td>{{org.creatorDisplayName}}</td>
-					<td>{{org.status}}</td>
-					<td>
-						<button class="btn btn-primary" ng-show="org.status != 'CONFIRMED'">Confirm Invitation</button>
-						<button class="btn btn-warning" ng-show="org.status == 'CONFIRMED'">Cancel Membership</button>
-					</td>
-				</tr>
-			</table>
-			<div ng-show="!orgInfo.additional.length">
-				You are not currently a member of any additional organization.
+		<div class="ibox-content">
+			<div class="table-responsive">
+				<table class="table table-striped" ng-show="orgInfo.orgs.length">
+					<tr>
+						<th>Organization</th>
+						<th>Creator</th>
+						<th>Status</th>
+						<th>Actions</th>
+					</tr>
+					<tr ng-repeat="org in orgInfo.orgs">
+						<td>{{org.name}}</td>
+						<td>{{org.creatorDisplayName}}</td>
+						<td>{{org.status}}</td>
+						<td>
+							<button class="btn btn-primary" ng-show="org.status != 'CONFIRMED'">Confirm Invitation</button>
+							<button class="btn btn-warning" ng-show="org.status == 'CONFIRMED'">Cancel Membership</button>
+						</td>
+					</tr>
+				</table>
+				<div ng-show="!orgInfo.orgs.length">
+					You are not currently a member of any organization. Please create a new one.
+				</div>
 			</div>
 		</div>
 	</div>
-</section>
+</div>
+
+<div class="row">
+	<div class="ibox float-e-margins">
+		<div class="ibox-title">
+			<h5>Organization Details</h5>
+		</div>
+		<div class="ibox-content">
+			<div class="row">
+				<div style="float: left; max-width: 380px;">
+					<div>
+						<div class="col-sm-4" >
+							<label for="inputDomain">Domain</label>
+						</div>
+						<div class="col-sm-5" style="padding-right: 0px">
+							<input id="inputDomain" class="form-control input-sm" data-ng-model="orgInfo.main[DOMAIN_NAME]"/>
+						</div>
+						<div class="col-sm-3" style="padding-left: 0px">
+							<input class="form-control input-sm" disabled value=".riox.io"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="inputOrgName" class="col-sm-4 control-label">Name</label>
+						<div class="col-sm-8">
+							<input id="inputOrgName" class="form-control input-sm" data-ng-model="orgInfo.main[NAME]"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="inputImage" class="col-sm-4 control-label">Image</label>
+						<div class="col-sm-8">
+							<input id="inputImage" class="form-control input-sm" data-ng-model="orgInfo.main.imageUrl"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="inputImage" class="col-sm-4 control-label"></label>
+						<div class="col-sm-8">
+							<button class=" btn btn-primary btn-sm" ng-click="saveOrganization()" id="btnSaveOrganization">
+								<span class="glyphicon glyphicon-save"></span> Save Changes</button>
+						</div>
+					</div>
+				</div>
+				<div style="float: left">
+					<div ngf-select="" ngf-drop="" ng-model="files" ng-model-rejected="rejFiles" 
+							ngf-multiple="multiple" ngf-accept="accept" accept="image/*" ngf-disabled="disabled" 
+							ngf-capture="capture" ngf-drag-over-class="{accept:'dragover', reject:'dragover-err', delay:100}" 
+							ngf-min-size="minSize" ngf-max-size="maxSize" 
+							class="drop-box ng-pristine ng-valid" ngf-drop-available="dropAvailable"
+							ng-show="!orgInfo.main[IMAGE_DATA][0].href">
+							Drop image here
+					</div>
+					<div class="col-sm-8" ng-show="orgInfo.main[IMAGE_DATA][0].href">
+						<img ng-src="{{orgInfo.main[IMAGE_DATA][0].href}}" style="max-height: 70px; max-width: 100px;"/>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="ibox float-e-margins">
+		<div class="ibox-title">
+			<h5>Organization Members</h5>
+		</div>
+		<div class="ibox-content">
+			<div class="table-responsive">
+				<table class="table table-striped" ng-show="orgInfo.orgs.length">
+					<tr>
+						<th>Name</th>
+						<th>Status</th>
+						<th>Actions</th>
+					</tr>
+					<tr ng-repeat="mem in main.members.length">
+						<td>{{mem.name}}</td>
+						<td>{{mem.status}}</td>
+						<td>
+							<button class="btn btn-primary" ng-click="removeMember(n)">Remove Member</button>
+						</td>
+					</tr>
+				</table>
+				<button class="btn btn-info btn-sm pull-right"
+						id="btnAddMember" ng-click="addMember()">Add Member</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
 <style type="text/css">
 #actionsTable {
 	height: 300px;

@@ -1,3 +1,4 @@
+var Activation = require('../../activation.model');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 
@@ -18,7 +19,22 @@ exports.setup = function (User, config) {
         if (!user.authenticate(password)) {
           return done(null, false, { message: 'Incorrect email address or password.' });
         }
-        return done(null, user);
+
+        /* check if account is activated */
+        var query = {};
+    	query[USER_ID] = user[ID];
+    	Activation.find(query, function(err, activation) {
+    		if (err || !activation || !activation[0]) {
+    			return done(null, false, { message: 'Cannot verify user activation.' });
+    		}
+    		activation = activation[0];
+    		if(!activation[ACTIVATION_DATE]) {
+    			return done(null, false, { message: 'Please activate your account first.' });
+    		} else if(activation[DEACTIVATED]) {
+    			return done(null, false, { message: 'Your account is currently deactivated.' });
+    		}
+            return done(null, user);
+    	});
       });
     }
   ));

@@ -14,7 +14,7 @@ angular.module('rioxApp')
 	};
 
 	$scope.addCert = function() {
-		var cert = {};
+		var cert = { name: "New Certificate" };
 		riox.add.certificate(cert, function(cert) {
 			loadCertificates();
 		});

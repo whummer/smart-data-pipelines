@@ -35,12 +35,17 @@ angular.module('rioxApp')
 		})
 		.state('index.settings.account', {
 			url: '/account',
-			templateUrl: 'app/views/settings/settings.account.html',
+			templateUrl: 'app/views/settings/account.html',
 			controller: 'SettingsAccountCtrl'
+		})
+		.state('index.settings.organizations', {
+			url: '/organizations',
+			templateUrl: 'app/views/settings/organizations.html',
+			controller: 'OrganizationsController'
 		})
 		.state('index.settings.security', {
 			url: '/security',
-			templateUrl: 'app/views/settings/settings.security.html',
+			templateUrl: 'app/views/settings/security.html',
 			controller: 'SettingsSecurityCtrl'
 		})
 

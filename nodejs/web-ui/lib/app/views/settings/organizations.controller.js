@@ -1,6 +1,6 @@
 
 var app = angular.module("rioxApp");
-app.controller('OrganizationController',
+app.controller('OrganizationsController',
 		function ($scope, Upload, Auth, growl) {
 
 	var fileServiceURL = appConfig.services.files.url;
@@ -39,25 +39,25 @@ app.controller('OrganizationController',
 		$scope.orgInfo = {};
 		riox.organizations(function(orgs) {
 			$scope.orgInfo.orgs = orgs;
-			$scope.orgInfo.additional = [];
-			$.each(orgs, function(idx, el) {
-				var userInfo = $scope.getCurrentUser();
-				if(userInfo) {
-					if(el[CREATOR_ID] == userInfo.id) {
-			   			var dfltOrg = $scope.orgInfo.main = el;
-			   			if(!dfltOrg.members) {
-			   				dfltOrg.members = [];
-			   			}
-			   			if(dfltOrg[IMAGE_DATA] && dfltOrg[IMAGE_DATA][0]) {
-			   				dfltOrg.imageUrl = dfltOrg[IMAGE_DATA][0].href;
-			   			}
-					} else {
-						$scope.orgInfo.additional.push(el);
-					}
-				} else {
-					console.warn("Unable to determine userInfo from scope.")
-				}
-			});
+			// TODO remove?
+//			$.each(orgs, function(idx, el) {
+//				var userInfo = $scope.getCurrentUser();
+//				if(userInfo) {
+//					if(el[CREATOR_ID] == userInfo.id) {
+//			   			var dfltOrg = $scope.orgInfo.main = el;
+//			   			if(!dfltOrg.members) {
+//			   				dfltOrg.members = [];
+//			   			}
+//			   			if(dfltOrg[IMAGE_DATA] && dfltOrg[IMAGE_DATA][0]) {
+//			   				dfltOrg.imageUrl = dfltOrg[IMAGE_DATA][0].href;
+//			   			}
+//					} else {
+//						$scope.orgInfo.additional.push(el);
+//					}
+//				} else {
+//					console.warn("Unable to determine userInfo from scope.")
+//				}
+//			});
 		});
 	}
 

@@ -11,7 +11,7 @@ angular.module('rioxApp')
     $scope.getCurrentOrganization = Auth.getCurrentOrganization;
 
     /* navigation path, displayed in top nav bar */
-    $scope.shared.navigationPath = [];
+    $rootScope.shared.navigationPath = [];
 
 	/* get nav. bar stack */
 	$scope.setNavPath = function(scope) {
@@ -25,6 +25,17 @@ angular.module('rioxApp')
 		}
 		$scope.shared.navigationPath = path;
 		return path;
+	};
+	$rootScope.getPageTitle = function() {
+		var title = "Riox ::";
+		var path = $scope.shared.navigationPath;
+		for(var i = 0; i < path.length; i ++) {
+			title += " " + path[i].name;
+			if(i < path.length - 1) {
+				title += " /"; 
+			}
+		}
+		return title;
 	};
 
     $scope.logout = function () {

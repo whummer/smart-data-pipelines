@@ -188,7 +188,7 @@ function doInsert(callback) {
 				});
 			}
 		});
-	}, 500);
+	}, 1000);
 }
 
 module.exports = doInsert;

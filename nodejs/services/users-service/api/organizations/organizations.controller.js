@@ -203,6 +203,11 @@ var findOrCreateDefault = function(userId, callback, errorCallback) {
 			var newObj = {};
 			newObj[NAME] = "Default Organization";
 			newObj[CREATOR_ID] = userId;
+			/* make sure we have a domain name */
+			if(!newObj[DOMAIN_NAME]) {
+				newObj[DOMAIN_NAME] = util.genShortUUID();
+			}
+
 			var newObj = new Organization(newObj);
 			newObj.save(function(err, obj) {
 				if (err)

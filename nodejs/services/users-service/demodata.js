@@ -1,5 +1,6 @@
 var Organization = require('./api/organizations/organization.model');
 var User = require('./api/users/user.model');
+var Activation = require('./api/users/activation.model');
 
 var demoOrgs = [
     	{
@@ -66,15 +67,24 @@ Organization.find({}, function(err, list) {
 });
 
 demoUsers.forEach(function(user) {
-	User.find(user.email, function(err, list) {
+	var query = {
+			email: user.email
+	};
+	User.find(query, function(err, list) {
 		if(err) {
 			console.error(err);
 			return;
 		}
 		if (!list || !list.length) {
 			var userObj = new User(user);
-			userObj.save();
+			userObj.save(function(err, user) {
+				var act = {};
+				act[USER_ID] = user.id;
+				act[ACTIVATION_DATE] = new Date();
+				var actObj = new Activation(act);
+				console.log("saving activation object");
+				actObj.save();
+			});
 		}
 	});
 });
-
