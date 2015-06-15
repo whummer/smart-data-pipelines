@@ -162,7 +162,6 @@ exports.create = function (req, res, next) {
 		}, headers: req.headers
 	}, function () {
 		next(errors.NotFoundError("Cannot find entity with ID " + sourceId))
-		//res.json(404, {message: "Cannot find entity with ID " + sourceId});
 	});
 };
 

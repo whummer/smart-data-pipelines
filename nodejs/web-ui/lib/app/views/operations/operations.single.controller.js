@@ -11,7 +11,7 @@ angular.module('rioxApp')
 		var copy = $scope.prepareApiObj($scope.shared.selectedAPI);
 		riox.save.streams.source(copy, function(saved) {
 			$scope.shared.selectedAPI = saved;
-			growl.info("Details have been saved.");
+			growl.info("Organization details saved.");
 		});
 	};
 

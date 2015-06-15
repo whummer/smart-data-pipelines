@@ -7,7 +7,7 @@ var mongoose = global.mongoose || require('mongoose');
 var config = require('../../config/environment');
 var riox = require('riox-shared/lib/api/riox-api');
 var auth = require('riox-services-base/lib/auth/auth.service');
-var email = require('./email');
+var email = require('riox-services-base/lib/util/email');
 var uuid = require('uuid');
 
 var validationError = function(res, err) {
@@ -38,12 +38,22 @@ exports.auth = function(req, res) {
 
 exports.search = function(req, res) {
 	var q = req.query.q;
-	var or1 = {};
-	var or2 = {};
-	or1[NAME] = q;
-	or2[EMAIL] = q;
-	var or = [or1, or2];
-	var query = {"$or" : or};
+	var email = req.query.email;
+	var name = req.query.name;
+	var query = {};
+
+	if(email) {
+		query[EMAIL] = email;
+	} else if(name) {
+		query[NAME] = name;
+	} else if(!email) {
+		var or1 = {};
+		var or2 = {};
+		or1[NAME] = q;
+		or2[EMAIL] = q;
+		var or = [or1, or2];
+		query = {"$or" : or};
+	}
 	User.find(query, function(err, users) {
 		if(err) {
 			return customError(res, 500, "Error when searching for users.");
@@ -133,16 +143,19 @@ exports.create = function (req, res, next) {
 };
 
 /**
- * Get a single user
+ * Get a single user.
  */
 exports.show = function (req, res, next) {
-  var userId = req.params.id;
+	var userId = req.params.id;
 
-  User.findById(userId, function (err, user) {
-    if (err) return next(err);
-    if (!user) return res.send(401);
-    res.json(user.profile);
-  });
+	userId = new mongoose.Types.ObjectId(userId);
+
+	/* TODO check permissions */
+	User.findById(userId, function (err, user) {
+		if (err) return next(err);
+		if (!user) return res.send(404);
+		res.json(user.profile);
+	});
 };
 
 /**
@@ -223,7 +236,7 @@ exports.saveMe = function(req, res, next) {
 
 
 exports.insertInternalCallUser = function() {
-	var id = mongoose.Types.ObjectId(auth.INTERNAL_USER_ID);
+	var id = new mongoose.Types.ObjectId(auth.INTERNAL_USER_ID);
 	var query = { _id: id };
 	User.findOne(query, function(err, user) {
 	    if (err) return next(err);

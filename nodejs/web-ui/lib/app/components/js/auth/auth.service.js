@@ -23,7 +23,7 @@ angular.module('rioxApp')
     /**
      * Load organizations of current user.
      */
-    var loadOrganization = function(callback) {
+    var loadOrganizations = function(callback) {
   	  if(!currentUser || (!currentUser.id && !currentUser._id)) return;
   	  if(!currentUser.id) {
   		  currentUser.id = currentUser._id;
@@ -53,7 +53,7 @@ angular.module('rioxApp')
 			function(user) {
 	    		return $q(function(resolve, reject) {
 	    			configureRioxApiAuth($cookieStore.get('token'), function(token) {
-	    				loadOrganization(function() {
+	    				loadOrganizations(function() {
 	            			deferred.resolve();
 	            		});
 	            	});
@@ -90,7 +90,7 @@ angular.module('rioxApp')
         	  currentUser = user;
         	  return configureRioxApiAuth(data.token, function() {
         		  Notifications.loadNotifications();
-            	  loadOrganization(cb);
+            	  loadOrganizations(cb);
               });
           });
         }).
@@ -112,7 +112,7 @@ angular.module('rioxApp')
         $cookieStore.remove('token');
         currentUser = {};
         riox.auth.reset();
-        loadOrganization();
+        loadOrganizations();
       },
 
       /**
@@ -182,7 +182,7 @@ angular.module('rioxApp')
       setCurrentOrganization: function(org) {
     	return currentOrganization = org;
       },
-      loadOrganization: loadOrganization,
+      loadOrganizations: loadOrganizations,
 
       /**
        * Check if a user is logged in

@@ -36,11 +36,7 @@ angular.module('rioxApp').controller('ApisWizardCtrl', function ($scope, $log, g
 		$scope.debug = true;
 	}
 
-	$scope.connectors = [
- 		{name: "HTTP Connector", type: "http"},
-		{name: "Websocket Connector", type: "ws"},
-		{name: "MQTT Connector", type: "mqtt"}
-	];
+	$scope.connectors = $scope.availableConnectors;
 
 	$scope.retentionTimeSliderOptions = {
 		values: [

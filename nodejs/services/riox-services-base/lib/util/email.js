@@ -55,11 +55,12 @@ exports.sendActivationMail = function(user, activationKey) {
 };
 
 exports.sendInvitationMail = function(user, invitee, invitation, org) {
-	var displayName = invitee.firstname + " " + invitee.lastname;
+	var displayName = invitee.name ? invitee.name : (invitee.firstname + " " + invitee.lastname);
 	var msg = EMAIL_INVITATION_MSG
-			.replace("<invitee>", displayName)
-			.replace("<invitedFor>", org[NAME])
-			.replace("<invitationKey>", invitation.id);
+			.replace(/<invitee>/g, displayName)
+			.replace(/<invitedFor>/g, org[NAME])
+			.replace(/<invitationKey>/g, invitation[ID]);
+	console.log("sending invitation mail", invitee, msg);
 	send(invitee.email, EMAIL_INVITATION_SUBJECT, msg);
 };
 

@@ -4,19 +4,21 @@ var mongoose = global.mongoose || require('mongoose');
 var Organization = require('./organization.model');
 var Membership = require('./membership.model');
 var util = require('riox-services-base/lib/util/util');
+var email = require('riox-services-base/lib/util/email');
 var auth = require('riox-services-base/lib/auth/auth.service');
+var riox = require('riox-shared/lib/api/riox-api');
 
 var validationError = function(res, err) {
 	return res.json(422, err);
 };
 
-function list(query, req, res) {
+var list = function(query, req, res) {
 	Organization.find(query, function(err, list) {
 		if (err)
 			return res.send(500, err);
-		res.json(200, list);
+		res.json(list);
 	});
-}
+};
 
 exports.index = function(req, res) {
 	return list({}, req, res);
@@ -25,7 +27,7 @@ exports.index = function(req, res) {
 exports.create = function(req, res, next) {
 	var user = auth.getCurrentUser(req);
 	var newOrg = req.body;
-	newOrg[CREATOR_ID] = user.id;
+	newOrg[CREATOR_ID] = user[ID];
 	/* make sure we have a domain name */
 	if(!newOrg[DOMAIN_NAME]) {
 		newOrg[DOMAIN_NAME] = util.genShortUUID();
@@ -54,7 +56,7 @@ exports.update = function(req, res) {
 			return res.send(404);
 		var existing = list[0];
 		// check if this is the org's owner
-		if (existing[CREATOR_ID] != user.id)
+		if (existing[CREATOR_ID] != user[ID])
 			return res.send(401);
 		/* copy info to existing entity */
 		existing[IMAGE_DATA] = obj[IMAGE_DATA];
@@ -71,9 +73,11 @@ exports.update = function(req, res) {
 
 exports.getOwnAll = function(req, res, next) {
 	var user = auth.getCurrentUser(req);
-	findOrCreateDefault(user.id, function(org) {
+	findOrCreateDefault(user[ID], function(org) {
 		var result = [org];
-		var query = {member: user.id};
+		var query = {};
+		query[MEMBER] = user[ID].toString ? user[ID].toString() : user[ID];
+		query[STATUS] = STATUS_CONFIRMED;
 		Membership.find(query, function(err, list) {
 			if (err)
 				return next(err);
@@ -81,7 +85,8 @@ exports.getOwnAll = function(req, res, next) {
 			list.forEach(function(el) {
 				ids.push(el[ORGANIZATION_ID]);
 			});
-			query = {id: {$in: ids} };
+			query = {};
+			query["_id"] = {"$in": ids};
 			Organization.find(query, function(err, list) {
 				if (err)
 					return next(err);
@@ -98,7 +103,7 @@ exports.getOwnAll = function(req, res, next) {
 
 exports.getOwnDefault = function(req, res, next) {
 	var user = auth.getCurrentUser(req);
-	findOrCreateDefault(user.id, function(org) {
+	findOrCreateDefault(user[ID], function(org) {
 		res.json(org);
 	}, function(error) {
 		return next(error);
@@ -115,10 +120,47 @@ exports.show = function(req, res, next) {
 };
 
 exports.destroy = function(req, res) {
-	/* TODO check permissions */
-	Organization.findByIdAndRemove(req.params.id, function(err, obj) {
+	var user = auth.getCurrentUser(req);
+	Organization.findById(req.params.id, function(err, org) {
 		if (err) return res.send(500, err);
-		return res.send(204);
+		if (!org) return res.send(404);
+		if(user[ID] != org[CREATOR_ID]) {
+			return res.send(401, {error: "Only the owner can delete an organization."});
+		}
+		Organization.findByIdAndRemove(req.params.id, function(err, obj) {
+			if (err) return res.send(500, err);
+			return res.send(204);
+		});
+	});
+};
+
+exports.deleteMembership = function(req, res) {
+	var user = auth.getCurrentUser(req);
+	Membership.findById(req.params.id, function(err, mem) {
+		if (err) return res.send(500, err);
+		if (!mem) return res.send(404);
+		if(user[ID] != mem[CREATOR_ID]) {
+			return res.send(401, {error: "Only the inviting user can delete an organization membership."});
+		}
+		Membership.findByIdAndRemove(req.params.id, function(err, obj) {
+			if (err) return res.send(500, err);
+			return res.send(204);
+		});
+	});
+};
+
+exports.showMembership = function(req, res, next) {
+	var memId = req.params.id;
+	if(!memId) return next(404);
+	var user = auth.getCurrentUser(req);
+	Membership.findById(memId, function(err, mem) {
+		if (err) return res.send(500, err);
+		var orgId = mem[ORGANIZATION_ID];
+		/* check permission */
+		if(!user.hasOrganization(orgId)) {
+			return next(401);
+		}
+		res.json(mem);
 	});
 };
 
@@ -151,8 +193,8 @@ exports.updateMembership = function(req, res, next) {
 			var existingMem = list[0];
 			/* check permissions */
 			if(existingMem.member != user.email &&
-					existingMem.member != user.id &&
-					existingMem[CREATOR_ID] != user.id) {
+					existingMem.member != user[ID] &&
+					existingMem[CREATOR_ID] != user[ID]) {
 				return next(401);
 			}
 			/* copy info to existing entity */
@@ -167,34 +209,125 @@ exports.updateMembership = function(req, res, next) {
 	});
 };
 
-exports.invite = function(req, res, next) {
-	var user = auth.getCurrentUser(req);
-	var inv = req.body;
-	inv[CREATOR_ID] = user.id;
-	/* check for existing invite */
-	var query = {};
-	query[ORGANIZATION_ID] = inv[ORGANIZATION_ID];
-	query["invitee"] = inv["invitee"];
-	query[CREATOR_ID] =inv[CREATOR_ID];
-	Membership.find(query, function(err, list) {
-		if (err)
-			return next(err);
-		if (!list || !list.length) {
-			/* save new */
-			var newMem = new Membership(inv);
-			newMem.status = STATUS_PENDING;
-			newMem.save(function(err, result) {
-				res.json(result);
-			});
-		} else {
-			/* return existing */
-			var mem = list[0];
-			res.json(mem);
-		}
+var findOrg = function(id) {
+	return new Promise(function (resolve, reject) {
+		Organization.findById(id, function(err, org) {
+			if (err)
+				return next(err);
+			resolve(org);
+		});
 	});
 };
 
+var findOrCreateMembership = function(mem) {
+	/* check for existing invite */
+	return new Promise(function (resolve, reject) {
+		Membership.find(mem, function(err, list) {
+			if (err)
+				return reject(err);
+			if (!list || !list.length) {
+				/* save new */
+				var newMem = new Membership(mem);
+				newMem[STATUS] = STATUS_PENDING;
+				newMem[CREATION_DATE] = new Date();
+				newMem.save(function(err, savedMem) {
+					/* set the 'new' flag */
+					savedMem._isNew = true;
+					resolve(savedMem);
+				});
+			} else {
+				/* return existing */
+				var memExist = list[0];
+				resolve(memExist);
+			}
+		});
+	});
+};
+
+var findUser = function(req, userId) {
+	return new Promise(function (resolve, reject) {
+		var query = {};
+		if(userId.indexOf("@") >= 0) {
+			query[EMAIL] = userId;
+		} else {
+			query[ID] = userId;
+		}
+		riox.user(query, {
+			callback: function(user) {
+				resolve(user);
+			},
+			headers: req.headers
+		}, function(error) {
+			reject(error);
+		});
+	});
+};
+
+exports.invite = function(req, res, next) {
+	var user = auth.getCurrentUser(req);
+	var inv = req.body;
+	inv[CREATOR_ID] = user[ID];
+
+	/* cannot invite yourself */
+	if(user[ID] == inv[MEMBER]) {
+		res.status(400).json({error: "You cannot invite yourself to this organization. Please choose a different user."});
+		return;
+	}
+
+	var state = {};
+
+	var findMem = function(org) {
+		state.org = org;
+		var query = {};
+		query[ORGANIZATION_ID] = org[ID];
+		query[MEMBER] = inv[MEMBER];
+		query[CREATOR_ID] = inv[CREATOR_ID];
+		return findOrCreateMembership(query);
+	};
+	var findInvitee = function(mem) {
+		state.mem = mem;
+		if(state.mem._isNew) {
+			return findUser(req, inv[MEMBER]);
+		}
+	};
+	var notify = function(invitee) {
+		if(state.mem._isNew) {
+			createNotification(req, TYPE_INVITE, state.org, state.mem);
+			email.sendInvitationMail(user, invitee, state.mem, state.org);
+		}
+		res.json(state.mem);
+	};
+	var error = function(err) {
+		return next(err);
+	};
+
+	/* start promise chain */
+	findOrg(inv[ORGANIZATION_ID]).
+	then(findMem, error).
+	then(findInvitee, error).
+	then(notify, error);
+
+};
+
 /* HELPER METHODS */
+
+var createNotification = function (req, type, org, mem) {
+	var notif = {};
+	notif[TYPE] = type;
+	console.log("invite", org, mem);
+	if (type == TYPE_INVITE) {
+		notif[TEXT] = "You have been invited to join the organization '" + org[NAME] + "'";
+		notif[RECIPIENT_ID] = mem[MEMBER];
+	}
+	notif[STATUS] = STATUS_UNREAD;
+	notif[PARAMS] = {};
+	notif[PARAMS][ORGANIZATION_ID] = org[ID];
+	notif[PARAMS][INVITER_ID] = mem[CREATOR_ID];
+	console.log("creating notif", notif);
+	riox.add.notification(notif, {
+		headers: req.headers
+	});
+} 
 
 var findSingle = function(id, callback, errorCallback) {
 	var query = {_id: id};

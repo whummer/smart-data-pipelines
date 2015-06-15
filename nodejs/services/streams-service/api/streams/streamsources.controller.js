@@ -20,11 +20,6 @@ function list(query, req, res, next) {
 			return next(errors.InternalError("Unable to list stream sources", err));
 		}
 
-		list.forEach(function (streamSource) {
-			/* set endpoint info: */
-			setEndpoint(streamSource);
-		});
-
 		if (fetchXdInfo) {
 			var xdInfoPromises = [];
 			var response = [];
@@ -81,6 +76,7 @@ exports.listProvided = function (req, res, next) {
 	var query = {};
 	var orgIDs = user.getOrganizationIDs();
 	query[ORGANIZATION_ID] = { "$in": orgIDs };
+	console.log("query", query);
 	return list(query, req, res, next);
 };
 
@@ -125,9 +121,6 @@ exports.createStreamSource = function (req, res, next) {
 		return validationError("Please provide a valid " + PERMIT_MODE + " for this source.", next);
 	}
 	// TODO check if ORGANIZATION_ID belongs to calling user!
-
-	/* set endpoint info */
-	setEndpoint(streamSource);
 
 	streamSource.save(function (err, obj) {
 		if (err) {
@@ -237,6 +230,8 @@ exports.updateStreamSource = function (req, res, next) {
 		obj[NAME] = req.body[NAME];
 		obj[OPERATIONS] = req.body[OPERATIONS];
 		obj[SCHEMAS] = req.body[SCHEMAS];
+		obj[DOMAIN_NAME] = req.body[DOMAIN_NAME];
+		obj[ENDPOINT] = req.body[ENDPOINT];
 
 		obj.save(function (err, obj) {
 			if (err) {
@@ -259,8 +254,6 @@ exports.showStreamSource = function (req, res, next) {
 		if (!obj) {
 			return next(errors.NotFoundError("No such stream-source: " + id));
 		}
-		/* set endpoint info: */
-		setEndpoint(obj);
 		/* return result */
 		res.json(obj);
 	});
@@ -275,12 +268,6 @@ exports.destroyStreamSource = function (req, res) {
 		return res.send(204);
 	});
 };
-
-var setEndpoint = function(source) {
-	var host = "xd-inbound.dev.riox.internal"; // TODO!
-	source[ENDPOINT] = "http://" + host + ":9000/" +
-		source[ORGANIZATION_ID] + "/" + source[ID];
-}
 
 var validationError = function (err, next) {
 	return next(errors.UnprocessableEntity("You passed a broken object", err));

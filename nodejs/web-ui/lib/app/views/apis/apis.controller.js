@@ -3,6 +3,14 @@
 angular.module('rioxApp').controller('ApisCtrl', 
 		function ($scope, Auth, $stateParams, Formatter, $q) {
 
+	/* CONSTANS */
+	$scope.availableConnectors =
+		[
+			{name: "HTTP Connector", type: "http"},
+			{name: "Websocket Connector", type: "ws"},
+			{name: "MQTT Connector", type: "mqtt"}
+		];
+
 	/** load stream sources */
 	$scope.loadStreamSources = function() {
 		var promise = $q(function(resolve, reject) {

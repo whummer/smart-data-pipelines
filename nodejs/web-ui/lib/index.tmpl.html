@@ -6,12 +6,12 @@
 <!--[if IE 8]>
 <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!-->
-<html class="no-js"> <!--<![endif]-->
+<html class="no-js" ng-app="rioxApp"> <!--<![endif]-->
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<link rel="shortcut icon" href="http://riox.io/favicon.ico" />
-	<base href="/">
+	<base href="/" />
 	<title ng-bind="getPageTitle()">Riox</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width">
@@ -25,7 +25,7 @@
 </head>
 
 <!-- here we go -->
-<body ng-app="rioxApp" class="">
+<body class="">
 
 <!-- growl div (for notifications) -->
 <div growl></div>

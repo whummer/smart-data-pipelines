@@ -8,6 +8,10 @@ var template = {}
 
 template["_id"] = { type: String, default: genShortUUID},
 /**
+ * Unique name, used as subdomain name.
+ */
+template[DOMAIN_NAME] = String;
+/**
  * Name.
  */
 template[NAME] = String;

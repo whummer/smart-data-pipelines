@@ -2,34 +2,49 @@
 	<div class="col-lg-5">
 		<div class="ibox float-e-margins">
 			<div class="ibox-title">
-				<h5>Stream Details</h5>
+				<h5>API Configuration</h5>
 			</div>
 			<div class="ibox-content">
-
-				<!-- organization image -->
-				<div class="logo">
-					<img ng-show="shared.selectedAPI.organizationImg" class="img-responsive" style="margin: auto; max-height: 100px"
-						ng-src="{{shared.selectedAPI.organizationImg}}">
-					<div ng-hide="shared.selectedAPI.organizationImg" class="text-center">
-						<img ng-src="app/components/img/no_image_available.png" style="margin: auto; max-height: 100px">
+				<div class="row">
+					<div class="form-group">
+						<label class="col-lg-4">Organization</label>
+						<div class="col-lg-8">
+							<select class="form-control" ng-options="o[ID] as o[NAME] for o in userOrganizations"
+								ng-model="shared.selectedAPI[ORGANIZATION_ID]"></select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-4">Subdomain</label>
+						<div class="col-lg-4" style="padding-right: 0px;">
+							<input class="form-control" name="domain"
+								ng-model="shared.selectedAPI[DOMAIN_NAME]" />
+						</div>
+						<div class="col-lg-4" style="padding-left: 0px;">
+							<input class="form-control" value=".riox.io" disabled="disabled"
+								ng-model="subdomain" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-4">Name</label>
+						<div class="col-lg-8">
+							<input class="form-control" name="name"  
+								ng-model="shared.selectedAPI[NAME]" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-4">Decription</label>
+						<div class="col-lg-8">
+							<textarea class="form-control" name="description"  
+								ng-model="shared.selectedAPI[DESCRIPTION]" style="resize:vertical;"></textarea>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-4"></label> 
+						<div class="col-lg-8">
+							<button class="btn btn-primary" ng-click="saveChanges()"><i class="fa fa-save"></i> Save Changes</button>
+						</div>
 					</div>
 				</div>
-
-				<!-- content -->
-				<div class="caption ng-binding">
-					<h4 class="ng-binding">{{shared.selectedAPI.name}}</h4>
-<!-- 					<hr> -->
-<!-- 					<b>Publisher:</b> {{shared.selectedAPI.organization.name}} -->
-					<hr>
-					{{shared.selectedAPI.description}}
-				</div>
-
-<!-- 				<div ng-init="thePrice = shared.selectedAPI.pricing" class="caption ng-binding"> -->
-<!-- 					<hr> -->
-<!-- 					<b>Price:</b> -->
-<!-- 					{{format.pricing(shared.selectedAPI.pricing)}} -->
-<!-- 				</div> -->
-
 			</div>
 		</div>
 	</div>
@@ -37,20 +52,31 @@
 	<div class="col-lg-7">
 		<div class="ibox float-e-margins">
 			<div class="ibox-title">
-				<h5>Configurations</h5>
+				<h5>Backend Details</h5>
 			</div>
 			<div class="ibox-content">
-				<form name="endpForm">
-				<div class="form-group">
-					<label>Endpoint URL</label> 
-					<input class="form-control" name="endpoint" disabled="disabled" 
-						ng-model="shared.selectedAPI[ENDPOINT]" mongoose-error />
-					<p class="help-block" ng-show="endpForm.endpoint.$error.mongoose">
-						{{ errors.other }}</p>
+				<div class="row">
+					<div class="form-group">
+						<label class="col-lg-4">Endpoint URL</label> 
+						<div class="col-lg-8">
+							<input class="form-control" name="endpoint" 
+								ng-model="shared.selectedAPI[ENDPOINT]" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-4">Connector</label> 
+						<div class="col-lg-8">
+							<select class="form-control" ng-options="o[TYPE] as o[NAME] for o in availableConnectors"
+								ng-model="shared.selectedAPI[CONNECTOR][TYPE]"></select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-4"></label> 
+						<div class="col-lg-8">
+							<button class="btn btn-primary" ng-click="saveChanges()"><i class="fa fa-save"></i> Save Changes</button>
+						</div>
+					</div>
 				</div>
-				<div><button class="btn btn-primary">Save Changes</button></div>
-				...
-				</form>
 			</div>
 		</div>
 	</div>

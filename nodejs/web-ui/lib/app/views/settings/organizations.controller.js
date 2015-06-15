@@ -9,6 +9,7 @@ app.controller('OrganizationsController',
 	$scope.selected = {};
 	$scope.usersServiceURL = appConfig.services.users.url;
 	$scope.emailPattern = /^[a-z]+[a-z0-9._]+@[a-z]+\.[a-z.]{2,5}$/;
+	$scope.currentUser = $scope.getCurrentUser();
 
 	$scope.saveOrganization = function() {
 		var org = $scope.selected.organization;
@@ -24,35 +25,50 @@ app.controller('OrganizationsController',
 			loadOrgs();
 			Auth.loadOrganization();
 		});
-	}
+	};
 
-	$scope.removeMember = function(index) {
-		var main = $scope.selected.organization;
-		if(!main) return;
-		if(!main.members) main.members = [];
-		main.members.splice(index, 1);
-	}
+	$scope.removeMember = function(mem) {
+		var org = $scope.selected.organization;
+		if(!org || !mem) return;
+		showConfirmDialog("Do you really want to remove this member from the organization?", function () {
+			riox.delete.organization.membership(mem, function() {
+				loadOrgs();
+			}, function(error) {
+				growl.warning("Unable to delete membership.");
+			});
+		});
+	};
 	$scope.addMember = function() {
 		var org = $scope.selected.organization;
 		if(!org) return;
 		var mem = {};
 		mem[ORGANIZATION_ID] = org[ID];
-		if($scope.newMember) {
-			mem[MEMBER] = $scope.newMember;
+		if($scope.newMember && $scope.newMember.originalObject) {
+			mem[MEMBER] = $scope.newMember.originalObject.id;
+			var user = Auth.getCurrentUser();
 		} else {
 			var email = $("#inputNewMem_value").val();
 			if(!email.match($scope.emailPattern)) {
 				growl.warning("Please select a user from the list, or type a valid email address.");
 				return;
 			}
-			mem[MEMBER] = email;
+			mem[MEMBER] = email; 
 		}
 		riox.add.organization.invite(mem, function() {
 			growl.info("Invitation has been sent out.");
 			loadOrgs();
+		}, function(error) {
+			error = error.responseJSON || error;
+			error = error.__result || error;
+			if(error.error) {
+				growl.warning(error.error);
+			} else {
+				growl.warning("Could not send invitation (unknown error)");
+				console.log(error);
+			}
 		});
 //		console.log($("#inputNewMem").val());
-	}
+	};
 
 	var loadOrgs = function() {
 		$scope.orgInfo = {};
@@ -62,8 +78,10 @@ app.controller('OrganizationsController',
 			$.each(orgs, function(idx, org) {
 				var query = {};
 				query[ID] = org[CREATOR_ID];
+				/* load creator user details */
 				riox.user(query, function(user) {
 					org.creatorDisplayName = user.name;
+	   				$scope.$apply();
 				});
 				if($scope.selected.organization && $scope.selected.organization[ID] == org[ID]) {
 					$scope.selected.organization = org;
@@ -77,29 +95,21 @@ app.controller('OrganizationsController',
 	   					if(mem[MEMBER] == user[EMAIL] || mem[MEMBER] == user[ID]) {
 	   						org.membership = mem;
 	   					}
+	   					/* load member user details */
+	   					var query = {};
+	   					query[ID] = mem[MEMBER];
+	   					riox.user(query, function(user) {
+	   						mem[NAME] = user.name;
+	   		   				$scope.$apply();
+	   					});
 	   				});
 	   				org[STATUS] = org.membership ? org.membership[STATUS] : "OWNER";
+	   				$scope.$apply();
 	   			});
-				// TODO remove?
-//				var userInfo = $scope.getCurrentUser();
-//				if(userInfo) {
-//					if(el[CREATOR_ID] == userInfo.id) {
-//			   			var dfltOrg = $scope.selected.organization = el;
-//			   			if(!dfltOrg.members) {
-//			   				dfltOrg.members = [];
-//			   			}
-//			   			if(dfltOrg[IMAGE_DATA] && dfltOrg[IMAGE_DATA][0]) {
-//			   				dfltOrg.imageUrl = dfltOrg[IMAGE_DATA][0].href;
-//			   			}
-//					} else {
-//						$scope.orgInfo.additional.push(el);
-//					}
-//				} else {
-//					console.warn("Unable to determine userInfo from scope.")
-//				}
 			});
+			$scope.$apply();
 		});
-	}
+	};
 
     var upload = function (files) {
     	//console.log("upload", files, angular.identity);
@@ -141,7 +151,7 @@ app.controller('OrganizationsController',
 	/* get nav. bar stack */
 	$scope.getNavPart = function() {
 		return { sref: "index.settings.organizations", name: "Organizations" };
-	}
+	};
 	$scope.setNavPath($scope);
 
 	/* load main elements */

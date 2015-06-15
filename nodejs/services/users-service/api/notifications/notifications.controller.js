@@ -14,7 +14,7 @@ function list(query, req, res) {
 			return res.send(500, err);
 		res.json(list);
 	});
-}
+};
 
 exports.index = function(req, res) {
 	var query = {};

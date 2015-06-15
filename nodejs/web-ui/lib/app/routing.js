@@ -48,6 +48,11 @@ angular.module('rioxApp')
 			templateUrl: 'app/views/settings/security.html',
 			controller: 'SettingsSecurityCtrl'
 		})
+		.state('index.settings.billing', {
+			url: '/billing',
+			templateUrl: 'app/views/settings/billing.html',
+			controller: 'SettingsBillingCtrl'
+		})
 
 	// authentication,
 		.state('index.login', {
@@ -80,6 +85,20 @@ angular.module('rioxApp')
 				/* this flag in this 'data' bag is propagated to all child-states */
 				authenticate: true
 			}
+		})
+		
+	// invitations mgmt
+		.state('index.accept', {
+			url: "/accept/{membershipId}",
+			templateUrl: "app/views/settings/invitation.html",
+			controller: "InvitationCtrl",
+			authenticate: true
+		})
+		.state('index.reject', {
+			url: "/reject/{membershipId}",
+			templateUrl: "app/views/settings/invitation.html",
+			controller: "InvitationCtrl",
+			authenticate: true
 		})
 
 	// APIs
