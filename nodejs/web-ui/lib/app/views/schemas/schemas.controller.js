@@ -1,12 +1,28 @@
 'use strict';
 
 angular.module('rioxApp')
-.controller('SchemasCtrl', function ($scope, Auth, $stateParams) {
+.controller('SchemasCtrl', function ($scope, $state, $stateParams) {
 
 	$scope.$watch("sources", function(sources) {
 		if(!sources) return;
 		$scope.loadSourceDetails(sources, $stateParams.sourceId);
 	});
+
+	$scope.deleteSchema = function(schema) {
+		showConfirmDialog("Are you sure that you want to delete this data schema?", function() {
+			var copy = $scope.prepareApiObj($scope.shared.selectedAPI);
+			for(var i = 0; i < copy[SCHEMAS].length; i ++) {
+				if(copy[SCHEMAS][i][ID] == schema[ID]) {
+					copy[SCHEMAS].splice(i, 1);
+				}
+			}
+			riox.save.streams.source(copy, function(saved) {
+				$scope.$apply(function() {
+					$scope.shared.selectedAPI = saved;
+				});
+			});
+		});
+	};
 
 	$scope.addSchema = function() {
 		var copy = $scope.prepareApiObj($scope.shared.selectedAPI);
@@ -16,7 +32,9 @@ angular.module('rioxApp')
 				}
 		);
 		riox.save.streams.source(copy, function(saved) {
-			$scope.shared.selectedAPI = saved;
+			$scope.$apply(function() {
+				$scope.shared.selectedAPI = saved;
+			});
 		});
 	};
 
@@ -35,6 +53,6 @@ angular.module('rioxApp')
 	$scope.getNavPart = function() {
 		return { sref: "index.apis.schemas", name: "Data Schemas" };
 	}
-	$scope.setNavPath($scope);
+	$scope.setNavPath($scope, $state);
 
 });

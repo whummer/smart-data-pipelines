@@ -77,7 +77,9 @@ exports.getOwnAll = function(req, res, next) {
 		var result = [org];
 		var query = {};
 		query[MEMBER] = user[ID].toString ? user[ID].toString() : user[ID];
-		query[STATUS] = STATUS_CONFIRMED;
+		if(typeof req.query.all == "undefined") {
+			query[STATUS] = STATUS_CONFIRMED;
+		}
 		Membership.find(query, function(err, list) {
 			if (err)
 				return next(err);
@@ -157,26 +159,38 @@ exports.showMembership = function(req, res, next) {
 		if (err) return res.send(500, err);
 		var orgId = mem[ORGANIZATION_ID];
 		/* check permission */
-		if(!user.hasOrganization(orgId)) {
+		if(!user.hasOrganization(orgId) && !isUserMember(user, mem)) {
 			return next(401);
 		}
 		res.json(mem);
 	});
 };
 
+var isUserMember = function(user, membership) {
+	return membership[MEMBER] == user[EMAIL] || 
+			membership[MEMBER] == user[ID];
+}
+
 exports.listMemberships = function(req, res, next) {
 	var orgId = req.params.id;
 	if(!orgId) return next(404);
 	var user = auth.getCurrentUser(req);
 	/* check permission */
-	if(!user.hasOrganization(orgId)) {
-		return next(401);
-	}
+	var userHasOrg = user.hasOrganization(orgId);
 	var query = {};
 	query[ORGANIZATION_ID] = orgId;
+	var result = [];
 	Membership.find(query, function(err, list) {
 		if (err) return res.send(500, err);
-		res.json(list);
+		list.forEach(function(mem) {
+			if(userHasOrg || isUserMember(user, mem)) {
+				result.push(mem);
+			}
+		});
+		if(!userHasOrg && result.length <= 0) {
+			return res.status(401).send();
+		}
+		res.json(result);
 	});
 };
 
@@ -314,7 +328,6 @@ exports.invite = function(req, res, next) {
 var createNotification = function (req, type, org, mem) {
 	var notif = {};
 	notif[TYPE] = type;
-	console.log("invite", org, mem);
 	if (type == TYPE_INVITE) {
 		notif[TEXT] = "You have been invited to join the organization '" + org[NAME] + "'";
 		notif[RECIPIENT_ID] = mem[MEMBER];
@@ -323,7 +336,6 @@ var createNotification = function (req, type, org, mem) {
 	notif[PARAMS] = {};
 	notif[PARAMS][ORGANIZATION_ID] = org[ID];
 	notif[PARAMS][INVITER_ID] = mem[CREATOR_ID];
-	console.log("creating notif", notif);
 	riox.add.notification(notif, {
 		headers: req.headers
 	});

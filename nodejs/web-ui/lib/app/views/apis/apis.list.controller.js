@@ -1,17 +1,15 @@
 'use strict';
 
 angular.module('rioxApp')
-.controller('ApisEndpointsCtrl', function ($scope, Auth) {
+.controller('ApisEndpointsCtrl', function ($scope, $state, $rootScope) {
 
 	$scope.trim = window.trim;
 
-	$scope.getNavPath = function() {
-		var path = [
-			{ sref: "index.apis.endpoints", name: "APIs" }
-		];
-		$scope.shared.navigationPath = path;
-		return path;
+	/* get nav. bar stack */
+	$scope.getNavPart = function() {
+		return false;
 	};
+	$scope.setNavPath($scope, $state);
 
 	/* load main elements */
 	$scope.loadStreamSources().
@@ -19,5 +17,4 @@ angular.module('rioxApp')
 		then($scope.loadStreamsConsumers).
 		then($scope.loadSourceDetails);
 
-	$scope.getNavPath();
 });

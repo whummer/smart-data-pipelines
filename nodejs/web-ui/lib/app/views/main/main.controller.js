@@ -12,9 +12,11 @@ angular.module('rioxApp')
 
     /* navigation path, displayed in top nav bar */
     $rootScope.shared.navigationPath = [];
+    $rootScope.stateToScopesMap = {};
 
 	/* get nav. bar stack */
-	$scope.setNavPath = function(scope) {
+    $rootScope.setNavPath = function(scope, state) {
+    	var origScope = scope;
 		var path = [];
 		for(var i = 0; scope && i < 10; i ++) {
 			if(typeof scope.getNavPart == "function") {
@@ -23,6 +25,11 @@ angular.module('rioxApp')
 			}
 			scope = scope.$parent;
 		}
+		if(state.current) state = state.current;
+		//console.log(state.name, "=", origScope);
+		/* put scope to map */
+		$rootScope.stateToScopesMap[state.name] = origScope;
+		/* set navigation path in scope */
 		$scope.shared.navigationPath = path;
 		return path;
 	};
@@ -37,6 +44,20 @@ angular.module('rioxApp')
 		}
 		return title;
 	};
+	if(!$rootScope.__pageNavListenerAdded) {
+		$rootScope.__pageNavListenerAdded = true;
+		$rootScope.$on('$stateChangeStart',
+			function(event, toState, toParams, fromState, fromParams) {
+				if(event.defaultPrevented) {
+					var scope = $rootScope.stateToScopesMap[toState.name];
+					if(scope) {
+						$rootScope.setNavPath(scope, toState);
+					}
+				}
+			}
+		);
+	}
+
 
     $scope.logout = function () {
       Auth.logout();

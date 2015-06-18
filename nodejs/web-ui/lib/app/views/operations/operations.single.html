@@ -9,7 +9,7 @@
 				<!-- OPERATIONS -->
 				<div ng-show="selectedOperation">
 					<div class="row">
-					<div class="col-lg-6">
+					<div class="col-lg-8">
 						<div class="form-group">
 							<label for="opName" class="col-lg-3">Name</label>
 							<div class="col-lg-9">
@@ -24,9 +24,32 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="opPath" class="col-lg-3">HTTP Resource</label>
+							<label for="opPath" class="col-lg-3">HTTP Path 
+								<i tooltip="Path of the HTTP resource, e.g., /api/v1/users"
+										class="fa fa-question-circle" style="margin-left: 5px"></i>
+							</label>
 							<div class="col-lg-9">
 								<input id="opPath" class="form-control" ng-model="selectedOperation[HTTP_RESOURCE]"/>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="opMethod" class="col-lg-3">Path Mapping
+								<i tooltip="By default, the frontend HTTP path maps to the same backend HTTP path. This can be customized here."
+										class="fa fa-question-circle" style="margin-left: 5px"></i>
+							</label>
+							<div class="col-lg-9" style="line-height: 40px;">
+								<input type="checkbox" class="" ng-model="diffPath" 
+									ng-click="selectedOperation[MAPPED_PATH] = diffPath ? selectedOperation[MAPPED_PATH] : ''"></input>
+									Maps to a different backend path
+							</div>
+						</div>
+						<div class="form-group" ng-show="diffPath">
+							<label for="opMethod" class="col-lg-3">Backend HTTP Path
+								<i tooltip="Backend HTTP path, e.g., /api/v2/users"
+										class="fa fa-question-circle" style="margin-left: 5px"></i>
+							</label>
+							<div class="col-lg-9">
+								<input id="opPath" class="form-control" ng-model="selectedOperation[MAPPED_PATH]"/>
 							</div>
 						</div>
 						<div class="form-group">
@@ -38,7 +61,6 @@
 					</div>
 					</div>
 				</div>
-
 			</div>
 		</div>
 	</div>

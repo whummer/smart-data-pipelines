@@ -19,10 +19,10 @@
 						<td>
 							<a class="fa fa-search" 
 									title="Show Details" ng-click="selected.organization = org"></a>
-							<a class="fa fa-check" ng-show="org[STATUS] == STATUS_PENDING"
-									title="Confirm Invitation"></a>
+							<a class="fa fa-check" ng-show="org[STATUS] == STATUS_PENDING || org[STATUS] == STATUS_REJECTED"
+									title="Acceopt Invitation" ng-click="acceptInvitation(org)"></a>
 							<a class="fa fa-remove" ng-show="org[STATUS] == STATUS_CONFIRMED"
-									title="Cancel Membership"></a>
+									title="Cancel Membership" ng-click="rejectInvitation(org)"></a>
 						</td>
 					</tr>
 				</table>
@@ -88,7 +88,7 @@
 							ng-show="!selOrg[IMAGE_DATA][0].href && selOrg[STATUS] == 'OWNER'">
 							Drop image here
 					</div>
-					<div ng-show="selOrg[IMAGE_DATA][0].href">
+					<div ng-show="selOrg[IMAGE_DATA][0].href" style="margin-left: 20px;">
 						<img ng-src="{{selOrg[IMAGE_DATA][0].href}}" style="max-height: 100px; max-width: 140px;"/>
 						<div><a ng-click="deleteImage()"><i class="fa fa-remove"></i> Delete Image</a></div>
 					</div>
@@ -98,7 +98,7 @@
 	</div>
 </div>
 
-<div class="row" ng-show="selected.organization">
+<div class="row" ng-show="selected.organization && selected.organization[STATUS] == STATUS_CONFIRMED">
 	<div class="col-lg-7" style="padding-left: 0px;">
 		<div class="ibox float-e-margins">
 			<div class="ibox-title">
@@ -137,9 +137,12 @@
 			<div class="ibox-content">
 				<div class="row">
 					<div class="form-group">
-						<label for="inputNewMem" class="col-sm-4 control-label">Select User</label>
+						<label for="inputNewMem" class="col-sm-4 control-label">Select User
+						<i tooltip-placement="top"
+							 tooltip="Find a user by username in the autocomplete dropdown, or enter a valid email address."
+								class="fa fa-question-circle" style="margin-left: 5px"></i>
+						</label>
 						<div class="col-sm-8">
-<!-- 							<input id="inputNewMem" class="form-control input-sm" data-ng-model="newMember"/> -->
 							<angucomplete id="inputNewMem"
 					              placeholder="Search members"
 					              pause="400"

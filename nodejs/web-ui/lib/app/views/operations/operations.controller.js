@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('rioxApp')
-.controller('OperationsCtrl', function ($scope, Auth, $stateParams) {
+.controller('OperationsCtrl', function ($scope, $state, $stateParams) {
 
 	$scope.$watch("sources", function(sources) {
 		if(!sources) return;
@@ -34,6 +34,6 @@ angular.module('rioxApp')
 	$scope.getNavPart = function() {
 		return { sref: "index.notifications ", name: "Operations" };
 	}
-	$scope.setNavPath($scope);
+	$scope.setNavPath($scope, $state);
 
 });

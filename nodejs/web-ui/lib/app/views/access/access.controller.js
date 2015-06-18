@@ -1,7 +1,9 @@
 'use strict';
 
 angular.module('rioxApp')
-.controller('AccessCtrl', function ($scope, Auth, $stateParams) {
+.controller('AccessCtrl', function ($scope, $state, $stateParams, growl) {
+
+	$scope.selected = {};
 
 	$scope.$watch("sources", function(sources) {
 		if(!sources) return;
@@ -69,6 +71,61 @@ angular.module('rioxApp')
 		});
 	}
 
+	$scope.addAccessRole = function() {
+		var role = {};
+		role[NAME] = "New Role";
+		$scope.selected.role = role;
+	};
+	$scope.loadAccessRoles = function() {
+		riox.access.roles(function(roles) {
+			$scope.$apply(function() {
+				$scope.accessRoles = roles;
+			});
+		});
+	};
+	$scope.deleteRole = function(role) {
+		if(!role) return;
+		showConfirmDialog("Are you sure that you want to permanently delete this access role?", function() {
+			riox.delete.access.role(role, function() {
+				$scope.selected.role = null;
+				$scope.loadAccessRoles();
+				growl.info("Access role has been deleted.");
+			});
+		});
+	};
+	$scope.saveRole = function() {
+		var role = $scope.selected.role;
+		if(!role) return;
+		var error = function(err) {
+			var result = err.responseJSON;
+			if(result.__result) result = result.__result;
+			growl.warning("Unable to save role: " + result.error);
+			return false;
+		}
+		if(!role[ID]) {
+			riox.add.access.role(role, function(role) {
+				$scope.loadAccessRoles();
+				growl.info("New access role has been added.");
+				$scope.$apply(function() {
+					$scope.selected.role = null;
+				});
+			}, error);
+		} else {
+			riox.save.access.role(role, function(role) {
+				$scope.loadAccessRoles();
+				growl.info("Access role details saved.");
+			}, error);
+		}
+	};
+	
+	$scope.loadOrganizations = function() {
+		riox.organizations(function(orgs) {
+			$scope.$apply(function() {
+				$scope.userOrganizations = orgs;
+			});
+		});
+	};
+
 	/* register event listeners */
 	$scope.$watch("shared.selectedAPI", function(s) {
 		if(!s) return;
@@ -79,6 +136,9 @@ angular.module('rioxApp')
 	$scope.getNavPart = function() {
 		return { sref: "index.apis.access", name: "Access Control" };
 	}
-	$scope.setNavPath($scope);
+	$scope.setNavPath($scope, $state);
 
+	/* load main elements */
+	$scope.loadAccessRoles();
+	$scope.loadOrganizations();
 });

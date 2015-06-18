@@ -1,6 +1,7 @@
 'use strict';
 
 var StreamAccess = require('./streamaccess.model');
+var AccessRole = require('./accessrole.model');
 var passport = require('passport');
 var auth = require('riox-services-base/lib/auth/auth.service');
 var riox = require('riox-shared/lib/api/riox-api');
@@ -186,14 +187,14 @@ var createNotification = function (req, type, access) {
 }
 
 exports.enableAccess = function (req, res, next) {
-	updatePermission(req, res, true);
+	updatePermission(req, res, next, true);
 };
 
 exports.disableAccess = function (req, res, next) {
-	updatePermission(req, res, false);
+	updatePermission(req, res, next, false);
 };
 
-var updatePermission = function (req, res, allowed) {
+var updatePermission = function (req, res, next, allowed) {
 	var user = auth.getCurrentUser(req);
 	var id = req.params.id;
 	if (!id) {
@@ -217,10 +218,91 @@ var updatePermission = function (req, res, allowed) {
 			});
 		}, function (error) {
 			return next(errors.UnauthorizedError("Not authorized", error));
-			//return res.send(401, {error: error});
 		});
 	});
 };
+
+/* METHODS FOR ROLES */
+
+exports.listRoles = function(req, res, next) {
+	var user = auth.getCurrentUser(req);
+	var query = {};
+	query[ORGANIZATION_ID] = {"$in" : user.getOrganizationIDs()};
+	AccessRole.find(query, function(err, list) {
+		if (err)
+			return next(errors.InternalError("Cannot list access roles.", err));
+		res.json(list);
+	});
+};
+
+exports.createRole = function(req, res, next) {
+	var role = new AccessRole(req.body);
+	var user = auth.getCurrentUser(req);
+	/* check authorization */
+	if(!role[ORGANIZATION_ID] || !user.hasOrganization(role[ORGANIZATION_ID])) {
+		return res.status(422).json({error: "Please provide a valid " + ORGANIZATION_ID});
+	}
+
+	role.save(role, function(err, result) {
+		if (err)
+			return next(errors.InternalError("Cannot create role.", err));
+		res.json(result);
+	});
+};
+
+exports.updateRole = function(req, res, next) {
+	var id = req.params.id;
+	var user = auth.getCurrentUser(req);
+	if(!id || id != req.body[ID]) {
+		return res.status(400).json({error: "Invalid role " + ID});
+	}
+	AccessRole.findById(id, function(err, role) {
+		if(err || !role) 
+			return res.status(404).json({error: "Cannot find role with ID: " + id});
+		/* check authorization for old organization */
+		if(!user.hasOrganization(role[ORGANIZATION_ID])) {
+			return res.status(401).json({error: "Cannot save this entity."});
+		}
+		/* check authorization for new organization*/
+		if(!role[ORGANIZATION_ID] || !user.hasOrganization(req.body[ORGANIZATION_ID])) {
+			return res.status(422).json({error: "Please provide a valid " + ORGANIZATION_ID});
+		}
+
+		/* copy info from request */
+		role[ORGANIZATION_ID] = req.body[ORGANIZATION_ID];
+		role[NAME] = req.body[NAME];
+		/* save changes */
+		role.save(function(err, role) {
+			if(err || !role) 
+				return res.status(404).json({error: "Cannot save role: " + err});
+			res.json(role);
+		});
+	});
+};
+
+exports.deleteRole = function(req, res, next) {
+	var id = req.params.id;
+	var user = auth.getCurrentUser(req);
+	if(!id) {
+		return res.status(400).json({error: "Invalid role " + ID});
+	}
+	AccessRole.findById(id, function(err, role) {
+		if(err || !role) 
+			return res.status(404).json({error: "Cannot find role with ID: " + id});
+		/* check authorization for organization */
+		if(!user.hasOrganization(role[ORGANIZATION_ID])) {
+			return res.status(401).json({error: "Cannot delete this entity."});
+		}
+		/* remove entity */
+		role.remove(function(err, result) {
+			if(err || !role) 
+				return res.status(500).json({error: "Cannot delete role with ID: " + id});
+			res.json(result);
+		});
+	});
+};
+
+/* HELPER METHODS */
 
 var executeAsOwner = function (user, source, callback, errorCallback) {
 	// TODO check if this user is the source owner

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('rioxApp').controller('ApisCtrl', 
-		function ($scope, Auth, $stateParams, Formatter, $q) {
+		function ($scope, $state, $stateParams, Formatter, $q) {
 
 	/* CONSTANS */
 	$scope.availableConnectors =
@@ -32,6 +32,9 @@ angular.module('rioxApp').controller('ApisCtrl',
 			sources.forEach(function(source) {
 				if(source.id == id) {
 					$scope.shared.selectedAPI = $scope.shared.selectedAPI = source;
+					if(!$scope.shared.selectedAPI[BACKEND_ENDPOINTS]) {
+						$scope.shared.selectedAPI[BACKEND_ENDPOINTS] = [];
+					}
 				}
 			});
 			resolve();
@@ -137,7 +140,7 @@ angular.module('rioxApp').controller('ApisCtrl',
 	$scope.getNavPart = function() {
 		return { sref: "index.apis.list", name: "APIs" };
 	}
-	$scope.setNavPath($scope);
+	$scope.setNavPath($scope, $state);
 
 	/* load main elements */
 	$scope.loadStreamSources().

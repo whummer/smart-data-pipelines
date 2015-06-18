@@ -5,6 +5,9 @@ angular.module('rioxApp')
 
     var currentUser = {};
     var currentOrganization = {};
+    
+    /* config/constants */
+    var AUTO_LOGIN_AFTER_SIGNUP = false;
 
     /**
      * Set auth headers for riox JS API.
@@ -129,9 +132,11 @@ angular.module('rioxApp')
 
         return User.save(user,
           function(data) {
-            $cookieStore.put('token', data.token);
-            configureRioxApiAuth(data.token);
-            currentUser = User.get();
+        	if(AUTO_LOGIN_AFTER_SIGNUP) {
+                $cookieStore.put('token', data.token);
+                configureRioxApiAuth(data.token);
+                currentUser = User.get();
+        	}
             return cb(user);
           },
           function(err) {

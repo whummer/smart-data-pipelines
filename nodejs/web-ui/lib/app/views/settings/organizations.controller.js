@@ -1,7 +1,7 @@
 
 var app = angular.module("rioxApp");
 app.controller('OrganizationsController',
-		function ($scope, Upload, Auth, growl) {
+		function ($scope, $state, Upload, Auth, growl) {
 
 	var fileServiceURL = appConfig.services.files.url;
 	var fileServiceURLAbs = resolve(fileServiceURL);
@@ -67,28 +67,31 @@ app.controller('OrganizationsController',
 				console.log(error);
 			}
 		});
-//		console.log($("#inputNewMem").val());
 	};
 
 	var loadOrgs = function() {
 		$scope.orgInfo = {};
 		var user = $scope.getCurrentUser();
-		riox.organizations(function(orgs) {
+		var query = {all: true};
+		riox.organizations(query, function(orgs) {
 			$scope.orgInfo.orgs = orgs;
 			$.each(orgs, function(idx, org) {
-				var query = {};
-				query[ID] = org[CREATOR_ID];
-				/* load creator user details */
-				riox.user(query, function(user) {
-					org.creatorDisplayName = user.name;
-	   				$scope.$apply();
-				});
+				if(org[CREATOR_ID]) {
+					var query = {};
+					query[ID] = org[CREATOR_ID];
+					/* load creator user details */
+					riox.user(query, function(user) {
+						org.creatorDisplayName = user.name;
+		   				$scope.$apply();
+					});
+				}
 				if($scope.selected.organization && $scope.selected.organization[ID] == org[ID]) {
 					$scope.selected.organization = org;
 				}
 	   			if(org[IMAGE_DATA] && org[IMAGE_DATA][0]) {
 	   				org.imageUrl = org[IMAGE_DATA][0].href;
 	   			}
+   				org[STATUS] = STATUS_UNKNOWN;
 	   			riox.organizations.memberships(org, function(mems) {
 	   				org.memberships = mems;
 	   				mems.forEach(function(mem) {
@@ -108,6 +111,21 @@ app.controller('OrganizationsController',
 	   			});
 			});
 			$scope.$apply();
+		});
+	};
+
+	$scope.acceptInvitation = function(org) {
+		var mem = org.membership[ID];
+		riox.organization.invite.accept(mem, function() {
+			loadOrgs();
+			growl.info("Organization membership successfully updated.");
+		});
+	};
+	$scope.rejectInvitation = function(org) {
+		var mem = org.membership[ID];
+		riox.organization.invite.reject(mem, function() {
+			loadOrgs();
+			growl.info("Organization membership successfully updated.");
 		});
 	};
 
@@ -152,7 +170,7 @@ app.controller('OrganizationsController',
 	$scope.getNavPart = function() {
 		return { sref: "index.settings.organizations", name: "Organizations" };
 	};
-	$scope.setNavPath($scope);
+	$scope.setNavPath($scope, $state);
 
 	/* load main elements */
 	loadOrgs();

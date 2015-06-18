@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('rioxApp')
-  .controller('SignupCtrl', function ($scope, Auth, $location, $window, $stateParams) {
+  .controller('SignupCtrl', function ($scope, Auth, $location, $window, $state, $stateParams) {
 	$scope.user = {};
 	$scope.errors = {};
 
@@ -13,28 +13,30 @@ angular.module('rioxApp')
 				firstname: $scope.user.firstname,
 				lastname: $scope.user.lastname,
 				email: $scope.user.email,
-				password: $scope.user.password
+				password: $scope.user.password,
+				organization: $scope.user.organization
 			})
 			.then( function() {
-			  // Account created, redirect to home
-			  $location.path('/');
+				// Account created, redirect to login
+				showSuccessDialog("Your new account has been created! We've sent you an email with instructions to activate the account.", function() {
+					$state.go('index.login');
+				});
 			})
 			.catch( function(err) {
-			  err = err.data.error;
-			  $scope.errors = {};
-	
-			  // Update validity of form fields that match the mongoose errors
-			  angular.forEach(err.errors, function(error, field) {
-				form[field].$setValidity('mongoose', false);
-				$scope.errors[field] = error.message;
-			  });
+				err = err.data.error;
+				$scope.errors = {};
+
+				// Update validity of form fields that match the mongoose errors
+				angular.forEach(err.errors, function(error, field) {
+					form[field].$setValidity('mongoose', false);
+					$scope.errors[field] = error.message;
+				});
 			});
 		}
 	};
 
 	$scope.loginOauth = function(provider) {
 		var url = appConfig.services.users.url + "/auth/" + provider;
-		console.log(url);
 		$window.location.href = url;
 	};
 
@@ -42,8 +44,10 @@ angular.module('rioxApp')
 		var key = $stateParams.activationKey;
 		riox.activate(key, function() {
 			$scope.activationSuccess = true;
+			$scope.$apply();
 		}, function() {
 			$scope.activationError = true;
+			$scope.$apply();
 		});
 	};
 

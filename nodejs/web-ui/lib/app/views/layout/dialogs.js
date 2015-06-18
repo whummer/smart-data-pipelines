@@ -12,9 +12,11 @@ app.controller('DialogController', [
 	  	}
 	  	window.showErrorDialog = function (dialog, details, callback) {
 	  		var display = '<p>The following error has occured: ' + dialog + '</p>' +
-			//'<p>Please try again, or contact us if the problem persists.</p>' +
 			(details ? ('<h4>Error Details</h4>' + '<p>' + details + '</p>') : "");
 	  		showDialog("error", display, [], callback, "lg");
+	  	}
+	  	window.showSuccessDialog = function (dialog, callback) {
+	  		showDialog("info", dialog, [], callback, "lg");
 	  	}
 	  	window.showConfirmDialog = function (dialog, callback) {
 	  		var display = '<p>' + dialog + '</p>';
@@ -52,8 +54,9 @@ app.controller('DialogController', [
 app.controller('DialogInstanceController', function (
 	$scope, $modalInstance, type, dialog, options) {
 
-		$scope.title = type == "error" ? "" : type == "confirm" ? "Confirm" : "Input Dialog";
+		$scope.title = type == "error" ? "" : type == "info" ? "" : type == "confirm" ? "Confirm" : "Input Dialog";
 		$scope.titleImg = type == "error" ? "img/alert.svg" : "";
+		$scope.titleSpanClass = type == "info" ? "fa fa-check" : "";
 		$scope.type = type;
 		$scope.dialog = dialog;
 		$scope.options = options;

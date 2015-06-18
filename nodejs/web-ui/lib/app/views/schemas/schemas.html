@@ -19,7 +19,10 @@
 								<tr ng-repeat="n in shared.selectedAPI[SCHEMAS]" ng-class="{ 'font-bold' : n == selectedSchema }">
 									<td><a ui-sref=".single({schemaId: n.id})">{{n[NAME]}}</a></td>
 									<td>{{n[DATA_ITEMS].length}}</td>
-									<td><a ui-sref=".single({schemaId: n.id})">details</a></td>
+									<td>
+										<a ui-sref=".single({schemaId: n.id})" class="fa fa-search" title="Show Details"></a>
+										<a ng-click="deleteSchema(n)" class="fa fa-remove" title="Delete"></a>
+									</td>
 								</tr>
 							</tbody>
 						</table>

@@ -25,6 +25,10 @@ angular.module('rioxApp')
     				} else if(el[TYPE] == TYPE_ACCESS_UPDATE) {
     					el.type = "Access Update";
     					el.link = "streams.consumed({sourceId: '" + el[PARAMS][SOURCE_ID] + "'})";
+    				} else if(el[TYPE] == TYPE_INVITE) {
+    					el.type = "Organization Invite";
+    					var orgId = el[PARAMS][ORGANIZATION_ID];
+    					el.link = "index.settings.organizations";
     				} else {
     					el.link = "#";
     				}

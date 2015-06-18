@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('rioxApp')
-.controller('SettingsSecurityCtrl', function ($scope, growl) {
+.controller('SettingsSecurityCtrl', function ($scope, $state, growl) {
 
 	$scope.selected = {};
 	$scope.resourceData = {};
@@ -9,7 +9,9 @@ angular.module('rioxApp')
 	var loadCertificates = function() {
 		delete $scope.selected.cert;
 		riox.certificates(function(certs) {
-			$scope.certificates = certs;
+			$scope.$apply(function() {
+				$scope.certificates = certs;
+			});
 		});
 	};
 
@@ -30,9 +32,11 @@ angular.module('rioxApp')
 		});
 	};
 	$scope.deleteCert = function(cert) {
-		riox.delete.certificate(cert, function(cert) {
-			loadCertificates();
-			growl.info("Certificate permanently deleted.");
+		showConfirmDialog("Do you really want to permanently delete this certificate? WARNING: This action cannot be undone.", function() {
+			riox.delete.certificate(cert, function(cert) {
+				loadCertificates();
+				growl.info("Certificate permanently deleted.");
+			});
 		});
 	};
 	$scope.selectCert = function(cert) {
@@ -46,7 +50,7 @@ angular.module('rioxApp')
 	$scope.getNavPart = function() {
 		return { sref: "index.settings.security", name: "Security" };
 	}
-	$scope.setNavPath($scope);
+	$scope.setNavPath($scope, $state);
 
 	/* load main elements */
 	loadCertificates();

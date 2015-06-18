@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('rioxApp').controller('NotificationsCtrl',
-function($scope, Notifications) {
+function($scope, $state, Notifications) {
 
 	$scope.resolve = function(notif) {
 		notif[STATUS] = STATUS_READ;
@@ -17,15 +17,11 @@ function($scope, Notifications) {
 	};
 
 	/* get nav. bar stack */
-	$scope.getNavPath = function() {
-		var path = [
-			{ sref: "index.notifications ", name: "Notifications" }
-		];
-		$scope.shared.navigationPath = path;
-		return path;
+	$scope.getNavPart = function() {
+		return { sref: "index.notifications ", name: "Notifications" };
 	};
+	$scope.setNavPath($scope, $state);
 
 	/* load main elements */
 	Notifications.loadNotifications();
-	$scope.getNavPath();
 });

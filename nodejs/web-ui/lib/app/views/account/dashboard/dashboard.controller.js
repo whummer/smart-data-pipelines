@@ -1,4 +1,4 @@
-function dashboardCtrl($scope, $log) {
+function dashboardCtrl($scope, $state, $log) {
 	$scope.dashboard = {
 		map: {
 			data: {
@@ -29,16 +29,11 @@ function dashboardCtrl($scope, $log) {
 	};
 
 	/* get nav. bar stack */
-	$scope.getNavPath = function() {
-		var path = [
-			{ sref: "index.dashboard", name: "Dashboard" }
-		];
-		$scope.shared.navigationPath = path;
-		return path;
+	$scope.getNavPart = function() {
+		return { sref: "index.dashboard", name: "Dashboard" };
 	};
+	$scope.setNavPath($scope, $state);
 
-	/* load main elements */
-	$scope.getNavPath();
 }
 
 angular.module('rioxApp').controller('dashboardCtrl', dashboardCtrl);

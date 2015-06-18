@@ -1,12 +1,12 @@
 'use strict';
 
 angular.module('rioxApp')
-.controller('SettingsCtrl', function ($scope, User, Auth, $window) {
+.controller('SettingsCtrl', function ($scope, $state) {
 
 	/* get nav. bar stack */
 	$scope.getNavPart = function() {
 		return { sref: "index.settings", name: "Settings" };
 	}
-	$scope.setNavPath($scope);
+	$scope.setNavPath($scope, $state);
 
 });

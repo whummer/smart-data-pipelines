@@ -1,13 +1,13 @@
 'use strict';
 
 angular.module('rioxApp')
-.controller('SettingsAccountCtrl', function ($scope, User, Auth, $window) {
+.controller('SettingsAccountCtrl', function ($scope, $state, User, Auth, $window) {
 
 	$scope.errors = {};
 	$scope.ISO_3166_COUNTRIES = ISO_3166_COUNTRIES;
 
 	$scope.changePassword = function(form) {
-		$scope.submitted = true;
+		$scope.submittedPW = true;
 		var valid = form.$valid && (form.newPassword.$viewValue == form.newPasswordRepeat.$viewValue);
 		if(valid) {
 			Auth.changePassword( $scope.user.oldPassword, $scope.user.newPassword )
@@ -23,6 +23,13 @@ angular.module('rioxApp')
 	};
 
 	$scope.saveDetails = function(form) {
+		$scope.submitted = true;
+
+		if(!$scope.user[NAME] || $scope.user[NAME].match(/^\s*$/)) {
+			form.username.$setValidity('mongoose', false);
+			$scope.errors.username = "Please specify";
+			return;
+		}
 		riox.save.me($scope.user, function(result) {
 		      /* 
 		       * important: make sure to reload the entire page, to
@@ -47,7 +54,7 @@ angular.module('rioxApp')
 	$scope.getNavPart = function() {
 		return { sref: "index.settings.account", name: "Account" };
 	}
-	$scope.setNavPath($scope);
+	$scope.setNavPath($scope, $state);
 
 	/* load main elements */
 	loadDetails();

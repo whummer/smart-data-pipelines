@@ -76,7 +76,6 @@ exports.listProvided = function (req, res, next) {
 	var query = {};
 	var orgIDs = user.getOrganizationIDs();
 	query[ORGANIZATION_ID] = { "$in": orgIDs };
-	console.log("query", query);
 	return list(query, req, res, next);
 };
 
@@ -231,7 +230,8 @@ exports.updateStreamSource = function (req, res, next) {
 		obj[OPERATIONS] = req.body[OPERATIONS];
 		obj[SCHEMAS] = req.body[SCHEMAS];
 		obj[DOMAIN_NAME] = req.body[DOMAIN_NAME];
-		obj[ENDPOINT] = req.body[ENDPOINT];
+		obj[BACKEND_ENDPOINTS] = req.body[BACKEND_ENDPOINTS];
+		obj[CONNECTOR] = req.body[CONNECTOR];
 
 		obj.save(function (err, obj) {
 			if (err) {

@@ -224,7 +224,15 @@ angular.module('rioxApp')
 					controller: "PricingCtrl"
 				}
 			}
+		})
+
+	// admin
+		.state('index.apis.admin', {
+			url: "/admin",
+			templateUrl: "app/views/admin/admin.html",
+			controller: "AdminCtrl"
 		});
+
 
 	// streams
 //		.state('streams', {

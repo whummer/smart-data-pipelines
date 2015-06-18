@@ -23,45 +23,14 @@
 				<input id="resourceDescription" name="resourceDescription" placeholder=""
 							 class="form-control required" ng-model="resourceData.description"/>
 			</div>
-<!-- 			<label for="resourceDescription" class="control-label col-sm-3 animated fadeIn" -->
-<!-- 						 ng-show="resourceForm.$submitted || resourceForm.resourceDescription.$touched"> -->
-<!-- 				<span class="text-danger" ng-show="resourceForm.resourceDescription.$error.required"> -->
-<!-- 					A Resource Description is required -->
-<!-- 				</span> -->
-<!-- 			</label> -->
 		</div>
 	</div>
-
-<!-- 	<div ng-show="false"> -->
-<!-- 		<div class="row"> -->
-<!-- 			<div class="form-group"> -->
-<!-- 				<label for="logoDropzone" class="col-sm-3 control-label"> -->
-<!-- 					Do you want a custom logo for your Data Resource? -->
-<!-- 				</label> -->
-<!-- 				<div class="col-sm-5"> -->
-<!-- 					<label class="switch"> -->
-<!-- 						<input type="checkbox" id="customLogo" class="form-control" ng-model="resourceData.customLogo"><i></i> -->
-<!-- 					</label> -->
-<!-- 				</div> -->
-<!-- 			</div> -->
-<!-- 		</div> -->
-<!-- 		<div class="row animated" ng-show="resourceData.customLogo" -->
-<!-- 				 ng-class="{fadeIn: resourceData.customLogo, fadeOut: !resourceData.customLogo}"> -->
-<!-- 			<div class="form-group"> -->
-<!-- 				<label for="logoDropzone" class="col-sm-3 control-label">Choose a Resource Logo</label> -->
-<!-- 				<div class="col-sm-5"> -->
-<!-- 					<div type="file" class="dropzone" drop-zone id="logoDropzone" ng-model="logo"></div> -->
-<!-- 				</div> -->
-<!-- 			</div> -->
-<!-- 		</div> -->
-<!-- 	</div> -->
 
 	<div class="row" style="overflow: visible">
 		<div class="form-group" style="overflow: visible;">
 			<label for="resourceDescription" class="col-sm-3 control-label">Tags</label>
 			<div class="col-sm-5">
 				<tags-input ng-model="resourceData.tags">
-<!-- 			        <auto-complete source="loadTags($query)"></auto-complete> -->
 			    </tags-input>
 			</div>
 		</div>
@@ -69,7 +38,7 @@
 
 	<div class="navButtons">
 		<a ng-click="nextStep()" class="btn btn-primary"
-						ng-disabled="resourceForm.$invalid || resourceForm.$pristine">Next
+				ng-disabled="resourceForm.$invalid || resourceForm.$pristine">Next
 		</a>
 	</div>
 </div>

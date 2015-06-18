@@ -169,6 +169,6 @@ angular.module('rioxApp').controller('ApisWizardCtrl', function ($scope, $log, g
 	$scope.getNavPart = function() {
 		return { sref: "index.apis.wizard.basic", name: "Wizard" };
 	}
-	$scope.setNavPath($scope);
+	$scope.setNavPath($scope, $state);
 	
 });

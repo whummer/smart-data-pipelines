@@ -15,7 +15,7 @@ router.delete('/:id', auth.hasRole('admin'), controller.destroy);
 router.put('/:id', auth.isAuthenticated(), controller.update);
 router.post('/:id/invite', auth.isAuthenticated(), controller.invite);
 router.get('/:id/memberships', auth.isAuthenticated(), auth.fetchOrgs(), controller.listMemberships);
-router.put('/:id/memberships', auth.isAuthenticated(), controller.updateMembership);
+router.put('/memberships/:id', auth.isAuthenticated(), controller.updateMembership);
 router.get('/memberships/:id', auth.isAuthenticated(), auth.fetchOrgs(), controller.showMembership);
 router.delete('/memberships/:id', auth.isAuthenticated(), auth.fetchOrgs(), controller.deleteMembership);
 

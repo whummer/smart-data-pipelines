@@ -10,6 +10,9 @@ var auth = require('riox-services-base/lib/auth/auth.service');
 var email = require('riox-services-base/lib/util/email');
 var uuid = require('uuid');
 
+/* configuration */
+var PW_MIN_LENGTH = 6;
+
 var validationError = function(res, err) {
   return customError(res, 422, err);
 };
@@ -113,33 +116,41 @@ var sendActivationMail = exports.sendActivationMail = function(user) {
  * Creates a new user
  */
 exports.create = function (req, res, next) {
-  var newUser = new User(req.body);
-  newUser.provider = 'local';
-  newUser.role = 'user';
-  if(!newUser[NAME]) {
-	  newUser[NAME] = newUser[FIRSTNAME] + " " + newUser[LASTNAME];
-  }
-  newUser.save(function(err, user) {
-    if (err || !user) return validationError(res, err);
+	var orgName = req.body.organization;
+	delete req.body.organization;
+	var newUser = new User(req.body);
+	newUser.provider = 'local';
+	newUser.role = 'user';
+	if(!newUser[NAME]) {
+		newUser[NAME] = newUser[FIRSTNAME] + " " + newUser[LASTNAME];
+	}
 
-    var token = auth.signToken(user._id);
-    var headers = auth.getHeaderFromToken(token);
+	if(!checkPassword(newUser.password, res)) {
+		return;
+	}
 
-    var org = {name: "Default Organization"};
-    //var token = auth.getInternalCallToken();
-    riox.add.organization(org, {
-    	callback: function(org) {
-    		/* send activation mail */
-    		sendActivationMail(user);
-    		/* send token result */
-    		res.json({ token: token });
-    	},
-    	headers: headers
-    },
-    function(error) {
-    	customError(res, 500, error);
-    });
-  });
+	newUser.save(function(err, user) {
+		if (err || !user) return validationError(res, err);
+
+		var token = auth.signToken(user._id);
+		var headers = auth.getHeaderFromToken(token);
+
+		var org = {name: orgName};
+		if(!org.name) org.name = "Default Organization";
+		//var token = auth.getInternalCallToken();
+		riox.add.organization(org, {
+				callback: function(org) {
+		 		/* send activation mail */
+				sendActivationMail(user);
+				/* send token result */
+				res.json({ token: token });
+			},
+	    	headers: headers
+		},
+		function(error) {
+			customError(res, 500, error);
+		});
+	});
 };
 
 /**
@@ -163,31 +174,73 @@ exports.show = function (req, res, next) {
  * restriction: 'admin'
  */
 exports.destroy = function(req, res) {
-  User.findByIdAndRemove(req.params.id, function(err, user) {
-    if(err) return customError(res, 500, err);
-    return res.send(204);
-  });
+	User.findByIdAndRemove(req.params.id, function(err, user) {
+		if(err) return customError(res, 500, err);
+		return res.send(204);
+	});
 };
 
 /**
  * Change a users password
  */
 exports.changePassword = function(req, res, next) {
-  var userId = req.user._id;
-  var oldPass = String(req.body.oldPassword);
-  var newPass = String(req.body.newPassword);
+	var userId = req.user._id;
+	var oldPass = String(req.body.oldPassword);
+	var newPass = String(req.body.newPassword);
 
-  User.findById(userId, function (err, user) {
-    if(user.authenticate(oldPass)) {
-      user.password = newPass;
-      user.save(function(err) {
-        if (err) return validationError(res, err);
-        res.send(200);
-      });
-    } else {
-      res.send(403);
-    }
-  });
+	if(!checkPassword(newPass)) {
+		return;
+	}
+
+	User.findById(userId, function (err, user) {
+		if(user.authenticate(oldPass)) {
+			user.password = newPass;
+			user.save(function(err) {
+				if (err) return validationError(res, err);
+				res.send(200);
+			});
+		} else {
+			res.send(403);
+		}
+	});
+};
+
+var checkPassword = function(pass, res) {
+	if(!checkPasswordValid(pass, res)) {
+		res.send(422, {error: {
+				errors: {
+					password: {
+						message: "The password contains illegal characters."
+					}
+				}
+			}
+		});
+		return false;
+	}
+	if(!checkPasswordStrength(pass)) {
+		res.send(422, {error: {
+				errors: {
+					password: {
+						message: "Please use a sronger password: at least " + 
+						PW_MIN_LENGTH + " characters (letters, numbers, specials)."
+					}
+				}
+			}
+		});
+		return false;
+	}
+	return true;
+};
+
+var checkPasswordValid = function(pass) {
+	return pass.match(/^[a-zA-Z0-9_!*\-@#+]+$/);
+};
+
+var checkPasswordStrength = function(pass) {
+	/* TODO make configurable */
+	return pass.match(/[a-zA-Z]+/) && 
+		pass.match(/[0-9]+/) && 
+		pass.length >= PW_MIN_LENGTH;
 };
 
 /**

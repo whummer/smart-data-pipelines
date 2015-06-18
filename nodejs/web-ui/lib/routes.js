@@ -4,8 +4,6 @@
 
 'use strict';
 
-//var errors = require('./components/errors');
-
 module.exports = function(app) {
 
   // All undefined asset or api routes should return a 404

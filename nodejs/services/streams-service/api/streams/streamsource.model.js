@@ -118,6 +118,7 @@ operation["_id"] = { type: String, default: genShortUUID };
 operation[NAME] = String;
 operation[HTTP_METHOD] = { type: String, enum: ["GET", "PUT", "POST", "DELETE", "HEAD"] };
 operation[HTTP_RESOURCE] = String;
+operation[MAPPED_PATH] = String;
 operation[OPTIONS] = Schema.Types.Mixed; // generic options to describe this operations
 operation[PRICING] = String;
 operation[SCHEMA_IN] = String;
@@ -134,9 +135,9 @@ template[OPERATIONS] = [OperationSchema];
 template[VISIBLE] = Boolean;
 
 /**
- * Stream Source endpoint.
+ * Backend endpoints.
  */
-template[ENDPOINT] = String;
+template[BACKEND_ENDPOINTS] = [String];
 
 
 var StreamSource = new Schema(template);

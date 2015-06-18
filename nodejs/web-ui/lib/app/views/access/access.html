@@ -3,6 +3,75 @@
 		<div class="col-lg-6">
 			<div class="ibox float-e-margins">
 				<div class="ibox-title">
+					<h5>Access Roles</h5>
+				</div>
+				<div class="ibox-content">
+					<div class="row">
+						<div class="col-lg-12" ng-show="accessRoles.length">
+							<div class="table-responsive">
+								<table class="table table-striped">
+									<thead>
+										<tr>
+											<th>#</th>
+											<th>Name</th>
+											<th>Action</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr ng-repeat="r in accessRoles" ng-class="{ 'font-bold' : r.id == selected.role.id }">
+											<td>{{accessRoles.indexOf(r) + 1}}</td>
+											<td>{{r[NAME]}}</td>
+											<td>
+												<a ng-click="selected.role = r" title="Edit Details"><i class="fa fa-edit"></i></a>
+												<a ng-click="deleteRole(r)" title="Delete"><i class="fa fa-remove"></i></a>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div class="col-lg-12" ng-show="!accessRoles.length">
+							Currently no access roles defined.
+						</div>
+						<div class="col-lg-12">
+							<button class="btn btn-primary btn-sm pull-right" ng-click="addAccessRole()"><i class="fa fa-plus"></i> Add New Role</button>
+						</div>
+					</div>
+					<div class="row" ng-show="selected.role">
+						<div class="form-group">
+							<label class="col-lg-4">Name</label>
+							<div class="col-lg-8">
+								<input class="form-control input-sm" ng-model="selected.role[NAME]" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-lg-4">Organization
+								<i tooltip="The organization that this role belongs to."
+										class="fa fa-question-circle" style="margin-left: 5px"></i>
+							</label>
+							<div class="col-lg-8">
+								<select class="form-control input-sm" required
+									ng-options="o[ID] as o[NAME] for o in userOrganizations"
+									ng-model="selected.role[ORGANIZATION_ID]"></select>
+								<p class="help-block"
+									ng-show="form.lastname.$error.required && submitted">
+									Please select an organization.</p>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-lg-4"></label> 
+							<div class="col-lg-8">
+								<button class="btn btn-primary" ng-click="saveRole()"><i class="fa fa-save"></i> Save Changes</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-lg-6">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
 					<h5>Stream Consumers</h5>
 				</div>
 				<div class="ibox-content" ng-show="shared.selectedAPI.consumers.length">
@@ -22,8 +91,8 @@
 										ng-class="{ 'font-bold' : c.id == selectedConsumer.id }">
 									<td>{{shared.selectedAPI.consumers.indexOf(c) + 1}}</td>
 									<td>{{c.requestorOrg.name}}</td>
-									<td>{{c.price}}</td>
-									<td>{{c.status}}</td>
+									<td>{{c[PRICE]}}</td>
+									<td>{{c[STATUS]}}</td>
 									<td>
 										<input ui-switch="{color:'#5C9C4D', size: 'small'}"
 										 ng-model="c.enabled" ng-change="updatePermission(c, shared.selectedAPI)"
@@ -40,47 +109,50 @@
 				</div>
 			</div>
 		</div>
-	
-		<div class="col-lg-6">
-			<div class="ibox float-e-margins">
-				<div class="ibox-title">
-					<h5>Data Owner Consents</h5>
+
+	</div>
+
+	<!-- load sub-view -->
+	<div ui-view=""></div>
+</div>
+
+<div class="row">
+
+	<div class="col-lg-6">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<h5>Data Owner Consents</h5>
+			</div>
+			<div class="ibox-content" ng-show="shared.selectedAPI.consents.length">
+				<div class="table-responsive">
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th>#</th>
+								<th>User</th>
+								<th>Status</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="c in shared.selectedAPI.consumers" ng-alias="c.enabled = (c[STATUS] == STATUS_PERMITTED)"
+									ng-class="{ 'font-bold' : c.id == selectedConsumer.id }">
+								<td>{{shared.selectedAPI.consumers.indexOf(c) + 1}}</td>
+								<td>{{c.requestorOrg.name}}</td>
+								<td>{{c.price}}</td>
+								<td>{{c.status}}</td>
+								<td>
+									<input ui-switch="{color:'#5C9C4D', size: 'small'}"
+									 ng-model="c.enabled" ng-change="updatePermission(c, shared.selectedAPI)"
+									 type="checkbox" class="form-control"/>
+								</td>
+							</tr>
+						</tbody>
+					</table>
 				</div>
-				<div class="ibox-content" ng-show="shared.selectedAPI.consents.length">
-					<div class="table-responsive">
-						<table class="table table-striped">
-							<thead>
-								<tr>
-									<th>#</th>
-									<th>User</th>
-									<th>Status</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr ng-repeat="c in shared.selectedAPI.consumers" ng-alias="c.enabled = (c[STATUS] == STATUS_PERMITTED)"
-										ng-class="{ 'font-bold' : c.id == selectedConsumer.id }">
-									<td>{{shared.selectedAPI.consumers.indexOf(c) + 1}}</td>
-									<td>{{c.requestorOrg.name}}</td>
-									<td>{{c.price}}</td>
-									<td>{{c.status}}</td>
-									<td>
-										<input ui-switch="{color:'#5C9C4D', size: 'small'}"
-										 ng-model="c.enabled" ng-change="updatePermission(c, shared.selectedAPI)"
-										 type="checkbox" class="form-control"/>
-									</td>
-	<!-- 										<td><a ui-sref="streams.provided({streamId: shared.selectedAPI.id, organizationId: c[REQUESTOR_ID]})">details</a></td> -->
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-				<div class="ibox-content" ng-show="!shared.selectedAPI.consents.length">
-					Currently no user consents registered for this stream.
-				</div>
+			</div>
+			<div class="ibox-content" ng-show="!shared.selectedAPI.consents.length">
+				Currently there are no consumer consents for this stream.
 			</div>
 		</div>
 	</div>
-
-	<!-- load selected source in sub-view -->
-	<div ui-view=""></div>
 </div>

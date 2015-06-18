@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('rioxApp')
-.controller('PricingCtrl', function ($scope, Auth, $stateParams) {
+.controller('PricingCtrl', function ($scope, $state, $stateParams) {
 
 	$scope.$watch("sources", function(sources) {
 		if(!sources) return;
@@ -12,6 +12,6 @@ angular.module('rioxApp')
 	$scope.getNavPart = function() {
 		return { sref: "index.apis.pricing", name: "Pricing" };
 	}
-	$scope.setNavPath($scope);
+	$scope.setNavPath($scope, $state);
 
 });
