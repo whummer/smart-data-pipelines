@@ -36,8 +36,12 @@ var paths = {
   // app base
   base: SRC_DIR,
 
-  // do not inject '.spec.js' files
-  scripts: [SRC_DIR + '/app/**/*.js', '!' + SRC_DIR + '/app/**/*.spec.js'],
+  // inject js files
+  scripts: [SRC_DIR + '/app/**/*.js', 
+            // do not inject '.spec.js' files
+            '!' + SRC_DIR + '/app/**/*.spec.js', 
+            // do not inject admin view files
+            '!' + SRC_DIR + '/app/views/admin/**/*.js'],
 
   // glob for all LESS files (required for file watching)
   less: [SRC_DIR + '/app/**/*.less'],

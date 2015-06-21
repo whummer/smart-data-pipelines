@@ -2,6 +2,7 @@
 
 var StreamAccess = require('./streamaccess.model');
 var AccessRole = require('./accessrole.model');
+var Consumer = require('./consumer.model');
 var passport = require('passport');
 var auth = require('riox-services-base/lib/auth/auth.service');
 var riox = require('riox-shared/lib/api/riox-api');
@@ -222,7 +223,7 @@ var updatePermission = function (req, res, next, allowed) {
 	});
 };
 
-/* METHODS FOR ROLES */
+/* METHODS FOR ACCESS ROLES */
 
 exports.listRoles = function(req, res, next) {
 	var user = auth.getCurrentUser(req);
@@ -243,7 +244,7 @@ exports.createRole = function(req, res, next) {
 		return res.status(422).json({error: "Please provide a valid " + ORGANIZATION_ID});
 	}
 
-	role.save(role, function(err, result) {
+	role.save(function(err, result) {
 		if (err)
 			return next(errors.InternalError("Cannot create role.", err));
 		res.json(result);
@@ -301,6 +302,122 @@ exports.deleteRole = function(req, res, next) {
 		});
 	});
 };
+
+/* METHODS FOR CONSUMERS */
+
+exports.listConsumers = function(req, res, next) {
+	var user = auth.getCurrentUser(req);
+	var source = req.query.source;
+	if(!source) {
+		return res.status(400).json({error: "Please provide a valid source as query parameter"});
+	}
+	var query = {};
+	riox.streams.source(source, {
+		headers: req.headers,
+		callback: function(sourceObj) {
+			/* check authorization */
+			if(!user.hasOrganization(sourceObj[ORGANIZATION_ID])) {
+				return res.status(401).json({error: "Access denied"});
+			}
+
+			query[SOURCE_ID] = source;
+			Consumer.find(query, function(err, list) {
+				if (err)
+					return next(errors.InternalError("Cannot list access roles.", err));
+				res.json(list);
+			});
+		}
+	}, function() {
+		return res.status(404).json({error: "Please provide a valid source as query parameter"});
+	});
+	//query[ORGANIZATION_ID] = {"$in" : user.getOrganizationIDs()};
+	
+};
+
+var validateConsumer = function(req, res, callback) {
+	var user = auth.getCurrentUser(req);
+	/* check request */
+	if(!req.body[SOURCE_ID]) {
+		return res.status(422).json({error: "Please provide a valid " + SOURCE_ID});
+	}
+	if(req.params.id && req.params.id != req.body[ID]) {
+		return res.status(400).json({error: "Invalid consumer " + ID});
+	}
+	riox.streams.source(req.body[SOURCE_ID], {
+		headers: req.headers,
+		callback: function(source) {
+
+			/* check authorization */
+			if(!source[ORGANIZATION_ID] || !user.hasOrganization(source[ORGANIZATION_ID])) {
+				return res.status(401).json({error: "Access denied."});
+			}
+
+			callback(); /* success */
+		}
+	}, function(error) {
+		return res.status(422).json({error: "Cannot find ID " + consumer[SOURCE_ID]});
+	});
+};
+
+exports.createConsumer = function(req, res, next) {
+	/* check request, then save */
+	validateConsumer(req, res, function() {
+		var consumer = new Consumer(req.body);
+		var user = auth.getCurrentUser(req);
+
+		consumer.save(function(err, result) {
+			if (err)
+				return next(errors.InternalError("Cannot create consumer.", err));
+			res.json(result);
+		});
+	});
+};
+
+exports.updateConsumer = function(req, res, next) {
+	/* check request, then save */
+	validateConsumer(req, res, function() {
+		var consumer = new Consumer(req.body);
+		var user = auth.getCurrentUser(req);
+		var id = req.params.id;
+
+		Consumer.findById(id, function(err, consumer) {
+			if(err || !consumer) 
+				return res.status(404).json({error: "Cannot find consumer with ID: " + id});
+
+			/* copy info from request */
+			consumer[SOURCE_ID] = req.body[SOURCE_ID];
+			consumer[ACCESSROLE_ID] = req.body[ACCESSROLE_ID];
+			consumer[NAME] = req.body[NAME];
+			/* save changes */
+			consumer.save(function(err, consumer) {
+				if(err || !consumer) 
+					return res.status(404).json({error: "Cannot save consumer: " + err});
+				res.json(consumer);
+			});
+		});
+	});
+	
+};
+
+exports.deleteConsumer = function(req, res, next) {
+	var id = req.params.id;
+	var user = auth.getCurrentUser(req);
+	if(!id) {
+		return res.status(400).json({error: "Invalid consumer " + ID});
+	}
+	Consumer.findById(id, function(err, consumer) {
+		if(err || !consumer) 
+			return res.status(404).json({error: "Cannot find consumer with ID: " + id});
+		/* TODO check authorization of the calling user! (probably navigate to SOURCE -> ORGANIZATION) */
+		/* remove entity */
+		consumer.remove(function(err, result) {
+			if(err || !consumer) 
+				return res.status(500).json({error: "Cannot delete consumer with ID: " + id});
+			res.json(result);
+		});
+	});
+};
+
 
 /* HELPER METHODS */
 

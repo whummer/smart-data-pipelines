@@ -14,8 +14,8 @@ var riox = require('riox-shared/lib/api/riox-api');
 // Setup server
 var app = express();
 var server = require('http').createServer(app);
-require('./config/express')(app);
 require('./routes')(app);
+require('./config/express')(app);
 
 // Start server
 server.listen(config.port, config.ip, function () {

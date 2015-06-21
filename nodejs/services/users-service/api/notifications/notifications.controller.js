@@ -11,7 +11,7 @@ var validationError = function(res, err) {
 function list(query, req, res) {
 	Notification.find(query, function(err, list) {
 		if (err)
-			return res.send(500, err);
+			return res.status(500).send({error: err});
 		res.json(list);
 	});
 };

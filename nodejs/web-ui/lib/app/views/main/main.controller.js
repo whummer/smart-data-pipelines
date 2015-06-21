@@ -25,10 +25,12 @@ angular.module('rioxApp')
 			}
 			scope = scope.$parent;
 		}
-		if(state.current) state = state.current;
-		//console.log(state.name, "=", origScope);
-		/* put scope to map */
-		$rootScope.stateToScopesMap[state.name] = origScope;
+		if(state) {
+			if(state.current) state = state.current;
+			//console.log(state.name, "=", origScope);
+			/* put scope to map */
+			$rootScope.stateToScopesMap[state.name] = origScope;
+		}
 		/* set navigation path in scope */
 		$scope.shared.navigationPath = path;
 		return path;
@@ -142,7 +144,18 @@ angular.module('rioxApp')
       }
       return number.toFixed(numDecimals);
     };
-
+    $scope.find = function(list, query) {
+    	if(!list || !list.length) return;
+    	for(var i = 0; i < list.length; i ++) {
+    		var item = list[i];
+			var same = true;
+    		for(var key in query) {
+    			if(query[key] != item[key])
+    				same = false;
+    		}
+    		if(same) return item;
+    	}
+    };
 
     $scope.loadDefaultOrganization = function () {
       var deferred = $q.defer();

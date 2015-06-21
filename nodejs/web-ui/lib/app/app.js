@@ -17,7 +17,8 @@ angular.module('rioxApp', [
 	'ngFileUpload',
 	'ngTagsInput',
 	'ng-alias',
-	'angucomplete'
+	'angucomplete',
+	'oc.lazyLoad'
 ])
 		.config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider, growlProvider) {
 			$locationProvider.html5Mode(false);

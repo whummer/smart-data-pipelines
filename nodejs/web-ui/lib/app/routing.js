@@ -5,26 +5,26 @@ angular.module('rioxApp')
 
 	$urlRouterProvider.otherwise("/main");
 
-	$stateProvider
+	var states = {
 
-	/* main index */
-		.state('index', {
+		/* main index */
+		'index': {
 			templateUrl: "app/views/layout/content.html"
-		})
-		.state('index.main', {
+		},
+		'index.main': {
 			url: "/main",
 			templateUrl: "app/views/main/main.html"
-		})
+		},
 
-	// dashboard
-		.state('index.dashboard', {
+		/* dashboard */
+		'index.dashboard': {
 			url: '/dashboard',
 			templateUrl: 'app/views/account/dashboard/dashboard.html',
 			authenticate: true
-		})
+		},
 
-	// settings
-		.state('index.settings', {
+		/* settings */
+		'index.settings': {
 			url: '/settings',
 			templateUrl: 'app/views/settings/settings.html',
 			controller: 'SettingsCtrl',
@@ -32,52 +32,52 @@ angular.module('rioxApp')
 				/* this flag in this 'data' bag is propagated to all child-states */
 				authenticate: true
 			}
-		})
-		.state('index.settings.account', {
+		},
+		'index.settings.account': {
 			url: '/account',
 			templateUrl: 'app/views/settings/account.html',
 			controller: 'SettingsAccountCtrl'
-		})
-		.state('index.settings.organizations', {
+		},
+		'index.settings.organizations': {
 			url: '/organizations',
 			templateUrl: 'app/views/settings/organizations.html',
 			controller: 'OrganizationsController'
-		})
-		.state('index.settings.security', {
+		},
+		'index.settings.security': {
 			url: '/security',
 			templateUrl: 'app/views/settings/security.html',
 			controller: 'SettingsSecurityCtrl'
-		})
-		.state('index.settings.billing', {
+		},
+		'index.settings.billing': {
 			url: '/billing',
 			templateUrl: 'app/views/settings/billing.html',
 			controller: 'SettingsBillingCtrl'
-		})
+		},
 
-	// authentication,
-		.state('index.login', {
+		/* authentication */
+		'index.login': {
 			url: '/login',
 			templateUrl: 'app/views/account/login/login.html',
 			controller: 'LoginCtrl'
-		})
-		.state('index.signup', {
+		},
+		'index.signup': {
 			url: '/signup',
 			templateUrl: 'app/views/account/signup/signup.html',
 			controller: 'SignupCtrl'
-		})
-		.state('index.auth.facebook.callback', {
+		},
+		'index.auth.facebook.callback': {
 			url: '/auth/facebook/callback',
 			templateUrl: 'app/views/account/callback/index.html',
 			controller: 'CallbackCtrl'
-		})
-		.state('index.activate', {
+		},
+		'index.activate': {
 			url: '/activate/{activationKey}',
 			templateUrl: 'app/views/account/signup/activate.html',
 			controller: 'SignupCtrl'
-		})
+		},
 
-	// general
-		.state('index.notifications', {
+		/* general */
+		'index.notifications': {
 			url: "/notifications",
 			templateUrl: "app/views/account/notifications/notifications.html",
 			controller: "NotificationsCtrl",
@@ -85,24 +85,24 @@ angular.module('rioxApp')
 				/* this flag in this 'data' bag is propagated to all child-states */
 				authenticate: true
 			}
-		})
+		},
 		
-	// invitations mgmt
-		.state('index.accept', {
+		/* invitations mgmt */
+		'index.accept': {
 			url: "/accept/{membershipId}",
 			templateUrl: "app/views/settings/invitation.html",
 			controller: "InvitationCtrl",
 			authenticate: true
-		})
-		.state('index.reject', {
+		},
+		'index.reject': {
 			url: "/reject/{membershipId}",
 			templateUrl: "app/views/settings/invitation.html",
 			controller: "InvitationCtrl",
 			authenticate: true
-		})
+		},
 
-	// APIs
-		.state('index.apis', {
+		/* APIs */
+		'index.apis': {
 			abstract: true,
 			url: "/apis",
 			templateUrl: "app/views/apis/apis.html",
@@ -111,8 +111,8 @@ angular.module('rioxApp')
 				/* this flag in this 'data' bag is propagated to all child-states */
 				authenticate: true
 			}
-		})
-		.state('index.apis.list', {
+		},
+		'index.apis.list': {
 			url: "",
 			views: {
 				"apiList@index.apis": {
@@ -120,8 +120,8 @@ angular.module('rioxApp')
 					controller: "ApisEndpointsCtrl"
 				}
 			}
-		})
-		.state('index.apis.list.single', {
+		},
+		'index.apis.list.single': {
 			url: "/{sourceId}",
 			views: {
 				"apiDetails@index.apis": {
@@ -129,10 +129,10 @@ angular.module('rioxApp')
 					controller: "ApisEndpointsSingleCtrl"
 				}
 			}
-		})
+		},
 
-	// APIs wizard/setup
-		.state('index.apis.wizard', {
+		/* APIs wizard/setup */
+		'index.apis.wizard': {
 			url: "/wizard?debug",
 			views: {
 				"apiList@index.apis": {
@@ -140,40 +140,40 @@ angular.module('rioxApp')
 					controller: "ApisWizardCtrl"
 				}
 			}
-		})
-		.state('index.apis.wizard.basic', {
+		},
+		'index.apis.wizard.basic': {
 			url: '/basic',
 			templateUrl: 'app/views/apis/wizard/basic.html'
-		})
-		.state('index.apis.wizard.connector', {
+		},
+		'index.apis.wizard.connector': {
 			url: '/connector',
 			templateUrl: 'app/views/apis/wizard/data_connector.html'
-		})
-		.state('index.apis.wizard.security', {
+		},
+		'index.apis.wizard.security': {
 			url: '/security',
 			templateUrl: 'app/views/apis/wizard/security.html',
 			controller: 'WizardSecurityCtrl'
-		})
-		.state('index.apis.wizard.data_access', {
+		},
+		'index.apis.wizard.data_access': {
 			url: '/access',
 			templateUrl: 'app/views/apis/wizard/data_access.html'
-		})
-//		.state('index.apis.wizard.data_pricing', {
+		},
+//		'index.apis.wizard.data_pricing': {
 //			url: '/pricing',
 //			templateUrl: 'app/views/apis/wizard/data_pricing.html'
-//		})
-		.state('index.apis.wizard.data_items', {
+//		},
+		'index.apis.wizard.data_items': {
 			url: '/items',
 			templateUrl: 'app/views/apis/wizard/data_items.html',
 			controller: 'WizardItemsCtrl'
-		})
-		.state('index.apis.wizard.deployment', {
+		},
+		'index.apis.wizard.deployment': {
 			url: '/deployment',
 			templateUrl: 'app/views/apis/wizard/deployment.html'
-		})
+		},
 
-	// access control
-		.state('index.apis.access', {
+		/* access control */
+		'index.apis.access': {
 			url: "/{sourceId}/access",
 			views: {
 				"apiDetails@index.apis": {
@@ -181,10 +181,10 @@ angular.module('rioxApp')
 					controller: "AccessCtrl"
 				}
 			}
-		})
+		},
 
-	// operations
-		.state('index.apis.operations', {
+		/* operations */
+		'index.apis.operations': {
 			url: "/{sourceId}/operations",
 			views: {
 				"apiDetails@index.apis": {
@@ -192,15 +192,15 @@ angular.module('rioxApp')
 					controller: "OperationsCtrl"
 				}
 			}
-		})
-		.state('index.apis.operations.single', {
+		},
+		'index.apis.operations.single': {
 			url: "/{operationId}",
 			templateUrl: "app/views/operations/operations.single.html",
 			controller: "OperationsSingleCtrl"
-		})
+		},
 
-	// schemas
-		.state('index.apis.schemas', {
+		/* schemas */
+		'index.apis.schemas': {
 			url: "/{sourceId}/schemas",
 			views: {
 				"apiDetails@index.apis": {
@@ -208,15 +208,15 @@ angular.module('rioxApp')
 					controller: "SchemasCtrl"
 				}
 			}
-		})
-		.state('index.apis.schemas.single', {
+		},
+		'index.apis.schemas.single': {
 			url: "/{schemaId}",
 			templateUrl: "app/views/schemas/schemas.single.html",
 			controller: "SchemasSingleCtrl"
-		})
+		},
 
-	// pricing
-		.state('index.apis.pricing', {
+		/* pricing */
+		'index.apis.pricing': {
 			url: "/{sourceId}/pricing",
 			views: {
 				"apiDetails@index.apis": {
@@ -224,14 +224,31 @@ angular.module('rioxApp')
 					controller: "PricingCtrl"
 				}
 			}
-		})
+		},
 
-	// admin
-		.state('index.apis.admin', {
+		/* admin */
+		'index.admin': {
 			url: "/admin",
 			templateUrl: "app/views/admin/admin.html",
-			controller: "AdminCtrl"
-		});
+			controller: "AdminCtrl",
+			controllerUrl: "app/views/admin/admin.controller.js"
+		}
+	};
+
+	/* set state routes */
+	var tmp = $stateProvider;
+	for(var key in states) {
+		var s = states[key];
+		if(s.controllerUrl) {
+			s.resolve = {
+				loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad) {
+					console.log("load controller ", s.url);
+					return $ocLazyLoad.load(s.controllerUrl);
+		        }]
+		    };
+		}
+		tmp = tmp.state(key, states[key]);
+	}
 
 
 	// streams

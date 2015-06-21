@@ -252,7 +252,7 @@ exports.me = function(req, res, next) {
     _id: userId
   }, '-salt -hashedPassword', function(err, user) { // don't ever give out the password or salt
     if (err) return next(err);
-    if (!user) return res.send(401);
+    if (!user) return res.status(401).send();
     res.json(user);
   });
 };

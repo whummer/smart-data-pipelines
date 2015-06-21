@@ -4,6 +4,7 @@ var express = require('express');
 var controller = require('./access.controller');
 var auth = require('riox-services-base/lib/auth/auth.service');
 var StreamAccess = require('./streamaccess.model');
+var Consumer = require('./consumer.model');
 
 var router = express.Router();
 
@@ -12,6 +13,12 @@ router.get('/roles', auth.isAuthenticated(), auth.fetchOrgs(), controller.listRo
 router.post('/roles', auth.isAuthenticated(), auth.fetchOrgs(), controller.createRole);
 router.put('/roles/:id', auth.isAuthenticated(), auth.fetchOrgs(), controller.updateRole);
 router.delete('/roles/:id', auth.isAuthenticated(), auth.fetchOrgs(), controller.deleteRole);
+
+/* access roles */
+router.get('/consumers', auth.isAuthenticated(), auth.fetchOrgs(), controller.listConsumers);
+router.post('/consumers', auth.isAuthenticated(), auth.fetchOrgs(), controller.createConsumer);
+router.put('/consumers/:id', auth.isAuthenticated(), auth.fetchOrgs(), controller.updateConsumer);
+router.delete('/consumers/:id', auth.isAuthenticated(), auth.fetchOrgs(), controller.deleteConsumer);
 
 /* access requests */
 router.get('/', auth.isAuthenticated(), controller.index);

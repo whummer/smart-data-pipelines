@@ -15,6 +15,7 @@
     "express": "~4.0.0",
     "ejs": "~0.8.4",
 
+    "riox-services-base": "../services/riox-services-base",
     "riox-shared": "../riox-shared"
   },
   "devDependencies": {

@@ -1,6 +1,6 @@
 <nav class="navbar-default navbar-static-side" role="navigation">
     <div class="sidebar-collapse">
-        <ul class="nav" id="side-menu">
+        <ul class="nav" id="side-menu" ng-alias="isUserLoggedIn = getCurrentUser()[ID]">
             <li class="nav-header">
                 <div class="dropdown profile-element" style="margin: auto;">
                 	<a ui-sref="index.main"><img class="img-responsive"
@@ -8,10 +8,10 @@
 				style="height: 40px; margin-top: 8px; margin: auto;" /></a>
                 </div>
             </li>
-            <li ng-class="{active: isActive('/dashboard')}">
+            <li ng-class="{active: isActive('/dashboard')}" ng-show="isUserLoggedIn">
                 <a ui-sref="index.dashboard"><i class="fa fa-dashboard"></i> <span class="nav-label">Dashboard</span></a>
             </li>
-            <li ng-class="{active: isActive('/apis')}">
+            <li ng-class="{active: isActive('/apis')}" ng-show="isUserLoggedIn">
                 <a ui-sref="index.apis.list"><i class="fa fa-exchange"></i> <span class="nav-label">My APIs</span> <span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level collapse" ng-class="{in: isActive('/apis')}">
                     <li>
@@ -31,19 +31,10 @@
 		            </li>
                 </ul>
             </li>
-<!--             <li ng-class="{active: isActive('/apis')}"> -->
-<!--                 <a ui-sref="index.apis.endpoints"><i class="fa fa-exchange"></i> <span class="nav-label">My APIs</span> </a> -->
-<!--             </li> -->
-<!--             <li ng-class="{active: isActive('/access')}" ng-show="shared.selectedAPI"> -->
-<!--                 <a ui-sref="index.access"><i class="fa fa-lock"></i> <span class="nav-label">Access Control</span></a> -->
-<!--             </li> -->
-<!--             <li ng-class="{active: isActive('/pricing')}" ng-show="shared.selectedAPI"> -->
-<!--                 <a ui-sref="index.pricing"><i class="fa fa-money"></i> <span class="nav-label">Pricing</span></a> -->
-<!--             </li> -->
-            <li ng-class="{active: isActive('/notifications')}">
+            <li ng-class="{active: isActive('/notifications')}" ng-show="isUserLoggedIn">
                 <a ui-sref="index.notifications"><i class="fa fa-bell"></i> <span class="nav-label">Notifications</span></a>
             </li>
-            <li ng-class="{active: isActive('/settings')}">
+            <li ng-class="{active: isActive('/settings')}" ng-show="isUserLoggedIn">
                 <a ui-sref="index.settings.account"><i class="glyphicon glyphicon-cog"></i> <span class="nav-label">Settings</span> <span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level collapse" ng-class="{in: isActive('/settings')}">
                     <li>
