@@ -11,11 +11,13 @@ var appConfig = servicesConfig = {
 	appRootPath: "/app",
 	bowerRootPath: "/bower_components",
 	services: {
+		streams: { url: "http://" + _host + ":8085/api/v1/streams" },
+//		streams: { url: "http://" + _host + "/api/v1/streams" },
+
 		core: { url: "http://" + _host + ":8080/api/v1" },
 		billing: { url: "http://" + _host + ":8080/api/v1/billing" },
 		users: { url: "http://" + _host + ":8084/api/v1/users" },
 		organizations: { url: "http://" + _host + ":8084/api/v1/organizations" },
-		streams: { url: "http://" + _host + ":8085/api/v1/streams" },
 		streamsources: { url: "http://" + _host + ":8085/api/v1/streams/sources" },
 		streamsinks: { url: "http://" + _host + ":8085/api/v1/streams/sinks" },
 		streamprocessors: { url: "http://" + _host + ":8085/api/v1/streams/processors" },

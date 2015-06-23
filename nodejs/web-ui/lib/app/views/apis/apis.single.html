@@ -55,6 +55,16 @@
 						</div>
 					</div>
 					<div class="form-group">
+						<label class="col-lg-4">Allow CORS
+							<i tooltip="Enables Cross-Origin Resource Sharing (CORS) by sending the appropriate HTTP headers on OPTIONS requests."
+									class="fa fa-question-circle" style="margin-left: 5px"></i>
+						</label> 
+						<div class="col-lg-8" style="line-height: 35px;">
+							<input type="checkbox" 
+								ng-model="shared.selectedAPI[ALLOW_CORS]"/> Enable CORS Headers
+						</div>
+					</div>
+					<div class="form-group">
 						<label class="col-lg-4">Certificate
 							<i tooltip="Optional: Custom certificate."
 									class="fa fa-question-circle" style="margin-left: 5px"></i>

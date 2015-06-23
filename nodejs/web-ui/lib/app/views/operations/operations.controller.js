@@ -14,8 +14,11 @@ angular.module('rioxApp')
 		newOp[NAME] = "New Operation";
 		newOp[HTTP_METHOD] = "GET";
 		newOp[HTTP_RESOURCE] = "/new";
+		copy[OPERATIONS].push(newOp);
 		riox.save.streams.source(copy, function(saved) {
-			$scope.shared.selectedAPI = saved;
+			$scope.$apply(function() {
+				$scope.shared.selectedAPI = saved;
+			});
 		});
 	};
 
@@ -32,7 +35,7 @@ angular.module('rioxApp')
 
 	/* get nav. bar stack */
 	$scope.getNavPart = function() {
-		return { sref: "index.notifications ", name: "Operations" };
+		return { sref: "index.apis.operations ", name: "Operations" };
 	}
 	$scope.setNavPath($scope, $state);
 

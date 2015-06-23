@@ -7,7 +7,6 @@ var auth = require('riox-services-base/lib/auth/auth.service');
 var router = express.Router();
 
 /* define routes */
-var router = express.Router();
 router.post('/permit', auth.isAuthenticated(), controller.logAndPermit);
 router.get('/limits', auth.isAuthenticated(), controller.showLimits);
 router.post('/limits', auth.isAuthenticated(), controller.addLimit);

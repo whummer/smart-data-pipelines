@@ -68,6 +68,10 @@ template[SECURITY] = String;
  */
 template[TAGS] = [String];
 /**
+ * Allow CORS access.
+ */
+template[ALLOW_CORS] = Boolean;
+/**
  * Data schemas.
  * 
  * schemas: [

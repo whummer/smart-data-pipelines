@@ -109,6 +109,8 @@ var rioxAPIs =
 		connector: {
 			type: "http"
 		},
+		backends: ["http://127.0.0.1:8085"],
+		"allow-cors": true,
 		operations:
 		[{
 			"name": "Get list of stream sources",
@@ -138,6 +140,8 @@ var rioxAPIs =
 		connector: {
 			type: "http"
 		},
+		backends: ["http://127.0.0.1:8084"],
+		"allow-cors": true,
 		operations:
 		[{
 			"name": "Get list of organizations",
