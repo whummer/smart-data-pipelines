@@ -8,7 +8,7 @@ var sh = {};
 
 var prettifyCSSLoaded = false;
 var __alertServiceError = function(config, status) {
-	if(!window.showErrorDialog) {
+	if(!window.showErrorDialog || !config) {
 		return;
 	}
 	var bodyData = config.data ? JSON.stringify(JSON.parse(config.data), undefined, 2) : "";
@@ -172,15 +172,15 @@ sh.invokePOST = function($http, url, body, callback, errorCallback) {
 	});
 }
 
-sh.invokePOSTandGET = function($http, url, body, callback) {
-	invokePOST($http, url, body, 
+sh.invokePOSTandGET = function($http, url, body, callback, errorCallback) {
+	invokePOST($http, url, body,
 		function(data, status, headers, config){
 		var loc = headers("Location");
-		invokeGET($http, loc, callback);
-	})
+		invokeGET($http, loc, callback, errorCallback);
+	}, errorCallback)
 }
 
-sh.invokePUT = function($http, url, body, callback) {
+sh.invokePUT = function($http, url, body, callback, errorCallback) {
 	if(window.setLoadingStatus) setLoadingStatus(true);
 	var cfg = __getConfig($http);
 	$http = cfg.http;
@@ -192,7 +192,11 @@ sh.invokePUT = function($http, url, body, callback) {
 	}).
 	error(function(data, status, headers, config) {
 		if(window.setLoadingStatus) setLoadingStatus(false);
-		__alertServiceError(config, status);
+		if(errorCallback) {
+			errorCallback(data, status, headers, config);
+		} else {
+			__alertServiceError(config, status);
+		}
 	});
 }
 

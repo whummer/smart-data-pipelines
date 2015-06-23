@@ -14,11 +14,14 @@ router.post('/roles', auth.isAuthenticated(), auth.fetchOrgs(), controller.creat
 router.put('/roles/:id', auth.isAuthenticated(), auth.fetchOrgs(), controller.updateRole);
 router.delete('/roles/:id', auth.isAuthenticated(), auth.fetchOrgs(), controller.deleteRole);
 
-/* access roles */
+/* consumers */
 router.get('/consumers', auth.isAuthenticated(), auth.fetchOrgs(), controller.listConsumers);
+router.get('/consumers/:apiKey', controller.getConsumerByApiKey);
 router.post('/consumers', auth.isAuthenticated(), auth.fetchOrgs(), controller.createConsumer);
 router.put('/consumers/:id', auth.isAuthenticated(), auth.fetchOrgs(), controller.updateConsumer);
 router.delete('/consumers/:id', auth.isAuthenticated(), auth.fetchOrgs(), controller.deleteConsumer);
+router.post('/consumers/:id/keys', auth.isAuthenticated(), auth.fetchOrgs(), controller.addKey);
+router.delete('/consumers/:id/keys/:key', auth.isAuthenticated(), auth.fetchOrgs(), controller.removeKey);
 
 /* access requests */
 router.get('/', auth.isAuthenticated(), controller.index);

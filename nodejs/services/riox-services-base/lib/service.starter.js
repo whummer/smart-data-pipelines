@@ -67,14 +67,16 @@ var start = function (config, routes, serviceName) {
 		}));
 	}
 
-	app.start = function (config, routes, serviceName) {
+	app.start = function (config, routes, serviceName, overrideExpressVersion) {
 
 		if (app.started) {
 			return app;
 		}
 
+		var expressToUse = overrideExpressVersion || express;
+
 		// Setup server
-		var expressApp = app.expressApp = express();
+		var expressApp = app.expressApp = expressToUse();
 		expressApp.use(cors());
 
 		if (config) app.__config = config;
@@ -97,10 +99,7 @@ var start = function (config, routes, serviceName) {
 				mongoose.__mockgooseHasBeenApplied = true;
 			}
 		} else {
-//			if(!mongoose.__mongooseHasBeenConnected) {
 			mongoose.connect(config.mongo.uri, config.mongo.options);
-//				mongoose.__mongooseHasBeenConnected = true;
-//			}
 		}
 
 		//
@@ -114,7 +113,7 @@ var start = function (config, routes, serviceName) {
 		var server = app.server = require('http').createServer(expressApp);
 		var expressConfig = require("./config/express");
 		expressConfig(expressApp, config);
-		routes(expressApp);
+		routes(expressApp, server);
 
 		// need to put this AFTER the routes are loaded
 		if (requestLogging && config.logging.requestLogging.logErrorRequests) {

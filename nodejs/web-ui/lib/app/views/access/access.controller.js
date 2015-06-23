@@ -10,7 +10,6 @@ angular.module('rioxApp')
 		$scope.loadSourceDetails(sources, $stateParams.sourceId);
 	});
 
-	
 	$scope.loadOrganizations = function() {
 		riox.organizations(function(orgs) {
 			$scope.$apply(function() {
@@ -136,9 +135,27 @@ angular.module('rioxApp')
 		});
 	};
 
-	/* add/generate API key */
+	/* add/delete API keys */
 	$scope.addApiKey = function() {
-		console.log("TODO add key");
+		var consumer = $scope.selected.consumer;
+		if(!consumer) return;
+		riox.add.access.consumer.key(consumer, function(consumer) {
+			$scope.$apply(function() {
+				$scope.selected.consumer = consumer;
+			});
+		});
+	};
+	$scope.deleteKey = function(key) {
+		var consumer = $scope.selected.consumer;
+		if(!consumer) return;
+		showConfirmDialog("Are you sure that you want to permanently delete this API Key?", function() {
+			riox.delete.access.consumer.key(consumer, key, function(consumer) {
+				$scope.$apply(function() {
+					if(consumer.__result) consumer = consumer.__result;
+					$scope.selected.consumer = consumer;
+				});
+			});
+		});
 	};
 
 	/* register event listeners */

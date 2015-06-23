@@ -19,7 +19,8 @@ angular.module('rioxApp')
 		/* dashboard */
 		'index.dashboard': {
 			url: '/dashboard',
-			templateUrl: 'app/views/account/dashboard/dashboard.html',
+			templateUrl: 'app/views/dashboard/dashboard.html',
+			controller: 'DashboardCtrl',
 			authenticate: true
 		},
 
@@ -226,6 +227,17 @@ angular.module('rioxApp')
 			}
 		},
 
+		/* pricing */
+		'index.apis.rating': {
+			url: "/{sourceId}/rating",
+			views: {
+				"apiDetails@index.apis": {
+					templateUrl: "app/views/rating/rating.html",
+					controller: "RatingCtrl"
+				}
+			}
+		},
+
 		/* admin */
 		'index.admin': {
 			url: "/admin",
@@ -240,9 +252,9 @@ angular.module('rioxApp')
 	for(var key in states) {
 		var s = states[key];
 		if(s.controllerUrl) {
+			/* lazily load some of the controllers */
 			s.resolve = {
 				loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad) {
-					console.log("load controller ", s.url);
 					return $ocLazyLoad.load(s.controllerUrl);
 		        }]
 		    };

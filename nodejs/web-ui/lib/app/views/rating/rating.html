@@ -1,0 +1,102 @@
+<div class="row" ng-show="shared.selectedAPI">
+	<div class="col-lg-12">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<h5>Rate Limits</h5>
+			</div>
+			<div class="ibox-content">
+				<div class="row">
+					<div class="col-lg-12" ng-show="rateLimits.length">
+						<div class="table-responsive">
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th>#</th>
+										<th>Operation</th>
+										<th>Rate Limit</th>
+										<th>Time Unit</th>
+										<th>Actions</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr ng-repeat="n in rateLimits" ng-class="{ 'font-bold' : n[ID] == selected.limit[ID] }">
+										<td>{{rateLimits.indexOf(n) + 1}}</td>
+										<td ng-alias="op = find(shared.selectedAPI[OPERATIONS], {id: n[OPERATION_ID]})">
+											<a ui-sref="index.apis.operations.single({sourceId: shared.selectedAPI[ID], operationId: op[ID]})">{{op[NAME]}}</a>
+										</td>
+										<td>{{n[AMOUNT]}}</td>
+										<td>{{n[TIMEUNIT]}}</td>
+										<td>
+											<a ng-click="selected.limit = n" class="fa fa-search" title="Show Details"></a>
+											<a ng-click="deleteRateLimit(n)" class="fa fa-remove" title="Delete"></a>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="col-lg-12" ng-show="!rateLimits.length">
+						Currently there are no rate limits defined for this API.
+					</div>
+					<div class="col-lg-12 text-right">
+						<button class="btn btn-primary" ng-click="addRateLimit()"><i class="fa fa-plus-circle"></i> Add Rate Limit</button>
+					</div>
+					<div style="max-width: 700px;" ng-show="selected.limit" ng-alias="appliesTo = !selected.limit[CONSUMER_ID] ? 'role' : 'consumer'">
+						<div class="form-group">
+							<label for="limitCons" class="col-lg-3">Applies to</label>
+							<div class="col-lg-9">
+								<div>
+									<input type="radio" value="role" ng-model="appliesTo"/> Consumers with a certain role
+								</div>
+								<div>
+									<input type="radio" value="consumer" ng-model="appliesTo" /> A specific consumer
+								</div>
+							</div>
+						</div>
+						<div class="form-group" ng-show="appliesTo == 'role'">
+							<label for="limitRole" class="col-lg-3">Role</label>
+							<div class="col-lg-9">
+								<select id="limitRole" class="form-control" ng-options="c[ID] as c[NAME] for c in accessRoles"
+									ng-model="selected.limit[ACCESSROLE_ID]"></select>
+							</div>
+						</div>
+						<div class="form-group" ng-show="appliesTo == 'consumer'">
+							<label for="limitCons" class="col-lg-3">Consumer</label>
+							<div class="col-lg-9">
+								<select id="limitCons" class="form-control" ng-options="c[ID] as c[NAME] for c in accessConsumers"
+									ng-model="selected.limit[CONSUMER_ID]"></select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="limitCons" class="col-lg-3">Operation</label>
+							<div class="col-lg-9">
+								<select id="limitCons" class="form-control"
+									ng-options="c[ID] as (c[NAME] + ' - ' + c[HTTP_METHOD] + ' ' + c[HTTP_RESOURCE]) for c in shared.selectedAPI[OPERATIONS]"
+									ng-model="selected.limit[OPERATION_ID]"></select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-lg-3">Limit</label>
+							<div class="col-lg-3">
+								<input id="limitLimit" class="form-control"
+									ng-model="selected.limit[AMOUNT]"/>
+							</div>
+							<div class="col-lg-2">
+								Requests per
+							</div>
+							<div class="col-lg-4">
+								<select id="limitTimeunit" class="form-control"
+									ng-options="t.value as t.label for t in timeUnits"
+									ng-model="selected.limit[TIMEUNIT]"></select>
+							</div>
+						</div>
+						<div class="text-right">
+							<button class="btn" ng-click="selected.limit = null"> Cancel</button>
+							<button class="btn btn-primary" ng-click="saveRateLimit()"><i class="fa fa-save"></i> Save Changes</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

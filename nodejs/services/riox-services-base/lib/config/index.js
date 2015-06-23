@@ -18,7 +18,13 @@ var all = {
 	},
 
 	// List of user roles
-	userRoles: ['guest', 'user', 'admin'],
+	userRoles:
+		[
+		 'guest', 	// non-registered user
+		 'apiKey',	// (anonymous) user identified via API Key
+		 'user',	// registered user
+		 'admin'	// admin
+		],
 
 	facebook: {
 		clientID: process.env.FACEBOOK_ID || 'id',

@@ -1,6 +1,6 @@
 <nav class="navbar-default navbar-static-side" role="navigation">
     <div class="sidebar-collapse">
-        <ul class="nav" id="side-menu" ng-alias="isUserLoggedIn = getCurrentUser()[ID]">
+        <ul class="nav" id="side-menu" ng-alias="isUserLoggedIn = hasRole('user') ; isAdminLoggedIn = hasRole('admin')">
             <li class="nav-header">
                 <div class="dropdown profile-element" style="margin: auto;">
                 	<a ui-sref="index.main"><img class="img-responsive"
@@ -27,6 +27,9 @@
 		                <a ui-sref="index.apis.access({sourceId: shared.selectedAPI.id})"><i class="fa fa-lock"></i> <span class="nav-label">Access Control</span></a>
 		            </li>
 		            <li ng-show="shared.selectedAPI">
+		                <a ui-sref="index.apis.rating({sourceId: shared.selectedAPI.id})"><i class="fa fa-ban"></i> <span class="nav-label">Rating</span></a>
+		            </li>
+		            <li ng-show="shared.selectedAPI">
 		                <a ui-sref="index.apis.pricing({sourceId: shared.selectedAPI.id})"><i class="fa fa-money"></i> <span class="nav-label">Pricing</span></a>
 		            </li>
                 </ul>
@@ -45,6 +48,9 @@
                     	<a ui-sref="index.settings.billing"><i class="fa fa-credit-card"></i> <span class="nav-label">Billing</span></a>
                     </li>
 		        </ul>
+            </li>
+            <li ng-class="{active: isActive('/admin')}" ng-show="isAdminLoggedIn">
+                <a ui-sref="index.admin"><i class="fa fa-wrench"></i> <span class="nav-label">Admin</span></a>
             </li>
         </ul>
     </div>

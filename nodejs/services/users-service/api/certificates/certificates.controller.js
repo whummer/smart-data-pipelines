@@ -6,14 +6,14 @@ var util = require('riox-services-base/lib/util/util');
 var auth = require('riox-services-base/lib/auth/auth.service');
 
 var validationError = function(res, err) {
-	return res.json(422, err);
+	return res.status(422).json({error: err});
 };
 
 function list(query, req, res) {
 	Certificate.find(query, function(err, list) {
 		if (err)
 			return res.send(500, err);
-		res.json(200, list);
+		res.json(list);
 	});
 }
 
@@ -83,8 +83,8 @@ exports.show = function(req, res, next) {
 exports.destroy = function(req, res) {
 	Certificate.findByIdAndRemove(req.params.id, function(err, obj) {
 		if (err)
-			return res.send(500, err);
-		return res.send(204);
+			return res.status(500).send({error: err});
+		return res.status(204).send({});
 	});
 };
 

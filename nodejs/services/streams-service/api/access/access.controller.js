@@ -7,6 +7,7 @@ var passport = require('passport');
 var auth = require('riox-services-base/lib/auth/auth.service');
 var riox = require('riox-shared/lib/api/riox-api');
 var util = require('util');
+var uuid = require('node-uuid');
 var errors = require('riox-services-base/lib/util/errors');
 
 var log = global.log || require('winston');
@@ -61,17 +62,14 @@ exports.getBySource = function (req, res, next) {
 	var isOwner = {}; isOwner[PROVIDER_ID] = { "$in": list };
 	var isRequestor = {}; isRequestor[REQUESTOR_ID] = { "$in": list };
 	query["$or"] = [isOwner, isRequestor];
-//	console.log(JSON.stringify(query));
 	return StreamAccess.find(query, function (err, obj) {
 		if (err) {
 			return next(errors.InternalError("Cannot lookup stream", err));
-			//return next(err);
 		}
 		if (!obj) {
 			return next(errors.NotFoundError("No such stream-access"));
 			//return res.send(404);
 		}
-//		console.log(obj);
 		res.json(obj);
 	});
 };
@@ -330,20 +328,18 @@ exports.listConsumers = function(req, res, next) {
 	}, function() {
 		return res.status(404).json({error: "Please provide a valid source as query parameter"});
 	});
-	//query[ORGANIZATION_ID] = {"$in" : user.getOrganizationIDs()};
-	
 };
 
-var validateConsumer = function(req, res, callback) {
+var validateConsumer = function(req, res, sourceId, callback) {
 	var user = auth.getCurrentUser(req);
 	/* check request */
-	if(!req.body[SOURCE_ID]) {
+	if(!sourceId) {
 		return res.status(422).json({error: "Please provide a valid " + SOURCE_ID});
 	}
-	if(req.params.id && req.params.id != req.body[ID]) {
+	if(req.params.id && req.body[ID] && req.params.id != req.body[ID]) {
 		return res.status(400).json({error: "Invalid consumer " + ID});
 	}
-	riox.streams.source(req.body[SOURCE_ID], {
+	riox.streams.source(sourceId, {
 		headers: req.headers,
 		callback: function(source) {
 
@@ -355,13 +351,13 @@ var validateConsumer = function(req, res, callback) {
 			callback(); /* success */
 		}
 	}, function(error) {
-		return res.status(422).json({error: "Cannot find ID " + consumer[SOURCE_ID]});
+		return res.status(422).json({error: "Cannot find ID " + sourceId});
 	});
 };
 
 exports.createConsumer = function(req, res, next) {
 	/* check request, then save */
-	validateConsumer(req, res, function() {
+	validateConsumer(req, res, req.body[SOURCE_ID], function() {
 		var consumer = new Consumer(req.body);
 		var user = auth.getCurrentUser(req);
 
@@ -375,7 +371,7 @@ exports.createConsumer = function(req, res, next) {
 
 exports.updateConsumer = function(req, res, next) {
 	/* check request, then save */
-	validateConsumer(req, res, function() {
+	validateConsumer(req, res, req.body[SOURCE_ID], function() {
 		var consumer = new Consumer(req.body);
 		var user = auth.getCurrentUser(req);
 		var id = req.params.id;
@@ -391,7 +387,7 @@ exports.updateConsumer = function(req, res, next) {
 			/* save changes */
 			consumer.save(function(err, consumer) {
 				if(err || !consumer) 
-					return res.status(404).json({error: "Cannot save consumer: " + err});
+					return res.status(500).json({error: "Cannot save consumer: " + err});
 				res.json(consumer);
 			});
 		});
@@ -418,6 +414,65 @@ exports.deleteConsumer = function(req, res, next) {
 	});
 };
 
+exports.getConsumerByApiKey = function(req, res, next) {
+	var apiKey = req.params.apiKey;
+	if(!apiKey)
+		return res.status(400).json({error: "Invalid API key in URL path"});
+	var query = {};
+	query[API_KEYS] = apiKey;
+	Consumer.find(query, function(err, list) {
+		if(err || !list || !list[0]) 
+			return res.status(404).json({error: "Cannot find consumer with API Key: " + apiKey});
+		res.json(list[0]);
+	});
+};
+
+exports.addKey = function(req, res, next) {
+	var id = req.params.id;
+	Consumer.findById(id, function(err, consumer) {
+		if(err || !consumer) 
+			return res.status(404).json({error: "Cannot find consumer with ID: " + id});
+
+		validateConsumer(req, res, consumer[SOURCE_ID], function() {
+			/* create new key */
+			var newKey = generateApiKey();
+			consumer[API_KEYS].push(newKey);
+			/* save changes */
+			consumer.save(function(err, consumer) {
+				if(err || !consumer)
+					return res.status(500).json({error: "Cannot add API Key: " + err});
+				res.json(consumer);
+			});
+		});
+	});
+};
+
+var generateApiKey = function() {
+	return uuid.v4();
+};
+
+exports.removeKey = function(req, res, next) {
+	var id = req.params.id;
+	var key = req.params.key;
+	Consumer.findById(id, function(err, consumer) {
+		if(err || !consumer) 
+			return res.status(404).json({error: "Cannot find consumer with ID: " + id});
+
+		validateConsumer(req, res, consumer[SOURCE_ID], function() {
+			/* remove key */
+			var idx = consumer[API_KEYS].indexOf(key);
+			if(idx >= 0) {
+				consumer[API_KEYS].splice(idx, 1);
+				/* save changes */
+				consumer.save(function(err, consumer) {
+					if(err || !consumer)
+						return res.status(500).json({error: "Cannot remove API Key: " + err});
+					res.json(consumer);
+				});
+			}
+		});
+	});
+};
 
 /* HELPER METHODS */
 

@@ -7,6 +7,7 @@ angular.module('rioxApp')
 	$rootScope.shared = $rootScope.shared || {};
     $scope.isLoggedIn = Auth.isLoggedIn;
     $scope.isAdmin = Auth.isAdmin;
+    $scope.hasRole = Auth.hasRole;
     $scope.getCurrentUser = Auth.getCurrentUser;
     $scope.getCurrentOrganization = Auth.getCurrentOrganization;
 
@@ -125,11 +126,12 @@ angular.module('rioxApp')
       return result;
     };
     $scope.dateFormat = "yyyy-MM-dd hh:mm:ss";
-    $scope.formatTime = $scope.formatTime = function (timestamp) {
+    $scope.timeFormat = "hh:mm:ss";
+    $scope.formatTime = window.formatTime = function (timestamp) {
       if (!timestamp) {
         return null;
       }
-      return formatDate(timestamp);
+      return formatDate(timestamp, $scope.timeFormat);
     };
     $scope.formatCoords = function (loc) {
       if (!loc)

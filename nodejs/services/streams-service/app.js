@@ -20,6 +20,7 @@ if(config.seedDB) { require("./demodata")(); }
 
 // start server
 var routes = require("./routes");
-var server = starter.start(config, routes, "streams-service");
+var expressIO = require("express.io");
+var server = starter.start(config, routes, "streams-service", expressIO);
 
 module.exports = server;

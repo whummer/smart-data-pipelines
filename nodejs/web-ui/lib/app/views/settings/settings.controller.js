@@ -5,7 +5,7 @@ angular.module('rioxApp')
 
 	/* get nav. bar stack */
 	$scope.getNavPart = function() {
-		return { sref: "index.settings", name: "Settings" };
+		return { sref: "index.settings.account", name: "Settings" };
 	}
 	$scope.setNavPath($scope, $state);
 

@@ -98,7 +98,7 @@
 	</div>
 </div>
 
-<div class="row" ng-show="selected.organization && selected.organization[STATUS] == STATUS_CONFIRMED">
+<div class="row" ng-show="selected.organization && (selected.organization[STATUS] == STATUS_CONFIRMED || selected.organization[STATUS] == 'OWNER')">
 	<div class="col-lg-7" style="padding-left: 0px;">
 		<div class="ibox float-e-margins">
 			<div class="ibox-title">

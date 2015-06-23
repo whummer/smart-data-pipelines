@@ -139,6 +139,7 @@
 	g.MSGTYPE_DATA = "DATA";
 	g.METRIC_REQUESTS = "REQUESTS";
 
+
 	var shareHook = (typeof window != "undefined") ? window : global;
 	for (key in g) {
 		shareHook[key] = sh[key] = g[key];

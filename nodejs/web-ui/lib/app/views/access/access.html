@@ -128,9 +128,19 @@
 						<div class="form-group">
 							<label class="col-lg-4">API Keys</label>
 							<div class="col-lg-8">
-								<input class="form-control input-sm" ng-model="selected.consumer[NAME]" />
+								<div ng-repeat="k in selected.consumer[API_KEYS]" style="display: table">
+									<input class="form-control input-sm" value="{{k}}" disabled="disabled" />
+									<span class="input-group-btn">
+										<button class="btn btn-sm btn-warning"
+											style="margin-bottom: 10px" type="button"
+											ng-click="deleteKey(k)" title="Delete API Key">
+											<span class="glyphicon glyphicon-remove"></span>&nbsp;
+										</button>
+									</span>
+								</div>
 							</div>
 							<button class="btn btn-primary btn-sm pull-right" ng-click="addApiKey()"><i class="fa fa-plus"></i> Add API Key</button>
+							<div class="clearfix"></div>
 						</div>
 						<div class="form-group">
 							<label class="col-lg-4"></label> 

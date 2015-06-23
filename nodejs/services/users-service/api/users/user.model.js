@@ -20,8 +20,10 @@ template[NAME] = String;
 template[FIRSTNAME] = String;
 /** User's last name. */
 template[LASTNAME] = String;
-/** User's last name. */
-template[EMAIL] = { type: String, lowercase: true };
+/** Email address used to identify this user. */
+template[EMAIL] = { type: String, lowercase: true, unique: true, sparse: true };
+/** API key used to identify this user. */
+template[API_KEY] = { type: String, unique: true, sparse: true };
 /** User's address. */
 template[ADDRESS] = {
 		_id: false,
@@ -120,7 +122,9 @@ UserSchema
   .pre('save', function(next) {
     if (!this.isNew) return next();
 
-    if (!validatePresenceOf(this.hashedPassword) && authTypes.indexOf(this.provider) === -1)
+    if (!validatePresenceOf(this.hashedPassword) 
+    		&& authTypes.indexOf(this.provider) === -1 
+    		&& !this[API_KEY])
       next(new Error('Invalid password'));
     else
       next();

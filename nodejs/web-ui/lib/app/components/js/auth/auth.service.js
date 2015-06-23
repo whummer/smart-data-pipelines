@@ -80,12 +80,18 @@ angular.module('rioxApp')
         
         var authServ = this;
 
-        var authLocalUrl = appConfig.services.users.url + "/auth/local";
+        var request = {
+    		email: user.email,
+    		password: user.password
+        };
 
-        $http.post(authLocalUrl, {
-          email: user.email,
-          password: user.password
-        }).
+        var authLocalUrl = appConfig.services.users.url + "/auth/local";
+        if(user[API_KEY]) {
+        	authLocalUrl += "/key";
+        	request[API_KEY] = user[API_KEY];
+        }
+
+        $http.post(authLocalUrl, request).
         success(function(data) {
           $cookieStore.put('token', data.token);
           deferred.resolve(data);
@@ -221,7 +227,17 @@ angular.module('rioxApp')
        * @return {Boolean}
        */
       isAdmin: function() {
-        return currentUser.role === 'admin';
+    	  return hasRole('admin');
+      },
+
+      /**
+       * Check if a user has a given role
+       *
+       * @return {Boolean}
+       */
+      hasRole: function(role) {
+    	  return appConfig.userRoles.indexOf(currentUser.role) >= 
+    		  appConfig.userRoles.indexOf(role);
       },
 
       /**

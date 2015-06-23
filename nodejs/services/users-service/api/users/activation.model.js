@@ -17,8 +17,6 @@ template[USER_ID] = String;
 template[ACTIVATION_KEY] = String;
 /** activation key. */
 template[DEACTIVATED] = Boolean;
-///** Creator */
-//template[CREATOR_ID] = String;
 
 var ActivationSchema = new Schema(template);
 

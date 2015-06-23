@@ -18,7 +18,8 @@ angular.module('rioxApp', [
 	'ngTagsInput',
 	'ng-alias',
 	'angucomplete',
-	'oc.lazyLoad'
+	'oc.lazyLoad',
+	'chart.js'
 ])
 		.config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider, growlProvider) {
 			$locationProvider.html5Mode(false);
