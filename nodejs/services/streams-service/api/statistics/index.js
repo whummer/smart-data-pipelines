@@ -4,11 +4,11 @@ var express = require('express');
 var controller = require('./statistics.controller');
 var auth = require('riox-services-base/lib/auth/auth.service');
 
-var router = express.Router();
-
 module.exports = function(app, server) {
 
-	/* define websocket route */
+	var router = express.Router();
+
+	/* DEFINE WEBSOCKET ROUTE */
 
 	var WebSocketServer = require("ws").Server;
 	var wss = new WebSocketServer(
@@ -16,7 +16,10 @@ module.exports = function(app, server) {
 	);
 	wss.on('connection', controller.live.connect);
 
-	/* define routes */
+	/* DEFINE ROUTES */
+
+	/* METHODS FOR STREAMS */
+	router.post('/invocations', auth.isAuthenticated(), controller.queryInvocationStats);
 
 	return router;
 };

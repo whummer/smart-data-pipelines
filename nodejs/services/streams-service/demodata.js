@@ -100,72 +100,97 @@ var demoData = [
 	}
 ];
 
-var rioxAPIs =
-[
-	{
-		name: "Stream Sources",
-		description: "Manage API Stream Sources",
+var rioxAPIs = 
+	[{
+		name: "riox:web-ui",
+		description: "Manage the Web UI",
 		"organization-id" : 0,
 		connector: {
 			type: "http"
 		},
-		backends: ["http://127.0.0.1:8085"],
+		backends: [ "http://127.0.0.1:8081"],
 		"allow-cors": true,
+		"public-access": true,
 		operations:
 		[{
-			"name": "Get list of stream sources",
+			"name": "GET index HTML page",
 			"http-method": "GET",
-			"http-resource": "/api/v1/streams/sources"
+			"url-path": "/(($)|(index.html))"
 		},{
-			"name": "Get single stream source",
+			"name": "GET Web content",
 			"http-method": "GET",
-			"http-resource": "/api/v1/streams/sources/*"
-		},{
-			"name": "Add stream source",
-			"http-method": "POST",
-			"http-resource": "/api/v1/streams/sources"
-		},{
-			"name": "Update stream source",
-			"http-method": "PUT",
-			"http-resource": "/api/v1/streams/sources"
-		},{
-			"name": "Delete stream source",
-			"http-method": "DELETE",
-			"http-resource": "/api/v1/streams/sources"
+			"url-path": "/((favicon.ico)|(robots.txt)|(app/)|(bower_components/))(.*)",
+			"disable-log": true
 		}]
 	},{
-		name: "Organizations",
-		description: "Manage Organizations",
+		name: "riox:websocket",
+		description: "Connect to live data via Websockets",
+		"organization-id" : 0,
+		connector: {
+			type: "ws"
+		},
+		backends: [ "ws://127.0.0.1:8085"],
+		"allow-cors": true,
+		operations:
+		[{
+			"name": "Connect",
+			"url-path": "/(.*)"
+		}]
+	}];
+
+var mapping = {
+		"organizations": 8084,
+		"streams": 8085,
+		"billing": 8080,
+		"users": {
+			"port": 8084,
+			"public-access": true
+		},
+		"statistics": 8085,
+		"ratings": 8085,
+		"access": 8085,
+		"files": 8087,
+		"notifications": 8084,
+		"analytics": 8086,
+		"consents": 8085,
+		"certificates": 8084
+};
+
+for(var key in mapping) {
+	var port = mapping[key][PORT] ? mapping[key][PORT] : mapping[key];
+	var pubAccess = mapping[key][PUBLIC_ACCESS];
+
+	var entry = {
+		name: "riox:" + key,
+		description: "Manage " + key + " in the riox API",
 		"organization-id" : 0,
 		connector: {
 			type: "http"
 		},
-		backends: ["http://127.0.0.1:8084"],
+		backends: [ "http://127.0.0.1:" + port ],
 		"allow-cors": true,
+		"public-access": pubAccess,
 		operations:
 		[{
-			"name": "Get list of organizations",
+			"name": "GET " + key,
 			"http-method": "GET",
-			"http-resource": "/api/v1/organizations"
+			"url-path": "/api/v1/" + key + "(.*)"
 		},{
-			"name": "Get single organization",
-			"http-method": "GET",
-			"http-resource": "/api/v1/organizations/*"
-		},{
-			"name": "Add organization",
+			"name": "POST " + key,
 			"http-method": "POST",
-			"http-resource": "/api/v1/organizations"
+			"url-path": "/api/v1/" + key + "(.*)"
 		},{
-			"name": "Update organization",
+			"name": "PUT " + key,
 			"http-method": "PUT",
-			"http-resource": "/api/v1/organizations"
+			"url-path": "/api/v1/" + key + "(.*)"
 		},{
-			"name": "Delete organization",
+			"name": "DELETE " + key,
 			"http-method": "DELETE",
-			"http-resource": "/api/v1/organizations/*"
+			"url-path": "/api/v1/" + key + "(.*)"
 		}]
-	}
-];
+	};
+	rioxAPIs.push(entry);
+};
 
 demoData = demoData.concat(rioxAPIs);
 

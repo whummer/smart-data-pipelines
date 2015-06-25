@@ -52,6 +52,8 @@
 	g.TIMEUNIT_DAY = "DAY";
 	g.TIMEUNIT_HOUR = "HOUR";
 	g.TIMEUNIT_MINUTE = "MINUTE";
+	g.TIME_FROM = "from";
+	g.TIME_TO = "to";
 	g.DOMAIN_NAME = "domain";
 	g.IMAGE_DATA = "image-data";
 	g.INVITER_ID = "inviter-id";
@@ -65,6 +67,7 @@
 	g.ADDRESS = "address";
 	g.PASSWORD = "password";
 	g.ROLE = "role";
+	g.HOST = "host";
 	g.ACCESSROLE_ID = "role-id";
 	g.STREAM_ID = "stream-id";
 	g.SOURCE_ID = "source-id";
@@ -101,6 +104,7 @@
 	g.PERMIT_MODE = "permit";
 	g.PERMIT_MODE_AUTO = "AUTO";
 	g.PERMIT_MODE_MANUAL = "MANUAL";
+	g.PORT = "port";
 	g.ENDPOINT = "endpoint";
 	g.BACKEND_ENDPOINTS = "backends";
 	g.VISIBLE = "visible";
@@ -118,7 +122,11 @@
 	g.DATA_OUT = "data-out";
 	g.SELECTOR = "selector";
 	g.HTTP_METHOD = "http-method";
-	g.HTTP_RESOURCE = "http-resource";
+	g.SOURCE_IP = "source-ip";
+	g.URL_PATH = "url-path";
+	g.URL_QUERY = "url-query";
+	g.PUBLIC_ACCESS = "public-access";
+	g.DISABLE_LOG = "disable-log";
 	g.MAPPED_PATH = "mapped-path";
 	g.OPERATIONS = "operations";
 	g.OPERATION_ID = "operation-id";
@@ -307,6 +315,11 @@
 	sh.certificates = sh.get.certificates = function (callback, errorCallback) {
 		return callGET(servicesConfig.services.certificates.url, callback, errorCallback);
 	};
+	sh.statistics = sh.get.statistics = {};
+	sh.statistics.invocations = sh.get.statistics.invocations = function (query, callback, errorCallback) {
+		var url = servicesConfig.services.statistics.url + "/invocations";
+		return callPOST(url, query, callback, errorCallback);
+	};
 
 	sh.stream = {};
 	sh.streams = {};
@@ -411,7 +424,7 @@
 			callback = query;
 		}
 		var url = servicesConfig.services.organizations.url;
-		if(query.all) url += "/?all=true";
+		if(query.all) url += "/all";
 		return callGET(url, callback, errorCallback);
 	};
 	sh.organizations.memberships = sh.get.organizations.memberships = function (org, callback, errorCallback) {
@@ -472,6 +485,10 @@
 			url += "?source=" + query[SOURCE_ID];
 		}
 		return callGET(url, callback, errorCallback);
+	};
+	sh.ratings.invocations = sh.get.ratings.invocations = function (query, callback, errorCallback) {
+		var url = servicesConfig.services.ratings.url + "/invocations";
+		return callPOST(url, query, callback, errorCallback);
 	};
 	sh.consents = sh.get.consents = function (query, callback, errorCallback) {
 		if (typeof callback == "undefined") {

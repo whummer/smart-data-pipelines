@@ -3,6 +3,7 @@
 var auth = require('riox-services-base/lib/auth/auth.service');
 var riox = require('riox-shared/lib/api/riox-api');
 var driver = require('./driver.redis');
+var logger = require('winston');
 
 exports.apply = function(req, res) {
 	var prom = new Promise(function(resolve, reject){
@@ -13,8 +14,11 @@ exports.apply = function(req, res) {
 	});
 
 	prom = prom.then(function() {
-		console.log("Successfully applied gateway rules");
-		res.json({message: "Successfully applied gateway rules."});
+		var msg = "Successfully applied gateway rules.";
+		logger.info(msg);
+		res.json({message: msg});
+	}, function(err) {
+		res.status(500).json({message: "There was an error applying the gateway rules: ", error: ""+err});
 	});
 	return prom;
 };
@@ -29,7 +33,7 @@ var applyConfig = function(sources, resolve, reject) {
 		driver.removeAllEntries(params, resolve, reject);
 	}).
 	then(applySources, reject).
-	then(driver.printAllKeys, reject).
+	//then(driver.printAllKeys, reject).
 	then(resolve, reject);
 };
 

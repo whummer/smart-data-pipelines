@@ -72,6 +72,10 @@ template[TAGS] = [String];
  */
 template[ALLOW_CORS] = Boolean;
 /**
+ * Enable public access. This is required, e.g., for public web documents etc.
+ */
+template[PUBLIC_ACCESS] = Boolean;
+/**
  * Data schemas.
  * 
  * schemas: [
@@ -112,7 +116,7 @@ template[SCHEMAS] = [SchemaSchema];
  * 	{
  * 		"name": "Get Temperature",
  * 		"http-method": "GET",
- * 		"http-resource": "/temperature",
+ * 		"url-path": "/temperature",
  * 		"schema-in": "abc123",
  * 		"schema-out": "def456"
  * 	}]
@@ -121,10 +125,11 @@ var operation = {};
 operation["_id"] = { type: String, default: genShortUUID };
 operation[NAME] = String;
 operation[HTTP_METHOD] = { type: String, enum: ["GET", "PUT", "POST", "DELETE", "HEAD"] };
-operation[HTTP_RESOURCE] = String;
+operation[URL_PATH] = String;
 operation[MAPPED_PATH] = String;
-operation[OPTIONS] = Schema.Types.Mixed; // generic options to describe this operations
+operation[OPTIONS] = Schema.Types.Mixed; // generic options to describe this operation
 operation[PRICING] = String;
+operation[DISABLE_LOG] = Boolean; // disable access logs, e.g., for web documents which are requested very often
 operation[SCHEMA_IN] = String;
 operation[SCHEMA_OUT] = String;
 var OperationSchema = new Schema(operation);

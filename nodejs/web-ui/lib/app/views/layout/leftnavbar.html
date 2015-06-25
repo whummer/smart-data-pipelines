@@ -34,6 +34,9 @@
 		            </li>
                 </ul>
             </li>
+            <li ng-class="{active: isActive('/statistics')}" ng-show="isUserLoggedIn">
+                <a ui-sref="index.statistics"><i class="fa fa-line-chart"></i> <span class="nav-label">Statistics</span></a>
+            </li>
             <li ng-class="{active: isActive('/notifications')}" ng-show="isUserLoggedIn">
                 <a ui-sref="index.notifications"><i class="fa fa-bell"></i> <span class="nav-label">Notifications</span></a>
             </li>

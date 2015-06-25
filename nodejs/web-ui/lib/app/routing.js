@@ -227,7 +227,7 @@ angular.module('rioxApp')
 			}
 		},
 
-		/* pricing */
+		/* rating */
 		'index.apis.rating': {
 			url: "/{sourceId}/rating",
 			views: {
@@ -236,6 +236,13 @@ angular.module('rioxApp')
 					controller: "RatingCtrl"
 				}
 			}
+		},
+
+		/* statistics */
+		'index.statistics': {
+			url: "/statistics",
+			templateUrl: "app/views/statistics/statistics.html",
+			controller: "StatsCtrl"
 		},
 
 		/* admin */

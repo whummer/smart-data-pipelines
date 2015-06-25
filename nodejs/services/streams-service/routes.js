@@ -14,7 +14,9 @@ module.exports = function (app, server) {
 	app.use('/api/v1/consents', require('./api/consents'));
 	app.use('/api/v1/ratings', require('./api/ratings'));
 	app.use('/api/v1/gateway', require('./api/gateway'));
-	require('./api/statistics')(app, server)
+	app.use('/api/v1/statistics', 
+			require('./api/statistics')(app, server)
+	);
 
 };
 

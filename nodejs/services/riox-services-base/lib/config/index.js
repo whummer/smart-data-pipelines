@@ -23,7 +23,8 @@ var all = {
 		 'guest', 	// non-registered user
 		 'apiKey',	// (anonymous) user identified via API Key
 		 'user',	// registered user
-		 'admin'	// admin
+		 'admin',	// admin
+		 'internal'	// internal calls
 		],
 
 	facebook: {

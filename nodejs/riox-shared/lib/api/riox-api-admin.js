@@ -29,6 +29,16 @@ var init = function(riox) {
 		return sh.callPOST(servicesConfig.services.ratings.url + "/logAndPermit", access, callback, errorCallback);
 	};
 
+	/* manage stream sources */
+
+	sh.streams.sources.all = function(query, callback, errorCallback) {
+		var url = servicesConfig.services.streams.url + "/sources/all?";
+		if(query[ORGANIZATION_ID]) {
+			url += ORGANIZATION_ID + "=" + query[ORGANIZATION_ID];
+		}
+		return riox.callGET(url, callback, errorCallback);
+	};
+
 	/* manage pricing plans */
 
 	sh.delete.plan = function(plan, callback) {

@@ -24,18 +24,27 @@ exports.addOperation = function(source, op, params) {
 //	console.log("addOperation: ", op[NAME]);
 	return new Promise(function(resolve, reject) {
 		getClient(params, function(client) {
-			var method = op[HTTP_METHOD];
-			var path = op[HTTP_RESOURCE];
-			var mappedPath = op[MAPPED_PATH] ? op[MAPPED_PATH] : op[HTTP_RESOURCE];
-			var vhost = source.vhost;
-			var key = PREFIX + 'frontend:' + vhost + ':' + method.toLowerCase();
-			var routeMap = {};
-			routeMap[path] = source[ID] + ":" + mappedPath;
-			client.hmset(key, routeMap, function (err, data) {
-//				console.log("addOperation ->", err, data);
-				if (err) return reject(err);
-				else resolve(params);
-			});
+			try {
+				var method = op[HTTP_METHOD];
+				if(method) {
+					var path = op[URL_PATH];
+					var mappedPath = op[MAPPED_PATH] ? op[MAPPED_PATH] : op[URL_PATH];
+					var vhost = source.vhost;
+					var key = PREFIX + 'frontend:' + vhost + ':' + method.toLowerCase();
+					var routeMap = {};
+					routeMap[path] = source[ID] + ":" + mappedPath;
+					client.hmset(key, routeMap, function (err, data) {
+//						console.log("addOperation ->", err, data);
+						if (err) return reject(err);
+						else resolve(params);
+					});
+				} else {
+					resolve(params);
+				}
+			} catch (e) {
+				console.log(e);
+				reject(e);
+			}
 		});
 	});
 };

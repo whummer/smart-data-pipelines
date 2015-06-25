@@ -13,7 +13,7 @@ angular.module('rioxApp')
 		var newOp = {};
 		newOp[NAME] = "New Operation";
 		newOp[HTTP_METHOD] = "GET";
-		newOp[HTTP_RESOURCE] = "/new";
+		newOp[URL_PATH] = "/new";
 		copy[OPERATIONS].push(newOp);
 		riox.save.streams.source(copy, function(saved) {
 			$scope.$apply(function() {

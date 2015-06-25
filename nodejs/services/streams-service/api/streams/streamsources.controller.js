@@ -67,8 +67,17 @@ function list(query, req, res, next) {
 /// METHODS FOR  '/streams/sources'
 ///
 
-exports.indexStreamSource = function (req, res, next) {
+exports.indexStreamSources = function (req, res, next) {
+	/* TODO: check authorization */
 	return list({}, req, res, next);
+};
+
+exports.indexAllStreamSources = function (req, res, next) {
+	var query = {};
+	if(req.query[ORGANIZATION_ID]) {
+		query[ORGANIZATION_ID] = req.query[ORGANIZATION_ID];
+	}
+	return list(query, req, res, next);
 };
 
 exports.listProvided = function (req, res, next) {
