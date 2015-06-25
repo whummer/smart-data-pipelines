@@ -1,0 +1,8 @@
+kind: Service
+apiVersion: v1beta2
+id: graphite-ui
+port: 8123
+containerPort: 80
+selector:
+  name: statsd
+

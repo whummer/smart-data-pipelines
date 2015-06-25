@@ -69,18 +69,20 @@ deploy-services:
 	(cd mongodb && make deploy)
 	(cd redis && make deploy)	
 	(cd kafka && make deploy)
-	(cd spring-xd-admin && make deploy)
-	(cd spring-xd-container && make deploy)
-	(cd spring-xd-hsqldb && make deploy)
+	(cd statsd && make deploy)
+#	(cd spring-xd-admin && make deploy)
+#	(cd spring-xd-container && make deploy)
+#	(cd spring-xd-hsqldb && make deploy)
 
 undeploy-services: 
-	(cd spring-xd-admin && make undeploy)
-	(cd spring-xd-container && make undeploy)
+#	(cd spring-xd-admin && make undeploy)
+#	(cd spring-xd-container && make undeploy)
 	(cd kafka && make undeploy)
 	(cd spring-xd-zookeeper && make undeploy)
-	(cd spring-xd-hsqldb && make undeploy)
+#	(cd spring-xd-hsqldb && make undeploy)
 	(cd redis && make undeploy)
 	(cd mongodb && make undeploy)
+	(cd statsd && make undeploy)
 	
 # ATTENTION: Use with caution. Stops and removes ALL docker container
 clean:

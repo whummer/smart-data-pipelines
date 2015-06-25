@@ -31,24 +31,47 @@
 	g.TYPE_ACCESS_REQUEST = "ACCESS_REQUEST";
 	g.TYPE_ACCESS_UPDATE = "ACCESS_UPDATE";
 	g.TYPE_CONSENT_UPDATE = "CONSENT_UPDATE";
+	g.TYPE_DATA_SCHEMA = "DATA_SCHEMA";
+	g.TYPE_DATA_ITEM = "DATA_ITEM";
+	g.TYPE_METHOD = "METHOD";
+	g.TYPE_INVITE = "INVITE";
 	g.THING_TYPE = "thing-type";
 	g.THING_ID = "thing-id";
 	g.THINGS = "things";
+	g.URL = "url";
+	g.DEACTIVATED = "deactivated";
 	g.PROPERTIES = "properties";
 	g.PROPERTY_ID = "property-id";
 	g.PROPERTY_NAME = "property";
 	g.PROPERTY_VALUE = "value";
 	g.PROPERTY_TYPE = "data-type";
+	g.OPTIONS = "options";
 	g.TIMESTAMP = "timestamp";
+	g.TIMEUNIT = "time-unit";
+	g.TIMEUNIT_MONTH = "MONTH";
+	g.TIMEUNIT_DAY = "DAY";
+	g.TIMEUNIT_HOUR = "HOUR";
+	g.TIMEUNIT_MINUTE = "MINUTE";
+	g.DOMAIN_NAME = "domain";
 	g.IMAGE_DATA = "image-data";
+	g.INVITER_ID = "inviter-id";
 	g.SIMULATION_ID = "simulation-id";
 	g.START_TIME = "start-time";
 	g.END_TIME = "end-time";
 	g.USER_ID = "user-id";
+	g.FIRSTNAME = "firstname";
+	g.LASTNAME = "lastname";
+	g.EMAIL = "email";
+	g.ADDRESS = "address";
+	g.PASSWORD = "password";
+	g.ROLE = "role";
+	g.ACCESSROLE_ID = "role-id";
 	g.STREAM_ID = "stream-id";
 	g.SOURCE_ID = "source-id";
 	g.PROCESSOR_ID = "processor-id";
 	g.SINK_ID = "sink-id";
+	g.AMOUNT = "amount";
+	g.ALLOW_CORS = "allow-cors";
 	g.ORGANIZATION_ID = "organization-id";
 	g.PROCESSORS = "processors";
 	g.PROVIDER_ID = "provider-id";
@@ -77,6 +100,7 @@
 	g.PERMIT_MODE_AUTO = "AUTO";
 	g.PERMIT_MODE_MANUAL = "MANUAL";
 	g.ENDPOINT = "endpoint";
+	g.BACKEND_ENDPOINTS = "backends";
 	g.VISIBLE = "visible";
 	g.INPUT = "input";
 	g.OUTPUT = "output";
@@ -87,15 +111,37 @@
 	g.VALID_VALUES = "valid-values";
 	g.SECURITY = "security";
 	g.RETENTION_TIME = "retention-time";
-	g.DATA_ITEMS = "data-items";
+	g.DATA_INTERFACES = "data-interfaces";
 	g.PRICING = "pricing";
+	g.DATA_OUT = "data-out";
+	g.SELECTOR = "selector";
+	g.HTTP_METHOD = "http-method";
+	g.HTTP_RESOURCE = "http-resource";
+	g.MAPPED_PATH = "mapped-path";
+	g.OPERATIONS = "operations";
+	g.OPERATION_ID = "operation-id";
+	g.SCHEMAS = "schemas";
+	g.SCHEMA_IN = "schema-in";
+	g.SCHEMA_OUT = "schema-out";
+	g.CERTIFICATE = "certificate";
+	g.DATA_ITEMS = "data-items";
 	g.HREF = "href";
+	g.CERT_FILE = "cert-file";
+	g.PK_FILE = "pk-file";
+	g.API_KEYS = "api-keys";
+	g.API_KEY = "api-key";
+	g.CONSUMER_ID = "consumer-id";
+	g.ACTIVATION_KEY = "activation-key";
+	g.ACTIVATION_DATE = "activation-date";
+	g.MSGTYPE_SUBSCRIBE = "SUBSCRIBE";
+	g.MSGTYPE_DATA = "DATA";
+	g.METRIC_REQUESTS = "REQUESTS";
+
 
 	var shareHook = (typeof window != "undefined") ? window : global;
 	for (key in g) {
 		shareHook[key] = sh[key] = g[key];
 	}
-
 
 	/* initialize authentication info */
 	sh.login = function (options, callback, errorCallback) {
@@ -118,18 +164,22 @@
 
 	sh.activate = function (actKey, callback, errorCallback) {
 		var req = {activationKey: actKey};
-		return callPOST(servicesConfig.services.users.url + "/activate", req, callback, errorCallback);
+		return callPOST(servicesConfig.services.users.url + "/activation", req, callback, errorCallback);
 	};
 	sh.signup = function (userInfo, callback, errorCallback) {
 		return callPOST(servicesConfig.services.users.url + "/", userInfo, callback, errorCallback);
 	};
 	sh.signin = function (userInfo, callback, errorCallback) {
-		return callPOST(servicesConfig.services.users.url + "/auth/local", userInfo, function(token) {
-			if(!callback || !callback.dontSetToken) {
-				sh.auth({
-					RIOX_AUTH_NETWORK: "riox",
-					RIOX_AUTH_TOKEN: token.token
-				}, callback, errorCallback);
+		return callPOST(servicesConfig.services.users.url + "/auth/local", userInfo, function(token, a1, a2) {
+			if(!token.token) {
+				if(errorCallback) errorCallback("Cannot read token from auth result: " + token);
+			} else {
+				if(!callback || !callback.dontSetToken) {
+					sh.auth({
+						RIOX_AUTH_NETWORK: "riox",
+						RIOX_AUTH_TOKEN: token.token
+					}, callback, errorCallback);
+				}
 			}
 		}, errorCallback);
 	};
@@ -142,11 +192,6 @@
 		assertAuth();
 		var __defaultHeaders = {
 			"Content-Type": "application/json",
-			// TODO remove
-//			"riox-auth-user-id": authToken.userId,
-//			"riox-auth-app-key": authToken.appKey,
-//			"riox-auth-network": authToken.network,
-//			"riox-auth-token": authToken.access_token,
 			"authorization": "Bearer " + authToken.access_token
 		};
 		if(typeof $ != "undefined") {
@@ -212,8 +257,10 @@
 	};
 	sh.user = sh.get.user = function (query, callback, errorCallback) {
 		var url = servicesConfig.services.users.url;
-		if (query.id) {
-			url += "/" + query.id;
+		if (query[ID]) {
+			url += "/" + query[ID];
+		} else if (query[EMAIL] || query[NAME]) {
+			url += "/search?email=" + query[EMAIL] + "&name=" + query[NAME];
 		} else {
 			throw "invalid user query";
 		}
@@ -254,6 +301,9 @@
 	};
 	sh.triggers = sh.get.triggers = function (callback, errorCallback) {
 		return callGET(servicesConfig.services.triggers.url, callback, errorCallback);
+	};
+	sh.certificates = sh.get.certificates = function (callback, errorCallback) {
+		return callGET(servicesConfig.services.certificates.url, callback, errorCallback);
 	};
 
 	sh.stream = {};
@@ -353,13 +403,30 @@
 		var url = servicesConfig.services.billing.url + "/plans";
 		return callGET(url, callback, errorCallback);
 	};
-	sh.organizations = sh.get.organizations = function (callback, errorCallback) {
+	sh.organizations = sh.get.organizations = function (query, callback, errorCallback) {
+		if(typeof query == "function" || typeof query.callback == "function") {
+			errorCallback = callback;
+			callback = query;
+		}
 		var url = servicesConfig.services.organizations.url;
+		if(query.all) url += "/?all=true";
+		return callGET(url, callback, errorCallback);
+	};
+	sh.organizations.memberships = sh.get.organizations.memberships = function (org, callback, errorCallback) {
+		var orgId = org[ID] ? org[ID] : org;
+		if(typeof orgId != "string") throw "Please provide a valid organization ID.";
+		var url = servicesConfig.services.organizations.url + "/" + orgId + "/memberships";
 		return callGET(url, callback, errorCallback);
 	};
 	sh.organization = sh.get.organization = function (org, callback, errorCallback) {
 		var id = org.id ? org.id : org;
 		var url = servicesConfig.services.organizations.url + "/" + id;
+		return callGET(url, callback, errorCallback);
+	};
+	sh.organization.membership = sh.get.organization.membership = function (mem, callback, errorCallback) {
+		var memId = mem[ID] ? mem[ID] : mem;
+		if(typeof memId != "string") throw "Please provide a valid membership ID.";
+		var url = servicesConfig.services.organizations.url + "/memberships/" + memId;
 		return callGET(url, callback, errorCallback);
 	};
 	sh.access = sh.get.access = function (query, callback, errorCallback) {
@@ -372,6 +439,30 @@
 		var url = servicesConfig.services.access.url +
 			(sourceId ? ("/source/" + sourceId) : "") +
 			(consumerId ? ("/consumer/" + consumerId) : "");
+		return callGET(url, callback, errorCallback);
+	};
+	sh.access.roles = sh.get.access.roles = function (callback, errorCallback) {
+		var url = servicesConfig.services.access.url + "/roles";
+		return callGET(url, callback, errorCallback);
+	};
+	sh.access.consumers = sh.get.access.consumers = function (query, callback, errorCallback) {
+		var url = servicesConfig.services.access.url + "/consumers";
+		if(query[SOURCE_ID]) {
+			url += "?source=" + query[SOURCE_ID];
+		}
+		return callGET(url, callback, errorCallback);
+	};
+	sh.access.consumer = sh.get.access.consumer = function (consumer, callback, errorCallback) {
+		var url = servicesConfig.services.access.url + "/consumers/";
+		url += consumer[API_KEY] ? consumer[API_KEY] : consumer[ID] ? consumer[ID] : consumer;
+		return callGET(url, callback, errorCallback);
+	};
+	sh.ratings = sh.get.ratings = sh.get.ratings || {};
+	sh.ratings.limits = sh.get.ratings.limits = function (query, callback, errorCallback) {
+		var url = servicesConfig.services.ratings.url + "/limits";
+		if(query[SOURCE_ID]) {
+			url += "?source=" + query[SOURCE_ID];
+		}
 		return callGET(url, callback, errorCallback);
 	};
 	sh.consents = sh.get.consents = function (query, callback, errorCallback) {
@@ -489,6 +580,12 @@
 	sh.add.organization = function (organization, callback, errorCallback) {
 		return callPOST(servicesConfig.services.organizations.url, organization, callback, errorCallback);
 	};
+	sh.add.organization.invite = function (invite, callback, errorCallback) {
+		var orgId = invite[ORGANIZATION_ID];
+		if(typeof orgId != "string") throw "Please provide a valid " + ORGANIZATION_ID;
+		var url = servicesConfig.services.organizations.url + "/" + orgId + "/invite";
+		return callPOST(url, invite, callback, errorCallback);
+	};
 	sh.add.notification = function (notification, callback, errorCallback) {
 		return callPOST(servicesConfig.services.notifications.url, notification, callback, errorCallback);
 	};
@@ -498,6 +595,20 @@
 			opts[PROPERTY_NAME];
 		return callPOST(url, dataItem, callback, errorCallback);
 	};
+	sh.add.access = sh.add.access || {};
+	sh.add.access.role = function(role, callback, errorCallback) {
+		var url = servicesConfig.services.access.url + "/roles";
+		return callPOST(url, role, callback, errorCallback);
+	}
+	sh.add.access.consumer = function(consumer, callback, errorCallback) {
+		var url = servicesConfig.services.access.url + "/consumers";
+		return callPOST(url, consumer, callback, errorCallback);
+	}
+	sh.add.access.consumer.key = function(consumer, callback, errorCallback) {
+		var id = consumer.id ? consumer.id : consumer;
+		var url = servicesConfig.services.access.url + "/consumers/" + id + "/keys";
+		return callPOST(url, {}, callback, errorCallback);
+	}
 
 	sh.add.streams = {};
 	sh.add.stream = function (stream, callback, errorCallback) {
@@ -511,6 +622,14 @@
 	};
 	sh.add.streams.processor = function (processor, callback, errorCallback) {
 		return callPOST(servicesConfig.services.streamprocessors.url, processor, callback, errorCallback);
+	};
+	sh.add.certificate = function (certificate, callback, errorCallback) {
+		return callPOST(servicesConfig.services.certificates.url, certificate, callback, errorCallback);
+	};
+	sh.add.rating = sh.add.rating || {};
+	sh.add.rating.limit = function(limit, callback, errorCallback) {
+		var url = servicesConfig.services.ratings.url + "/limits";
+		return callPOST(url, limit, callback, errorCallback);
 	};
 
 
@@ -530,6 +649,12 @@
 	sh.save.organization = function (organization, callback, errorCallback) {
 		return callPUT(servicesConfig.services.organizations.url + "/" + organization.id, organization, callback, errorCallback);
 	};
+	sh.save.organization.membership = function (mem, callback, errorCallback) {
+		return callPUT(servicesConfig.services.organizations.url + "/memberships/" + mem.id, mem, callback, errorCallback);
+	};
+	sh.save.certificate = function (certificate, callback, errorCallback) {
+		return callPUT(servicesConfig.services.certificates.url + "/" + certificate.id, certificate, callback, errorCallback);
+	};
 	sh.save.thing = function (thing, callback, errorCallback) {
 		return callPUT(servicesConfig.services.things.url, thing, callback, errorCallback);
 	};
@@ -545,7 +670,8 @@
 
 	sh.save.streams = {};
 	sh.save.streams.source = function (stream, callback, errorCallback) {
-		return callPUT(servicesConfig.services.streams.url + "/sources", stream, callback, errorCallback);
+		var id = assertID(stream);
+		return callPUT(servicesConfig.services.streams.url + "/sources/" + id, stream, callback, errorCallback);
 	};
 	sh.save.sink = function (sink, callback, errorCallback) {
 		return callPUT(servicesConfig.services.streamsinks.url, sink, callback, errorCallback);
@@ -569,6 +695,19 @@
 		} else {
 			throw "Missing either '" + ID + "' or '" + SOURCE_ID + "' of stream access entity";
 		}
+	};
+	sh.save.access.role = function (role, callback, errorCallback) {
+		var url = servicesConfig.services.access.url + "/roles/" + role.id;
+		return callPUT(url, role, callback, errorCallback);
+	};
+	sh.save.access.consumer = function (consumer, callback, errorCallback) {
+		var url = servicesConfig.services.access.url + "/consumers/" + consumer.id;
+		return callPUT(url, consumer, callback, errorCallback);
+	};
+	sh.save.rating = {};
+	sh.save.rating.limit = function (limit, callback, errorCallback) {
+		var url = servicesConfig.services.ratings.url + "/limits/" + limit.id;
+		return callPUT(url, limit, callback, errorCallback);
 	};
 
 	/* methods for DELETEing data */
@@ -618,9 +757,45 @@
 		var url = servicesConfig.services.access.url + "/" + access.id;
 		return callDELETE(url, callback, errorCallback);
 	};
+	sh.delete.access.role = function (role, callback, errorCallback) {
+		var id = role.id ? role.id : role;
+		var url = servicesConfig.services.access.url + "/roles/" + id;
+		return callDELETE(url, callback, errorCallback);
+	};
+	sh.delete.access.consumer = function (consumer, callback, errorCallback) {
+		var id = consumer.id ? consumer.id : consumer;
+		var url = servicesConfig.services.access.url + "/consumers/" + id;
+		return callDELETE(url, callback, errorCallback);
+	};
+	sh.delete.access.consumer.key = function (consumer, key, callback, errorCallback) {
+		var id = consumer.id ? consumer.id : consumer;
+		var url = servicesConfig.services.access.url + "/consumers/" + id + "/keys/" + key;
+		return callDELETE(url, callback, errorCallback);
+	};
+	sh.delete.rating = sh.delete.rating || {};
+	sh.delete.rating.limit = function (limit, callback, errorCallback) {
+		var id = limit.id ? limit.id : limit;
+		var url = servicesConfig.services.ratings.url + "/limits/" + id;
+		return callDELETE(url, callback, errorCallback);
+	};
 	sh.delete.notification = function (notification, callback, errorCallback) {
 		var id = notification.id ? notification.id : notification;
 		var url = servicesConfig.services.notifications.url + "/" + id;
+		return callDELETE(url, callback, errorCallback);
+	};
+	sh.delete.certificate = function (certificate, callback, errorCallback) {
+		var id = certificate.id ? certificate.id : certificate;
+		var url = servicesConfig.services.certificates.url + "/" + id;
+		return callDELETE(url, callback, errorCallback);
+	};
+	sh.delete.organization = function (org, callback, errorCallback) {
+		var id = org.id ? org.id : org;
+		var url = servicesConfig.services.organizations.url + "/" + id;
+		return callDELETE(url, callback, errorCallback);
+	};
+	sh.delete.organization.membership = function (mem, callback, errorCallback) {
+		var id = mem.id ? mem.id : mem;
+		var url = servicesConfig.services.organizations.url + "/memberships/" + id;
 		return callDELETE(url, callback, errorCallback);
 	};
 
@@ -683,6 +858,28 @@
 		return callPOST(url, {}, callback, errorCallback);
 	};
 
+	/* methods for invitations/memberships of organizations */
+
+	sh.organization.invite = sh.organization.invite || {};
+	sh.organization.invite.accept = function (invite, callback, errorCallback) {
+		updateOrganizationMembership(STATUS_CONFIRMED, invite, callback, errorCallback);
+	};
+	sh.organization.invite.reject = function (invite, callback, errorCallback) {
+		updateOrganizationMembership(STATUS_REJECTED, invite, callback, errorCallback);
+	};
+
+	var updateOrganizationMembership = function(status, invite, callback, errorCallback) {
+		var memId = invite[ID] ? invite[ID] : invite;
+		var nextCall = {
+			headers: callback.headers,
+			callback: function(mem) {
+				mem[STATUS] = status;
+				sh.save.organization.membership(mem, callback, errorCallback);
+			}
+		}
+		sh.organization.membership(memId, nextCall, errorCallback);
+	}
+
 	/* methods for simulation control */
 
 	sh.sim = {};
@@ -698,7 +895,7 @@
 		return function (p1, p2, p3, p4, p5) {
 			if (typeof errorCallback == "function") {
 				var goOn = errorCallback(p1, p2, p3, p4, p5);
-				if (goOn == false)
+				if (goOn === false)
 					return;
 			}
 			if (typeof sh.defaultErrorCallback == "function") {
@@ -709,6 +906,9 @@
 
 	var callGET = sh.callGET = function (url, options, errorCallback) {
 		var m = mem();
+		if(!options)
+			options = {};
+
 		var callback = options.callback ? options.callback : options;
 		if (options.doCacheResults && m[url]) {
 			if (typeof callback == "function") {
@@ -883,6 +1083,12 @@
 
 	/* HELPER METHODS */
 
+	var assertID = function(obj) {
+		if(!obj.id)
+			throw "Unexpected 'id' property: " + obj;
+		return obj.id;
+	};
+	
 	/* http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript */
 	var guid = (function () {
 		function s4() {
@@ -943,3 +1149,4 @@ E,r,w,x,y,z,A,B,C,D,G,v=[],H,F=[1116352408,1899447441,3049323471,3921009573,9619
 3516065817,3600352804,4094571909,275423344,430227734,506948616,659060556,883997877,958139571,1322822218,1537002063,1747873779,1955562222,2024104815,2227730452,2361852424,2428436474,2756734187,3204031479,3329325298];e=[3238371032,914150663,812702999,4144912697,4290775857,1750603025,1694076839,3204075428];f=[1779033703,3144134277,1013904242,2773480762,1359893119,2600822924,528734635,1541459225];if("SHA-224"===d||"SHA-256"===d)k=64,c=(b+65>>>9<<4)+15,u=16,E=1,G=Number,r=O,w=P,x=Q,y=M,z=N,A=K,B=L,D=J,
 C=I,e="SHA-224"===d?e:f;else throw"Unexpected error in SHA-2 implementation";for(;a.length<=c;)a.push(0);a[b>>>5]|=128<<24-b%32;a[c]=b;H=a.length;for(l=0;l<H;l+=u){b=e[0];c=e[1];f=e[2];h=e[3];g=e[4];m=e[5];q=e[6];p=e[7];for(n=0;n<k;n+=1)16>n?(s=n*E+l,t=a.length<=s?0:a[s],s=a.length<=s+1?0:a[s+1],v[n]=new G(t,s)):v[n]=w(z(v[n-2]),v[n-7],y(v[n-15]),v[n-16]),t=x(p,B(g),C(g,m,q),F[n],v[n]),s=r(A(b),D(b,c,f)),p=q,q=m,m=g,g=r(h,t),h=f,f=c,c=b,b=r(t,s);e[0]=r(b,e[0]);e[1]=r(c,e[1]);e[2]=r(f,e[2]);e[3]=r(h,
 e[3]);e[4]=r(g,e[4]);e[5]=r(m,e[5]);e[6]=r(q,e[6]);e[7]=r(p,e[7])}if("SHA-224"===d)a=[e[0],e[1],e[2],e[3],e[4],e[5],e[6]];else if("SHA-256"===d)a=e;else throw"Unexpected error in SHA-2 implementation";return a}F.jsSHA=u})(this);
+
