@@ -473,6 +473,11 @@ Worker.prototype.runServer = function (config) {
 					//console.log(result);
 					if(result[STATUS] == STATUS_PERMITTED) {
 						proxyRequest();
+					} else if(result[STATUS] == STATUS_UNKNOWN) {
+						if(req.method == "OPTIONS" && CORS_HEADERS_ENABLED) {
+							addCORSHeaders(req, res);
+							return res.end();
+						}
 					} else {
 						errorMessage(res, "No access permission, or request limit exceeded.", 403);
 					}
