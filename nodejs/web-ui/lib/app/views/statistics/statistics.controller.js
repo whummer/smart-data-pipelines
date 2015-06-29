@@ -1,7 +1,22 @@
 'use strict';
 
 angular.module('rioxApp')
-.controller('StatsCtrl', function ($scope, $state, $stateParams, growl) {
+.controller('StatsCtrl', function ($scope, $state, growl, ngTableParams) {
+
+	var loadTableParams = function() {
+		var data = $scope.stats.details;
+		$scope.tableParams = new ngTableParams({
+			page: 1,
+			count: 10
+	    }, {
+	        total: data.length,
+	        getData: function ($defer, params) {
+	        	var from = (params.page() - 1) * params.count();
+	        	var to = params.page() * params.count();
+	            $defer.resolve(data.slice(from, to));
+	        }
+	    });
+	};
 
 	$scope.loadStats = function() {
 		$scope.stats = {};
@@ -11,6 +26,7 @@ angular.module('rioxApp')
 			console.log(stats);
 			$scope.$apply(function() {
 				$scope.stats = stats;
+				loadTableParams();
 			});
 		});
 	};

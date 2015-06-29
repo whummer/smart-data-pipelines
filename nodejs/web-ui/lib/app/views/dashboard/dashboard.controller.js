@@ -3,6 +3,7 @@ function dashboardCtrl($scope, $state, $log) {
 	/* constants/configs */
 	var MAX_LENGTH_ALL = 200;
 	var MAX_LENGTH = 20;
+	$scope.ISO_3166_COUNTRIES = ISO_3166_COUNTRIES;
 	$scope.intervals = 
 		[
 		 {value: 1000, label: "1 sec"},
@@ -13,9 +14,9 @@ function dashboardCtrl($scope, $state, $log) {
 
 	/* chart config */
 	$scope.chart = {};
-	$scope.chart.series = ['Series A', 'Series B'];
-	$scope.chart.data = [[],[]];
-	$scope.chart.dataAll = [[],[]];
+	$scope.chart.series = ['# Requests'];
+	$scope.chart.data = [[]];
+	$scope.chart.dataAll = [[]];
 	$scope.chart.labels = [];
 	$scope.chart.labelsAll = [];
 	$scope.chart.options = {
@@ -26,32 +27,12 @@ function dashboardCtrl($scope, $state, $log) {
 	
 	/* stats hash */
 	$scope.stats = {
-			requests: {
-				status: {},
-				total: null
-			}
+		requests: {
+			status: {},
+			total: null
+		},
+		countries: {}
 	}
-
-	$scope.dashboard = {
-		map: {
-			data: {
-				"US": 293,
-				"FR": 540,
-				"CH": 120,
-				"AT": 10,
-				"DE": 550,
-				"IT": 200,
-				"GB": 120
-			}
-		}
-//		consumers: [
-//			{idx: 1, name: 'Landzeit', consumed: 12313412, amount: 'EUR 1239,32.-'},
-//			{idx: 2, name: 'OMV', consumed: 661312, amount: 'EUR 529,29.-'},
-//			{idx: 3, name: 'McDonalds', consumed: 123112, amount: 'EUR 421,17.-'},
-//			{idx: 4, name: 'Moser Medical Group', consumed: 3813, amount: 'EUR 189,15.-'},
-//			{idx: 5, name: 'VIG (Vienna Insurance Group)', consumed: 3412, amount: 'EUR 139,12.-'}
-//		]
-	};
 
 	$scope.sortableModel = [];
 	$scope.sortableOptions = {
@@ -68,7 +49,6 @@ function dashboardCtrl($scope, $state, $log) {
 	};
 
 	$scope.toggleShowLive = function() {
-		console.log("toogle");
 		if($scope.chart.update) {
 			$scope.chart.labels = $scope.chart.labelsAll.slice(- MAX_LENGTH);
 			$scope.chart.data[0] = $scope.chart.dataAll[0].slice(- MAX_LENGTH);
@@ -96,11 +76,17 @@ function dashboardCtrl($scope, $state, $log) {
 			var msg = JSON.parse(evt.data);
 			if(msg[TYPE] == MSGTYPE_DATA) {
 				var data = msg[PAYLOAD];
+				//console.log("data", data);
+				var received = null;
 				/* read counters */
-				$scope.stats.requests.status[200] = data.counters['status_code.200'];
-				$scope.stats.requests.status[500] = data.counters['status_code.500'];
+				if(data.counters) {
+					$scope.stats.requests.status[200] = data.counters['status_code.200'];
+					$scope.stats.requests.status[500] = data.counters['status_code.500'];
+					received = data.counters['statsd.packets_received'];
+				} else {
+					received = data.numInvocations;
+				}
 				/* read chart data */
-				var received = data.counters['statsd.packets_received'];
 				var label = formatTime(new Date());
 				$scope.chart.dataAll[0].push(received);
 				$scope.chart.labelsAll.push(label);
@@ -120,6 +106,36 @@ function dashboardCtrl($scope, $state, $log) {
 		};
 	};
 
+	var getCountryStats = function() {
+		var res = $scope.countryStats = {};
+		$scope.invocationStats.details.forEach(function(inv) {
+			//console.log(inv);
+			for(var key in inv.ips) {
+				var obj = inv.ips[key];
+				if(obj.country) {
+					if(!res[obj.country]) {
+						res[obj.country] = 0;
+					}
+					res[obj.country] += obj.timestamps.length;
+				}
+			};
+		});
+		$scope.stats.countries = res;
+	};
+
+	$scope.loadInvocationStats = function() {
+		$scope.invocationStats = {};
+		var query = {};
+		query.details = true;
+		riox.statistics.invocations(query, function(stats) {
+			//console.log(stats);
+			$scope.$apply(function() {
+				$scope.invocationStats = stats;
+				getCountryStats();
+			});
+		});
+	};
+
 	/* get nav. bar stack */
 	$scope.getNavPart = function() {
 		return { sref: "index.dashboard", name: "Dashboard" };
@@ -128,6 +144,7 @@ function dashboardCtrl($scope, $state, $log) {
 
 	/* load main elements */
 	initWS($scope.chart);
+	$scope.loadInvocationStats();
 }
 
 angular.module('rioxApp').controller('DashboardCtrl', dashboardCtrl);

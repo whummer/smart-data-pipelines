@@ -6,6 +6,8 @@ var Invocation = require('./invocation.model');
 var RateLimit = require('./rate.limit.model');
 var url = require('url');
 var logger = require('winston');
+var Client = require('node-rest-client').Client;
+var LRUCache = require("lru-cache");
 var riox = require('riox-shared/lib/api/riox-api');
 require('riox-shared/lib/api/riox-api-admin')(riox);
 
@@ -20,6 +22,8 @@ var KEY_USERS = "__usr__";
 var KEY_LIMIT = "__lmt__";
 var KEY_USED = "__use__";
 var KEY_TIMESTAMP = "__tme__";
+var KEY_ORGANIZATIONS = "__orgs__";
+var KEY_APIS = "__apis__";
 
 /* Example structure: 
  * 
@@ -44,6 +48,10 @@ var KEY_TIMESTAMP = "__tme__";
  * 
  * */
 var configCache = {};
+var ipInfosCache = LRUCache({
+	max: 500,
+	maxAge: 1000 * 60 * 60 * 24
+});
 
 
 /* HELPER METHODS */
@@ -51,6 +59,7 @@ var configCache = {};
 var getOrgForHost = function(host, callback) {
 	var subdomain = host.split(/\./).slice(-3, 1)[0];
 	var query = { all: true };
+	var orgsCache = getCacheEntry(configCache, KEY_ORGANIZATIONS);
 	riox.organizations(query, {
 		headers: auth.getInternalCallTokenHeader(),
 		callback: function(orgs) {
@@ -62,12 +71,14 @@ var getOrgForHost = function(host, callback) {
 				}
 			}
 			callback(found);
-		}
+		},
+		cache: orgsCache
 	});
 };
 var getSourceForPath = function(method, org, path, callback) {
 	var query = {};
 	query[ORGANIZATION_ID] = org[ID];
+	var apisCache = getCacheEntry(configCache, KEY_APIS);
 	riox.streams.sources.all(query, {
 		headers: auth.getInternalCallTokenHeader(),
 		callback: function(list) {
@@ -76,7 +87,7 @@ var getSourceForPath = function(method, org, path, callback) {
 			for(var i = 0; i < list.length; i ++) {
 				var item = list[i];
 				for(var j = 0; j < item[OPERATIONS].length; j ++) {
-				var op = item[OPERATIONS][j];
+					var op = item[OPERATIONS][j];
 					if(op[HTTP_METHOD] == method) {
 						var regex = new RegExp(op[URL_PATH]);
 						if(path.match(regex)) {
@@ -92,8 +103,12 @@ var getSourceForPath = function(method, org, path, callback) {
 					}
 				}
 			}
+			if(!found) {
+				logger.warn("API operation not found for organization", org[ID], ":", method, path);
+			}
 			callback(found);
-		}
+		},
+		cache: apisCache
 	});
 };
 var getSourceForURL = function(method, host, path, query, callback) {
@@ -115,8 +130,22 @@ var returnAndSave = function(invocationObj, status, res, cacheForPath) {
 			if(cacheForPath[KEY_OPERATION]) {
 				invocationObj[OPERATION_ID] = cacheForPath[KEY_OPERATION][ID];
 			}
-			/* save invocation (fire and forget) */
-			invocationObj.save();
+			/* get IP address */
+			var ip = invocationObj[SOURCE_IP];
+			if(ipInfosCache.get(ip)) {
+				invocationObj[SOURCE_COUNTRY] = ipInfosCache.get(ip).countryCode || "-";
+			}
+			/* save invocation */
+			invocationObj.save(function(err, obj) {
+				/* deterimine IP address */
+				if(!obj[SOURCE_COUNTRY]) {
+					getIPInfo(obj[SOURCE_IP], function(info) {
+						obj[SOURCE_COUNTRY] = info.countryCode;
+						ipInfosCache.set(ip, info || {});
+						obj.save();
+					});
+				}
+			});
 		}
 	}
 	var response = {};
@@ -173,7 +202,7 @@ var checkCache = function() {
 var getCacheEntry = function(cache, key) {
 	if(cache[key]) {
 		if(isOverTTL(cache[key][KEY_TIMESTAMP])) {
-			console.log("Cache key " + key + " is over TTL, deleting...")
+			//console.log("Cache key " + key + " is over TTL, deleting...")
 			delete cache[key];
 		}
 	}
@@ -189,7 +218,6 @@ var getCacheEntry = function(cache, key) {
 exports.logAndPermit = function(req, res) {
 	var inv = new Invocation();
 	inv[TIMESTAMP] = new Date();
-	//console.log(req.body);
 	var userID = req.body[USER_ID];
 	var u = url.parse(req.body[URL]);
 	inv[HOST] = u.host;
@@ -227,6 +255,9 @@ exports.logAndPermit = function(req, res) {
 
 		cacheForPath[KEY_API] = result[KEY_API];
 		cacheForPath[KEY_OPERATION] = result[KEY_OPERATION];
+		if(!cacheForPath[KEY_OPERATION]) {
+			return returnAndSave(inv, STATUS_UNKNOWN, res, cacheForPath);
+		}
 
 		//console.log("getLimitForUserAndOp", userID, result[KEY_OPERATION][ID]);
 		getLimitForUserAndOp(userID, result[KEY_OPERATION][ID], function(limits) {
@@ -251,9 +282,7 @@ exports.logAndPermit = function(req, res) {
 			var status = checkAccessLimits(cacheForUsers, userID);
 			return returnAndSave(inv, status, res, cacheForPath);
 		});
-
 	});
-
 };
 
 exports.showLimits = function(req, res) {
@@ -272,7 +301,6 @@ exports.queryLimits = function(req, res) {
 	query[ACCESSROLE_ID] = req[ACCESSROLE_ID] || undefined;
 	query[TYPE] = req[TYPE] || undefined;
 	queryLimits(userId, function(limits) {
-		console.log("limits", limits);
 		res.json(limits);
 	});
 };
@@ -417,17 +445,27 @@ exports.queryInvocations = function(req, res) {
 				inv = JSON.parse(JSON.stringify(inv)); // clone
 				resultMap[key] = inv;
 				inv.count = 1;
-				inv.timestamps = {};
-				inv.timestamps[inv[SOURCE_IP]] = [inv[TIMESTAMP]];
+				inv.ips = {};
+				inv.ips[inv[SOURCE_IP]] = {
+						country: inv[SOURCE_COUNTRY],
+						timestamps: [inv[TIMESTAMP]]
+				};
 				delete inv[TIMESTAMP];
 				delete inv[SOURCE_IP];
 				resultArray.push(inv);
 			} else {
 				var item = resultMap[key];
-				if(!item.timestamps[inv[SOURCE_IP]]) {
-					item.timestamps[inv[SOURCE_IP]] = [];
+				var ip = inv[SOURCE_IP];
+				if(!item.ips[ip]) {
+					item.ips[ip] = {
+						country: inv[SOURCE_COUNTRY],
+						timestamps: []
+					};
 				}
-				item.timestamps[inv[SOURCE_IP]].push(inv[TIMESTAMP]);
+				if(!item.ips[ip].country) {
+					item.ips[ip].country = inv[SOURCE_COUNTRY];
+				}
+				item.ips[ip].timestamps.push(inv[TIMESTAMP]);
 				item.count ++;
 			}
 		}
@@ -437,6 +475,18 @@ exports.queryInvocations = function(req, res) {
 
 /* HELPER METHODS */
 
-function isNumber(n) {
+var isNumber = function(n) {
 	return !isNaN(parseFloat(n)) && isFinite(n);
-}
+};
+
+var getIPInfo = function(ip, callback) {
+	var url = "http://www.telize.com/geoip/" + ip;
+	var client = new Client();
+	logger.info("Getting source country for IP address:", ip);
+	client.get(url, function(data, response){
+        var result = {};
+        data = data.toJSON ? JSON.parse(data.toString()) : data;
+        result.countryCode = data["country_code"];
+        callback(result);
+    });
+};

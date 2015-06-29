@@ -48,6 +48,10 @@ template[TIMESTAMP] = Date;
  */
 template[SOURCE_IP] = String;
 /**
+ * Source country of the invocation, based on the IP address.
+ */
+template[SOURCE_COUNTRY] = String;
+/**
  * Result status code (e.g., 200 for HTTP OK).
  */
 template[RESULT_STATUS] = String;

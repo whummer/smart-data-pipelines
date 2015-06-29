@@ -24,6 +24,8 @@ if (!global.servicesConfig) {
 	global.servicesConfig = require('./config/services');
 }
 
+/* any status codes >= (gte) to this one will be logged as errors */
+var STATUS_CODE_LOGERROR_START = 500;
 
 var start = function (config, routes, serviceName) {
 
@@ -35,9 +37,8 @@ var start = function (config, routes, serviceName) {
 		if (config.logging.requestLogging) {
 			requestLogging = true;
 
-			// this one has to go BEFORE the routes are loaded
 			if (config.logging.requestLogging.logAllRequests) {
-				expressApp.use(expressWinston.logger({
+				var requestLogger = expressWinston.logger({
 					transports: [
 						new log.transports.Console({
 							json: false,
@@ -45,18 +46,46 @@ var start = function (config, routes, serviceName) {
 							colorize: true
 						})
 					],
-
 					expressFormat: true,
 					meta: config.logging.requestLogging.logMeta
-				}))
+				});
+				var errorDetailsLogger = expressWinston.logger({
+					transports: [
+						new log.transports.Console({
+							json: false,
+							timestamp: true,
+							colorize: true
+						})
+					],
+					expressFormat: true,
+					meta: true
+				});
+
+				expressApp.use(function(req, res, next) {
+					var end = res.end;
+					res.end = function(chunk, encoding) {
+			            res.end = end;
+			            if(res.end) res.end(chunk, encoding);
+						var emptyNext = function(){};
+						if(res.statusCode < STATUS_CODE_LOGERROR_START) {
+							requestLogger(req, res, emptyNext);
+						} else {
+							errorDetailsLogger(req, res, emptyNext);
+						}
+						res.end(); // needed to trigger the callback function in winston-express logger
+					};
+			        next();
+				});
 			}
 		}
 		return requestLogging;
 	}
 
 	function configureErrorRequestLogging(expressApp) {
-		console.log("Enabling error request logging");
-		expressApp.use(expressWinston.errorLogger({
+		log.remove(log.transports.Console).add(log.transports.Console, config.logging);
+		log.info("Enabling error request logging");
+
+		var errorDetailsLogger = expressWinston.errorLogger({
 			transports: [
 				new log.transports.Console({
 					json: true,
@@ -64,7 +93,15 @@ var start = function (config, routes, serviceName) {
 					colorize: true
 				})
 			]
-		}));
+		});
+		expressApp.use(function(err, req, res, next) {
+			var emptyNext = function(){};
+			if(res.statusCode >= STATUS_CODE_LOGERROR_START) {
+				errorDetailsLogger(err, req, res, emptyNext);
+			}
+			res.end(); // needed to trigger the callback function in winston-express logger
+		});
+
 	}
 
 	app.start = function (config, routes, serviceName, overrideExpressVersion) {
@@ -92,7 +129,7 @@ var start = function (config, routes, serviceName) {
 		// Connect to database
 		if (process.env.TEST_MODE) {
 			if (!mongoose.__mockgooseHasBeenApplied) {
-				console.log("Using TEST mode (mockgoose)");
+				if(log) log.info("Using TEST mode (mockgoose)");
 				var mockgoose = require('mockgoose');
 				mockgoose(mongoose);
 				mongoose.connect("");
@@ -104,6 +141,7 @@ var start = function (config, routes, serviceName) {
 
 		//
 		// configure winston logger @todo think about if we should put this in express.js
+		// This one has to go BEFORE the routes are loaded
 		//
 		var requestLogging = false;
 		if (log && config.logging) {

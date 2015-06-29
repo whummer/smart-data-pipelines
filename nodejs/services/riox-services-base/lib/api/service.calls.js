@@ -51,7 +51,31 @@ var convertResponseData = function(data) {
 	return data;
 }
 
+var getCache = function(cache, key) {
+	if(!cache) return;
+	if(typeof cache.get == "function") {
+		return cache.get(key);
+	}
+	return cache[key];
+};
+var setCache = function(cache, key, value) {
+	if(!cache) return;
+	if(typeof cache.set == "function") {
+		return cache.set(key, value);
+	}
+	var oldVal = cache[key];
+	cache[key] = value;
+	return oldVal;
+};
+
 sh.invokeGET = function(options, url, callback, errorCallback) {
+	/* get from cache */
+	var cacheKey = ""+url;
+	var cacheValue = getCache(options.cache, cacheKey);
+	if(typeof cacheValue != "undefined") {
+		return callback(cacheValue.__data, cacheValue.statusCode, cacheValue.headers, cacheValue);
+	}
+
 	args = __getConfig(options);
 	return client.get(url, args, function(data, response) {
 		data = convertResponseData(data); // convert data object
@@ -59,6 +83,8 @@ sh.invokeGET = function(options, url, callback, errorCallback) {
 			/* error */
 			errorCallback(data, response.statusCode, response.headers, response);
 		} else if(callback) {
+			response.__data = data;
+			setCache(options.cache, cacheKey, response);
 			callback(data, response.statusCode, response.headers, response);
 		}
 	}).

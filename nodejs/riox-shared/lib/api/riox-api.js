@@ -123,6 +123,7 @@
 	g.SELECTOR = "selector";
 	g.HTTP_METHOD = "http-method";
 	g.SOURCE_IP = "source-ip";
+	g.SOURCE_COUNTRY = "source-country";
 	g.URL_PATH = "url-path";
 	g.URL_QUERY = "url-query";
 	g.PUBLIC_ACCESS = "public-access";

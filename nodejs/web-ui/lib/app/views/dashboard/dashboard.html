@@ -74,9 +74,25 @@ div.jvectormap-label {
 			<div class="ibox-content">
 				<div class="row">
 					<div class="col-lg-12">
-						<div vector-map style="height: 300px;" my-map-data="dashboard.map.data"></div>
+						<div vector-map style="height: 300px;" my-map-data="stats.countries"></div>
 					</div>
 				</div>
+				<table class="table table-hover margin bottom">
+					<thead>
+					<tr>
+						<th class="text-center">Code</th>
+						<th class="text-center">Country</th>
+						<th class="text-center">Requests</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr ng-repeat="(key,value) in stats.countries">
+						<td class="text-center">{{key}}</td>
+						<td class="text-center">{{ISO_3166_COUNTRIES[key]}}</td>
+						<td class="text-center">{{value}}</td>
+					</tr>
+					</tbody>
+				</table>
 			</div>
 		</div>
 	</div>

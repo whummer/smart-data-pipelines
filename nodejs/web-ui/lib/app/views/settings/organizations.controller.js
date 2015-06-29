@@ -72,7 +72,7 @@ app.controller('OrganizationsController',
 	var loadOrgs = function() {
 		$scope.orgInfo = {};
 		var user = $scope.getCurrentUser();
-		var query = {all: true};
+		var query = {};
 		riox.organizations(query, function(orgs) {
 			$scope.orgInfo.orgs = orgs;
 			$.each(orgs, function(idx, org) {

@@ -11,9 +11,9 @@ template["_id"] = { type: String, default: genShortUUID};
  */
 template[NAME] = String;
 /**
- * Unique name (used as domain name).
+ * Unique name (used as domain name). List of strings.
  */
-template[DOMAIN_NAME] = { type: String, unique: true };
+template[DOMAIN_NAME] = [ String ];
 /**
  * Image(s).
  */

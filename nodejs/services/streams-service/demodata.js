@@ -214,11 +214,11 @@ function findOrgs(callback) {
 			headers: token,
 			callback: function(list) {
 				list.forEach(function(o) {
-					index = o.domain == "platform" ? 0 :
-							o.domain == "vienna" ? 1 :
-							o.domain == "bmw" ? 2 :
-							o.domain == "mercedes" ? 3 : 
-							o.domain == "tesla" ? 4 : 5;
+					index = o.domain.indexOf("platform") >= 0 ? 0 :
+							o.domain.indexOf("vienna") >= 0 ? 1 :
+							o.domain.indexOf("bmw") >= 0 ? 2 :
+							o.domain.indexOf("mercedes") >= 0 ? 3 : 
+							o.domain.indexOf("tesla") >= 0 ? 4 : 5;
 					orgs[index] = o;
 				});
 				callback();

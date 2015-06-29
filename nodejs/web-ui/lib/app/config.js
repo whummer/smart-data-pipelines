@@ -4,7 +4,7 @@
 
 var _host = "platform.riox.io";
 if(typeof window != "undefined") {
-	_host = window.location.hostname;
+	_host = window.location.host;
 }
 
 var appConfig = servicesConfig = {

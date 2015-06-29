@@ -6,10 +6,15 @@ var demo = require('./statistics');
 
 exports.queryInvocationStats = function(req, res) {
 	var query = req.body;
-	var user = auth.getCurrentUser(req);
-	
+	var headers = auth.getInternalCallTokenHeader();
+	queryInvocations(query, headers, function(stats) {
+		res.json(stats);
+		res.end();
+	});
+};
+
+var queryInvocations = function(query, headers, callback) {
 	var doQuery = function() {
-		var headers = auth.getInternalCallTokenHeader();
 		riox.ratings.invocations(query, {
 			headers: headers,
 			callback: function(invocations) {
@@ -26,12 +31,13 @@ exports.queryInvocationStats = function(req, res) {
 				if(query.details) {
 					stats.details = invocations;
 				}
-				res.json(stats);
+				callback(stats);
 			}
 		});
 	};
 
 	if(query[OPERATION_ID]) {
+		/* TODO check permission to access the operation data */
 		doQuery();
 	} else {
 		query[OPERATION_ID] = [];
@@ -45,7 +51,12 @@ exports.queryInvocationStats = function(req, res) {
 			doQuery();
 		});
 	}
-	
+};
+
+var queryLiveInvocations = function(query, headers, callback, errorCallback) {
+	queryInvocations(query, headers, function(stats) {
+		callback(stats);
+	});
 };
 
 exports.live = {};
@@ -59,7 +70,7 @@ exports.live.connect = function(ws, req) {
 			ws.__options.interval = interval;
 			if(!ws.__options.started) {
 				ws.__options.started = true;
-				sendData(ws);
+				sendData(ws, msg);
 			}
 		}
 	});
@@ -67,21 +78,34 @@ exports.live.connect = function(ws, req) {
 
 /* HELPER METHODS */
 
-var sendData = function(ws) {
-	var res = {};
-	res[TYPE] = MSGTYPE_DATA;
-	res[PAYLOAD] = demo;
-	try {
-		ws.send(JSON.stringify(res));
-		setTimeout(function() {
-			sendData(ws);
-		}, ws.__options.interval);
-	} catch (e) {
-		/* stop sending */
-	}
+var getAuthHeader = function(req) {
+	return { cookie: req.headers.cookie };
 };
 
-var getLocation = function(ip) {
-	var url = "http://getcitydetails.geobytes.com/GetCityDetails?fqcn=";
-	// TODO
+var sendData = function(ws, subMsg, query, headers) {
+	var res = {};
+	res[TYPE] = MSGTYPE_DATA;
+	
+	setTimeout(function() {
+		if(!query) 
+			query = {};
+		if(!query[TIME_TO])
+			query[TIME_TO] = new Date().getTime() - ws.__options.interval;
+		query[TIME_FROM] = query[TIME_TO];
+		query[TIME_TO] = new Date().getTime();
+		if(!headers) {
+			headers = getAuthHeader(ws.upgradeReq);
+		}
+		queryLiveInvocations(query, headers, function(data) {
+			res[PAYLOAD] = data;
+			try {
+				ws.send(JSON.stringify(res));
+				sendData(ws, subMsg, query, headers);
+			} catch (e) {
+				/* stop sending */
+			}
+		}, function(err) {
+			console.log(err);
+		});
+	}, ws.__options.interval);
 };

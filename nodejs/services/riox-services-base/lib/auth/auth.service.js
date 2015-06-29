@@ -6,7 +6,6 @@ var expressJwt = require('express-jwt');
 var compose = require('composable-middleware');
 var riox = require('riox-shared/lib/api/riox-api');
 var log = global.log || require('winston');
-//var cookieParser = require('cookie-parser');
 
 var validateJwt = expressJwt({secret: config.secrets.session});
 
@@ -36,6 +35,11 @@ function isAuthenticated() {
 				req.headers.authorization = header.authorization;
 			}
 			validateJwt(req, res, next);
+		})
+		.use(function (err, req, res, next) {
+			if(err)
+				res.status(401).send({error: "Unauthorized: " + err}); // set Unauthorized status code
+			next(err);
 		});
 }
 
@@ -60,6 +64,7 @@ function hasRole(roleRequired) {
 				}
 				else {
 					res.status(403).json({error: "Forbidden."});
+					res.end();
 				}
 			}
 			if (req.user.role) {
@@ -123,6 +128,7 @@ function fetchOrgs() {
 					}
 				}, function () {
 					res.send(500);
+					res.end();
 				});
 			}
 		});
@@ -198,7 +204,10 @@ function getTokenFromHeaders(req) {
  * Set token cookie directly for oAuth strategies
  */
 function setTokenCookie(req, res) {
-	if (!req.user) return res.json(404, {message: 'Something went wrong, please try again.'});
+	if (!req.user) {
+		res.json(404, {message: 'Something went wrong, please try again.'});
+		return res.end();
+	}
 	var token = signToken(req.user._id, req.user.role);
 	res.cookie('token', JSON.stringify(token));
 	res.redirect('/');

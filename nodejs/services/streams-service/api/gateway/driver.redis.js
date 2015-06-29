@@ -34,7 +34,6 @@ exports.addOperation = function(source, op, params) {
 					var routeMap = {};
 					routeMap[path] = source[ID] + ":" + mappedPath;
 					client.hmset(key, routeMap, function (err, data) {
-//						console.log("addOperation ->", err, data);
 						if (err) return reject(err);
 						else resolve(params);
 					});
@@ -50,14 +49,11 @@ exports.addOperation = function(source, op, params) {
 };
 
 exports.addEndpoint = function(source, endpoint, params) {
-//	console.log("addEndpoint", endpoint);
 	return new Promise(function(resolve, reject) {
 		getClient(params, function(client) {
 			var vhost = source.vhost;
 			var key = PREFIX + 'frontend:' + vhost + ':' + source[ID];
-//			console.log(key);
 			client.rpush(key, endpoint, function(err, data) {
-//				console.log("addEndpoint ->", err, data);
 				if (err) return reject(err);
 				else resolve(params);
 			});

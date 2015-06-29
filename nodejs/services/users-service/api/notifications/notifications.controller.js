@@ -13,6 +13,7 @@ function list(query, req, res) {
 		if (err)
 			return res.status(500).send({error: err});
 		res.json(list);
+		res.end();
 	});
 };
 
