@@ -27,7 +27,7 @@ var hipacheVersion = require(path.join(__dirname, '..', 'package.json')).version
 /* configure riox admin API */
 if(ENFORCE_ACCESS_LIMITS) {
 	global.riox = require('riox-shared/lib/api/riox-api.js')
-	global.appConfig = require('riox-services-base/lib/config/services');
+	global.appConfig = global.servicesConfig = require('riox-services-base/lib/config/services');
 	global.auth = require('riox-services-base/lib/auth/auth.service');
 	require('riox-services-base/lib/api/service.calls');
 	require('riox-shared/lib/api/riox-api-admin.js')(riox);
@@ -389,6 +389,19 @@ Worker.prototype.runServer = function (config) {
 					userAgent: req.headers['user-agent'],
 					virtualHost: req.meta.virtualHost
 				}, logType.accessLog);
+
+				if(ENFORCE_ACCESS_LIMITS) {
+//					req.on("end", function() {
+					if(req.__loggedInvocation && req.__loggedInvocation[INVOCATION_ID]) {
+						var request = {};
+						request[ID] = req.__loggedInvocation[INVOCATION_ID];
+						request[RESULT_STATUS] = res.statusCode;
+						riox.save.rating.invocation(request, {
+							headers: auth.getInternalCallTokenHeader()
+						});
+					}
+//					});
+				}
 			};
 		}.bind(this)());
 
@@ -472,6 +485,7 @@ Worker.prototype.runServer = function (config) {
 				riox.ratings.logAndPermit(access, function(result) {
 					//console.log(result);
 					if(result[STATUS] == STATUS_PERMITTED) {
+						req.__loggedInvocation = result;
 						proxyRequest();
 					} else if(result[STATUS] == STATUS_UNKNOWN) {
 						if(req.method == "OPTIONS" && CORS_HEADERS_ENABLED) {
@@ -498,7 +512,10 @@ Worker.prototype.runServer = function (config) {
 			if (err) {
 				logger.error("worker.redis.wsRequestHandler:", err);				
 			}
-			if (backend && backend.targetPath) {					
+			if (backend && backend.targetPath) {
+				socket.on('data', function(data) {
+					console.log('Socketondata:', data.toString())
+				});
 				// Proxy the WebSocket request to the backend
 				proxy.ws(req, socket, head, {
 					target: {
@@ -508,6 +525,9 @@ Worker.prototype.runServer = function (config) {
 					},
 					ignorePath: false,  /* ensures that we don't end up with paths like "/index.html/index.html" */
 					prependPath: false /* ensures that we don't end up with paths like "/index.html/" */
+				});
+				socket.on('data', function(data) {
+					console.log('Socketondata1:', data.toString());
 				});
 			} else {
 				logger.error("worker.redis.wsRequestHandler:", "Route not defined.");

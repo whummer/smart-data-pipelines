@@ -78,6 +78,7 @@
 	g.REQUESTOR_ID = "requestor-id";
 	g.CONSENTOR_ID = "consentor-id";
 	g.RECIPIENT_ID = "recipient-id";
+	g.INVOCATION_ID = "invocation-id";
 	g.CONNECTOR = "connector";
 	g.MEMBER = "member";
 	g.TAGS = "tags";
@@ -96,6 +97,7 @@
 	g.STATUS_UNREAD = "UNREAD";
 	g.STATUS_READ = "READ";
 	g.STATUS_DELETED = "DELETED";
+	g.RESULT_STATUS = "result-status";
 	g.PERMIT_MODE = "permit";
 	g.PERMIT_MODE_AUTO = "AUTO";
 	g.PERMIT_MODE_MANUAL = "MANUAL";
@@ -709,6 +711,11 @@
 		var url = servicesConfig.services.ratings.url + "/limits/" + limit.id;
 		return callPUT(url, limit, callback, errorCallback);
 	};
+	sh.save.rating.invocation = function (invocation, callback, errorCallback) {
+		var id = invocation.id ? invocation.id : invocation;
+		var url = servicesConfig.services.ratings.url + "/invocations/" + id;
+		return callPUT(url, invocation, callback, errorCallback);
+	};
 
 	/* methods for DELETEing data */
 
@@ -953,6 +960,8 @@
 		if (typeof body == "object") {
 			body = JSON.stringify(body);
 		}
+		if(!options)
+			options = {};
 		var callback = options.callback ? options.callback : options;
 		errorCallback = wrapDefaultErrorCallback(errorCallback);
 		invokeFunc(options, url, body,

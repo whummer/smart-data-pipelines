@@ -93,16 +93,16 @@ sh.invokePOST = function(options, url, body, callback, errorCallback) {
     });
 }
 
-sh.invokePOSTandGET = function($http, url, body, callback) {
-	invokePOST($http, url, body, 
+sh.invokePOSTandGET = function(options, url, body, callback) {
+	invokePOST(options, url, body, 
 		function(data, status, headers, config) {
 			var loc = headers("Location");
-			invokeGET($http, loc, callback);
+			invokeGET(options, loc, callback);
 		}
 	);
 }
 
-sh.invokePUT = function($http, url, body, callback) {
+sh.invokePUT = function(options, url, body, callback, errorCallback) {
 	args = __getConfig(options, body);
 	return client.put(url, args, function(data, response) {
 		data = convertResponseData(data); // convert data object
