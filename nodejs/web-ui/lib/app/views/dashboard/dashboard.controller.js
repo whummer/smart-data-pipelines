@@ -1,4 +1,4 @@
-function dashboardCtrl($scope, $state, $log) {
+function dashboardCtrl($scope, $state, $log, growl) {
 
 	/* constants/configs */
 	var MAX_LENGTH_ALL = 200;
@@ -61,7 +61,7 @@ function dashboardCtrl($scope, $state, $log) {
 	});
 
 	var subscribeWS = function(chart) {
-		if(chart.ws.readyState !== 1) return;
+		if(!chart.ws || chart.ws.readyState !== 1) return;
 		var req = {};
 		req[TYPE] = MSGTYPE_SUBSCRIBE;
 		req.interval = chart.interval;
@@ -70,40 +70,44 @@ function dashboardCtrl($scope, $state, $log) {
 
 	var initWS = function(chart) {
 		/* subscribe to websocket */
-		var url = appConfig.services.statisticsWebsocket.url;
-		chart.ws = new WebSocket(url);
-		chart.ws.onmessage = function(evt) {
-			var msg = JSON.parse(evt.data);
-			if(msg[TYPE] == MSGTYPE_DATA) {
-				var data = msg[PAYLOAD];
-				//console.log("data", data);
-				var received = null;
-				/* read counters */
-				if(data.counters) {
-					$scope.stats.requests.status[200] = data.counters['status_code.200'];
-					$scope.stats.requests.status[500] = data.counters['status_code.500'];
-					received = data.counters['statsd.packets_received'];
-				} else {
-					received = data.numInvocations;
+		try {
+			var url = appConfig.services.statisticsWebsocket.url;
+			chart.ws = new WebSocket(url);
+			chart.ws.onmessage = function(evt) {
+				var msg = JSON.parse(evt.data);
+				if(msg[TYPE] == MSGTYPE_DATA) {
+					var data = msg[PAYLOAD];
+					//console.log("data", data);
+					var received = null;
+					/* read counters */
+					if(data.counters) {
+						$scope.stats.requests.status[200] = data.counters['status_code.200'];
+						$scope.stats.requests.status[500] = data.counters['status_code.500'];
+						received = data.counters['statsd.packets_received'];
+					} else {
+						received = data.numInvocations;
+					}
+					/* read chart data */
+					var label = formatTime(new Date());
+					$scope.chart.dataAll[0].push(received);
+					$scope.chart.labelsAll.push(label);
+					trimArray($scope.chart.dataAll[0], MAX_LENGTH_ALL);
+					trimArray($scope.chart.labelsAll, MAX_LENGTH_ALL);
+					if($scope.chart.update) {
+						$scope.chart.data[0].push(received);
+						$scope.chart.labels.push(label);
+						trimArray($scope.chart.data[0], MAX_LENGTH);
+						trimArray($scope.chart.labels, MAX_LENGTH);
+						$scope.$apply();
+					}
 				}
-				/* read chart data */
-				var label = formatTime(new Date());
-				$scope.chart.dataAll[0].push(received);
-				$scope.chart.labelsAll.push(label);
-				trimArray($scope.chart.dataAll[0], MAX_LENGTH_ALL);
-				trimArray($scope.chart.labelsAll, MAX_LENGTH_ALL);
-				if($scope.chart.update) {
-					$scope.chart.data[0].push(received);
-					$scope.chart.labels.push(label);
-					trimArray($scope.chart.data[0], MAX_LENGTH);
-					trimArray($scope.chart.labels, MAX_LENGTH);
-					$scope.$apply();
-				}
-			}
-		};
-		chart.ws.onopen = function(evt) {
-			subscribeWS(chart);
-		};
+			};
+			chart.ws.onopen = function(evt) {
+				subscribeWS(chart);
+			};
+		} catch(e) {
+			growl.warning("Unable to connect to websocket. Please try again later.");
+		}
 	};
 
 	var getCountryStats = function() {
@@ -131,9 +135,23 @@ function dashboardCtrl($scope, $state, $log) {
 			//console.log(stats);
 			$scope.$apply(function() {
 				$scope.invocationStats = stats;
+				console.log(stats);
+				stats.requests = $scope.stats.requests = {
+						status: stats.status,
+						total: stats.numInvocations};
 				getCountryStats();
 			});
 		});
+	};
+
+	$scope.countStatus = function(hash, statusRegex) {
+		var result = 0;
+		for(var key in hash) {
+			if((""+key).match(statusRegex)) {
+				result += hash[key];
+			}
+		}
+		return result;
 	};
 
 	/* get nav. bar stack */

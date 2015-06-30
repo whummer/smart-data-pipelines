@@ -8,12 +8,14 @@
 	<div>
 		<div class="form-group">
 			<label for="enableSecurity" class="col-sm-5">
-				Enable Custom Certificate <i class="fa fa-question-circle"> </i>
+				Enable Custom Certificate <i tooltip-placement="top"
+					 tooltip="Provide your own SSL/TLS certificate for encrypted HTTPS connections."
+						class="fa fa-question-circle" style="margin-left: 5px"></i>
 			</label>
 			<div class="col-sm-7">
 				<label class="switch">
 					<input type="checkbox" id="enableSecurity" class="form-control"
-								 ng-model="resourceData.securityEnabled"><i></i>
+								 ng-model="resourceData.securityEnabled">
 				</label>
 			</div>
 		</div>

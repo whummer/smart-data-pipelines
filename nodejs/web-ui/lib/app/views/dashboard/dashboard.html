@@ -88,7 +88,7 @@ div.jvectormap-label {
 					<tbody>
 					<tr ng-repeat="(key,value) in stats.countries">
 						<td class="text-center">{{key}}</td>
-						<td class="text-center">{{ISO_3166_COUNTRIES[key]}}</td>
+						<td class="text-center">{{ISO_3166_COUNTRIES[key] || "Unknown"}}</td>
 						<td class="text-center">{{value}}</td>
 					</tr>
 					</tbody>
@@ -110,52 +110,63 @@ div.jvectormap-label {
 <!-- 			</div> -->
 <!-- 		</div> -->
 <!-- 	</div> -->
-	<div class="col-lg-3 connectPanels">
+	<div class="col-lg-2 connectPanels">
 		<div class="ibox float-e-margins">
 			<div class="ibox-title">
 				<h5>Total Requests</h5>
 			</div>
 			<div class="ibox-content statsCounter">
-				{{stats.requests.total}}
+				{{stats.requests.total || 0}}
 <!-- 				<div class="stat-percent font-bold text-info">20% <i class="fa fa-level-up"></i></div> -->
 <!-- 				<small>provided by you (04/2015)</small> -->
 			</div>
 		</div>
 	</div>
-	<div class="col-lg-3 connectPanels">
+	<div class="col-lg-2 connectPanels">
 		<div class="ibox float-e-margins">
 			<div class="ibox-title">
-				<h5>Requests Status 200</h5>
+				<h5>Success / Error</h5>
 			</div>
 			<div class="ibox-content statsCounter">
-				{{stats.requests.status[200]}}
+				<span class="text-success">{{countStatus(stats.requests.status, '^2[0-9]+$')}}</span> / 
+				<span class="text-danger">{{countStatus(stats.requests.status, '^(4|5)[0-9]+$')}}</span>
 <!-- 				<div class="stat-percent font-bold text-info">20% <i class="fa fa-level-up"></i></div> -->
 <!-- 				<small>provided by you (04/2015)</small> -->
 			</div>
 		</div>
 	</div>
-	<div class="col-lg-3 connectPanels">
+	<div class="col-lg-2 connectPanels">
 		<div class="ibox float-e-margins">
 			<div class="ibox-title">
-				<h5>Requests Status 404</h5>
+				<h5>Blocked Requests</h5>
 			</div>
 			<div class="ibox-content statsCounter">
-				{{stats.requests.status[404]}}
+				{{countStatus(stats.requests.status, '^(401|403)$')}}
 <!-- 				<div class="stat-percent font-bold text-success">24% <i class="fa fa-level-up"></i></div> -->
 <!-- 				<small>consumed by clients (04/2015)</small> -->
 			</div>
 		</div>
 	</div>
-	<div class="col-lg-3 connectPanels">
+	<div class="col-lg-6 connectPanels">
 		<div class="ibox float-e-margins">
 			<div class="ibox-title">
-				<h5>Requests Status 500</h5>
+				<h5>Requests Status Codes</h5>
 			</div>
-			<div class="ibox-content statsCounter">
-				{{stats.requests.status[500]}}
-
-<!-- 				<div class="stat-percent font-bold text-danger">38% <i class="fa fa-level-down"></i></div> -->
-<!-- 				<small>Last Month (04/2015)</small> -->
+			<div class="ibox-content">
+				<table class="table table-hover table-striped margin bottom">
+					<thead>
+					<tr>
+						<th class="text-center">Status Code</th>
+						<th class="text-center">Requests</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr ng-repeat="(key,value) in stats.requests.status">
+						<td class="text-center">{{(key && key != "null") ? key : 'Unknown'}}</td>
+						<td class="text-center">{{value}}</td>
+					</tr>
+					</tbody>
+				</table>
 			</div>
 		</div>
 	</div>

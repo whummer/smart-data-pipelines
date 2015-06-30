@@ -17,9 +17,9 @@ angular.module('rioxApp')
     	riox.auth({
       	  RIOX_AUTH_NETWORK: "riox",
       	  RIOX_AUTH_TOKEN: token
-        }, callback, function() {
+        }, callback, function(err) {
         	/* error occurred */
-        	console.log("error");
+        	console.log("Error:", err);
         });
     };
 
@@ -54,13 +54,11 @@ angular.module('rioxApp')
 		currentUser.$promise = deferred.promise;
 		oldPromise.then(
 			function(user) {
-	    		return $q(function(resolve, reject) {
-	    			configureRioxApiAuth($cookieStore.get('token'), function(token) {
-	    				loadOrganizations(function() {
-	            			deferred.resolve();
-	            		});
-	            	});
-	    		});
+	    		configureRioxApiAuth($cookieStore.get('token'), function(token) {
+    				loadOrganizations(function() {
+            			deferred.resolve();
+            		});
+            	});
 			}
 		);
     }
@@ -170,6 +168,20 @@ angular.module('rioxApp')
         }, function(err) {
           return cb(err);
         }).$promise;
+      },
+
+      /**
+       * Sets the current user to a new objects.
+       *
+       * @return {Object} user
+       */
+      setCurrentUser: function(user) {
+          var deferred = $q.defer();
+    	  currentUser = user;
+    	  loadOrganizations(function() {
+    		  deferred.resolve();
+    	  });
+    	  return deferred.promise;
       },
 
       /**

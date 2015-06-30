@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('rioxApp')
-.controller('SettingsAccountCtrl', function ($scope, $state, User, Auth, $window) {
+.controller('SettingsAccountCtrl', function ($scope, $state, User, Auth, $window, growl) {
 
 	$scope.errors = {};
 	$scope.ISO_3166_COUNTRIES = ISO_3166_COUNTRIES;
@@ -11,13 +11,19 @@ angular.module('rioxApp')
 		var valid = form.$valid && (form.newPassword.$viewValue == form.newPasswordRepeat.$viewValue);
 		if(valid) {
 			Auth.changePassword( $scope.user.oldPassword, $scope.user.newPassword )
-			.then( function() {
-				$scope.message = 'Password successfully changed.';
+			.then(function(obj) {
+				$scope.message = "Password successfully changed.";
+				growl.info("Password successfully changed");
 			})
-			.catch( function() {
-				form.password.$setValidity('mongoose', false);
-				$scope.errors.other = 'Incorrect password';
-				$scope.message = '';
+			.catch( function(err) {
+				if(err && err.status == 403) {
+					form.password.$setValidity("mongoose", false);
+					$scope.errors.other = "Incorrect password";
+				} else {
+					form.newPassword.$setValidity("mongoose", false);
+					$scope.errors.newPassword = err.data.error.errors.newPassword.message;
+				}
+				$scope.message = "";
 			});
 		}
 	};
@@ -31,14 +37,8 @@ angular.module('rioxApp')
 			return;
 		}
 		riox.save.me($scope.user, function(result) {
-		      /* 
-		       * important: make sure to reload the entire page, to
-		       * reset all controllers, flush state information, etc.
-		       */
-		      setTimeout(function(){
-		    	  console.log("Reloading the page...");
-		          $window.location.reload(); 
-		      }, 100);
+			Auth.setCurrentUser(result);
+			growl.info("Account details successfully saved.");
 		});
 	};
 

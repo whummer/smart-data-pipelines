@@ -14,6 +14,7 @@ router.delete('/limits/:id', auth.isAuthenticated(), controller.deleteLimit);
 router.post('/limits/query', auth.hasRole("admin"), controller.queryLimits);
 
 router.post('/invocations', auth.hasRole("admin"), controller.queryInvocations);
+router.put('/invocations/:id', auth.hasRole("admin"), controller.updateInvocation);
 
 /* routes for internal access */
 router.post('/logAndPermit', controller.logAndPermit);

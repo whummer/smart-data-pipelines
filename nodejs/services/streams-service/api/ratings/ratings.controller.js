@@ -124,9 +124,11 @@ var getSourceForURL = function(method, host, path, query, callback) {
 };
 
 var returnAndSave = function(invocationObj, status, res, cacheForPath) {
+	var invocationID = undefined;
 	if(status == STATUS_PERMITTED) {
 		var disableLog = cacheForPath[KEY_OPERATION] && cacheForPath[KEY_OPERATION][DISABLE_LOG];
 		if(!disableLog) {
+			invocationObj[ID] = invocationObj["_id"] = invocationID = util.genShortUUID();
 			if(cacheForPath[KEY_OPERATION]) {
 				invocationObj[OPERATION_ID] = cacheForPath[KEY_OPERATION][ID];
 			}
@@ -137,6 +139,8 @@ var returnAndSave = function(invocationObj, status, res, cacheForPath) {
 			}
 			/* save invocation */
 			invocationObj.save(function(err, obj) {
+				if(err)
+					return res.status(500).json({error: "Unable to save invocation: " + err});
 				/* deterimine IP address */
 				if(!obj[SOURCE_COUNTRY]) {
 					getIPInfo(obj[SOURCE_IP], function(info) {
@@ -150,6 +154,7 @@ var returnAndSave = function(invocationObj, status, res, cacheForPath) {
 	}
 	var response = {};
 	response[STATUS] = status;
+	response[INVOCATION_ID] = invocationID;
 	/* return result */
 	res.json(response);
 };
@@ -259,7 +264,6 @@ exports.logAndPermit = function(req, res) {
 			return returnAndSave(inv, STATUS_UNKNOWN, res, cacheForPath);
 		}
 
-		//console.log("getLimitForUserAndOp", userID, result[KEY_OPERATION][ID]);
 		getLimitForUserAndOp(userID, result[KEY_OPERATION][ID], function(limits) {
 			console.log("limits", limits);
 			var limit = limits[0];
@@ -448,7 +452,8 @@ exports.queryInvocations = function(req, res) {
 				inv.ips = {};
 				inv.ips[inv[SOURCE_IP]] = {
 						country: inv[SOURCE_COUNTRY],
-						timestamps: [inv[TIMESTAMP]]
+						timestamps: [inv[TIMESTAMP]],
+						resultStatus: [inv[RESULT_STATUS]]
 				};
 				delete inv[TIMESTAMP];
 				delete inv[SOURCE_IP];
@@ -459,17 +464,30 @@ exports.queryInvocations = function(req, res) {
 				if(!item.ips[ip]) {
 					item.ips[ip] = {
 						country: inv[SOURCE_COUNTRY],
-						timestamps: []
+						timestamps: [],
+						resultStatus: []
 					};
 				}
 				if(!item.ips[ip].country) {
 					item.ips[ip].country = inv[SOURCE_COUNTRY];
 				}
 				item.ips[ip].timestamps.push(inv[TIMESTAMP]);
+				item.ips[ip].resultStatus.push(inv[RESULT_STATUS]);
 				item.count ++;
 			}
 		}
 		res.json(resultArray);
+	});
+};
+
+exports.updateInvocation = function(req, res) {
+	Invocation.findById(req.params.id, function(err, inv) {
+		if(err || !inv)
+			return res.status(500).json({error: "Unable to update invocation: " + err});
+		inv[RESULT_STATUS] = req.body[RESULT_STATUS];
+		inv.save(function(err, result) {
+			res.json({});
+		});
 	});
 };
 

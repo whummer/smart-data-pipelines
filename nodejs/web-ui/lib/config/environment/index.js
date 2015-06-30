@@ -32,11 +32,11 @@ var all = {
 
 	allowedPaths:
 		[
-		 	"/", "/index.html", "/favicon.ico", 
+		 	"/", "/index.html", "/favicon.ico"
 		],
 	allowedPathStarts:
 		[
-		 	"/bower_components", "/app"
+		 	"/bower_components", "/app", "/loaderio-"
 		],
 
 	// Server port

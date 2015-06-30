@@ -76,7 +76,7 @@ sh.invokeGET = function(options, url, callback, errorCallback) {
 		return callback(cacheValue.__data, cacheValue.statusCode, cacheValue.headers, cacheValue);
 	}
 
-	args = __getConfig(options);
+	var args = __getConfig(options);
 	return client.get(url, args, function(data, response) {
 		data = convertResponseData(data); // convert data object
 		if(response.statusCode >= 400 && response.statusCode < 600) {
@@ -99,7 +99,7 @@ sh.invokeGET = function(options, url, callback, errorCallback) {
 }
 
 sh.invokePOST = function(options, url, body, callback, errorCallback) {
-	args = __getConfig(options, body);
+	var args = __getConfig(options, body);
 	return client.post(url, args, function(data, response) {
 		data = convertResponseData(data); // convert data object
 		if(response.statusCode >= 400 && response.statusCode < 600) {
@@ -129,7 +129,7 @@ sh.invokePOSTandGET = function(options, url, body, callback) {
 }
 
 sh.invokePUT = function(options, url, body, callback, errorCallback) {
-	args = __getConfig(options, body);
+	var args = __getConfig(options, body);
 	return client.put(url, args, function(data, response) {
 		data = convertResponseData(data); // convert data object
 		if(response.statusCode >= 400 && response.statusCode < 600) {

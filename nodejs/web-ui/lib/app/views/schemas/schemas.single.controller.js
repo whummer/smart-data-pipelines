@@ -17,6 +17,17 @@ angular.module('rioxApp')
 		newItem[SELECTOR] = "item";
 		$scope.selectedSchema[DATA_ITEMS].push(newItem);
 	};
+	$scope.removeDataItem = function(item) {
+		var schema = $scope.selectedSchema;
+		if(!schema) return;
+		var items = schema[DATA_ITEMS];
+		for(var i = 0; i < items.length; i ++) {
+			console.log(items[i], item, items[i] == item);
+			if(items[i] == item) {
+				return items.splice(i, 1);
+			}
+		}
+	};
 
 	$scope.saveDetails = function() {
 		var copy = $scope.prepareApiObj($scope.shared.selectedAPI);

@@ -188,7 +188,7 @@ exports.changePassword = function(req, res, next) {
 	var oldPass = String(req.body.oldPassword);
 	var newPass = String(req.body.newPassword);
 
-	if(!checkPassword(newPass)) {
+	if(!checkPassword(newPass, res)) {
 		return;
 	}
 
@@ -206,10 +206,10 @@ exports.changePassword = function(req, res, next) {
 };
 
 var checkPassword = function(pass, res) {
-	if(!checkPasswordValid(pass, res)) {
+	if(!checkPasswordValid(pass)) {
 		res.send(422, {error: {
 				errors: {
-					password: {
+					newPassword: {
 						message: "The password contains illegal characters."
 					}
 				}
@@ -220,7 +220,7 @@ var checkPassword = function(pass, res) {
 	if(!checkPasswordStrength(pass)) {
 		res.send(422, {error: {
 				errors: {
-					password: {
+					newPassword: {
 						message: "Please use a sronger password: at least " + 
 						PW_MIN_LENGTH + " characters (letters, numbers, specials)."
 					}
@@ -298,7 +298,7 @@ exports.insertInternalCallUser = function() {
 	    	var newUser = new User({
 	    		_id: id,
 	    		name: "root",
-	    		password: "does not matter because user is deactivated",
+	    		password: "does_not_matter_because_user_is_deactivated",
 	    		deactivated: true,
 	    		role: "internal"
 	    	});

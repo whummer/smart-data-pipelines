@@ -631,7 +631,7 @@
 		return callPOST(url, consumer, callback, errorCallback);
 	}
 	sh.add.access.consumer.key = function(consumer, callback, errorCallback) {
-		var id = consumer.id ? consumer.id : consumer;
+		var id = consumer._id ? consumer._id : consumer.id ? consumer.id : consumer;
 		var url = servicesConfig.services.access.url + "/consumers/" + id + "/keys";
 		return callPOST(url, {}, callback, errorCallback);
 	}

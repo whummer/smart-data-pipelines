@@ -6,11 +6,17 @@ var expressJwt = require('express-jwt');
 var compose = require('composable-middleware');
 var riox = require('riox-shared/lib/api/riox-api');
 var log = global.log || require('winston');
+var LRUCache = require("lru-cache");
 
 var validateJwt = expressJwt({secret: config.secrets.session});
 
 var INTERNAL_USER_ID = "000000000000000000000000"; // Mongodb ObjectId format
 var expiresInMinutes = 60 * 24 * 3; // 3 days expiration time
+
+var usersCache = LRUCache({
+	max: 500,
+	maxAge: 1000 * 60
+});
 
 /**
  * Attaches the user object to the request if authenticated
@@ -67,7 +73,11 @@ function hasRole(roleRequired) {
 					res.end();
 				}
 			}
+			var cachedUser = usersCache.get(id);
 			if (req.user.role) {
+				check();
+			} else if (cachedUser) {
+				req.user.role = cachedUser.role;
 				check();
 			} else {
 				riox.user({id: id}, {
@@ -75,6 +85,7 @@ function hasRole(roleRequired) {
 					callback: function (user) {
 						/* add user role to request */
 						req.user.role = user.role;
+						usersCache.set(id, user);
 						check();
 					}
 				});

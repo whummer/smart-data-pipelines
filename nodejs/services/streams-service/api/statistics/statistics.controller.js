@@ -24,9 +24,14 @@ var queryInvocations = function(query, headers, callback) {
 				stats.status = {};
 				for(var i = 0; i < invocations.length; i ++) {
 					var inv = invocations[i];
+					for(var key in inv.ips) {
+						var val = inv.ips[key];
+						for(var j = 0; j < val.resultStatus.length; j ++) {
+							var status = val.resultStatus[j];
+							stats.status[status] = (stats.status[status] || 0) + 1;
+						}
+					}
 					stats.numInvocations += inv.count;
-					var status = inv[RESULT_STATUS];
-					stats.status[status] = (stats.status[status] || 0) + 1;
 				}
 				if(query.details) {
 					stats.details = invocations;

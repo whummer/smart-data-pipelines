@@ -121,6 +121,11 @@ var rioxAPIs =
 			"http-method": "GET",
 			"url-path": "/((favicon.ico)|(robots.txt)|(app/)|(bower_components/))(.*)",
 			"disable-log": true
+		},{
+			"name": "GET Web metadata",
+			"http-method": "GET",
+			"url-path": "/loaderio-(.*)",
+			"disable-log": true
 		}]
 	},{
 		name: "riox:websocket",
