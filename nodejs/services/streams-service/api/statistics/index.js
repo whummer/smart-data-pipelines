@@ -12,7 +12,7 @@ module.exports = function(app, server) {
 
 	var WebSocketServer = require("ws").Server;
 	var wss = new WebSocketServer(
-			{server: server, path: "/api/v1/statistics/live"}
+			{server: server, path: "/api/v1/statistics/live", perMessageDeflate : false}
 	);
 	wss.on('connection', controller.live.connect);
 
