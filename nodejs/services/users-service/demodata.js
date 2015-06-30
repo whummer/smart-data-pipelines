@@ -59,11 +59,14 @@ var demoUsers = [
     		name: "F.R.",
     		email: "om@riox.io",
     		password: "test123",
-    		role: "admin"
+    		role: "admin",
+    		orgs: [ "000000000001" ]
     	},{
     		name: "O.M.",
     		email: "om@riox.io",
-    		password: "test123"
+    		password: "test123",
+    		role: "admin",
+    		orgs: [ "000000000001" ]
     	},{
     		name: "Walde",
     		email: "wh1@riox.io",
