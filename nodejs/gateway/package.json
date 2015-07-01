@@ -29,7 +29,10 @@
     "redis": "0.10.x",
     "winston": "^1.0.0",
     "promise": "7.0.3",
-    "lynx": "0.2.0"
+    "lynx": "0.2.0",
+
+    "riox-services-base": "file:../services/riox-services-base",
+    "riox-shared": "file:../riox-shared"
   },
   "devDependencies": {
     "mocha": "1.x",
@@ -49,10 +52,7 @@
     "ws": "^0.4.31",
     "rimraf": "^2.2.8",
     "coveralls": "^2.10.0",
-    "connect": "^2.14.3",
-
-    "riox-services-base": "file:../services/riox-services-base",
-    "riox-shared": "file:../riox-shared"
+    "connect": "^2.14.3"
   },
   "scripts": {
     "start": "./bin/hipache",

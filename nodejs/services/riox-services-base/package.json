@@ -35,7 +35,7 @@
 		"readable-stream": "^2.0.0",
 		"lru-cache": "2.6.4",
 
-		"riox-shared": "../../riox-shared"
+		"riox-shared": "file:../../riox-shared"
 	},
 	"devDependencies": {
 	    "should": "^6.0.3",
