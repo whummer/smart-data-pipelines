@@ -186,7 +186,7 @@ exports.destroy = function(req, res) {
 exports.changePassword = function(req, res, next) {
 	var userId = req.user._id;
 	var oldPass = String(req.body.oldPassword);
-	var newPass = String(req.body.newPassword);
+	var newPass = String(req.body.password);
 
 	if(!checkPassword(newPass, res)) {
 		return;
@@ -209,7 +209,7 @@ var checkPassword = function(pass, res) {
 	if(!checkPasswordValid(pass)) {
 		res.send(422, {error: {
 				errors: {
-					newPassword: {
+					password: {
 						message: "The password contains illegal characters."
 					}
 				}
@@ -220,7 +220,7 @@ var checkPassword = function(pass, res) {
 	if(!checkPasswordStrength(pass)) {
 		res.send(422, {error: {
 				errors: {
-					newPassword: {
+					password: {
 						message: "Please use a sronger password: at least " + 
 						PW_MIN_LENGTH + " characters (letters, numbers, specials)."
 					}

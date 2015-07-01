@@ -1484,6 +1484,36 @@ body.mini-navbar #side-menu .nav-second-level {
 .ibox-title {
   background: #fefdff;
 }
+/* ngTable and pagination */
+.pagination li.ng-leave-active {
+  display: none;
+}
+.pagination > .active > a,
+.active > a:hover {
+  box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.125);
+}
+.ng-table-counts {
+  border-radius: 4px;
+}
+.ng-table-counts button {
+  box-sizing: border-box;
+  color: #777;
+  cursor: not-allowed;
+  background-color: #fff;
+  border-color: #ddd;
+  padding-bottom: 3px;
+  padding-top: 3px;
+}
+.btn-default.active {
+  background-color: #f4f4f4;
+  border-color: #DDDDDD;
+  color: inherit;
+  box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.125);
+}
+.ng-table th {
+  text-align: left;
+}
+/* wizard styles */
 .wizard > .steps button,
 .wizard > .steps a,
 .wizard > .steps a:hover,

@@ -139,8 +139,9 @@ var returnAndSave = function(invocationObj, status, res, cacheForPath) {
 			}
 			/* save invocation */
 			invocationObj.save(function(err, obj) {
-				if(err)
-					return res.status(500).json({error: "Unable to save invocation: " + err});
+				if(err) {
+					logger.warn("Unable to save invocation: " + err);
+				}
 				/* deterimine IP address */
 				if(!obj[SOURCE_COUNTRY]) {
 					getIPInfo(obj[SOURCE_IP], function(info) {

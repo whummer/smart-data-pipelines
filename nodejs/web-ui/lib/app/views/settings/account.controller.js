@@ -8,9 +8,9 @@ angular.module('rioxApp')
 
 	$scope.changePassword = function(form) {
 		$scope.submittedPW = true;
-		var valid = form.$valid && (form.newPassword.$viewValue == form.newPasswordRepeat.$viewValue);
+		var valid = form.$valid && (form.password.$viewValue == form.passwordRepeat.$viewValue);
 		if(valid) {
-			Auth.changePassword( $scope.user.oldPassword, $scope.user.newPassword )
+			Auth.changePassword( $scope.user.oldPassword, $scope.user.password )
 			.then(function(obj) {
 				$scope.message = "Password successfully changed.";
 				growl.info("Password successfully changed");
@@ -20,8 +20,8 @@ angular.module('rioxApp')
 					form.password.$setValidity("mongoose", false);
 					$scope.errors.other = "Incorrect password";
 				} else {
-					form.newPassword.$setValidity("mongoose", false);
-					$scope.errors.newPassword = err.data.error.errors.newPassword.message;
+					form.password.$setValidity("mongoose", false);
+					$scope.errors.password = err.data.error.errors.password.message;
 				}
 				$scope.message = "";
 			});

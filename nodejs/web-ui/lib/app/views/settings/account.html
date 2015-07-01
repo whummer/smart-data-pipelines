@@ -87,15 +87,15 @@
 
 						<div class="form-group">
 							<label>Current Password</label> <input type="password"
-								name="password" class="form-control"
+								name="oldPassword" class="form-control"
 								ng-model="user.oldPassword" mongoose-error />
-							<p class="help-block" ng-show="pwForm.password.$error.mongoose">
+							<p class="help-block" ng-show="pwForm.oldPassword.$error.mongoose">
 								{{ errors.other }}</p>
 						</div>
 
 						<div class="form-group">
 							<label>New Password</label> <input type="password"
-								name="newPassword" class="form-control" mongoose-error
+								name="password" class="form-control" mongoose-error
 								ng-model="user.newPassword" ng-minlength="6" required />
 							<p class="help-block"
 								ng-show="(pwForm.newPassword.$error.minlength || pwForm.newPassword.$error.required) && (pwForm.newPassword.$dirty || submittedPW)">

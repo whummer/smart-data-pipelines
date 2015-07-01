@@ -128,7 +128,7 @@ div.jvectormap-label {
 				<h5>Success / Error</h5>
 			</div>
 			<div class="ibox-content statsCounter">
-				<span class="text-success">{{countStatus(stats.requests.status, '^2[0-9]+$')}}</span> / 
+				<span class="text-success">{{countStatus(stats.requests.status, '^(2|3)[0-9]+$')}}</span> / 
 				<span class="text-danger">{{countStatus(stats.requests.status, '^(4|5)[0-9]+$')}}</span>
 <!-- 				<div class="stat-percent font-bold text-info">20% <i class="fa fa-level-up"></i></div> -->
 <!-- 				<small>provided by you (04/2015)</small> -->
