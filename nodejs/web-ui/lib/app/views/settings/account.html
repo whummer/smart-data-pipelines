@@ -1,0 +1,126 @@
+<div class="container">
+	<div class="row">
+		<div class="col-lg-6">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5>Personal Details</h5>
+				</div>
+				<div class="ibox-content">
+					<form class="form" name="formDetails" ng-submit="saveDetails(formDetails)"
+						novalidate>
+						<div class="form-group">
+							<label class="col-lg-4">Email</label>
+							<div class="col-lg-8">
+								<input class="form-control" name="email"
+									ng-model="user[EMAIL]" disabled="disabled" mongoose-error />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-lg-4">User Name</label>
+							<div class="col-lg-8">
+								<input class="form-control" name="username"
+									ng-model="user[NAME]" mongoose-error required />
+								<p class="help-block"
+									ng-show="formDetails.username.$error.required && submitted ">
+									Please enter your user name.</p>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-lg-4">First Name</label>
+							<div class="col-lg-8">
+								<input class="form-control" name="firstname"
+									ng-model="user[FIRSTNAME]" mongoose-error />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-lg-4">Last Name</label>
+							<div class="col-lg-8">
+								<input class="form-control"
+									ng-model="user[LASTNAME]" mongoose-error />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-lg-4">Street Address</label>
+							<div class="col-lg-8">
+								<input class="form-control" name="lastname"
+									ng-model="user.address.street" mongoose-error />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-lg-4">Post Code / City</label>
+							<div class="col-lg-8">
+								<div class="col-lg-5" style="padding: 0px">
+									<input class="form-control"
+										ng-model="user.address.code" mongoose-error />
+								</div>
+								<div class="col-lg-7" style="padding: 0px">
+									<input class="form-control"
+										ng-model="user.address.city" mongoose-error />
+								</div>
+							</div>
+							
+						</div>
+						<div class="form-group">
+							<label class="col-lg-4">Country</label>
+							<div class="col-lg-8">
+								<select class="form-control" ng-model="user.address.country"
+									ng-options="key as label for (key, label) in ISO_3166_COUNTRIES"
+									mongoose-error></select>
+							</div>
+						</div>
+
+						<button class="btn btn-lg btn-primary btn-sm" type="submit">Save
+							changes</button>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-lg-6">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5>Change Password</h5>
+				</div>
+				<div class="ibox-content">
+					<form class="form" name="pwForm" ng-submit="changePassword(pwForm)"
+						novalidate>
+
+						<div class="form-group">
+							<label>Current Password</label> <input type="password"
+								name="oldPassword" class="form-control"
+								ng-model="user.oldPassword" mongoose-error />
+							<p class="help-block" ng-show="pwForm.oldPassword.$error.mongoose">
+								{{ errors.other }}</p>
+						</div>
+
+						<div class="form-group">
+							<label>New Password</label> <input type="password"
+								name="password" class="form-control" mongoose-error
+								ng-model="user.newPassword" ng-minlength="6" required />
+							<p class="help-block"
+								ng-show="(pwForm.newPassword.$error.minlength || pwForm.newPassword.$error.required) && (pwForm.newPassword.$dirty || submittedPW)">
+								Password too short.</p>
+							<p class="help-block" ng-show="pwForm.newPassword.$error.mongoose">
+								{{ errors.newPassword }}</p>
+							<p class="help-block" ng-show="pwForm.newPassword.$error.service">
+								{{ errors.other }}</p>
+						</div>
+
+						<div class="form-group">
+							<label>Repeat Password</label> <input type="password"
+								name="newPasswordRepeat" class="form-control" mongoose-error
+								ng-model="newPasswordRepeat" ng-minlength="6" required />
+							<p class="help-block"
+								ng-show="(pwForm.newPassword.$viewValue != pwForm.newPasswordRepeat.$viewValue) && (pwForm.newPasswordRepeat.$dirty || submittedPW)">
+								The two passwords do not match.</p>
+						</div>
+
+						<p class="help-block">{{ message }}</p>
+
+						<button class="btn btn-lg btn-primary btn-sm" type="submit">Update Password</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

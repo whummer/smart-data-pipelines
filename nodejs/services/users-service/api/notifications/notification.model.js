@@ -5,7 +5,7 @@ var Schema = mongoose.Schema;
 
 var template = {};
 
-template["_id"] = { type: String, default: genShortUUID};
+template["_id"] = { type: String, unique: true, default: genShortUUID};
 
 /**
  * ID of the organization or user this notification belongs to.

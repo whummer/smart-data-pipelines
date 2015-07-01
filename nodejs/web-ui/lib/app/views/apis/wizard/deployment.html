@@ -1,0 +1,43 @@
+<div class="animated fadeIn">
+	<h2>Summary and Deployment</h2>
+	<div class="widget p-xl">
+		<div class="row" style="margin-top: 10px; font-size: 14px;">
+			<dl class="dl-horizontal" style="text-align: left;">
+				<dt>Name</dt>
+				<dd>{{resourceData.name}}</dd>
+				<dt>Description</dt>
+				<dd>{{resourceData.description}}</dd>
+				<dt>Connector</dt>
+				<dd>{{resourceData.connector.name}}</dd>
+				<dt>Security</dt>
+				<dd>
+					<div ng-show="resourceData.securityEnabled">
+						<span class="fa fa-shield text-success"></span> Use custom certificate
+					</div>
+					<div ng-hide="resourceData.securityEnabled">
+						<span class="fa fa-shield text-success"></span> Use default security
+					</div>
+				</dd>
+				<dt>Access Control</dt>
+				<dd>
+					<span ng-show="resourceData.authDisabled">
+						<span class="fa fa-shield text-danger"></span> API is public (no access authorization required)
+					</span>
+					<span ng-show="!resourceData.authDisabled">
+						<span class="fa fa-shield text-success"></span> API is restricted (requires authorization by you)
+					</span>
+				</dd>
+			</dl>
+		</div>
+	</div>
+
+	<fieldset class="m-t-md">
+		<div class="navButtons">
+			<a ng-click="prevStep()" class="btn btn-default">Previous</a>
+			<button ng-click="processForm()" class="btn btn-primary"
+							ng-disabled="resourceForm.$invalid || resourceForm.$pristine">
+				Create API
+			</button>
+		</div>
+	</fieldset>
+</div>

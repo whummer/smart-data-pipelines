@@ -66,7 +66,7 @@
 body {
   font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   background-color: #f3f3f4;
-  font-size: 13px;
+  font-size: 14px;
   color: #676a6c;
   overflow-x: hidden;
 }
@@ -237,19 +237,20 @@ ol.unstyled {
 .footer {
   background: none repeat scroll 0 0 white;
   border-top: 1px solid #e7eaec;
-  color: #88be5f;
+  color: #2f4050;
   bottom: 0;
   left: 0;
   padding: 10px 20px;
   position: absolute;
   right: 0;
+  z-index: 1;
 }
 .footer.fixed_full {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 1000;
+  z-index: 1;
   padding: 10px 20px;
   background: white;
   border-top: 1px solid #e7eaec;
@@ -574,7 +575,7 @@ table.table-mail tr td {
   color: #ffffff;
 }
 .translucent-black-widget-bg {
-  background-color: rgba(39, 39, 39, 0.75);
+  background-color: none;
   color: white;
 }
 .dark-grey-widget-bg {
@@ -594,7 +595,7 @@ table.table-mail tr td {
   color: #ffffff;
 }
 .nav-top {
-  background-color: rgba(39, 39, 39, 0.75);
+  background-color: none;
 }
 .yellow-bg {
   background-color: #f8ac59;
@@ -1413,6 +1414,106 @@ button.dim:active:before {
   width: 100%;
   color: #fff;
 }
+body {
+  background-color: #2f4050;
+}
+#page-wrapper {
+  z-index: 10;
+}
+#topnavbar .navPath {
+  background: #fff;
+  z-index: 10;
+  position: relative;
+  line-height: 30px;
+  padding-left: 20px;
+  font-size: 14px;
+  height: auto;
+}
+#topnavbar .navLinks {
+  height: 45px;
+  z-index: 5;
+  position: relative;
+}
+#topnavbar .navLinks .navbar-minimalize {
+  margin-top: 10px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  padding-left: 6px;
+  padding-right: 6px;
+}
+#topnavbar .navbar-top-links li a {
+  padding-top: 12px;
+  padding-bottom: 7px;
+  height: 40px;
+  min-height: 40px;
+}
+#topnavbar .navbar-top-links > li.active {
+  border-left: none;
+  border-top: 4px solid #708d98;
+  background: #293846;
+}
+#topnavbar .navbar-top-links > li.active a {
+  padding-top: 8px;
+  height: 41px;
+}
+body.mini-navbar #side-menu .nav-second-level {
+  width: 200px;
+}
+body.body-small .navbar-right {
+  float: right;
+}
+body.mini-navbar #side-menu .nav-second-level li i {
+  float: left;
+}
+body.mini-navbar #side-menu .nav-second-level .nav-label {
+  display: block;
+}
+body.mini-navbar #side-menu .nav-second-level li a {
+  padding-left: 10px;
+}
+body.mini-navbar #side-menu .nav-second-level {
+  z-index: 100;
+}
+#side-menu li a {
+  font-size: 14px;
+}
+#side-menu .nav-second-level li a {
+  padding-left: 30px;
+  font-size: 14px;
+}
+.ibox-title {
+  background: #fefdff;
+}
+/* ngTable and pagination */
+.pagination li.ng-leave-active {
+  display: none;
+}
+.pagination > .active > a,
+.active > a:hover {
+  box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.125);
+}
+.ng-table-counts {
+  border-radius: 4px;
+}
+.ng-table-counts button {
+  box-sizing: border-box;
+  color: #777;
+  cursor: not-allowed;
+  background-color: #fff;
+  border-color: #ddd;
+  padding-bottom: 3px;
+  padding-top: 3px;
+}
+.btn-default.active {
+  background-color: #f4f4f4;
+  border-color: #DDDDDD;
+  color: inherit;
+  box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.125);
+}
+.ng-table th {
+  text-align: left;
+}
+/* wizard styles */
 .wizard > .steps button,
 .wizard > .steps a,
 .wizard > .steps a:hover,
@@ -3397,7 +3498,7 @@ a.forum-item-title:hover {
   display: inline-block;
 }
 .navbar-top-links li:last-child {
-  margin-right: 40px;
+  margin-right: 0px;
 }
 .navbar-top-links li a {
   padding: 20px 10px;
@@ -3479,7 +3580,7 @@ a.forum-item-title:hover {
 }
 .nav-header {
   padding: 33px 25px;
-  background: url("patterns/header-profile.png") no-repeat;
+  background: url("styles/img/header-profile.png") no-repeat;
 }
 .pace-done .nav-header {
   transition: all 0.5s;
@@ -3628,13 +3729,13 @@ body.mini-navbar .navbar-default .nav > li > .nav-second-level li a {
   transition: all 0.5s;
 }
 .navbar-fixed-top {
-  background: rgba(39, 39, 39, 0.75);
+  background: #2f4050;
   transition-duration: 0.5s;
   border-bottom: 1px solid #e7eaec !important;
 }
 .navbar-fixed-top,
 .navbar-static-top {
-  background: rgba(39, 39, 39, 0.75);
+  background: #2f4050;
 }
 .fixed-nav #wrapper {
   margin-top: 60px;

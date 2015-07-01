@@ -9,8 +9,8 @@
 		var trimmed = str.substr(0, length);
 		if(trimmed.length < str.length) {
 			//re-trim if we are in the middle of a word
-			trimmed = trimmed.substr(0, 
-					Math.min(trimmed.length, trimmed.lastIndexOf(" ")));
+			var idx = Math.min(trimmed.length, trimmed.lastIndexOf(" "));
+			if(idx > 0) trimmed = trimmed.substr(0, idx);
 			// add dots
 			trimmed += "...";
 		}
@@ -52,6 +52,33 @@
 		    return formatDate(this, this.toStringFormat);
 		}
 		return this.toStringOriginal();
+	}
+
+	// http://stackoverflow.com/questions/19098797/fastest-way-to-flatten-un-flatten-nested-json-objects
+	x.flattenJson = function(data) {
+		var result = {};
+
+		function recurse(cur, prop) {
+			if (Object(cur) !== cur) {
+				result[prop] = cur;
+			} else if (Array.isArray(cur)) {
+				for (var i = 0, l = cur.length; i < l; i++)
+					recurse(cur[i], prop + "[" + i + "]");
+				if (l == 0)
+					result[prop] = [];
+			} else {
+				var isEmpty = true;
+				for (var p in cur) {
+					isEmpty = false;
+					recurse(cur[p], prop ? prop + "." + p : p);
+				}
+				if (isEmpty && prop)
+					result[prop] = {};
+			}
+		}
+
+		recurse(data, "");
+		return result;
 	}
 
 	/* from http://stackoverflow.com/questions/14638018/current-time-formatting-with-javascript */

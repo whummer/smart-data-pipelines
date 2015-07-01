@@ -40,7 +40,7 @@ function iboxTools($timeout) {
 	return {
 		restrict: 'A',
 		scope: true,
-		templateUrl: 'app/views/common/ibox_tools.html',
+		templateUrl: 'app/views/layout/ibox_tools.html',
 		controller: function ($scope, $element) {
 			// Function for collapse ibox
 			$scope.showhide = function () {
@@ -195,28 +195,37 @@ function vectorMap() {
 			myMapData: '=',
 		},
 		link: function (scope, element, attrs) {
-			element.vectorMap({
-				map: 'world_mill_en',
-				backgroundColor: "transparent",
-				regionStyle: {
-					initial: {
-						fill: '#e4e4e4',
-						"fill-opacity": 0.9,
-						stroke: 'none',
-						"stroke-width": 0,
-						"stroke-opacity": 0
-					}
-				},
-				series: {
-					regions: [
-						{
-							values: scope.myMapData,
-							scale: ["#4F8241", "#e4e4e4"],
-							normalizeFunction: 'polynomial'
+			
+			var apply = function() {
+				$(element).html("");
+				$(".jvectormap-label").remove();
+				element.vectorMap({
+					map: 'world_mill_en',
+					backgroundColor: "transparent",
+					regionStyle: {
+						initial: {
+							fill: '#e4e4e4',
+							"fill-opacity": 0.9,
+							stroke: 'none',
+							"stroke-width": 0,
+							"stroke-opacity": 0
 						}
-					]
-				}
-			});
+					},
+					series: {
+						regions: [
+							{
+								values: scope.myMapData,
+								scale: ["#e4eae4", "#4F8241"],
+								normalizeFunction: 'polynomial'
+							}
+						]
+					}
+				});
+			};
+
+			scope.$watch('myMapData', function(){
+				apply();
+            });
 		}
 	}
 }

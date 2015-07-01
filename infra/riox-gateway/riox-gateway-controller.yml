@@ -1,0 +1,21 @@
+kind: ReplicationController
+apiVersion: v1beta2
+id: riox-gateway
+labels:
+  name: riox-gateway
+desiredState:
+  replicas: 1
+  replicaSelector:
+    name: riox-gateway
+  podTemplate:
+    labels:
+      name: riox-gateway
+    desiredState:
+      manifest:
+        version: v1beta2
+        id: riox-gateway
+        containers:
+          - name: riox-gateway
+            image: riox/riox-gateway:0.1.0
+            ports: 
+              - containerPort: 9393

@@ -15,7 +15,12 @@ angular.module('rioxApp', [
 	'hljs',
 	'ui.ace',
 	'ngFileUpload',
-	'ng-alias'
+	'ngTagsInput',
+	'ng-alias',
+	'angucomplete',
+	'oc.lazyLoad',
+	'chart.js',
+	'ngTable'
 ])
 		.config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider, growlProvider) {
 			$locationProvider.html5Mode(false);

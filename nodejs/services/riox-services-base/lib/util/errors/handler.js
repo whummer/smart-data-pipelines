@@ -16,6 +16,6 @@ module.exports = function (err, req, res, next) {
 		log.debug("Handling error " + status + " for request: ", req.path);
 	}
 
-	res.json(status, {status: err.code, message: err.message, cause: err.cause});
+	res.status(status).json({status: err.code, message: err.message, cause: err.cause});
 }
 ;

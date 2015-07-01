@@ -1,0 +1,44 @@
+<div class="animated fadeIn" style="overflow: visible;;">
+	<h2>Tell us about your API</h2>
+	<br/>
+
+	<div class="row">
+		<div class="form-group">
+			<label for="resourceName" class="col-sm-3 control-label">API Name</label>
+			<div class="col-sm-5">
+				<input id="resourceName" name="resourceName" placeholder="" class="form-control"
+							 ng-model="resourceData.name" required>
+			</div>
+			<label for="resourceName" class="control-label col-sm-3 animated fadeIn"
+						 ng-show="resourceForm.$submitted || resourceForm.resourceName.$touched">
+				<span class="text-danger " ng-show="resourceForm.resourceName.$error.required">A Resource Name is required</span>
+			</label>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="form-group">
+			<label for="resourceDescription" class="col-sm-3 control-label">Short Description</label>
+			<div class="col-sm-5">
+				<input id="resourceDescription" name="resourceDescription" placeholder=""
+							 class="form-control required" ng-model="resourceData.description"/>
+			</div>
+		</div>
+	</div>
+
+	<div class="row" style="overflow: visible">
+		<div class="form-group" style="overflow: visible;">
+			<label for="resourceDescription" class="col-sm-3 control-label">Tags</label>
+			<div class="col-sm-5">
+				<tags-input ng-model="resourceData.tags">
+			    </tags-input>
+			</div>
+		</div>
+	</div>
+
+	<div class="navButtons">
+		<a ng-click="nextStep()" class="btn btn-primary"
+				ng-disabled="resourceForm.$invalid || resourceForm.$pristine">Next
+		</a>
+	</div>
+</div>

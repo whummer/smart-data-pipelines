@@ -1,0 +1,176 @@
+<style type="text/css">
+div.statsCounter {
+	font-size: 20px;
+	text-align: center;
+	font-weight: bold;
+}
+div.jvectormap-label {
+	position: absolute;
+	z-index: 1000;
+}
+</style>
+
+<div class="row animated fadeInRight" ui-sortable="sortableOptions" ng-model="sortableModel">
+<!-- 	<div class="col-lg-6 connectPanels" ui-sortable="sortableOptions" ng-model="sortableModel"> -->
+<!-- 		<div class="ibox float-e-margins"> -->
+<!-- 			<div class="ibox-title"> -->
+<!-- 				<h5>Top 5 Consumers Worldwide</h5> -->
+<!-- 				<div ibox-tools></div> -->
+<!-- 			</div> -->
+<!-- 			<div class="ibox-content"> -->
+
+<!-- 				<div class="row"> -->
+<!-- 					<div class="col-lg-12"> -->
+<!-- 						<table class="table table-hover margin bottom"> -->
+<!-- 							<thead> -->
+<!-- 							<tr> -->
+<!-- 								<th style="width: 1%" class="text-center">No.</th> -->
+<!-- 								<th>Consumer Name</th> -->
+<!-- 								<th class="text-center">Datapoints Consumed</th> -->
+<!-- 								<th class="text-center">Amount</th> -->
+<!-- 							</tr> -->
+<!-- 							</thead> -->
+<!-- 							<tbody> -->
+<!-- 							<tr ng-repeat="consumer in dashboard.consumers"> -->
+<!-- 								<td class="text-center">{{consumer.idx}}</td> -->
+<!-- 								<td>{{consumer.name}}</td> -->
+<!-- 								<td class="text-center small">{{consumer.consumed}}</td> -->
+<!-- 								<td class="text-center"><span class="label label-primary">{{consumer.amount}}</span></td> -->
+<!-- 							</tr> -->
+<!-- 							</tbody> -->
+<!-- 						</table> -->
+<!-- 					</div> -->
+
+<!-- 				</div> -->
+<!-- 			</div> -->
+<!-- 		</div> -->
+<!-- 	</div> -->
+
+	<div class="col-lg-6 connectPanels">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<h5>Live Metrics</h5>
+			</div>
+			<div class="ibox-content">
+				<div class="row">
+					<div class="col-lg-12">
+						<input type="checkbox" ng-model="chart.update" ng-change="toggleShowLive()"/> Live Updates
+						<select ng-model="chart.interval" ng-options="i.value as i.label for i in intervals"></select>
+						<canvas id="line" class="chart chart-line" data="chart.data"
+						  labels="chart.labels" legend="true" series="chart.series"
+						  click="onClick" options="chart.options">
+						</canvas> 
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-lg-6 connectPanels" ui-sortable="sortableOptions" ng-model="sortableModel">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<h5>API Consumers Worldwide</h5>
+			</div>
+			<div class="ibox-content">
+				<div class="row">
+					<div class="col-lg-12">
+						<div vector-map style="height: 300px;" my-map-data="stats.countries"></div>
+					</div>
+				</div>
+				<table class="table table-hover margin bottom">
+					<thead>
+					<tr>
+						<th class="text-center">Code</th>
+						<th class="text-center">Country</th>
+						<th class="text-center">Requests</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr ng-repeat="(key,value) in stats.countries">
+						<td class="text-center">{{key}}</td>
+						<td class="text-center">{{ISO_3166_COUNTRIES[key] || "Unknown"}}</td>
+						<td class="text-center">{{value}}</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="clearfix"></div>
+
+<!-- 	<div class="col-lg-3 connectPanels"> -->
+<!-- 		<div class="ibox float-e-margins"> -->
+<!-- 			<div class="ibox-title"> -->
+<!-- 				<h5>Income</h5> -->
+<!-- 			</div> -->
+<!-- 			<div class="ibox-content"> -->
+<!-- 				<h1 class="no-margins">&euro; 12886.20</h1> -->
+<!-- 				<div class="stat-percent font-bold text-success">98% <i class="fa fa-bolt"></i></div> -->
+<!-- 				<small>Total income per last billing cycle </small> -->
+<!-- 			</div> -->
+<!-- 		</div> -->
+<!-- 	</div> -->
+	<div class="col-lg-2 connectPanels">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<h5>Total Requests</h5>
+			</div>
+			<div class="ibox-content statsCounter">
+				{{stats.requests.total || 0}}
+<!-- 				<div class="stat-percent font-bold text-info">20% <i class="fa fa-level-up"></i></div> -->
+<!-- 				<small>provided by you (04/2015)</small> -->
+			</div>
+		</div>
+	</div>
+	<div class="col-lg-2 connectPanels">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<h5>Success / Error</h5>
+			</div>
+			<div class="ibox-content statsCounter">
+				<span class="text-success">{{countStatus(stats.requests.status, '^(2|3)[0-9]+$')}}</span> / 
+				<span class="text-danger">{{countStatus(stats.requests.status, '^(4|5)[0-9]+$')}}</span>
+<!-- 				<div class="stat-percent font-bold text-info">20% <i class="fa fa-level-up"></i></div> -->
+<!-- 				<small>provided by you (04/2015)</small> -->
+			</div>
+		</div>
+	</div>
+	<div class="col-lg-2 connectPanels">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<h5>Blocked Requests</h5>
+			</div>
+			<div class="ibox-content statsCounter">
+				{{countStatus(stats.requests.status, '^(401|403)$')}}
+<!-- 				<div class="stat-percent font-bold text-success">24% <i class="fa fa-level-up"></i></div> -->
+<!-- 				<small>consumed by clients (04/2015)</small> -->
+			</div>
+		</div>
+	</div>
+	<div class="col-lg-6 connectPanels">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<h5>Requests Status Codes</h5>
+			</div>
+			<div class="ibox-content">
+				<table class="table table-hover table-striped margin bottom">
+					<thead>
+					<tr>
+						<th class="text-center">Status Code</th>
+						<th class="text-center">Requests</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr ng-repeat="(key,value) in stats.requests.status">
+						<td class="text-center">{{(key && key != "null") ? key : 'Unknown'}}</td>
+						<td class="text-center">{{value}}</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+

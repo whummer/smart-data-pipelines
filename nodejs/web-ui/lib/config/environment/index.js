@@ -30,43 +30,21 @@ var all = {
 		}
 	},
 
+	allowedPaths:
+		[
+		 	"/", "/index.html", "/favicon.ico"
+		],
+	allowedPathStarts:
+		[
+		 	"/bower_components", "/app", "/loaderio-"
+		],
+
 	// Server port
 	port: process.env.PORT || 9000,
 
-	// Secret for session, you will want to change this and make it an environment variable
-	secrets: {
-		session: 'riox-secret'
-	},
-
 	// List of user roles
-	userRoles: ['guest', 'user', 'admin'],
+	userRoles: ['guest', 'user', 'admin']
 
-	// MongoDB connection options
-	mongo: {
-		options: {
-			db: {
-				safe: true
-			}
-		}
-	},
-
-	facebook: {
-		clientID: process.env.FACEBOOK_ID || 'id',
-		clientSecret: process.env.FACEBOOK_SECRET || 'secret',
-		callbackURL: (process.env.DOMAIN || '') + '/auth/facebook/callback'
-	},
-
-	twitter: {
-		clientID: process.env.TWITTER_ID || 'id',
-		clientSecret: process.env.TWITTER_SECRET || 'secret',
-		callbackURL: (process.env.DOMAIN || '') + '/auth/twitter/callback'
-	},
-
-	google: {
-		clientID: process.env.GOOGLE_ID || 'id',
-		clientSecret: process.env.GOOGLE_SECRET || 'secret',
-		callbackURL: (process.env.DOMAIN || '') + '/auth/google/callback'
-	}
 };
 
 // Export the config object based on the NODE_ENV

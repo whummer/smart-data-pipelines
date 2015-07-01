@@ -6,23 +6,23 @@ var expressJwt = require('express-jwt');
 var compose = require('composable-middleware');
 var riox = require('riox-shared/lib/api/riox-api');
 var log = global.log || require('winston');
+var LRUCache = require("lru-cache");
 
 var validateJwt = expressJwt({secret: config.secrets.session});
 
 var INTERNAL_USER_ID = "000000000000000000000000"; // Mongodb ObjectId format
 var expiresInMinutes = 60 * 24 * 3; // 3 days expiration time
 
+var usersCache = LRUCache({
+	max: 500,
+	maxAge: 1000 * 60
+});
+
 /**
  * Attaches the user object to the request if authenticated
  * Otherwise returns 403
  */
 function isAuthenticated() {
-	/*if (config.auth.disable) {
-		log.debug("Authentication is disabled");
-		return compose().use(function(req,res,next) {
-			next();
-		});
-	}*/
 
 	return compose()
 		// Validate jwt
@@ -32,8 +32,26 @@ function isAuthenticated() {
 				var header = getHeaderFromToken(req.query.access_token);
 				req.headers.authorization = header.authorization;
 			}
+			// allow access_token to be passed through cookie header as well
+			if (req.cookies && req.cookies['token']) {
+				var token = req.cookies['token'];
+				if(token.slice(0, 1) == '"') token = token.substring(1);
+				if(token.slice(-1) == '"') token = token.substring(0, token.length - 1);
+				var header = getHeaderFromToken(token);
+				req.headers.authorization = header.authorization;
+			}
 			validateJwt(req, res, next);
+		})
+		.use(function (err, req, res, next) {
+			if(err)
+				res.status(401).send({error: "Unauthorized: " + err}); // set Unauthorized status code
+			next(err);
 		});
+}
+
+function userHasRole(user, role) {
+	return config.userRoles.indexOf(user.role) >= 
+		config.userRoles.indexOf(role);
 }
 
 /**
@@ -47,14 +65,19 @@ function hasRole(roleRequired) {
 		.use(function meetsRequirements(req, res, next) {
 			var id = req.user._id;
 			var check = function () {
-				if (config.userRoles.indexOf(req.user.role) >= config.userRoles.indexOf(roleRequired)) {
+				if (userHasRole(req.user, roleRequired)) {
 					next();
 				}
 				else {
-					res.send(403);
+					res.status(403).json({error: "Forbidden."});
+					res.end();
 				}
 			}
+			var cachedUser = usersCache.get(id);
 			if (req.user.role) {
+				check();
+			} else if (cachedUser) {
+				req.user.role = cachedUser.role;
 				check();
 			} else {
 				riox.user({id: id}, {
@@ -62,6 +85,7 @@ function hasRole(roleRequired) {
 					callback: function (user) {
 						/* add user role to request */
 						req.user.role = user.role;
+						usersCache.set(id, user);
 						check();
 					}
 				});
@@ -82,7 +106,10 @@ function fetchOrgs() {
 					headers: req.headers,
 					callback: function (orgs) {
 						/* add user organizations to request */
-						req.user.organizations = orgs;
+						req.user.organizations = orgs || [];
+						if(!orgs) {
+							log.warn("Unable to get user organizations:", orgs);
+						}
 						/* add convenience functions.
 						 * TODO wh: performance could be improved: don't
 						 * always create these functions on the fly */
@@ -112,6 +139,7 @@ function fetchOrgs() {
 					}
 				}, function () {
 					res.send(500);
+					res.end();
 				});
 			}
 		});
@@ -144,6 +172,17 @@ function getInternalCallTokenHeader() {
 }
 
 /**
+ * Extract the user ID from the token of a request.
+ */
+function extractUserID(req, callback) {
+	var token = getTokenFromHeaders(req);
+	if(!token) {
+		return callback(token);
+	}
+	return jwt.verify(token, config.secrets.session, callback);
+}
+
+/**
  * Validate a token
  */
 function validateToken(token, callback) {
@@ -166,11 +205,20 @@ function getHeaderFromToken(token) {
 	return {authorization: 'Bearer ' + token};
 }
 
+function getTokenFromHeaders(req) {
+	var authToken = req.headers.authorization;
+	if(!authToken) return null;
+	return authToken.split(/Bearer\s+/).slice(-1)[0];
+}
+
 /**
  * Set token cookie directly for oAuth strategies
  */
 function setTokenCookie(req, res) {
-	if (!req.user) return res.json(404, {message: 'Something went wrong, please try again.'});
+	if (!req.user) {
+		res.json(404, {message: 'Something went wrong, please try again.'});
+		return res.end();
+	}
 	var token = signToken(req.user._id, req.user.role);
 	res.cookie('token', JSON.stringify(token));
 	res.redirect('/');
@@ -188,5 +236,7 @@ exports.getTokenHeaderForUserId = getTokenHeaderForUserId;
 exports.signToken = signToken;
 exports.getHeaderFromToken = getHeaderFromToken;
 exports.validateToken = validateToken;
+exports.extractUserID = extractUserID;
 
 exports.INTERNAL_USER_ID = INTERNAL_USER_ID;
+

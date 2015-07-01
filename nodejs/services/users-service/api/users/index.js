@@ -12,10 +12,13 @@ router.delete('/:id', auth.hasRole('admin'), controller.destroy);
 router.get('/me', auth.isAuthenticated(), controller.me);
 router.put('/me', auth.isAuthenticated(), controller.saveMe);
 router.put('/:id/password', auth.isAuthenticated(), controller.changePassword);
-router.get('/:id', auth.isAuthenticated(), controller.show);
 router.post('/', controller.create);
+router.get('/search', auth.isAuthenticated(), controller.search);
 router.use('/auth', require('./auth'));
 router.post('/auth', controller.auth);
+router.post('/activation', controller.activate);
+router.post('/activation/:key/send', controller.activate);
+router.get('/:id', auth.isAuthenticated(), controller.show);
 
 /* make sure we have the user account for internal calls available */
 controller.insertInternalCallUser();

@@ -11,10 +11,11 @@ var validationError = function(res, err) {
 function list(query, req, res) {
 	Notification.find(query, function(err, list) {
 		if (err)
-			return res.send(500, err);
-		res.json(200, list);
+			return res.status(500).send({error: err});
+		res.json(list);
+		res.end();
 	});
-}
+};
 
 exports.index = function(req, res) {
 	var query = {};

@@ -1,0 +1,34 @@
+<div class="animated fadeIn" style="overflow: visible;">
+	<h2>Setup Access to your API</h2>
+	<br/>
+
+	<p>In this step, you can define whether or not you want to explicitly grant access to your data consumers.
+		By default, you will need to grant access to your API for each consumers.
+	</p>
+
+	<p>If you want to provide the data to your consumers without prior access granting, use the button below to turn
+		off Access Authorization
+	</p>
+
+	<div class="widget animated fadeIn dark-grey-widget-bg p-xl" ng-show="resourceData.showDisableAuth" style="">
+			<strong>I understand that all my data resources will be consumable without my
+				prior authorization grant.</strong>
+			<label class="switch">
+				<br/>
+				<input type="checkbox" id="disableAuthorization" class="form-control"
+							 ng-model="resourceData.authDisabled"><i></i>
+			</label>
+	</div>
+
+	<a ng-click="resourceData.showDisableAuth = !resourceData.showDisableAuth" class="btn btn-primary">
+		Turn {{ resourceData.showDisableAuth ? 'On' : 'Off'}} Access Authorization <span class="fa fa-lock" ng-class="{'fa-unlock' : resourceData.showDisableAuth, 'fa-lock' : !resourceData.showDisableAuth}"></span>
+	</a>
+
+	<div class="navButtons" style="margin-top: 20px;">
+		<a ng-click="prevStep()" class="btn btn-default">Previous</a>
+		<a ng-click="nextStep()" class="btn btn-primary" ng-disabled="resourceData.showDisableAuth && !resourceData.authDisabled">Next</a>
+	</div>
+
+</div>
+
+

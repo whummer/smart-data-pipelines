@@ -1,0 +1,43 @@
+<fieldset class="animated fadeIn" style="">
+	<h2>Configure Security</h2>
+
+	<p>Riox uses transport-level encryption to ensure security of your data and APIs. You may
+	either use the default security configuration, or select your own custom certificate.</p>
+
+	<!-- data security settings -->
+	<div>
+		<div class="form-group">
+			<label for="enableSecurity" class="col-sm-5">
+				Enable Custom Certificate <i tooltip-placement="top"
+					 tooltip="Provide your own SSL/TLS certificate for encrypted HTTPS connections."
+						class="fa fa-question-circle" style="margin-left: 5px"></i>
+			</label>
+			<div class="col-sm-7">
+				<label class="switch">
+					<input type="checkbox" id="enableSecurity" class="form-control"
+								 ng-model="resourceData.securityEnabled">
+				</label>
+			</div>
+		</div>
+	</div>
+
+	<div ng-alias="newCert = resourceData.certSelect.id == '__new__'" style="max-width: 500px;">
+		<div ng-show="resourceData.securityEnabled">
+			<div class="form-group">
+				<label for="certSel" class="col-lg-5">Select Certificate</label>
+				<div class="col-lg-7">
+					<select id="certSel" class="form-control" ng-model="resourceData.certSelect" 
+						ng-options="n as n.name for n in userCertificates track by n.id"></select>
+				</div>
+			</div>
+			<div ng-show="newCert">
+				<div ng-include="'app/views/shared/certificates.upload.html'"></div>
+			</div>
+		</div>
+		<div class="navButtons">
+			<a ng-click="prevStep()" class="btn btn-default">Previous</a>
+			<a ng-click="nextStep()" class="btn btn-primary"
+				ng-disabled="newCert && (!resourceData.certName || !resourceData.certKEY || !resourceData.certCRT)">Next</a>
+		</div>
+	</div>
+</fieldset>

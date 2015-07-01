@@ -1,72 +1,90 @@
-
 <div class="animated fadeInRight">
-	<h1>Sign up</h1>
 	<div class="row">
-		<div class="col-sm-12">
-
+		<div class="col-lg-12">
 			<div class="ibox">
 				<div class="ibox-title">
 					<h5>Register a new user account</h5>
 				</div>
 				<div class="ibox-content ">
-					<form class="form" name="form" ng-submit="register(form)"
+					<div>
+						<form class="form" name="form" ng-submit="register(form)"
 						novalidate>
+							<div class="form-group"
+								ng-class="{ 'has-success': form.firstname.$valid && submitted,
+	                                            'has-error': form.firstname.$invalid && submitted }">
+								<label>First Name</label> <input type="text" name="firstname"
+									class="form-control" ng-model="user.firstname" required />
+								<p class="help-block"
+									ng-show="form.firstname.$error.required && submitted">
+									Please enter your first name.</p>
+							</div>
+	
+							<div class="form-group"
+								ng-class="{ 'has-success': form.lastname.$valid && submitted,
+	                                            'has-error': form.lastname.$invalid && submitted }">
+								<label>Last Name</label> <input type="text" name="lastname"
+									class="form-control" ng-model="user.lastname" required />
+								<p class="help-block"
+									ng-show="form.lastname.$error.required && submitted">
+									Please enter your last name.</p>
+							</div>
 
-						<div class="form-group"
-							ng-class="{ 'has-success': form.name.$valid && submitted,
-                                            'has-error': form.name.$invalid && submitted }">
+							<div class="form-group"
+								ng-class="{ 'has-success': form.organization.$valid && submitted,
+	                                            'has-error': form.organization.$invalid && submitted }">
+								<label>Organization</label> <input type="text" name="organization"
+									class="form-control" ng-model="user.organization" required
+									mongoose-error />
+								<p class="help-block"
+									ng-show="form.organization.$error.required && submitted">
+									Please enter your organization name.</p>
+								<p class="help-block" ng-show="form.organization.$error.mongoose">
+									{{ errors.organization }}</p>
+							</div>
 
-							<label>Name</label> <input type="text" name="name"
-								class="form-control" ng-model="user.name" required />
-							<p class="help-block"
-								ng-show="form.name.$error.required && submitted">A name is
-								required</p>
-						</div>
-
-						<div class="form-group"
-							ng-class="{ 'has-success': form.email.$valid && submitted,
-                                            'has-error': form.email.$invalid && submitted }">
-							<label>Email</label> <input type="email" name="email"
-								class="form-control" ng-model="user.email" required
-								mongoose-error />
-							<p class="help-block"
-								ng-show="form.email.$error.email && submitted">Doesn't look
-								like a valid email.</p>
-							<p class="help-block"
-								ng-show="form.email.$error.required && submitted">What's
-								your email address?</p>
-							<p class="help-block" ng-show="form.email.$error.mongoose">{{
-								errors.email }}</p>
-						</div>
-
-						<div class="form-group"
-							ng-class="{ 'has-success': form.password.$valid && submitted,
-                                            'has-error': form.password.$invalid && submitted }">
-							<label>Password</label> <input type="password" name="password"
-								class="form-control" ng-model="user.password" ng-minlength="3"
-								required mongoose-error />
-							<p class="help-block"
-								ng-show="(form.password.$error.minlength || form.password.$error.required) && submitted">
-								Password must be at least 3 characters.</p>
-							<p class="help-block" ng-show="form.password.$error.mongoose">
-								{{ errors.password }}</p>
-						</div>
-
-						<div>
-							<button class="btn btn-inverse btn-lg btn-login" type="submit">
-								Sign up</button>
-						</div>
-
-						<hr />
-						<div>
-							Already have an account? <a ui-sref="index.login">Login</a>.
-							<!-- 							<a class="btn btn-google-plus" href="" -->
-							<!-- 								ng-click="loginOauth('google')"> <i -->
-							<!-- 								class="fa fa-google-plus"></i> Connect with Google+ -->
-							<!-- 							</a> -->
-						</div>
-
-					</form>
+							<div class="form-group"
+								ng-class="{ 'has-success': form.email.$valid && submitted,
+	                                            'has-error': form.email.$invalid && submitted }">
+								<label>Email</label> <input type="email" name="email"
+									class="form-control" ng-model="user.email" required
+									mongoose-error />
+								<p class="help-block"
+									ng-show="form.email.$error.email && submitted">Doesn't look
+									like a valid email.</p>
+								<p class="help-block"
+									ng-show="form.email.$error.required && submitted">Please enter
+									your email address.</p>
+								<p class="help-block" ng-show="form.email.$error.mongoose">{{
+									errors.email }}</p>
+							</div>
+	
+							<div class="form-group"
+								ng-class="{ 'has-success': form.password.$valid && submitted,
+	                                            'has-error': form.password.$invalid && submitted }">
+								<label>Password</label> <input type="password" name="password"
+									class="form-control" ng-model="user.password" 
+									required mongoose-error />
+								<p class="help-block"
+									ng-show="form.password.$error.required && submitted">Please enter
+									your password</p>
+								<p class="help-block" ng-show="form.password.$error.mongoose">
+									{{ errors.password }}</p>
+							</div>
+							<div>
+								<button class="btn btn-inverse btn-lg btn-login" type="submit">
+									Sign up</button>
+							</div>
+	
+							<hr />
+							<div>
+								Already have an account? <a ui-sref="index.login">Login</a>.
+<!-- 							<a class="btn btn-google-plus" href="" -->
+<!-- 								ng-click="loginOauth('google')"> <i -->
+<!-- 								class="fa fa-google-plus"></i> Connect with Google+ -->
+<!-- 							</a> -->
+							</div>
+						</form>
+					</div>
 
 				</div>
 			</div>

@@ -36,8 +36,12 @@ var paths = {
   // app base
   base: SRC_DIR,
 
-  // do not inject '.spec.js' files
-  scripts: [SRC_DIR + '/app/**/*.js', '!' + SRC_DIR + '/app/**/*.spec.js'],
+  // inject js files
+  scripts: [SRC_DIR + '/app/**/*.js', 
+            // do not inject '.spec.js' files
+            '!' + SRC_DIR + '/app/**/*.spec.js', 
+            // do not inject admin view files
+            '!' + SRC_DIR + '/app/views/admin/**/*.js'],
 
   // glob for all LESS files (required for file watching)
   less: [SRC_DIR + '/app/**/*.less'],
@@ -219,7 +223,7 @@ gulp.task('ui:serve', 'serve the riox-ui src using nodemon', function () {
     script: SRC_DIR + '/server.js', verbose: false,
     watch: ["web-ui/lib"],
     ignore: ["web-ui/node_modules", "node_modules", "web-ui/lib/bower_components", "services/**/node_modules"],
-    env: {NODE_PATH: "/opt/boxen/nodenv/versions/v0.12.2/lib/node_modules", NODE_ENV: "development", PORT: 8081}
+    env: {NODE_PATH: process.env.NODE_PATH || "/opt/boxen/nodenv/versions/v0.12.2/lib/node_modules", NODE_ENV: "development", PORT: 8081}
   });
 });
 

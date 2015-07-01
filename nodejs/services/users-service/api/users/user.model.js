@@ -5,22 +5,7 @@ var Schema = mongoose.Schema;
 var crypto = require('crypto');
 var authTypes = ['github', 'twitter', 'facebook', 'google'];
 
-var UserSchema = new Schema({
-  name: String,
-  firstname: String,
-  lastname: String,
-  address: {
-	  _id: false,
-	  street: String,
-	  code: String,
-	  city: String,
-	  country: String
-  },
-  email: { type: String, lowercase: true },
-  role: {
-    type: String,
-    default: 'user'
-  },
+var template = {
   hashedPassword: String,
   provider: String,
   salt: String,
@@ -28,7 +13,32 @@ var UserSchema = new Schema({
   twitter: {},
   google: {},
   github: {}
-});
+};
+/** User name (display name). */
+template[NAME] = String;
+/** User's first name. */
+template[FIRSTNAME] = String;
+/** User's last name. */
+template[LASTNAME] = String;
+/** Email address used to identify this user. */
+template[EMAIL] = { type: String, lowercase: true, unique: true, sparse: true };
+/** API key used to identify this user. */
+template[API_KEY] = { type: String, unique: true, sparse: true };
+/** User's address. */
+template[ADDRESS] = {
+		_id: false,
+		street: String,
+		code: String,
+		city: String,
+		country: String
+};
+/** User's role. */
+template[ROLE] = {
+	    type: String,
+		default: 'user'
+};
+
+var UserSchema = new Schema(template);
 
 /**
  * Virtuals
@@ -112,7 +122,9 @@ UserSchema
   .pre('save', function(next) {
     if (!this.isNew) return next();
 
-    if (!validatePresenceOf(this.hashedPassword) && authTypes.indexOf(this.provider) === -1)
+    if (!validatePresenceOf(this.hashedPassword) 
+    		&& authTypes.indexOf(this.provider) === -1 
+    		&& !this[API_KEY])
       next(new Error('Invalid password'));
     else
       next();

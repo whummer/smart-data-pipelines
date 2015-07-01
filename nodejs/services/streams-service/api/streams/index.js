@@ -20,7 +20,8 @@ router.post('/', auth.isAuthenticated(), streamsCtrl.createStream);
 router.post('/:id/apply', auth.isAuthenticated(), streamsCtrl.applyStreamConfig);
 
 /* METHODS FOR STREAM SOURCES */
-router.get('/sources', /* auth.isAuthenticated(), */ sourcesCtrl.indexStreamSource);
+router.get('/sources/all', auth.hasRole('admin'), sourcesCtrl.indexAllStreamSources);
+router.get('/sources', /* auth.isAuthenticated(), */ sourcesCtrl.indexStreamSources);
 router.get('/sources/:id', auth.isAuthenticated(), sourcesCtrl.showStreamSource);
 router.delete('/sources/:id', auth.hasRole('admin'), sourcesCtrl.destroyStreamSource);
 router.post('/sources', auth.isAuthenticated(), sourcesCtrl.createStreamSource);

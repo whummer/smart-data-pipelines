@@ -7,12 +7,17 @@ var runSequence = require('run-sequence');
 var fs = require('fs');
 var cp = require('child_process');
 
-var gulpFiles = {
-	ui : require('./web-ui/web-ui-gulpfile'),
-	streamService : require('./services/streams-service/streams-service-gulpfile'),
-	usersService : require('./services/users-service/users-service-gulpfile'),
-	analyticsService : require('./services/analytics-service/analytics-service-gulpfile'),
-	filesService : require('./services/files-service/files-service-gulpfile')
+try {
+	var gulpFiles = {
+		ui : require('./web-ui/web-ui-gulpfile'),
+		streamService : require('./services/streams-service/streams-service-gulpfile'),
+		usersService : require('./services/users-service/users-service-gulpfile'),
+		analyticsService : require('./services/analytics-service/analytics-service-gulpfile'),
+		filesService : require('./services/files-service/files-service-gulpfile')
+	}
+} catch(e) {
+	// some dependencies still missing.
+	console.log("Cannot import gulp sub-files:", e, e.stack.split("\n"));
 }
 var nodeDirs = [".", "services/test",
                 "services/users-service", "services/streams-service", "services/analytics-service", "services/files-service",

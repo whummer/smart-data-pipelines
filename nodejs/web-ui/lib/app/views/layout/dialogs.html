@@ -1,0 +1,45 @@
+<section ng-controller="DialogController">
+	<script type="text/ng-template" id="dialogContent.html">
+		<!--<style type="text/css">.modal-dialog { height: 100% } .modal-content { height: 100% } </style>
+		<div class="modal inmodal" role="dialog" style="height: 100%">
+		<div class="modal-content animated bounceInRight" style="height: 100%">-->
+
+        <div class="modal-header">
+            <img ng-src="{{titleImg}}"/><h3 class="modal-title"><span ng-class="titleSpanClass"></span> {{title}}</h3>
+        </div>
+        <div class="modal-body">
+	        <span ng-bind-html="dialog"></span>
+			<div ng-show="type == 'input'">
+	            <input class="form-control" ng-model="input"/>
+			</div>
+        	<div ng-show="type == 'select'">
+	            <select class="form-control" ng-model="selected" ng-options="opt.name for opt in options"></select>
+			</div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="ok()" autofocus="autofocus">OK</button>
+            <button class="btn btn-warning" ng-click="cancel()" ng-show="type != 'error' && type != 'info'">Cancel</button>
+        </div>
+
+        <!--</div>
+        </div>-->
+    </script>
+    <script type="text/ng-template" id="foo">
+        <div class="modal-header">
+            <img ng-src="{{titleImg}}"/><h3 class="modal-title">{{title}}</h3>
+        </div>
+        <div class="modal-body">
+	        <span ng-bind-html="dialog"></span>
+			<div ng-show="type == 'input'">
+	            <input class="form-control" ng-model="input"/>
+			</div>
+        	<div ng-show="type == 'select'">
+	            <select class="form-control" ng-model="selected" ng-options="opt.name for opt in options"></select>
+			</div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="ok()" autofocus="autofocus">OK</button>
+            <button class="btn btn-warning" ng-click="cancel()" ng-show="type != 'error'">Cancel</button>
+        </div>
+	</script>
+</section>

@@ -5,6 +5,9 @@ angular.module('rioxApp')
 
     var currentUser = {};
     var currentOrganization = {};
+    
+    /* config/constants */
+    var AUTO_LOGIN_AFTER_SIGNUP = false;
 
     /**
      * Set auth headers for riox JS API.
@@ -14,13 +17,16 @@ angular.module('rioxApp')
     	riox.auth({
       	  RIOX_AUTH_NETWORK: "riox",
       	  RIOX_AUTH_TOKEN: token
-        }, callback);
+        }, callback, function(err) {
+        	/* error occurred */
+        	console.log("Error:", err);
+        });
     };
 
     /**
      * Load organizations of current user.
      */
-    var loadOrganization = function(callback) {
+    var loadOrganizations = function(callback) {
   	  if(!currentUser || (!currentUser.id && !currentUser._id)) return;
   	  if(!currentUser.id) {
   		  currentUser.id = currentUser._id;
@@ -48,13 +54,11 @@ angular.module('rioxApp')
 		currentUser.$promise = deferred.promise;
 		oldPromise.then(
 			function(user) {
-	    		return $q(function(resolve, reject) {
-	    			configureRioxApiAuth($cookieStore.get('token'), function(token) {
-	    				loadOrganization(function() {
-	            			deferred.resolve();
-	            		});
-	            	});
-	    		});
+	    		configureRioxApiAuth($cookieStore.get('token'), function(token) {
+    				loadOrganizations(function() {
+            			deferred.resolve();
+            		});
+            	});
 			}
 		);
     }
@@ -74,12 +78,18 @@ angular.module('rioxApp')
         
         var authServ = this;
 
-        var authLocalUrl = appConfig.services.users.url + "/auth/local";
+        var request = {
+    		email: user.email,
+    		password: user.password
+        };
 
-        $http.post(authLocalUrl, {
-          email: user.email,
-          password: user.password
-        }).
+        var authLocalUrl = appConfig.services.users.url + "/auth/local";
+        if(user[API_KEY]) {
+        	authLocalUrl += "/key";
+        	request[API_KEY] = user[API_KEY];
+        }
+
+        $http.post(authLocalUrl, request).
         success(function(data) {
           $cookieStore.put('token', data.token);
           deferred.resolve(data);
@@ -87,7 +97,7 @@ angular.module('rioxApp')
         	  currentUser = user;
         	  return configureRioxApiAuth(data.token, function() {
         		  Notifications.loadNotifications();
-            	  loadOrganization(cb);
+            	  loadOrganizations(cb);
               });
           });
         }).
@@ -109,7 +119,7 @@ angular.module('rioxApp')
         $cookieStore.remove('token');
         currentUser = {};
         riox.auth.reset();
-        loadOrganization();
+        loadOrganizations();
       },
 
       /**
@@ -126,9 +136,11 @@ angular.module('rioxApp')
 
         return User.save(user,
           function(data) {
-            $cookieStore.put('token', data.token);
-            configureRioxApiAuth(data.token);
-            currentUser = User.get();
+        	if(AUTO_LOGIN_AFTER_SIGNUP) {
+                $cookieStore.put('token', data.token);
+                configureRioxApiAuth(data.token);
+                currentUser = User.get();
+        	}
             return cb(user);
           },
           function(err) {
@@ -159,6 +171,20 @@ angular.module('rioxApp')
       },
 
       /**
+       * Sets the current user to a new objects.
+       *
+       * @return {Object} user
+       */
+      setCurrentUser: function(user) {
+          var deferred = $q.defer();
+    	  currentUser = user;
+    	  loadOrganizations(function() {
+    		  deferred.resolve();
+    	  });
+    	  return deferred.promise;
+      },
+
+      /**
        * Gets all available info on authenticated user
        *
        * @return {Object} user
@@ -179,7 +205,7 @@ angular.module('rioxApp')
       setCurrentOrganization: function(org) {
     	return currentOrganization = org;
       },
-      loadOrganization: loadOrganization,
+      loadOrganizations: loadOrganizations,
 
       /**
        * Check if a user is logged in
@@ -213,7 +239,17 @@ angular.module('rioxApp')
        * @return {Boolean}
        */
       isAdmin: function() {
-        return currentUser.role === 'admin';
+    	  return hasRole('admin');
+      },
+
+      /**
+       * Check if a user has a given role
+       *
+       * @return {Boolean}
+       */
+      hasRole: function(role) {
+    	  return appConfig.userRoles.indexOf(currentUser.role) >= 
+    		  appConfig.userRoles.indexOf(role);
       },
 
       /**

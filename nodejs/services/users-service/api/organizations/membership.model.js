@@ -30,7 +30,7 @@ template[CREATOR_ID] = String;
 /**
  * Creation Date.
  */
-template[CREATION_DATE] = String;
+template[CREATION_DATE] = Date;
 
 
 var MembershipSchema = new Schema(template);

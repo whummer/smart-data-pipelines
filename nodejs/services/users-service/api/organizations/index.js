@@ -8,12 +8,15 @@ var router = express.Router();
 
 router.get('/all', auth.hasRole('admin'), controller.index);
 router.get('/', auth.isAuthenticated(), controller.getOwnAll);
+router.post('/', auth.isAuthenticated(), controller.create);
 router.get('/default', auth.isAuthenticated(), controller.getOwnDefault);
 router.get('/:id', /* auth.isAuthenticated() ,*/ controller.show);
 router.delete('/:id', auth.hasRole('admin'), controller.destroy);
-router.post('/', auth.isAuthenticated(), controller.create);
-router.put('/membership', auth.isAuthenticated(), controller.updateMembership);
 router.put('/:id', auth.isAuthenticated(), controller.update);
-router.post('/invite', auth.isAuthenticated(), controller.invite);
+router.post('/:id/invite', auth.isAuthenticated(), controller.invite);
+router.get('/:id/memberships', auth.isAuthenticated(), auth.fetchOrgs(), controller.listMemberships);
+router.put('/memberships/:id', auth.isAuthenticated(), controller.updateMembership);
+router.get('/memberships/:id', auth.isAuthenticated(), auth.fetchOrgs(), controller.showMembership);
+router.delete('/memberships/:id', auth.isAuthenticated(), auth.fetchOrgs(), controller.deleteMembership);
 
 module.exports = router;

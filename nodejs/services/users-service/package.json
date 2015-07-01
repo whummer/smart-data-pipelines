@@ -23,6 +23,7 @@
     "passport-local": "~0.1.6",
     "passport-twitter": "latest",
     "winston": "^1.0.0",
+    "uuid": "2.0.1",
 
     "riox-shared": "../../riox-shared/",
     "riox-services-base": "../riox-services-base/"

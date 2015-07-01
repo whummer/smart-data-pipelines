@@ -7,8 +7,60 @@ angular.module('rioxApp')
 	$rootScope.shared = $rootScope.shared || {};
     $scope.isLoggedIn = Auth.isLoggedIn;
     $scope.isAdmin = Auth.isAdmin;
+    $scope.hasRole = Auth.hasRole;
     $scope.getCurrentUser = Auth.getCurrentUser;
     $scope.getCurrentOrganization = Auth.getCurrentOrganization;
+
+    /* navigation path, displayed in top nav bar */
+    $rootScope.shared.navigationPath = [];
+    $rootScope.stateToScopesMap = {};
+
+	/* get nav. bar stack */
+    $rootScope.setNavPath = function(scope, state) {
+    	var origScope = scope;
+		var path = [];
+		for(var i = 0; scope && i < 10; i ++) {
+			if(typeof scope.getNavPart == "function") {
+				var part = scope.getNavPart();
+				if(part) path.unshift(part);
+			}
+			scope = scope.$parent;
+		}
+		if(state) {
+			if(state.current) state = state.current;
+			//console.log(state.name, "=", origScope);
+			/* put scope to map */
+			$rootScope.stateToScopesMap[state.name] = origScope;
+		}
+		/* set navigation path in scope */
+		$scope.shared.navigationPath = path;
+		return path;
+	};
+	$rootScope.getPageTitle = function() {
+		var title = "Riox ::";
+		var path = $scope.shared.navigationPath;
+		for(var i = 0; i < path.length; i ++) {
+			title += " " + path[i].name;
+			if(i < path.length - 1) {
+				title += " /"; 
+			}
+		}
+		return title;
+	};
+	if(!$rootScope.__pageNavListenerAdded) {
+		$rootScope.__pageNavListenerAdded = true;
+		$rootScope.$on('$stateChangeStart',
+			function(event, toState, toParams, fromState, fromParams) {
+				if(event.defaultPrevented) {
+					var scope = $rootScope.stateToScopesMap[toState.name];
+					if(scope) {
+						$rootScope.setNavPath(scope, toState);
+					}
+				}
+			}
+		);
+	}
+
 
     $scope.logout = function () {
       Auth.logout();
@@ -17,11 +69,14 @@ angular.module('rioxApp')
        * important: make sure to reload the entire page, to
        * reset all controllers, flush state information, etc.
        */
-      $window.location.reload();
+      setTimeout(function(){
+    	  console.log("Reloading the page...");
+          $window.location.reload(); 
+      }, 100);
     };
 
     $scope.isActive = function (route) {
-      return route === $location.path();
+      return route === $location.path() || $location.path().indexOf(route) == 0;
     };
 
     riox.defaultErrorCallback = function (p1, p2, p3, p4) {
@@ -35,7 +90,7 @@ angular.module('rioxApp')
 
     $scope.loadDefaultOrganization = function () {
       var deferred = $q.defer();
-      riots.organizations(function (orgs) {
+      riox.organizations(function (orgs) {
         angular.forEach(orgs, function (org) {
           var userInfo = $scope.getCurrentUser();
           if (userInfo) {
@@ -71,11 +126,12 @@ angular.module('rioxApp')
       return result;
     };
     $scope.dateFormat = "yyyy-MM-dd hh:mm:ss";
-    $scope.formatTime = $scope.formatTime = function (timestamp) {
+    $scope.timeFormat = "hh:mm:ss";
+    $scope.formatTime = window.formatTime = function (timestamp) {
       if (!timestamp) {
         return null;
       }
-      return formatDate(timestamp);
+      return formatDate(timestamp, $scope.timeFormat);
     };
     $scope.formatCoords = function (loc) {
       if (!loc)
@@ -90,7 +146,18 @@ angular.module('rioxApp')
       }
       return number.toFixed(numDecimals);
     };
-
+    $scope.find = function(list, query) {
+    	if(!list || !list.length) return;
+    	for(var i = 0; i < list.length; i ++) {
+    		var item = list[i];
+			var same = true;
+    		for(var key in query) {
+    			if(query[key] != item[key])
+    				same = false;
+    		}
+    		if(same) return item;
+    	}
+    };
 
     $scope.loadDefaultOrganization = function () {
       var deferred = $q.defer();
