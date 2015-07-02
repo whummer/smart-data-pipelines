@@ -205,7 +205,7 @@ if [ "$START" == 1 ]; then
   start_hsql;
   start_kafka;
 
-  if [ "$XD_ENABLED" -ne "" ]; then
+  if [ "$XD_ENABLED" == 1 ]; then
 	  start_xd_admin;
 	  start_xd_container;
   fi
