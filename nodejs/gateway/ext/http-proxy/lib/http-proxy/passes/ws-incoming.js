@@ -1,10 +1,12 @@
-var http   = require('http'),
-		https  = require('https'),
-		common = require('../common'),
-		logger = require('winston'),
-		passes = exports,
-		util = require('util');
-		//AnalyticsTransformer = require('./analytics-transformer.js');
+var
+	_ = require('lodash'),
+	http = require('http'),
+	https = require('https'),
+	common = require('../common'),
+	logger = require('winston'),
+	passes = exports,
+	KafkaTransformer = require('./kafka-transformer.js'),
+	util = require('util');
 
 /*!
  * Array of passes.
@@ -32,7 +34,7 @@ var passes = exports;
 	 * @api private
 	 */
 
-	function checkMethodAndHeader (req, socket) {
+		function checkMethodAndHeader(req, socket) {
 		if (req.method !== 'GET' || !req.headers.upgrade) {
 			socket.destroy();
 			return true;
@@ -54,16 +56,16 @@ var passes = exports;
 	 * @api private
 	 */
 
-	function XHeaders(req, socket, options) {
-		if(!options.xfwd) return;
+		function XHeaders(req, socket, options) {
+		if (!options.xfwd) return;
 
 		var values = {
-			for  : req.connection.remoteAddress || req.socket.remoteAddress,
-			port : common.getPort(req),
+			for: req.connection.remoteAddress || req.socket.remoteAddress,
+			port: common.getPort(req),
 			proto: common.hasEncryptedConnection(req) ? 'wss' : 'ws'
 		};
 
-		['for', 'port', 'proto'].forEach(function(header) {
+		['for', 'port', 'proto'].forEach(function (header) {
 			req.headers['x-forwarded-' + header] =
 				(req.headers['x-forwarded-' + header] || '') +
 				(req.headers['x-forwarded-' + header] ? ',' : '') +
@@ -81,12 +83,14 @@ var passes = exports;
 	 *
 	 * @api private
 	 */
-	function stream(req, socket, options, head, server, clb) {
+		function stream(req, socket, options, head, server, clb) {
 		logger.debug("ws-incoming::stream");
 		common.setupSocket(socket);
 
 		if (head && head.length) socket.unshift(head);
 
+
+		logger.debug('extensions: ', options.extensions);
 
 		var proxyReq = (common.isSSL.test(options.target.protocol) ? https : http).request(
 			common.setupOutgoing(options.ssl || {}, options, req)
@@ -98,7 +102,7 @@ var passes = exports;
 			if (!res.upgrade) socket.end();
 		});
 
-		proxyReq.on('upgrade', function(proxyRes, proxySocket, proxyHead) {
+		proxyReq.on('upgrade', function (proxyRes, proxySocket, proxyHead) {
 			proxySocket.on('error', onOutgoingError);
 
 			// Allow us to listen when the websocket has completed
@@ -118,15 +122,20 @@ var passes = exports;
 			if (proxyHead && proxyHead.length) proxySocket.unshift(proxyHead);
 
 			socket.write('HTTP/1.1 101 Switching Protocols\r\n');
-			socket.write(Object.keys(proxyRes.headers).map(function(i) {
+			socket.write(Object.keys(proxyRes.headers).map(function (i) {
 				return i + ": " + proxyRes.headers[i];
 			}).join('\r\n') + '\r\n\r\n');
 
-			proxySocket //.pipe(new AnalyticsTransformer("proxy2backend"))
-								 .pipe(socket)
-								 // .pipe(new AnalyticsTransformer("backend2proxy"))
-								 .pipe(proxySocket);      
-			
+			proxySocket
+				.pipe(socket)
+				.pipe(proxySocket);
+
+			var kafkaEnabled  = _.indexOf(options.extensions, 'kafka-extension') != -1;
+			if (kafkaEnabled) {
+				proxySocket.pipe(new KafkaTransformer("kafka-interceptor", options.context));
+			}
+
+
 			server.emit('open', proxySocket);
 			server.emit('proxySocket', proxySocket);  //DEPRECATED.
 		});
@@ -143,8 +152,8 @@ var passes = exports;
 		}
 
 	}
-	
+
 ] // <--
-	.forEach(function(func) {
+	.forEach(function (func) {
 		passes[func.name] = func;
 	});

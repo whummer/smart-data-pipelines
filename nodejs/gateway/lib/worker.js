@@ -20,9 +20,13 @@ var monitorRequest = expressStatsd(monitorConfig);
 /* constants/configurations */
 var CORS_HEADERS_ENABLED = true;
 var ENFORCE_ACCESS_LIMITS = true;
-var SEND_TO_STATSD = true;
+var SEND_TO_STATSD = false;
 var rootDir = fs.realpathSync(__dirname + '/../');
 var hipacheVersion = require(path.join(__dirname, '..', 'package.json')).version;
+
+var KAFKA_EXTENSION = 'kafka-extension';
+
+var ENABLED_EXTENSIONS = [KAFKA_EXTENSION];
 
 /* configure riox admin API */
 if(ENFORCE_ACCESS_LIMITS) {
@@ -513,9 +517,9 @@ Worker.prototype.runServer = function (config) {
 				logger.error("worker.redis.wsRequestHandler:", err);
 			}
 			if (backend && backend.targetPath) {
-				socket.on('data', function(data) {
-					console.log('Socketondata:', data.toString())
-				});
+
+				console.log('Backend:', JSON.stringify(backend))
+
 				// Proxy the WebSocket request to the backend
 				proxy.ws(req, socket, head, {
 					target: {
@@ -523,12 +527,19 @@ Worker.prototype.runServer = function (config) {
 						port: backend.port,
 						path: backend.targetPath
 					},
-					ignorePath: false,  /* ensures that we don't end up with paths like "/index.html/index.html" */
+
+					extensions : ENABLED_EXTENSIONS,
+					context: backend,
+					ignorePath: false, /* ensures that we don't end up with paths like "/index.html/index.html" */
 					prependPath: false /* ensures that we don't end up with paths like "/index.html/" */
 				});
-				socket.on('data', function(data) {
-					console.log('Socketondata1:', data.toString());
-				});
+
+				// the following works only for non-websocket data
+				/*proxy.on('proxyRes', function (proxyRes, req, res) {
+				 console.log('RAW Response from the target:', proxyRes);
+				 });
+				 */
+
 			} else {
 				logger.error("worker.redis.wsRequestHandler:", "Route not defined.");
 			}

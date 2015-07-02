@@ -23,16 +23,18 @@
   },
   "dependencies": {
     "express-statsd": "^0.3.0",
-    "http-proxy": "./ext/http-proxy",
+    "http-proxy": "file:./ext/http-proxy",
+    "kafka-node": "^0.2.27",
+    "lodash": "^3.10.0",
     "lru-cache": "2.5.x",
-    "minimist": "0.0.8",
-    "redis": "0.10.x",
-    "winston": "^1.0.0",
-    "promise": "7.0.3",
     "lynx": "0.2.0",
-
+    "minimist": "0.0.8",
+    "promise": "7.0.3",
+    "redis": "0.10.x",
     "riox-services-base": "file:../services/riox-services-base",
-    "riox-shared": "file:../riox-shared"
+    "riox-shared": "file:../riox-shared",
+    "uuid": "^2.0.1",
+    "winston": "^1.0.0"
   },
   "devDependencies": {
     "mocha": "1.x",
