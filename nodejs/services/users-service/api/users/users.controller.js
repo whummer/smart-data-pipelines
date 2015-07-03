@@ -9,6 +9,8 @@ var riox = require('riox-shared/lib/api/riox-api');
 var auth = require('riox-services-base/lib/auth/auth.service');
 var email = require('riox-services-base/lib/util/email');
 var uuid = require('uuid');
+var crypto = require('crypto');
+var pwgen = require('password-generator');
 
 /* configuration */
 var PW_MIN_LENGTH = 6;
@@ -185,8 +187,8 @@ exports.destroy = function(req, res) {
  */
 exports.changePassword = function(req, res, next) {
 	var userId = req.user._id;
-	var oldPass = String(req.body.oldPassword);
-	var newPass = String(req.body.password);
+	var oldPass = String(req.body.password);
+	var newPass = String(req.body.newPassword);
 
 	if(!checkPassword(newPass, res)) {
 		return;
@@ -241,6 +243,37 @@ var checkPasswordStrength = function(pass) {
 	return pass.match(/[a-zA-Z]+/) && 
 		pass.match(/[0-9]+/) && 
 		pass.length >= PW_MIN_LENGTH;
+};
+
+var generatePassword = function(callback) {
+	var pw = pwgen();
+	callback(pw);
+};
+
+/**
+ * Recover account details.
+ */
+exports.recover = function(req, res) {
+	var emailStr = req.body[EMAIL];
+	if(!emailStr || emailStr.match(/^\s*$/))
+		return res.status(400).json({error: "Please provide a valid email address"});
+	var query = {};
+	query[EMAIL] = emailStr;
+	User.find(query, function(err, list) {
+		if(err || !list || !list.length) 
+			return res.status(404).send();
+		var user = list[0];
+		generatePassword(function(password) {
+			user[PASSWORD] = password;
+			user.save(function(err, user) {
+				if(err || !user)
+					return res.status(500).json({error: "Unable to change user password: " + err});
+				//console.log("sending recover email", user, password);
+				email.sendRecoverMail(user, password);
+				res.json({message: "Recover email sent successfully."});
+			});
+		});
+	});
 };
 
 /**

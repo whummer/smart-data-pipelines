@@ -24,6 +24,7 @@ function dashboardCtrl($scope, $state, $log, growl) {
 	};
 	$scope.chart.update = true;
 	$scope.chart.interval = 2000;
+	$scope.showCountryDetails = true;
 	
 	/* stats hash */
 	$scope.stats = {
@@ -77,7 +78,6 @@ function dashboardCtrl($scope, $state, $log, growl) {
 				var msg = JSON.parse(evt.data);
 				if(msg[TYPE] == MSGTYPE_DATA) {
 					var data = msg[PAYLOAD];
-					//console.log("data", data);
 					var received = null;
 					/* read counters */
 					if(data.counters) {
@@ -87,6 +87,10 @@ function dashboardCtrl($scope, $state, $log, growl) {
 					} else {
 						received = data.numInvocations;
 					}
+
+					// TODO remove (testing only)
+					//received = window.lastReceived = (window.lastReceived || 120) + (Math.random() - 0.5) * 10;
+
 					/* read chart data */
 					var label = formatTime(new Date());
 					$scope.chart.dataAll[0].push(received);
@@ -113,7 +117,6 @@ function dashboardCtrl($scope, $state, $log, growl) {
 	var getCountryStats = function() {
 		var res = $scope.countryStats = {};
 		$scope.invocationStats.details.forEach(function(inv) {
-			//console.log(inv);
 			for(var key in inv.ips) {
 				var obj = inv.ips[key];
 				if(obj.country) {
@@ -125,6 +128,22 @@ function dashboardCtrl($scope, $state, $log, growl) {
 			};
 		});
 		$scope.stats.countries = res;
+		// TODO remove (testing only)
+//		$scope.stats.countries = {
+//			"US": 100,
+//			"DE": 60,
+//			"CH": 10,
+//			"FR": 55,
+//			"UK": 60,
+//			"AU": 75,
+//			"CA": 45,
+//			"AT": 50,
+//			"BR": 75,
+//			"RU": 60,
+//			"ES": 60,
+//			"EG": 60,
+//			"IT": 65,
+//		}
 	};
 
 	$scope.loadInvocationStats = function() {
@@ -132,10 +151,8 @@ function dashboardCtrl($scope, $state, $log, growl) {
 		var query = {};
 		query.details = true;
 		riox.statistics.invocations(query, function(stats) {
-			//console.log(stats);
 			$scope.$apply(function() {
 				$scope.invocationStats = stats;
-				console.log(stats);
 				stats.requests = $scope.stats.requests = {
 						status: stats.status,
 						total: stats.numInvocations};

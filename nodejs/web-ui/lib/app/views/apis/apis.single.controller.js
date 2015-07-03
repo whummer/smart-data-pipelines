@@ -22,7 +22,6 @@ angular.module('rioxApp')
 	$scope.removeEndpoint = function(i) {
 		var api = $scope.shared.selectedAPI;
 		if(!api) return;
-		console.log("removeEndpoint");
 		api[BACKEND_ENDPOINTS].splice(i, 1);
 	};
 
@@ -42,6 +41,10 @@ angular.module('rioxApp')
 		});
 	};
 
+	var isTopLevelDomain = function(host) {
+		return host && host.match(/^.*\.((com)|(net)|(org)|(ftp\.sh))(:[0-9]+)?$/);
+	};
+
 	/* get nav. bar stack */
 	$scope.getNavPart = function() {
 		if($scope.shared.selectedAPI) {
@@ -57,11 +60,21 @@ angular.module('rioxApp')
 		var api = $scope.shared.selectedAPI;
 		for(var i = 0; i < orgs.length; i ++) {
 			if(orgs[i][ID] == api[ORGANIZATION_ID]) {
-				$scope.subdomain = "." + orgs[i][DOMAIN_NAME] + ".riox.io";
+				var domains = orgs[i][DOMAIN_NAME];
+				if(!domains.length) {
+					domains = [ ".riox.io" ];
+				}
+				for(var j = 0; j < domains.length; j ++) {
+					if(!isTopLevelDomain(domains[j])) {
+						domains[j] = domains[j] + ".riox.io";
+					}
+					domains[j] = "." + domains[j];
+				}
+				$scope.subdomains = domains;
+				$scope.selectedSubdomain = domains[0];
 				return;
 			}
 		}
-		$scope.subdomain = ".riox.io";
 	});
 
 	/* load main elements */

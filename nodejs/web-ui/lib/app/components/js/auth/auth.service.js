@@ -161,7 +161,7 @@ angular.module('rioxApp')
         var cb = callback || angular.noop;
 
         return User.changePassword({ id: currentUser._id }, {
-          oldPassword: oldPassword,
+          password: oldPassword,
           newPassword: newPassword
         }, function(user) {
           return cb(user);

@@ -19,7 +19,7 @@
 								</div>
 							</div>
 						</div>
-						<div class="table-responsive">
+						<div class="table-responsive" ng-show="tableParams">
 							<table ng-table="tableParams" class="table table-striped">
 								<thead>
 									<tr>
@@ -40,6 +40,9 @@
 									</tr>
 								</tbody>
 							</table>
+						</div>
+						<div class="table-responsive" ng-show="!tableParams">
+							Loading ...
 						</div>
 					</div>
 				</div>

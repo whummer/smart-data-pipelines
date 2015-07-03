@@ -139,10 +139,10 @@ var returnAndSave = function(invocationObj, status, res, cacheForPath) {
 			}
 			/* save invocation */
 			invocationObj.save(function(err, obj) {
-				if(err) {
-					logger.warn("Unable to save invocation: " + err);
+				if(err || !obj) {
+					return logger.warn("Unable to save invocation: " + err);
 				}
-				/* deterimine IP address */
+				/* determine IP address */
 				if(!obj[SOURCE_COUNTRY]) {
 					getIPInfo(obj[SOURCE_IP], function(info) {
 						obj[SOURCE_COUNTRY] = info.countryCode;
