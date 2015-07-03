@@ -130,11 +130,15 @@ var passes = exports;
 				.pipe(socket)
 				.pipe(proxySocket);
 
-			var kafkaEnabled  = _.indexOf(options.extensions, 'kafka-extension') != -1;
-			if (kafkaEnabled) {
-				proxySocket.pipe(new KafkaTransformer("kafka-interceptor", options.context));
-			}
-
+			// add configured extensions
+			_.each(options.extensions, function(extension) {
+				if (extension.enabled) {
+					logger.info('Enabling extension: %s -> %s', extension.name, extension.enabled);
+					proxySocket.pipe(setupExtension(extension, options.context));
+				} else {
+					logger.debug('Extension is disabled: %s', extension.name);
+				}
+			});
 
 			server.emit('open', proxySocket);
 			server.emit('proxySocket', proxySocket);  //DEPRECATED.
@@ -157,3 +161,12 @@ var passes = exports;
 	.forEach(function (func) {
 		passes[func.name] = func;
 	});
+
+
+function setupExtension(extension, context) {
+	switch (extension.name) {
+		case 'kafka' : return new KafkaTransformer("kafka-interceptor", context);
+		default : throw new Error('Unknown extension: ' + extension.name);
+	}
+
+}

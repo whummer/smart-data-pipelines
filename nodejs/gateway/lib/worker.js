@@ -24,10 +24,6 @@ var SEND_TO_STATSD = false;
 var rootDir = fs.realpathSync(__dirname + '/../');
 var hipacheVersion = require(path.join(__dirname, '..', 'package.json')).version;
 
-var KAFKA_EXTENSION = 'kafka-extension';
-
-var ENABLED_EXTENSIONS = [KAFKA_EXTENSION];
-
 /* configure riox admin API */
 if(ENFORCE_ACCESS_LIMITS) {
 	global.riox = require('riox-shared/lib/api/riox-api.js')
@@ -94,7 +90,11 @@ Worker.prototype.run = function () {
 };
 
 Worker.prototype.runServer = function (config) {
+
 	var options = {};
+
+
+	console.log(config.extensions)
 	if (config.server.httpKeepAlive !== true) {
 		// Disable the http Agent of the http-proxy library so we force
 		// the proxy to close the connection after each request to the backend
@@ -512,6 +512,7 @@ Worker.prototype.runServer = function (config) {
 	var wsRequestHandler = function (req, socket, head) {
 		logger.debug("worker.wsRequestHandler");
 
+;
 		this.cache.getBackend(req.headers.host, req.method, req.url, function (err, code, backend) {
 			if (err) {
 				logger.error("worker.redis.wsRequestHandler:", err);
@@ -528,7 +529,7 @@ Worker.prototype.runServer = function (config) {
 						path: backend.targetPath
 					},
 
-					extensions : ENABLED_EXTENSIONS,
+					extensions : config.extensions,
 					context: backend,
 					ignorePath: false, /* ensures that we don't end up with paths like "/index.html/index.html" */
 					prependPath: false /* ensures that we don't end up with paths like "/index.html/" */
