@@ -81,7 +81,7 @@ exports.sendRecoverMail = function(user, password) {
 	var msg = EMAIL_ACCOUNT_RECOVER_MSG
 			.replace("<name>", displayName)
 			.replace("<password>", password);
-	send(user.email, EMAIL_ACTIVATION_SUBJECT, msg);
+	send(user.email, EMAIL_ACCOUNT_RECOVER_SUBJECT, msg);
 };
 
 var getDisplayName = function(user) {
