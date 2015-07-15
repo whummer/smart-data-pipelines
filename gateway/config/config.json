@@ -1,0 +1,36 @@
+{
+	"server": {
+    "debug": false,
+		"accessLog": "/var/log/hipache/hipache.log",
+		"workers": 1,
+		"maxSockets": 100,
+		"deadBackendTTL": 30,
+		"tcpTimeout": 30,
+		"retryOnError": 3,
+		"deadBackendOn500": true,
+		"httpKeepAlive": false,
+		"staticDir": null,
+		"lruCache": false
+	},
+	"http": {
+		"port": 8090,
+		"bind": ["0.0.0.0"]
+	},
+	"https": {
+		"bind": "0.0.0.0",
+		"port": 8091,
+		"cert": "config/server.crt",
+		"key": "config/server.key"
+	},
+	"extensions": [
+		{
+			"name": "kafka",
+			"enabled": true,
+			"config": {
+				"brokerHost": "localhost",
+				"brokerPort": 9192
+			}
+		}
+	],
+	"driver": "redis://redis.production.svc.cluster.local"
+}

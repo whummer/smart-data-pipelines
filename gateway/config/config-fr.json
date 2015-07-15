@@ -1,0 +1,26 @@
+{
+    "server": {
+        "debug": true,
+        "accessLog": "/tmp/hipache.log",
+        "workers": 1,
+        "maxSockets": 100,
+        "deadBackendTTL": 30,
+        "tcpTimeout": 15,
+        "retryOnError": 0,
+        "deadBackendOn500": true,
+        "httpKeepAlive": true,
+        "lruCache": false
+    },
+    "http": {
+        "port": 80,
+        "bind": [ "0.0.0.0" ]
+    },
+    "https": {
+    	"bind" : "127.0.0.1",
+     	"port" : 443,
+    	"cert" : "config/server.crt",
+    	"key"  : "config/server.key"
+    },
+    "user": "riox",
+    "group": "staff"
+}

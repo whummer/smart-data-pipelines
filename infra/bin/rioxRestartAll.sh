@@ -33,4 +33,4 @@ done
 
 #( cd nodejs && gulp riox) &
 
-#( cd ~/eclipse/riox/nodejs/gateway && sudo ./bin/rgw -f config/config.json )
+#( cd ~/eclipse/riox/gateway && sudo ./bin/rgw -f config/config.json )
