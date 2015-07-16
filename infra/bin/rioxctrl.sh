@@ -2,6 +2,7 @@
 
 red=`tput setaf 1`
 green=`tput setaf 2`
+yellow=`tput setaf 3`
 reset=`tput sgr0`
 
 VERBOSE=0
@@ -9,6 +10,7 @@ CHECK=0
 RESTART=0
 START=0
 KILL=0
+XD_ENABLED=0
 
 #
 # collect CLI args
@@ -20,13 +22,11 @@ while true; do
     -s | --start) START=1; shift ;;
     -k | --kill) KILL=1; shift ;;
     -c | --check) CHECK=1; shift ;;
+    -x | --xd-enabled) XD_ENABLED=1; shift ;;
     -- ) shift; break ;;
     * ) break ;;
   esac
 done
-
-echo "CHECK: $CHECK"
-echo "VERBOSE: $VERBOSE"
 
 XD_CONTAINER=$(which xd-container)
 ZK=$(which zkServer)
@@ -57,8 +57,10 @@ if [ "$VERBOSE" == 1 ]; then
 	echo "ZK_CLIENT_CONNECT: ${ZK_CLIENT_CONNECT}"
 	echo "SPRING_REDIS_HOST: ${SPRING_REDIS_HOST}"
 	echo "SPRING_REDIS_PORT: ${SPRING_REDIS_PORT}"
-	echo "XD_MESSAGEBUS_KAFKA_BROKERS: ${XD_MESSAGEBUS_KAFKA_BROKERS}"
-	echo "XD_MESSAGEBUS_KAFKA_ZKADDRESS: ${XD_MESSAGEBUS_KAFKA_ZKADDRESS}"
+	if [ "$XD_ENABLED" -ne "" ]; then
+		echo "XD_MESSAGEBUS_KAFKA_BROKERS: ${XD_MESSAGEBUS_KAFKA_BROKERS}"
+		echo "XD_MESSAGEBUS_KAFKA_ZKADDRESS: ${XD_MESSAGEBUS_KAFKA_ZKADDRESS}"
+	fi
 fi
 
 #
@@ -181,15 +183,6 @@ function start_xd_admin() {
 	else
 		printf "${green}Found xd-admin script: ${XD_ADMIN}${reset}\n"
 		nohup $XD_ADMIN 2>&1 > /tmp/xd-admin.log &
-		#sleep 3
-		#started=$(cat /tmp/hsql | grep "Started HsqlServerApplication")
-		#if [ -z "$started" ]; then
-		#	printf "${red}Could not start HSQL:${reset}\n"
-		#	cat /tmp/hsql.log
-		#	exit -1
-		##lse
-		#	printf "${green}HSQL started successfully${reset}\n"
-		#fi
 	fi
 }
 
@@ -199,15 +192,6 @@ function start_xd_container() {
 	else
 		printf "${green}Found xd-container script: ${XD_CONTAINER}${reset}\n"
 		nohup $XD_CONTAINER 2>&1 > /tmp/xd-container.log &
-		#sleep 3
-		#started=$(cat /tmp/hsql | grep "Started HsqlServerApplication")
-		#if [ -z "$started" ]; then
-		#	printf "${red}Could not start HSQL:${reset}\n"
-		#	cat /tmp/hsql.log
-		#	exit -1
-		##lse
-		#	printf "${green}HSQL started successfully${reset}\n"
-		#fi
 	fi
 }
 
@@ -221,28 +205,38 @@ if [ "$START" == 1 ]; then
   start_hsql;
   start_kafka;
 
-  start_xd_admin;
-  start_xd_container;
+  if [ "$XD_ENABLED" == 1 ]; then
+	  start_xd_admin;
+	  start_xd_container;
+  fi
 
   exit 0
 fi
 
 if [ "$KILL" == 1 ]; then
-	printf "${red}Killing riox services...${reset}\n"
+	printf "${yellow}Killing riox services...${reset}\n"
 	pkill redis-server
 	$KAFKA_STOP
 	$ZK stop
 	kill -9 $(ps -eaf | grep hsqldb | grep -v grep | awk '{print $2}')
+	CHECK=1;
 fi
 
 function check_output {
 	service=$1
 	output=$2
-	if [ -z "$output" ]; then
-		printf "${red}${service} seems unavailable.${reset}\n"
-		exit -1
+	if [ "$KILL" == 1 ]; then
+		if [ -z "$output" ]; then
+			printf "${green}${service} shutdown${reset}\n"
+		else
+			printf "${red}${service} still there!${reset}\n"
+		fi
 	else
-		printf "${green}${service} seems OK!${reset}\n"
+		if [ -z "$output" ]; then
+			printf "${yellow}${service} seems unavailable.${reset}\n"
+		else
+			printf "${green}${service} seems OK!${reset}\n"
+		fi
 	fi
 }
 

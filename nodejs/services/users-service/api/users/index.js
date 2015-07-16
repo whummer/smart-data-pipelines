@@ -19,6 +19,7 @@ router.post('/auth', controller.auth);
 router.post('/activation', controller.activate);
 router.post('/activation/:key/send', controller.activate);
 router.get('/:id', auth.isAuthenticated(), controller.show);
+router.post('/recover', controller.recover);
 
 /* make sure we have the user account for internal calls available */
 controller.insertInternalCallUser();

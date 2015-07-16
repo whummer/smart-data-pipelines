@@ -30,6 +30,9 @@
 		"winston": "^1.0.0",
 		"promise": "7.0.3",
 		"lynx": "0.2.0",
+		"kafka-node": "^0.2.27",
+		"lodash": "^3.10.0",
+		"uuid": "^2.0.1",
 
 		"riox-services-base": "file:../services/riox-services-base",
 		"riox-shared": "file:../riox-shared"

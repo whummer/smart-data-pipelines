@@ -10,7 +10,7 @@ angular.module('rioxApp')
 		$scope.submittedPW = true;
 		var valid = form.$valid && (form.password.$viewValue == form.passwordRepeat.$viewValue);
 		if(valid) {
-			Auth.changePassword( $scope.user.oldPassword, $scope.user.password )
+			Auth.changePassword( $scope.user.oldPassword, $scope.user.newPassword )
 			.then(function(obj) {
 				$scope.message = "Password successfully changed.";
 				growl.info("Password successfully changed");

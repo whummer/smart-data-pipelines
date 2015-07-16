@@ -24,6 +24,7 @@
     "passport-twitter": "latest",
     "winston": "^1.0.0",
     "uuid": "2.0.1",
+    "password-generator": "1.0.0",
 
     "riox-shared": "../../riox-shared/",
     "riox-services-base": "../riox-services-base/"
