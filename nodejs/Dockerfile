@@ -43,13 +43,6 @@ ADD ./riox-shared/bower.json /code/riox-shared/
 ADD ./web-ui/*gulpfile.js /code/web-ui/
 RUN gulp ui:bower
 
-# add gulpfiles - TODO probably not needed
-#ADD ./services/files-service/*gulpfile.js /code/services/files-service/
-#ADD ./services/users-service/*gulpfile.js /code/services/users-service/
-#ADD ./services/streams-service/*gulpfile.js /code/services/streams-service/
-#ADD ./services/analytics-service/*gulpfile.js /code/services/analytics-service/
-#ADD ./gateway/gulpfile.js /code/gateway/
-
 # now add entire code dir
 ADD . /code
 
