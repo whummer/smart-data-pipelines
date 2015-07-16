@@ -153,7 +153,7 @@ var applyByStreamSink = exports.applyByStreamSink = function(sink, callback, err
 
 
 var setEndpoint = function(source) {
-	var host = "xd-outbound.dev.riox.internal"; // TODO!
+	var host = "TODO.riox"; // TODO!
 	source[ENDPOINT] = "ws://" + host + ":9001/" +
 		source[ORGANIZATION_ID] + "/" + source[ID];
 }

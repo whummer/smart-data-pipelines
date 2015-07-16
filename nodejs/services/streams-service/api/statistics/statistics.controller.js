@@ -110,7 +110,7 @@ var sendData = function(ws, subMsg, query, headers) {
 				/* stop sending */
 			}
 		}, function(err) {
-			console.log(err);
+			console.log("Error querying invocations", err);
 		});
 	}, ws.__options.interval);
 };

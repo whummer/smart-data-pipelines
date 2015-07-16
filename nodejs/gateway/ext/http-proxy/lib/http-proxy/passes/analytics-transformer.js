@@ -1,4 +1,5 @@
 var util = require('util'),
+		appConfig = require('riox-services-base/lib/config/services'),
 		logger = require('winston'),
 		Transform = require('stream').Transform,
 		kafka = require('kafka-node'),
@@ -23,7 +24,7 @@ function AnalyticsTransformer(name, options) {
 	//
 	// Init Kafka
 	//	
-	self.kafkaClient = new kafka.Client("zookeeper.dev.riox.internal:2181");
+	self.kafkaClient = new kafka.Client(appConfig.infra.zookeeper.host);
 	self.producer = new HighLevelProducer(self.kafkaClient);
 	self.consumer = new HighLevelConsumer(
 						self.kafkaClient,

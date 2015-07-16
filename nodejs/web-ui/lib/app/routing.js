@@ -66,6 +66,11 @@ angular.module('rioxApp')
 			templateUrl: 'app/views/account/signup/signup.html',
 			controller: 'SignupCtrl'
 		},
+		'index.recover': {
+			url: '/recover',
+			templateUrl: 'app/views/account/login/recover.html',
+			controller: 'RecoverCtrl'
+		},
 		'index.auth.facebook.callback': {
 			url: '/auth/facebook/callback',
 			templateUrl: 'app/views/account/callback/index.html',

@@ -2,7 +2,7 @@
 angular.module('rioxApp').controller('CertUploadCtrl', 
 		function($scope, $log, $http, growl, Upload, $state) {
 
-	var fileServiceURL = appConfig.services.files.url;
+	var fileServiceURL = window.appConfig.services.files.url;
 	var fileServiceURLAbs = resolve(fileServiceURL);
 
 	var HEADER_NAME_ALLOW_ORIGIN = "access-control-allow-origin";

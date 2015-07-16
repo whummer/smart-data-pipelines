@@ -22,5 +22,5 @@
     },
     "user": "riox",
     "group": "riox",
-    "driver": "redis://redis.dev.riox.internal:6379/gateway"
+	"driver": "redis://redis.production.cluster.local"
 }

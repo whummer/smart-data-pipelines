@@ -1,12 +1,12 @@
 deploy:
 	@echo "Deploying Kubernetes DNS ..."
-	kubectl create -f dns-controller.yml --namespace=default
-	kubectl create -f dns-service.yml --namespace=default
+	kubectl create -f dns-controller.yml --namespace=kube-system
+	kubectl create -f dns-service.yml --namespace=kube-system
 
 undeploy:
 	@echo "Undeploying Kubernetes DNS ..."
-	kubectl resize rc kube-dns --scale=0 --namespace=default
-	kubectl delete -f dns-controller.yml --namespace=default
-	kubectl delete -f dns-service.yml --namespace=default
+	kubectl scale rc kube-dns-v8 --replicas=0 --namespace=kube-system
+	kubectl delete -f dns-controller.yml --namespace=kube-system
+	kubectl delete -f dns-service.yml --namespace=kube-system
 
 .PHONY: deploy undeploy

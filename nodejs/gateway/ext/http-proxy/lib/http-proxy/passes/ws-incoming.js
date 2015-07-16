@@ -5,7 +5,7 @@ var
 	common = require('../common'),
 	logger = require('winston'),
 	passes = exports,
-	KafkaTransformer = require('./kafka-transformer.js'),
+//	KafkaTransformer = require('./kafka-transformer.js'), // TODO kafka-fix
 	util = require('util');
 
 /*!
@@ -165,7 +165,7 @@ var passes = exports;
 
 function setupExtension(extension, context) {
 	switch (extension.name) {
-		case 'kafka' : return new KafkaTransformer("kafka-interceptor", context);
+//		case 'kafka' : return new KafkaTransformer("kafka-interceptor", context); // TODO kafka-fix
 		default : throw new Error('Unknown extension: ' + extension.name);
 	}
 

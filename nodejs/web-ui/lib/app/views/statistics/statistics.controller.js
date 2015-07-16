@@ -23,7 +23,6 @@ angular.module('rioxApp')
 		var query = {};
 		query.details = true;
 		riox.statistics.invocations(query, function(stats) {
-			console.log(stats);
 			$scope.$apply(function() {
 				$scope.stats = stats;
 				loadTableParams();

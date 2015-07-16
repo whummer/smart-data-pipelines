@@ -36,14 +36,6 @@ var all = {
 	// Should we populate the DB with sample data?
 	seedDB: false,
 
-	// Secret for session, you will want to change this and make it an environment variable
-	secrets: {
-		session: 'riox-secret'
-	},
-
-	// List of user roles
-	userRoles: ['guest', 'user', 'admin'],
-
 	// MongoDB connection options
 	mongo: {
 		options: {
@@ -51,24 +43,6 @@ var all = {
 				safe: true
 			}
 		}
-	},
-
-	facebook: {
-		clientID: process.env.FACEBOOK_ID || 'id',
-		clientSecret: process.env.FACEBOOK_SECRET || 'bd3a056db300ed5fefdd068cd88d15d4',
-		callbackURL: (process.env.DOMAIN || '') + '/auth/facebook/callback'
-	},
-
-	twitter: {
-		clientID: process.env.TWITTER_ID || 'id',
-		clientSecret: process.env.TWITTER_SECRET || 'secretTwitter',
-		callbackURL: (process.env.DOMAIN || '') + '/auth/twitter/callback'
-	},
-
-	google: {
-		clientID: process.env.GOOGLE_ID || 'id',
-		clientSecret: process.env.GOOGLE_SECRET || 'secretGoogle',
-		callbackURL: (process.env.DOMAIN || '') + '/auth/google/callback'
 	}
 
 };

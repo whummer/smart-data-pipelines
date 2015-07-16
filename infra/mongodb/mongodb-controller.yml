@@ -1,25 +1,20 @@
 kind: ReplicationController
-apiVersion: v1beta2
-id: mongo
-labels:
+apiVersion: v1
+metadata:
   name: mongo
-desiredState:
-  replicas: 1
-  replicaSelector:
+  labels:
     name: mongo
-  podTemplate:
-    labels:
-      name: mongo
-    desiredState:
-      manifest:
-        version: v1beta2
-        id: mongo
-        containers:
+spec:
+  replicas: 1
+  selector:
+    name: mongo
+  template:
+    metadata:
+      labels:
+        name: mongo
+    spec:
+      containers:
           - name: mongo
             image: mongo:3.0.2
             ports:
               - containerPort: 27017
-            command: [
-                "mongod",
-                "--smallfiles"
-            ]

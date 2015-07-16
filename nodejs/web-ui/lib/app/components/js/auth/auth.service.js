@@ -83,7 +83,7 @@ angular.module('rioxApp')
     		password: user.password
         };
 
-        var authLocalUrl = appConfig.services.users.url + "/auth/local";
+        var authLocalUrl = window.appConfig.services.users.url + "/auth/local";
         if(user[API_KEY]) {
         	authLocalUrl += "/key";
         	request[API_KEY] = user[API_KEY];
@@ -161,7 +161,7 @@ angular.module('rioxApp')
         var cb = callback || angular.noop;
 
         return User.changePassword({ id: currentUser._id }, {
-          oldPassword: oldPassword,
+          password: oldPassword,
           newPassword: newPassword
         }, function(user) {
           return cb(user);
@@ -248,8 +248,8 @@ angular.module('rioxApp')
        * @return {Boolean}
        */
       hasRole: function(role) {
-    	  return appConfig.userRoles.indexOf(currentUser.role) >= 
-    		  appConfig.userRoles.indexOf(role);
+    	  return window.appConfig.userRoles.indexOf(currentUser.role) >= 
+    		  window.appConfig.userRoles.indexOf(role);
       },
 
       /**

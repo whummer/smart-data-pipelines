@@ -1,11 +1,11 @@
 kind: Service
-apiVersion: v1beta2
-id: mongo
-port: 27017
-containerPort: 27017
-selector:
+apiVersion: v1
+metadata:
   name: mongo
-
-# For the reverse proxy config
-#annotations:
-#  "kubernetesReverseproxy": "{\"hosts\": [{\"host\": \"mongo.dev.riox.internal\", \"port\": \"27017\"}]}"
+spec:
+  selector:
+    name: mongo
+  ports:
+  - name: mongo
+    port: 27017
+    protocol: TCP

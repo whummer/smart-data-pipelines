@@ -1,0 +1,35 @@
+apiVersion: v1beta3
+kind: List
+items:
+  - kind: ReplicationController
+    apiVersion: v1beta2
+    id: gateway
+    labels:
+      name: gateway
+    desiredState:
+      replicas: 1
+      replicaSelector:
+        name: gateway
+      podTemplate:
+        labels:
+          name: gateway
+        desiredState:
+          manifest:
+            version: v1beta2
+            id: gateway
+            containers:
+              - name: gateway
+                image: riox/codebase
+                ports:
+                  - containerPort: 80
+                command: [
+                    "gulp",
+                    "gateway:start"
+                ]
+  - kind: Service
+    apiVersion: v1beta2
+    id: gateway
+    port: 80
+    containerPort: 80
+    selector:
+      name: gateway

@@ -2,11 +2,12 @@ var Organization = require('./api/organizations/organization.model');
 var User = require('./api/users/user.model');
 var Activation = require('./api/users/activation.model');
 var Membership = require('./api/organizations/membership.model');
+var appConfig = require('riox-services-base/lib/config/services');
 
 var demoOrgs = [
     	{
     		_id : "000000000001",
-    		domain : ["platform", "web4d.ftp.sh"],
+    		domain : ["platform", "web4d.ftp.sh", "gateway." + appConfig.domain],
     		name : "Riox",
     		description : "This organization represents the Riox platform tenant.",
     		"image-data" : [{

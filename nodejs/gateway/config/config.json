@@ -31,5 +31,5 @@
 			}
 		}
 	],
-	"driver": "redis://redis.dev.riox.internal"
+	"driver": "redis://redis.production.cluster.local"
 }

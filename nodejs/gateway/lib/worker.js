@@ -11,10 +11,11 @@ var fs = require('fs'),
 	memoryMonitor = require('./memorymonitor'),
 	logger = require('winston'),
 	lynx = require('lynx'),
+	appConfig = require('riox-services-base/lib/config/services'),
 	expressStatsd = require('express-statsd');
 
 /* statsd config */
-var monitorConfig = {"client": new lynx("statsd.dev.riox.internal", 8125)};
+var monitorConfig = {"client": new lynx(appConfig.infra.statsd.hostname, 8125)};
 var monitorRequest = expressStatsd(monitorConfig);
 
 /* constants/configurations */

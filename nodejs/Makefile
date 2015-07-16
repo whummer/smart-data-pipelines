@@ -43,7 +43,7 @@ run-e2e-test:
 	docker run --rm -it --dns=10.0.0.100 -v `pwd`:/code riox/nodejs-base bash -c "cd services && mocha ${TEST_TIMEOUT}"
 
 run-xd-shell:
-	# Spring XS shell. Connect with "admin config server http://xd-admin.dev.riox.internal:9393"
+	# Spring XS shell. Connect with "admin config server http://xd-admin....:9393"
 	docker run --rm -it --dns=10.0.0.100 riox/springxd-shell:1.1.1
 
 .PHONY: build push all clean run-e2e-test run-xd-shell install

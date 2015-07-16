@@ -2,7 +2,7 @@
 
 angular.module('rioxApp')
   .factory('User', function ($resource) {
-	var url = appConfig.services.users.url + '/:id/:controller';
+	var url = window.appConfig.services.users.url + '/:id/:controller';
     return $resource(url, {
       id: '@_id'
     },

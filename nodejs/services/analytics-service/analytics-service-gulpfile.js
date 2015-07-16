@@ -129,3 +129,11 @@ gulp.task('services:analytics:docker:push', function () {
 			['--no-push', '-i', 'riox/analytics-service', '-v', '-b', absoluteBuildDir],
 			{env: process.env, cwd: _cwd, stdio: 'inherit'})
 });
+
+/* Kubernetes deploy/undeploy tasks */
+gulp.task('services:analytics:k8s:deploy', function () {
+	runCmd('kubectl', ["create", "-f", "k8s.yml"], __dirname);
+});
+gulp.task('services:analytics:k8s:undeploy', function () {
+	runCmd('kubectl', ["delete", "-f", "k8s.yml"], __dirname);
+});

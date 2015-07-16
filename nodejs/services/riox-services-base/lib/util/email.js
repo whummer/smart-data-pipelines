@@ -42,20 +42,26 @@ var EMAIL_INVITATION_MSG = "Dear <invitee>,\n"
 		+ "To accept this invitation, follow this link:\n"
 		+ URL_ACCEPT_INVITATION + "\n" + "\n"
 		+ "To reject, follow this link:\n" + URL_REJECT_INVITATION;
-// TODO make configurable in config file
+//TODO make configurable in config file
 var EMAIL_ACCOUNT_ACTIVATED_MSG = "Dear <name>,\n"
 		+ "\n"
 		+ "Your account on http://riox.io has been activated! You can now login with your user account.\n";
+//TODO make configurable in config file
+var EMAIL_ACCOUNT_RECOVER_SUBJECT = "riox.io - Recover account";
+var EMAIL_ACCOUNT_RECOVER_MSG = "Dear <name>,\n"
+		+ "\n"
+		+ "You have chosen to recover your account details on http://riox.io . "
+		+ "Your password has been reset. Please use the following temporary password:\n<password>\n";
 
 exports.sendActivationMail = function(user, activationKey) {
-	var displayName = user.firstname + " " + user.lastname;
+	var displayName = getDisplayName(user);
 	var msg = EMAIL_ACTIVATION_MSG.replace("<name>",
 			user.name).replace("<activationKey>", activationKey);
 	send(user.email, EMAIL_ACTIVATION_SUBJECT, msg);
 };
 
 exports.sendInvitationMail = function(user, invitee, invitation, org) {
-	var displayName = invitee.name ? invitee.name : (invitee.firstname + " " + invitee.lastname);
+	var displayName = getDisplayName(invitee);
 	var msg = EMAIL_INVITATION_MSG
 			.replace(/<invitee>/g, displayName)
 			.replace(/<invitedFor>/g, org[NAME])
@@ -65,9 +71,30 @@ exports.sendInvitationMail = function(user, invitee, invitation, org) {
 };
 
 exports.sendAccountActivatedMail = function(user) {
-	var displayName = user.firstname + " " + user.lastname;
+	var displayName = getDisplayName(user);
 	var msg = EMAIL_ACCOUNT_ACTIVATED_MSG.replace("<name>", displayName);
 	send(user.email, EMAIL_ACTIVATION_SUBJECT, msg);
+};
+
+exports.sendRecoverMail = function(user, password) {
+	var displayName = getDisplayName(user);
+	var msg = EMAIL_ACCOUNT_RECOVER_MSG
+			.replace("<name>", displayName)
+			.replace("<password>", password);
+	send(user.email, EMAIL_ACCOUNT_RECOVER_SUBJECT, msg);
+};
+
+var getDisplayName = function(user) {
+	if(user.name) {
+		return user.name;
+	} else if(user.firstname && user.lastname) {
+		return user.firstname + " " + user.lastname;
+	} else if(user.firstname) {
+		return user.firstname;
+	} else if(user.lastname) {
+		return user.lastname;
+	}
+	return "User";
 };
 
 var send = exports.send = function(to, subject, message, from, user, pass, host, port) {

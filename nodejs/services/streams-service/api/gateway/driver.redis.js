@@ -2,9 +2,10 @@
 
 var redis = require("redis");
 var url = require("url");
+var appConfig = require('riox-services-base/lib/config/services');
 
 var config = {
-		url: "redis://redis.dev.riox.internal:6379"
+		url: appConfig.infra.redis.url
 };
 var PREFIX = "";
 

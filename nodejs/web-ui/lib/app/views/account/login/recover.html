@@ -1,0 +1,53 @@
+<div class="animated fadeInRight">
+	<div class="row">
+		<div class="col-sm-12">
+
+			<div class="ibox">
+				<div class="ibox-title">
+					<h5>Recover account details</h5>
+				</div>
+				<div class="ibox-content ">
+					<div class="row">
+						<form class="form col-lg-7" name="form1" ng-submit="recover(form1)" novalidate>
+							<div style="margin: 15px;">
+							Please provide your email address.
+							We will send instructions to recover your account password.
+							</div>
+							<div class="form-group">
+								<label class="col-lg-4">Your Email Address</label>
+								<div class="col-lg-8">
+									{{userEmail}}
+									<input name="email"
+										class="form-control" ng-model="formData.userEmail" required>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-lg-4"></div>
+								<div class="col-lg-8">
+									<div class="has-error">
+										<p class="help-block"
+										ng-show="form1.email.$error.email && submitted">Please enter
+										a valid email.</p>
+									</div>
+									<p class="help-block">{{ messages }}</p>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-lg-4"></label>
+								<div class="col-lg-8">
+								<button class="btn btn-inverse" type="submit">
+									Recover</button>
+								</div>
+							</div>
+						</form>
+					</div>
+	
+					<hr/>
+					<div>
+						Have your account details? <a ui-sref="index.login">Log in</a>.
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
