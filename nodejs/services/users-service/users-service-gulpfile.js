@@ -129,3 +129,11 @@ gulp.task('services:users:docker:push', function () {
 			['--no-push', '-i', 'riox/stream-service', '-v', '-b', absoluteBuildDir],
 			{env: process.env, cwd: _cwd, stdio: 'inherit'})
 });
+
+/* Kubernetes deploy/undeploy tasks */
+gulp.task('services:users:k8s:deploy', function () {
+	runCmd('kubectl', ["create", "-f", "k8s.yml"], __dirname);
+});
+gulp.task('services:users:k8s:undeploy', function () {
+	runCmd('kubectl', ["delete", "-f", "k8s.yml"], __dirname);
+});

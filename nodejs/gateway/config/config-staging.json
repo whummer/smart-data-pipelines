@@ -1,0 +1,25 @@
+{
+    "server": {
+        "debug": false,
+        "accessLog": "/var/log/hipache.log",
+        "workers": 1,
+        "maxSockets": 1024,
+        "deadBackendTTL": 30,
+        "tcpTimeout": 15,
+        "retryOnError": 0,
+        "deadBackendOn500": true,
+        "httpKeepAlive": true,
+        "lruCache": true
+    },
+    "http": {
+		"port": 80,
+		"bind": ["0.0.0.0"]
+    },
+    "https": {
+    	"bind" : "0.0.0.0",
+     	"port" : 443,
+    	"cert" : "config/server.crt", 
+    	"key"  : "config/server.key"
+    },
+	"driver": "redis://redis.production.svc.cluster.local"
+}

@@ -7,7 +7,7 @@ var semver = require('./semver');
 //
 // the directories where package.json's are looked up
 //
-var nodeDirs = [".", "services/test",
+var nodeDirs = [".", "services/test", "gateway", "gateway/ext/http-proxy",
 	"services/users-service", "services/streams-service", "services/analytics-service", "services/files-service",
 	"services/riox-services-base", "web-ui"];
 
@@ -165,7 +165,7 @@ function installGlobalIfNotExists(installed) {
 function addDepToHash(deps, dep, version) {
 	if (localModule(version)) {
 		/* local module path -> ignore! */
-		console.log("INFO: Ignoring local module dependency '" + dep + "' with path '" + version + "'");
+		//console.log("INFO: Ignoring local module dependency '" + dep + "' with path '" + version + "'");
 		return;
 	}
 

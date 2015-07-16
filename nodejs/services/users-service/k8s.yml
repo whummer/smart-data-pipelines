@@ -1,0 +1,68 @@
+apiVersion: v1
+kind: List
+items:
+  - kind: ReplicationController
+    apiVersion: v1
+    metadata:
+      name: users-service
+      labels:
+        name: users-service
+    spec:
+      replicas: 2
+      selector:
+        name: users-service
+      template:
+        metadata:
+          labels:
+            name: users-service
+        spec:
+          imagePullSecrets:
+            - name: rioxregistrykey
+          containers:
+            - name: users-service
+              image: riox/hyperriox
+              ports:
+                - containerPort: 8084
+              command:
+                - "gulp"
+                - "services:users:serve"
+
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      name: users-service
+    spec:
+      ports:
+        - port: 8084
+      selector:
+        name: users-service
+
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      name: certificates-service
+    spec:
+      ports:
+        - port: 8084
+      selector:
+        name: users-service
+
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      name: notifications-service
+    spec:
+      ports:
+        - port: 8084
+      selector:
+        name: users-service
+
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      name: organizations-service
+    spec:
+      ports:
+        - port: 8084
+      selector:
+        name: users-service

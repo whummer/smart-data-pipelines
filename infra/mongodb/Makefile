@@ -1,13 +1,14 @@
+RIOX_ENV=production
 
 deploy:
 	@echo "Deploying Mongo ..."
-	kubectl create -f mongodb-controller.yml
-	kubectl create -f mongodb-service.yml
+	kubectl create -f mongodb-controller.yml --namespace=${RIOX_ENV}
+	kubectl create -f mongodb-service.yml --namespace=${RIOX_ENV}
 
 undeploy:
 	@echo "Undeploying Mongo ..."
-	kubectl resize rc mongo --scale=0
-	kubectl delete -f mongodb-controller.yml
-	kubectl delete -f mongodb-service.yml
+	kubectl scale rc mongo --replicas=0 --namespace=${RIOX_ENV}
+	kubectl delete -f mongodb-controller.yml --namespace=${RIOX_ENV}
+	kubectl delete -f mongodb-service.yml --namespace=${RIOX_ENV}
 
 .PHONY: deploy undeploy

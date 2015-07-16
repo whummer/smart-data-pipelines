@@ -1,5 +1,6 @@
 VERSION=latest
 IMAGE=riox/kafka
+RIOX_ENV=production
 
 all: build push
 
@@ -11,13 +12,13 @@ push:
 
 deploy:
 	@echo "Deploying Kafka ..."
-	kubectl create -f kafka-controller.yml
-	kubectl create -f kafka-service.yml
+	kubectl create -f kafka-controller.yml --namespace=${RIOX_ENV}
+	kubectl create -f kafka-service.yml --namespace=${RIOX_ENV}
 
 undeploy:
 	@echo "Undeploying Kafka ..."
-	kubectl resize rc kafka --scale=0
-	kubectl delete -f kafka-controller.yml
-	kubectl delete -f kafka-service.yml
+	kubectl scale rc kafka --replicas=0 --namespace=${RIOX_ENV}
+	kubectl delete -f kafka-controller.yml --namespace=${RIOX_ENV}
+	kubectl delete -f kafka-service.yml --namespace=${RIOX_ENV}
 
 .PHONY: build push all clean deploy undeploy

@@ -1,0 +1,83 @@
+apiVersion: v1
+kind: List
+items:
+  - kind: ReplicationController
+    apiVersion: v1
+    metadata:
+      name: streams-service
+      labels:
+        name: streams-service
+    spec:
+      replicas: 2
+      selector:
+        name: streams-service
+      template:
+        metadata:
+          labels:
+            name: streams-service
+        spec:
+          containers:
+            - name: streams-service
+              image: riox/hyperriox
+              ports:
+                - containerPort: 8085
+              command:
+                - "gulp"
+                - "services:streams:serve"
+
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      name: streams-service
+    spec:
+      ports:
+        - port: 8085
+      selector:
+        name: streams-service
+
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      name: access-service
+    spec:
+      ports:
+        - port: 8085
+      selector:
+        name: streams-service
+
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      name: gateway-service
+    spec:
+      ports:
+        - port: 8085
+      selector:
+        name: streams-service
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      name: ratings-service
+    spec:
+      ports:
+        - port: 8085
+      selector:
+        name: streams-service
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      name: statistics-service
+    spec:
+      ports:
+        - port: 8085
+      selector:
+        name: streams-service
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      name: consents-service
+    spec:
+      ports:
+        - port: 8085
+      selector:
+        name: streams-service

@@ -59,7 +59,7 @@ module.exports = function(app) {
 
 	// todo om: either switch this to '/lib' or adapt gulpfile for /public structure
 	if ('production' === env) {
-		app.use(favicon(path.join(config.root, 'public', 'favicon.ico')));
+		app.use(favicon(path.join(config.root, 'favicon.ico')));
 		setupDefaults(app);
 		//app.use(morgan('dev'));
 	}

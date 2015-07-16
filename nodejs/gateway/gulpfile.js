@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    var gulp = require('gulp');
+    var gulp = global.gulp || require('gulp');
     // var gutil = require('gulp-util');
 
     var mocha = require('gulp-mocha');
@@ -80,6 +80,16 @@
 
     gulp.task('hack:drivers', function () {
         gulp.watch(scripts, ['test:drivers-catched']);
+    });
+
+    gulp.task('gateway:start', 'start riox gateway', function() {
+    	runCmd("bin/rgw", ["-c", "config/config-staging.json"], __dirname);
+    });
+    gulp.task('gateway:k8s:deploy', 'start riox gateway via k8s', function() {
+    	runCmd('kubectl', ["create", "-f", "k8s.yml"], __dirname);
+    });
+    gulp.task('gateway:k8s:undeploy', 'stop riox gateway via k8s', function() {
+    	runCmd('kubectl', ["delete", "-f", "k8s.yml"], __dirname);
     });
 
 }());

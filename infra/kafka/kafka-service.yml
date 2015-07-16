@@ -1,7 +1,11 @@
 kind: Service
-apiVersion: v1beta2
-id: kafka
-port: 9092
-selector:
+apiVersion: v1
+metadata:
   name: kafka
-containerPort: 9092
+spec:
+  selector:
+    name: kafka
+  ports:
+  - name: kafka
+    port: 9092
+    protocol: TCP

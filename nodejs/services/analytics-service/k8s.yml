@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: List
+items:
+  - kind: ReplicationController
+    apiVersion: v1
+    metadata:
+      name: analytics-service
+      labels:
+        name: analytics-service
+    spec:
+      replicas: 2
+      selector:
+        name: analytics-service
+      template:
+        metadata:
+          labels:
+            name: analytics-service
+        spec:
+          imagePullSecrets:
+            - name: rioxregistrykey
+          containers:
+            - name: analytics-service
+              image: riox/hyperriox
+              ports:
+                - containerPort: 8086
+              command:
+                - "gulp"
+                - "services:analytics:serve"
+
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      name: analytics-service
+    spec:
+      ports:
+        - port: 8086
+      selector:
+        name: analytics-service

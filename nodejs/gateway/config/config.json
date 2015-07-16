@@ -1,5 +1,6 @@
 {
 	"server": {
+        "debug": false,
 		"accessLog": "/var/log/hipache/hipache.log",
 		"workers": 1,
 		"maxSockets": 100,
@@ -9,7 +10,6 @@
 		"deadBackendOn500": true,
 		"httpKeepAlive": false,
 		"staticDir": null
-
 	},
 	"http": {
 		"port": 8090,
@@ -31,5 +31,5 @@
 			}
 		}
 	],
-	"driver": "redis://redis.dev.riox.internal"
+	"driver": "redis://redis.production.svc.cluster.local"
 }

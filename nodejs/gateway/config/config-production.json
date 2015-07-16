@@ -15,12 +15,12 @@
         "enabled": false
     },
     "https": {
-    	"bind" : "127.0.0.1",
+    	"bind" : "0.0.0.0",
      	"port" : 443,
     	"cert" : "config/server.crt", 
     	"key"  : "config/server.key"
     },
     "user": "riox",
     "group": "riox",
-    "driver": "redis://redis.dev.riox.internal:6379/gateway"
+	"driver": "redis://redis.production.svc.cluster.local"
 }

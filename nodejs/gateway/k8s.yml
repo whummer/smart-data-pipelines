@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: List
+items:
+  - kind: ReplicationController
+    apiVersion: v1
+    metadata:
+      name: gateway
+      labels:
+        name: gateway
+    spec:
+      replicas: 1
+      selector:
+        name: gateway
+      template:
+        metadata:
+          labels:
+            name: gateway
+        spec:
+          imagePullSecrets:
+            - name: rioxregistrykey
+          containers:
+            - name: gateway
+              image: riox/hyperriox
+              ports:
+                - containerPort: 80
+              command:
+                  - "gulp"
+                  - "gateway:start"
+
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      name: gateway
+    spec:
+      ports:
+        - port: 80
+      type: LoadBalancer
+      selector:
+        name: gateway

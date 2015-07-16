@@ -236,14 +236,17 @@
 	};
 	sh.isAuth = function () {
 		return sh.authToken && sh.authToken.access_token && sh.authToken.access_token != "__invalid__";
-	}
+	};
 	sh.signout = sh.auth.reset = function (options, callback, errorCallback) {
 		sh.auth({
 			RIOX_AUTH_NETWORK: "riox",
 			RIOX_AUTH_TOKEN: "__invalid__",
 			dontInvokeService: true
 		});
-	}
+	};
+	sh.recover = sh.auth.recover = function (options, callback, errorCallback) {
+		callPOST(servicesConfig.services.users.url + "/recover", options, callback, errorCallback);
+	};
 
 	/* methods for GETting data */
 

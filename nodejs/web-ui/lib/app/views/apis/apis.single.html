@@ -26,8 +26,8 @@
 								ng-model="shared.selectedAPI[DOMAIN_NAME]" />
 						</div>
 						<div class="col-lg-4" style="padding-left: 0px;">
-							<input class="form-control input-sm" value=".riox.io" disabled="disabled"
-								ng-model="subdomain" />
+							<select ng-options="d for d in subdomains" ng-model="selectedSubdomain" 
+								class="form-control input-sm"></select>
 						</div>
 					</div>
 					<div class="form-group">
@@ -61,7 +61,7 @@
 						</label> 
 						<div class="col-lg-8" style="line-height: 35px;">
 							<input type="checkbox" 
-								ng-model="shared.selectedAPI[PUBLIC_ACCESS]"/> Allow anonymous public access to this API (e.g., Web documents, Open Data).
+								ng-model="shared.selectedAPI[PUBLIC_ACCESS]"/> Allow anonymous public access to this API
 						</div>
 					</div>
 					<div class="form-group">

@@ -3,13 +3,7 @@
 var path = require('path');
 var merge = require('riox-services-base/lib/config/merge');
 var commonConfig = require('riox-services-base/lib/config');
-
-function requiredProcessEnv(name) {
-	if (!process.env[name]) {
-		throw new Error('You must set the ' + name + ' environment variable');
-	}
-	return process.env[name];
-}
+var appConfig = require('riox-services-base/lib/config/services');
 
 // All configurations will extend these options
 // ============================================
@@ -46,32 +40,33 @@ var config = {
 	},
 
 	kafka: {
-		hostname: "kafka.dev.riox.internal",
+		hostname: appConfig.infra.kafka.hostname,
 		port: 9092
 	},
 
 	zookeeper: {
-		hostname: "zookeeper.dev.riox.internal",
+		hostname: appConfig.infra.zookeeper.hostname,
 		port: 2181
-	},
-
-	xdadmin: {
-		hostname: "xd-admin.dev.riox.internal",
-		port: 9393
-	},
-
-	xdcontainer: {
-		inbound: {
-			hostname: "xd-inbound.dev.riox.internal",
-			port: 9000
-		},
-		outbound: {
-			hostname: "xd-outbound.dev.riox.internal",
-			port: 9001
-		}
-
-
 	}
+
+	// TODO remove
+//	xdadmin: {
+//		hostname: "TODO",
+//		port: 9393
+//	},
+//
+//	xdcontainer: {
+//		inbound: {
+//			hostname: "TODO",
+//			port: 9000
+//		},
+//		outbound: {
+//			hostname: "TODO",
+//			port: 9001
+//		}
+//
+//
+//	}
 
 };
 

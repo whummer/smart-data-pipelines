@@ -1,4 +1,4 @@
-VERSION=v0.16.2
+VERSION=v1.0.0
 IMAGE=riox/hyperkube
 
 all: clean build push
