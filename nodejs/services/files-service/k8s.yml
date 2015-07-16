@@ -1,0 +1,35 @@
+apiVersion: v1beta3
+kind: List
+items:
+  - kind: ReplicationController
+    apiVersion: v1beta2
+    id: files-service
+    labels:
+      name: files-service
+    desiredState:
+      replicas: 1
+      replicaSelector:
+        name: files-service
+      podTemplate:
+        labels:
+          name: files-service
+        desiredState:
+          manifest:
+            version: v1beta2
+            id: files-service
+            containers:
+              - name: files-service
+                image: riox/codebase
+                ports:
+                  - containerPort: 8087
+                command: [
+                    "gulp",
+                    "services:files:serve"
+                ]
+  - kind: Service
+    apiVersion: v1beta2
+    id: files-service
+    port: 8087
+    containerPort: 8087
+    selector:
+      name: files-service

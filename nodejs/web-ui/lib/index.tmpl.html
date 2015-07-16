@@ -45,7 +45,7 @@
 window.__patch__setRequestHeader = true;
 </script>
 <!-- <script src="/bower_components/ng-file-upload/angular-file-upload-shim.js"></script> -->
-<script src="/app/components/js/angular-file-upload-shim.js"></script>
+<script src="/app/components/preload/angular-file-upload-shim.js"></script>
 
 <!-- Add your site or application content here -->
 <div ng-controller="MainCtrl">
@@ -66,9 +66,11 @@ window.__patch__setRequestHeader = true;
 <!-- endinject -->
 
 <!-- todo find a way to control the order without this explicit bs -->
+<script src="/app/config.js"></script>
 <script src="/bower_components/angular-dropzone/lib/angular-dropzone.js"></script>
-<script src="/app/components/js/jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
-<script src="/app/components/js/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+<script src="/bower_components/ace-builds/src/ace.js"></script>
+<script src="/app/components/preload/jquery-jvectormap-1.2.2.min.js"></script>
+<script src="/app/components/preload/jquery-jvectormap-world-mill-en.js"></script>
 
 <!-- inject:js -->
 <!-- endinject -->

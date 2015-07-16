@@ -3,11 +3,11 @@ var app = angular.module("rioxApp");
 app.controller('OrganizationsController',
 		function ($scope, $state, Upload, Auth, growl) {
 
-	var fileServiceURL = appConfig.services.files.url;
+	var fileServiceURL = window.appConfig.services.files.url;
 	var fileServiceURLAbs = resolve(fileServiceURL);
 
 	$scope.selected = {};
-	$scope.usersServiceURL = appConfig.services.users.url;
+	$scope.usersServiceURL = window.appConfig.services.users.url;
 	$scope.emailPattern = /^[a-z]+[a-z0-9._]+@[a-z]+\.[a-z.]{2,5}$/;
 	$scope.currentUser = $scope.getCurrentUser();
 

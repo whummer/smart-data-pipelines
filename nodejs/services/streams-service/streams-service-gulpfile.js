@@ -121,11 +121,18 @@ function prepareDockerfile(env) {
 			.pipe(gulp.dest(dockerfileDest));
 }
 
+// TODO whu: remove?
 gulp.task('services:streams:docker:push', function () {
-	var _cwd = path.resolve(BASE_DIR + '/../..');
 	var absoluteBuildDir = path.resolve(BUILD_DIR_TEST); // todo make for PROD too
-	util.log('Executing docker build-push in dir ', _cwd);
-	return cp.spawn('bin/docker-util.sh',
+	return runCmd('bin/docker-util.sh',
 			['--no-push', '-i', 'riox/stream-service', '-v', '-b', absoluteBuildDir],
-			{env: process.env, cwd: _cwd, stdio: 'inherit'})
+			path.resolve(BASE_DIR + '/../..'));
+});
+
+/* Kubernetes deploy/undeploy tasks */
+gulp.task('services:streams:k8s:deploy', function () {
+	runCmd('kubectl', ["create", "-f", "k8s.yml"], __dirname);
+});
+gulp.task('services:streams:k8s:undeploy', function () {
+	runCmd('kubectl', ["delete", "-f", "k8s.yml"], __dirname);
 });

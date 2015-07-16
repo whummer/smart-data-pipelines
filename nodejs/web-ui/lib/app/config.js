@@ -12,7 +12,7 @@ if(typeof window != "undefined") {
 	_host = window.location.host;
 }
 
-var appConfig = servicesConfig = {
+var appConfig = window.appConfig = servicesConfig = {
 	appRootPath: "/app",
 	bowerRootPath: "/bower_components",
 	services: {

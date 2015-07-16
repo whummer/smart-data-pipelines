@@ -2,9 +2,6 @@
 
 var appConfig = require("riox-services-base/lib/config/services.js");
 
-/* set global admin user */
-global.adminUser = {email: "riox", password: "riox", role: "admin"};
-
 // Development specific configuration
 // ==================================
 module.exports = {

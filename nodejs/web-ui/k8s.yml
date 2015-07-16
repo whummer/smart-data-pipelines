@@ -1,0 +1,35 @@
+apiVersion: v1beta3
+kind: List
+items:
+  - kind: ReplicationController
+    apiVersion: v1beta2
+    id: riox-ui
+    labels:
+      name: riox-ui
+    desiredState:
+      replicas: 1
+      replicaSelector:
+        name: riox-ui
+      podTemplate:
+        labels:
+          name: riox-ui
+        desiredState:
+          manifest:
+            version: v1beta2
+            id: riox-ui
+            containers:
+              - name: riox-ui
+                image: riox/codebase
+                ports:
+                  - containerPort: 8081
+                command: [
+                    "gulp",
+                    "ui:serve:prod"
+                ]
+  - kind: Service
+    apiVersion: v1beta2
+    id: riox-ui
+    port: 8081
+    containerPort: 8081
+    selector:
+      name: riox-ui

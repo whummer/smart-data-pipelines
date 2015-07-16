@@ -71,7 +71,7 @@ function dashboardCtrl($scope, $state, $log, growl) {
 	var initWS = function(chart) {
 		/* subscribe to websocket */
 		try {
-			var url = appConfig.services.statisticsWebsocket.url;
+			var url = window.appConfig.services.statisticsWebsocket.url;
 			chart.ws = new WebSocket(url);
 			chart.ws.onmessage = function(evt) {
 				var msg = JSON.parse(evt.data);

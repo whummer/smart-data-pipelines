@@ -1,0 +1,56 @@
+apiVersion: v1beta3
+kind: List
+items:
+  - kind: ReplicationController
+    apiVersion: v1beta2
+    id: users-service
+    labels:
+      name: users-service
+    desiredState:
+      replicas: 1
+      replicaSelector:
+        name: users-service
+      podTemplate:
+        labels:
+          name: users-service
+        desiredState:
+          manifest:
+            version: v1beta2
+            id: users-service
+            containers:
+              - name: users-service
+                image: riox/codebase
+                ports:
+                  - containerPort: 8084
+                command: [
+                    "gulp",
+                    "services:users:serve"
+                ]
+  - kind: Service
+    apiVersion: v1beta2
+    id: users-service
+    port: 8084
+    containerPort: 8084
+    selector:
+      name: users-service
+  - kind: Service
+    apiVersion: v1beta2
+    id: certificates-service
+    port: 8084
+    containerPort: 8084
+    selector:
+      name: users-service
+  - kind: Service
+    apiVersion: v1beta2
+    id: notifications-service
+    port: 8084
+    containerPort: 8084
+    selector:
+      name: users-service
+  - kind: Service
+    apiVersion: v1beta2
+    id: organizations-service
+    port: 8084
+    containerPort: 8084
+    selector:
+      name: users-service

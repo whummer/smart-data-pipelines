@@ -4,13 +4,6 @@ var path = require('path');
 var merge = require('riox-services-base/lib/config/merge');
 var commonConfig = require('riox-services-base/lib/config');
 
-function requiredProcessEnv(name) {
-	if (!process.env[name]) {
-		throw new Error('You must set the ' + name + ' environment variable');
-	}
-	return process.env[name];
-}
-
 // All configurations will extend these options
 // ============================================
 var config = {

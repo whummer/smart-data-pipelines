@@ -1,0 +1,35 @@
+apiVersion: v1beta3
+kind: List
+items:
+  - kind: ReplicationController
+    apiVersion: v1beta2
+    id: analytics-service
+    labels:
+      name: analytics-service
+    desiredState:
+      replicas: 1
+      replicaSelector:
+        name: analytics-service
+      podTemplate:
+        labels:
+          name: analytics-service
+        desiredState:
+          manifest:
+            version: v1beta2
+            id: analytics-service
+            containers:
+              - name: analytics-service
+                image: riox/codebase
+                ports:
+                  - containerPort: 8086
+                command: [
+                    "gulp",
+                    "services:analytics:serve"
+                ]
+  - kind: Service
+    apiVersion: v1beta2
+    id: analytics-service
+    port: 8086
+    containerPort: 8086
+    selector:
+      name: analytics-service

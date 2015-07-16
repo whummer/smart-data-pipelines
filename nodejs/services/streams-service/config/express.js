@@ -18,9 +18,7 @@ var config = require('./environment');
 function commonConfig(app) {
   app.use(express.static(path.join(config.root, 'static')));
   app.set('appPath', '/');
-  //app.use(morgan('dev'));
   app.use(morgan('dev'));
-
 }
 
 module.exports = function(app) {

@@ -19,7 +19,7 @@ try {
 	// some dependencies still missing.
 	console.log("Cannot import gulp sub-files:", e, e.stack.split("\n"));
 }
-var nodeDirs = [".", "services/test",
+var nodeDirs = [".", "services/test", "gateway", "gateway/ext/http-proxy",
                 "services/users-service", "services/streams-service", "services/analytics-service", "services/files-service",
                 "services/riox-services-base", "web-ui"];
 var bowerDirs = ["web-ui/lib"];
@@ -27,7 +27,25 @@ var bowerDirs = ["web-ui/lib"];
 gulp.task('riox', 'start riox nodejs infrastructure', function() {
 	runSequence('ui:livereload', 'services:streams:serve', 'services:users:serve',
 			'services:analytics:serve', 'services:files:serve');
-	//runSequence('ui:serve:nolivereload', 'services:streams:serve', 'services:users:serve');
+});
+
+gulp.task('gateway:start', 'start riox gateway', function() {
+	runCmd("bin/rgw", ["-f", "config/config.json"], __dirname + "/gateway");
+});
+gulp.task('gateway:k8s:deploy', 'start riox gateway via k8s', function() {
+	runCmd('kubectl', ["create", "-f", "k8s.yml"], __dirname + "/gateway");
+});
+gulp.task('gateway:k8s:undeploy', 'stop riox gateway via k8s', function() {
+	runCmd('kubectl', ["delete", "-f", "k8s.yml"], __dirname + "/gateway");
+});
+
+gulp.task('riox:k8s', 'start riox nodejs infrastructure via k8s', function() {
+	runSequence('ui:k8s:deploy', 'gateway:k8s:deploy', 'services:streams:k8s:deploy',
+			'services:users:k8s:deploy', 'services:analytics:k8s:deploy', 'services:files:k8s:deploy');
+});
+gulp.task('riox:k8s:undeploy', 'undeploy riox nodejs infrastructure via k8s', function() {
+	runSequence('ui:k8s:undeploy', 'gateway:k8s:undeploy', 'services:streams:k8s:undeploy',
+			'services:users:k8s:undeploy', 'services:analytics:k8s:undeploy', 'services:files:k8s:undeploy');
 });
 
 gulp.task('deps:clean:all', 'clean all node_modules and bower_components directories', function() {
@@ -80,7 +98,7 @@ gulp.task('deps:install:global', 'parse all dependencies and devDependencies fro
 function addDepToHash(deps, dep, version) {
 	if(version.indexOf("./") >= 0) {
 		/* local module path -> ignore! */
-		console.log("INFO: Ignoring local module dependency '" + dep + "' with path '" + version + "'");
+		//console.log("INFO: Ignoring local module dependency '" + dep + "' with path '" + version + "'");
 		return;
 	}
 	if(deps[dep] && deps[dep] != version) {
@@ -101,4 +119,9 @@ function cleanDir(dir) {
 		console.log("Cleaning directory", dir);
 		gulp.src(dir, {read: false}).pipe(clean());
 	}
+}
+global.runCmd = function(cmd, args, cwd) {
+	var _cwd = cwd || __dirname;
+	return cp.spawn(cmd, args,
+			{env: process.env, cwd: _cwd, stdio: 'inherit'})
 }
