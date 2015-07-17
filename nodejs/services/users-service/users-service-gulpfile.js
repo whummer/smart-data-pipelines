@@ -132,8 +132,12 @@ gulp.task('services:users:docker:push', function () {
 
 /* Kubernetes deploy/undeploy tasks */
 gulp.task('services:users:k8s:deploy', function () {
-	runCmd('kubectl', ["create", "-f", "k8s.yml"], __dirname);
+	runCmd('kubectl', ["create", "-f", "k8s.yml",
+					"--namespace=" + (process.env.RIOX_ENV || 'test')], __dirname);
 });
 gulp.task('services:users:k8s:undeploy', function () {
-	runCmd('kubectl', ["delete", "-f", "k8s.yml"], __dirname);
+	runCmd('kubectl', ["scale", "--replicas=0", "rc", "users-service",
+					"--namespace=" + (process.env.RIOX_ENV || 'test')], __dirname);
+	runCmd('kubectl', ["delete", "-f", "k8s.yml",
+					"--namespace=" + (process.env.RIOX_ENV || 'test')], __dirname);
 });

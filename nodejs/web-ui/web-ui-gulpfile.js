@@ -37,9 +37,9 @@ var paths = {
 	base: SRC_DIR,
 
 	// inject js files
-	scripts: [SRC_DIR + '/app/**/*.js', 
+	scripts: [SRC_DIR + '/app/**/*.js',
 						// do not inject '.spec.js' files
-						'!' + SRC_DIR + '/app/**/*.spec.js', 
+						'!' + SRC_DIR + '/app/**/*.spec.js',
 						// do not inject admin view files
 						'!' + SRC_DIR + '/app/views/admin/**/*.js'],
 
@@ -299,8 +299,12 @@ gulp.task('ui:serve:test', 'serve the TEST build of riox-ui (8081)', ['ui:build:
 
 /* Kubernetes deploy/undeploy tasks */
 gulp.task('ui:k8s:deploy', function () {
-	runCmd('kubectl', ["create", "-f", "k8s.yml"], __dirname);
+	runCmd('kubectl', ["create", "-f", "k8s.yml",
+					"--namespace=" + (process.env.RIOX_ENV || 'test')], __dirname);
 });
 gulp.task('ui:k8s:undeploy', function () {
-	runCmd('kubectl', ["delete", "-f", "k8s.yml"], __dirname);
+	runCmd('kubectl', ["scale", "--replicas=0", "rc", "riox-ui",
+					"--namespace=" + (process.env.RIOX_ENV || 'test')], __dirname);
+	runCmd('kubectl', ["delete", "-f", "k8s.yml",
+					"--namespace=" + (process.env.RIOX_ENV || 'test')], __dirname);
 });

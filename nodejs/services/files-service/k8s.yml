@@ -3,7 +3,6 @@ kind: List
 items:
   - kind: ReplicationController
     apiVersion: v1
-
     metadata:
       name: files-service
       labels:
@@ -21,7 +20,7 @@ items:
             - name: rioxregistrykey
           containers:
             - name: files-service
-              image: riox/hyperriox
+              image: riox/hyperriox:latest
               ports:
                 - containerPort: 8087
               command:

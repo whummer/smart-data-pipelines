@@ -11,6 +11,12 @@ endif
 
 .PHONY: build-images push-images deploy-k8s deploy-k8s-dns deploy-services clean
 
+init-cluster:
+	(cd k8s-namespaces && make deploy)
+	(cd aws && kubectl create -f secrets.yml --namespace=production)
+	(cd aws && kubectl create -f secrets.yml --namespace=staging)
+	(cd aws && kubectl create -f secrets.yml --namespace=test)
+
 build-push: build-images push-images
 
 build-images:

@@ -20,7 +20,7 @@ items:
             - name: rioxregistrykey
           containers:
             - name: gateway
-              image: riox/hyperriox
+              image: riox/hyperriox:latest
               ports:
                 - containerPort: 80
               command:

@@ -47,7 +47,8 @@ spec:
             memory: 50Mi
         args:
         # command = "/kube2sky"
-        - -domain=
+        - -kube_master_url=http://172.17.42.1:8080/api/ # whu TODO don't hardcode IP address
+        - -domain=cluster.local
       - name: skydns
         image: gcr.io/google_containers/skydns:2015-03-11-001
         resources:
@@ -69,7 +70,7 @@ spec:
         livenessProbe:
           httpGet:
             path: /healthz
-            port: 8080
+            port: 8191
             scheme: HTTP
           initialDelaySeconds: 30
           timeoutSeconds: 5
@@ -81,9 +82,9 @@ spec:
             memory: 20Mi
         args:
         - -cmd=nslookup kubernetes.default.svc.cluster.local localhost >/dev/null
-        - -port=8080
+        - -port=8191
         ports:
-        - containerPort: 8080
+        - containerPort: 8191
           protocol: TCP
       volumes:
       - name: etcd-storage
