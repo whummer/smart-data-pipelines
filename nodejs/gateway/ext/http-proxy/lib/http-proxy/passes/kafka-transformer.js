@@ -104,7 +104,7 @@ KafkaTransformer.prototype.parseAndLogFrame = function (message) {
 	}
 
 	var self = this;
-	var compressed = RSV1 == 0x40;
+	var compressed = (RSV1 == 0x40);
 	if (compressed) {
 		decompress(payload, FIN, function (err, decompressed) {
 			var plainPayload = decompressed.toString();

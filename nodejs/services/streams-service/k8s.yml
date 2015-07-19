@@ -16,9 +16,11 @@ items:
           labels:
             name: streams-service
         spec:
+          imagePullSecrets:
+            - name: rioxregistrykey
           containers:
             - name: streams-service
-              image: riox/hyperriox
+              image: riox/hyperriox:latest
               ports:
                 - containerPort: 8085
               command:

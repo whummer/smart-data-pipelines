@@ -1,7 +1,0 @@
-kind: Service
-apiVersion: v1beta2
-id: riox-gateway
-port: 443
-selector:
-  name: riox-gateway
-containerPort: 8443

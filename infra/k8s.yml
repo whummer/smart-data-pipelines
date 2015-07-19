@@ -1,7 +1,9 @@
 etcd:
   image: kubernetes/etcd:2.0.5.1
   net: host
-  command: /usr/local/bin/etcd --addr=127.0.0.1:4001 --bind-addr=0.0.0.0:4001 --data-dir=/var/etcd/data
+  command: /usr/local/bin/etcd --addr=127.0.0.1:4001
+                               --bind-addr=0.0.0.0:4001
+                               --data-dir=/var/etcd/data
 
 master:
   image: riox/hyperkube:v1.0.0
@@ -10,7 +12,9 @@ master:
     - /var/run/docker.sock:/var/run/docker.sock
   command: /hyperkube kubelet --api_servers=http://localhost:8080 --v=2 --address=0.0.0.0
                               --cluster_dns=10.0.0.100 --cluster_domain=cluster.local
-                              --enable_server --hostname_override=127.0.0.1 --config=/etc/kubernetes/manifests
+                              --enable_server --hostname_override=127.0.0.1
+                              --config=/etc/kubernetes/manifests
+                              --host-network-sources="*"
 
 proxy:
   image: riox/hyperkube:v1.0.0
@@ -18,40 +22,38 @@ proxy:
   privileged: true
   command: /hyperkube proxy --master=http://127.0.0.1:8080 --v=2
 
-# reserve proxy
-#docker run --net=host -d -e CONFD_ETCD_NODE=127.0.0.1:4001 -t -p 80:80 darkgaro/kubernetes-reverseproxy
-
-controllermanager:
-  image: riox/hyperkube:v1.0.0
-  net: host
-  command: [
-              "/hyperkube",
-              "controller-manager",
-              "--master=127.0.0.1:8080",
-              "--machines=127.0.0.1",
-              "--sync_nodes=true",
-              "--v=2"
-        ]
-
-apiserver:
-  image: riox/hyperkube:v1.0.0
-  net: host
-  command: [
-              "/hyperkube",
-              "apiserver",
-              "--portal_net=10.0.0.1/24",
-              "--address=127.0.0.1",
-              "--etcd_servers=http://127.0.0.1:4001",
-              "--cluster_name=kubernetes",
-              "--v=2"
-        ]
-
-scheduler:
-  image: riox/hyperkube:v1.0.0
-  net: host
-  command: [
-              "/hyperkube",
-              "scheduler",
-              "--master=127.0.0.1:8080",
-              "--v=2"
-        ]
+# controllermanager:
+#   image: riox/hyperkube:v1.0.0
+#   net: host
+#   command: [
+#               "/hyperkube",
+#               "controller-manager",
+#               "--master=127.0.0.1:8080",
+#               # "--machines=127.0.0.1",
+#               # "--sync_nodes=true",
+#               "--cluster_name=kubernetes",
+#               "--v=2"
+#         ]
+#
+# apiserver:
+#   image: riox/hyperkube:v1.0.0
+#   net: host
+#   command: [
+#               "/hyperkube",
+#               "apiserver",
+#               "--portal_net=10.0.0.1/24",
+#               "--address=127.0.0.1",
+#               "--etcd_servers=http://127.0.0.1:4001",
+#               "--cluster_name=kubernetes",
+#               "--v=2"
+#         ]
+#
+# scheduler:
+#   image: riox/hyperkube:v1.0.0
+#   net: host
+#   command: [
+#               "/hyperkube",
+#               "scheduler",
+#               "--master=127.0.0.1:8080",
+#               "--v=2"
+#         ]

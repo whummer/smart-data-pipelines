@@ -20,7 +20,7 @@ items:
             - name: rioxregistrykey
           containers:
             - name: users-service
-              image: riox/hyperriox
+              image: riox/hyperriox:latest
               ports:
                 - containerPort: 8084
               command:

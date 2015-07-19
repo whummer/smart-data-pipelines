@@ -11,25 +11,23 @@ endif
 
 .PHONY: build-images push-images deploy-k8s deploy-k8s-dns deploy-services clean
 
+init-cluster:
+	(cd k8s-namespaces && make deploy)
+	(cd cluster && kubectl create -f secrets.yml --namespace=production)
+	(cd cluster && kubectl create -f secrets.yml --namespace=staging)
+	(cd cluster && kubectl create -f secrets.yml --namespace=test)
+
 build-push: build-images push-images
 
 build-images:
-	(cd nodejs && make build)
 	(cd hyperkube && make build)
 	(cd kafka && make build)
-	(cd spring-xd-base && make build)
-	(cd spring-xd-zookeeper && make build)
 	(cd statsd && make build)
 
-
 push-images:
-	(cd nodejs && make build)
 	(cd hyperkube && make push)
 	(cd kafka && make push)
-	(cd spring-xd-base && make push)
-	(cd spring-xd-zookeeper && make push)
 	(cd statsd && make push)
-
 
 deploy-k8s:
 	$(compose) -f k8s.yml up -d
@@ -41,18 +39,18 @@ undeploy-k8s-dns:
 	(cd k8s-dns && make undeploy)
 
 deploy-services:
-	(cd spring-xd-zookeeper && make deploy)
+	(cd zk && make deploy-standalone)
 	(cd mongodb && make deploy)
-	(cd redis && make deploy)
+	(cd redis && make deploy-standalone)
 	(cd kafka && make deploy)
-	(cd statsd && make deploy)
+	#(cd statsd && make deploy)
 
 undeploy-services:
 	(cd kafka && make undeploy)
-	(cd spring-xd-zookeeper && make undeploy)
-	(cd redis && make undeploy)
+	(cd zk && make undeploy-standalone)
+	(cd redis && make undeploy-standalone)
 	(cd mongodb && make undeploy)
-	(cd statsd && make undeploy)
+	#(cd statsd && make undeploy)
 
 # ATTENTION: Use with caution. Stops and removes ALL docker container
 clean:

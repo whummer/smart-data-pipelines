@@ -1,9 +1,9 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: zookeeper-3
+  name: zookeeper
   labels:
-    name: zookeeper-3
+    name: zookeeper
 spec:
   ports:
     - name: client
@@ -15,5 +15,8 @@ spec:
     - name: election
       port: 3888
       targetPort: 3888
+    - name: exhibitor-ui
+      port: 8181
+      targetPort: 8181
   selector:
-    server-id: 3
+    name: zookeeper

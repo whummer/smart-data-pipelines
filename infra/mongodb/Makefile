@@ -1,4 +1,4 @@
-RIOX_ENV=production
+RIOX_ENV?=dev
 
 deploy:
 	@echo "Deploying Mongo ..."

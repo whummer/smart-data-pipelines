@@ -26,8 +26,8 @@
 			"name": "kafka",
 			"enabled": true,
 			"config": {
-				"broker-host": "localhost",
-				"broker-port": 9192
+				"brokerHost": "localhost",
+				"brokerPort": 9192
 			}
 		}
 	],

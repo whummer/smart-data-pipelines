@@ -1,4 +1,4 @@
-FROM riox/nodejs:0.12.2
+FROM node:0.12.2
 MAINTAINER Waldemar Hummer
 
 RUN	apt-get -y update
