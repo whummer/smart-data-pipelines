@@ -4,7 +4,6 @@ deploy:
 	@echo "Deploying Mongo ..."
 	kubectl create -f mongodb-controller.yml --namespace=${RIOX_ENV}
 	kubectl create -f mongodb-service.yml --namespace=${RIOX_ENV}
-	setup-replicas.sh
 
 undeploy:
 	@echo "Undeploying Mongo ..."
