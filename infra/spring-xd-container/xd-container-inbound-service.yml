@@ -1,7 +1,0 @@
-kind: Service
-apiVersion: v1beta2
-id: xd-inbound
-port: 9000
-selector:
-  name: xd-container
-containerPort: 9000

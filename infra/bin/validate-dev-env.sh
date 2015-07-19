@@ -17,7 +17,7 @@ printf "Verifying Kubernetes Master: "
 output=`curl -s localhost:8080/healthz`
 if [ "$output" == "ok" ]; then
 	printf "${green}PASS${reset}\n"
-else 
+else
   printf "${red}FAIL${reset}\n"
 
   echo "  Potential fixes:"
@@ -31,29 +31,29 @@ echo ""
 #
 printf "Verifying DNS Connectivity: "
 
-output=`dig @10.0.0.100 +short kubernetes-ro.default.riox.internal`
+output=`dig @10.0.0.100 +short kubernetes.default.svc.cluster.local`
 if [ "$output" == "10.0.0.1" ]; then
 	printf "${green}PASS${reset}\n"
-else 
+else
   printf "${red}FAIL${reset}\n"
 
   echo "  Potential fixes:"
-  echo "    - [ALL]  Restart kube2sky because it often hangs : docker ps | grep kube2sky | awk -F' ' '{ print \$$1 }' | xargs docker 
+  echo "    - [ALL]  Restart kube2sky because it often hangs : docker ps | grep kube2sky | awk -F' ' '{ print \$$1 }' | xargs docker
   echo "    - [OS X] Ensure route exists: sudo route -n add 10.0.0.0/16 192.168.59.103"
   restart"
-fi	
+fi
 echo ""
 
 #
-# Verify DNS resolution works 
+# Verify DNS resolution works
 #
-declare -a hosts=('mongo' 'redis' 'kafka' 'xd-admin' 'xd-inbound' 'xd-outbound' 'zookeeper' 'hsqldb');
+declare -a hosts=('mongo' 'redis' 'kafka' 'zookeeper');
 echo "Verifying DNS Resolution: "
 for h in "${hosts[@]}"
 do
-	output=`dig @10.0.0.100 +short ${h}.dev.riox.internal`
+	output=`dig @10.0.0.100 +short ${h}.dev.svc.cluster.local`
 
-	printf "   %-30s " "$h.dev.riox.internal:"
+	printf "   %-30s " "$h.dev.svc.cluster.local:"
 
 	if [ "$output" == "" ]; then
 		printf "${red}FAIL${reset}\n"
@@ -63,4 +63,3 @@ do
 done
 
 echo ""
-

@@ -1,0 +1,27 @@
+kind: ReplicationController
+apiVersion: v1
+metadata:
+  name: zookeeper
+  labels:
+    name: zookeeper
+spec:
+  replicas: 1
+  selector:
+    name: zookeeper
+  template:
+    metadata:
+      labels:
+        name: zookeeper
+    spec:
+      containers:
+        - name: server
+          image: fabric8/zookeeper
+          env:
+            - name: SERVER_ID
+              value: "1"
+            - name: MAX_SERVERS
+              value: "1"
+          ports:
+            - containerPort: 2181
+            - containerPort: 2888
+            - containerPort: 3888

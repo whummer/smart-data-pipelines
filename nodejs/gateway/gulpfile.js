@@ -85,11 +85,5 @@
     gulp.task('gateway:start', 'start riox gateway', function() {
     	runCmd("bin/rgw", ["-c", "config/config-staging.json"], __dirname);
     });
-    gulp.task('gateway:k8s:deploy', 'start riox gateway via k8s', function() {
-    	runCmd('kubectl', ["create", "-f", "k8s.yml"], __dirname);
-    });
-    gulp.task('gateway:k8s:undeploy', 'stop riox gateway via k8s', function() {
-    	runCmd('kubectl', ["delete", "-f", "k8s.yml"], __dirname);
-    });
-
+  
 }());

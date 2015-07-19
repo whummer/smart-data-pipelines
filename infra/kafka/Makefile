@@ -1,6 +1,6 @@
 VERSION=latest
 IMAGE=riox/kafka
-RIOX_ENV=production
+RIOX_ENV?=dev
 
 all: build push
 

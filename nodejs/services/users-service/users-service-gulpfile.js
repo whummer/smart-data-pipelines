@@ -23,7 +23,6 @@ var BASE_DIR = 'services/users-service';
 var BUILD_DIR = BASE_DIR + '/build';
 var BUILD_DIR_TEST = BUILD_DIR + '/test';
 var BUILD_DIR_PROD = BUILD_DIR + '/production';
-var DOCKERFILE = "Dockerfile.tmpl";
 
 //
 // Dockerfile settings
@@ -84,56 +83,4 @@ gulp.task('services:users:serve', 'serve the streams-service  using nodemon', fu
 	 script: BASE_DIR + '/app.js',
 	 env: { 'NODE_ENV': 'development' , 'PORT' : dockerSettings.port}
 	 });*/
-});
-
-//
-// Docker tasks
-//
-gulp.task('services:users:docker:build:test', 'build a Docker image from streams-service TEST build', function () {
-	util.log(util.colors.magenta("Building Docker image for TEST..."));
-	runSequence('services:users:build:test', 'services:users:docker:build:test:dockerfile', 'services:users:docker:push', function () {
-		util.log(util.colors.magenta("Built Docker image for TEST. Enjoy."));
-	});
-});
-
-gulp.task('services:users:docker:build:prod', 'build a Docker image from streams-service PRODUCTION build', function () {
-	util.log(util.colors.magenta("Building Docker image for PRODUCTION..."));
-	runSequence('services:users:build:prod', 'services:users:docker:build:prod:dockerfile', 'services:users:docker:push', function () {
-		util.log(util.colors.magenta("Built Docker image for PRODUCTION. Enjoy."));
-	});
-});
-
-gulp.task('services:users:docker:build:test:dockerfile', 'prepare a Dockerfile for streams service  (TEST)', function () {
-	return prepareDockerfile('test');
-});
-
-gulp.task('services:users:docker:build:prod:dockerfile', 'prepare a Dockerfile for streams service (PRODUCTION)', function () {
-	return prepareDockerfile('production');
-});
-
-function prepareDockerfile(env) {
-	var dockerfileDest = path.join(BUILD_DIR, env);
-	util.log('Preparing Dockerfile at ' + dockerfileDest);
-	return gulp.src(path.join(BASE_DIR, DOCKERFILE))
-			.pipe(replace("%NODE_ENV%", env))
-			.pipe(replace("%PORT%", dockerSettings.port))
-			.pipe(rename("Dockerfile"))
-			.pipe(gulp.dest(dockerfileDest));
-}
-
-gulp.task('services:users:docker:push', function () {
-	var _cwd = path.resolve(BASE_DIR + '/../..');
-	var absoluteBuildDir = path.resolve(BUILD_DIR_TEST); // todo make for PROD too
-	util.log('Executing docker build-push in dir ', _cwd);
-	return cp.spawn('bin/docker-util.sh',
-			['--no-push', '-i', 'riox/stream-service', '-v', '-b', absoluteBuildDir],
-			{env: process.env, cwd: _cwd, stdio: 'inherit'})
-});
-
-/* Kubernetes deploy/undeploy tasks */
-gulp.task('services:users:k8s:deploy', function () {
-	runCmd('kubectl', ["create", "-f", "k8s.yml"], __dirname);
-});
-gulp.task('services:users:k8s:undeploy', function () {
-	runCmd('kubectl', ["delete", "-f", "k8s.yml"], __dirname);
 });

@@ -1,7 +1,0 @@
-kind: Service
-apiVersion: v1beta2
-id: hsqldb
-port: 9101
-selector:
-  name: hsqldb
-containerPort: 9101

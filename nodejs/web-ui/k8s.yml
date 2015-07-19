@@ -20,12 +20,12 @@ items:
             - name: rioxregistrykey
           containers:
             - name: riox-ui
-              image: riox/hyperriox
+              image: riox/hyperriox:latest
               ports:
                 - containerPort: 8081
               command:
                 - "gulp"
-                - "ui:serve:prod"
+                - "ui:serve:prod"              
   - kind: Service
     apiVersion: v1
     metadata:
