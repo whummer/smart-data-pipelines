@@ -1,5 +1,7 @@
 'use strict';
 
+var appConfig = require("riox-services-base/lib/config/services.js");
+
 // Production specific configuration
 // =================================
 module.exports = {

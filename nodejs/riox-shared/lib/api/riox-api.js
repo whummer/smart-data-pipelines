@@ -158,7 +158,7 @@
 	sh.login = function (options, callback, errorCallback) {
 		var shaObj = new jsSHA(options.password, "TEXT");
 		options.password = shaObj.getHash("SHA-256", "HEX");
-		callPOST(servicesConfig.services.users.url + "/login", options, callback, errorCallback);
+		callPOST(servicesConfig.users.url + "/login", options, callback, errorCallback);
 	};
 	var assertAuth = function () {
 		var ok = sh.authToken &&
@@ -175,13 +175,13 @@
 
 	sh.activate = function (actKey, callback, errorCallback) {
 		var req = {activationKey: actKey};
-		return callPOST(servicesConfig.services.users.url + "/activation", req, callback, errorCallback);
+		return callPOST(servicesConfig.users.url + "/activation", req, callback, errorCallback);
 	};
 	sh.signup = function (userInfo, callback, errorCallback) {
-		return callPOST(servicesConfig.services.users.url + "/", userInfo, callback, errorCallback);
+		return callPOST(servicesConfig.users.url + "/", userInfo, callback, errorCallback);
 	};
 	sh.signin = function (userInfo, callback, errorCallback) {
-		return callPOST(servicesConfig.services.users.url + "/auth/local", userInfo, function(token, a1, a2) {
+		return callPOST(servicesConfig.users.url + "/auth/local", userInfo, function(token, a1, a2) {
 			if(!token.token) {
 				if(errorCallback) errorCallback("Cannot read token from auth result: " + token);
 			} else {
@@ -230,7 +230,7 @@
 					network: authToken.network,
 					token: authToken.access_token
 				};
-				callPOST(servicesConfig.services.users.url + "/auth", authToken, funcSuccess, funcError);
+				callPOST(servicesConfig.users.url + "/auth", authToken, funcSuccess, funcError);
 			}
 		}
 	};
@@ -245,7 +245,7 @@
 		});
 	};
 	sh.recover = sh.auth.recover = function (options, callback, errorCallback) {
-		callPOST(servicesConfig.services.users.url + "/recover", options, callback, errorCallback);
+		callPOST(servicesConfig.users.url + "/recover", options, callback, errorCallback);
 	};
 
 	/* methods for GETting data */
@@ -261,16 +261,16 @@
 		if (opts.appKey) {
 			path = "/by/appKey/" + opts.appKey;
 		}
-		return callGET(servicesConfig.services.apps.url + path, callback, errorCallback);
+		return callGET(servicesConfig.apps.url + path, callback, errorCallback);
 	};
 	sh.me = function (callback, errorCallback) {
-		return callGET(servicesConfig.services.users.url + "/me", callback, errorCallback);
+		return callGET(servicesConfig.users.url + "/me", callback, errorCallback);
 	};
 	sh.users = sh.get.users = function (callback, errorCallback) {
-		return callGET(servicesConfig.services.users.url, callback, errorCallback);
+		return callGET(servicesConfig.users.url, callback, errorCallback);
 	};
 	sh.user = sh.get.user = function (query, callback, errorCallback) {
-		var url = servicesConfig.services.users.url;
+		var url = servicesConfig.users.url;
 		if (query[ID]) {
 			url += "/" + query[ID];
 		} else if (query[EMAIL] || query[NAME]) {
@@ -281,21 +281,21 @@
 		return callGET(url, callback, errorCallback);
 	};
 	sh.actions = sh.get.actions = function (opts, callback, errorCallback) {
-		return callPOST(servicesConfig.services.users.url + "/actions/query", opts, callback, errorCallback);
+		return callPOST(servicesConfig.users.url + "/actions/query", opts, callback, errorCallback);
 	};
 	sh.apps = sh.get.apps = function (callback, errorCallback) {
-		return callGET(servicesConfig.services.apps.url, callback, errorCallback);
+		return callGET(servicesConfig.apps.url, callback, errorCallback);
 	};
 	sh.thingType = sh.get.thingType = function (id, callback, errorCallback) {
 		if (!id) {
 			if (callback) callback(null);
 			return null;
 		}
-		return callGET(servicesConfig.services.thingTypes.url + "/" + id, callback, errorCallback);
+		return callGET(servicesConfig.thingTypes.url + "/" + id, callback, errorCallback);
 	};
 	sh.thingTypes = sh.get.thingTypes = function (callback, errorCallback) {
 		var maxThings = 100;
-		return callGET(servicesConfig.services.thingTypes.url + "?page=0&size=" + maxThings, callback, errorCallback);
+		return callGET(servicesConfig.thingTypes.url + "?page=0&size=" + maxThings, callback, errorCallback);
 	};
 	sh.things = sh.get.things = function (opts, callback, errorCallback) {
 		if (!opts) opts = {};
@@ -304,24 +304,24 @@
 		if (opts.appId) {
 			suffix = "/by/application/" + opts.appId;
 		}
-		return callGET(servicesConfig.services.things.url + suffix, callback, errorCallback);
+		return callGET(servicesConfig.things.url + suffix, callback, errorCallback);
 	};
 	sh.thing = sh.get.thing = function (id, callback, errorCallback) {
 		if (!id) {
 			if (callback) callback(null);
 			return null;
 		}
-		return callGET(servicesConfig.services.things.url + "/" + id, callback, errorCallback);
+		return callGET(servicesConfig.things.url + "/" + id, callback, errorCallback);
 	};
 	sh.triggers = sh.get.triggers = function (callback, errorCallback) {
-		return callGET(servicesConfig.services.triggers.url, callback, errorCallback);
+		return callGET(servicesConfig.triggers.url, callback, errorCallback);
 	};
 	sh.certificates = sh.get.certificates = function (callback, errorCallback) {
-		return callGET(servicesConfig.services.certificates.url, callback, errorCallback);
+		return callGET(servicesConfig.certificates.url, callback, errorCallback);
 	};
 	sh.statistics = sh.get.statistics = {};
 	sh.statistics.invocations = sh.get.statistics.invocations = function (query, callback, errorCallback) {
-		var url = servicesConfig.services.statistics.url + "/invocations";
+		var url = servicesConfig.statistics.url + "/invocations";
 		return callPOST(url, query, callback, errorCallback);
 	};
 
@@ -329,7 +329,7 @@
 	sh.streams = {};
 	sh.get.streams = {};
 	sh.streams.sources = sh.get.streams.sources = function (searchOpts, callback, errorCallback) {
-		var url = servicesConfig.services.streams.url + "/sources";
+		var url = servicesConfig.streams.url + "/sources";
 		if (searchOpts && typeof searchOpts.query != "undefined") {
 			url += "/query";
 			return callPOST(url, searchOpts, callback, errorCallback);
@@ -341,21 +341,21 @@
 			if (callback) callback(null);
 			return null;
 		}
-		return callGET(servicesConfig.services.streams.url + "/sources/" + id, callback, errorCallback);
+		return callGET(servicesConfig.streams.url + "/sources/" + id, callback, errorCallback);
 	};
 	sh.streams.consumed = function (searchOpts, callback, errorCallback) {
-		var url = servicesConfig.services.streams.url + "/consumed";
+		var url = servicesConfig.streams.url + "/consumed";
 		return callGET(url, callback, errorCallback);
 	};
 	sh.streams.provided = function (searchOpts, callback, errorCallback) {
-		var url = servicesConfig.services.streams.url + "/provided";
+		var url = servicesConfig.streams.url + "/provided";
 		if(searchOpts[NAME]) {
 			url += "/by/name/" + searchOpts[NAME];
 		}
 		return callGET(url, callback, errorCallback);
 	};
 	sh.streams.sinks = sh.get.streams.sinks = function (searchOpts, callback, errorCallback) {
-		var url = servicesConfig.services.streamsinks.url;
+		var url = servicesConfig.streamsinks.url;
 		return callGET(url, callback, errorCallback);
 	};
 	sh.streams.processor = function (id, callback, errorCallback) {
@@ -363,45 +363,45 @@
 			if (callback) callback(null);
 			return null;
 		}
-		return callGET(servicesConfig.services.streamprocessors.url + "/" + id, callback, errorCallback);
+		return callGET(servicesConfig.streamprocessors.url + "/" + id, callback, errorCallback);
 	};
 	sh.streams.processors = function (searchOpts, callback, errorCallback) {
-		var url = servicesConfig.services.streamprocessors.url;
+		var url = servicesConfig.streamprocessors.url;
 		return callGET(url, callback, errorCallback);
 	};
 	sh.analytics = sh.get.analytics = function (callback, errorCallback) {
-		var url = servicesConfig.services.analytics.url;
+		var url = servicesConfig.analytics.url;
 		return callGET(url, callback, errorCallback);
 	};
 	sh.manufacturers = sh.get.manufacturers = function (callback, errorCallback) {
-		return callGET(servicesConfig.services.manufacturers.url, callback, errorCallback);
+		return callGET(servicesConfig.manufacturers.url, callback, errorCallback);
 	};
 	sh.stats = sh.get.stats = function (opts, callback, errorCallback) {
-		var url = buildQueryURL(servicesConfig.services.stats.url, opts);
+		var url = buildQueryURL(servicesConfig.stats.url, opts);
 		return callGET(url, callback, errorCallback);
 	};
 	sh.simulationTypes = sh.get.simulationTypes = function (callback, errorCallback) {
 		var maxResults = 100;
-		return callGET(servicesConfig.services.simulationTypes.url + "?page=0&size=" + maxResults, callback, errorCallback);
+		return callGET(servicesConfig.simulationTypes.url + "?page=0&size=" + maxResults, callback, errorCallback);
 	};
 	sh.notifications = sh.get.notifications = function (opts, callback, errorCallback) {
-		return callGET(servicesConfig.services.notifications.url, callback, errorCallback);
+		return callGET(servicesConfig.notifications.url, callback, errorCallback);
 	};
 
 	sh.simulations = sh.get.simulations = function (callback, errorCallback) {
 		var maxResults = 100;
-		return callGET(servicesConfig.services.simulations.url + "?page=0&size=" + maxResults, callback, errorCallback);
+		return callGET(servicesConfig.simulations.url + "?page=0&size=" + maxResults, callback, errorCallback);
 	};
 	sh.simulationByThingIdAndPropertyName = sh.get.simulationByThingIdAndPropertyName = function (opts, callback, errorCallback) {
 		var maxResults = 100;
 		var thingId = opts.thingId;
 		var propertyName = opts.propertyName;
-		return callGET(servicesConfig.services.simulations.url + "?page=0&size=" + maxResults + "&thingId="
+		return callGET(servicesConfig.simulations.url + "?page=0&size=" + maxResults + "&thingId="
 		+ thingId + "&propertyName=" + propertyName, callback, errorCallback);
 	};
 
 	sh.data = sh.get.data = function (opts, callback, errorCallback) {
-		var url = servicesConfig.services.thingData.url + "/" +
+		var url = servicesConfig.thingData.url + "/" +
 			opts[THING_ID] + "/" + opts[PROPERTY_NAME];
 		if (opts.amount) {
 			url += "/history?amount=" + opts.amount;
@@ -410,16 +410,16 @@
 	};
 	sh.config = sh.get.config = function (callback, errorCallback) {
 		assertAuth();
-		var url = servicesConfig.services.users.url + "/by/email/" + authInfo.email + "/config";
+		var url = servicesConfig.users.url + "/by/email/" + authInfo.email + "/config";
 		return callGET(url, callback, errorCallback);
 	};
 	sh.driver = sh.get.driver = function (opts, callback, errorCallback) {
-		var url = servicesConfig.services.drivers.url + "/forThing/" +
+		var url = servicesConfig.drivers.url + "/forThing/" +
 			opts[THING_ID] + "/" + opts[PROPERTY_NAME];
 		return callGET(url, callback, errorCallback);
 	};
 	sh.plans = sh.get.plans = function (callback, errorCallback) {
-		var url = servicesConfig.services.billing.url + "/plans";
+		var url = servicesConfig.billing.url + "/plans";
 		return callGET(url, callback, errorCallback);
 	};
 	sh.organizations = sh.get.organizations = function (query, callback, errorCallback) {
@@ -427,31 +427,31 @@
 			errorCallback = callback;
 			callback = query;
 		}
-		var url = servicesConfig.services.organizations.url;
+		var url = servicesConfig.organizations.url;
 		if(query.all) url += "/all";
 		return callGET(url, callback, errorCallback);
 	};
 	sh.organizations.memberships = sh.get.organizations.memberships = function (org, callback, errorCallback) {
 		var orgId = org[ID] ? org[ID] : org;
 		if(typeof orgId != "string") throw "Please provide a valid organization ID.";
-		var url = servicesConfig.services.organizations.url + "/" + orgId + "/memberships";
+		var url = servicesConfig.organizations.url + "/" + orgId + "/memberships";
 		return callGET(url, callback, errorCallback);
 	};
 	sh.organizations.memberships = sh.get.organizations.memberships = function (org, callback, errorCallback) {
 		var orgId = org[ID] ? org[ID] : org;
 		if(typeof orgId != "string") throw "Please provide a valid organization ID.";
-		var url = servicesConfig.services.organizations.url + "/" + orgId + "/memberships";
+		var url = servicesConfig.organizations.url + "/" + orgId + "/memberships";
 		return callGET(url, callback, errorCallback);
 	};
 	sh.organization = sh.get.organization = function (org, callback, errorCallback) {
 		var id = org.id ? org.id : org;
-		var url = servicesConfig.services.organizations.url + "/" + id;
+		var url = servicesConfig.organizations.url + "/" + id;
 		return callGET(url, callback, errorCallback);
 	};
 	sh.organization.membership = sh.get.organization.membership = function (mem, callback, errorCallback) {
 		var memId = mem[ID] ? mem[ID] : mem;
 		if(typeof memId != "string") throw "Please provide a valid membership ID.";
-		var url = servicesConfig.services.organizations.url + "/memberships/" + memId;
+		var url = servicesConfig.organizations.url + "/memberships/" + memId;
 		return callGET(url, callback, errorCallback);
 	};
 	sh.access = sh.get.access = function (query, callback, errorCallback) {
@@ -461,37 +461,37 @@
 		}
 		var sourceId = query[SOURCE_ID];
 		var consumerId = query[REQUESTOR_ID];
-		var url = servicesConfig.services.access.url +
+		var url = servicesConfig.access.url +
 			(sourceId ? ("/source/" + sourceId) : "") +
 			(consumerId ? ("/consumer/" + consumerId) : "");
 		return callGET(url, callback, errorCallback);
 	};
 	sh.access.roles = sh.get.access.roles = function (callback, errorCallback) {
-		var url = servicesConfig.services.access.url + "/roles";
+		var url = servicesConfig.access.url + "/roles";
 		return callGET(url, callback, errorCallback);
 	};
 	sh.access.consumers = sh.get.access.consumers = function (query, callback, errorCallback) {
-		var url = servicesConfig.services.access.url + "/consumers";
+		var url = servicesConfig.access.url + "/consumers";
 		if(query[SOURCE_ID]) {
 			url += "?source=" + query[SOURCE_ID];
 		}
 		return callGET(url, callback, errorCallback);
 	};
 	sh.access.consumer = sh.get.access.consumer = function (consumer, callback, errorCallback) {
-		var url = servicesConfig.services.access.url + "/consumers/";
+		var url = servicesConfig.access.url + "/consumers/";
 		url += consumer[API_KEY] ? consumer[API_KEY] : consumer[ID] ? consumer[ID] : consumer;
 		return callGET(url, callback, errorCallback);
 	};
 	sh.ratings = sh.get.ratings = sh.get.ratings || {};
 	sh.ratings.limits = sh.get.ratings.limits = function (query, callback, errorCallback) {
-		var url = servicesConfig.services.ratings.url + "/limits";
+		var url = servicesConfig.ratings.url + "/limits";
 		if(query[SOURCE_ID]) {
 			url += "?source=" + query[SOURCE_ID];
 		}
 		return callGET(url, callback, errorCallback);
 	};
 	sh.ratings.invocations = sh.get.ratings.invocations = function (query, callback, errorCallback) {
-		var url = servicesConfig.services.ratings.url + "/invocations";
+		var url = servicesConfig.ratings.url + "/invocations";
 		return callPOST(url, query, callback, errorCallback);
 	};
 	sh.consents = sh.get.consents = function (query, callback, errorCallback) {
@@ -502,7 +502,7 @@
 		var sourceId = query[SOURCE_ID];
 		var consumerId = query[REQUESTOR_ID];
 		var consentorId = query[CONSENTOR_ID];
-		var url = servicesConfig.services.consents.url;
+		var url = servicesConfig.consents.url;
 		if(consentorId) {
 			url = url + "/user/" + consentorId;
 		} else {
@@ -512,7 +512,7 @@
 		return callGET(url, callback, errorCallback);
 	};
 	sh.usage = sh.get.usage = function (callback, errorCallback) {
-		var url = servicesConfig.services.users.url + "/me/usage";
+		var url = servicesConfig.users.url + "/me/usage";
 		return callGET(url, callback, errorCallback);
 	};
 	sh.properties = sh.get.properties = function (thingType, callback, errorCallback) {
@@ -589,75 +589,75 @@
 	sh.add = {};
 
 	sh.add.thingType = function (thingType, callback, errorCallback) {
-		return callPOST(servicesConfig.services.thingTypes.url, thingType, callback, errorCallback);
+		return callPOST(servicesConfig.thingTypes.url, thingType, callback, errorCallback);
 	};
 	sh.add.app = function (app, callback, errorCallback) {
-		return callPOST(servicesConfig.services.apps.url, app, callback, errorCallback);
+		return callPOST(servicesConfig.apps.url, app, callback, errorCallback);
 	};
 	sh.add.thing = function (thing, callback, errorCallback) {
-		return callPOST(servicesConfig.services.things.url, thing, callback, errorCallback);
+		return callPOST(servicesConfig.things.url, thing, callback, errorCallback);
 	};
 	sh.add.simulationType = function (simType, callback, errorCallback) {
-		return callPOST(servicesConfig.services.simulationTypes.url, simType, callback, errorCallback);
+		return callPOST(servicesConfig.simulationTypes.url, simType, callback, errorCallback);
 	};
 	sh.add.trigger = function (trigger, callback, errorCallback) {
 		if (!trigger.type) {
 			trigger.type = "FUNCTION";
 		}
-		return callPOST(servicesConfig.services.triggers.url, trigger, callback, errorCallback);
+		return callPOST(servicesConfig.triggers.url, trigger, callback, errorCallback);
 	};
 	sh.add.organization = function (organization, callback, errorCallback) {
-		return callPOST(servicesConfig.services.organizations.url, organization, callback, errorCallback);
+		return callPOST(servicesConfig.organizations.url, organization, callback, errorCallback);
 	};
 	sh.add.organization.invite = function (invite, callback, errorCallback) {
 		var orgId = invite[ORGANIZATION_ID];
 		if(typeof orgId != "string") throw "Please provide a valid " + ORGANIZATION_ID;
-		var url = servicesConfig.services.organizations.url + "/" + orgId + "/invite";
+		var url = servicesConfig.organizations.url + "/" + orgId + "/invite";
 		return callPOST(url, invite, callback, errorCallback);
 	};
 	sh.add.notification = function (notification, callback, errorCallback) {
-		return callPOST(servicesConfig.services.notifications.url, notification, callback, errorCallback);
+		return callPOST(servicesConfig.notifications.url, notification, callback, errorCallback);
 	};
 	sh.add.data = function (opts, dataItem, callback, errorCallback) {
-		var url = servicesConfig.services.thingData.url + "/" +
+		var url = servicesConfig.thingData.url + "/" +
 			opts[THING_ID] + "/" +
 			opts[PROPERTY_NAME];
 		return callPOST(url, dataItem, callback, errorCallback);
 	};
 	sh.add.access = sh.add.access || {};
 	sh.add.access.role = function(role, callback, errorCallback) {
-		var url = servicesConfig.services.access.url + "/roles";
+		var url = servicesConfig.access.url + "/roles";
 		return callPOST(url, role, callback, errorCallback);
 	}
 	sh.add.access.consumer = function(consumer, callback, errorCallback) {
-		var url = servicesConfig.services.access.url + "/consumers";
+		var url = servicesConfig.access.url + "/consumers";
 		return callPOST(url, consumer, callback, errorCallback);
 	}
 	sh.add.access.consumer.key = function(consumer, callback, errorCallback) {
 		var id = consumer._id ? consumer._id : consumer.id ? consumer.id : consumer;
-		var url = servicesConfig.services.access.url + "/consumers/" + id + "/keys";
+		var url = servicesConfig.access.url + "/consumers/" + id + "/keys";
 		return callPOST(url, {}, callback, errorCallback);
 	}
 
 	sh.add.streams = {};
 	sh.add.stream = function (stream, callback, errorCallback) {
-		return callPOST(servicesConfig.services.streams.url, stream, callback, errorCallback);
+		return callPOST(servicesConfig.streams.url, stream, callback, errorCallback);
 	};
 	sh.add.streams.source = function (source, callback, errorCallback) {
-		return callPOST(servicesConfig.services.streamsources.url, source, callback, errorCallback);
+		return callPOST(servicesConfig.streamsources.url, source, callback, errorCallback);
 	};
 	sh.add.streams.sink = function (sink, callback, errorCallback) {
-		return callPOST(servicesConfig.services.streamsinks.url, sink, callback, errorCallback);
+		return callPOST(servicesConfig.streamsinks.url, sink, callback, errorCallback);
 	};
 	sh.add.streams.processor = function (processor, callback, errorCallback) {
-		return callPOST(servicesConfig.services.streamprocessors.url, processor, callback, errorCallback);
+		return callPOST(servicesConfig.streamprocessors.url, processor, callback, errorCallback);
 	};
 	sh.add.certificate = function (certificate, callback, errorCallback) {
-		return callPOST(servicesConfig.services.certificates.url, certificate, callback, errorCallback);
+		return callPOST(servicesConfig.certificates.url, certificate, callback, errorCallback);
 	};
 	sh.add.rating = sh.add.rating || {};
 	sh.add.rating.limit = function(limit, callback, errorCallback) {
-		var url = servicesConfig.services.ratings.url + "/limits";
+		var url = servicesConfig.ratings.url + "/limits";
 		return callPOST(url, limit, callback, errorCallback);
 	};
 
@@ -667,55 +667,55 @@
 	sh.save = {};
 
 	sh.save.me = function (me, callback, errorCallback) {
-		return callPUT(servicesConfig.services.users.url + "/me", me, callback, errorCallback);
+		return callPUT(servicesConfig.users.url + "/me", me, callback, errorCallback);
 	};
 	sh.save.thingType = function (thingType, callback, errorCallback) {
-		return callPUT(servicesConfig.services.thingTypes.url, thingType, callback, errorCallback);
+		return callPUT(servicesConfig.thingTypes.url, thingType, callback, errorCallback);
 	};
 	sh.save.app = function (app, callback, errorCallback) {
-		return callPUT(servicesConfig.services.apps.url, app, callback, errorCallback);
+		return callPUT(servicesConfig.apps.url, app, callback, errorCallback);
 	};
 	sh.save.organization = function (organization, callback, errorCallback) {
-		return callPUT(servicesConfig.services.organizations.url + "/" + organization.id, organization, callback, errorCallback);
+		return callPUT(servicesConfig.organizations.url + "/" + organization.id, organization, callback, errorCallback);
 	};
 	sh.save.organization.membership = function (mem, callback, errorCallback) {
-		return callPUT(servicesConfig.services.organizations.url + "/memberships/" + mem.id, mem, callback, errorCallback);
+		return callPUT(servicesConfig.organizations.url + "/memberships/" + mem.id, mem, callback, errorCallback);
 	};
 	sh.save.certificate = function (certificate, callback, errorCallback) {
-		return callPUT(servicesConfig.services.certificates.url + "/" + certificate.id, certificate, callback, errorCallback);
+		return callPUT(servicesConfig.certificates.url + "/" + certificate.id, certificate, callback, errorCallback);
 	};
 	sh.save.thing = function (thing, callback, errorCallback) {
-		return callPUT(servicesConfig.services.things.url, thing, callback, errorCallback);
+		return callPUT(servicesConfig.things.url, thing, callback, errorCallback);
 	};
 	sh.save.simulationType = function (simType, callback, errorCallback) {
-		return callPUT(servicesConfig.services.simulationTypes.url, simType, callback, errorCallback);
+		return callPUT(servicesConfig.simulationTypes.url, simType, callback, errorCallback);
 	};
 	sh.save.trigger = function (trigger, callback, errorCallback) {
-		return callPUT(servicesConfig.services.triggers.url, trigger, callback, errorCallback);
+		return callPUT(servicesConfig.triggers.url, trigger, callback, errorCallback);
 	};
 	sh.save.notification = function (notification, callback, errorCallback) {
-		return callPUT(servicesConfig.services.notifications.url, notification, callback, errorCallback);
+		return callPUT(servicesConfig.notifications.url, notification, callback, errorCallback);
 	};
 
 	sh.save.streams = {};
 	sh.save.streams.source = function (stream, callback, errorCallback) {
 		var id = assertID(stream);
-		return callPUT(servicesConfig.services.streams.url + "/sources/" + id, stream, callback, errorCallback);
+		return callPUT(servicesConfig.streams.url + "/sources/" + id, stream, callback, errorCallback);
 	};
 	sh.save.sink = function (sink, callback, errorCallback) {
-		return callPUT(servicesConfig.services.streamsinks.url, sink, callback, errorCallback);
+		return callPUT(servicesConfig.streamsinks.url, sink, callback, errorCallback);
 	};
 	sh.save.driver = function (driver, callback, errorCallback) {
-		var url = servicesConfig.services.drivers.url + "/forThing/" +
+		var url = servicesConfig.drivers.url + "/forThing/" +
 			driver[THING_ID] + "/" + driver[PROPERTY_NAME];
 		return callPUT(url, driver, callback, errorCallback);
 	};
 	sh.save.config = function (config, callback, errorCallback) {
-		var url = servicesConfig.services.users.url + "/by/email/" + authInfo.email + "/config";
+		var url = servicesConfig.users.url + "/by/email/" + authInfo.email + "/config";
 		return callPUT(url, config, callback, errorCallback);
 	};
 	sh.save.access = function (access, callback, errorCallback) {
-		var url = servicesConfig.services.access.url;
+		var url = servicesConfig.access.url;
 		if (access.id) {
 			url += "/" + access.id;
 			return callPUT(url, access, callback, errorCallback);
@@ -726,21 +726,21 @@
 		}
 	};
 	sh.save.access.role = function (role, callback, errorCallback) {
-		var url = servicesConfig.services.access.url + "/roles/" + role.id;
+		var url = servicesConfig.access.url + "/roles/" + role.id;
 		return callPUT(url, role, callback, errorCallback);
 	};
 	sh.save.access.consumer = function (consumer, callback, errorCallback) {
-		var url = servicesConfig.services.access.url + "/consumers/" + consumer.id;
+		var url = servicesConfig.access.url + "/consumers/" + consumer.id;
 		return callPUT(url, consumer, callback, errorCallback);
 	};
 	sh.save.rating = {};
 	sh.save.rating.limit = function (limit, callback, errorCallback) {
-		var url = servicesConfig.services.ratings.url + "/limits/" + limit.id;
+		var url = servicesConfig.ratings.url + "/limits/" + limit.id;
 		return callPUT(url, limit, callback, errorCallback);
 	};
 	sh.save.rating.invocation = function (invocation, callback, errorCallback) {
 		var id = invocation.id ? invocation.id : invocation;
-		var url = servicesConfig.services.ratings.url + "/invocations/" + id;
+		var url = servicesConfig.ratings.url + "/invocations/" + id;
 		return callPUT(url, invocation, callback, errorCallback);
 	};
 
@@ -750,86 +750,86 @@
 
 	sh.delete.thingType = function (thingType, callback, errorCallback) {
 		var id = thingType.id ? thingType.id : thingType;
-		return callDELETE(servicesConfig.services.thingTypes.url + "/" + id, callback, errorCallback);
+		return callDELETE(servicesConfig.thingTypes.url + "/" + id, callback, errorCallback);
 	};
 	sh.delete.app = function (app, callback, errorCallback) {
 		var id = app.id ? app.id : app;
-		return callDELETE(servicesConfig.services.apps.url + "/" + id, callback, errorCallback);
+		return callDELETE(servicesConfig.apps.url + "/" + id, callback, errorCallback);
 	};
 	sh.delete.thing = function (thing, callback, errorCallback) {
 		var id = thing.id ? thing.id : thing;
-		return callDELETE(servicesConfig.services.things.url + "/" + id, callback, errorCallback);
+		return callDELETE(servicesConfig.things.url + "/" + id, callback, errorCallback);
 	};
 	sh.delete.simulationType = function (simType, callback, errorCallback) {
 		var id = simType.id ? simType.id : simType;
-		return callDELETE(servicesConfig.services.simulationTypes.url + "/" + id, callback, errorCallback);
+		return callDELETE(servicesConfig.simulationTypes.url + "/" + id, callback, errorCallback);
 	};
 	sh.delete.simulation = function (id, callback, errorCallback) {
-		return callDELETE(servicesConfig.services.simulations.url + "/" + id, callback, errorCallback);
+		return callDELETE(servicesConfig.simulations.url + "/" + id, callback, errorCallback);
 	};
 	sh.delete.trigger = function (trigger, callback, errorCallback) {
 		var id = trigger.id ? trigger.id : trigger;
-		return callDELETE(servicesConfig.services.triggers.url + "/" + id, callback, errorCallback);
+		return callDELETE(servicesConfig.triggers.url + "/" + id, callback, errorCallback);
 	};
 	sh.delete.triggersForCreator = function (creatorId, callback, errorCallback) {
-		return callDELETE(servicesConfig.services.triggers.url + "?creatorId=" + creatorId, callback, errorCallback);
+		return callDELETE(servicesConfig.triggers.url + "?creatorId=" + creatorId, callback, errorCallback);
 	};
 	sh.delete.stream = function (stream, callback, errorCallback) {
 		var id = stream.id ? stream.id : stream;
-		return callDELETE(servicesConfig.services.streams.url + "/" + id, callback, errorCallback);
+		return callDELETE(servicesConfig.streams.url + "/" + id, callback, errorCallback);
 	};
 	sh.delete.sink = function (sink, callback, errorCallback) {
 		var id = sink.id ? sink.id : sink;
-		return callDELETE(servicesConfig.services.streamsinks.url + "/" + id, callback, errorCallback);
+		return callDELETE(servicesConfig.streamsinks.url + "/" + id, callback, errorCallback);
 	};
 	sh.delete.driver = function (opts, callback, errorCallback) {
-		var url = servicesConfig.services.drivers.url + "/resetFor/" +
+		var url = servicesConfig.drivers.url + "/resetFor/" +
 			opts[THING_ID] + "/" + opts[PROPERTY_NAME];
 		return callGET(url, callback, errorCallback);
 	};
 	sh.delete.access = function (access, callback, errorCallback) {
-		var url = servicesConfig.services.access.url + "/" + access.id;
+		var url = servicesConfig.access.url + "/" + access.id;
 		return callDELETE(url, callback, errorCallback);
 	};
 	sh.delete.access.role = function (role, callback, errorCallback) {
 		var id = role.id ? role.id : role;
-		var url = servicesConfig.services.access.url + "/roles/" + id;
+		var url = servicesConfig.access.url + "/roles/" + id;
 		return callDELETE(url, callback, errorCallback);
 	};
 	sh.delete.access.consumer = function (consumer, callback, errorCallback) {
 		var id = consumer.id ? consumer.id : consumer;
-		var url = servicesConfig.services.access.url + "/consumers/" + id;
+		var url = servicesConfig.access.url + "/consumers/" + id;
 		return callDELETE(url, callback, errorCallback);
 	};
 	sh.delete.access.consumer.key = function (consumer, key, callback, errorCallback) {
 		var id = consumer.id ? consumer.id : consumer;
-		var url = servicesConfig.services.access.url + "/consumers/" + id + "/keys/" + key;
+		var url = servicesConfig.access.url + "/consumers/" + id + "/keys/" + key;
 		return callDELETE(url, callback, errorCallback);
 	};
 	sh.delete.rating = sh.delete.rating || {};
 	sh.delete.rating.limit = function (limit, callback, errorCallback) {
 		var id = limit.id ? limit.id : limit;
-		var url = servicesConfig.services.ratings.url + "/limits/" + id;
+		var url = servicesConfig.ratings.url + "/limits/" + id;
 		return callDELETE(url, callback, errorCallback);
 	};
 	sh.delete.notification = function (notification, callback, errorCallback) {
 		var id = notification.id ? notification.id : notification;
-		var url = servicesConfig.services.notifications.url + "/" + id;
+		var url = servicesConfig.notifications.url + "/" + id;
 		return callDELETE(url, callback, errorCallback);
 	};
 	sh.delete.certificate = function (certificate, callback, errorCallback) {
 		var id = certificate.id ? certificate.id : certificate;
-		var url = servicesConfig.services.certificates.url + "/" + id;
+		var url = servicesConfig.certificates.url + "/" + id;
 		return callDELETE(url, callback, errorCallback);
 	};
 	sh.delete.organization = function (org, callback, errorCallback) {
 		var id = org.id ? org.id : org;
-		var url = servicesConfig.services.organizations.url + "/" + id;
+		var url = servicesConfig.organizations.url + "/" + id;
 		return callDELETE(url, callback, errorCallback);
 	};
 	sh.delete.organization.membership = function (mem, callback, errorCallback) {
 		var id = mem.id ? mem.id : mem;
-		var url = servicesConfig.services.organizations.url + "/memberships/" + id;
+		var url = servicesConfig.organizations.url + "/memberships/" + id;
 		return callDELETE(url, callback, errorCallback);
 	};
 
@@ -839,31 +839,31 @@
 	sh.stream.request = function (req, callback, errorCallback) {
 		var id = req[STREAM_ID];
 		if (!id) throw "Invalid stream id.";
-		var url = servicesConfig.services.streams.url + "/" + id + "/permissions";
+		var url = servicesConfig.streams.url + "/" + id + "/permissions";
 		return callPOST(url, req, callback, errorCallback);
 	};
 	sh.stream.permissions = function (stream, callback, errorCallback) {
 		var id = stream.id ? stream.id : stream;
-		var url = servicesConfig.services.streams.url + "/" + id + "/permissions";
+		var url = servicesConfig.streams.url + "/" + id + "/permissions";
 		return callGET(url, callback, errorCallback);
 	};
 	sh.stream.permissions.save = function (perms, callback, errorCallback) {
-		var url = servicesConfig.services.streams.url + "/" + perms[STREAM_ID] + "/permissions";
+		var url = servicesConfig.streams.url + "/" + perms[STREAM_ID] + "/permissions";
 		return callPUT(url, perms, callback, errorCallback);
 	};
 	sh.stream.restrictions = function (stream, callback, errorCallback) {
 		var id = stream.id ? stream.id : stream;
-		var url = servicesConfig.services.streams.url + "/" + id + "/restrictions";
+		var url = servicesConfig.streams.url + "/" + id + "/restrictions";
 		return callGET(url, callback, errorCallback);
 	};
 	sh.stream.restrictions.save = function (restr, callback, errorCallback) {
-		var url = servicesConfig.services.streams.url + "/" + restr[STREAM_ID] + "/restrictions";
+		var url = servicesConfig.streams.url + "/" + restr[STREAM_ID] + "/restrictions";
 		return callPUT(url, restr, callback, errorCallback);
 	};
 	sh.stream.apply = function (req, callback, errorCallback) {
 		var id = req[STREAM_ID];
 		if (!id) throw "Invalid stream id.";
-		var url = servicesConfig.services.streams.url + "/" + id + "/apply";
+		var url = servicesConfig.streams.url + "/" + id + "/apply";
 		return callPOST(url, req, callback, errorCallback);
 	};
 
@@ -872,23 +872,23 @@
 	sh.access = sh.access || {};
 	sh.access.enable = function (access, callback, errorCallback) {
 		var id = access.id ? access.id : access;
-		var url = servicesConfig.services.access.url + "/" + id + "/enable";
+		var url = servicesConfig.access.url + "/" + id + "/enable";
 		return callPOST(url, {}, callback, errorCallback);
 	};
 	sh.access.disable = function (access, callback, errorCallback) {
 		var id = access.id ? access.id : access;
-		var url = servicesConfig.services.access.url + "/" + id + "/disable";
+		var url = servicesConfig.access.url + "/" + id + "/disable";
 		return callPOST(url, {}, callback, errorCallback);
 	};
 	sh.consent = sh.consent || {};
 	sh.consent.enable = function (consent, callback, errorCallback) {
 		var id = consent.id ? consent.id : consent;
-		var url = servicesConfig.services.consents.url + "/" + id + "/enable";
+		var url = servicesConfig.consents.url + "/" + id + "/enable";
 		return callPOST(url, {}, callback, errorCallback);
 	};
 	sh.consent.disable = function (consent, callback, errorCallback) {
 		var id = consent.id ? consent.id : consent;
-		var url = servicesConfig.services.consents.url + "/" + id + "/disable";
+		var url = servicesConfig.consents.url + "/" + id + "/disable";
 		return callPOST(url, {}, callback, errorCallback);
 	};
 
@@ -919,7 +919,7 @@
 	sh.sim = {};
 	sh.sim.gen = function (request, callback, errorCallback) {
 		var type = request.type == "GPS" ? "traffic" : "curve";
-		var url = servicesConfig.services.simulations.url + "/gen/" + type;
+		var url = servicesConfig.simulations.url + "/gen/" + type;
 		return callPOST(url, request, callback, errorCallback);
 	}
 
@@ -1040,7 +1040,7 @@
 	var connectWebsocket = sh.connectWebsocket = function (options) {
 		var onOpenCallback = options.callback ? options.callback : options;
 		var sendTokenInProtocolUpdate = options.sendTokenInProtocolUpdate;
-		var wsURL = options.url ? options.url : servicesConfig.services.websocket.url;
+		var wsURL = options.url ? options.url : servicesConfig.websocket.url;
 		assertAuth();
 		var ws;
 		if (openConnectionPerRequest || !sh.websocket || sh.websocket.readyState > 1) {

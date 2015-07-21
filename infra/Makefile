@@ -16,6 +16,7 @@ init-cluster:
 	(cd cluster && kubectl create -f secrets.yml --namespace=production)
 	(cd cluster && kubectl create -f secrets.yml --namespace=staging)
 	(cd cluster && kubectl create -f secrets.yml --namespace=test)
+	(cd cluster && kubectl create -f secrets.yml --namespace=development)
 
 build-push: build-images push-images
 
