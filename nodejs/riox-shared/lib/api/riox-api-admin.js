@@ -26,13 +26,13 @@ var init = function(riox) {
 	/* rating/billing of API calls */
 	sh.ratings = sh.ratings || {};
 	sh.ratings.logAndPermit = function(access, callback, errorCallback) {
-		return sh.callPOST(servicesConfig.services.ratings.url + "/logAndPermit", access, callback, errorCallback);
+		return sh.callPOST(servicesConfig.ratings.url + "/logAndPermit", access, callback, errorCallback);
 	};
 
 	/* manage stream sources */
 
 	sh.streams.sources.all = function(query, callback, errorCallback) {
-		var url = servicesConfig.services.streams.url + "/sources/all?";
+		var url = servicesConfig.streams.url + "/sources/all?";
 		if(query[ORGANIZATION_ID]) {
 			url += ORGANIZATION_ID + "=" + query[ORGANIZATION_ID];
 		}
@@ -43,17 +43,17 @@ var init = function(riox) {
 
 	sh.delete.plan = function(plan, callback) {
 		var id = plan.id ? plan.id : plan;
-		return riox.callDELETE(servicesConfig.services.billing.url + "/plans/" + id, callback);
+		return riox.callDELETE(servicesConfig.billing.url + "/plans/" + id, callback);
 	}
 	sh.save.plan = function(plan, callback) {
 		var id = plan.id ? plan.id : plan;
-		return riox.callPUT(servicesConfig.services.billing.url + "/plans/" + id, plan, callback);
+		return riox.callPUT(servicesConfig.billing.url + "/plans/" + id, plan, callback);
 	}
 
 	/* manage organizations */
 
 	sh.organizations.all = sh.get.organizations.all = function(callback, errorCallback) {
-		var url = servicesConfig.services.organizations.url + "/all";
+		var url = servicesConfig.organizations.url + "/all";
 		return riox.callGET(url, callback, errorCallback);
 	};
 
@@ -64,16 +64,16 @@ var init = function(riox) {
 	sh.account.activate = function(user, callback) {
 		var id = user.id ? user.id : user;
 		var req = {userId: id, active: true};
-		return riox.callPOST(servicesConfig.services.users.url + "/active/" + id, req, callback);
+		return riox.callPOST(servicesConfig.users.url + "/active/" + id, req, callback);
 	}
 	sh.account.deactivate = function(user, callback) {
 		var id = user.id ? user.id : user;
 		var req = {userId: id, active: false};
-		return riox.callPOST(servicesConfig.services.users.url + "/active/" + id, req, callback);
+		return riox.callPOST(servicesConfig.users.url + "/active/" + id, req, callback);
 	}
 	sh.account.active = function(user, callback) {
 		var id = user.id ? user.id : user;
-		return riox.callGET(servicesConfig.services.users.url + "/active/" + id, callback);
+		return riox.callGET(servicesConfig.users.url + "/active/" + id, callback);
 	}
 
 	return sh;

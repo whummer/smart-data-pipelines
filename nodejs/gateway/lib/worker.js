@@ -11,7 +11,6 @@ var fs = require('fs'),
 	memoryMonitor = require('./memorymonitor'),
 	logger = require('winston'),
 	lynx = require('lynx'),
-	appConfig = require('riox-services-base/lib/config/services'),
 	expressStatsd = require('express-statsd');
 
 /* constants/configurations */
@@ -31,7 +30,7 @@ if(SEND_TO_STATSD) {
 /* configure riox admin API */
 if(ENFORCE_ACCESS_LIMITS) {
 	global.riox = require('riox-shared/lib/api/riox-api.js')
-	global.appConfig = global.servicesConfig = require('riox-services-base/lib/config/services');
+	global.servicesConfig = global.config.services;
 	global.auth = require('riox-services-base/lib/auth/auth.service');
 	require('riox-services-base/lib/api/service.calls');
 	require('riox-shared/lib/api/riox-api-admin.js')(riox);

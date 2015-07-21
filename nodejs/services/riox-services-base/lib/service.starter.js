@@ -21,8 +21,8 @@ var mongoose = global.mongoose || require('mongoose');
 if (!global.mongoose) {
 	global.mongoose = mongoose;
 }
-if (!global.servicesConfig) {
-	global.servicesConfig = require('./config/services');
+if (!global.servicesConfig && global.config) {
+	global.servicesConfig = global.config.services;
 }
 
 /* any status codes >= (gte) to this one will be logged as errors */

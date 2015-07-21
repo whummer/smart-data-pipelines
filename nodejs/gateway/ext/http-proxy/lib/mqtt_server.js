@@ -1,6 +1,4 @@
-var mosca = require('mosca'),
-	appConfig = require('riox-services-base/lib/config/services');
-
+var mosca = require('mosca');
 
 var ascoltatore = {
 	//using ascoltatore

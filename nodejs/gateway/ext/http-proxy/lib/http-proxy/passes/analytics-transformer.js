@@ -1,5 +1,4 @@
 var util = require('util'),
-		appConfig = require('riox-services-base/lib/config/services'),
 		logger = require('winston'),
 		Transform = require('stream').Transform,
 		kafka = require('kafka-node'),

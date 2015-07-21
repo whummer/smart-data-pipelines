@@ -3,7 +3,6 @@
 var path = require('path');
 var merge = require('riox-services-base/lib/config/merge');
 var commonConfig = require('riox-services-base/lib/config');
-var appConfig = require('riox-services-base/lib/config/services');
 
 // All configurations will extend these options
 // ============================================
