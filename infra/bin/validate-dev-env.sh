@@ -4,6 +4,8 @@ red=`tput setaf 1`
 green=`tput setaf 2`
 reset=`tput sgr0`
 
+: ${RIOX_ENV:=development}
+
 
 # TODO: Check rereqs:
 #  - brew install coreutils (for timeout)
@@ -51,9 +53,9 @@ declare -a hosts=('mongo' 'redis' 'kafka' 'zookeeper');
 echo "Verifying DNS Resolution: "
 for h in "${hosts[@]}"
 do
-	output=`dig @10.0.0.100 +short ${h}.dev.svc.cluster.local`
+	output=`dig @10.0.0.100 +short ${h}.${RIOX_ENV}.svc.cluster.local`
 
-	printf "   %-30s " "$h.dev.svc.cluster.local:"
+	printf "   %-30s " "$h.${RIOX_ENV}.svc.cluster.local:"
 
 	if [ "$output" == "" ]; then
 		printf "${red}FAIL${reset}\n"
@@ -68,7 +70,7 @@ echo ""
 # Verify services are UP
 
 printf "Verify Zookeeper is working:  "
-output=`echo ruok | nc zookeeper.dev.svc.cluster.local 2181`
+output=`echo ruok | nc zookeeper.${RIOX_ENV}.svc.cluster.local 2181`
 if [ "$output" == "imok" ]; then
 	printf "%-5s ${green}PASS${reset}\n"
 else

@@ -43,11 +43,11 @@ deploy-services:
 	(cd zk && make deploy-standalone)
 	(cd mongodb && make deploy)
 	(cd redis && make deploy-standalone)
-	(cd kafka && make deploy)
+	(cd kafka && make deploy-standalone)
 	#(cd statsd && make deploy)
 
 undeploy-services:
-	(cd kafka && make undeploy)
+	(cd kafka && make undeploy-standalone)
 	(cd zk && make undeploy-standalone)
 	(cd redis && make undeploy-standalone)
 	(cd mongodb && make undeploy)
