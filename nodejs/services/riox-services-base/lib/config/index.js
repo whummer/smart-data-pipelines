@@ -9,7 +9,7 @@ global.adminUser = {email: "riox", password: "riox", role: "admin"};
 // All configurations will extend these options
 // ============================================
 var all = {
-	env: process.env.NODE_ENV,
+	env: process.env.RIOX_ENV,
 
 	// Secret for session
 	secrets: {

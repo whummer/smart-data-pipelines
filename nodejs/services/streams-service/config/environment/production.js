@@ -4,17 +4,22 @@
 // =================================
 module.exports = {
 
-	// Server IP
-	ip:		process.env.IP ||
-			undefined,
-
-	// Server port
-	port:	process.env.PORT ||
-			8080,
-
-	// MongoDB connection options
 	mongo: {
-		uri: appConfig.infra.mongodb.url
+		uri: appConfig["production"].infra.mongodb.url
+	},
+
+	kafka: {
+		hostname: appConfig["production"].infra.kafka.hostname,
+		port: 9092
+	},
+
+	zookeeper: {
+		hostname: appConfig["production"].infra.zookeeper.hostname,
+		port: 2181
+	},
+
+	redis: {
+		url: appConfig["production"].infra.redis.url
 	}
 
 };

@@ -1,4 +1,4 @@
-RIOX_ENV?=dev
+RIOX_ENV?=development
 
 deploy-standalone:
 	kubectl create -f zk-single-service.yml --namespace=${RIOX_ENV}

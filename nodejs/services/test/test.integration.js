@@ -1,7 +1,7 @@
 'use strict';
 
 process.env.TEST_MODE = true;
-process.env.NODE_ENV = "test";
+process.env.NODE_ENV = process.env.RIOX_ENV = "test";
 require('riox-services-base/lib/api/service.calls');
 global.servicesConfig = require('riox-services-base/lib/config/services');
 

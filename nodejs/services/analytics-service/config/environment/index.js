@@ -12,7 +12,7 @@ function requiredProcessEnv(name) {
 }
 
 var config = {
-	env: process.env.NODE_ENV,
+	env: process.env.RIOX_ENV,
 
 	// Root path of server
 	root: path.normalize(__dirname + '/../../..'),
@@ -29,24 +29,12 @@ var config = {
 		}
 	},
 
-	// Server port
-	port: process.env.PORT || 9000,
-
 	// Should we populate the DB with sample data?
 	seedDB: false,
-
-	// MongoDB connection options
-	mongo: {
-		options: {
-			db: {
-				safe: true
-			}
-		}
-	}
 
 };
 
 /* load env. config */
-var envConfig = require("./" + process.env.NODE_ENV + ".js");
+var envConfig = require("./" + process.env.RIOX_ENV + ".js");
 /* merge configs */
 module.exports = merge(merge(commonConfig, config), envConfig);

@@ -8,7 +8,7 @@
       "merge_logs": true,
       "cwd": "analytics-service",
       "env": {
-        "NODE_ENV": "development",
+        "RIOX_ENV": "development",
         "SERVICE_PORT": 8086
       }
     },
@@ -20,7 +20,7 @@
       "merge_logs": true,
       "cwd": "files-service",
       "env": {
-        "NODE_ENV": "development",
+        "RIOX_ENV": "development",
         "SERVICE_PORT": 8087
       }
     },
@@ -32,7 +32,7 @@
       "merge_logs": true,
       "cwd": "streams-service",
       "env": {
-        "NODE_ENV": "development",
+        "RIOX_ENV": "development",
 		"DISABLE_AUTH" : true,
         "SERVICE_PORT": 8085
       }
@@ -45,7 +45,7 @@
       "merge_logs": true,
       "cwd": "users-service",
       "env": {
-        "NODE_ENV": "development",
+        "RIOX_ENV": "development",
         "SERVICE_PORT": 8084
       }
     }

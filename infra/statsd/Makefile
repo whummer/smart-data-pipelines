@@ -1,4 +1,4 @@
-RIOX_ENV?=dev
+RIOX_ENV?=development
 VERSION=latest
 IMAGE=riox/statsd-mongo
 

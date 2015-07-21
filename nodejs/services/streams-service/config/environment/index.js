@@ -25,52 +25,11 @@ var config = {
 	},
 
 	// Should we populate the DB with sample data?
-	seedDB: false,
-
-	// Server port
-	port: process.env.PORT || 9000,
-
-	// MongoDB connection options
-	mongo: {
-		options: {
-			db: {
-				safe: true
-			}
-		}
-	},
-
-	kafka: {
-		hostname: appConfig.infra.kafka.hostname,
-		port: 9092
-	},
-
-	zookeeper: {
-		hostname: appConfig.infra.zookeeper.hostname,
-		port: 2181
-	}
-
-	// TODO remove
-//	xdadmin: {
-//		hostname: "TODO",
-//		port: 9393
-//	},
-//
-//	xdcontainer: {
-//		inbound: {
-//			hostname: "TODO",
-//			port: 9000
-//		},
-//		outbound: {
-//			hostname: "TODO",
-//			port: 9001
-//		}
-//
-//
-//	}
+	seedDB: false
 
 };
 
 /* load env. config */
-var envConfig = require("./" + process.env.NODE_ENV + ".js");
+var envConfig = require("./" + process.env.RIOX_ENV + ".js");
 /* merge configs */
 module.exports = merge(merge(commonConfig, config), envConfig);

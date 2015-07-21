@@ -1,4 +1,4 @@
-RIOX_ENV?=dev
+RIOX_ENV?=development
 
 # deploy-cluster:
 # 	kubectl create -f cluster/redis-master.yml --namespace=${RIOX_ENV}

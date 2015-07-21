@@ -21,6 +21,5 @@
     	"key"  : "config/server.key"
     },
     "user": "riox",
-    "group": "staff",
-	"driver": "redis://redis.production.svc.cluster.local"
+    "group": "staff"
 }

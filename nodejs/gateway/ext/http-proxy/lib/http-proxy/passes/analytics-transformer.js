@@ -24,7 +24,7 @@ function AnalyticsTransformer(name, options) {
 	//
 	// Init Kafka
 	//	
-	self.kafkaClient = new kafka.Client(appConfig.infra.zookeeper.host);
+	self.kafkaClient = new kafka.Client(global.config.zookeeper.host);
 	self.producer = new HighLevelProducer(self.kafkaClient);
 	self.consumer = new HighLevelConsumer(
 						self.kafkaClient,

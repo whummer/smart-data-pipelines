@@ -7,8 +7,10 @@ var appConfig = require("riox-services-base/lib/config/services.js");
 module.exports = {
 
 	mongo: {
-		uri: appConfig.infra.mongodb.url
+		uri: appConfig["development"].infra.mongodb.url
 	},
+
+	services: appConfig["development"].services,
 
 	seedDB: true
 };
