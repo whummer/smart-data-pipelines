@@ -236,7 +236,7 @@ function findOrgs(callback) {
 			}
 		});
 	}, function(e) {
-		console.log("ERROR", e);
+		console.log("ERROR inserting demo data", e);
 	});
 }
 
