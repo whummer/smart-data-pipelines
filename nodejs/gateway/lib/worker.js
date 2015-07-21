@@ -30,7 +30,6 @@ if(SEND_TO_STATSD) {
 /* configure riox admin API */
 if(ENFORCE_ACCESS_LIMITS) {
 	global.riox = require('riox-shared/lib/api/riox-api.js')
-	global.servicesConfig = global.config.services;
 	global.auth = require('riox-services-base/lib/auth/auth.service');
 	require('riox-services-base/lib/api/service.calls');
 	require('riox-shared/lib/api/riox-api-admin.js')(riox);
