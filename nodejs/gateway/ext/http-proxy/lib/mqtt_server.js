@@ -5,7 +5,7 @@ var mosca = require('mosca'),
 var ascoltatore = {
 	//using ascoltatore
 	type: 'mongo',				
-	url: appConfig.infra.mongodb.baseurl + '/mqtt',
+	url: global.config.mongodb.baseurl + '/mqtt',
 	pubsubCollection: 'ascoltatori',
 	mongo: {}
 };
@@ -15,7 +15,7 @@ var moscaSettings = {
 	backend: ascoltatore,
 	persistence: {
 		factory: mosca.persistence.Mongo,
-		url: appConfig.infra.mongodb.baseurl + '/mqtt',
+		url: global.config.mongodb.baseurl + '/mqtt',
 	}
 };
 

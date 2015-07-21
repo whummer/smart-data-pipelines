@@ -20,6 +20,5 @@
      	"port" : 443,
     	"cert" : "config/server.crt",
     	"key"  : "config/server.key"
-    },
-	"driver": "redis://redis.production.svc.cluster.local"
+    }
 }

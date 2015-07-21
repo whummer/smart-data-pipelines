@@ -81,6 +81,6 @@ gulp.task('services:streams:serve', 'serve the streams-service  using nodemon', 
 	// (see https://github.com/JacksonGariety/gulp-nodemon/issues/6)
 	/*return nodemon({
 		script: BASE_DIR + '/app.js',
-		env: { 'NODE_ENV': 'development' , 'PORT' : dockerSettings.port}
+		env: { 'RIOX_ENV': 'development' , 'PORT' : dockerSettings.port}
 	});*/
 });

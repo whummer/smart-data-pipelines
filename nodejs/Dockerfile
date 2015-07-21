@@ -2,8 +2,8 @@ FROM node:0.12.2
 MAINTAINER riox
 MAINTAINER Waldemar Hummer
 
-# install binaries: gulp, mocha
-RUN npm install -g gulp mocha nodemon
+# install prerequisites
+RUN npm install -g gulp mocha nodemon linklocal node-gyp
 
 # change workdir
 WORKDIR /code/
@@ -37,6 +37,9 @@ ADD ./web-ui/package.json /code/web-ui/
 # now install all other modules (global flag on: -g)
 RUN gulp deps:install:global
 
+# fix: kafka-node needs to be installed separately
+RUN npm install -g kafka-node
+
 # install bower dependencies
 ADD ./web-ui/bower.json /code/web-ui/
 ADD ./riox-shared/bower.json /code/riox-shared/
@@ -50,9 +53,8 @@ ADD . /code
 RUN rm -rf `find . -name node_modules | grep -v '^\./node_modules'`
 RUN rm -rf ./web-ui/build/production/
 
-# set config to use link-local, then npm install
+# set config to use link-local before running npm install
 RUN echo '{"build":{"linklocal":true}}' > /root/.rioxrc
-RUN npm install -g linklocal
 
 # link local deps
 RUN gulp deps:clean:local

@@ -4,8 +4,9 @@
 
 'use strict';
 
-// Set default node environment to development
-process.env.NODE_ENV = process.env.NODE_ENV || "development";
+//Set default environment
+process.env.RIOX_ENV = process.env.RIOX_ENV || "development";
+process.env.NODE_ENV = process.env.RIOX_ENV == "development" ? "development" : "production";
 
 // load config
 var riox = require("riox-shared/lib/api/riox-api");

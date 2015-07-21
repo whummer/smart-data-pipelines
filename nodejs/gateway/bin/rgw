@@ -28,6 +28,10 @@ if (argv.h || argv.help) {
     return util.puts(help);
 }
 
+/* load environment config */
+process.env.RIOX_ENV = process.env.RIOX_ENV || "development";
+global.config = require("../lib/config/environment");
+
 var configFile = argv.c || argv.config;
 
 if (!configFile) {

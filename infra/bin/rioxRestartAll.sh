@@ -1,6 +1,10 @@
 #!/bin/bash
 
-BASEDIR=`dirname $0`
+REALPATH=`realpath $0`
+if [ "$REALPATH" == "" ]; then
+	REALPATH=$0
+fi
+BASEDIR=`dirname $REALPATH`
 
 docker rm -f $(docker ps -aq)
 

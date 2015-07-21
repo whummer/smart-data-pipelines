@@ -14,16 +14,19 @@ var fs = require('fs'),
 	appConfig = require('riox-services-base/lib/config/services'),
 	expressStatsd = require('express-statsd');
 
-/* statsd config */
-var monitorConfig = {"client": new lynx(appConfig.infra.statsd.hostname, 8125)};
-var monitorRequest = expressStatsd(monitorConfig);
-
 /* constants/configurations */
 var CORS_HEADERS_ENABLED = true;
 var ENFORCE_ACCESS_LIMITS = true;
 var SEND_TO_STATSD = false;
 var rootDir = fs.realpathSync(__dirname + '/../');
 var hipacheVersion = require(path.join(__dirname, '..', 'package.json')).version;
+
+/* statsd config */
+var monitorRequest = null;
+if(SEND_TO_STATSD) {
+	var monitorConfig = {"client": new lynx(global.config.statsd.hostname, 8125)};
+	monitorRequest = expressStatsd(monitorConfig);
+}
 
 /* configure riox admin API */
 if(ENFORCE_ACCESS_LIMITS) {

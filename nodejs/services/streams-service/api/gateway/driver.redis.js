@@ -2,10 +2,9 @@
 
 var redis = require("redis");
 var url = require("url");
-var appConfig = require('riox-services-base/lib/config/services');
 
-var config = {
-		url: appConfig.infra.redis.url
+var redisConfig = {
+		url: global.config.redis.url
 };
 var PREFIX = "";
 
@@ -76,7 +75,7 @@ var getClient = function(params, callback) {
 	if(params.client) {
 		return callback(params.client);
 	}
-	var u = url.parse(config.url);
+	var u = url.parse(redisConfig.url);
 
 	var client = redis.createClient(u.port, u.hostname);
 	client.on('ready', function () {

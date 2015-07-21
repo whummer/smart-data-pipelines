@@ -26,7 +26,8 @@ function Cache(config, handlers) {
         debugHandler('Cache: ' + msg);
     };
 
-    this.client = factory.getDriver(config.driver);
+    var driverArray = (global.config.driver instanceof Array) ? global.config.driver : [global.config.driver];
+    this.client = factory.getDriver(driverArray);
 
     this.client.on('error', function (err) {
         this.log('DriverError ' + err);

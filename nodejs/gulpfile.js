@@ -20,6 +20,7 @@ for(var key in gulpFiles) {
 	try {
 		require(gulpFiles[key]);
 	} catch(e) {
+		//console.log(e);
 		/* dependency missing -> swallow */
 	}
 }
