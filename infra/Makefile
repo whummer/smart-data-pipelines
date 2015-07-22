@@ -41,7 +41,7 @@ undeploy-k8s-dns:
 
 deploy-services:
 	(cd zk && make deploy-standalone)
-	(cd mongodb && make deploy)
+	(cd mongodb && make deploy-standalone)
 	(cd redis && make deploy-standalone)
 	(cd kafka && make deploy-standalone)
 	#(cd statsd && make deploy)
