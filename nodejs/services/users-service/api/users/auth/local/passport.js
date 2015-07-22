@@ -20,6 +20,11 @@ exports.setup = function (User, config) {
           return done(null, false, { message: 'Incorrect email address or password.' });
         }
 
+        /* if admin user, return success */
+        if(user[ROLE] == "admin") {
+            return done(null, user);
+        }
+
         /* check if account is activated */
         var query = {};
     	query[USER_ID] = user[ID];
