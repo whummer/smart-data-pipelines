@@ -64,7 +64,7 @@ var applySources = function(params) {
 };
 
 var isTopLevelDomain = function(host) {
-	return host && host.match(/^.*\.((com)|(net)|(org)|(ftp\.sh)|(internal))(:[0-9]+)?$/);
+	return host && host.match(/^.*\.((com)|(net)|(org)|(ftp\.sh)|(internal)|(cluster\.local))(:[0-9]+)?$/);
 };
 var isArray = function(obj) {
 	return Object.prototype.toString.call(obj) === '[object Array]';
