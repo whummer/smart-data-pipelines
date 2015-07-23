@@ -22,6 +22,10 @@ module.exports = {
 
 	redis: {
 		url: appConfig["production"].infra.redis.url
-	}
+	},
+
+	services: appConfig["production"].services,
+
+	seedDB: true
 
 };
