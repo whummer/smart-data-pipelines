@@ -4,13 +4,13 @@ CLUSTER_REPLICAS?=3
 REPLICA_SET=rs0
 
 REPLICA_SUFFIXES:= $(shell seq 1 ${CLUSTER_REPLICAS})
-DEPLOYED_CONTROLLERS=$(shell kubectl get rc | grep mongo | awk '{print $4}' | cut -d'=' -f 2)
-DEPLOYED_SERVICES=$(shell kubectl get services | grep mongo | awk '{print $3}' | cut -d'=' -f 2)
+DEPLOYED_CONTROLLERS=$(shell kubectl get rc --namespace=${RIOX_ENV} | grep mongo | awk '{print $4}' | cut -d'=' -f 2)
+DEPLOYED_SERVICES=$(shell kubectl get services --namespace=${RIOX_ENV} | grep mongo | awk '{print $3}' | cut -d'=' -f 2)
 
 deploy: deploy-standalone 
 
 deploy-standalone:
-	@echo "Deployin MongoDB in standalone mode."
+	@echo "Deploying MongoDB in standalone mode."
 	kubectl create -f mongodb-controller-single.yml --namespace=${RIOX_ENV}
 	kubectl create -f mongodb-service-single.yml --namespace=${RIOX_ENV}
 
@@ -29,18 +29,27 @@ status:
 	@echo "Deployed services: ${DEPLOYED_SERVICES}"
 
 undeploy:
-	@echo "Undeploying Mongo."
+	@echo "Undeploying Mongo. Using namespace ${RIOX_ENV}"
+
+	@if [ -z "$(DEPLOYED_CONTROLLERS)" ]; then \
+		echo "Warning: No deployed controllers found." ; \
+	fi
+
 	@for CTRL in $(DEPLOYED_CONTROLLERS) ; do \
 		if [[ "$$CTRL" == mongo* ]]; then \
 			echo "Shutting down controller $$CTRL" ; \
-			kubectl stop rc $$CTRL ; \
+			kubectl stop rc $$CTRL --namespace=${RIOX_ENV} ; \
 		fi; \
 	done;
+
+	@if [ -z "$(DEPLOYED_SERVICES)" ]; then \
+		echo "Warning: No deployed services found." ; \
+	fi
 
 	@for SVC in $(DEPLOYED_SERVICES) ; do \
 		if [[ "$$SVC" == mongo* ]]; then \
 			echo "Shutting down service  $$SVC" ; \
-			kubectl stop service $$SVC; \
+			kubectl stop service $$SVC --namespace=${RIOX_ENV}; \
 		fi; \
 	done;
 
