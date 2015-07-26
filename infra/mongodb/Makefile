@@ -1,30 +1,49 @@
 RIOX_ENV?=development
 
-MONGO_REPLICAS?=3
+CLUSTER_REPLICAS?=3
+REPLICA_SET=rs0
 
-deploy-cluster:
-	@echo "Replicas: ${MONGO_REPLICAS}"
-	cat mongodb-controller.tmpl.yml | sed 's/@MONGO_REPLICAS@/${MONGO_REPLICAS}/' \
-		| sed 's/@ARGS@/"--smallfiles", "--replSet=rs0"/' > mongodb-controller.yml ;
-	make deploy
+REPLICA_SUFFIXES:= $(shell seq 1 ${CLUSTER_REPLICAS})
+DEPLOYED_CONTROLLERS=$(shell kubectl get rc | grep mongo | awk '{print $4}' | cut -d'=' -f 2)
+DEPLOYED_SERVICES=$(shell kubectl get services | grep mongo | awk '{print $3}' | cut -d'=' -f 2)
+
+deploy: deploy-standalone 
 
 deploy-standalone:
-	cat mongodb-controller.tmpl.yml | sed 's/@MONGO_REPLICAS@/1/' \
-		| sed 's/@ARGS@/"--smallfiles"/' > mongodb-controller.yml ;
-	make deploy
+	@echo "Deployin MongoDB in standalone mode."
+	kubectl create -f mongodb-controller-single.yml --namespace=${RIOX_ENV}
+	kubectl create -f mongodb-service-single.yml --namespace=${RIOX_ENV}
 
-deploy:
-	@echo "Deploying Mongo."
-	kubectl create -f mongodb-controller.yml --namespace=${RIOX_ENV}
-	kubectl create -f mongodb-service.yml --namespace=${RIOX_ENV}
+deploy-cluster: 
+	@echo "Deploying MongoDB in replicated mode. #Replicas: ${CLUSTER_REPLICAS}"
+	@for SUFFIX in ${REPLICA_SUFFIXES} ; do \
+		kubectl create -f mongodb-controller-$${SUFFIX}.yml --namespace=${RIOX_ENV}; \
+		kubectl create -f mongodb-service-$${SUFFIX}.yml --namespace=${RIOX_ENV}; \
+	done
+
+init-cluster:
+	./setup-replicas.sh
+
+status:
+	@echo "Deployed controllers: ${DEPLOYED_CONTROLLERS}"
+	@echo "Deployed services: ${DEPLOYED_SERVICES}"
 
 undeploy:
-	@echo "Undeploying Mongo ..."
-	kubectl scale rc mongo --replicas=0 --namespace=${RIOX_ENV}
-	kubectl delete -f mongodb-controller.yml --namespace=${RIOX_ENV}
-	kubectl delete -f mongodb-service.yml --namespace=${RIOX_ENV}
+	@echo "Undeploying Mongo."
+	@for CTRL in $(DEPLOYED_CONTROLLERS) ; do \
+		if [[ "$$CTRL" == mongo* ]]; then \
+			echo "Shutting down controller $$CTRL" ; \
+			kubectl stop rc $$CTRL ; \
+		fi; \
+	done;
 
-clean:
-	rm mongodb-controller.yml
+	@for SVC in $(DEPLOYED_SERVICES) ; do \
+		if [[ "$$SVC" == mongo* ]]; then \
+			echo "Shutting down service  $$SVC" ; \
+			kubectl stop service $$SVC; \
+		fi; \
+	done;
 
-.PHONY: deploy undeploy deploy-cluster deploy-standalone clean
+	@echo "Undeployed Mongo."
+
+.PHONY: deploy undeploy deploy-cluster deploy-standalone status
