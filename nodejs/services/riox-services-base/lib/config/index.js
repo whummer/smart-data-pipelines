@@ -4,7 +4,11 @@ var path = require('path');
 var _ = require('lodash');
 
 /* set global admin user */
-global.adminUser = {email: "riox", password: "riox", role: "admin"};
+global.adminUser = {
+		email: "riox",
+		password: "wFZ5Z5aUAWUjA!",
+		role: "admin"
+};
 
 // All configurations will extend these options
 // ============================================

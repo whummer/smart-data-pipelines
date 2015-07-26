@@ -21,10 +21,7 @@ var config = {
 			logMeta: false,
 			logErrorRequests: true
 		}
-	},
-
-	// Should we populate the DB with sample data?
-	seedDB: false
+	}
 
 };
 

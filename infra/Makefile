@@ -41,16 +41,16 @@ undeploy-k8s-dns:
 
 deploy-services:
 	(cd zk && make deploy-standalone)
-	(cd mongodb && make deploy)
+	(cd mongodb && make deploy-standalone)
 	(cd redis && make deploy-standalone)
-	(cd kafka && make deploy)
+	(cd kafka && make deploy-standalone)
 	#(cd statsd && make deploy)
 
 undeploy-services:
-	(cd kafka && make undeploy)
 	(cd zk && make undeploy-standalone)
-	(cd redis && make undeploy-standalone)
 	(cd mongodb && make undeploy)
+	(cd redis && make undeploy-standalone)
+	(cd kafka && make undeploy-standalone)
 	#(cd statsd && make undeploy)
 
 # ATTENTION: Use with caution. Stops and removes ALL docker container

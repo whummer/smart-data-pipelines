@@ -35,6 +35,7 @@ envs.forEach(function(env) {
 	appConfig[env] = {
 			domain: env + "." + domain,
 			services: {
+				"riox-ui": {		url: "http://" + getHost(env, "riox-ui") + ":8081/" },
 				billing: {			url: "http://" + getHost(env, "billing-service") + ":8080/api/v1/billing" },
 				users: {			url: "http://" + getHost(env, "users-service") + ":8084/api/v1/users" },
 				organizations: {	url: "http://" + getHost(env, "organizations-service") + ":8084/api/v1/organizations" },

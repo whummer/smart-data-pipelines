@@ -26,7 +26,7 @@ sleep 2
 code=
 while [ "$code" != "0" ]; do
 	echo "Waiting for DNS"
-	dig @10.0.0.100 mongo.dev.riox.internal | grep ANSWER
+	dig @10.0.0.100 mongo.development.riox.internal | grep ANSWER
 	code=$?
 	sleep 3
 done

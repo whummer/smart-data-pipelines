@@ -17,7 +17,9 @@ spec:
           - name: kafka
             image: riox/kafka
             env:
-              - name: KAFKA_ZOOKEEPER_CONNECT
-                value: zookeeper.dev.svc.cluster.local:2181
+              - name: POD_NAMESPACE
+                valueFrom:
+                  fieldRef:
+                    fieldPath: metadata.namespace
             ports:
               - containerPort: 9092

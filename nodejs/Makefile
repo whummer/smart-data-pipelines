@@ -1,7 +1,7 @@
 # Environment to deploy to (default: test)
 RIOX_ENV?=test
-RIOX_VERSION?=latest
 IMAGE=riox/hyperriox
+IMAGE_VERSION?=latest
 TEST_TIMEOUT= # set this to --no-timeouts in case the test times out.
 
 NPATH=/usr/local/lib/node_modules/
@@ -36,10 +36,10 @@ pm2-run:
 # TARGETS for building the Hyperriox image (container all the microservices)
 ###############
 build-image:
-	docker build -t ${IMAGE}:${RIOX_VERSION} .
+	docker build -t ${IMAGE}:${IMAGE_VERSION} .
 
 push-image:
-	docker push ${IMAGE}:${RIOX_VERSION}
+	docker push ${IMAGE}:${IMAGE_VERSION}
 
 ###############
 # TARGETS for testing during development
@@ -53,15 +53,31 @@ run-e2e-test:
 ###############
 # TARGETS for deployment
 ###############
-.PHONY: deploy-services undeploy-services scaledown-services
+.PHONY: deploy-services undeploy-services scaledown-services render-template
 
-deploy-services:
+render-template:
+	(cd gateway && ../../util/templater.sh k8s.tmpl.yml > k8s.yml)
+	(cd web-ui && ../../util/templater.sh k8s.tmpl.yml > k8s.yml)
+	(cd services/analytics-service && ../../../util/templater.sh k8s.tmpl.yml > k8s.yml)
+	(cd services/files-service && ../../../util/templater.sh k8s.tmpl.yml > k8s.yml)
+	(cd services/streams-service && ../../../util/templater.sh k8s.tmpl.yml > k8s.yml)
+	(cd services/users-service && ../../../util/templater.sh k8s.tmpl.yml > k8s.yml)
+
+deploy-services: render-template
 	(cd gateway && kubectl create -f k8s.yml --namespace=${RIOX_ENV})
 	(cd web-ui && kubectl create -f k8s.yml --namespace=${RIOX_ENV})
 	(cd services/analytics-service && kubectl create -f k8s.yml --namespace=${RIOX_ENV})
 	(cd services/files-service && kubectl create -f k8s.yml --namespace=${RIOX_ENV})
 	(cd services/streams-service && kubectl create -f k8s.yml --namespace=${RIOX_ENV})
 	(cd services/users-service && kubectl create -f k8s.yml --namespace=${RIOX_ENV})
+
+rolling-update:
+	kubectl rolling-update --namespace=${RIOX_ENV} analytics-service --image=riox/hyperriox:${IMAGE_VERSION}
+	kubectl rolling-update --namespace=${RIOX_ENV} files-service --image=riox/hyperriox:${IMAGE_VERSION}
+	kubectl rolling-update --namespace=${RIOX_ENV} gateway --image=riox/hyperriox:${IMAGE_VERSION}
+	kubectl rolling-update --namespace=${RIOX_ENV} riox-ui --image=riox/hyperriox:${IMAGE_VERSION}
+	kubectl rolling-update --namespace=${RIOX_ENV} streams-service --image=riox/hyperriox:${IMAGE_VERSION}
+	kubectl rolling-update --namespace=${RIOX_ENV} users-service --image=riox/hyperriox:${IMAGE_VERSION}
 
 scaledown-services:
 	kubectl scale --replicas=0 rc gateway --namespace=${RIOX_ENV}
@@ -71,10 +87,10 @@ scaledown-services:
 	kubectl scale --replicas=0 rc streams-service --namespace=${RIOX_ENV}
 	kubectl scale --replicas=0 rc users-service --namespace=${RIOX_ENV}
 
-undeploy-services: scaledown-services
-	(cd gateway && kubectl delete -f k8s.yml --namespace=${RIOX_ENV})
-	(cd web-ui && kubectl delete -f k8s.yml --namespace=${RIOX_ENV})
-	(cd services/analytics-service && kubectl delete -f k8s.yml --namespace=${RIOX_ENV})
-	(cd services/files-service && kubectl delete -f k8s.yml --namespace=${RIOX_ENV})
-	(cd services/streams-service && kubectl delete -f k8s.yml --namespace=${RIOX_ENV})
-	(cd services/users-service && kubectl delete -f k8s.yml --namespace=${RIOX_ENV})
+undeploy-services:
+	(cd gateway && kubectl stop -f k8s.yml --namespace=${RIOX_ENV})
+	(cd web-ui && kubectl stop -f k8s.yml --namespace=${RIOX_ENV})
+	(cd services/analytics-service && kubectl stop -f k8s.yml --namespace=${RIOX_ENV})
+	(cd services/files-service && kubectl stop -f k8s.yml --namespace=${RIOX_ENV})
+	(cd services/streams-service && kubectl stop -f k8s.yml --namespace=${RIOX_ENV})
+	(cd services/users-service && kubectl stop -f k8s.yml --namespace=${RIOX_ENV})

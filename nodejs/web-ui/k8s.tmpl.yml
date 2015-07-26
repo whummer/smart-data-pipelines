@@ -1,0 +1,44 @@
+{{IMAGE_VERSION=latest}}
+apiVersion: v1
+kind: List
+items:
+  - kind: ReplicationController
+    apiVersion: v1
+    metadata:
+      name: riox-ui
+      labels:
+        name: riox-ui
+    spec:
+      replicas: 2
+      selector:
+        name: riox-ui
+      template:
+        metadata:
+          labels:
+            name: riox-ui
+        spec:
+          imagePullSecrets:
+            - name: rioxregistrykey
+          containers:
+            - name: riox-ui
+              image: riox/hyperriox:{{IMAGE_VERSION}}
+              ports:
+                - containerPort: 8081
+              command:
+                - "gulp"
+                - "ui:serve:prod"
+              env:
+                - name: RIOX_ENV
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.namespace
+
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      name: riox-ui
+    spec:
+      ports:
+        - port: 8081
+      selector:
+        name: riox-ui

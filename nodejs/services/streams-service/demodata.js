@@ -1,12 +1,11 @@
 var StreamSource = require('./api/streams/streamsource.model.js');
 var riox = require('riox-shared/lib/api/riox-api');
 var riox = require('riox-shared/lib/api/riox-api-admin')(riox);
+var url = require('url');
 
 var getHost = function(service) {
-	if(service != "riox-ui") {
-		service += "-service";
-	}
-	return service + "." + global.config.domain + ":" + port;
+	var serviceUrl = global.config.services[service].url;
+	return url.parse(serviceUrl).host;
 };
 
 var LOREM = " Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum";
@@ -114,7 +113,7 @@ var rioxAPIs =
 		connector: {
 			type: "http"
 		},
-		backends: [ "http://" + getHost("riox-ui") + ":8081"],
+		backends: [ "http://" + getHost("riox-ui")],
 		"allow-cors": true,
 		"public-access": true,
 		operations:
@@ -149,6 +148,7 @@ var rioxAPIs =
 		}]
 	}];
 
+/* TODO whu: remove ports from here (not necessary here) */
 var mapping = {
 		"organizations": 8084,
 		"streams": 8085,
@@ -236,7 +236,7 @@ function findOrgs(callback) {
 			}
 		});
 	}, function(e) {
-		console.log("ERROR", e);
+		console.log("ERROR inserting demo data", e);
 	});
 }
 

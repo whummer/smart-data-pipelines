@@ -325,7 +325,10 @@ exports.insertInternalCallUser = function() {
 	var id = new mongoose.Types.ObjectId(auth.INTERNAL_USER_ID);
 	var query = { _id: id };
 	User.findOne(query, function(err, user) {
-	    if (err) return next(err);
+	    if (err) {
+	    	console.log("ERROR: Could not save internal user!", err); // TODO handle this error
+	    	return;
+	    }
 	    if (!user)  {
 	    	//console.log("Creating internal/admin user");
 	    	var newUser = new User({

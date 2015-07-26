@@ -35,7 +35,8 @@ template[ADDRESS] = {
 /** User's role. */
 template[ROLE] = {
 	    type: String,
-		default: 'user'
+		default: 'user',
+		enum: global.config.userRoles
 };
 
 var UserSchema = new Schema(template);

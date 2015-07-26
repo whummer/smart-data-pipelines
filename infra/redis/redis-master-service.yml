@@ -6,4 +6,5 @@ spec:
   ports:
     - port: 6379
   selector:
-    name: redis-master
+    name: redis
+    role: master

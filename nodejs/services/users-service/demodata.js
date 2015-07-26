@@ -6,7 +6,12 @@ var Membership = require('./api/organizations/membership.model');
 var demoOrgs = [
     	{
     		_id : "000000000001",
-    		domain : ["platform", "web4d.ftp.sh", "gateway." + global.config.domain],
+    		domain : ["platform", "web4d.ftp.sh", "demo", "staging",
+    		          "gateway.production.svc.cluster.local",
+    		          "gateway.staging.svc.cluster.local",
+    		          "gateway.test.svc.cluster.local",
+    		          "gateway.development.svc.cluster.local",
+    		          "gateway." + global.config.domain],
     		name : "Riox",
     		description : "This organization represents the Riox platform tenant.",
     		"image-data" : [{

@@ -25,7 +25,13 @@ items:
                 - containerPort: 8081
               command:
                 - "gulp"
-                - "ui:serve:prod"              
+                - "ui:serve:prod"
+              env:
+                - name: RIOX_ENV
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.namespace
+
   - kind: Service
     apiVersion: v1
     metadata:

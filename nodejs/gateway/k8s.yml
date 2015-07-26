@@ -26,6 +26,11 @@ items:
               command:
                   - "gulp"
                   - "gateway:start"
+              env:
+                - name: RIOX_ENV
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.namespace
 
   - kind: Service
     apiVersion: v1

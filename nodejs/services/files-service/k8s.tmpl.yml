@@ -1,0 +1,44 @@
+{{IMAGE_VERSION=latest}}
+apiVersion: v1
+kind: List
+items:
+  - kind: ReplicationController
+    apiVersion: v1
+    metadata:
+      name: files-service
+      labels:
+        name: files-service
+    spec:
+      replicas: 2
+      selector:
+        name: files-service
+      template:
+        metadata:
+          labels:
+            name: files-service
+        spec:
+          imagePullSecrets:
+            - name: rioxregistrykey
+          containers:
+            - name: files-service
+              image: riox/hyperriox:{{IMAGE_VERSION}}
+              ports:
+                - containerPort: 8087
+              command:
+                - "gulp"
+                - "services:files:serve"
+              env:
+                - name: RIOX_ENV
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.namespace
+
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      name: files-service
+    spec:
+      ports:
+        - port: 8087
+      selector:
+        name: files-service

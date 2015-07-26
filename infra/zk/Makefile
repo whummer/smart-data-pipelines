@@ -1,33 +1,32 @@
 RIOX_ENV?=development
+ZK_CLUSTER_INSTANCES?=3
+ZK_RELEASE=3.4.6
+
+build-image:
+	docker build -t riox/zookeeper-exhibitor:${ZK_RELEASE} docker-zk-exhibitor
+
+push-image:
+	docker push riox/zookeeper-exhibitor:${ZK_RELEASE}
 
 deploy-standalone:
-	kubectl create -f zk-single-service.yml --namespace=${RIOX_ENV}
-	kubectl create -f zk-single-rc.yml --namespace=${RIOX_ENV}
+	@echo "Deploying Zookeeper standalone ..."
+	kubectl create -f zk-service.yml --namespace=${RIOX_ENV}
+	kubectl create -f zk-rc-single.yml --namespace=${RIOX_ENV}
 
 undeploy-standalone:
-	kubectl scale rc zookeeper --replicas=0 --namespace=${RIOX_ENV}
-	kubectl delete -f zk-single-rc.yml --namespace=${RIOX_ENV}
-	kubectl delete -f zk-single-service.yml --namespace=${RIOX_ENV}
+	@echo "Undeploying Zookeeper standalone ..."
+	kubectl stop -f zk-rc-single.yml --namespace=${RIOX_ENV}
+	kubectl stop -f zk-service.yml --namespace=${RIOX_ENV}
 
 deploy-cluster:
 	@echo "Deploying Zookeeper cluster ..."
-	kubectl create -f zk-1-service.yml --namespace=${RIOX_ENV}
-	kubectl create -f zk-2-service.yml --namespace=${RIOX_ENV}
-	kubectl create -f zk-3-service.yml --namespace=${RIOX_ENV}
-	kubectl create -f zk-1-pod.yml --namespace=${RIOX_ENV}
-	kubectl create -f zk-2-pod.yml --namespace=${RIOX_ENV}
-	kubectl create -f zk-3-pod.yml --namespace=${RIOX_ENV}
-
-#	kubectl create -f dns-service.yml --namespace=${RIOX_ENV}
+	kubectl create -f zk-service.yml --namespace=${RIOX_ENV}
+	kubectl create -f zk-rc-aws.yml --namespace=${RIOX_ENV}
+	kubectl scale rc zookeeper --replicas=${ZK_CLUSTER_INSTANCES} --namespace=${RIOX_ENV}
 
 undeploy-cluster:
 	@echo "Undeploying Zookeeper cluster ..."
-	kubectl delete -f zk-1-service.yml --namespace=${RIOX_ENV}
-	kubectl delete -f zk-2-service.yml --namespace=${RIOX_ENV}
-	kubectl delete -f zk-3-service.yml --namespace=${RIOX_ENV}
-	kubectl delete -f zk-1-pod.yml --namespace=${RIOX_ENV}
-	kubectl delete -f zk-2-pod.yml --namespace=${RIOX_ENV}
-	kubectl delete -f zk-3-pod.yml --namespace=${RIOX_ENV}
-
+	kubectl stop -f zk-rc-aws.yml --namespace=${RIOX_ENV}
+	kubectl stop -f zk-service.yml --namespace=${RIOX_ENV}
 
 .PHONY: deploy-cluster undeploy-cluster

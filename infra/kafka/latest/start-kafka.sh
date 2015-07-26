@@ -1,7 +1,7 @@
 #!/bin/bash
 
 : ${KAFKA_BROKER_ID:=$RANDOM}
-: ${KAFKA_ZOOKEEPER_CONNECT:=$(env | grep ZOOKEEPER_PORT_2181_TCP= | sed -e 's|.*tcp://||' | paste -sd ,)}
+: ${KAFKA_ZOOKEEPER_CONNECT:=zookeeper.${POD_NAMESPACE}.svc.cluster.local:2181}
 : ${KAFKA_ADVERTISED_HOST:=${KAFKA_PORT_9092_TCP_ADDR}}
 : ${KAFKA_ADVERTISED_PORT:=${KAFKA_PORT_9092_TCP_PORT}}
 : ${KAFKA_LOG_CLEANER:=true}

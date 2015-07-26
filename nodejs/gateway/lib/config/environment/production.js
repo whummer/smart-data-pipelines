@@ -1,5 +1,7 @@
 'use strict';
 
+var appConfig = require("riox-services-base/lib/config/services.js");
+
 module.exports = {
 
 	mongo: {
@@ -13,7 +15,9 @@ module.exports = {
 	zookeeper: {
 		host: appConfig["production"].infra.zookeeper.host
 	},
-	
-	driver: appConfig["production"].infra.redis.url
+
+	driver: appConfig["production"].infra.redis.url,
+
+	services: appConfig["production"].services
 
 };

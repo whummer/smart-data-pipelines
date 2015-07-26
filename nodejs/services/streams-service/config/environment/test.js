@@ -24,6 +24,8 @@ module.exports = {
 		url: appConfig["test"].infra.redis.url
 	},
 
+	services: appConfig["test"].services,
+
 	seedDB: true
 
 };

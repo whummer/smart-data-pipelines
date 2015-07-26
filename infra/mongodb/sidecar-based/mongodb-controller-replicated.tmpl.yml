@@ -5,7 +5,7 @@ metadata:
   labels:
     name: mongo
 spec:
-  replicas: 3
+  replicas: @MONGO_REPLICAS@
   selector:
     name: mongo
   template:
@@ -16,9 +16,16 @@ spec:
       containers:
           - name: mongo
             image: mongo:3.0.2
-            args: ["--smallfiles", "--replSet=rs0"]
+            args: [@ARGS@]
             ports:
               - containerPort: 27017
+          - name: mongo-sidecar
+            image: "riox/mongo-k8s-sidecar:v1.0.0"
+            env:
+              - name: MONGO_SIDECAR_POD_LABELS
+                value: "name:mongo"
+    labels:
+      name: mongo
 #            volumeMounts:
 #              - name: mongo-db-mount
 #                mountPath: /data/mongo/db

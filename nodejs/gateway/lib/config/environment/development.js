@@ -16,6 +16,8 @@ module.exports = {
 		host: appConfig["development"].infra.zookeeper.host
 	},
 
-	driver: appConfig["development"].infra.redis.url
+	driver: appConfig["development"].infra.redis.url,
+
+	services: appConfig["development"].services
 
 };
