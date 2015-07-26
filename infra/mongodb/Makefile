@@ -2,6 +2,7 @@ RIOX_ENV?=development
 
 CLUSTER_REPLICAS?=3
 REPLICA_SET=rs0
+REDEPLOY?=1
 
 REPLICA_SUFFIXES:= $(shell seq 1 ${CLUSTER_REPLICAS})
 DEPLOYED_CONTROLLERS=$(shell kubectl get rc --namespace=${RIOX_ENV} | grep mongo | awk '{print $4}' | cut -d'=' -f 2)
@@ -11,6 +12,10 @@ deploy: deploy-standalone
 
 deploy-standalone:
 	@echo "Deploying MongoDB in standalone mode."
+	@if [ "$(REDEPLOY)" -eq 1 ] && ( [ -n "$(DEPLOYED_CONTROLLERS)" ]  || [ -n "$(DEPLOYED_SERVICES)" ]) ; then \
+		$(MAKE) undeploy ; \
+	fi
+
 	kubectl create -f mongodb-controller-single.yml --namespace=${RIOX_ENV}
 	kubectl create -f mongodb-service-single.yml --namespace=${RIOX_ENV}
 
@@ -33,7 +38,10 @@ undeploy:
 
 	@if [ -z "$(DEPLOYED_CONTROLLERS)" ]; then \
 		echo "Warning: No deployed controllers found." ; \
+	else \
+		echo "Deployed controllers: $(DEPLOYED_CONTROLLERS)"; \
 	fi
+		
 
 	@for CTRL in $(DEPLOYED_CONTROLLERS) ; do \
 		if [[ "$$CTRL" == mongo* ]]; then \
@@ -44,6 +52,8 @@ undeploy:
 
 	@if [ -z "$(DEPLOYED_SERVICES)" ]; then \
 		echo "Warning: No deployed services found." ; \
+	else \
+		echo "Deployed services: $(DEPLOYED_SERVICES)"; \
 	fi
 
 	@for SVC in $(DEPLOYED_SERVICES) ; do \
