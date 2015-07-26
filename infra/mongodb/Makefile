@@ -1,3 +1,4 @@
+SHELL := /bin/bash
 RIOX_ENV?=development
 
 CLUSTER_REPLICAS?=3
