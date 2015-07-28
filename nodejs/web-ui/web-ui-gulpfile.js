@@ -83,7 +83,9 @@ gulp.task('default', 'i\'m only here for the beer', function () {
 // clean output directories
 //
 gulp.task('ui:clean', 'remove build directories', function () {
-	return gulp.src(BUILD_DIR, {read: false}).pipe(clean());
+	return gulp.
+		src(BUILD_DIR, {read: false}).
+		pipe(clean());
 });
 
 //
@@ -98,14 +100,17 @@ gulp.task('ui:copy:test', 'copies riox-ui sources to TEST build dir', function (
 	]).pipe(gulp.dest(BUILD_DIR_TEST));
 });
 
-gulp.task('ui:copy:prod', 'copies riox-ui sources to PRODUCTION build dir', function () {
-	return gulp.src([
+gulp.task('ui:copy:prod', 'copies riox-ui sources to PRODUCTION build dir', function (callback) {
+	var pipe = gulp.src([
 		SRC_DIR + '/**',
 		'!' + "/**/*.less",
 		'!' + "index.tmpl.html",
 		'!' + SRC_DIR + '/app/styles/less{,/**}',
 		'!' + SRC_DIR + '/app/components/js{,/**}'
 	]).pipe(gulp.dest(BUILD_DIR_PROD));
+	pipe.on("end", function() {
+		callback();
+	});
 });
 
 //
@@ -116,7 +121,7 @@ gulp.task('ui:less', 'compiles LESS to CSS', function () {
 });
 
 function less2css(target) {
-	util.log('Compiling LESS files to CSS (' + util.colors.magenta(paths.less_main) + ')');
+	console.log('Compiling LESS files to CSS (' + util.colors.magenta(paths.less_main) + ')');
 	return gulp.src([paths.less_main, paths.less_in_views, '!'	+ paths.less_includes])
 		.pipe(less())
 		.pipe(gulp.dest(target));
@@ -133,11 +138,15 @@ gulp.task('ui:inject:test', 'inject resources (CSS, JS) into index.html (TEST)',
 	return injectResources(BUILD_DIR_TEST, paths.base + '/app', 'web-ui/lib')
 });
 
-gulp.task('ui:inject:prod', 'inject resources (CSS, JS) into index.html (PROD)', function () {
-	return injectResources(BUILD_DIR_PROD, paths.base + '/app', ['web-ui/lib', 'web-ui/build/production'], true)
+gulp.task('ui:inject:prod', 'inject resources (CSS, JS) into index.html (PROD)', function (callback) {
+	return injectResources(BUILD_DIR_PROD, paths.base + '/app', ['web-ui/lib', 'web-ui/build/production'], true,
+		function() {
+			callback();
+		}
+	)
 });
 
-function injectResources(indexLocation, cssLocation, ignorePath, minified) {
+function injectResources(indexLocation, cssLocation, ignorePath, minified, callback) {
 	var cssFiles = less2css(cssLocation);
 
 	// todo om: check how we can do this right (not explicitly filtering those)
@@ -147,7 +156,7 @@ function injectResources(indexLocation, cssLocation, ignorePath, minified) {
 
 	var scripts = minified ? paths.minified_js : paths.scripts;
 
-	return gulp.src(paths.main)
+	var pipe = gulp.src(paths.main)
 
 		.pipe(inject(
 			gulp.src(bowerFiles({paths: BASE_DIR}), {read: false})
@@ -163,18 +172,21 @@ function injectResources(indexLocation, cssLocation, ignorePath, minified) {
 
 		.pipe(rename('index.html'))// rename from index.tmpl.html to index.html
 		.pipe(gulp.dest(indexLocation));
+	pipe.on("end", function() {
+		if(callback) callback();
+	});
 }
 
 //
 // Minify and copy all JavaScript (except vendor scripts)
 // with sourcemaps all the way down
 //
-gulp.task('ui:scriptsmin', 'concatenate, minify and uglify JS script sources', function () {
+gulp.task('ui:scriptsmin', 'concatenate, minify and uglify JS script sources', function (callback) {
 	// todo om: check how we can do this right (not explicitly filtering those)
 	var vectorMapFilter = gulpFilter(['**', '!**/jquery-jvectormap*.js']);
 	var aceFilter = gulpFilter(['**', '!**/ace.js']);
 
-	return gulp.src(paths.scripts)
+	var pipe = gulp.src(paths.scripts)
 		.pipe(aceFilter)
 		.pipe(vectorMapFilter)
 		.pipe(angular_filesort())
@@ -183,6 +195,9 @@ gulp.task('ui:scriptsmin', 'concatenate, minify and uglify JS script sources', f
 		.pipe(uglify({mangle: false, compress: {sequences: false}}))
 		.pipe(sourcemaps.write())
 		.pipe(gulp.dest(BUILD_DIR_PROD + '/app/components/js'));
+	pipe.on("end", function() {
+		callback();
+	});
 });
 
 //
@@ -251,18 +266,20 @@ gulp.task('ui:livereload', 'serve the riox-ui using nodemon (with livereload)', 
 //
 // build PROD
 //
-gulp.task('ui:build:prod', 'create a PRODUCTION build of riox-ui', function () {
+gulp.task('ui:build:prod', 'create a PRODUCTION build of riox-ui', function (callback) {
 	util.log(util.colors.green("Running PRODUCTION build"));
 	//runSequence('ui:clean', 'ui:imagemin', 'ui:scriptsmin', 'ui:copy:prod', 'ui:inject:prod');
-	runSequence('ui:clean', 'ui:scriptsmin', 'ui:copy:prod', 'ui:inject:prod');
+	runSequence('ui:clean', 'ui:scriptsmin', 'ui:copy:prod', 'ui:inject:prod', function() {
+		callback();
+	});
 });
 
 //
 // build PROD (no image optimization)
 //
-gulp.task('ui:build:prod:noimagemin', 'create a PRODUCTION build of riox-ui (NO image optimization)', function () {
+gulp.task('ui:build:prod:noimagemin', 'create a PRODUCTION build of riox-ui (NO image optimization)', function (callback) {
 	util.log(util.colors.green("Running PRODUCTION build"));
-	runSequence('ui:copy:prod', 'ui:scriptsmin', 'ui:inject:prod');
+	runSequence('ui:copy:prod', 'ui:scriptsmin', 'ui:inject:prod', callback);
 });
 
 //
@@ -275,14 +292,13 @@ gulp.task('ui:build:test', 'create a TEST build of riox-ui', function () {
 //
 // serve PROD build task (to check build) - NO LIVE RELOAD
 //
+console.log(__dirname + "/..");
+console.log(BUILD_DIR_PROD + '/server.js');
 gulp.task('ui:serve:prod', 'serve the PRODUCTION build of riox-ui (8081)', ['ui:build:prod'], function () {
-	setTimeout(function() {
-		return nodemon({
-			script: BUILD_DIR_PROD + '/server.js',
-			env: {'NODE_ENV': 'production', 'PORT': 8081},
-			options: '-i ' + BUILD_DIR_PROD + "/*"
-		});
-	}, 20 * 1000);
+	var env = process.env;
+	env.NODE_ENV = "production";
+	env.PORT = "8081";
+	runCmd("node", [BUILD_DIR_PROD + '/server.js'], __dirname + "/..", env);
 });
 
 //

@@ -12,4 +12,7 @@ module.exports = function(app) {
 			res.sendfile(app.get('appPath') + '/app/views/errors/404.html');
 	});
 
+	/* Health check */
+	app.use('/healthz', require("riox-services-base/lib/health/health-simple.js"));
+
 };

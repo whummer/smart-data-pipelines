@@ -82,8 +82,8 @@
         gulp.watch(scripts, ['test:drivers-catched']);
     });
 
-    gulp.task('gateway:start', 'start riox gateway', function() {
+    gulp.task('gateway:run', 'start riox gateway', function() {
     	runCmd("bin/rgw", ["-c", "config/config-staging.json"], __dirname);
     });
-  
+
 }());

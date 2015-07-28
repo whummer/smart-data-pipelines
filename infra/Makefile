@@ -47,10 +47,10 @@ deploy-services:
 	#(cd statsd && make deploy)
 
 undeploy-services:
-	(cd zk && make undeploy-standalone)
-	(cd mongodb && make undeploy)
-	(cd redis && make undeploy-standalone)
-	(cd kafka && make undeploy-standalone)
+	-(cd zk && make undeploy-standalone)
+	-(cd mongodb && make undeploy)
+	-(cd redis && make undeploy-standalone)
+	-(cd kafka && make undeploy-standalone)
 	#(cd statsd && make undeploy)
 
 # ATTENTION: Use with caution. Stops and removes ALL docker container

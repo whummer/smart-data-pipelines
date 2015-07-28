@@ -9,7 +9,7 @@ items:
       labels:
         name: gateway
     spec:
-      replicas: 1
+      replicas: 2
       selector:
         name: gateway
       template:
@@ -26,7 +26,7 @@ items:
                 - containerPort: 80
               command:
                   - "gulp"
-                  - "gateway:start"
+                  - "gateway:run"
               env:
                 - name: RIOX_ENV
                   valueFrom:

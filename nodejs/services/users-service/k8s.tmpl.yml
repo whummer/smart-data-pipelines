@@ -26,12 +26,18 @@ items:
                 - containerPort: 8084
               command:
                 - "gulp"
-                - "services:users:serve"
+                - "services:users:run"
               env:
                 - name: RIOX_ENV
                   valueFrom:
                     fieldRef:
                       fieldPath: metadata.namespace
+              livenessProbe:
+                httpGet:
+                  path: /healthz
+                  port: 8084
+                initialDelaySeconds: 60
+                timeoutSeconds: 3
 
   - kind: Service
     apiVersion: v1

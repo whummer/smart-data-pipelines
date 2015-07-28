@@ -35,15 +35,6 @@ gulp.task('riox', 'start riox nodejs infrastructure', function() {
 			'services:analytics:serve', 'services:files:serve');
 });
 
-gulp.task('riox:k8s', 'start riox nodejs infrastructure via k8s', function() {
-	runSequence('ui:k8s:deploy', 'gateway:k8s:deploy', 'services:streams:k8s:deploy',
-			'services:users:k8s:deploy', 'services:analytics:k8s:deploy', 'services:files:k8s:deploy');
-});
-gulp.task('riox:k8s:undeploy', 'undeploy riox nodejs infrastructure via k8s', function() {
-	runSequence('ui:k8s:undeploy', 'gateway:k8s:undeploy', 'services:streams:k8s:undeploy',
-			'services:users:k8s:undeploy', 'services:analytics:k8s:undeploy', 'services:files:k8s:undeploy');
-});
-
 gulp.task('deps:clean:all', 'clean all node_modules and bower_components directories', function() {
 	nodeDirs.forEach(function(dir) {
 		cleanNodeDir(dir);
@@ -98,7 +89,7 @@ function addDepToHash(deps, dep, version) {
 		return;
 	}
 	if(deps[dep] && deps[dep] != version) {
-		console.log("WARN: Overwriting version of '" + dep + "' from '" + 
+		console.log("WARN: Overwriting version of '" + dep + "' from '" +
 				deps[dep] + "' to '" + version + "'");
 	}
 	deps[dep] = version;
@@ -116,8 +107,8 @@ function cleanDir(dir) {
 		gulp.src(dir, {read: false}).pipe(clean());
 	}
 }
-global.runCmd = function(cmd, args, cwd) {
+global.runCmd = function(cmd, args, cwd, env) {
 	var _cwd = cwd || __dirname;
 	return cp.spawn(cmd, args,
-			{env: process.env, cwd: _cwd, stdio: 'inherit'})
+			{env: env || process.env, cwd: _cwd, stdio: 'inherit'})
 }

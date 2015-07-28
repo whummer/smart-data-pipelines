@@ -84,3 +84,7 @@ gulp.task('services:analytics:serve', 'serve the analytics-service  using nodemo
 		env: { 'RIOX_ENV': 'development' , 'PORT' : dockerSettings.port}
 	});*/
 });
+
+gulp.task('services:analytics:run', 'runs the analytics-service', function () {
+	runCmd("node", ["app.js"], BASE_DIR);
+});

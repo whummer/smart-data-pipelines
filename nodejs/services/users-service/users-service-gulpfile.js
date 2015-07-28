@@ -84,3 +84,7 @@ gulp.task('services:users:serve', 'serve the streams-service  using nodemon', fu
 	 env: { 'RIOX_ENV': 'development' , 'PORT' : dockerSettings.port}
 	 });*/
 });
+
+gulp.task('services:users:run', 'runs the users-service', function () {
+	runCmd("node", ["app.js"], BASE_DIR);
+});
