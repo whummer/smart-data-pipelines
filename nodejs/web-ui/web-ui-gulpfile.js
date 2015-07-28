@@ -91,13 +91,16 @@ gulp.task('ui:clean', 'remove build directories', function () {
 //
 // Copy files for TEST and PROD
 //
-gulp.task('ui:copy:test', 'copies riox-ui sources to TEST build dir', function () {
-	return gulp.src([
+gulp.task('ui:copy:test', 'copies riox-ui sources to TEST build dir', function (callback) {
+	var pipe = gulp.src([
 		SRC_DIR + '/**',
 		'!' + "/**/*.less",
 		'!' + "/**/index.tmpl.html",
 		'!' + SRC_DIR + '/app/styles/less{,/**}'
 	]).pipe(gulp.dest(BUILD_DIR_TEST));
+	pipe.on("end", function() {
+		callback();
+	});
 });
 
 gulp.task('ui:copy:prod', 'copies riox-ui sources to PRODUCTION build dir', function (callback) {
@@ -134,8 +137,12 @@ gulp.task('ui:inject:dev', 'inject resources (CSS, JS) into index.html (DEV)', f
 	return injectResources(paths.base, paths.base + '/app', 'web-ui/lib')
 });
 
-gulp.task('ui:inject:test', 'inject resources (CSS, JS) into index.html (TEST)', function () {
-	return injectResources(BUILD_DIR_TEST, paths.base + '/app', 'web-ui/lib')
+gulp.task('ui:inject:test', 'inject resources (CSS, JS) into index.html (TEST)', function (callback) {
+	return injectResources(BUILD_DIR_TEST, paths.base + '/app', 'web-ui/lib', false,
+		function() {
+			callback();
+		}
+	);
 });
 
 gulp.task('ui:inject:prod', 'inject resources (CSS, JS) into index.html (PROD)', function (callback) {
@@ -285,8 +292,9 @@ gulp.task('ui:build:prod:noimagemin', 'create a PRODUCTION build of riox-ui (NO 
 //
 // build PROD (no image optimization)
 //
-gulp.task('ui:build:test', 'create a TEST build of riox-ui', function () {
-	runSequence('ui:copy:test', 'ui:inject:test');
+gulp.task('ui:build:test', 'create a TEST build of riox-ui', function (callback) {
+	util.log(util.colors.green("Running TEST build"));
+	runSequence('ui:copy:test', 'ui:inject:test', callback);
 });
 
 //
@@ -305,9 +313,8 @@ gulp.task('ui:serve:prod', 'serve the PRODUCTION build of riox-ui (8081)', ['ui:
 // serve TEST build task (to check build) - NO LIVE RELOAD
 //
 gulp.task('ui:serve:test', 'serve the TEST build of riox-ui (8081)', ['ui:build:test'], function () {
-	return nodemon({
-		script: BUILD_DIR_TEST + '/server.js',
-		env: {'NODE_ENV': 'test', 'PORT': 8081}
-		//options: '-i ' + BUILD_DIR_TEST + "/*"
-	});
+	var env = process.env;
+	env.NODE_ENV = "test";
+	env.PORT = "8081";
+	runCmd("node", [BUILD_DIR_TEST + '/server.js'], __dirname + "/..", env);
 });
