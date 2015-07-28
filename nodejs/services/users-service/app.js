@@ -17,8 +17,8 @@ global.config = require("riox-services-base/lib/config/merge")(global.config, co
 // require service starter
 var starter = require("riox-services-base/lib/service.starter");
 
-// Populate DB with sample data
-if(config.seedDB) { require("./demodata"); }
+// Populate DB with bootstrap metadata
+if(config.seedDB) { require("./api/bootstrap").loopInsert(); }
 
 // start server
 var routes = require("./routes");

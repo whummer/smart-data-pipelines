@@ -35,13 +35,26 @@ gulp.task('riox', 'start riox nodejs infrastructure', function() {
 			'services:analytics:serve', 'services:files:serve');
 });
 
-gulp.task('riox:k8s', 'start riox nodejs infrastructure via k8s', function() {
-	runSequence('ui:k8s:deploy', 'gateway:k8s:deploy', 'services:streams:k8s:deploy',
-			'services:users:k8s:deploy', 'services:analytics:k8s:deploy', 'services:files:k8s:deploy');
-});
-gulp.task('riox:k8s:undeploy', 'undeploy riox nodejs infrastructure via k8s', function() {
-	runSequence('ui:k8s:undeploy', 'gateway:k8s:undeploy', 'services:streams:k8s:undeploy',
-			'services:users:k8s:undeploy', 'services:analytics:k8s:undeploy', 'services:files:k8s:undeploy');
+gulp.task('ui:bootstrap', 'Insert necessary data to boot the riox UI and make the riox APIs accessible.', function() {
+	
+	global.config = require("./services/users-service/config/environment");
+	require('./services/riox-services-base/lib/api/service.calls');
+	global.servicesConfig = global.config.services;
+	var riox = require("./riox-shared/lib/api/riox-api");
+	require("./riox-shared/lib/api/riox-api-admin")(riox);
+	//global.config = require("./riox-services-base/lib/config/merge")(global.config, config);
+
+	riox.users._bootstrap({}, function() {
+		console.log("Successfully inserted users metadata");
+		riox.streams._bootstrap({}, function() {
+			console.log("Successfully inserted APIs metadata");
+			console.log("Done.");
+		}, function(err) {
+			console.log("ERROR: Unable to insert APIs metadata:", err);
+		});
+	}, function(err) {
+		console.log("ERROR: Unable to insert users metadata:", err);
+	});
 });
 
 gulp.task('deps:clean:all', 'clean all node_modules and bower_components directories', function() {
@@ -98,7 +111,7 @@ function addDepToHash(deps, dep, version) {
 		return;
 	}
 	if(deps[dep] && deps[dep] != version) {
-		console.log("WARN: Overwriting version of '" + dep + "' from '" + 
+		console.log("WARN: Overwriting version of '" + dep + "' from '" +
 				deps[dep] + "' to '" + version + "'");
 	}
 	deps[dep] = version;

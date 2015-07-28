@@ -12,4 +12,7 @@ module.exports = function(app) {
   app.use('/api/v1/notifications', require('./api/notifications'));
   app.use('/api/v1/certificates', require('./api/certificates'));
 
+  /* Health check */
+  app.use('/healtz', require("riox-services-base/lib/health/health-simple.js"));
+
 };

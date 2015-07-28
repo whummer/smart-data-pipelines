@@ -14,6 +14,8 @@ var organizationsCache = LRUCache({
 
 
 exports.apply = function(req, res) {
+	logger.info("Starting to apply gateway rules");
+
 	var prom = new Promise(function(resolve, reject){
 		var query = {};
 		riox.streams.sources(query, function(sources) {

@@ -20,7 +20,7 @@ items:
             - name: rioxregistrykey
           containers:
             - name: users-service
-              image: riox/hyperriox:latest
+              image: riox/hyperriox:472c4d85d58795b459ed9fc698be76d2aa483955
               ports:
                 - containerPort: 8084
               command:
@@ -31,6 +31,12 @@ items:
                   valueFrom:
                     fieldRef:
                       fieldPath: metadata.namespace
+              livenessProbe:
+                httpGet:
+                  path: /healthz
+                  port: 8084
+                initialDelaySeconds: 5
+                timeoutSeconds: 1
 
   - kind: Service
     apiVersion: v1

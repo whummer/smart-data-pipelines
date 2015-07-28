@@ -1,5 +1,7 @@
 'use strict';
 
+var util = require('riox-services-base/lib/util/util');
+var riox = require('riox-shared/lib/api/riox-api');
 var mongoose = global.mongoose || require('mongoose');
 var Schema = mongoose.Schema;
 

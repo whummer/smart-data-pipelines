@@ -80,6 +80,17 @@ var applyStream = function (stream, callback, errorCallback) {
 		});
 };
 
+/* Bootstrap metadata */
+
+exports.bootstrap = function(req, res) {
+	var insertData = require("../bootstrap");
+	insertData(function(result) {
+		res.json({});
+	}, function(err) {
+		res.status(500).json({error: err});
+	});
+};
+
 //
 // helpers
 //

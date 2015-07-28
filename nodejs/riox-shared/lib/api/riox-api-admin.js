@@ -26,7 +26,7 @@ var init = function(riox) {
 	/* rating/billing of API calls */
 	sh.ratings = sh.ratings || {};
 	sh.ratings.logAndPermit = function(access, callback, errorCallback) {
-		return sh.callPOST(servicesConfig.ratings.url + "/logAndPermit", access, callback, errorCallback);
+		return riox.callPOST(servicesConfig.ratings.url + "/logAndPermit", access, callback, errorCallback);
 	};
 
 	/* manage stream sources */
@@ -38,23 +38,43 @@ var init = function(riox) {
 		}
 		return riox.callGET(url, callback, errorCallback);
 	};
+	sh.streams._bootstrap = function(options, callback, errorCallback) {
+		options = options ? options : {};
+		return riox.callPOST(servicesConfig.streams.url + "/_bootstrap", options, callback, errorCallback);
+	};
 
 	/* manage pricing plans */
 
 	sh.delete.plan = function(plan, callback) {
 		var id = plan.id ? plan.id : plan;
 		return riox.callDELETE(servicesConfig.billing.url + "/plans/" + id, callback);
-	}
+	};
 	sh.save.plan = function(plan, callback) {
 		var id = plan.id ? plan.id : plan;
 		return riox.callPUT(servicesConfig.billing.url + "/plans/" + id, plan, callback);
-	}
+	};
 
 	/* manage organizations */
 
 	sh.organizations.all = sh.get.organizations.all = function(callback, errorCallback) {
 		var url = servicesConfig.organizations.url + "/all";
 		return riox.callGET(url, callback, errorCallback);
+	};
+
+	/* manage streaming gateway (routing/proxy rules etc.) */
+
+	sh.gateway = {};
+	sh.gateway.apply = function(options, callback, errorCallback) {
+		if(!options) options = {};
+		var url = servicesConfig.gateway.url + "/apply";
+		return riox.callPOST(url, options, callback, errorCallback);
+	};
+
+	/* manage users */
+
+	sh.users._bootstrap = function(options, callback, errorCallback) {
+		options = options ? options : {};
+		return riox.callPOST(servicesConfig.users.url + "/_bootstrap", options, callback, errorCallback);
 	};
 
 	/* manage user accounts */

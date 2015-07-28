@@ -39,6 +39,7 @@ envs.forEach(function(env) {
 				billing: {			url: "http://" + getHost(env, "billing-service") + ":8080/api/v1/billing" },
 				users: {			url: "http://" + getHost(env, "users-service") + ":8084/api/v1/users" },
 				organizations: {	url: "http://" + getHost(env, "organizations-service") + ":8084/api/v1/organizations" },
+				gateway: {			url: "http://" + getHost(env, "gateway-service") + ":8085/api/v1/gateway" },
 				streams: {			url: "http://" + getHost(env, "streams-service") + ":8085/api/v1/streams" },
 				streamsources: {	url: "http://" + getHost(env, "streams-service") + ":8085/api/v1/streams/sources" },
 				streamsinks: {		url: "http://" + getHost(env, "streams-service") + ":8085/api/v1/streams/sinks" },

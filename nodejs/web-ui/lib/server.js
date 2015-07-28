@@ -10,6 +10,7 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 var express = require('express');
 var config = require('./config/environment');
 var riox = require('riox-shared/lib/api/riox-api');
+var log = global.log = require('winston');
 
 // Setup server
 var app = express();
@@ -19,7 +20,7 @@ require('./config/express')(app);
 
 // Start server
 server.listen(config.port, config.ip, function () {
-  console.log('Express server listening on %d, in %s mode', config.port, app.get('env'));
+	log.info('Express server listening on %d, in %s mode', config.port, app.get('env'));
 });
 
 // Expose app

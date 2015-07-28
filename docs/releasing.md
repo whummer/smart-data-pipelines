@@ -14,7 +14,6 @@ the `develop` branch and test it end-to-end.
    that contains all services. The image is tagged with either `latest`
    or a specific `VERSION` in case it is released to staging.
 
-
 1. We track the version  update the VERSION file  `develop` and
 
 ### Create a new staging release
@@ -29,4 +28,16 @@ the `develop` branch and test it end-to-end.
     ```
     git tag -a v`cat VERSION` -m '<meaningful description>'
     ```
-    
+
+1. Commit and push the VERSION file to `develop` and ensure the test run succeeds (which should be the case if it succeeded before, otherwise file an issue).
+
+1. Push the tag to the origin
+
+   ```
+   git push origin v`cat VERSION`
+   ```
+
+1. Trigger the Jenkins staging build manually:
+
+1. Watch and ensure the build succeeds. If it does not we have to roll back.
+   **This is still TBD**

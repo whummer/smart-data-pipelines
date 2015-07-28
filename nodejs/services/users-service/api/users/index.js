@@ -7,6 +7,7 @@ var auth = require('riox-services-base/lib/auth/auth.service');
 
 var router = express.Router();
 
+router.post('/_bootstrap', controller.bootstrap);
 router.get('/', auth.hasRole('admin'), controller.index);
 router.delete('/:id', auth.hasRole('admin'), controller.destroy);
 router.get('/me', auth.isAuthenticated(), controller.me);

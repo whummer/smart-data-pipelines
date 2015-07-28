@@ -345,6 +345,15 @@ exports.insertInternalCallUser = function() {
 	});
 }
 
+exports.bootstrap = function(req, res, next) {
+	var insertData = require("../bootstrap");
+	insertData(function(result) {
+		res.json({});
+	}, function(err) {
+		res.status(500).json({error: err});
+	});
+};
+
 /**
  * Authentication callback
  */

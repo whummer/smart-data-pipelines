@@ -52,10 +52,13 @@ module.exports = function(app) {
 	app.use(bodyParser.json());
 	app.use(methodOverride());
 	app.use(cookieParser());
-	
-	/* enable basic auth: */
-	//var basicAuth = require('node-basicauth');
-	//app.use(basicAuth({"riox": "rioxRocks!"}));
+
+	/* enable basic auth for signups */
+	if (process.env.RIOX_ENV === 'staging') {
+		var basicAuth = require('node-basicauth');
+		app.get('/app/views/account/signup/signup.html', basicAuth({"riox": "rioxRocks!"}));
+		//app.use(basicAuth({"riox": "rioxRocks!"}));
+	}
 
 	// todo om: either switch this to '/lib' or adapt gulpfile for /public structure
 	if ('production' === env) {

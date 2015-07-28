@@ -9,6 +9,9 @@ var auth = require('riox-services-base/lib/auth/auth.service');
 
 var router = express.Router();
 
+/* BOOTSTRAP (enter API metadata) */
+router.post('/_bootstrap', streamsCtrl.bootstrap);
+
 /* METHODS FOR STREAMS */
 router.get('/', auth.isAuthenticated(), streamsCtrl.listAll);
 
