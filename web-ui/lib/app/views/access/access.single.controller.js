@@ -7,9 +7,9 @@ angular.module('rioxApp')
 	$scope.consumers = null;
 	$scope.selectedConsumer = $stateParams.organizationId;
 
-	$scope.$watch("sources", function(sources) {
-		if(!sources) return;
-		$scope.loadSourceDetails(sources, $stateParams.sourceId);
+	$scope.$watch("proxies", function(proxies) {
+		if(!proxies) return;
+		$scope.loadProxyDetails(proxies, $stateParams.sourceId);
 	});
 
 });

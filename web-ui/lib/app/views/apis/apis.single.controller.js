@@ -3,17 +3,16 @@
 angular.module('rioxApp')
 .controller('ApisEndpointsSingleCtrl', function ($scope, $state, growl, $stateParams) {
 
-	$scope.$watch("sources", function(sources) {
-		if(!sources) return;
-		// console.log("sources", sources);
-		$scope.loadSourceDetails(sources, $stateParams.sourceId);
+	$scope.$watch("proxies", function(proxies) {
+		if(!proxies) return;
+		$scope.loadProxyDetails(proxies, $stateParams.sourceId);
 		$scope.setNavPath($scope, $state);
 	});
 
 	$scope.saveChanges = function() {
 		var api = $scope.shared.selectedAPI;
 		if(!api) return;
-		riox.save.streams.source(api, function(source) {
+		riox.save.proxy(api, function(source) {
 			//$scope.shared.selectedAPI = source; // TODO needed?
 			growl.info("API details saved successfully.");
 		});

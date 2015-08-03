@@ -11,27 +11,27 @@ angular.module('rioxApp').controller('ApisCtrl',
 			{name: "MQTT Connector", type: "mqtt"}
 		];
 
-	/** load stream sources */
-	$scope.loadStreamSources = function() {
+	/** load proxies */
+	$scope.loadProxies = function() {
 		var promise = $q(function(resolve, reject) {
-			riox.streams.provided({}, function(sources) {
+			riox.proxies({}, function(list) {
 				$scope.$apply(function() {
-					$scope.sources = sources;
-					resolve(sources);
+					$scope.proxies = list;
+					resolve(list);
 				});
 			});
 		});
 		return promise;
 	};
 
-	/** load stream source details */
-	$scope.loadSourceDetails = $scope.loadSourceDetails = function(sources, id) {
+	/** load proxy details */
+	$scope.loadProxyDetails = function(list, id) {
 		if(!id) return;
-		if(!sources) sources = $scope.sources;
+		if(!list) list = $scope.proxies;
 		var promise = $q(function(resolve, reject) {
-			sources.forEach(function(source) {
-				if(source.id == id) {
-					$scope.shared.selectedAPI = $scope.shared.selectedAPI = source;
+			list.forEach(function(proxy) {
+				if(proxy.id == id) {
+					$scope.shared.selectedAPI = $scope.shared.selectedAPI = proxy;
 					if(!$scope.shared.selectedAPI[BACKEND_ENDPOINTS]) {
 						$scope.shared.selectedAPI[BACKEND_ENDPOINTS] = [];
 					}
@@ -42,13 +42,13 @@ angular.module('rioxApp').controller('ApisCtrl',
 		return promise;
 	};
 
-	/** prepare stream sources (load organization details, ...) */
-	$scope.prepareStreamSources = function(list) {
+	/** prepare proxies (load organization details, ...) */
+	$scope.prepareProxies = function(list) {
 		var promise = $q.when(1);
 		angular.forEach(list, function(el) {
 			promise = promise.then(function() {
 				return $q(function(resolve, reject) {
-					$scope.prepareStreamSource(el, resolve);
+					$scope.prepareProxy(el, resolve);
 				});
 			});
 		});
@@ -60,8 +60,8 @@ angular.module('rioxApp').controller('ApisCtrl',
 		return promise;
 	};
 
-	/** prepare a single stream source (load organization image, ...) */
-	$scope.prepareStreamSource = function(el, callback) {
+	/** prepare a single proxy (load organization image, ...) */
+	$scope.prepareProxy = function(el, callback) {
 		if(el[ORGANIZATION_ID]) {
 			riox.organization(el[ORGANIZATION_ID], function(org) {
 				if(org[IMAGE_DATA] && org[IMAGE_DATA][0]) {
@@ -75,14 +75,14 @@ angular.module('rioxApp').controller('ApisCtrl',
 		}
 	}
 
-	/** load the consumers of a list of streams */
-	$scope.loadStreamsConsumers = function(sources) {
+	/** load the consumers of a list of proxies */
+	$scope.loadProxiesConsumers = function(proxies) {
 		var promise = $q.when(1);
-		$.each(sources, function(idx,el) {
+		$.each(proxies, function(idx,el) {
 			promise = promise.then(function() {
 				return $q(function(resolve, reject) {
-					loadStreamConsumers(el).then(function() {
-						resolve(sources);
+					loadProxyConsumers(el).then(function() {
+						resolve(proxies);
 					});
 				});
 			});
@@ -105,19 +105,19 @@ angular.module('rioxApp').controller('ApisCtrl',
 		return copy;
 	};
 
-	/* helper methods: load stream consumers for a single source */
+	/* helper methods: load consumers for a single proxy */
 	
-	var reloadStreamConsumers = function(source) {
-		source.consumers = null;
-		loadStreamConsumers(source);
+	var reloadProxyConsumers = function(proxy) {
+		proxy.consumers = null;
+		loadProxyConsumers(proxy);
 	}
-	var loadStreamConsumers = function(source) {
-		if(source.consumers) return;
+	var loadProxyConsumers = function(proxy) {
+		if(proxy.consumers) return;
 		var deferred = $q.defer();
 		var query = {};
-		query[SOURCE_ID] = source.id;
+		query[SOURCE_ID] = proxy.id;
 		riox.access(query, function(accesses) {
-			source.consumers = accesses;
+			proxy.consumers = accesses;
 			var promise = $q.when(1);
 			accesses.forEach(function(acc) {
 				promise = promise.then(function() {
@@ -143,9 +143,9 @@ angular.module('rioxApp').controller('ApisCtrl',
 	$scope.setNavPath($scope, $state);
 
 	/* load main elements */
-	$scope.loadStreamSources().
-		then($scope.prepareStreamSources).
-		then($scope.loadStreamsConsumers).
-		then($scope.loadSourceDetails);
+	$scope.loadProxies().
+		then($scope.prepareProxies).
+		then($scope.loadProxiesConsumers).
+		then($scope.loadProxyDetails);
 
 });

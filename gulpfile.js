@@ -9,12 +9,15 @@ var cp = require('child_process');
 
 
 var gulpFiles = {
-	ui: './web-ui/web-ui-gulpfile',
+	ui: './web-ui/gulpfile',
 	gateway: './gateway/gulpfile',
-	streamService: './services/streams-service/streams-service-gulpfile',
-	usersService: './services/users-service/users-service-gulpfile',
-	analyticsService: './services/analytics-service/analytics-service-gulpfile',
-	filesService: './services/files-service/files-service-gulpfile'
+	pipesService: './services/pipes-service/gulpfile',
+	usersService: './services/users-service/gulpfile',
+	gatewayService: './services/gateway-service/gulpfile',
+	accessService: './services/access-service/gulpfile',
+	pricingService: './services/pricing-service/gulpfile',
+	analyticsService: './services/analytics-service/gulpfile',
+	filesService: './services/files-service/gulpfile'
 }
 for(var key in gulpFiles) {
 	try {
@@ -26,13 +29,14 @@ for(var key in gulpFiles) {
 }
 
 var nodeDirs = [".", "services/test", "gateway", "gateway/ext/http-proxy",
-                "services/users-service", "services/streams-service", "services/analytics-service", "services/files-service",
+                "services/users-service", "services/access-service", "services/gateway-service", 
+                "services/pricing-service", "services/pipes-service", "services/analytics-service", "services/files-service",
                 "services/riox-services-base", "web-ui"];
 var bowerDirs = ["web-ui/lib"];
 
 gulp.task('riox', 'start riox nodejs infrastructure', function() {
-	runSequence('ui:livereload', 'services:streams:serve', 'services:users:serve',
-			'services:analytics:serve', 'services:files:serve');
+	runSequence('ui:livereload', 'services:pipes:serve', 'services:users:serve', 'services:pricing:serve',
+			'services:analytics:serve', 'services:gateway:serve', 'services:access:serve', 'services:files:serve');
 });
 
 gulp.task('ui:bootstrap', 'Insert necessary data to boot the riox UI and make the riox APIs accessible.', function() {
@@ -46,7 +50,7 @@ gulp.task('ui:bootstrap', 'Insert necessary data to boot the riox UI and make th
 
 	riox.users._bootstrap({}, function() {
 		console.log("Successfully inserted users metadata");
-		riox.streams._bootstrap({}, function() {
+		riox.proxies._bootstrap({}, function() {
 			console.log("Successfully inserted APIs metadata");
 			console.log("Done.");
 		}, function(err) {

@@ -15,9 +15,9 @@ angular.module('rioxApp')
 		 {id: TIMEUNIT_DAY, name: "Daily", unitName: "Day"}
 		];
 
-	$scope.$watch("sources", function(sources) {
-		if(!sources) return;
-		$scope.loadSourceDetails(sources, $stateParams.sourceId);
+	$scope.$watch("proxies", function(proxies) {
+		if(!proxies) return;
+		$scope.loadProxyDetails(proxies, $stateParams.sourceId);
 	});
 
 	var loadPricingPlans = function() {

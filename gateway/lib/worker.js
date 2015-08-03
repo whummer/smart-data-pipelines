@@ -404,6 +404,8 @@ Worker.prototype.runServer = function (config) {
 						request[RESULT_STATUS] = res.statusCode;
 						riox.save.rating.invocation(request, {
 							headers: auth.getInternalCallTokenHeader()
+						}, function(err) {
+							console.log("WARN: cannot log invocation:", err);
 						});
 					}
 //					});

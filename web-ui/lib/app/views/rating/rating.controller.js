@@ -13,9 +13,9 @@ angular.module('rioxApp')
 			{value: TIMEUNIT_MONTH, label: "Month"}
 		];
 
-	$scope.$watch("sources", function(sources) {
-		if(!sources) return;
-		$scope.loadSourceDetails(sources, $stateParams.sourceId);
+	$scope.$watch("proxies", function(proxies) {
+		if(!proxies) return;
+		$scope.loadProxyDetails(proxies, $stateParams.sourceId);
 		loadRateLimits();
 		loadConsumers();
 		loadAccessRoles();

@@ -14,7 +14,9 @@ if (localConfig.build) {
   console.log("\n");
 }
 
-var service_directories = ['../gateway', '../gateway/ext/http-proxy', 'streams-service', 'users-service', 'riox-services-base', 'analytics-service', 'files-service'];
+var service_directories = ['../gateway', '../gateway/ext/http-proxy', 'riox-services-base', 
+                           'pipes-service', 'access-service', 'pricing-service', 'gateway-service', 
+                           'users-service', 'analytics-service', 'files-service'];
 var services_test_directory = 'services/test';
 var web_ui_directory = 'web-ui';
 

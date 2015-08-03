@@ -5,9 +5,9 @@ angular.module('rioxApp')
 
 	$scope.selected = {};
 
-	$scope.$watch("sources", function(sources) {
-		if(!sources) return;
-		$scope.loadSourceDetails(sources, $stateParams.sourceId);
+	$scope.$watch("proxies", function(proxies) {
+		if(!proxies) return;
+		$scope.loadProxyDetails(proxies, $stateParams.sourceId);
 	});
 
 	$scope.loadOrganizations = function() {
@@ -210,14 +210,14 @@ angular.module('rioxApp')
 		});
 	};
 
-	/* load user consents for a list of stream sources */
-	var loadConsents = function(sources) {
+	/* load user consents for a list of proxies */
+	var loadConsents = function(proxies) {
 		var promise = $q.when(1);
-		$.each(sources, function(idx,el) {
+		$.each(proxies, function(idx,el) {
 			promise = promise.then(function() {
 				return $q(function(resolve, reject) {
 					loadStreamConsents(el).then(function() {
-						resolve(sources);
+						resolve(proxies);
 					});
 				});
 			});

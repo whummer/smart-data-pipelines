@@ -3,9 +3,9 @@
 angular.module('rioxApp')
 .controller('SchemasCtrl', function ($scope, $state, $stateParams) {
 
-	$scope.$watch("sources", function(sources) {
-		if(!sources) return;
-		$scope.loadSourceDetails(sources, $stateParams.sourceId);
+	$scope.$watch("proxies", function(proxies) {
+		if(!proxies) return;
+		$scope.loadProxyDetails(proxies, $stateParams.sourceId);
 	});
 
 	$scope.deleteSchema = function(schema) {

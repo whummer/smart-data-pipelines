@@ -6,7 +6,7 @@ angular.module('rioxApp')
 	$scope.trim = window.trim;
 
 	var loadTableParams = function() {
-		var data = $scope.sources;
+		var data = $scope.proxies;
 		$scope.tableParams = new ngTableParams({
 			page: 1,
 			count: 10
@@ -27,10 +27,10 @@ angular.module('rioxApp')
 	$scope.setNavPath($scope, $state);
 
 	/* load main elements */
-	$scope.loadStreamSources().
-		then($scope.prepareStreamSources).
-		then($scope.loadStreamsConsumers).
-		then($scope.loadSourceDetails).
+	$scope.loadProxies().
+		then($scope.prepareProxies).
+		then($scope.loadProxiesConsumers).
+		then($scope.loadProxyDetails).
 		then(loadTableParams);
 
 });

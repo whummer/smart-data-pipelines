@@ -2,7 +2,7 @@
 	<div class="col-lg-6">
 		<div class="ibox float-e-margins">
 			<div class="ibox-title">
-				<h5>Stream Consumers</h5>
+				<h5>Stream Pipe Consumers</h5>
 			</div>
 			<div class="ibox-content" ng-show="shared.selectedAPI.consumers.length">
 				<div class="table-responsive">
@@ -28,7 +28,7 @@
 									 ng-model="c.enabled" ng-change="updatePermission(c, shared.selectedAPI)"
 									 type="checkbox" class="form-control"/>
 								</td>
-<!-- 										<td><a ui-sref="streams.provided({streamId: shared.selectedAPI.id, organizationId: c[REQUESTOR_ID]})">details</a></td> -->
+<!-- 										<td><a ui-sref="pipes.provided({streamId: shared.selectedAPI.id, organizationId: c[REQUESTOR_ID]})">details</a></td> -->
 							</tr>
 						</tbody>
 					</table>
@@ -67,7 +67,7 @@
 									 ng-model="c.enabled" ng-change="updatePermission(c, shared.selectedAPI)"
 									 type="checkbox" class="form-control"/>
 								</td>
-<!-- 										<td><a ui-sref="streams.provided({streamId: shared.selectedAPI.id, organizationId: c[REQUESTOR_ID]})">details</a></td> -->
+<!-- 										<td><a ui-sref="pipes.provided({streamId: shared.selectedAPI.id, organizationId: c[REQUESTOR_ID]})">details</a></td> -->
 							</tr>
 						</tbody>
 					</table>

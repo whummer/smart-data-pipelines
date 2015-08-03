@@ -20,11 +20,11 @@ angular.module('rioxApp')
     				el.time = formatDate(el[CREATION_DATE]);
     				if(el[TYPE] == TYPE_ACCESS_REQUEST) {
     					el.type = "Access Request";
-    					el.link = "streams.provided({sourceId: '" + el[PARAMS][SOURCE_ID] + "', " +
+    					el.link = "pipes.provided({sourceId: '" + el[PARAMS][SOURCE_ID] + "', " +
     						"organizationId: '" + el[PARAMS][REQUESTOR_ID] + "'})";
     				} else if(el[TYPE] == TYPE_ACCESS_UPDATE) {
     					el.type = "Access Update";
-    					el.link = "streams.consumed({sourceId: '" + el[PARAMS][SOURCE_ID] + "'})";
+    					el.link = "pipes.consumed({sourceId: '" + el[PARAMS][SOURCE_ID] + "'})";
     				} else if(el[TYPE] == TYPE_INVITE) {
     					el.type = "Organization Invite";
     					var orgId = el[PARAMS][ORGANIZATION_ID];
