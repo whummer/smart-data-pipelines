@@ -15,6 +15,8 @@ module.exports = {
 	facebook: {
 		clientID:		appConfig.auth.facebook.client_id,
 		callbackURL:	appConfig.auth.facebook.redirect_uri
-	}
+	},
+
+	seedDB: true
 
 };

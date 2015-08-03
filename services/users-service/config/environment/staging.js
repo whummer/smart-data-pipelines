@@ -7,7 +7,7 @@ var appConfig = require("riox-services-base/lib/config/services.js");
 module.exports = {
 
 	mongo: {
-		uri: appConfig["production"].infra.mongodb.url
+		uri: appConfig["staging"].infra.mongodb.url
 	},
 
 	services: appConfig["staging"].services,
@@ -15,6 +15,8 @@ module.exports = {
 	facebook: {
 		clientID:		appConfig.auth.facebook.client_id,
 		callbackURL:	appConfig.auth.facebook.redirect_uri
-	}
+	},
+
+	seedDB: true
 
 };
