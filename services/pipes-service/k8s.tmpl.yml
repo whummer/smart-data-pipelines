@@ -26,7 +26,7 @@ items:
                 - containerPort: 8085
               command:
                 - "gulp"
-                - "services:streams:run"
+                - "services:pipes:run"
               env:
                 - name: RIOX_ENV
                   valueFrom:
