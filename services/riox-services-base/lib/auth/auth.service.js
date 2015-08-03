@@ -205,6 +205,11 @@ function getHeaderFromToken(token) {
 	return {authorization: 'Bearer ' + token};
 }
 
+function getHeaderForCurrentUser(user) {
+	var token = signToken(user.id);
+	return getHeaderFromToken(token);
+}
+
 function getTokenFromHeaders(req) {
 	var authToken = req.headers.authorization;
 	if(!authToken) return null;
@@ -235,6 +240,7 @@ exports.getInternalCallTokenHeader = getInternalCallTokenHeader;
 exports.getTokenHeaderForUserId = getTokenHeaderForUserId;
 exports.signToken = signToken;
 exports.getHeaderFromToken = getHeaderFromToken;
+exports.getHeaderForCurrentUser = getHeaderForCurrentUser;
 exports.validateToken = validateToken;
 exports.extractUserID = extractUserID;
 

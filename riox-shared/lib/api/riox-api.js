@@ -668,6 +668,9 @@
 	sh.add.pipes.processor = function (processor, callback, errorCallback) {
 		return callPOST(servicesConfig.pipeprocessors.url, processor, callback, errorCallback);
 	};
+	sh.add.proxy = function (obj, callback, errorCallback) {
+		return callPOST(servicesConfig.proxies.url, obj, callback, errorCallback);
+	};
 	sh.add.certificate = function (certificate, callback, errorCallback) {
 		return callPOST(servicesConfig.certificates.url, certificate, callback, errorCallback);
 	};
@@ -725,6 +728,10 @@
 	};
 	sh.save.sink = function (sink, callback, errorCallback) {
 		return callPUT(servicesConfig.pipesinks.url, sink, callback, errorCallback);
+	};
+	sh.save.proxy = function (obj, callback, errorCallback) {
+		var id = assertID(obj);
+		return callPUT(servicesConfig.proxies.url + "/" + id, obj, callback, errorCallback);
 	};
 	sh.save.driver = function (driver, callback, errorCallback) {
 		var url = servicesConfig.drivers.url + "/forThing/" +

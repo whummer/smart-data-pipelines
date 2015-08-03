@@ -6,7 +6,10 @@ var demo = require('./statistics');
 
 exports.queryInvocationStats = function(req, res) {
 	var query = req.body;
-	var headers = auth.getInternalCallTokenHeader();
+	//var headers = auth.getInternalCallTokenHeader();
+	var user = auth.getCurrentUser(req);
+	var headers = auth.getHeaderForCurrentUser(user);
+
 	queryInvocations(query, headers, function(stats) {
 		res.json(stats);
 		res.end();

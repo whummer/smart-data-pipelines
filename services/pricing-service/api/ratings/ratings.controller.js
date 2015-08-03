@@ -56,6 +56,8 @@ var ipInfosCache = LRUCache({
 
 /* HELPER METHODS */
 
+
+
 var getOrgForHost = function(host, callback) {
 	var subdomain = host.split(/\./).slice(-3, 1)[0];
 	var query = { all: true };
@@ -66,7 +68,9 @@ var getOrgForHost = function(host, callback) {
 			var found = false;
 			for(var i = 0; i < orgs.length; i ++) {
 				var org = orgs[i];
-				if(org[DOMAIN_NAME] == subdomain) {
+				var domains = org[DOMAIN_NAME];
+				if(domains == subdomain || 
+						domains.indexOf(subdomain) >= 0) {
 					found = org;
 				}
 			}
@@ -79,11 +83,11 @@ var getProxyForPath = function(method, org, path, callback) {
 	var query = {};
 	query[ORGANIZATION_ID] = org[ID];
 	var apisCache = getCacheEntry(configCache, KEY_APIS);
-	riox.proxies(query, {
+	riox.proxies.all(query, {
 		headers: auth.getInternalCallTokenHeader(),
 		callback: function(list) {
 			var found = false;
-			/* TODO: whu: move functionality into microservice */
+			/* TODO: whu: move functionality into microservice (?) */
 			for(var i = 0; i < list.length; i ++) {
 				var item = list[i];
 				for(var j = 0; j < item[OPERATIONS].length; j ++) {
@@ -266,7 +270,6 @@ exports.logAndPermit = function(req, res) {
 		}
 
 		getLimitForUserAndOp(userID, result[KEY_OPERATION][ID], function(limits) {
-			//console.log("limits", limits);
 			var limit = limits[0];
 			if(limit) {
 				cacheOfUser[KEY_LIMIT] = limit; // TODO
@@ -438,7 +441,6 @@ exports.queryInvocations = function(req, res) {
 	};
 
 	Invocation.find(query, function(err, invocations) {
-		//console.log("ratings.invs:", invocations);
 		if(err || !invocations)
 			return res.status(500).json({error: "Unable to query for invocations."});
 		var resultMap = {};

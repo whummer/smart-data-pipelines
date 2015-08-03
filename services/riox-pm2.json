@@ -25,12 +25,12 @@
       }
     },
     {
-      "name": "streams-service",
+      "name": "pipes-service",
       "script": "app.js",
       "watch": true,
       "node_args": "--harmony",
       "merge_logs": true,
-      "cwd": "streams-service",
+      "cwd": "pipes-service",
       "env": {
         "RIOX_ENV": "development",
 		"DISABLE_AUTH" : true,

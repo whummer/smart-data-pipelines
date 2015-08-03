@@ -20,6 +20,6 @@ var starter = require("riox-services-base/lib/service.starter");
 // start server
 var routes = require("./routes");
 var expressIO = require("express.io");
-var server = starter.start(config, routes, "streams-service", expressIO);
+var server = starter.start(config, routes, "pricing-service", expressIO);
 
 module.exports = server;

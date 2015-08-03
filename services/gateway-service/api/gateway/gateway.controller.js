@@ -18,8 +18,7 @@ exports.apply = function(req, res) {
 
 	var prom = new Promise(function(resolve, reject){
 		var query = {};
-		//console.log(auth.getInternalCallTokenHeader());
-		riox.proxies(query, {
+		riox.proxies.all(query, {
 			headers: auth.getInternalCallTokenHeader(),
 			callback: function(proxies) {
 				applyConfig(proxies, resolve, reject);
@@ -57,7 +56,6 @@ var applyConfig = function(sources, resolve, reject) {
 };
 
 var applySources = function(params) {
-//	console.log("applySources");
 	var prom = empty(params);
 
 	params.sources.forEach(function(source) {
@@ -79,7 +77,6 @@ var isArray = function(obj) {
 };
 
 var applySource = function(sourceObj, params, resolve, reject) {
-//	console.log("applySource");
 	if(!sourceObj[OPERATIONS]) sourceObj[OPERATIONS] = [];
 
 	var promOuter = new Promise(function(resolve, reject) {
@@ -127,7 +124,6 @@ var applySource = function(sourceObj, params, resolve, reject) {
 };
 
 var addEndpoints = function(source, params) {
-//	console.log("addEndpoints");
 	var prom = empty(params);
 	source[BACKEND_ENDPOINTS].forEach(function(endpoint) {
 		prom = prom.then(function() {

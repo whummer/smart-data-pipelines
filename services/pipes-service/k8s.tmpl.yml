@@ -5,22 +5,22 @@ items:
   - kind: ReplicationController
     apiVersion: v1
     metadata:
-      name: streams-service
+      name: pipes-service
       labels:
-        name: streams-service
+        name: pipes-service
     spec:
       replicas: 1
       selector:
-        name: streams-service
+        name: pipes-service
       template:
         metadata:
           labels:
-            name: streams-service
+            name: pipes-service
         spec:
           imagePullSecrets:
             - name: rioxregistrykey
           containers:
-            - name: streams-service
+            - name: pipes-service
               image: riox/hyperriox:{{IMAGE_VERSION}}
               ports:
                 - containerPort: 8085
@@ -42,12 +42,12 @@ items:
   - kind: Service
     apiVersion: v1
     metadata:
-      name: streams-service
+      name: pipes-service
     spec:
       ports:
         - port: 8085
       selector:
-        name: streams-service
+        name: pipes-service
 
   - kind: Service
     apiVersion: v1
@@ -57,7 +57,7 @@ items:
       ports:
         - port: 8085
       selector:
-        name: streams-service
+        name: pipes-service
 
   - kind: Service
     apiVersion: v1
@@ -67,7 +67,7 @@ items:
       ports:
         - port: 8085
       selector:
-        name: streams-service
+        name: pipes-service
 
   - kind: Service
     apiVersion: v1
@@ -77,4 +77,4 @@ items:
       ports:
         - port: 8085
       selector:
-        name: streams-service
+        name: pipes-service

@@ -69,6 +69,11 @@ var init = function(riox) {
 		var url = servicesConfig.gateway.url + "/apply";
 		return riox.callPOST(url, options, callback, errorCallback);
 	};
+	sh.proxies.all = sh.get.proxies.all = function(options, callback, errorCallback) {
+		if(!options) options = {};
+		var url = servicesConfig.proxies.url + "/all";
+		return riox.callGET(url, callback, errorCallback);
+	};
 
 	/* manage ratings/invocations */
 

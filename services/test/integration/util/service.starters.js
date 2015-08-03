@@ -11,7 +11,7 @@ x.startStreamsService = function() {
 		services.streams.sinks.url = global.servicesConfig.streamsinks.url = services.streams.url + "/sinks";
 		services.streams.processors.url = global.servicesConfig.streamprocessors.url = services.streams.url + "/processors";
 		process.env.SERVICE_PORT = services.streams.port;
-		services.streams.server = require('../../../streams-service/app.js');
+		services.streams.server = require('../../../pipes-service/app.js');
 	}
 	if(!services.streams.server.started)
 		services.streams.server.start();

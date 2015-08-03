@@ -97,7 +97,7 @@ angular.module('rioxApp').controller('ApisWizardCtrl', function ($scope, $log, g
 	};
 
 	//
-	// "submits" the form, ie. creates the data resource via the streams API
+	// "submits" the form, ie. creates the data resource via the API
 	//
 	$scope.processForm = function () {
 		var r = $scope.resourceData;
@@ -115,7 +115,7 @@ angular.module('rioxApp').controller('ApisWizardCtrl', function ($scope, $log, g
 		$log.debug("Filtered data items: ", dataItems);
 		var selectedOrganization = null;
 
-		var addStreamSource = function (selectedOrganization) {
+		var addProxy = function (selectedOrganization) {
 			$log.debug("Saving new resource: ", r);
 
 			var connector = {};
@@ -123,33 +123,33 @@ angular.module('rioxApp').controller('ApisWizardCtrl', function ($scope, $log, g
 			connector[CERTIFICATE] = !$scope.resourceData.securityEnabled ? 
 					"default" : $scope.resourceData.certSelect.id;
 	
-			var dataStream = {};
-			dataStream[NAME] = r.name;
-			dataStream[DESCRIPTION] = r.description;
-			dataStream[CONNECTOR] = connector;
-			dataStream[ORGANIZATION_ID] = "TODO"; // default org. filled in a later function call; 
+			var proxy = {};
+			proxy[NAME] = r.name;
+			proxy[DESCRIPTION] = r.description;
+			proxy[CONNECTOR] = connector;
+			proxy[ORGANIZATION_ID] = "TODO"; // default org. filled in a later function call; 
 												// TODO: however, should be made configurable in wizard 
-			dataStream[TAGS] = r.tags;
-			dataStream[VISIBLE] = true;
+			proxy[TAGS] = r.tags;
+			proxy[VISIBLE] = true;
 	
 			var selectedPermitMode = r.authDisabled ? PERMIT_MODE_AUTO : PERMIT_MODE_MANUAL;
-			dataStream[PERMIT_MODE] = {
+			proxy[PERMIT_MODE] = {
 				type : selectedPermitMode
 			};
 
 			// todo billingUnit and unitSize are currently not used
 			if (dataItems.length) {
-				dataStream[DATA_ITEMS] = dataItems;
+				proxy[DATA_ITEMS] = dataItems;
 			} else {
-				dataStream.pricing = {
+				proxy.pricing = {
 					unitPrice: r.defaultPricing
 				};
 			};
 
-			dataStream[ORGANIZATION_ID] = selectedOrganization.id;
-			$log.debug("Adding new data resource: ", dataStream);
-			riox.add.streams.source(dataStream, function () {
-				growl.success("Added new API '" + dataStream.name + "'");
+			proxy[ORGANIZATION_ID] = selectedOrganization.id;
+			$log.debug("Adding new data resource: ", proxy);
+			riox.add.proxy(proxy, function () {
+				growl.success("Added new API '" + proxy.name + "'");
 				$state.go('index.apis.list');
 			})
 		};
@@ -159,10 +159,10 @@ angular.module('rioxApp').controller('ApisWizardCtrl', function ($scope, $log, g
 			$log.error('Cannot load default orgaization: ' + reason);
 		};
 
-		// add certificate, then determine the organization of the logged in user, then create the stream
+		// add certificate, then determine the organization of the logged in user, then create the proxy
 		createNewCertificate().
 			then($scope.loadDefaultOrganization).
-			then(addStreamSource, handleDefaultOrgUnavailable);
+			then(addProxy, handleDefaultOrgUnavailable);
 	}
 
 	/* get nav. bar stack */

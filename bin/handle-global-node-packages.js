@@ -8,8 +8,9 @@ var semver = require('./semver');
 // the directories where package.json's are looked up
 //
 var nodeDirs = [".", "services/test", "gateway", "gateway/ext/http-proxy",
-	"services/users-service", "services/streams-service", "services/analytics-service", "services/files-service",
-	"services/riox-services-base", "web-ui"];
+	"services/users-service", "services/pipes-service", "services/analytics-service",
+	"services/files-service", "services/gateway-service", "services/access-service", 
+	"services/pricing-service", "services/riox-services-base", "web-ui"];
 
 //
 // handle cmdline args

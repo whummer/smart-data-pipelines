@@ -28,7 +28,10 @@ ADD ./gateway/ext/http-proxy/package.json /code/gateway/ext/http-proxy/
 ADD ./services/riox-services-base/package.json /code/services/riox-services-base/
 ADD ./services/files-service/package.json /code/services/files-service/
 ADD ./services/users-service/package.json /code/services/users-service/
-ADD ./services/streams-service/package.json /code/services/streams-service/
+ADD ./services/pipes-service/package.json /code/services/pipes-service/
+ADD ./services/access-service/package.json /code/services/access-service/
+ADD ./services/gateway-service/package.json /code/services/gateway-service/
+ADD ./services/pricing-service/package.json /code/services/pricing-service/
 ADD ./services/analytics-service/package.json /code/services/analytics-service/
 ADD ./services/test/package.json /code/services/test/
 ADD ./riox-shared/package.json /code/riox-shared/
