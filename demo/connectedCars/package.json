@@ -15,7 +15,7 @@
     "express": "~4.0.0",
     "ejs": "~0.8.4",
 
-    "riox-shared": "../../nodejs/riox-shared"
+    "riox-shared": "../../riox-shared"
   },
   "engines": {
     "node": ">=0.10.0"

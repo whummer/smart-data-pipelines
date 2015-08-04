@@ -1,0 +1,81 @@
+<div class="row" ng-show="shared.selectedAPI">
+	<div class="col-lg-6">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<h5>Stream Pipe Consumers</h5>
+			</div>
+			<div class="ibox-content" ng-show="shared.selectedAPI.consumers.length">
+				<div class="table-responsive">
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th>#</th>
+								<th>User</th>
+								<th>Price</th>
+								<th>Status</th>
+								<th>Enabled</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="c in shared.selectedAPI.consumers" ng-alias="c.enabled = (c[STATUS] == STATUS_PERMITTED)"
+									ng-class="{ 'font-bold' : c.id == selectedConsumer.id }">
+								<td>{{shared.selectedAPI.consumers.indexOf(c) + 1}}</td>
+								<td>{{c.requestorOrg.name}}</td>
+								<td>{{c.price}}</td>
+								<td>{{c.status}}</td>
+								<td>
+									<input ui-switch="{color:'#5C9C4D', size: 'small'}"
+									 ng-model="c.enabled" ng-change="updatePermission(c, shared.selectedAPI)"
+									 type="checkbox" class="form-control"/>
+								</td>
+<!-- 										<td><a ui-sref="pipes.provided({streamId: shared.selectedAPI.id, organizationId: c[REQUESTOR_ID]})">details</a></td> -->
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="ibox-content" ng-show="!shared.selectedAPI.consumers.length">
+				Currently there are no consumers for this stream.
+			</div>
+		</div>
+	</div>
+
+	<div class="col-lg-6">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<h5>Data Owner Consents</h5>
+			</div>
+			<div class="ibox-content" ng-show="shared.selectedAPI.consents.length">
+				<div class="table-responsive">
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th>#</th>
+								<th>User</th>
+								<th>Status</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="c in shared.selectedAPI.consumers" ng-alias="c.enabled = (c[STATUS] == STATUS_PERMITTED)"
+									ng-class="{ 'font-bold' : c.id == selectedConsumer.id }">
+								<td>{{shared.selectedAPI.consumers.indexOf(c) + 1}}</td>
+								<td>{{c.requestorOrg.name}}</td>
+								<td>{{c.price}}</td>
+								<td>{{c.status}}</td>
+								<td>
+									<input ui-switch="{color:'#5C9C4D', size: 'small'}"
+									 ng-model="c.enabled" ng-change="updatePermission(c, shared.selectedAPI)"
+									 type="checkbox" class="form-control"/>
+								</td>
+<!-- 										<td><a ui-sref="pipes.provided({streamId: shared.selectedAPI.id, organizationId: c[REQUESTOR_ID]})">details</a></td> -->
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="ibox-content" ng-show="!shared.selectedAPI.consents.length">
+				Currently no user consents registered for this stream.
+			</div>
+		</div>
+	</div>
+</div>

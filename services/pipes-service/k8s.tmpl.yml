@@ -1,0 +1,50 @@
+{{IMAGE_VERSION=latest}}
+apiVersion: v1
+kind: List
+items:
+  - kind: ReplicationController
+    apiVersion: v1
+    metadata:
+      name: pipes-service
+      labels:
+        name: pipes-service
+    spec:
+      replicas: 1
+      selector:
+        name: pipes-service
+      template:
+        metadata:
+          labels:
+            name: pipes-service
+        spec:
+          imagePullSecrets:
+            - name: rioxregistrykey
+          containers:
+            - name: pipes-service
+              image: riox/hyperriox:{{IMAGE_VERSION}}
+              ports:
+                - containerPort: 8085
+              command:
+                - "gulp"
+                - "services:pipes:run"
+              env:
+                - name: RIOX_ENV
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.namespace
+              livenessProbe:
+                httpGet:
+                  path: /healthz
+                  port: 8085
+                initialDelaySeconds: 60
+                timeoutSeconds: 3
+
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      name: pipes-service
+    spec:
+      ports:
+        - port: 8085
+      selector:
+        name: pipes-service

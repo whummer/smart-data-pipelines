@@ -1,0 +1,249 @@
+<div class="row" ng-show="shared.selectedAPI">
+	<div class="col-lg-6">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<h5>Pricing Plans</h5>
+			</div>
+			<div class="ibox-content">
+				<div class="row">
+					<div class="col-lg-12" ng-show="plans.length">
+						<div class="table-responsive">
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th>#</th>
+										<th>Name</th>
+										<th>Pricing Items</th>
+										<th>Actions</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr ng-repeat="n in plans" ng-class="{ 'font-bold' : n[ID] == selected.plan[ID] }">
+										<td>{{plans.indexOf(n) + 1}}</td>
+										<td><a ng-click="selected.plan = n">{{n[NAME]}}</a></td>
+										<td>{{n[TIMEUNIT]}}</td>
+										<td>
+											<a ng-click="selected.plan = n" class="fa fa-search" title="Show Details"></a>
+											<a ng-click="deletePlan(n)" class="fa fa-remove" title="Delete"></a>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="col-lg-12" ng-show="!plans.length">
+						Currently no pricing plans defined.
+					</div>
+					<div class="col-lg-12 text-right">
+						<button class="btn btn-primary" ng-click="addPlan()"><i class="fa fa-plus-circle"></i> Add Pricing Plan</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-lg-6">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<h5>Pricing Plan Details</h5>
+			</div>
+			<div class="ibox-content">
+				<div class="row">
+					
+					<div class="col-lg-12" ng-show="!plans.length">
+						Currently no pricing plans defined.
+					</div>
+					<div ng-show="plans.length && !selected.plan" class="col-lg-8">
+						Please select a plan from the table.
+					</div>
+					<div ng-show="selected.plan" class="col-lg-12">
+						<div class="form-group">
+							<label class="col-lg-4">Organization
+								<i tooltip="The organization that this pricing plan belongs to."
+										class="fa fa-question-circle" style="margin-left: 5px"></i>
+							</label>
+							<div class="col-lg-8">
+								<select disabled="disabled" class="form-control input-sm" 
+									ng-options="o[ID] as o[NAME] for o in userOrganizations"
+									ng-model="selected.plan[ORGANIZATION_ID]"></select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="planName" class="col-lg-4">Name</label>
+							<div class="col-lg-8">
+								<input id="planName" class="form-control" 
+									ng-model="selected.plan[NAME]" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-lg-4"></label>
+							<div class="col-lg-8">
+								<div class="text-right">
+									<button class="btn" ng-click="selected.plan = null"> Cancel</button>
+									<button class="btn btn-primary" ng-click="savePlan()"><i class="fa fa-save"></i> Save Changes</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row" ng-show="selected.plan">
+	<div class="col-lg-12">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<h5>Pricing Items</h5>
+			</div>
+			<div class="ibox-content">
+				<div class="row">
+					<div class="col-lg-12" ng-show="selected.plan[PRICING_ITEMS].length">
+						<div class="table-responsive">
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th>#</th>
+										<th>Type</th>
+										<th>Price</th>
+										<th>Billing Unit / Period</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr ng-repeat="i in selected.plan[PRICING_ITEMS]" ng-class="{ 'font-bold' : i == selected.item }">
+										<td>{{selected.plan[PRICING_ITEMS].indexOf(i) + 1}}</td>
+										<td>{{find(itemTypes, {id: i[TYPE]})[NAME]}}</td>
+										<td>{{i[AMOUNT]}}</td>
+										<td>{{i[UNIT]}}</td>
+										<td>
+											<a ng-click="selected.item = i" class="fa fa-search" title="Show Details"></a>
+											<a ng-click="deleteItem(i)" class="fa fa-remove" title="Delete"></a>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="col-lg-12" ng-show="!selected.plan[PRICING_ITEMS].length">
+						Currently no pricing items defined in this pricing plan.
+					</div>
+					<div class="col-lg-12 text-right">
+						<button class="btn btn-primary" ng-click="addItem()"><i class="fa fa-plus-circle"></i> Add Pricing Item</button>
+					</div>
+					<div ng-show="selected.item" class="col-lg-8">
+						<h3>Pricing Item Details</h3>
+						<div class="form-group">
+							<label class="col-lg-4">Type</label>
+							<div class="col-lg-8">
+								<select class="form-control input-sm" 
+									ng-options="o[ID] as o[NAME] for o in itemTypes"
+									ng-model="selected.item[TYPE]"></select>
+							</div>
+						</div>
+						<div ng-show="selected.item[TYPE] == TYPE_FIXED_PRICE">
+							<label class="col-lg-4">Amount</label>
+							<div class="col-lg-3">
+								<input id="limitLimit" class="form-control"
+									ng-model="selected.item[AMOUNT]"/>
+							</div>
+							<div class="col-lg-2">
+								€ per
+							</div>
+							<div class="col-lg-3">
+								<select id="limitTimeunit" class="form-control"
+									ng-options="t[ID] as t.unitName for t in pricingPeriods"
+									ng-model="selected.item[PERIOD]"></select>
+							</div>
+						</div>
+						<div ng-show="selected.item[TYPE] == TYPE_VARIABLE_PRICE">
+						
+						</div>
+<!-- 						<div class="form-group"> -->
+<!-- 							<label class="col-lg-4">Billing Period</label> -->
+<!-- 							<div class="col-lg-8"> -->
+<!-- 								<select class="form-control input-sm"  -->
+<!-- 									ng-options="o[ID] as o[NAME] for o in pricingPeriods" -->
+<!-- 									ng-model="selected.item[PERIOD]"></select> -->
+<!-- 							</div> -->
+<!-- 						</div> -->
+						<div class="form-group">
+							<label class="col-lg-4"></label>
+							<div class="col-lg-8">
+								<div class="text-right">
+									<button class="btn" ng-click="selected.item = null"> Cancel</button>
+									<button class="btn btn-primary" ng-click="savePlan()"><i class="fa fa-save"></i> Save Changes</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row" ng-show="selected.plan">
+	<div class="col-lg-12">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<h5>Usage Limits</h5>
+			</div>
+			<div class="ibox-content">
+				<div class="row">
+					<div class="col-lg-12" ng-show="selected.plan[LIMITS].length">
+						<div class="table-responsive">
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th>#</th>
+										<th>Type</th>
+										<th>Price</th>
+										<th>Billing Unit / Period</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr ng-repeat="i in selected.plan[LIMITS]" ng-class="{ 'font-bold' : i == selected.limit }">
+										<td>{{selected.plan[LIMITS].indexOf(i) + 1}}</td>
+										<td>{{find(itemTypes, {id: i[TYPE]})[NAME]}}</td>
+										<td>{{i[AMOUNT]}}</td>
+										<td>{{i[UNIT]}}</td>
+										<td>
+											<a ng-click="selected.limit = i" class="fa fa-search" title="Show Details"></a>
+											<a ng-click="deleteLimit(i)" class="fa fa-remove" title="Delete"></a>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="col-lg-12" ng-show="!selected.plan[LIMITS].length">
+						Currently no usage limits defined in this pricing plan.
+					</div>
+					<div class="col-lg-12 text-right">
+						<button class="btn btn-primary" ng-click="addLimit()"><i class="fa fa-plus-circle"></i> Add Usage Limit</button>
+					</div>
+					<div ng-show="selected.limit" class="col-lg-8">
+						<h3>Usage Limit Details</h3>
+						<div class="form-group">
+							<label class="col-lg-4">Type</label>
+							<div class="col-lg-8">
+								<select class="form-control input-sm" 
+									ng-options="o[ID] as o[NAME] for o in itemTypes"
+									ng-model="selected.limit[TYPE]"></select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-lg-4"></label>
+							<div class="col-lg-8">
+								<div class="text-right">
+									<button class="btn" ng-click="selected.limit = null"> Cancel</button>
+									<button class="btn btn-primary" ng-click="savePlan()"><i class="fa fa-save"></i> Save Changes</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
