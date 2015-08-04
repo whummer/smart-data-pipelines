@@ -22,11 +22,13 @@ build-push: build-images push-images
 
 build-images:
 	(cd hyperkube && make build)
+	(cd spring-xd-base && make build)
 	(cd kafka && make build)
 	(cd statsd && make build)
 
 push-images:
 	(cd hyperkube && make push)
+	(cd spring-xd-base && make push)
 	(cd kafka && make push)
 	(cd statsd && make push)
 
@@ -42,15 +44,21 @@ undeploy-k8s-dns:
 deploy-services:
 	(cd zk && make deploy-standalone)
 	(cd mongodb && make deploy-standalone)
+	(cd mysql && make deploy-standalone)
 	(cd redis && make deploy-standalone)
 	(cd kafka && make deploy-standalone)
+	(cd spring-xd-admin && make deploy-standalone)
+	(cd spring-xd-container && make deploy-standalone)
 	#(cd statsd && make deploy)
 
 undeploy-services:
 	-(cd zk && make undeploy-standalone)
 	-(cd mongodb && make undeploy)
+	-(cd mysql && make undeploy-standalone)	
 	-(cd redis && make undeploy-standalone)
 	-(cd kafka && make undeploy-standalone)
+	-(cd spring-xd-admin && make undeploy-standalone)
+	-(cd spring-xd-container && make undeploy-standalone)
 	#(cd statsd && make undeploy)
 
 # ATTENTION: Use with caution. Stops and removes ALL docker container

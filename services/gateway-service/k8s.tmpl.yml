@@ -1,0 +1,68 @@
+{{IMAGE_VERSION=latest}}
+apiVersion: v1
+kind: List
+items:
+  - kind: ReplicationController
+    apiVersion: v1
+    metadata:
+      name: gateway-service
+      labels:
+        name: gateway-service
+    spec:
+      replicas: 1
+      selector:
+        name: gateway-service
+      template:
+        metadata:
+          labels:
+            name: gateway-service
+        spec:
+          imagePullSecrets:
+            - name: rioxregistrykey
+          containers:
+            - name: gateway-service
+              image: riox/hyperriox:{{IMAGE_VERSION}}
+              ports:
+                - containerPort: 8088
+              command:
+                - "gulp"
+                - "services:gateway:run"
+              env:
+                - name: RIOX_ENV
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.namespace
+              livenessProbe:
+                httpGet:
+                  path: /healthz
+                  port: 8088
+                initialDelaySeconds: 60
+                timeoutSeconds: 3
+
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      name: proxies-service
+    spec:
+      ports:
+        - port: 8088
+      selector:
+        name: gateway-service
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      name: gateway-service
+    spec:
+      ports:
+        - port: 8088
+      selector:
+        name: gateway-service
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      name: statistics-service
+    spec:
+      ports:
+        - port: 8088
+      selector:
+        name: gateway-service

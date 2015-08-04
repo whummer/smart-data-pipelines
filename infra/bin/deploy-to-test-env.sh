@@ -9,10 +9,13 @@ BASEDIR=`dirname $0`
 export RIOX_ENV=test
 
 # Error handling
-trap "cleanup" SIGHUP
-trap "cleanup" SIGINT
-trap "cleanup" SIGTERM
-trap "cleanup" INT
+#trap "cleanup" SIGHUP
+#trap "cleanup" SIGINT
+#trap "cleanup" SIGTERM
+#trap "cleanup" INT
+
+trap "cleanup" INT TERM
+#trap "cleanup" EXIT
 
 # Checks success of a command and exist if != 0 and cleans up.
 function checkSuccess () {
@@ -35,7 +38,8 @@ function printLabel () {
 function cleanup () {
   printLabel "Cleaning up"
   (cd $BASEDIR/../ && make undeploy-services)
-  (cd $BASEDIR/../../nodejs && make undeploy-services)
+  (cd $BASEDIR/../../ && make undeploy-services)
+  #kill -KILL $$
 }
 
 # Usage: run_with_timeout N cmd args...
@@ -55,31 +59,6 @@ function run_with_timeout () {
   )
 }
 
-# Waits for the ELB to be "ready" to service requests
-# Be aware of this issue:
-#   https://github.com/GoogleCloudPlatform/kubernetes/issues/11324
-function waitForClusterReadiness () {
-  printf "Waiting for Riox services to be ready "
-  output=
-  while [[ !("$output" =~ "riox.all.min.js") ]]; do
-    output=`curl -s -H "Host: platform.riox.io" http://$0`
-
-    # TODO remove this after the timing issue with the demodata has been fixed
-    if [[ "$output" =~ "No resource found" ]]; then
-        echo "Restarting user and streams service in env ${RIOX_ENV}..."
-        kubectl --namespace=${RIOX_ENV} scale rc users-service --replicas=0
-        kubectl --namespace=${RIOX_ENV} scale rc users-service --replicas=2
-        sleep 5
-        kubectl --namespace=${RIOX_ENV} scale rc streams-service --replicas=0
-        kubectl --namespace=${RIOX_ENV} scale rc streams-service --replicas=2
-        sleep 5
-    fi
-    printf "."
-  	sleep 5
-  done
-  printf "\n"
-}
-
 # DEPLOY INFRASTRUCTURE SERVICES
 printLabel "Infrastructure service deployment "
 (cd $BASEDIR/../ && make deploy-services)
@@ -90,30 +69,60 @@ sleep 10
 
 # DEPLOY RIOX SERVICES
 printLabel "Riox micro service deployment "
-(cd $BASEDIR/../../nodejs && make deploy-services)
+(cd $BASEDIR/../../ && make deploy-services)
 checkSuccess
 
 printLabel "Waiting for the Riox services to settle "
 
-lb_endpoint=`kubectl --namespace=${RIOX_ENV} describe service gateway | grep "LoadBalancer Ingress" | awk -F':' '{ print $2 }' | xargs`
-echo "Found AWS ELB endpoint: ${lb_endpoint}"
-if [ "$lb_endpoint" == "" ]; then
-  echo "Error: we most likely hit the race condiation as described here: https://github.com/GoogleCloudPlatform/kubernetes/issues/11324"
+# run in loop with 3 seconds sleep
+lb_endpoint=
+for i in `seq 1 10`;
+do
+  sleep 3
+  lb_endpoint=`kubectl --namespace=${RIOX_ENV} describe service gateway | grep "LoadBalancer Ingress" | awk -F':' '{ print $2 }' | xargs`
+  #echo "AWS ELB endpoint: ${lb_endpoint}"
+  if [[ "$lb_endpoint" != "" ]]; then
+    break
+  fi
+done
+
+echo "AWS ELB endpoint: ${lb_endpoint}"
+if [[ "$lb_endpoint" == "" ]]; then
+  echo "Error: we most likely hit the race condiation as described here:"
+  echo "       --> https://github.com/GoogleCloudPlatform/kubernetes/issues/11324"
   cleanup
+  exit 1
 fi
+
+printf "Waiting for Riox services to be ready "
+output=
+for i in `seq 1 50`;
+do
+  output=`curl -s -H "Host: demo.riox.io" http://${lb_endpoint}`
+  if [[ "$output" =~ "riox.all.min.js" ]]; then
+    break
+  else
+    printf "."
+    sleep 10
+  fi
+done
 printf "\n"
 
-# Find the cluster to be ready within a 4 min timeout
-run_with_timeout 240 "waitForClusterReadiness" ${lb_endpoint}
-echo "Cluster seems operational!"
+output=`curl -s -H "Host: demo.riox.io" http://${lb_endpoint}`
+if [[ "$output" =~ "riox.all.min.js" ]]; then
+  echo "Cluster seems operational!"
+else
+  echo "Cluster does not seem to work!"
+  echo "Output: $output"
+  cleanup
+  exit 1
+fi
 
 printLabel "Running selenium test on latest deployment: ${lb_endpoint}"
-
 if [ -e "/usr/bin/xvfb-run" ]; then
   (cd $BASEDIR/../../e2e/selenium/e2e.ui && xvfb-run mvn -Driox.endpoint="${lb_endpoint}" test)
 else
   (cd $BASEDIR/../../e2e/selenium/e2e.ui && mvn -Driox.endpoint="${lb_endpoint}" test)
 fi
 checkSuccess
-
 cleanup

@@ -1,0 +1,37 @@
+kind: ReplicationController
+apiVersion: v1
+metadata:
+  name: mysql
+  labels:
+    name: mysql
+spec:
+  replicas: 1
+  selector:
+    name: mysql
+  template:
+    metadata:
+      labels:
+        name: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:5.6
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: Xdr67&uk.
+            - name: MYSQL_USER
+              value: riox
+            - name: MYSQL_PASSWORD
+              value: rioxRocks2015!
+            - name: MYSQL_DATABASE
+              value: springxd
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: data
+      volumes:
+        - name: data
+          awsElasticBlockStore:
+            volumeID: vol-55d1f7bc
+            fsType: ext4

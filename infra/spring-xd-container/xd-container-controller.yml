@@ -1,0 +1,24 @@
+kind: ReplicationController
+apiVersion: v1
+metadata:
+  name: xd-container
+spec:
+  replicas: 1
+  selector:
+    name: xd-container
+  template:
+    metadata:
+      labels:
+        name: xd-container
+    spec:
+      imagePullSecrets:
+        - name: rioxregistrykey
+      containers:
+        - name: xd-container
+          image: riox/springxd-base:1.2.1
+          imagePullPolicy: Always
+          args:
+            - /start-container.sh
+          ports:
+            - containerPort: 9000
+            - containerPort: 9001

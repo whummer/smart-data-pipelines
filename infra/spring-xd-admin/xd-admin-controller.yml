@@ -1,0 +1,25 @@
+kind: ReplicationController
+apiVersion: v1
+metadata:
+  name: xd-admin
+  labels:
+    name: xd-admin
+spec:
+  replicas: 1
+  selector:
+    name: xd-admin
+  template:
+    metadata:
+      labels:
+        name: xd-admin
+    spec:
+      imagePullSecrets:
+        - name: rioxregistrykey
+      containers:
+        - name: xd-admin
+          image: riox/springxd-base:1.2.1
+          imagePullPolicy: Always
+          args:
+            - /start-admin.sh
+          ports:
+            - containerPort: 9393

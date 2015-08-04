@@ -14,8 +14,13 @@ export IMAGE_VERSION=`git rev-list ${GIT_TAG} | head -n 1`
 
 # TODO validate that image version exists in docker registry
 
-(cd $BASEDIR/../../nodejs/ && make rolling-update)
+(cd $BASEDIR/../../ && make rolling-update)
 
-# TODO: this is a temp hack for the timing fix
-kubectl --namespace=staging scale rc streams-service --replicas=0
-kubectl --namespace=staging scale rc streams-service --replicas=2
+sleep 15
+
+echo "Running selenium tests"
+if [ -e "/usr/bin/xvfb-run" ]; then
+  (cd $BASEDIR/../../e2e/selenium/e2e.ui && xvfb-run mvn -Driox.endpoint="http://demo.riox.io" test)
+else
+  (cd $BASEDIR/../../e2e/selenium/e2e.ui && mvn -Driox.endpoint="http://demo.riox.io" test)
+fi

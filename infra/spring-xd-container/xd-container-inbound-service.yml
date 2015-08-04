@@ -1,0 +1,9 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: xd-inbound
+spec:
+  selector:
+    name: xd-container
+  ports:
+    - port: 9000

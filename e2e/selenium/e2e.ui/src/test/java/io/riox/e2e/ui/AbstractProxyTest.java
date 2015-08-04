@@ -19,51 +19,57 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 /**
  * This class setups a Proxy server that handles spoofs the host name
  * of the AWS load balancer to "platform.riox.io".
- * 
+ *
  * @author riox
  */
 public class AbstractProxyTest {
 
 	protected static WebDriver driver = null;
 	protected static String rioxUrl = null;
+	protected static String fakeHost = null;
 
 	@BeforeClass
 	public static void beforeAll() {
 
-		if (System.getProperty("webdriver.chrome.driver") == null) {			
-			System.out.println("Ensure 'chromedriver' binary' is in PATH or " + 
+		if (System.getProperty("webdriver.chrome.driver") == null) {
+			System.out.println("Ensure 'chromedriver' binary' is in PATH or " +
 //			throw new RuntimeException(
 					" set the system property 'webdriver.chrome.driver' to the location of "
 					+ "the chromedriver. You can download it from here:"
 					+ " https://sites.google.com/a/chromium.org/chromedriver/ ");
 		}
-		
+
 		rioxUrl = System.getProperty("riox.endpoint");
 		if (rioxUrl == null) {
 			throw new RuntimeException("Please specify the 'riox.endpoint' system property "
 					+ "pointing to the Riox instance that you want to test.");
 		}
-		
+
+		fakeHost = System.getProperty("riox.fakeHost");
+		if (fakeHost == null) {
+			fakeHost = "demo.riox.io";
+		}
+
 		if (!rioxUrl.startsWith("http://")) {
 			rioxUrl = "http://" + rioxUrl;
 		}
-		
+
 
 		// start the proxy
-		BrowserMobProxy proxy = new BrowserMobProxyServer();		
+		BrowserMobProxy proxy = new BrowserMobProxyServer();
 		proxy.start(0);
 
-		// map host 
-		proxy.addRequestFilter(new RequestFilter() {			
+		// map host
+		proxy.addRequestFilter(new RequestFilter() {
 			public HttpResponse filterRequest(HttpRequest request,
-					HttpMessageContents contents, HttpMessageInfo messageInfo) {				
-               request.headers().set("Host", "platform.riox.io");
-               return null;				
+					HttpMessageContents contents, HttpMessageInfo messageInfo) {
+               request.headers().set("Host", fakeHost);
+               return null;
 			}
 		});
-		
+
 		// get the Selenium proxy object
-		Proxy proxy1 = ClientUtil.createSeleniumProxy(proxy);	
+		Proxy proxy1 = ClientUtil.createSeleniumProxy(proxy);
 
 		// configure it as a desired capability
 		DesiredCapabilities capabilities = new DesiredCapabilities();

@@ -3,7 +3,6 @@ IMAGE=riox/kafka
 
 deploy:
 	@echo "Deploying Namespaces ..."
-	kubectl create -f namespace-kube-system.yml
 	kubectl create -f namespace-production.yml
 	kubectl create -f namespace-staging.yml
 	kubectl create -f namespace-test.yml

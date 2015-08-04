@@ -1,0 +1,83 @@
+{
+	"name": "hipache",
+	"version": "0.4.0",
+	"description": "Complete high-scaled reverse-proxy solution",
+	"keywords": [
+		"reverse",
+		"proxy",
+		"http",
+		"http-proxy"
+	],
+	"homepage": "https://github.com/dotcloud/hipache",
+	"bugs": {
+		"url": "https://github.com/dotcloud/hipache/issues",
+		"email": "sam.alba@gmail.com"
+	},
+	"license": "MIT",
+	"main": "./bin/rgw",
+	"bin": {
+		"rgw": "./bin/rgw"
+	},
+	"directories": {
+		"lib": "./lib"
+	},
+	"dependencies": {
+		"express-statsd": "^0.3.0",
+		"http-proxy": "file:./ext/http-proxy",
+		"lru-cache": "2.6.4",
+		"minimist": "1.1.1",
+		"redis": "0.12.1",
+		"winston": "^1.0.0",
+		"promise": "7.0.3",
+		"lynx": "0.2.0",
+		"kafka-node": "^0.2.27",
+		"lodash": "2.4.2",
+		"uuid": "2.0.1",
+
+		"riox-services-base": "file:../services/riox-services-base",
+		"riox-shared": "file:../riox-shared"
+	},
+	"devDependencies": {
+		"mocha": "1.x",
+		"jshint": "2.x",
+		"gulp": "^3.8.11",
+		"gulp-mocha": "^0.4.1",
+		"gulp-eslint": "^0.1.5",
+		"gulp-jshint": "^1.5.0",
+		"jshint-stylish": "^0.1.5",
+		"chai": "^1.9.0",
+		"istanbul": "^0.2.6",
+		"npmlog": "^0.0.6",
+		"memcached": "^0.2.8",
+		"node-etcd": "^2.0.10",
+		"node-zookeeper-client": "^0.2.1",
+		"ws": "^0.7.1",
+		"rimraf": "^2.2.8",
+		"coveralls": "2.10.0",
+		"connect": "3.3.5"
+	},
+	"scripts": {
+		"start": "./bin/hipache",
+		"test": "istanbul test _mocha --report html -- test/**/*.js --reporter spec --timeout 4000",
+		"coveralls": "istanbul cover _mocha --report lcovonly -- test/**/*.js -R spec && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage",
+		"hint": "gulp hint"
+	},
+	"engines": {
+		"node": ">=0.10.0",
+		"npm": ">=1.0.0"
+	},
+	"engine-strict": true,
+	"author": {
+		"name": "Sam Alba",
+		"email": "sam.alba@gmail.com",
+		"url": "http://www.dotcloud.com/"
+	},
+	"maintainer": [
+		"Sam Alba <sam.alba@gmail.com>",
+		"Olivier Gambier <viapanda@gmail.com>"
+	],
+	"repository": {
+		"type": "git",
+		"url": "http://github.com/dotcloud/hipache.git"
+	}
+}
