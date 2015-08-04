@@ -25,7 +25,7 @@ ADD ./Makefile /code/
 RUN make install-prereq && \
 
 	# clean up npm cache
-	rm -rf /root/.cache /root/.npm
+	rm -rf /root/.cache /root/.npm /tmp/*
 
 # add files required to make a gulp run
 ADD ./gulpfile.js ./package.json /code/
@@ -53,14 +53,14 @@ RUN gulp deps:install:global && \
 	npm install -g kafka-node && \
 
 	# clean up npm cache
-	rm -rf /root/.cache /root/.npm
+	rm -rf /root/.cache /root/.npm /tmp/*
 
 # install bower dependencies
 ADD ./riox-shared/bower.json /code/riox-shared/
 ADD ./web-ui/bower.json /code/web-ui/
 ADD ./web-ui/*gulpfile.js /code/web-ui/
 ADD ./web-ui/.bowerrc /code/web-ui/
-RUN gulp ui:bower
+RUN gulp ui:bower && rm -rf /root/.cache /tmp/*
 
 # clean up
 #RUN apt-get purge -y git make g++ gcc python perl
