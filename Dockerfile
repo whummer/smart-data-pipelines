@@ -72,7 +72,7 @@ ADD ./gateway/ /code/gateway/
 ADD ./riox-shared/ /code/riox-shared/
 
 	# finish up
-RUN rm -rf `find . -name node_modules | grep -v '^\./node_modules'` && \
+RUN rm -rf `find . -name node_modules` && \
 	rm -rf ./web-ui/build/production/ && \
 
 	# set config to use link-local before running npm install
