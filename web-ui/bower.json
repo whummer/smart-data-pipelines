@@ -37,7 +37,7 @@
     "ng-file-upload": "4.0.3",
     "riox-shared": "../riox-shared",
     "angular-ui-ace": "~0.2.3",
-    "ace-builds": "~1.1.9",
+    "ace-builds": "https://github.com/riox/ace-builds.git#master",
     "ng-alias": "https://github.com/whummer/ng-alias.git#master",
     "ng-tags-input": "2.3.0",
     "angucomplete": "#",
@@ -54,6 +54,7 @@
     "switchery": "~0.7.0",
     "dropzone": "~4.0.1",
     "jquery": "~1.11.0",
-    "angular-sanitize": "~1.4.0"
+    "angular-sanitize": "~1.4.0",
+    "ace-builds": "master"
   }
 }

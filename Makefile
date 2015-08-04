@@ -20,7 +20,7 @@ install:
 	gulp ui:bower
 
 install-prereq:
-	npm install -g gulp mocha nodemon	pm2
+	npm install -g gulp mocha nodemon pm2 linklocal node-gyp gulp-help gulp-clean run-sequence bower
 
 uninstall-global:
 	(cd bin && node handle-global-node-packages.js --uninstall && cd ..)
@@ -37,6 +37,7 @@ pm2-run:
 ###############
 build-image:
 	docker build -t ${IMAGE}:${IMAGE_VERSION} .
+	#infra/bin/docker-squash-image.sh
 
 push-image:
 	docker push ${IMAGE}:${IMAGE_VERSION}

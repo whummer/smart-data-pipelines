@@ -1,9 +1,6 @@
-FROM node:0.12.2
+FROM node:0.12.7-slim
 MAINTAINER riox
 MAINTAINER Waldemar Hummer
-
-# install prerequisites
-RUN npm install -g gulp mocha nodemon linklocal node-gyp
 
 # change workdir
 WORKDIR /code/
@@ -12,14 +9,26 @@ WORKDIR /code/
 ENV NODE_PATH /usr/local/lib/node_modules/
 
 # TODO: whu: temporary fix: gd.tuwien.ac.at is currently not working :/
-RUN sed -i s/httpredir.debian.org/debian.mirror.lrz.de/g /etc/apt/sources.list
+#RUN sed -i s/httpredir.debian.org/debian.mirror.lrz.de/g /etc/apt/sources.list
 
-# install some commonly used tools inside the container
-RUN apt-get update -y && apt-get install -y --force-yes vim nano less
+	# install some commonly used tools inside the container
+RUN apt-get update -y && apt-get install -y --force-yes vim && \
 
-# install all deps required to make a gulp run
+	# install tools needed to fetch dependencies and compile native extensions
+	apt-get install -y python git make g++ && \
+	
+	# clean up docs/man pages
+	rm -rf /usr/share/doc /usr/share/man/
+
+# install prerequisites
+ADD ./Makefile /code/
+RUN make install-prereq && \
+
+	# clean up npm cache
+	rm -rf /root/.cache /root/.npm
+
+# add files required to make a gulp run
 ADD ./gulpfile.js ./package.json /code/
-RUN npm install --ignore-scripts
 
 # add package.json files to prepare npm install
 ADD ./bin/ /code/bin/
@@ -37,31 +46,41 @@ ADD ./services/test/package.json /code/services/test/
 ADD ./riox-shared/package.json /code/riox-shared/
 ADD ./web-ui/package.json /code/web-ui/
 
-# now install all other modules (global flag on: -g)
-RUN gulp deps:install:global
+	# now install all other node modules (global flag on: -g)
+RUN gulp deps:install:global && \
 
-# fix: kafka-node needs to be installed separately
-RUN npm install -g kafka-node
+	# fix: kafka-node needs to be installed separately (build native deps)
+	npm install -g kafka-node && \
+
+	# clean up npm cache
+	rm -rf /root/.cache /root/.npm
 
 # install bower dependencies
-ADD ./web-ui/bower.json /code/web-ui/
 ADD ./riox-shared/bower.json /code/riox-shared/
+ADD ./web-ui/bower.json /code/web-ui/
 ADD ./web-ui/*gulpfile.js /code/web-ui/
+ADD ./web-ui/.bowerrc /code/web-ui/
 RUN gulp ui:bower
-
-# now add entire code dir
-ADD . /code
 
 # clean up
-RUN rm -rf `find . -name node_modules | grep -v '^\./node_modules'`
-RUN rm -rf ./web-ui/build/production/
+#RUN apt-get purge -y git make g++ gcc python perl
 
-# set config to use link-local before running npm install
-RUN echo '{"build":{"linklocal":true}}' > /root/.rioxrc
+# now add code dirs
+ADD ./services/ /code/services/
+ADD ./web-ui/ /code/web-ui/
+ADD ./gateway/ /code/gateway/
+ADD ./riox-shared/ /code/riox-shared/
 
-# link local deps
-RUN gulp deps:clean:local
-RUN npm install --unsafe-perm
-RUN gulp ui:bower
+	# finish up
+RUN rm -rf `find . -name node_modules | grep -v '^\./node_modules'` && \
+	rm -rf ./web-ui/build/production/ && \
+
+	# set config to use link-local before running npm install
+	echo '{"build":{"linklocal":true}}' > /root/.rioxrc && \
+
+	# link local deps && \
+	gulp deps:clean:local && \
+	node bin/preinstall.js && \
+	gulp ui:bower
 
 CMD ["/bin/bash"]

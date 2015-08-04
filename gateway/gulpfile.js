@@ -2,7 +2,6 @@
     'use strict';
 
     var gulp = global.gulp || require('gulp');
-    // var gutil = require('gulp-util');
 
     var mocha = require('gulp-mocha');
 

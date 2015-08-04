@@ -4,14 +4,12 @@
 var gulp = require('gulp-help')(require('gulp')),
 		nodemon = require('gulp-nodemon'),
 		bowerFiles = require('main-bower-files'),
-		install = require('gulp-install'),
 		less = require('gulp-less'),
 		path = require('path'),
 		inject = require('gulp-inject'),
 		angular_filesort = require('gulp-angular-filesort'),
 		cp = require('child_process'),
 		rename = require('gulp-rename'),
-		replace = require('gulp-replace'),
 		clean = require('gulp-clean'),
 		util = require('gulp-util'),
 		uglify = require('gulp-uglify'),
@@ -20,7 +18,7 @@ var gulp = require('gulp-help')(require('gulp')),
 		gulpFilter = require('gulp-filter'),
 		sourcemaps = require('gulp-sourcemaps'),
 		runSequence = require('run-sequence'),
-		bower = require('gulp-bower'),
+		//bower = require('gulp-bower'),
 		es = require('event-stream');
 
 //
@@ -227,14 +225,8 @@ gulp.task('ui:scriptsmin', 'concatenate, minify and uglify JS script sources', f
 // install bower files
 //
 gulp.task('ui:bower', 'install bower dependencies', function () {
-	return bower({cwd: BASE_DIR}).pipe(gulp.dest(BASE_DIR + "/lib/bower_components"));
-});
-
-//
-// install node modules
-//
-gulp.task('ui:node_modules', 'install required node modules', function () {
-	return gulp.src([BASE_DIR + "/package.json"]).pipe(install());
+	return runCmd("bower", ["install", "--allow-root"], __dirname);
+	//return bower({cwd: BASE_DIR}).pipe(gulp.dest(BASE_DIR + "/lib/bower_components"));
 });
 
 //
@@ -243,7 +235,6 @@ gulp.task('ui:node_modules', 'install required node modules', function () {
 
 //run app using nodemon
 gulp.task('ui:serve', 'serve the riox-ui src using nodemon', function () {
-	//runSequence('ui:bower', 'ui:node_modules', 'ui:inject:dev');
 	runSequence('ui:bower', 'ui:inject:dev');
 
 	return nodemon({
