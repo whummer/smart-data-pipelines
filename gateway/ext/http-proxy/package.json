@@ -26,7 +26,7 @@
     "eventemitter3": "1.x.x",
     "kafka-node": "^0.2.27",
     "minimist": "1.1.1",
-    "mosca": "^0.30.0",
+    "mosca": "0.31.1",
     "promise": "7.0.3",
     "requires-port": "0.x.x",
     "type-of-is": "^3.4.0",

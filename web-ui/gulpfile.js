@@ -10,7 +10,8 @@ var gulp = require('gulp-help')(require('gulp')),
 		angular_filesort = require('gulp-angular-filesort'),
 		cp = require('child_process'),
 		rename = require('gulp-rename'),
-		clean = require('gulp-clean'),
+		del = require('del'),
+		vinylPaths = require('vinyl-paths'),
 		util = require('gulp-util'),
 		uglify = require('gulp-uglify'),
 		concat = require('gulp-concat'),
@@ -83,7 +84,7 @@ gulp.task('default', 'i\'m only here for the beer', function () {
 gulp.task('ui:clean', 'remove build directories', function () {
 	return gulp.
 		src(BUILD_DIR, {read: false}).
-		pipe(clean());
+		pipe(vinylPaths(del));
 });
 
 //
