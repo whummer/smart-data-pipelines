@@ -1,53 +1,89 @@
 {
-  "apps": [
-    {
-      "name": "analytics-service",
-      "script": "app.js",
-      "watch": true,
-      "node_args": "--harmony",
-      "merge_logs": true,
-      "cwd": "analytics-service",
-      "env": {
-        "RIOX_ENV": "development",
-        "SERVICE_PORT": 8086
-      }
-    },
-    {
-      "name": "files-service",
-      "script": "app.js",
-      "watch": true,
-      "node_args": "--harmony",
-      "merge_logs": true,
-      "cwd": "files-service",
-      "env": {
-        "RIOX_ENV": "development",
-        "SERVICE_PORT": 8087
-      }
-    },
-    {
-      "name": "pipes-service",
-      "script": "app.js",
-      "watch": true,
-      "node_args": "--harmony",
-      "merge_logs": true,
-      "cwd": "pipes-service",
-      "env": {
-        "RIOX_ENV": "development",
-		"DISABLE_AUTH" : true,
-        "SERVICE_PORT": 8085
-      }
-    },
-    {
-      "name": "users-service",
-      "script": "app.js",
-      "watch": true,
-      "node_args": "--harmony",
-      "merge_logs": true,
-      "cwd": "users-service",
-      "env": {
-        "RIOX_ENV": "development",
-        "SERVICE_PORT": 8084
-      }
-    }
-  ]
+	"apps": [
+		{
+			"name": "analytics-service",
+			"script": "app.js",
+			"watch": true,
+			"node_args": "--harmony",
+			"merge_logs": true,
+			"cwd": "analytics-service",
+			"env": {
+				"RIOX_ENV": "development",
+				"SERVICE_PORT": 8086
+			}
+		},
+		{
+			"name": "files-service",
+			"script": "app.js",
+			"watch": true,
+			"node_args": "--harmony",
+			"merge_logs": true,
+			"cwd": "files-service",
+			"env": {
+				"RIOX_ENV": "development",
+				"SERVICE_PORT": 8087
+			}
+		},
+		{
+			"name": "gateway-service",
+			"script": "app.js",
+			"watch": true,
+			"node_args": "--harmony",
+			"merge_logs": true,
+			"cwd": "gateway-service",
+			"env": {
+				"RIOX_ENV": "development",
+				"SERVICE_PORT": 8088
+			}
+		},
+		{
+			"name": "access-service",
+			"script": "app.js",
+			"watch": true,
+			"node_args": "--harmony",
+			"merge_logs": true,
+			"cwd": "access-service",
+			"env": {
+				"RIOX_ENV": "development",
+				"SERVICE_PORT": 8089
+			}
+		},
+		{
+			"name": "pricing-service",
+			"script": "app.js",
+			"watch": true,
+			"node_args": "--harmony",
+			"merge_logs": true,
+			"cwd": "pricing-service",
+			"env": {
+				"RIOX_ENV": "development",
+				"SERVICE_PORT": 8090
+			}
+		},
+		{
+			"name": "pipes-service",
+			"script": "app.js",
+			"watch": true,
+			"node_args": "--harmony",
+			"merge_logs": true,
+			"cwd": "pipes-service",
+			"env": {
+				"RIOX_ENV": "development",
+				"DISABLE_AUTH": true,
+				"SERVICE_PORT": 8085
+			}
+		},
+		{
+			"name": "users-service",
+			"script": "app.js",
+			"watch": true,
+			"node_args": "--harmony",
+			"merge_logs": true,
+			"cwd": "users-service",
+			"env": {
+				"RIOX_ENV": "development",
+				"SERVICE_PORT": 8084
+			}
+		}
+	]
 }
