@@ -1,4 +1,4 @@
-angular.module('rioxApp').controller('EditDataPipeCtrl', function($scope, $filter, $stateParams) {
+angular.module('rioxApp').controller('EditDataPipeCtrl', function ($scope, $filter, $stateParams, growl, $log) {
 
 	console.log("Withing data pipes EDIT controller");
 
@@ -14,15 +14,14 @@ angular.module('rioxApp').controller('EditDataPipeCtrl', function($scope, $filte
 	// edit existing pipeline
 	//
 	if ($stateParams.pipeId) {
-		var pipe =  $filter('filter')($scope.samplePipes, {pipeId: $stateParams.pipeId})[0];
-		$scope.pipeline = pipe;
+		$scope.pipeline = $scope.samplePipes[0]; //$filter('filter')($scope.samplePipes, {pipeId: $stateParams.pipeId})[0];
 	}
 
 	//
 	// import existing pipeline definition (JSON)
 	//
 	$scope.importPipeline = function () {
-		showEditorDialog("Paste the definition of your pipeline below", "Import Datapipe", {options:{mode:'json'}}, function (content) {
+		showEditorDialog("Paste the definition of your pipeline below", "Import Datapipe", {options: {mode: 'json'}}, function (content) {
 			console.log("Got EditorContent: ", content);
 			$scope.pipeline = angular.fromJson(content);
 		});
@@ -42,55 +41,70 @@ angular.module('rioxApp').controller('EditDataPipeCtrl', function($scope, $filte
 	// templates for datapipe elements
 	//
 	$scope.templates = [
+
 		{
-			type: "source",
-			cssClass: 'pipeSource',
+			label: "Source",
+			class: "element",
+			type: 'source',
 			icon: "download"
 		},
 		{
-			type: "processor",
-			cssClass: 'pipeProcessor',
+			label: "Processor",
+			class: "element",
+			type: 'processor',
 			icon: "cog"
 		},
 		{
-			type: "sink",
-			cssClass: 'pipeSink',
+			label: "Sink",
+			class: "element",
+			type: 'sink',
 			icon: "upload"
+		},
+		{
+			label: "Container",
+			class: "container",
+			//type : "element-container",
+			icon: "bars"
 		}
 	];
 
 	$scope.sources = [
 		{
 			name: 'HTTP',
+			type: 'http-out',
 			icon: 'globe',
-			availableOptions: [
-				{name: 'URL', type: 'String'},
-				{name: 'Interval', type: 'Number'}
+			options: [
+				{name: 'url', type: 'String'},
+				{name: 'method', type: 'String'},
+				{name: 'interval', type: 'Number'}
 			]
 		},
 		{
 			name: 'Websocket',
+			type: 'websocket-out',
 			icon: 'globe fa-spin',
-			availableOptions: [
-				{name: 'URL', type: 'String'}
+			options: [
+				{name: 'url', type: 'String'}
 			]
 		},
 
 		{
-			name: 'TwitterStream',
+			name: 'Twitter Stream',
+			type: 'twitter-stream',
 			icon: 'twitter',
-			availableOptions: [
-				{name: 'Follow', type: 'String'},
-				{name: 'Track', type: 'String'}
+			options: [
+				{name: 'follow', type: 'String'},
+				{name: 'track', type: 'String'}
 			]
 		},
 
 		{
-			name: 'TwitterSearch',
+			name: 'Twitter Search',
+			type: 'twitter-search',
 			icon: 'twitter-square',
-			availableOptions: [
-				{name: 'Query', type: 'String'},
-				{name: 'Geocode', type: 'String'}
+			options: [
+				{name: 'query', type: 'String'},
+				{name: 'geocode', type: 'String'}
 			]
 		}
 	];
@@ -98,23 +112,36 @@ angular.module('rioxApp').controller('EditDataPipeCtrl', function($scope, $filte
 	$scope.processors = [
 		{
 			name: 'Aggregator',
+			type: 'aggregator',
 			icon: 'share-alt fa-flip-horizontal',
-			availableOptions: []
+			options: []
 		},
 		{
 			name: 'Filter',
+			type: 'filter',
 			icon: 'filter',
-			availableOptions: []
+			options: []
 		},
 		{
 			name: 'Splitter',
+			type: 'splitter',
 			icon: 'share-alt',
-			availableOptions: []
+			options: []
 		},
 		{
-			name: 'Transform',
+			name: 'Transformer',
+			type: 'transformer',
 			icon: 'gears',
-			availableOptions: []
+			options: []
+		},
+		{
+			name: 'Script',
+			type: 'script',
+			icon: 'code',
+			options: [
+				{'name': 'location', type: 'String', 'description': 'location of script file (e.g. URL)'},
+				{'name': 'sync-interval', type: 'Number', 'description': 'seconds between refresh from script location'}
+			]
 		}
 	];
 
@@ -123,34 +150,78 @@ angular.module('rioxApp').controller('EditDataPipeCtrl', function($scope, $filte
 	$scope.sinks = [
 		{
 			name: 'Map Visualization',
+			type: 'map',
 			icon: 'map-o',
-			availableOptions: []
+			options: []
 		},
 
 		{
 			name: 'Table Visualization',
+			type: 'table',
 			icon: 'table',
-			availableOptions: []
+			options: []
 		},
-
 
 		{
 			name: 'Logfile',
+			type: 'file',
 			icon: 'file-text-o',
-			availableOptions: [
-				{
-					name: 'LogfileName',
-					type: 'String'
-				}
+			options: [
+				{name: 'LogfileName', type: 'String'}
 			]
 		}
 	];
 
 	//
+	// get the available options for the currently selected element
+	//
+	$scope.getAvailableOptions = function (selectedElement) {
+		if (!selectedElement) return;
+		$log.debug('Getting available options for ', selectedElement.label);
+		var template = getTemplatesForElement(selectedElement);
+		$log.info('Got options: ', template.options);
+		return template.options;
+	};
+
+
+	$scope.getClassForElement = function (element) {
+		$log.debug('Getting class for element ', element);
+		if (element.type) {
+			return element.type == 'container' ? 'element-container' : element.type;
+		} else {
+			return element.class == 'container' ? 'element-container' : 'element';
+		}
+	};
+
+	//
+	// get the font-aawesome based icon for given element
+	//
+	$scope.getElementIcon = function (element) {
+		$log.debug('Getting icon for element ', element);
+		var template = getTemplatesForElement(element);
+		return template.icon;
+	};
+
+	function getTemplatesForElement(element) {
+		var elementsOfSelectedType = element.type == 'source' ?
+				$scope.sources : element.type == 'sink' ?
+				$scope.sinks : $scope.processors;
+
+		return $filter('filter')(elementsOfSelectedType, {type: element.subtype})[0];
+	}
+
+
+	//
 	// save pipeline via service call
 	//
 	$scope.submitDatapipe = function () {
-		$scope.updateDatapipeDefinition();
+		var payload = angular.copy($scope.pipeline);
+		delete payload.elements[0].config.availableOptions;
+		delete payload.elements[0].config.icon;
+
+		riox.add.pipe(angular.toJson(payload), function (response) {
+			growl.info("Datapipe saved successfully.");
+		});
 	};
 
 	//
@@ -161,8 +232,12 @@ angular.module('rioxApp').controller('EditDataPipeCtrl', function($scope, $filte
 		console.log('Submitting: ', pipelineDefinition);
 		$scope.pipelineDefinition = pipelineDefinition;
 		showDebugDialog("Here is what your pipeline looks like: ",
-			"Definition of Pipeline '" + $scope.pipeline.name + "'",
-			pipelineDefinition);
+				"Definition of Pipeline '" + $scope.pipeline.name + "'",
+				pipelineDefinition);
+	};
+
+	$scope.clearCanvas = function () {
+		$scope.pipeline.elements = [];
 	};
 
 	//

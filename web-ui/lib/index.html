@@ -16,11 +16,11 @@
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width">
 
-	<link rel="stylesheet" type="text/css" href="/bower_components/angucomplete/angucomplete.css"></link>
+	<link rel="stylesheet" type="text/css" href="/bower_components/angucomplete/angucomplete.css">
+	<link rel="stylesheet" type="text/css" href="/bower_components/font-awesome/css/font-awesome.min.css">
 	<!-- bower:css -->
 	<link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.css">
 	<link rel="stylesheet" href="/bower_components/metisMenu/dist/metisMenu.css">
-	<link rel="stylesheet" href="/bower_components/fontawesome/css/font-awesome.css">
 	<link rel="stylesheet" href="/bower_components/dropzone/dist/min/dropzone.min.css">
 	<link rel="stylesheet" href="/bower_components/ionrangeslider/css/ion.rangeSlider.css">
 	<link rel="stylesheet" href="/bower_components/ionrangeslider/css/ion.rangeSlider.skinFlat.css">
@@ -28,16 +28,19 @@
 	<link rel="stylesheet" href="/bower_components/animate.css/animate.css">
 	<link rel="stylesheet" href="/bower_components/ng-tags-input/ng-tags-input.min.css">
 	<link rel="stylesheet" href="/bower_components/ng-table/dist/ng-table.min.css">
+	<link rel="stylesheet" href="/bower_components/highlightjs/styles/default.css">
 	<link rel="stylesheet" href="/bower_components/switchery/dist/switchery.css">
 	<link rel="stylesheet" href="/bower_components/angular-chart.js/dist/angular-chart.css">
 	<!-- endinject -->
 	<!-- inject:css -->
 	<link rel="stylesheet" href="/app/styles/css/chosen.css">
 	<link rel="stylesheet" href="/app/styles/css/jquery.steps.css">
+	<link rel="stylesheet" href="/app/views/sdps/sdps.css">
+	<link rel="stylesheet" href="/app/views/apis/wizard/data_semantics.css">
+	<link rel="stylesheet" href="/app/app.css">
 	<link rel="stylesheet" href="/app/views/old/provider_wizard/data_connector.css">
 	<link rel="stylesheet" href="/app/views/old/provider_wizard/data_semantics.css">
-	<link rel="stylesheet" href="/app/app.css">
-	<link rel="stylesheet" href="/app/views/apis/wizard/data_semantics.css">
+	<link rel="stylesheet" href="/app/views/sdps/sdps.css">
 	<link rel="stylesheet" href="/app/app.css">
 	<link rel="stylesheet" href="/app/views/old/provider_wizard/data_connector.css">
 	<link rel="stylesheet" href="/app/views/old/provider_wizard/data_semantics.css">
@@ -61,7 +64,7 @@
 
 <!-- ng-file-upload shim -->
 <script>
-/*  Note, pace has some conflicts with ng-file-upload (both mess with 
+/*  Note, pace has some conflicts with ng-file-upload (both mess with
 	XMLHttpRequest object), hence we need to apply a little patch here */
 window.__patch__setRequestHeader = true;
 </script>
@@ -82,6 +85,9 @@ window.__patch__setRequestHeader = true;
 	<!-- main view -->
 	<div ui-view=""></div>
 </div>
+
+<!-- todo find a way to control the order without this explicit bs -->
+<script src="/bower_components/highlightjs/highlight.pack.min.js"></script>
 
 <!-- bower:js -->
 <script src="/bower_components/angular/angular.js"></script>
@@ -114,12 +120,15 @@ window.__patch__setRequestHeader = true;
 <script src="/bower_components/angular-highlightjs/build/angular-highlightjs.js"></script>
 <script src="/bower_components/ng-file-upload/ng-file-upload.js"></script>
 <script src="/bower_components/riox-shared/lib/api/riox-api.js"></script>
+<script src="/bower_components/ace-builds/src-min/ace.js"></script>
 <script src="/bower_components/ng-alias/index.js"></script>
 <script src="/bower_components/ng-tags-input/ng-tags-input.min.js"></script>
 <script src="/bower_components/angucomplete/angucomplete.js"></script>
 <script src="/bower_components/oclazyload/dist/ocLazyLoad.js"></script>
 <script src="/bower_components/Chart.js/Chart.js"></script>
 <script src="/bower_components/ng-table/dist/ng-table.min.js"></script>
+<script src="/bower_components/angular-drag-and-drop-lists/angular-drag-and-drop-lists.js"></script>
+<script src="/bower_components/highlightjs/highlight.pack.min.js"></script>
 <script src="/bower_components/switchery/dist/switchery.js"></script>
 <script src="/bower_components/ng-switchery/src/ng-switchery.js"></script>
 <script src="/bower_components/angular-ui-ace/ui-ace.js"></script>
@@ -129,7 +138,7 @@ window.__patch__setRequestHeader = true;
 <!-- todo find a way to control the order without this explicit bs -->
 <script src="/app/config.js"></script>
 <script src="/bower_components/angular-dropzone/lib/angular-dropzone.js"></script>
-<script src="/bower_components/ace-builds/src/ace.js"></script>
+<script src="/bower_components/ace-builds/src-min/ace.js"></script>
 <script src="/app/components/preload/jquery-jvectormap-1.2.2.min.js"></script>
 <script src="/app/components/preload/jquery-jvectormap-world-mill-en.js"></script>
 
@@ -140,26 +149,26 @@ window.__patch__setRequestHeader = true;
 <script src="/app/components/js/mongoose-error/mongoose-error.directive.js"></script>
 <script src="/app/components/js/auth/user.service.js"></script>
 <script src="/app/components/js/auth/auth.service.js"></script>
-<script src="/app/views/apis/wizard/wizard.controller.js"></script>
-<script src="/app/views/apis/wizard/security.controller.js"></script>
-<script src="/app/views/apis/wizard/data_items.controller.js"></script>
 <script src="/app/views/old/streams/streams.provided.single.controller.js"></script>
 <script src="/app/views/old/streams/streams.provided.controller.js"></script>
 <script src="/app/views/old/streams/streams.controller.js"></script>
 <script src="/app/views/old/streams/streams.consumed.controller.js"></script>
+<script src="/app/views/old/provider_wizard/provider-wizard.controller.js"></script>
+<script src="/app/views/old/provider_wizard/data_pricing.controller.js"></script>
+<script src="/app/views/old/provider_wizard/data_items.controller.js"></script>
 <script src="/app/views/old/consumer_wizard/request.controller.js"></script>
 <script src="/app/views/old/consumer_wizard/consumer.wizard.controller.js"></script>
 <script src="/app/views/old/consumer_wizard/connector.controller.js"></script>
 <script src="/app/views/old/consumer_wizard/confirm.controller.js"></script>
 <script src="/app/views/old/consumer_wizard/catalog.controller.js"></script>
 <script src="/app/views/old/consumer_wizard/analytics.controller.js"></script>
-<script src="/app/views/old/provider_wizard/provider-wizard.controller.js"></script>
-<script src="/app/views/old/provider_wizard/data_pricing.controller.js"></script>
-<script src="/app/views/old/provider_wizard/data_items.controller.js"></script>
+<script src="/app/views/apis/wizard/wizard.controller.js"></script>
+<script src="/app/views/apis/wizard/security.controller.js"></script>
+<script src="/app/views/apis/wizard/data_items.controller.js"></script>
+<script src="/app/views/account/signup/signup.controller.js"></script>
 <script src="/app/views/account/notifications/notifications.controller.js"></script>
 <script src="/app/views/account/login/recover.controller.js"></script>
 <script src="/app/views/account/login/login.controller.js"></script>
-<script src="/app/views/account/signup/signup.controller.js"></script>
 <script src="/app/views/account/callback/callback.controller.js"></script>
 <script src="/app/components/preload/angular-file-upload-shim.js"></script>
 <script src="/app/components/js/util.js"></script>
@@ -167,26 +176,29 @@ window.__patch__setRequestHeader = true;
 <script src="/app/components/js/inspinia.js"></script>
 <script src="/app/components/js/directives.js"></script>
 <script src="/app/views/statistics/statistics.controller.js"></script>
+<script src="/app/views/shared/certificates.upload.controller.js"></script>
 <script src="/app/views/settings/settings.controller.js"></script>
 <script src="/app/views/settings/security.controller.js"></script>
 <script src="/app/views/settings/organizations.controller.js"></script>
 <script src="/app/views/settings/invitation.controller.js"></script>
 <script src="/app/views/settings/billing.controller.js"></script>
 <script src="/app/views/settings/account.controller.js"></script>
-<script src="/app/views/shared/certificates.upload.controller.js"></script>
+<script src="/app/views/sdps/sdps.list.controller.js"></script>
+<script src="/app/views/sdps/sdps.edit.controller.js"></script>
+<script src="/app/views/sdps/sdps.controller.js"></script>
 <script src="/app/views/schemas/schemas.single.controller.js"></script>
 <script src="/app/views/schemas/schemas.controller.js"></script>
-<script src="/app/views/analytics/analytics.controller.js"></script>
 <script src="/app/views/rating/rating.controller.js"></script>
-<script src="/app/views/apis/apis.single.controller.js"></script>
-<script src="/app/views/apis/apis.list.controller.js"></script>
-<script src="/app/views/apis/apis.controller.js"></script>
 <script src="/app/views/pricing/pricing.controller.js"></script>
 <script src="/app/views/operations/operations.single.controller.js"></script>
 <script src="/app/views/operations/operations.controller.js"></script>
 <script src="/app/views/main/main.controller.js"></script>
 <script src="/app/views/layout/dialogs.js"></script>
 <script src="/app/views/dashboard/dashboard.controller.js"></script>
+<script src="/app/views/apis/apis.single.controller.js"></script>
+<script src="/app/views/apis/apis.list.controller.js"></script>
+<script src="/app/views/apis/apis.controller.js"></script>
+<script src="/app/views/analytics/analytics.controller.js"></script>
 <script src="/app/views/access/access.single.controller.js"></script>
 <script src="/app/views/access/access.controller.js"></script>
 <script src="/app/routing.js"></script>

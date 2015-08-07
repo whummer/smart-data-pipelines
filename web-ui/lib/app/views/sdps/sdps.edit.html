@@ -8,7 +8,7 @@
 		<div class="col-lg-12 ">
 			<div class="ibox float-e-margins">
 				<div class="ibox-title">
-					<h3>{{pipeline.name ? 'Editing ' + pipeline.name : 'Pipeline Designer' }}</h3>
+					<h3 ng-class="{'text-muted' : !pipeline.name}">{{pipeline.name ? pipeline.name : 'Untitled' }}</h3>
 				</div>
 				<div class="ibox-content pipeEditor">
 					<div class="dropzone box box-yellow" ng-include="'app/views/sdps/sdps.edit.canvas.html'"></div>
@@ -48,37 +48,35 @@
 								<i class="fa fa-plus"></i> Import Data Pipe
 							</button>
 
-							<button class="btn btn-sm btn-warning pull-right" ng-click="pipeline={}"style="margin-right: 10px;">
+							<button class="btn btn-sm btn-warning pull-right" ng-click="clearCanvas()" style="margin-right: 10px;">
 								<i class="fa fa-trash"></i> Clear
 							</button>
 
+							<br/>
+							<br/>
+
+							<div class="checkbox pull-right">
+								<label>
+									<input type="checkbox" ng-model="showElementSource"/>Show Element Source
+								</label>
+							</div>
+
 						</div>
 					</div>
+					<div class="row" ng-show="selectedItem && showElementSource">
+						<!--<div source="angular.toJson(selectedItem)" hljs></div>-->
+						<!--<div class="col-lg-12">{{angular.toJson(selectedItem, true)}}</div>-->
+						<div class="col-lg-12">{{selectedItem}}</div>
 
+					</div>
 				</div>
 			</div>
+
 		</div>
+
 	</div>
 
-	<!--<div class="modal inmodal fade animated" id="dataPipeDefinitionModal" tabindex="-1" role="dialog">
-		<div class="modal-dialog modal-sm">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
-						class="sr-only">Close</span></button>
-					<h4 class="modal-title">Definition of Datapipe {{pipeline.name}}</h4>
-				</div>
-				<div class="modal-body">
-					{{pipelineDefinition}}
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
-				</div>
-			</div>
-		</div>
-	</div>-->
-
-
+	<!-- PIPELINE TOOLBOX -->
 	<div class="row">
 		<div class="col-lg-6">
 			<div class=" ibox float-e-margins">
@@ -94,9 +92,9 @@
 								    dnd-effect-allowed="copy"
 								    dnd-copied="item.id = item.id + 1">
 
-									<div class="{{item.cssClass}}">
+									<div class="{{getClassForElement(item)}}">
 										<i style="margin-top: 10px" class="fa fa-2x fa-{{item.icon}}"></i><br/>
-										<span style="font-weight: 800; ">{{item.type}}</span>
+										<span style="font-weight: 800; ">{{item.label}}</span>
 									</div>
 
 								</li>
@@ -109,19 +107,20 @@
 
 						<div class="clearfix"></div>
 					</div>
-
-
 				</div>
 			</div>
 		</div>
+
+		<!-- ELEMENT CONFIGURATION -->
 		<div class="col-lg-6" ng-show="selectedItem">
 			<div class="ibox float-e-margins">
 				<div class="ibox-title">
-					<h5><!--<i class="fa fa-{{selectedItem.icon}}"></i>--> Details
-						for {{selectedItem.type}} <span ng-show="selectedItem.label"> &rsaquo;&rsaquo; {{selectedItem.label}}
+					<h5>Details for {{selectedItem.type}} <span ng-show="selectedItem.label"> &rsaquo;&rsaquo;
+						{{selectedItem.label}}
 							&lsaquo;&lsaquo;</span></h5>
 				</div>
 				<div class="ibox-content">
+
 					<form class="form">
 
 						<div class="form-group">
@@ -141,7 +140,8 @@
 						<div class="form-group" ng-show="selectedItem.type=='source'">
 							<label class="col-lg-4">Source Type</label>
 							<div class="col-lg-8">
-								<select ng-options="s as s.name for s in sources track by s.name" ng-model="selectedItem.config"
+								<select ng-options="s.type as s.name for s in sources"
+								        ng-model="selectedItem.subtype"
 								        class="form-control input-sm"></select>
 							</div>
 						</div>
@@ -149,7 +149,8 @@
 						<div class="form-group" ng-show="selectedItem.type=='processor'">
 							<label class="col-lg-4">Processor Type</label>
 							<div class="col-lg-8">
-								<select ng-options="p as p.name for p in processors track by p.name" ng-model="selectedItem.config"
+								<select ng-options="p.type as p.name for p in processors"
+								        ng-model="selectedItem.subtype"
 								        class="form-control input-sm"></select>
 							</div>
 						</div>
@@ -157,17 +158,18 @@
 						<div class="form-group" ng-show="selectedItem.type=='sink'">
 							<label class="col-lg-4">Sink Type</label>
 							<div class="col-lg-8">
-								<select ng-options="s as s.name for s in sinks track by s.name" ng-model="selectedItem.config"
+								<select ng-options="s.type as s.name for s in sinks "
+								        ng-model="selectedItem.subtype"
 								        class="form-control input-sm"></select>
 							</div>
 						</div>
 
-						<div class="form-group" ng-repeat="option in selectedItem.config.availableOptions">
+						<div class="form-group" ng-repeat="option in getAvailableOptions(selectedItem)">
 							<label class="col-lg-4">{{option.name}}</label>
 							<div class="col-lg-8">
 								<input class="form-control" name="{{option.name}}"
 								       type="{{option.type == 'Number' ? 'number' : 'text'}}"
-								       ng-model="selectedItem.config.options[option.name]"/>
+								       ng-model="selectedItem.options[option.name]"/>
 							</div>
 						</div>
 
@@ -179,23 +181,6 @@
 
 	</div>
 
-
-	<!--<div class="row">
-		<div class="col-lg-12">
-			<div class="ibox float-e-margins">
-				<div class="ibox-title">
-					<h5>Pipeline Actions</h5>
-				</div>
-				<div class="ibox-content">
-					<button class="btn btn-lg btn-primary btn-sm" ng-click="submitDatapipe()">
-						Save Data Pipe
-					</button>
-				</div>
-			</div>
-		</div>
-	</div>-->
-
 	<div class="clearfix"></div>
-
 
 </div>

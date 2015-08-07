@@ -1,4 +1,4 @@
-angular.module('rioxApp').controller('ListDataPipesCtrl', function($scope, ngTableParams) {
+angular.module('rioxApp').controller('ListDataPipesCtrl', function($scope, ngTableParams, $log) {
 
 	console.log("Withing data pipes LIST controller");
 
@@ -17,5 +17,16 @@ angular.module('rioxApp').controller('ListDataPipesCtrl', function($scope, ngTab
 		});
 	};
 
+	/*var loadAllPipes = $scope.loadAllPipes = function() {
+		console.log("Loading pipes")
+		riox.pipes({}, function(pipes) {
+			console.log("Loaded PIPES: ", pipes)
+			$log.debug('Loaded Pipes: ', pipes);
+			$scope.pipes = pipes;
+		});
+	};
+*/
+
+//	loadAllPipes();
 	loadTableParams();
 });

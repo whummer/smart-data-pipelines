@@ -39,7 +39,7 @@
 									<td>{{p.name}}</td>
 									<td>{{trim(p.description, 60)}}</td>
 									<td>{{p.elements.length}}</td>
-									<td><a ui-sref="index.sdps.create({pipeId: p.pipeId})">edit</a></td>
+									<td><a ui-sref="index.sdps.create({pipeId: p._id})">edit</a></td>
 								</tr>
 								</tbody>
 							</table>
@@ -53,5 +53,10 @@
 		</div>
 	</div>
 
-	<div ui-view=""></div>
+	<div class="">
+		Pipes: {{pipes}}
+	</div>
+
+
+
 </div>

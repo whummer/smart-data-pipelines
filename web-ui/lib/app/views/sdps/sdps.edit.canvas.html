@@ -1,25 +1,49 @@
 <div class="container-element box box-blue">
-	<ul dnd-list="pipeline.elements"
-	    dnd-horizontal-list="true"
-	    class="itemlist">
-		<li ng-repeat="element in pipeline.elements"
-		    dnd-draggable="element"
-		    dnd-effect-allowed="move"
-		    dnd-selected="selectItem(element)"
-		    dnd-dragstart="logEvent('Started to drag an item', event)"
-		    dnd-moved="pipeline.elements.splice($index, 1); logEvent('Item moved', event)"
-		    dnd-copied="logEvent('Item copied', event)">
-			<div class="{{element.cssClass}}" ng-class="{
-																									pipeSourceSelected : (selectedItem == element) && element.type == 'source',
-																									pipeSinkSelected : (selectedItem == element) && element.type == 'sink',
-																									pipeProcessorSelected :(selectedItem == element) && element.type == 'processor'}">
 
-				<i style="margin-top:10px" class="fa fa-2x fa-{{element.config ? element.config.icon : element.icon}}"></i><br/>
-				<span ng-show="element.label">{{element.label}}</span>
-				<span ng-hide="element.label">{{element.type}}</span>
-			</div>
+	<!-- DnD canvas area -->
+	<div ng-include="'list.html'"></div>
 
-		</li>
-	</ul>
+
+	<!-- template for element list -->
+	<script type="text/ng-template" id="list.html">
+		<ul dnd-list="pipeline.elements" dnd-horizontal-list="true" class="itemlist">
+			<li ng-repeat="element in pipeline.elements"
+			    dnd-draggable="element"
+			    dnd-effect-allowed="move"
+			    dnd-selected="selectItem(element)"
+			    dnd-dragstart="logEvent('Started to drag an item', event)"
+			    dnd-moved="pipeline.elements.splice($index, 1); logEvent('Item moved', event)"
+			    dnd-copied="logEvent('Item copied', event)"
+			    ng-include="element.class + '.html'">
+			</li>
+		</ul>
+	</script>
+
+
+	<!-- This template is responsible for rendering a container element. It uses
+     the above list template to render each container column -->
+	<script type="text/ng-template" id="container.html">
+		<div class="element-container">
+			<div class="column" ng-repeat="list in item.elements" ng-include="'list.html'"></div>
+			<div class="clearfix"></div>
+		</div>
+	</script>
+
+	<!-- Template for a normal list item -->
+	<script type="text/ng-template" id="element.html">
+
+		<div class="{{getClassForElement(element)}}" ng-class="{
+																									sourceSelected : (selectedItem == element) && element.type == 'source',
+																									sinkSelected : (selectedItem == element) && element.type == 'sink',
+																									processorSelected :(selectedItem == element) && element.type == 'processor'}">
+
+			<i style="margin-top:10px" class="fa fa-2x fa-{{getElementIcon(element)}}"></i><br/>
+			<span ng-show="element.label">{{element.label}}</span>
+			<span ng-hide="element.label">{{element.type}}</span>
+		</div>
+
+	</script>
+
+
 	<div class="clearfix"></div>
 </div>
