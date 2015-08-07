@@ -58,14 +58,23 @@ function extendError(BaseType, subTypeName, errorCode, options) {
 			},
 			message: {
 				enumerable: false,
-				value: this.parseFn(message || '')
+				value: this.parseFn(getMessageWithCause() || '')
 			},
 			cause : {
 				value : cause
 			}
 		});
 
+		function getMessageWithCause() {
+			if (cause && cause.stack) {
+				return message += "\nCAUSE -----> " + cause.stack;
+			} else {
+				return message;
+			}
+		}
+
 		// Include stack trace in error object
+
 		if (Error.captureStackTrace) {
 			Error.captureStackTrace(this, this.constructor);
 		}
@@ -101,4 +110,4 @@ module.exports = extendError;
 module.exports.InternalError = extendError('InternalError', 500);
 module.exports.UnauthorizedError = extendError('UnauthorizedError', 401);
 module.exports.NotFoundError = extendError('NotFoundError', 404);
-module.exports.UnprocessableEntity = extendError('NotFoundError', 422);
+module.exports.UnprocessableEntity = extendError('UnprocessableEntity', 422);

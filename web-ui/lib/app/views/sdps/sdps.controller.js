@@ -9,127 +9,303 @@ angular.module("rioxApp").controller("DataPipesCtrl", function ($scope) {
 	//
 	$scope.samplePipes = [
 		{
+			"_id": "1d8yw8d1csd",
+			"name": "WartezeitenPipe",
+			"description": "my cool datapipe",
 			"elements": [
 				{
+					"class": "element",
 					"type": "source",
-					"cssClass": "pipeSource",
-					"label": "http-in",
-					"description": "ingest data from API",
-					"config": {
-						"name": "HTTP",
-						"icon": "globe",
-						"availableOptions": [
-							{
-								"name": "URL",
-								"type": "String"
-							},
-							{
-								"name": "Interval",
-								"type": "Number"
-							}
-						],
-						"options": {
-							"URL": "http://www.a1.net",
-							"Interval": 3
-						}
+					"subtype": "http-out",
+					"label": "poll-meldeamt",
+					"description": "poll all meldeamt data per 10sec",
+					"options": {
+						"url": "http://wien.gv.at/api/meldeamt",
+						"http-method": "GET",
+						"interval": 10
 					}
 				},
-				{
-					"type": "processor",
-					"cssClass": "pipeProcessor",
-					"label": "transform-districts",
-					"description": "transform all this shit",
-					"config": {
-						"name": "Transform",
-						"icon": "gears",
-						"availableOptions": []
-					}
-				},
-				{
-					"type": "sink",
-					"cssClass": "pipeSink",
-					"label": "dashboard",
-					"description": "visualize waiting times in a TABLE",
-					"config": {
-						"name": "Table Visualization",
-						"icon": "table",
-						"availableOptions": []
-					}
-				}
-			],
-			"name": "TestPipe Seppl",
-			"description": "Very cool pipe smoked by seppl",
-			"pipeId": 0
-		},
 
-		{
-			"elements": [
 				{
-					"type": "source",
-					"cssClass": "pipeSource",
-					"label": "twitter-search",
-					"description": "ingest data from API",
-					"config": {
-						"name": "TwitterSearch",
-						"icon": "twitter-square",
-						"availableOptions": [
-							{
-								"name": "Query",
-								"type": "String"
-							},
-							{
-								"name": "Geocode",
-								"type": "String"
-							}
-						],
-						"options": {
-							"Query": "strache :(",
-							"Geocode": "43.312331,18.312329,15km"
-						}
-					}
-				},
-				{
+					"class": "element",
 					"type": "processor",
-					"cssClass": "pipeProcessor",
-					"label": "aggregate-3",
-					"description": "aggregates 3 results",
-					"config": {
-						"name": "Aggregator",
-						"icon": "share-alt fa-flip-horizontal",
-						"availableOptions": []
+					"subtype": "script",
+					"label": "add-discriminator-element-meldeservice",
+					"description": "Adds origin (Meldeservice)",
+					"options": {
+						"location": "file:// | s3:// | http://",
+						"sync-interval": 60,
+						"variables": {
+							"origin": "Meldeservice",
+							"has-wifi": "true"
+						}
 					}
 				},
 				{
-					"type": "sink",
-					"cssClass": "pipeSink",
-					"label": "dump-to-logfile",
-					"description": "visualize waiting times in a TABLE",
-					"config": {
-						"name": "Logfile",
-						"icon": "file-text-o",
-						"availableOptions": [
-							{
-								"name": "LogfileName",
-								"type": "String"
-							}
-						],
-						"options": {
-							"LogfileName": "/tmp/log.out"
+					"class": "element",
+					"type": "processor",
+					"subtype": "script",
+					"label": "enrich-with-location-data",
+					"description": "enriches payload with location data",
+					"options": {
+						"location": "file:// | s3:// | http://",
+						"sync-interval": 60,
+						"variables": {
+							"mapping-file": "mapping.in",
+							"data-file": "data.in"
 						}
 					}
+				},
+
+				{
+					"class": "element",
+					"type": "sink",
+					"subtype": "map",
+					"label": "visualize-data-in-map",
+					"description": "visualize data in a kibana map",
+					"options": {}
 				}
-			],
-			"name": "TestPipe Fritz",
-			"description": "Not so cool this pipe",
-			"pipeId": 1
+
+
+			]
 		}
 
-	];
+
+	]/*	$scope.samplePipes = [
+	 {
+	 "_id" : "1d8yw8d1csd",
+	 "name": "WartezeitenPipe",
+	 "description": "my cool datapipe",
+	 "elements": [
+	 {
+	 "class": "container",
+	 "type": "source",
+	 "label": "source-container-aemter",
+	 "description": "source container for meldeamt, passamt, parkpickerl",
+	 "elements": [
+	 {
+	 "class": "element",
+	 "type" : "source",
+	 "subtype": "http-out",
+	 "label": "poll-meldeamt",
+	 "description": "poll all meldeamt data per 10sec",
+	 "options": {
+	 "url": "http://wien.gv.at/api/meldeamt",
+	 "http-method": "GET",
+	 "interval": 10
+	 }
+	 },
+	 {
+	 "class": "element",
+	 "type": "source",
+	 "subtype": "http-out",
+	 "label": "poll-passamt",
+	 "description": "poll all passamt data per 10sec",
+	 "options": {
+	 "url": "http://wien.gv.at/api/passamt",
+	 "http-method": "GET",
+	 "interval": 10
+	 }
+	 }
+	 ]
+	 },
+
+	 {
+	 "class": "container",
+	 "type": "processor",
+	 "label": "processor-container-aemter",
+	 "description": "source container for meldeamt, passamt, parkpickerl",
+	 "elements": [
+
+	 {
+	 "class": "element",
+	 "type" : "processor",
+	 "subtype": "script",
+	 "label": "add-discriminator-element-meldeservice",
+	 "description": "Adds origin (Meldeservice)",
+	 "options": {
+	 "location": "file:// | s3:// | http://",
+	 "sync-interval": 60,
+	 "variables": {
+	 "origin": "Meldeservice",
+	 "has-wifi": "true"
+	 }
+	 }
+	 },
+	 {
+	 "class": "element",
+	 "type" : "processor",
+	 "subtype": "script",
+	 "label": "add-discriminator-element-passservice",
+	 "description": "Adds origin (Passservice)",
+	 "options": {
+	 "location": "file:// | s3:// | http://",
+	 "sync-interval": 60,
+	 "variables": {
+	 "origin": "Passservice",
+	 "has-wifi": "true"
+	 }
+	 }
+	 }
+	 ]
+	 },
+
+	 {
+	 "class": "element",
+	 "type" : "processor",
+	 "subtype": "script",
+	 "label": "enrich-with-location-data",
+	 "description": "enriches payload with location data",
+	 "options": {
+	 "location": "file:// | s3:// | http://",
+	 "sync-interval": 60,
+	 "variables": {
+	 "mapping-file": "mapping.in",
+	 "data-file": "data.in"
+	 }
+	 }
+	 },
+
+	 {
+	 "class": "element",
+	 "type" : "sink",
+	 "subtype": "map",
+	 "label": "visualize-data-in-map",
+	 "description": "visualize data in a kibana map",
+	 "options": {
+
+	 }
+	 }
+
+
+	 ]
+	 }
+
+
+
+
+	 ]*/;
 
 	//
 	// end sample data
 	//
 
+
+	/*
+	 {
+	 "name": "WartezeitenPipe",
+	 "description": "my cool datapipe",
+	 "elements": [
+	 {
+	 "class": "container",
+	 "type": "source",
+	 "label": "source-container-aemter",
+	 "description": "source container for meldeamt, passamt, parkpickerl",
+	 "elements": [
+	 {
+	 "class": "source",
+	 "type": "http-poll",
+	 "label": "poll-meldeamt",
+	 "description": "poll all meldeamt data per 10sec",
+	 "options": {
+	 "url": "http://wien.gv.at/api/meldeamt",
+	 "http-method": "GET",
+	 "interval": 10
+	 }
+	 },
+	 {
+	 "class": "source",
+	 "type": "http-poll",
+	 "label": "poll-passamt",
+	 "description": "poll all passamt data per 10sec",
+	 "options": {
+	 "url": "http://wien.gv.at/api/passamt",
+	 "http-method": "GET",
+	 "interval": 10
+	 }
+	 },
+	 {
+	 "class": "source",
+	 "type": "http-poll",
+	 "label": "poll-parkpickerl",
+	 "description": "poll all pickerl data per 10sec",
+	 "options": {
+	 "url": "http://wien.gv.at/api/pickerl",
+	 "http-method": "GET",
+	 "interval": 10
+	 }
+	 }
+
+	 ]
+	 },
+
+	 {
+	 "class": "container",
+	 "type": "processor",
+	 "label": "processor-container-aemter",
+	 "description": "source container for meldeamt, passamt, parkpickerl",
+	 "elements": [
+
+	 {
+	 "class": "processor",
+	 "type": "script",
+	 "label": "add-discriminator-element-meldeservice",
+	 "description": "Adds origin (Meldeservice)",
+	 "options": {
+	 "location": "file:// | s3:// | http://",
+	 "sync-interval": 60,
+	 "variables": {
+	 "origin": "Meldeservice",
+	 "has-wifi": "true"
+	 }
+	 }
+	 },
+	 {
+	 "class": "processor",
+	 "type": "script",
+	 "label": "add-discriminator-element-passservice",
+	 "description": "Adds origin (Passservice)",
+	 "options": {
+	 "location": "file:// | s3:// | http://",
+	 "sync-interval": 60,
+	 "variables": {
+	 "origin": "Passservice",
+	 "has-wifi": "true"
+	 }
+	 }
+	 }
+	 ]
+	 },
+
+	 {
+	 "class": "processor",
+	 "type": "script",
+	 "label": "enrich-with-location-data",
+	 "description": "enriches payload with location data",
+	 "options": {
+	 "location": "file:// | s3:// | http://",
+	 "sync-interval": 60,
+	 "variables": {
+	 "mapping-file": "mapping.in",
+	 "data-file": "data.in"
+	 }
+	 }
+	 },
+
+	 {
+	 "class": "sink",
+	 "type": "map-visualization",
+	 "label": "visualize-data-in-map",
+	 "description": "visualize data in a kibana map",
+	 "options": {
+
+	 }
+	 }
+
+
+	 ]
+	 }
+	 */
 
 
 });

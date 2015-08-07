@@ -20,6 +20,7 @@ require('./integration/api/test.files');
 
 /* Streams integration tests */
 //require('./integration/streams/test.streams.apply');
+require('./integration/pipes/test.pipes.deployments');
 
 /* Stream integration test with analytics */
 //require('./integration/streams/test.moving-avg.apply.js');

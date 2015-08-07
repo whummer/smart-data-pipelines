@@ -20,6 +20,16 @@ module.exports = {
 		port: 2181
 	},
 
+	springxdadmin: {
+		hostname: "xd-admin.development.svc.cluster.local",
+		port: 9393
+	},
+
+	elasticsearch: {
+		hostname: "elasticsearch.development.svc.cluster.local",
+		port: 9300
+	},
+
 	services: appConfig["development"].services,
 
 	seedDB: true

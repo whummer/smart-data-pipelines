@@ -51,11 +51,11 @@ while (line = fileReader.read()) {
 
   def id = line.readInt("OBJECTID");
   def mba = mappingTable[id];
-  
+
   if (mba) {
     def geoLoc = line.readString("SHAPE").replace("POINT (", "").replace(")", "").split(" ");
     def entry = [
-      "location" : [ "long": geoLoc[0], "lat" : geoLoc[1] ],
+      "location" : ""+geoLoc[0] + "," + geoLoc[1],
       "name" : line.readString("NAME"),
       "address" : line.readString("ADRESSE"),
       "waitingTime" : payload[mba]

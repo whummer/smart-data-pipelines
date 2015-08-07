@@ -77,6 +77,9 @@
 	g.SOURCE_ID = "source-id";
 	g.PROCESSOR_ID = "processor-id";
 	g.SINK_ID = "sink-id";
+	g.PIPE_SOURCE_OPTIONS = "pipe-source-options";
+	g.PIPE_SOURCE_CONFIG = "pipe-source-config";
+	g.PIPE_DEFINITION = "pipe-definition";
 	g.AMOUNT = "amount";
 	g.ALLOW_CORS = "allow-cors";
 	g.ORGANIZATION_ID = "organization-id";
@@ -158,6 +161,7 @@
 
 
 	var shareHook = (typeof window != "undefined") ? window : global;
+	//var key;
 	for (key in g) {
 		shareHook[key] = sh[key] = g[key];
 	}
@@ -657,6 +661,7 @@
 
 	sh.add.pipes = {};
 	sh.add.pipe = function (obj, callback, errorCallback) {
+		console.log("Adding pipe: ", obj)
 		return callPOST(servicesConfig.pipes.url, obj, callback, errorCallback);
 	};
 	sh.add.pipes.source = function (source, callback, errorCallback) {
@@ -895,6 +900,8 @@
 		return callPOST(url, req, callback, errorCallback);
 	};
 
+
+
 	/* methods for access permissions */
 
 	sh.access = sh.access || {};
@@ -1116,7 +1123,7 @@
 		ws.onmessage = function (msg) {
 			var data = JSON.parse(msg.data);
 			if (callback) {
-				result = callback(data);
+				var result = callback(data);
 				if (result === false) {
 					// unsubscribe
 					var msg = {

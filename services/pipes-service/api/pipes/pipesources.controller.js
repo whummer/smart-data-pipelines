@@ -4,7 +4,7 @@ var PipeSource = require('./pipesource.model.js');
 var passport = require('passport');
 var auth = require('riox-services-base/lib/auth/auth.service');
 var riox = require('riox-shared/lib/api/riox-api');
-var springxd = require('riox-services-base/lib/util/springxd.util');
+// var springxd = require('riox-services-base/lib/util/springxd.util');
 var path = require('path');
 var errors = require('riox-services-base/lib/util/errors');
 

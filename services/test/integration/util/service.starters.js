@@ -138,3 +138,21 @@ x.startAnalyticsService = function(callback) {
 	return services.analytics;
 }
 
+x.startPipesService = function() {
+	if(!services.pipes) {
+		/* make sure we use mockgoose as DB */
+		ensureMockgoose();
+
+		services.pipes = { port : 3000, sinks: {}, sources: {}, processors: {} };
+		services.pipes.url = global.servicesConfig.pipes.url =
+			"http://localhost:" + services.pipes.port + "/api/v1/pipes";
+		// 	services.pipes.deployments.url = global.servicesConfig.pipes.url = services.pipes.url + "/deployments";
+		// services.streams.sinks.url = global.servicesConfig.streamsinks.url = services.streams.url + "/sinks";
+		// services.streams.processors.url = global.servicesConfig.streamprocessors.url = services.streams.url + "/processors";
+		process.env.SERVICE_PORT = services.pipes.port;
+		services.pipes.server = require('../../../pipes-service/app.js');
+	}
+	if(!services.pipes.server.started)
+		services.pipes.server.start();
+	return services.pipes;
+}

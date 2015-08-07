@@ -5,7 +5,7 @@ var passport = require('passport');
 var mongoose = global.mongoose || require('mongoose');
 var auth = require('riox-services-base/lib/auth/auth.service');
 var riox = require('riox-shared/lib/api/riox-api');
-var springxd = require('riox-services-base/lib/util/springxd.util');
+// var springxd = require('riox-services-base/lib/util/springxd.util');
 var errors = require('riox-services-base/lib/util/errors');
 
 var log = global.log || require('winston');

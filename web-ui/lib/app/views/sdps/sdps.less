@@ -101,7 +101,7 @@
 
 /***************************** Pipe Source styles *****************************/
 
-.pipeElement {
+.element {
 	width: @pipe-element-width;
 	height: @pipe-element-height;
 	background-color: @pipe-element-bg;
@@ -112,7 +112,7 @@
 	color: @pipe-element-font-color;
 }
 
-.pipeElementAttachment {
+.elementAttachment {
 	content: "";
 	position: absolute;
 	top: 20px;
@@ -124,70 +124,79 @@
 	-moz-transform: rotate(180deg);
 }
 
-.pipeSource {
-	.pipeElement
+.source {
+	.element
 }
 
-.pipeSource:after {
-	.pipeElementAttachment;
+.source:after {
+	.elementAttachment;
 	right: -10px;
 	border-right: 10px solid @pipe-element-bg;
 }
 
-.pipeSourceSelected {
-	.pipeSource;
+.sourceSelected {
+	.source;
 	background-color: @pipe-element-bg-selected !important;
 }
 
-.pipeSourceSelected:after {
-	.pipeElementAttachment;
+.sourceSelected:after {
+	.elementAttachment;
 	border-right: 10px solid @pipe-element-bg-selected !important;
 }
 
 /***************************** Pipe Sink styles *****************************/
 
-.pipeSink {
-	.pipeElement;
+.sink {
+	.element;
 }
 
-.pipeSinkSelected {
-	.pipeSink;
+.sinkSelected {
+	.sink;
 	background-color: @pipe-element-bg-selected !important;
 }
 
-.pipeSink:before {
-	.pipeElementAttachment;
+.sink:before {
+	.elementAttachment;
 	right: 110px;
 	border-right: 10px solid white;
 }
 
 /***************************** Pipe Processor styles *****************************/
 
-.pipeProcessor {
-	.pipeElement;
+.processor {
+	.element;
 }
 
-.pipeProcessorSelected {
-	.pipeProcessor;
+.processorSelected {
+	.processor;
 	background-color: @pipe-element-bg-selected !important;
 }
 
-.pipeProcessor:before {
-	.pipeElementAttachment;
+.processor:before {
+	.elementAttachment;
 	border-right: 10px solid white;
 	right: 110px;
 }
 
-.pipeProcessor:after {
-	.pipeElementAttachment;
+.processor:after {
+	.elementAttachment;
 	right: -10px;
 	border-right: 10px solid @pipe-element-bg;
 }
 
-.pipeProcessorSelected:after {
-	.pipeElementAttachment;
+.processorSelected:after {
+	.elementAttachment;
 	right: -10px;
 	border-right: 10px solid @pipe-element-bg-selected;
+}
+
+/********************************** ELEMENT CONTAINER *************************************/
+.element-container {
+	.element;
+	background-color: transparent;
+	border-color: @pipe-element-bg;
+	border-style: dashed;
+	color: @pipe-element-bg;
 }
 
 .removeElementArea {

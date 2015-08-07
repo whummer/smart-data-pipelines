@@ -95,6 +95,16 @@ var start = function (config, routes, serviceName) {
 				})
 			]
 		});
+
+		//
+		// FR: add a global error handler so we see problems on the console.
+		//
+		function logErrors(err, req, res, next) {
+			log.error(err.stack);
+  		next(err);
+		}
+		expressApp.use(logErrors);
+
 		expressApp.use(function(err, req, res, next) {
 			var emptyNext = function(){};
 			if(res.statusCode >= STATUS_CODE_LOGERROR_START) {
