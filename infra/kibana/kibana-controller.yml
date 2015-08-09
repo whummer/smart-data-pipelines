@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  labels:
+    name: kibana
+  name: kibana
+spec:
+  replicas: 1
+  selector:
+    name: kibana
+  template:
+    metadata:
+      labels:
+         name: kibana
+    spec:
+      containers:
+      - name: kibana
+        image: kibana:4.1.1
+        ports:
+        - name: kibana
+          containerPort: 5601
+        env:
+          - name: OUR_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: ELASTICSEARCH_URL
+            value: "http://elasticsearch.$(OUR_NAMESPACE).svc.cluster.local:9200"
