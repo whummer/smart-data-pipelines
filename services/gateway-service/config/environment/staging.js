@@ -7,25 +7,25 @@ var appConfig = require("riox-services-base/lib/config/services.js");
 module.exports = {
 
 	mongo: {
-		uri: appConfig["staging"].infra.mongodb.url
+		uri: appConfig["production"].infra.mongodb.url
 	},
 
 	kafka: {
-		hostname: appConfig["staging"].infra.kafka.hostname,
+		hostname: appConfig["production"].infra.kafka.hostname,
 		port: 9092
 	},
 
 	zookeeper: {
-		hostname: appConfig["staging"].infra.zookeeper.hostname,
+		hostname: appConfig["production"].infra.zookeeper.hostname,
 		port: 2181
 	},
 
 	redis: {
-		url: appConfig["staging"].infra.redis.url
+		url: appConfig["production"].infra.redis.url
 	},
 
 	services: appConfig["staging"].services,
-	
+
 	seedDB: true
 
 };

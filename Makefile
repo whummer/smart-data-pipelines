@@ -6,7 +6,7 @@ TEST_TIMEOUT= # set this to --no-timeouts in case the test times out.
 
 NPATH=/usr/local/lib/node_modules/
 ifeq ($(USE_NODENV), true)
-NPATH=/opt/boxen/nodenv/versions/v0.12.2/lib/node_modules/
+NPATH=/opt/boxen/nodenv/versions/v0.12.7/lib/node_modules/
 endif
 
 export NODE_PATH=$(NPATH)
@@ -20,7 +20,7 @@ install:
 	gulp ui:bower
 
 install-prereq:
-	npm install -g gulp mocha nodemon pm2 linklocal node-gyp gulp-help gulp-clean run-sequence bower
+	npm install -g gulp mocha nodemon pm2 linklocal node-gyp gulp-help del vinyl-paths run-sequence bower
 
 uninstall-global:
 	(cd bin && node handle-global-node-packages.js --uninstall && cd ..)

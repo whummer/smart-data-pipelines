@@ -1,7 +1,6 @@
 'use strict';
 
-angular.module('rioxApp')
-.config(function ($stateProvider, $urlRouterProvider) {
+angular.module('rioxApp').config(function ($stateProvider, $urlRouterProvider) {
 
 	$urlRouterProvider.otherwise("/main");
 
@@ -92,7 +91,7 @@ angular.module('rioxApp')
 				authenticate: true
 			}
 		},
-		
+
 		/* invitations mgmt */
 		'index.accept': {
 			url: "/accept/{membershipId}",
@@ -256,20 +255,59 @@ angular.module('rioxApp')
 			templateUrl: "app/views/admin/admin.html",
 			controller: "AdminCtrl",
 			controllerUrl: "app/views/admin/admin.controller.js"
+		},
+
+		/*
+		 *
+		 * smart data pipeline views
+		 *
+		 */
+
+		'index.sdps': {
+			abstract: true,
+			url: "/sdps",
+			controller: 'DataPipesCtrl',
+			templateUrl: "app/views/sdps/sdps.html",
+			data: {
+				authenticate: true
+			}
+		},
+
+		'index.sdps.create': {
+			url: '/sdps/edit/:pipeId',
+			views: {
+				"editSdp@index.sdps": {
+					templateUrl: 'app/views/sdps/sdps.edit.html',
+					controller: 'EditDataPipeCtrl'
+				}
+			}
+		},
+
+		'index.sdps.list': {
+			url: '/sdps/list',
+			views: {
+				"listSdp@index.sdps": {
+					templateUrl: 'app/views/sdps/sdps.list.html',
+					controller: 'ListDataPipesCtrl'
+				}
+			}
+
 		}
+
+
 	};
 
 	/* set state routes */
 	var tmp = $stateProvider;
-	for(var key in states) {
+	for (var key in states) {
 		var s = states[key];
-		if(s.controllerUrl) {
+		if (s.controllerUrl) {
 			/* lazily load some of the controllers */
 			s.resolve = {
-				loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad) {
+				loadMyCtrl: ['$ocLazyLoad', function ($ocLazyLoad) {
 					return $ocLazyLoad.load(s.controllerUrl);
-		        }]
-		    };
+				}]
+			};
 		}
 		tmp = tmp.state(key, states[key]);
 	}

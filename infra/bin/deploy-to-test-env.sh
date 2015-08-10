@@ -14,7 +14,7 @@ export RIOX_ENV=test
 #trap "cleanup" SIGTERM
 #trap "cleanup" INT
 
-trap "cleanup" INT TERM
+#trap "cleanup" INT TERM
 #trap "cleanup" EXIT
 
 # Checks success of a command and exist if != 0 and cleans up.
@@ -23,7 +23,6 @@ function checkSuccess () {
     printf "${green}PASS${reset}\n"
   else
     printf "${red}FAILED${reset}\n"
-    cleanup
     exit 1
   fi
 }
@@ -34,30 +33,8 @@ function printLabel () {
   echo "${bold}##################################${reset}"
 }
 
-# Cleans up all resources on the cloud
-function cleanup () {
-  printLabel "Cleaning up"
-  (cd $BASEDIR/../ && make undeploy-services)
-  (cd $BASEDIR/../../ && make undeploy-services)
-  #kill -KILL $$
-}
-
-# Usage: run_with_timeout N cmd args...
-#    or: run_with_timeout cmd args...
-# In the second case, cmd cannot be a number and the timeout will be 10 seconds.
-function run_with_timeout () {
-  local time=10
-  if [[ $1 =~ ^[0-9]+$ ]]; then time=$1; shift; fi
-  # Run in a subshell to avoid job control messages
-  ( "$@" &
-    child=$!
-    # Avoid default notification in non-interactive shell for SIGTERM
-    trap -- "" SIGTERM
-    ( sleep $time
-      kill $child 2> /dev/null ) &
-    wait $child
-  )
-}
+printLabel "Cleanup up from previous run"
+./$BASEDIR/cleanup-test-env.sh
 
 # DEPLOY INFRASTRUCTURE SERVICES
 printLabel "Infrastructure service deployment "
@@ -90,7 +67,6 @@ echo "AWS ELB endpoint: ${lb_endpoint}"
 if [[ "$lb_endpoint" == "" ]]; then
   echo "Error: we most likely hit the race condiation as described here:"
   echo "       --> https://github.com/GoogleCloudPlatform/kubernetes/issues/11324"
-  cleanup
   exit 1
 fi
 
@@ -114,7 +90,6 @@ if [[ "$output" =~ "riox.all.min.js" ]]; then
 else
   echo "Cluster does not seem to work!"
   echo "Output: $output"
-  cleanup
   exit 1
 fi
 
@@ -125,4 +100,8 @@ else
   (cd $BASEDIR/../../e2e/selenium/e2e.ui && mvn -Driox.endpoint="${lb_endpoint}" test)
 fi
 checkSuccess
-cleanup
+
+# Only cleanup at success
+if [[ $? -eq 0 ]]; then
+  ./$BASEDIR/cleanup-test-env.sh
+fi
