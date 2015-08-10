@@ -72,17 +72,17 @@ describe('/organizations', function() {
 					"organization-id": org.id
 			};
 			/* create membership invite */
-			test.user1.post(app.organizations.url + "/invite").send(inv).end(function(err, res) {
+			test.user1.post(app.organizations.url + "/" + org.id + "/invite").send(inv).end(function(err, res) {
 				var inv1 = res.body;
 				assert.equal(inv1.status, STATUS_PENDING);
 				/* create membership invite again (should return the same entity) */
-				test.user1.post(app.organizations.url + "/invite").send(inv).end(function(err, res) {
+				test.user1.post(app.organizations.url + "/" + org.id + "/invite").send(inv).end(function(err, res) {
 					var inv2 = res.body;
 					assert.equal(inv2.status, STATUS_PENDING);
 					assert.equal(inv1.id, inv2.id);
 					/* change membership status (as user2) */
 					inv2.status = STATUS_CONFIRMED;
-					test.user2.put(app.organizations.url + "/membership").send(inv2).end(function(err, res) {
+					test.user2.put(app.organizations.url + "/memberships/" + inv2.id).send(inv2).end(function(err, res) {
 						var inv3 = res.body;
 						assert.equal(inv3.status, STATUS_CONFIRMED);
 						assert.equal(inv2.id, inv3.id);

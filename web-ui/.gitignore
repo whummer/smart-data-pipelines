@@ -2,3 +2,4 @@
 build
 node_modules
 k8s.yml
+lib/index.html

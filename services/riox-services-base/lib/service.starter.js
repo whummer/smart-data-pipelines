@@ -133,7 +133,7 @@ var start = function (config, routes, serviceName) {
 				if(log) log.info("Using TEST mode (mockgoose)");
 				var mockgoose = require('mockgoose');
 				mockgoose(mongoose);
-				mongoose.connect("");
+				//mongoose.connect("");
 				mongoose.__mockgooseHasBeenApplied = true;
 			}
 		} else {

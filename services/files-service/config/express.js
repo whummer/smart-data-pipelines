@@ -31,16 +31,6 @@ module.exports = function(app) {
   app.use(methodOverride());
   app.use(cookieParser());
 
-  // Persist sessions with mongoStore
-  // COMMENTED OUT BY FR - do we need this?
-  // We need to enable sessions for passport twitter because its an oauth 1.0 strategy
-  // app.use(session({
-  //   secret: config.secrets.session,
-  //   resave: true,
-  //   saveUninitialized: true,
-  //   store: new mongoStore({ mongoose_connection: mongoose.connection })
-  // }));
-
   if ('production' === env) {
     commonConfig(app);
   }
