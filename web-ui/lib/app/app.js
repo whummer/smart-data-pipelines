@@ -20,7 +20,8 @@ angular.module('rioxApp', [
 	'angucomplete',
 	'oc.lazyLoad',
 	'chart.js',
-	'ngTable'
+	'ngTable',
+	'dndLists' // drag and drop stuff
 ])
 		.config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider, growlProvider) {
 			$locationProvider.html5Mode(false);

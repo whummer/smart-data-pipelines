@@ -1,0 +1,15 @@
+STREAM DEFINTITIONS
+-------------------
+stream create --name fetchMeldeServiceData --definition "trigger --fixedDelay=60 | http-client --url='''http://www.wien.gv.at/wartezeiten/meldeservice/wartezeiten.svc/GetWartezeiten''' --httpMethod=GET | script --script=json-add-element.groovy --variables='key=origin,value=meldeservice' > queue:waitingtimes" --deploy
+stream create --name fetchPassServiceData --definition "trigger --fixedDelay=60 | http-client --url='''http://www.wien.gv.at/wartezeiten/passservice/wartezeiten.svc/GetWartezeiten''' --httpMethod=GET | script --script=json-add-element.groovy --variables='key=origin,value=passservice' > queue:waitingtimes" --deploy
+stream create --name fetchParkPickerlServiceData --definition "trigger --fixedDelay=60 | http-client --url='''http://www.wien.gv.at/wartezeiten/parkpickerl/wartezeiten.svc/GetWartezeiten''' --httpMethod=GET | script --script=json-add-element.groovy --variables='key=origin,value=parkpickerlservice' > queue:waitingtimes" --deploy
+stream create --name correlate --definition "queue:waitingtimes >  transform --script=enrich-json-from-csv.groovy --propertiesLocation=enrich-json-from-csv.properties --variables='csvFile=file:///opt/xd-data/ma-data.csv' | log" --deploy
+
+
+OBSOLETE:
+---------
+
+# Insert batch
+job create importMagistratsaemter --definition "filejdbc --resources=file:///Users/riox/csvdir/*.csv --names=FID,OBJECTID,SHAPE,NAME,ADRESSE,SE_ANNO_CAD_DATA --tableName=magistratsaemter --initializeDatabase=true" --deploy
+stream create --name importMagistratsAemterTrigger --definition "trigger --fixedDelay=10 > queue:job:importMagistratsaemter" --deploy
+stream create readMagistratsaemter --definition "jdbc --fixedDelay=1 --url=jdbc:hsqldb:hsql://localhost:9101/xdjob --query=\"select SHAPE,NAME,ADRESSE from magistratsaemter where NAME LIKE '%Magistratisches Bezirksamt%'\" | log" --deploy

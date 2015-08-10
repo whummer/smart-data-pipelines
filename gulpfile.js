@@ -2,7 +2,8 @@
 // require gulp and plugins
 //
 var gulp = global.gulp = require('gulp-help')(require('gulp'));
-var clean = require('gulp-clean');
+var del = require('del');
+var vinylPaths = require('vinyl-paths');
 var runSequence = require('run-sequence');
 var fs = require('fs');
 var cp = require('child_process');
@@ -130,7 +131,7 @@ function cleanBowerDir(dir) {
 function cleanDir(dir) {
 	if(fs.existsSync(dir)) {
 		console.log("Cleaning directory", dir);
-		gulp.src(dir, {read: false}).pipe(clean());
+		gulp.src(dir, {read: false}).pipe(vinylPaths(del));
 	}
 }
 global.runCmd = function(cmd, args, cwd, env) {

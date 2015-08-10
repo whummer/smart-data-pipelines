@@ -10,7 +10,8 @@ var gulp = require('gulp-help')(require('gulp')),
 		angular_filesort = require('gulp-angular-filesort'),
 		cp = require('child_process'),
 		rename = require('gulp-rename'),
-		clean = require('gulp-clean'),
+		del = require('del'),
+		vinylPaths = require('vinyl-paths'),
 		util = require('gulp-util'),
 		uglify = require('gulp-uglify'),
 		concat = require('gulp-concat'),
@@ -83,7 +84,7 @@ gulp.task('default', 'i\'m only here for the beer', function () {
 gulp.task('ui:clean', 'remove build directories', function () {
 	return gulp.
 		src(BUILD_DIR, {read: false}).
-		pipe(clean());
+		pipe(vinylPaths(del));
 });
 
 //
@@ -164,7 +165,11 @@ function injectResources(indexLocation, cssLocation, ignorePath, minified, callb
 	var pipe = gulp.src(paths.main)
 
 		.pipe(inject(
-			gulp.src(bowerFiles({paths: BASE_DIR}), {read: false})
+			gulp.src(bowerFiles({paths: {
+				bowerDirectory:	BASE_DIR + '/lib/bower_components',
+				bowerJson : BASE_DIR + '/bower.json',
+				bowerRc : BASE_DIR + '/.bowerrc'
+			}}), {read: false})
 				.pipe(jqueryFilter), {name: 'bower', ignorePath: ignorePath}))
 
 		.pipe(inject(es.merge(
