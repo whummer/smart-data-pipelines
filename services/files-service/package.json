@@ -19,7 +19,6 @@
     "riox-services-base": "../riox-services-base"
   },
   "devDependencies": {
-    "mockgoose": "2.0.1"
   },
   "engines": {
     "node": ">=0.10.0"

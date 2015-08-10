@@ -14,6 +14,9 @@ var template = {
   google: {},
   github: {}
 };
+
+template["_id"] = { type: String, default: genShortUUID };
+
 /** User name (display name). */
 template[NAME] = String;
 /** User's first name. */

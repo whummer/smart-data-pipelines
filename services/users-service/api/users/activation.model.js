@@ -1,11 +1,12 @@
 'use strict';
 
 var mongoose = global.mongoose || require('mongoose');
+var util = require('riox-services-base/lib/util/util');
 var Schema = mongoose.Schema;
 
 var template = {};
 
-template["_id"] = { type: String, default: genShortUUID};
+template["_id"] = { type: String, default: util.genShortUUID};
 
 /** Creation Date. */
 template[CREATION_DATE] = Date;
