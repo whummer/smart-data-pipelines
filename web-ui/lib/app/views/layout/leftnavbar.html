@@ -49,13 +49,32 @@
 
 			<li ng-class="{active: isActive('/sdps')}" ng-show="isUserLoggedIn">
 				<a ui-sref="index.sdps.list">
-					<i class="fa fa-filter"></i> <span class="nav-label">My SDPs</span><span class="fa arrow"></span>
+					<i class="fa fa-filter"></i> <span class="nav-label">Smart Data Pipes</span><span class="fa arrow"></span>
 				</a>
 
 				<ul class="nav nav-second-level collapse" ng-class="{in: isActive('/sdps')}">
 					<li>
-						<a ui-sref="index.sdps.create"><i class="fa fa-magic"></i> <span
-							class="nav-label">Create New SDP</span></a>
+						<a ui-sref="index.sdps.create">
+							<i class="fa fa-ellipsis-h"></i> <span class="nav-label">New Data Pipe</span>
+						</a>
+					</li>
+
+					<li>
+						<a ui-sref="index.sdps.list">
+							<i class="fa fa-list"></i> <span class="nav-label">List Data Pipes</span>
+						</a>
+					</li>
+
+					<li>
+						<a ui-sref="index.sdps.bricks.create">
+							<i class="fa fa-cubes"></i><span class="nav-label">New Smart Brick</span>
+						</a>
+					</li>
+
+					<li>
+						<a ui-sref="index.sdps.bricks">
+							<i class="fa fa-list"></i><span class="nav-label">List Smart Bricks</span>
+						</a>
 					</li>
 				</ul>
 			</li>

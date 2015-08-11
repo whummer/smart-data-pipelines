@@ -1,15 +1,16 @@
 <div class="container-element box box-blue">
 
 	<!-- DnD canvas area -->
-	<div ng-include="'list.html'"></div>
+	<div ng-include="'list.html'" ng-alias="elements = pipeline.elements"></div>
 
 
 	<!-- template for element list -->
 	<script type="text/ng-template" id="list.html">
-		<ul dnd-list="pipeline.elements" dnd-horizontal-list="true" class="itemlist">
-			<li ng-repeat="element in pipeline.elements"
+		<ul dnd-list="elements" dnd-horizontal-list="true" class="itemlist">
+			<li ng-repeat="element in elements"
 			    dnd-draggable="element"
-			    dnd-effect-allowed="move"
+			    dnd-effect-allowed="copyMove"
+			    dnd-external-sources="true"
 			    dnd-selected="selectItem(element)"
 			    dnd-dragstart="logEvent('Started to drag an item', event)"
 			    dnd-moved="pipeline.elements.splice($index, 1); logEvent('Item moved', event)"
@@ -24,8 +25,7 @@
      the above list template to render each container column -->
 	<script type="text/ng-template" id="container.html">
 		<div class="element-container">
-			<div class="column" ng-repeat="list in item.elements" ng-include="'list.html'"></div>
-			<div class="clearfix"></div>
+			<div ng-repeat="elements in element.elements" ng-include="'list.html'"></div>
 		</div>
 	</script>
 

@@ -1,7 +1,7 @@
 var uuid = require('node-uuid');
 
 exports.genShortUUID = global.genShortUUID = function() {
-    var id = uuid.v4()
+    var id = uuid.v4();
     /* trim to the last 12 chars */
     id = id.substring(id.length - 12);
     return id;
@@ -71,7 +71,7 @@ exports.estimateObjectSize = function(object) {
         {
             objectList[ objectList.length ] = value;
 
-            for( i in value ) {
+            for(var i in value ) {
                 bytes += 8; // an assumed existence overhead
                 bytes += recurse( value[i] );
             }
