@@ -45,6 +45,7 @@ fileReader.setLineMapper(lineMapper);
 def context = new ExecutionContext();
 fileReader.open(context);
 def line = null;
+def result = [];
 while (line = fileReader.read()) {
 
   def id = line.readInt("OBJECTID");
@@ -55,11 +56,16 @@ while (line = fileReader.read()) {
     def entry = [
       "location" : [ "long": geoLoc[0], "lat" : geoLoc[1] ],
       "name" : line.readString("NAME"),
+      "location" : "" + geoLoc[1] + "," + geoLoc[0],
       "address" : line.readString("ADRESSE"),
-      "waitingTime" : payload[mba]
+      "waitingTime" : payload[mba],
+      "isOpen" : payload["IsOpen"],
+      "timestamp" : payload["Timestamp"],
+      "wartekreis" : payload["Wartekreis"]
     ]
     payload[mba] = entry;
-    println(entry);
+    //println(entry);
+    result << entry;
   }
 }
-return payload;
+return result;
