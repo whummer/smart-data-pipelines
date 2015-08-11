@@ -1,311 +1,142 @@
-angular.module("rioxApp").controller("DataPipesCtrl", function ($scope) {
+angular.module("rioxApp").controller("DataPipesCtrl", function ($scope, $log, growl, $location) {
 
 	console.log("Withing data pipes PARENT controller");
 
 	$scope.trim = window.trim;
 
+	$scope.sources = [];
+	$scope.sinks = [];
+	$scope.processors = [];
+
 	//
-	// sample pipelines
+	// templates for datapipe elements
 	//
-	$scope.samplePipes = [
+	$scope.templates = [
+
 		{
-			"_id": "1d8yw8d1csd",
-			"name": "WartezeitenPipe",
-			"description": "my cool datapipe",
-			"elements": [
-				{
-					"class": "element",
-					"type": "source",
-					"subtype": "http-out",
-					"label": "poll-meldeamt",
-					"description": "poll all meldeamt data per 10sec",
-					"options": {
-						"url": "http://wien.gv.at/api/meldeamt",
-						"http-method": "GET",
-						"interval": 10
-					}
-				},
-
-				{
-					"class": "element",
-					"type": "processor",
-					"subtype": "script",
-					"label": "add-discriminator-element-meldeservice",
-					"description": "Adds origin (Meldeservice)",
-					"options": {
-						"location": "file:// | s3:// | http://",
-						"sync-interval": 60,
-						"variables": {
-							"origin": "Meldeservice",
-							"has-wifi": "true"
-						}
-					}
-				},
-				{
-					"class": "element",
-					"type": "processor",
-					"subtype": "script",
-					"label": "enrich-with-location-data",
-					"description": "enriches payload with location data",
-					"options": {
-						"location": "file:// | s3:// | http://",
-						"sync-interval": 60,
-						"variables": {
-							"mapping-file": "mapping.in",
-							"data-file": "data.in"
-						}
-					}
-				},
-
-				{
-					"class": "element",
-					"type": "sink",
-					"subtype": "map",
-					"label": "visualize-data-in-map",
-					"description": "visualize data in a kibana map",
-					"options": {}
-				}
-
-
-			]
+			label: "Source",
+			class: "element",
+			type: 'source',
+			icon: "download"
+		},
+		{
+			label: "Processor",
+			class: "element",
+			type: 'processor',
+			icon: "cog"
+		},
+		{
+			label: "Sink",
+			class: "element",
+			type: 'sink',
+			icon: "upload"
+		},
+		{
+			label: "Container",
+			class: "container",
+			icon: "bars",
+			elements : []
 		}
+	];
 
-
-	]/*	$scope.samplePipes = [
-	 {
-	 "_id" : "1d8yw8d1csd",
-	 "name": "WartezeitenPipe",
-	 "description": "my cool datapipe",
-	 "elements": [
-	 {
-	 "class": "container",
-	 "type": "source",
-	 "label": "source-container-aemter",
-	 "description": "source container for meldeamt, passamt, parkpickerl",
-	 "elements": [
-	 {
-	 "class": "element",
-	 "type" : "source",
-	 "subtype": "http-out",
-	 "label": "poll-meldeamt",
-	 "description": "poll all meldeamt data per 10sec",
-	 "options": {
-	 "url": "http://wien.gv.at/api/meldeamt",
-	 "http-method": "GET",
-	 "interval": 10
-	 }
-	 },
-	 {
-	 "class": "element",
-	 "type": "source",
-	 "subtype": "http-out",
-	 "label": "poll-passamt",
-	 "description": "poll all passamt data per 10sec",
-	 "options": {
-	 "url": "http://wien.gv.at/api/passamt",
-	 "http-method": "GET",
-	 "interval": 10
-	 }
-	 }
-	 ]
-	 },
-
-	 {
-	 "class": "container",
-	 "type": "processor",
-	 "label": "processor-container-aemter",
-	 "description": "source container for meldeamt, passamt, parkpickerl",
-	 "elements": [
-
-	 {
-	 "class": "element",
-	 "type" : "processor",
-	 "subtype": "script",
-	 "label": "add-discriminator-element-meldeservice",
-	 "description": "Adds origin (Meldeservice)",
-	 "options": {
-	 "location": "file:// | s3:// | http://",
-	 "sync-interval": 60,
-	 "variables": {
-	 "origin": "Meldeservice",
-	 "has-wifi": "true"
-	 }
-	 }
-	 },
-	 {
-	 "class": "element",
-	 "type" : "processor",
-	 "subtype": "script",
-	 "label": "add-discriminator-element-passservice",
-	 "description": "Adds origin (Passservice)",
-	 "options": {
-	 "location": "file:// | s3:// | http://",
-	 "sync-interval": 60,
-	 "variables": {
-	 "origin": "Passservice",
-	 "has-wifi": "true"
-	 }
-	 }
-	 }
-	 ]
-	 },
-
-	 {
-	 "class": "element",
-	 "type" : "processor",
-	 "subtype": "script",
-	 "label": "enrich-with-location-data",
-	 "description": "enriches payload with location data",
-	 "options": {
-	 "location": "file:// | s3:// | http://",
-	 "sync-interval": 60,
-	 "variables": {
-	 "mapping-file": "mapping.in",
-	 "data-file": "data.in"
-	 }
-	 }
-	 },
-
-	 {
-	 "class": "element",
-	 "type" : "sink",
-	 "subtype": "map",
-	 "label": "visualize-data-in-map",
-	 "description": "visualize data in a kibana map",
-	 "options": {
-
-	 }
-	 }
-
-
-	 ]
-	 }
-
-
-
-
-	 ]*/;
 
 	//
-	// end sample data
+	// load pipeline elements
 	//
+	$scope.loadPipelineElements = function () {
+		$log.debug('Loading pipeline elements');
+		riox.pipeelements({}, function (elements) {
+			$log.debug('Loaded %s elements', elements.length);
+			elements.forEach(function (element) {
+				switch (element.type) {
+					case 'source' :
+						$scope.sources.push(element);
+						break;
+					case 'sink' :
+						$scope.sinks.push(element);
+						break;
+					case 'processor' :
+						$scope.processors.push(element);
+						break;
+					default:
+						throw new Error('Unexpeced element type: ' + element.type);
+				}
+			})
+		})
+	};
+
+	//
+	// get the available options for the currently selected element
+	//
+	$scope.getAvailableOptions = function (selectedElement) {
+		if (!selectedElement) return;
+		//$log.debug('Getting available options for ', selectedElement.label);
+		var template = getTemplatesForElement(selectedElement);
+		$log.info('Got options: ', template.options);
+		return template.options;
+	};
 
 
-	/*
-	 {
-	 "name": "WartezeitenPipe",
-	 "description": "my cool datapipe",
-	 "elements": [
-	 {
-	 "class": "container",
-	 "type": "source",
-	 "label": "source-container-aemter",
-	 "description": "source container for meldeamt, passamt, parkpickerl",
-	 "elements": [
-	 {
-	 "class": "source",
-	 "type": "http-poll",
-	 "label": "poll-meldeamt",
-	 "description": "poll all meldeamt data per 10sec",
-	 "options": {
-	 "url": "http://wien.gv.at/api/meldeamt",
-	 "http-method": "GET",
-	 "interval": 10
-	 }
-	 },
-	 {
-	 "class": "source",
-	 "type": "http-poll",
-	 "label": "poll-passamt",
-	 "description": "poll all passamt data per 10sec",
-	 "options": {
-	 "url": "http://wien.gv.at/api/passamt",
-	 "http-method": "GET",
-	 "interval": 10
-	 }
-	 },
-	 {
-	 "class": "source",
-	 "type": "http-poll",
-	 "label": "poll-parkpickerl",
-	 "description": "poll all pickerl data per 10sec",
-	 "options": {
-	 "url": "http://wien.gv.at/api/pickerl",
-	 "http-method": "GET",
-	 "interval": 10
-	 }
-	 }
+	//
+	// get the correct CSS class for given element
+	//
+	$scope.getClassForElement = function (element, big) {
+		//$log.debug('Getting class for element ', element);
+		if (element.type) {
+			return element.type == 'container' ? 'element-container' : big ? element.type + 'Big' : element.type;
+		} else {
+			return element.class == 'container' ? 'element-container' : 'element';
+		}
+	};
 
-	 ]
-	 },
+	//
+	// get the font-awesome based icon for given element
+	//
+	$scope.getElementIcon = function (element) {
+		if (element.icon) {
+			return element.icon;
+		}
+		//$log.debug('Getting icon for element ', element);
+		var template = getTemplatesForElement(element);
+		return template.icon;
+	};
 
-	 {
-	 "class": "container",
-	 "type": "processor",
-	 "label": "processor-container-aemter",
-	 "description": "source container for meldeamt, passamt, parkpickerl",
-	 "elements": [
+	function getTemplatesForElement(element) {
+		var elementsOfSelectedType = element.type == 'source' ?
+				$scope.sources : element.type == 'sink' ?
+				$scope.sinks : $scope.processors;
 
-	 {
-	 "class": "processor",
-	 "type": "script",
-	 "label": "add-discriminator-element-meldeservice",
-	 "description": "Adds origin (Meldeservice)",
-	 "options": {
-	 "location": "file:// | s3:// | http://",
-	 "sync-interval": 60,
-	 "variables": {
-	 "origin": "Meldeservice",
-	 "has-wifi": "true"
-	 }
-	 }
-	 },
-	 {
-	 "class": "processor",
-	 "type": "script",
-	 "label": "add-discriminator-element-passservice",
-	 "description": "Adds origin (Passservice)",
-	 "options": {
-	 "location": "file:// | s3:// | http://",
-	 "sync-interval": 60,
-	 "variables": {
-	 "origin": "Passservice",
-	 "has-wifi": "true"
-	 }
-	 }
-	 }
-	 ]
-	 },
+		//$log.warn('selected type: ', elementsOfSelectedType)
+		return $filter('filter')(elementsOfSelectedType, {subtype: element.subtype})[0];
+	}
 
-	 {
-	 "class": "processor",
-	 "type": "script",
-	 "label": "enrich-with-location-data",
-	 "description": "enriches payload with location data",
-	 "options": {
-	 "location": "file:// | s3:// | http://",
-	 "sync-interval": 60,
-	 "variables": {
-	 "mapping-file": "mapping.in",
-	 "data-file": "data.in"
-	 }
-	 }
-	 },
+	//
+	// open datapipe definition in modal view
+	//
+	$scope.showPipelineDefinition = function (pipeline) {
+		var pipelineDefinition = angular.toJson(pipeline, true);
+		showDebugDialog("Here is what your pipeline looks like: ",
+				"Definition of Pipeline '" + pipeline.name + "'",
+				pipelineDefinition);
+	};
 
-	 {
-	 "class": "sink",
-	 "type": "map-visualization",
-	 "label": "visualize-data-in-map",
-	 "description": "visualize data in a kibana map",
-	 "options": {
+	//
+	// delete a pipeline
+	//
+	$scope.deletePipeline = function (pipeline, callback) {
+		var deleteCallback = function () {
+			riox.delete.pipe(pipeline._id, function () {
+				growl.success('Deleted pipeline "' + pipeline.name + '"');
+				callback();
+			}, function (error) {
+				$log.error('Cannot delete pipeline: ', error);
+				growl.error('Cannot delete pipeline "' + pipeline.name + "'. See console for details");
+			})
+		};
 
-	 }
-	 }
+		showConfirmDialog("Do you really want to delete pipline '" + pipeline.name + "'?", deleteCallback);
+	};
 
-
-	 ]
-	 }
-	 */
-
+	$scope.loadPipelineElements();
 
 });

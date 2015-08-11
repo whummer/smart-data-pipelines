@@ -65,7 +65,8 @@
  */
 .pipeEditor .dropzone .dndPlaceholder {
 	background-color: #ddd !important;
-	min-height: 42px;
+	min-height: 80px;
+	width: 120px;
 	display: block;
 	position: relative;
 }
@@ -76,10 +77,10 @@
 
 .pipeEditor .dropzone .itemlist > li {
 	color: @pipe-element-font-color;
-	float: left;
 	font-weight: 700;
 	margin-top: 20px;
 	text-align: center;
+	float: left;
 	width: @pipe-element-width;
 	height: @pipe-element-height;
 	margin-left: 10px;
@@ -103,12 +104,14 @@
 
 .element {
 	width: @pipe-element-width;
-	height: @pipe-element-height;
+	min-height: @pipe-element-height;
 	background-color: @pipe-element-bg;
+	float: left;
 	position: relative;
 	text-align: center;
 	border-radius: .25em;
 	padding-top: 5px;
+	margin-left: 10px;
 	color: @pipe-element-font-color;
 }
 
@@ -122,6 +125,14 @@
 	border-bottom: 10px solid transparent;
 	-webkit-transform: rotate(180deg);
 	-moz-transform: rotate(180deg);
+}
+
+.elementAttachmentBig {
+	.elementAttachment;
+	top: 40px;
+	height: 80px;
+	border-top: 20px solid transparent;
+	border-bottom: 20px solid transparent;
 }
 
 .source {
@@ -193,9 +204,13 @@
 /********************************** ELEMENT CONTAINER *************************************/
 .element-container {
 	.element;
+	float: left;
+	margin-left: 10px;
 	background-color: transparent;
 	border-color: @pipe-element-bg;
 	border-style: dashed;
+	width: @pipe-element-width + 10%;
+	height: @pipe-element-height + 10%;
 	color: @pipe-element-bg;
 }
 
@@ -209,4 +224,48 @@
 	border-style: dashed;
 	border-width: 1px;
 	margin-top: 5px;
+}
+
+/********************************** ELEMENT LIST BIG VIEWS *************************************/
+
+.sourceBig {
+	.source;
+	width: @pipe-element-width * 2;
+	height: @pipe-element-height * 2;
+}
+
+.sourceBig:after {
+	.elementAttachmentBig;
+	right: -15px;
+	border-right: 15px solid @pipe-element-bg;
+}
+
+.processorBig {
+	.processor;
+	width: @pipe-element-width * 2;
+	height: @pipe-element-height * 2;
+}
+
+.processorBig:before {
+	.elementAttachmentBig;
+	border-right: 15px solid white;
+	right: 225px;
+}
+
+.processorBig:after {
+	.elementAttachmentBig;
+	right: -15px;
+	border-right: 15px solid @pipe-element-bg;
+}
+
+.sinkBig {
+	.sink;
+	width: @pipe-element-width * 2;
+	height: @pipe-element-height * 2;
+}
+
+.sinkBig:before {
+	.elementAttachmentBig;
+	right: 225px;
+	border-right: 15px solid white;
 }

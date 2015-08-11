@@ -13,11 +13,12 @@ var cors = require('cors');
 var util = require('./util/util');
 var expressWinston = require('express-winston');
 var log = global.log = require('winston');
-var errorHandler = require('./util/errors/handler')
+var errorHandler = require('./util/errors/handler');
 
 require('./api/service.calls');
 
-var mongoose = global.mongoose || require('mongoose');
+var mongoose = global.mongoose || require('mongoose-q')();
+//var mongoose = global.mongoose || require('mongoose');
 if (!global.mongoose) {
 	global.mongoose = mongoose;
 }
@@ -26,7 +27,7 @@ if (!global.servicesConfig && global.config) {
 }
 
 /* any status codes >= (gte) to this one will be logged as errors */
-var STATUS_CODE_LOGERROR_START = 500;
+var STATUS_CODE_LOGERROR_START = 400;
 
 var start = function (config, routes, serviceName) {
 
@@ -62,20 +63,22 @@ var start = function (config, routes, serviceName) {
 					meta: true
 				});
 
-				expressApp.use(function(req, res, next) {
+				expressApp.use(function (req, res, next) {
 					var end = res.end;
-					res.end = function(chunk, encoding) {
-			            res.end = end;
-			            if(res.end) res.end(chunk, encoding);
-						var emptyNext = function(){};
-						if(res.statusCode < STATUS_CODE_LOGERROR_START) {
+					res.end = function (chunk, encoding) {
+						res.end = end;
+						if (res.end) res.end(chunk, encoding);
+						var emptyNext = function () {
+						};
+
+						if (res.statusCode < STATUS_CODE_LOGERROR_START) {
 							requestLogger(req, res, emptyNext);
 						} else {
 							errorDetailsLogger(req, res, emptyNext);
 						}
 						res.end(); // needed to trigger the callback function in winston-express logger
 					};
-			        next();
+					next();
 				});
 			}
 		}
@@ -95,6 +98,7 @@ var start = function (config, routes, serviceName) {
 				})
 			]
 		});
+<<<<<<< HEAD
 
 		//
 		// FR: add a global error handler so we see problems on the console.
@@ -108,6 +112,12 @@ var start = function (config, routes, serviceName) {
 		expressApp.use(function(err, req, res, next) {
 			var emptyNext = function(){};
 			if(res.statusCode >= STATUS_CODE_LOGERROR_START) {
+=======
+		expressApp.use(function (err, req, res, next) {
+			var emptyNext = function () {
+			};
+			if (res.statusCode >= STATUS_CODE_LOGERROR_START) {
+>>>>>>> 7bba080... adding support for data bricks in pipe service and in UI.
 				errorDetailsLogger(err, req, res, emptyNext);
 			}
 			res.end(); // needed to trigger the callback function in winston-express logger
@@ -140,7 +150,7 @@ var start = function (config, routes, serviceName) {
 		// Connect to database
 		if (process.env.TEST_MODE) {
 			if (!mongoose.__mockgooseHasBeenApplied) {
-				if(log) log.info("Using TEST mode (mockgoose)");
+				if (log) log.info("Using TEST mode (mockgoose)");
 				var mockgoose = require('mockgoose');
 				mockgoose(mongoose);
 				//mongoose.connect("");

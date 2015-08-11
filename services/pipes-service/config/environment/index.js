@@ -21,7 +21,9 @@ var config = {
 			logMeta: false,
 			logErrorRequests: true
 		}
-	}
+	},
+
+	seedDB : true
 
 };
 

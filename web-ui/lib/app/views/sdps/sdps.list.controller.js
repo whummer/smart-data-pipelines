@@ -1,32 +1,49 @@
-angular.module('rioxApp').controller('ListDataPipesCtrl', function($scope, ngTableParams, $log) {
+angular.module('rioxApp').controller('ListDataPipesCtrl', function ($scope, ngTableParams, $log, growl) {
 
 	console.log("Withing data pipes LIST controller");
 
-	var loadTableParams = function () {
-		var data = $scope.samplePipes;
-		$scope.tableParams = new ngTableParams({
-			page: 1,
-			count: 10
-		}, {
-			total: data.length,
-			getData: function ($defer, params) {
-				var from = (params.page() - 1) * params.count();
-				var to = params.page() * params.count();
-				$defer.resolve(data.slice(from, to));
-			}
-		});
-	};
+	//
+	// model for our data pipes
+	//
+	$scope.pipes = [];
 
-	/*var loadAllPipes = $scope.loadAllPipes = function() {
-		console.log("Loading pipes")
-		riox.pipes({}, function(pipes) {
-			console.log("Loaded PIPES: ", pipes)
-			$log.debug('Loaded Pipes: ', pipes);
+	//
+	// build a table view that displays a pageable list of pipes
+	//
+	$scope.tableParams = new ngTableParams({page: 1, count: 5}, {
+		total: $scope.pipes.length,
+		getData: function ($defer, params) {
+			$log.debug("getData() called. Pipes: ", $scope.pipes);
+			params.total($scope.pipes.length);
+			$defer.resolve($scope.pipes.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+		}
+	});
+
+	//
+	// helper to load all pipelines from backend
+	//
+	var loadAllPipes = function () {
+		riox.pipes({}, function (pipes) {
+			$log.debug('Loaded ' + pipes.length + ' pipes');
 			$scope.pipes = pipes;
+			$scope.tableParams.reload();
+		}, function (error) {
+			$log.error('Cannot load pipes: ', error);
+			growl.error('Cannot load pipes. See console for details.');
 		});
 	};
-*/
 
-//	loadAllPipes();
-	loadTableParams();
+	//
+	// delete given pipeline and refresh pipes list
+	//
+	$scope.deletePipelineAndReload = function (pipeline) {
+		$log.debug('DeleteAndReload');
+		$scope.deletePipeline(pipeline, loadAllPipes);
+	};
+
+	//
+	// populate view with data
+	//
+	loadAllPipes();
+
 });

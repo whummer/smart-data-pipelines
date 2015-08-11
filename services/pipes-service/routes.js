@@ -10,6 +10,7 @@ module.exports = function (app, server) {
 
 	/* API routes */
 	app.use('/api/v1/pipes', require('./api/pipes'));
+	app.use('/api/v1/pipeelements', require('./api/pipeelements'));
 
 	app.use('/api/v1/pipes/deployments', require('./api/pipes/deployments'))
 

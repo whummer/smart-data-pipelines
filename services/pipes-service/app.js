@@ -22,4 +22,9 @@ var routes = require("./routes");
 var expressIO = require("express.io");
 var server = starter.start(config, routes, "pipes-service", expressIO);
 
+//console.log("RIOX::::: ", riox);
+
+if (config.seedDB) {
+	require('./api/bootstrap').insertDefaultElements();
+}
 module.exports = server;

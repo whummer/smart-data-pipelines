@@ -21,6 +21,7 @@ angular.module('rioxApp', [
 	'oc.lazyLoad',
 	'chart.js',
 	'ngTable',
+	//'dragularModule'
 	'dndLists' // drag and drop stuff
 ])
 		.config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider, growlProvider) {

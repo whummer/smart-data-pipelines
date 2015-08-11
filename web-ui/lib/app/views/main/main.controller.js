@@ -111,7 +111,7 @@ angular.module('rioxApp')
 
     /* expose riox model constants to root $scope */
 
-    for(key in riox.CONSTANTS) {
+    for(var key in riox.CONSTANTS) {
     	$scope[key] = riox.CONSTANTS[key];
     }
 

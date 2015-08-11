@@ -11,8 +11,12 @@
 					<h3 ng-class="{'text-muted' : !pipeline.name}">{{pipeline.name ? pipeline.name : 'Untitled' }}</h3>
 				</div>
 				<div class="ibox-content pipeEditor">
-					<div class="dropzone box box-yellow" ng-include="'app/views/sdps/sdps.edit.canvas.html'"></div>
 
+					<!-- PIPELINE CANVAS -->
+					<!--<div ng-include="'app/views/sdps/sdps.edit.canvas.dragular.html'"></div>-->
+					<div class="dropzone" ng-include="'app/views/sdps/sdps.edit.canvas.html'"></div>
+
+					<!-- PIPELINE PROPERTIES -->
 					<div class="row " style="margin-top: 5px; margin-right: 0px">
 						<div class="col-lg-6">
 							<form class="form">
@@ -37,9 +41,7 @@
 								<i class="fa fa-floppy-o"></i> Save Data Pipe
 							</button>
 
-							<button class="btn btn-primary btn-sm pull-right" data-toggle="modal"
-							        data-target="#dataPipeDefinitionModal"
-							        ng-click="updateDatapipeDefinition()">
+							<button class="btn btn-primary btn-sm pull-right" ng-click="showPipelineDefinition(pipeline)">
 								<i class="fa fa-code"></i> Show Data Pipe Definition
 							</button>
 
@@ -48,13 +50,19 @@
 								<i class="fa fa-plus"></i> Import Data Pipe
 							</button>
 
-							<button class="btn btn-sm btn-warning pull-right" ng-click="clearCanvas()" style="margin-right: 10px;">
-								<i class="fa fa-trash"></i> Clear
+							<br/>
+							<br/>
+							<button class="btn btn-sm btn-warning pull-right" ng-click="clearCanvas()">
+								<i class="fa fa-trash"></i> Clear Canvas
+							</button>
+
+							<button class="btn btn-sm btn-danger pull-right" ng-click="deletePipelineAndShowList(pipeline)"
+							        style="margin-right: 10px;">
+								<i class="fa fa-remove"></i> Delete Datapipe
 							</button>
 
 							<br/>
 							<br/>
-
 							<div class="checkbox pull-right">
 								<label>
 									<input type="checkbox" ng-model="showElementSource"/>Show Element Source
@@ -64,10 +72,7 @@
 						</div>
 					</div>
 					<div class="row" ng-show="selectedItem && showElementSource">
-						<!--<div source="angular.toJson(selectedItem)" hljs></div>-->
-						<!--<div class="col-lg-12">{{angular.toJson(selectedItem, true)}}</div>-->
 						<div class="col-lg-12">{{selectedItem}}</div>
-
 					</div>
 				</div>
 			</div>
@@ -87,14 +92,14 @@
 					<div class="row">
 						<div class="pipeToolbox toolbox box box-padding col-sm-10 ">
 							<ul>
-								<li ng-repeat="item in templates"
-								    dnd-draggable="item"
+								<li ng-repeat="template in templates"
+								    dnd-draggable="template"
 								    dnd-effect-allowed="copy"
-								    dnd-copied="item.id = item.id + 1">
+								    dnd-copied="template.id = template.id + 1">
 
-									<div class="{{getClassForElement(item)}}">
-										<i style="margin-top: 10px" class="fa fa-2x fa-{{item.icon}}"></i><br/>
-										<span style="font-weight: 800; ">{{item.label}}</span>
+									<div class="{{getClassForElement(template)}}">
+										<i style="margin-top: 10px" class="fa fa-2x fa-{{template.icon}}"></i><br/>
+										<span style="font-weight: 800; ">{{template.label}}</span>
 									</div>
 
 								</li>
@@ -140,7 +145,7 @@
 						<div class="form-group" ng-show="selectedItem.type=='source'">
 							<label class="col-lg-4">Source Type</label>
 							<div class="col-lg-8">
-								<select ng-options="s.type as s.name for s in sources"
+								<select ng-options="s.subtype as s.subtype for s in sources"
 								        ng-model="selectedItem.subtype"
 								        class="form-control input-sm"></select>
 							</div>
@@ -149,7 +154,7 @@
 						<div class="form-group" ng-show="selectedItem.type=='processor'">
 							<label class="col-lg-4">Processor Type</label>
 							<div class="col-lg-8">
-								<select ng-options="p.type as p.name for p in processors"
+								<select ng-options="p.subtype as p.subtype for p in processors"
 								        ng-model="selectedItem.subtype"
 								        class="form-control input-sm"></select>
 							</div>
@@ -158,7 +163,7 @@
 						<div class="form-group" ng-show="selectedItem.type=='sink'">
 							<label class="col-lg-4">Sink Type</label>
 							<div class="col-lg-8">
-								<select ng-options="s.type as s.name for s in sinks "
+								<select ng-options="s.subtype as s.subtype for s in sinks "
 								        ng-model="selectedItem.subtype"
 								        class="form-control input-sm"></select>
 							</div>
