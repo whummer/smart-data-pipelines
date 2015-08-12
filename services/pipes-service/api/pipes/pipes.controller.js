@@ -1,6 +1,6 @@
 'use strict';
 
-var Pipe = require('./pipe.model.js'),
+var Pipe = require('./pipe.model.js').Model,
 		errors = require('riox-services-base/lib/util/errors'),
 		auth = require('riox-services-base/lib/auth/auth.service'),
 		log = global.log;

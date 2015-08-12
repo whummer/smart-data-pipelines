@@ -21,4 +21,5 @@ Pipe.options.toJSON.transform = function (doc, ret, options) {
 
 Pipe.set('toObject', {virtuals: true});
 
-module.exports = mongoose.model('Pipe', Pipe);
+module.exports.Model = mongoose.model('Pipe', Pipe);
+module.exports.Schema = Pipe;
