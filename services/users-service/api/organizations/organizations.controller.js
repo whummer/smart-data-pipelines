@@ -268,6 +268,7 @@ var findUser = function(req, userId) {
 		}
 		riox.user(query, {
 			callback: function(user) {
+				if(user[0]) user = user[0];
 				resolve(user);
 			},
 			headers: req.headers

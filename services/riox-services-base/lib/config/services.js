@@ -5,6 +5,15 @@
 var domain = "svc.cluster.local";
 
 var getHost = function(env, service) {
+	if(service == "riox-ui-frontend") {
+		var uiFrontends = {
+				"production": "platform.riox.io",
+				"staging": "demo.riox.io",
+				"test": "gateway.test." + domain,
+				"development": "gateway.development." + domain
+		};
+		return uiFrontends[env];
+	}
 	return service + "." + env + "." + domain;
 }
 
@@ -35,6 +44,7 @@ envs.forEach(function(env) {
 	appConfig[env] = {
 			domain: env + "." + domain,
 			services: {
+				"riox-ui-frontend": { url: "http://" + getHost(env, "riox-ui-frontend") + "/" },
 				"riox-ui": {		url: "http://" + getHost(env, "riox-ui") + ":8081/" },
 				billing: {			url: "http://" + getHost(env, "billing-service") + ":8080/api/v1/billing" },
 				users: {			url: "http://" + getHost(env, "users-service") + ":8084/api/v1/users" },
@@ -71,6 +81,9 @@ envs.forEach(function(env) {
 				redis: {
 					hostname: getHost(env, "redis"),
 					url: "redis://" + getHost(env, "redis") + ":6379"
+				},
+				kibana: {
+					url: "http://" + getHost(env, "kibana") + ":5601"
 				},
 				statsd: {
 					hostname: getHost(env, "statsd")

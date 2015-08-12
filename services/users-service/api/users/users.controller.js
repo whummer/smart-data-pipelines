@@ -145,7 +145,9 @@ exports.create = function (req, res, next) {
 		 		/* send activation mail */
 				sendActivationMail(user);
 				/* send token result */
-				res.json({ token: token });
+				var result = { token: token };
+				result[USER_ID] = user[ID];
+				res.json(result);
 			},
 	    	headers: headers
 		},
@@ -160,8 +162,6 @@ exports.create = function (req, res, next) {
  */
 exports.show = function (req, res, next) {
 	var userId = req.params.id;
-
-	userId = new mongoose.Types.ObjectId(userId);
 
 	/* TODO check permissions */
 	User.findById(userId, function (err, user) {
@@ -280,14 +280,15 @@ exports.recover = function(req, res) {
  * Get my info
  */
 exports.me = function(req, res, next) {
-  var userId = req.user._id;
-  User.findOne({
-    _id: userId
-  }, '-salt -hashedPassword', function(err, user) { // don't ever give out the password or salt
-    if (err) return next(err);
-    if (!user) return res.status(401).send();
-    res.json(user);
-  });
+	var user = auth.getCurrentUser(req);
+	var userId = user.id;
+	User.findOne({
+		_id: userId
+	}, '-salt -hashedPassword', function(err, user) { // don't ever give out the password or salt
+		if (err) return next(err);
+		if (!user) return res.status(401).send();
+		res.json(user);
+	});
 };
 
 /**
@@ -322,7 +323,8 @@ exports.saveMe = function(req, res, next) {
 
 
 exports.insertInternalCallUser = function() {
-	var id = new mongoose.Types.ObjectId(auth.INTERNAL_USER_ID);
+	var id = auth.INTERNAL_USER_ID;
+
 	var query = { _id: id };
 	User.findOne(query, function(err, user) {
 	    if (err) {

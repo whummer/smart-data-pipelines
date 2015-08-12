@@ -10,10 +10,10 @@ var EMAIL_PROXY_SMTP_HOST = "smtp.sendgrid.net";
 var EMAIL_PROXY_SMTP_PORT = 2525;
 var EMAIL_PROXY_SMTP_USER = "whummer";
 var EMAIL_PROXY_SMTP_PASS = "__TODO__";
-var URL_BASE = "http://platform.riox.io:8081";
-var URL_ACTIVATION = URL_BASE + "/#/activate/<activationKey>";
-var URL_ACCEPT_INVITATION = URL_BASE + "/#/accept/<invitationKey>";
-var URL_REJECT_INVITATION = URL_BASE + "/#/reject/<invitationKey>";
+var URL_BASE = global.servicesConfig["riox-ui-frontend"].url;
+var URL_ACTIVATION = URL_BASE + "#/activate/<activationKey>";
+var URL_ACCEPT_INVITATION = URL_BASE + "#/accept/<invitationKey>";
+var URL_REJECT_INVITATION = URL_BASE + "#/reject/<invitationKey>";
 //var EMAIL_SMTP_HOST = "mail.gandi.net";
 //var EMAIL_SMTP_PORT = 465;
 //var EMAIL_SMTP_USER = "info@riox.io";
@@ -66,7 +66,7 @@ exports.sendInvitationMail = function(user, invitee, invitation, org) {
 			.replace(/<invitee>/g, displayName)
 			.replace(/<invitedFor>/g, org[NAME])
 			.replace(/<invitationKey>/g, invitation[ID]);
-	console.log("sending invitation mail", invitee, msg);
+	//console.log("sending invitation mail", invitee, msg);
 	send(invitee.email, EMAIL_INVITATION_SUBJECT, msg);
 };
 

@@ -26,7 +26,7 @@ if (!global.servicesConfig && global.config) {
 }
 
 /* any status codes >= (gte) to this one will be logged as errors */
-var STATUS_CODE_LOGERROR_START = 500;
+var STATUS_CODE_LOGERROR_START = 400;
 
 var start = function (config, routes, serviceName) {
 
@@ -59,7 +59,7 @@ var start = function (config, routes, serviceName) {
 						})
 					],
 					expressFormat: true,
-					meta: true
+					meta: false
 				});
 
 				expressApp.use(function(req, res, next) {
@@ -75,7 +75,7 @@ var start = function (config, routes, serviceName) {
 						}
 						res.end(); // needed to trigger the callback function in winston-express logger
 					};
-			        next();
+					next();
 				});
 			}
 		}
@@ -100,7 +100,7 @@ var start = function (config, routes, serviceName) {
 			if(res.statusCode >= STATUS_CODE_LOGERROR_START) {
 				errorDetailsLogger(err, req, res, emptyNext);
 			}
-			res.end(); // needed to trigger the callback function in winston-express logger
+			//next();
 		});
 
 	}
@@ -133,7 +133,7 @@ var start = function (config, routes, serviceName) {
 				if(log) log.info("Using TEST mode (mockgoose)");
 				var mockgoose = require('mockgoose');
 				mockgoose(mongoose);
-				mongoose.connect("");
+				//mongoose.connect("");
 				mongoose.__mockgooseHasBeenApplied = true;
 			}
 		} else {
@@ -154,13 +154,13 @@ var start = function (config, routes, serviceName) {
 		expressConfig(expressApp, config);
 		routes(expressApp, server);
 
-		// need to put this AFTER the routes are loaded
+		// install our custom error handler AFTER the routes are loaded
+		expressApp.use(errorHandler);
+
+		// install error request logger last
 		if (requestLogging && config.logging.requestLogging.logErrorRequests) {
 			configureErrorRequestLogging(expressApp);
 		}
-
-		// install our custom error handler last
-		expressApp.use(errorHandler);
 
 		server.listen(config.port, config.ip, function () {
 			log.info('Service ' + serviceName + ' listening on %d, in %s mode', config.port, expressApp.get('env'));

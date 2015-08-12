@@ -10,7 +10,8 @@ var LRUCache = require("lru-cache");
 
 var validateJwt = expressJwt({secret: config.secrets.session});
 
-var INTERNAL_USER_ID = "000000000000000000000000"; // Mongodb ObjectId format
+//var INTERNAL_USER_ID = "000000000000000000000000"; // Mongodb ID format
+var INTERNAL_USER_ID = "000000000000"; // Mongodb ID format
 var expiresInMinutes = 60 * 24 * 3; // 3 days expiration time
 
 var usersCache = LRUCache({
@@ -221,7 +222,7 @@ function getTokenFromHeaders(req) {
  */
 function setTokenCookie(req, res) {
 	if (!req.user) {
-		res.json(404, {message: 'Something went wrong, please try again.'});
+		res.json(401, {message: 'Something went wrong, please try again.'});
 		return res.end();
 	}
 	var token = signToken(req.user._id, req.user.role);

@@ -10,7 +10,8 @@ var gulp = require('gulp-help')(require('gulp')),
 		angular_filesort = require('gulp-angular-filesort'),
 		cp = require('child_process'),
 		rename = require('gulp-rename'),
-		clean = require('gulp-clean'),
+		del = require('del'),
+		vinylPaths = require('vinyl-paths'),
 		util = require('gulp-util'),
 		uglify = require('gulp-uglify'),
 		concat = require('gulp-concat'),
@@ -83,7 +84,7 @@ gulp.task('default', 'i\'m only here for the beer', function () {
 gulp.task('ui:clean', 'remove build directories', function () {
 	return gulp.
 		src(BUILD_DIR, {read: false}).
-		pipe(clean());
+		pipe(vinylPaths(del));
 });
 
 //
@@ -118,11 +119,11 @@ gulp.task('ui:copy:prod', 'copies riox-ui sources to PRODUCTION build dir', func
 // compile LESS files to CSS
 //
 gulp.task('ui:less', 'compiles LESS to CSS', function () {
-	return less2css();
+	return less2css(paths.base + '/app');
 });
 
 function less2css(target) {
-	console.log('Compiling LESS files to CSS (' + util.colors.magenta(paths.less_main) + ')');
+	console.log('Compiling LESS files to CSS (' + util.colors.magenta(paths.less_main) + ',' + target + ')');
 	return gulp.src([paths.less_main, paths.less_in_views, '!'	+ paths.less_includes])
 		.pipe(less())
 		.pipe(gulp.dest(target));
@@ -164,7 +165,11 @@ function injectResources(indexLocation, cssLocation, ignorePath, minified, callb
 	var pipe = gulp.src(paths.main)
 
 		.pipe(inject(
-			gulp.src(bowerFiles({paths: BASE_DIR}), {read: false})
+			gulp.src(bowerFiles({paths: {
+				bowerDirectory:	BASE_DIR + '/lib/bower_components',
+				bowerJson : BASE_DIR + '/bower.json',
+				bowerRc : BASE_DIR + '/.bowerrc'
+			}}), {read: false})
 				.pipe(jqueryFilter), {name: 'bower', ignorePath: ignorePath}))
 
 		.pipe(inject(es.merge(
@@ -267,7 +272,7 @@ gulp.task('ui:livereload', 'serve the riox-ui using nodemon (with livereload)', 
 gulp.task('ui:build:prod', 'create a PRODUCTION build of riox-ui', function (callback) {
 	util.log(util.colors.green("Running PRODUCTION build"));
 	//runSequence('ui:clean', 'ui:imagemin', 'ui:scriptsmin', 'ui:copy:prod', 'ui:inject:prod');
-	runSequence('ui:clean', 'ui:scriptsmin', 'ui:copy:prod', 'ui:inject:prod', function() {
+	runSequence('ui:clean', 'ui:less', 'ui:scriptsmin', 'ui:copy:prod', 'ui:inject:prod', function() {
 		callback();
 	});
 });
@@ -277,15 +282,15 @@ gulp.task('ui:build:prod', 'create a PRODUCTION build of riox-ui', function (cal
 //
 gulp.task('ui:build:prod:noimagemin', 'create a PRODUCTION build of riox-ui (NO image optimization)', function (callback) {
 	util.log(util.colors.green("Running PRODUCTION build"));
-	runSequence('ui:copy:prod', 'ui:scriptsmin', 'ui:inject:prod', callback);
+	runSequence('ui:less', 'ui:scriptsmin', 'ui:copy:prod', 'ui:inject:prod', callback);
 });
 
 //
-// build PROD (no image optimization)
+// build TEST (no image optimization)
 //
 gulp.task('ui:build:test', 'create a TEST build of riox-ui', function (callback) {
 	util.log(util.colors.green("Running TEST build"));
-	runSequence('ui:copy:test', 'ui:inject:test', callback);
+	runSequence('ui:less', 'ui:copy:test', 'ui:inject:test', callback);
 });
 
 //

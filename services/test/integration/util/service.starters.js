@@ -2,8 +2,27 @@ var services = {};
 
 var x = exports;
 
+
+var ensureMockgoose = x.ensureMockgoose = function() {
+	var mongoose = global.mongoose || require('mongoose');
+	if (!global.mongoose) {
+		global.mongoose = mongoose;
+	}
+	if (!mongoose.__mockgooseHasBeenApplied) {
+		console.log("Enabling mockgoose for TEST mode");
+		var mockgoose = require('mockgoose');
+		mockgoose(mongoose);
+		mongoose.connect("");
+		mongoose.__mockgooseHasBeenApplied = true;
+	}
+};
+
+
 x.startStreamsService = function() {
 	if(!services.streams) {
+		/* make sure we use mockgoose as DB */
+		ensureMockgoose();
+		/* prepare and run service */
 		services.streams = { port : 3000, sinks: {}, sources: {}, processors: {} };
 		services.streams.url = global.servicesConfig.streams.url =
 			"http://localhost:" + services.streams.port + "/api/v1/streams";
@@ -20,6 +39,9 @@ x.startStreamsService = function() {
 
 x.startStreamsAccessService = function() {
 	if(!services.access) {
+		/* make sure we use mockgoose as DB */
+		ensureMockgoose();
+		/* prepare and run service */
 		services.access = { port : 3000 };
 		services.access.url = global.servicesConfig.access.url =
 			"http://localhost:" + services.access.port + "/api/v1/access";
@@ -33,6 +55,9 @@ x.startStreamsAccessService = function() {
 
 x.startStreamsConsentsService = function() {
 	if(!services.consents) {
+		/* make sure we use mockgoose as DB */
+		ensureMockgoose();
+		/* prepare and run service */
 		services.consents = { port : 3000 };
 		services.consents.url = global.servicesConfig.consents.url =
 			"http://localhost:" + services.consents.port + "/api/v1/consents";
@@ -46,6 +71,9 @@ x.startStreamsConsentsService = function() {
 
 x.startUsersService = function() {
 	if(!services.users) {
+		/* make sure we use mockgoose as DB */
+		ensureMockgoose();
+		/* prepare and run service */
 		services.users = { port : 3001 };
 		services.users.url = global.servicesConfig.users.url =
 			"http://localhost:" + services.users.port + "/api/v1/users";
@@ -59,6 +87,9 @@ x.startUsersService = function() {
 
 x.startOrganizationsService = function() {
 	if(!services.organizations) {
+		/* make sure we use mockgoose as DB */
+		ensureMockgoose();
+		/* prepare and run service */
 		services.organizations = { port : 3001 };
 		services.organizations.url = global.servicesConfig.organizations.url =
 			"http://localhost:" + services.organizations.port + "/api/v1/organizations";
@@ -72,6 +103,9 @@ x.startOrganizationsService = function() {
 
 x.startFilesService = function() {
 	if(!services.files) {
+		/* make sure we use mockgoose as DB */
+		ensureMockgoose();
+		/* prepare and run service */
 		services.files = { port : 3004 };
 		services.files.url = global.servicesConfig.files.url =
 			"http://localhost:" + services.files.port + "/api/v1/files";
@@ -86,6 +120,9 @@ x.startFilesService = function() {
 x.startAnalyticsService = function(callback) {
 	var exists = !!services.analytics;
 	if(!exists) {
+		/* make sure we use mockgoose as DB */
+		ensureMockgoose();
+		/* prepare and run service */
 		services.analytics = { port : 3005 };
 		services.analytics.url = global.servicesConfig.analytics.url =
 			"http://localhost:" + services.analytics.port + "/api/v1/analytics";

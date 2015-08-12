@@ -63,7 +63,9 @@ app.auth = function(email, pass, callback) {
 	services.users = starters.startUsersService();
 	services.organizations = starters.startOrganizationsService();
 	/* do login */
-	attemptLogin(email, pass, callback);
+	setTimeout(function() {
+		attemptLogin(email, pass, callback);
+	}, 1000);
 }
 
 var getUserId = function(userObj, callback) {
@@ -94,7 +96,7 @@ app.authDefault = function(callback) {
 		return;
 	}
 
-	app.auth("user1@test.com", "user1", function(res) {
+	app.auth("test1@example.com", "test123", function(res) {
 		app.user1 = {
 			tokenHeaders : {
 				authorization : "Bearer " + res.body.token
@@ -102,7 +104,7 @@ app.authDefault = function(callback) {
 		};
 		initClientProxy(app.user1);
 
-		app.auth("user2@test.com", "user2", function(res) {
+		app.auth("test2@example.com", "test123", function(res) {
 			app.user2 = {
 				tokenHeaders : {
 					authorization : "Bearer " + res.body.token

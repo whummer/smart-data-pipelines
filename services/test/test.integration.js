@@ -10,16 +10,16 @@ beforeEach(function(){
 })
 
 /* API tests */
-require('./integration/api/test.streams');
-require('./integration/api/test.streamaccess');
-require('./integration/api/test.streamconsents');
+//require('./integration/api/test.streams');
+//require('./integration/api/test.streamaccess');
+//require('./integration/api/test.streamconsents');
 require('./integration/api/test.users');
 require('./integration/api/test.organizations');
 require('./integration/api/test.files');
-require('./integration/api/test.analytics');
+//require('./integration/api/test.analytics');
 
 /* Streams integration tests */
-require('./integration/streams/test.streams.apply');
+//require('./integration/streams/test.streams.apply');
 
 /* Stream integration test with analytics */
-require('./integration/streams/test.moving-avg.apply.js');
+//require('./integration/streams/test.moving-avg.apply.js');

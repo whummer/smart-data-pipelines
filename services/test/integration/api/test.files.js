@@ -58,7 +58,6 @@ describe('/files', function() {
 		fs.writeFileSync(tmpName1, "Test file content ...");
 		upload(test.user1, tmpName1, "uploaded.txt", function(fileId) {
 			download(app.files.url + "/" + fileId, tmpName2, function() {
-//				console.log(tmpName1, tmpName2);
 				assert.equal(checksum(tmpName1), checksum(tmpName2));
 				done();
 			});
