@@ -126,7 +126,7 @@ angular.module("rioxApp").controller("DataPipesCtrl", function ($scope, $log, gr
 	//
 	$scope.deletePipeline = function (pipeline, callback) {
 		var deleteCallback = function () {
-			riox.delete.pipe(pipeline._id, function () {
+			riox.delete.pipe(pipeline.id, function () {
 				growl.success('Deleted pipeline "' + pipeline.name + '"');
 				callback();
 			}, function (error) {

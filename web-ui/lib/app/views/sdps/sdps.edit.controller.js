@@ -47,9 +47,7 @@ angular.module('rioxApp').controller('EditDataPipeCtrl', function ($scope, $filt
 			//
 			$scope.submitDatapipe = function () {
 				var payload = angular.copy($scope.pipeline);
-				delete payload.__v;
-				delete payload._id;
-				if ($scope.pipeline._id) {
+				if ($scope.pipeline.id) {
 					riox.save.pipe(payload, function (response) {
 						$log.info('Updated datapipe. Response: ', response);
 						growl.info("Datapipe updated successfully.");

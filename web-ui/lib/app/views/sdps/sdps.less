@@ -15,7 +15,7 @@
  */
 .pipeEditor ul[dnd-list],
 .pipeEditor ul[dnd-list] > li {
-	position: relative;
+  position: relative;
 }
 
 /***************************** Dropzone Styling *****************************/
@@ -25,9 +25,9 @@
  * otherwise you can't drop to it once it's empty
  */
 .pipeEditor .dropzone ul[dnd-list] {
-	min-height: 42px;
-	margin: 0;
-	padding-left: 0;
+  min-height: 42px;
+  margin: 0;
+  padding-left: 0;
 }
 
 /**
@@ -38,7 +38,7 @@
  * browsers we can use event.offsetY for this.
  */
 .pipeEditor .dropzone li {
-	display: block;
+  display: block;
 }
 
 /**
@@ -47,7 +47,7 @@
  * .dndDragging class is automatically set during the drag operation.
  */
 .pipeEditor .dropzone .dndDragging {
-	opacity: 0.7;
+  opacity: 0.7;
 }
 
 /**
@@ -56,7 +56,7 @@
  * actually moving it. Note that the source element has also .dndDragging class.
  */
 .pipeEditor .dropzone .dndDraggingSource {
-	display: none;
+  display: none;
 }
 
 /**
@@ -64,215 +64,275 @@
  * while the user is dragging over it.
  */
 .pipeEditor .dropzone .dndPlaceholder {
-	background-color: #ddd !important;
-	min-height: 80px;
-	width: 120px;
-	display: block;
-	position: relative;
+  background-color: #ddd !important;
+  min-height: 80px;
+  width: 120px;
+  display: block;
+  position: relative;
 }
 
 .pipeEditor .dropzone .itemlist {
-	min-height: 120px !important;
+  min-height: 120px !important;
 }
 
 .pipeEditor .dropzone .itemlist > li {
-	color: @pipe-element-font-color;
-	font-weight: 700;
-	margin-top: 20px;
-	text-align: center;
-	float: left;
-	width: @pipe-element-width;
-	height: @pipe-element-height;
-	margin-left: 10px;
+  color: @pipe-element-font-color;
+  font-weight: 700;
+  margin-top: 20px;
+  text-align: center;
+  float: left;
+  width: @pipe-element-width;
+  height: @pipe-element-height;
+  margin-left: 10px;
 }
 
 .pipeEditor .dropzone .container-element {
-	margin: 10px;
+  margin: 10px;
 }
 
 .pipeToolbox ul {
-	list-style-type: none;
-	padding: 0;
+  list-style-type: none;
+  padding: 0;
 }
 
 .pipeToolbox ul li {
-	margin: 5px;
-	display: inline-block;
+  margin: 5px;
+  display: inline-block;
 }
 
 /***************************** Pipe Source styles *****************************/
 
 .element {
-	width: @pipe-element-width;
-	min-height: @pipe-element-height;
-	background-color: @pipe-element-bg;
-	float: left;
-	position: relative;
-	text-align: center;
-	border-radius: .25em;
-	padding-top: 5px;
-	margin-left: 10px;
-	color: @pipe-element-font-color;
+  width: @pipe-element-width;
+  min-height: @pipe-element-height;
+  background-color: @pipe-element-bg;
+  float: left;
+  position: relative;
+  text-align: center;
+  border-radius: .25em;
+  padding-top: 5px;
+  margin-left: 10px;
+  color: @pipe-element-font-color;
 }
 
 .elementAttachment {
-	content: "";
-	position: absolute;
-	top: 20px;
-	width: 0;
-	height: 40px;
-	border-top: 10px solid transparent;
-	border-bottom: 10px solid transparent;
-	-webkit-transform: rotate(180deg);
-	-moz-transform: rotate(180deg);
-}
-
-.elementAttachmentBig {
-	.elementAttachment;
-	top: 40px;
-	height: 80px;
-	border-top: 20px solid transparent;
-	border-bottom: 20px solid transparent;
+  content: "";
+  position: absolute;
+  top: 20px;
+  width: 0;
+  height: 40px;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
 }
 
 .source {
-	.element
+  .element
 }
 
 .source:after {
-	.elementAttachment;
-	right: -10px;
-	border-right: 10px solid @pipe-element-bg;
+  .elementAttachment;
+  right: -10px;
+  border-right: 10px solid @pipe-element-bg;
 }
 
 .sourceSelected {
-	.source;
-	background-color: @pipe-element-bg-selected !important;
+  .source;
+  background-color: @pipe-element-bg-selected !important;
 }
 
 .sourceSelected:after {
-	.elementAttachment;
-	border-right: 10px solid @pipe-element-bg-selected !important;
+  .elementAttachment;
+  border-right: 10px solid @pipe-element-bg-selected !important;
 }
 
 /***************************** Pipe Sink styles *****************************/
 
 .sink {
-	.element;
+  .element;
 }
 
 .sinkSelected {
-	.sink;
-	background-color: @pipe-element-bg-selected !important;
+  .sink;
+  background-color: @pipe-element-bg-selected !important;
 }
 
 .sink:before {
-	.elementAttachment;
-	right: 110px;
-	border-right: 10px solid white;
+  .elementAttachment;
+  right: 110px;
+  border-right: 10px solid white;
 }
 
 /***************************** Pipe Processor styles *****************************/
 
 .processor {
-	.element;
+  .element;
 }
 
 .processorSelected {
-	.processor;
-	background-color: @pipe-element-bg-selected !important;
+  .processor;
+  background-color: @pipe-element-bg-selected !important;
 }
 
 .processor:before {
-	.elementAttachment;
-	border-right: 10px solid white;
-	right: 110px;
+  .elementAttachment;
+  border-right: 10px solid white;
+  right: 110px;
 }
 
 .processor:after {
-	.elementAttachment;
-	right: -10px;
-	border-right: 10px solid @pipe-element-bg;
+  .elementAttachment;
+  right: -10px;
+  border-right: 10px solid @pipe-element-bg;
 }
 
 .processorSelected:after {
-	.elementAttachment;
-	right: -10px;
-	border-right: 10px solid @pipe-element-bg-selected;
+  .elementAttachment;
+  right: -10px;
+  border-right: 10px solid @pipe-element-bg-selected;
 }
 
 /********************************** ELEMENT CONTAINER *************************************/
 .element-container {
-	.element;
-	float: left;
-	margin-left: 10px;
-	background-color: transparent;
-	border-color: @pipe-element-bg;
-	border-style: dashed;
-	width: @pipe-element-width + 10%;
-	height: @pipe-element-height + 10%;
-	color: @pipe-element-bg;
+  .element;
+  float: left;
+  margin-left: 10px;
+  background-color: transparent;
+  border-color: @pipe-element-bg;
+  border-style: dashed;
+  width: @pipe-element-width + 10%;
+  height: @pipe-element-height + 10%;
+  color: @pipe-element-bg;
 }
 
 .removeElementArea {
-	background-color: @remove-element-bg;
-	border-radius: .25em;
-	width: 80px;
-	height: 80px;
-	padding-top: 15px;
-	text-align: center;
-	border-style: dashed;
-	border-width: 1px;
-	margin-top: 5px;
+  background-color: @remove-element-bg;
+  border-radius: .25em;
+  width: 80px;
+  height: 80px;
+  padding-top: 15px;
+  text-align: center;
+  border-style: dashed;
+  border-width: 1px;
+  margin-top: 5px;
 }
 
 /********************************** ELEMENT LIST BIG VIEWS *************************************/
 
+.elementBig {
+  .element;
+  width: @pipe-element-width * 2;
+  height: @pipe-element-height * 2;
+}
+
+.elementAttachmentBig {
+  .elementAttachment;
+  top: 40px;
+  height: 80px;
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+}
+
 .sourceBig {
-	.source;
-	width: @pipe-element-width * 2;
-	height: @pipe-element-height * 2;
+  .elementBig;
 }
 
 .sourceBig:after {
-	.elementAttachmentBig;
-	right: -15px;
-	border-right: 15px solid @pipe-element-bg;
+  .elementAttachmentBig;
+  right: -15px;
+  border-right: 15px solid @pipe-element-bg;
 }
 
 .processorBig {
-	.processor;
-	width: @pipe-element-width * 2;
-	height: @pipe-element-height * 2;
+  .elementBig;
 }
 
 .processorBig:before {
-	.elementAttachmentBig;
-	border-right: 15px solid white;
-	right: 225px;
+  .elementAttachmentBig;
+  border-right: 15px solid white;
+  right: 225px;
 }
 
 .processorBig:after {
-	.elementAttachmentBig;
-	right: -15px;
-	border-right: 15px solid @pipe-element-bg;
+  .elementAttachmentBig;
+  right: -15px;
+  border-right: 15px solid @pipe-element-bg;
 }
 
 .sinkBig {
-	.sink;
-	width: @pipe-element-width * 2;
-	height: @pipe-element-height * 2;
+  .elementBig;
 }
 
 .sinkBig:before {
-	.elementAttachmentBig;
-	right: 225px;
-	border-right: 15px solid white;
+  .elementAttachmentBig;
+  right: 225px;
+  border-right: 15px solid white;
+
+}
+
+/********************************** ELEMENT LIST SMALL VIEWS *************************************/
+
+.elementSmall {
+  .element;
+  width: @pipe-element-width * 0.5;
+  height: @pipe-element-height * 0.5;
+  min-height: @pipe-element-height * 0.5;
+}
+
+
+.elementAttachmentSmall {
+  .elementAttachment;
+  top: 10px;
+  height: 10px;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+}
+
+
+.sourceSmall {
+  .elementSmall;
+}
+
+.sourceSmall:after {
+  .elementAttachmentSmall;
+  right: -15px;
+  border-right: 10px solid @pipe-element-bg;
+}
+
+.processorSmall {
+  .processor;
+  width: @pipe-element-width * 2;
+  height: @pipe-element-height * 2;
+}
+
+.processorSmall:before {
+  .elementAttachmentSmall;
+  border-right: 15px solid white;
+  right: 225px;
+}
+
+.processorSmall:after {
+  .elementAttachmentSmall;
+  right: -15px;
+  border-right: 15px solid @pipe-element-bg;
+}
+
+.sinkSmall {
+  .sink;
+  width: @pipe-element-width * 2;
+  height: @pipe-element-height * 2;
+}
+
+.sinkSmall:before {
+  .elementAttachmentSmall;
+  right: 225px;
+  border-right: 15px solid white;
 }
 
 /******************************* COMMON STYLES *********************************/
 .v-align {
-	float: none;
-	display: inline-block;
-	vertical-align: middle;
+  float: none;
+  display: inline-block;
+  vertical-align: middle;
 }
