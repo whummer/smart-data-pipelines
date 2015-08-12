@@ -1,7 +1,5 @@
 'use strict';
 
-var mongoose = global.mongoose || require('mongoose-q')();
-
 var Schema = mongoose.Schema;
 
 var pipeSchema = {};

@@ -1,6 +1,8 @@
 'use strict';
 
-var mongoose = global.mongoose || require('mongoose-q')();
+// var mongoose = global.mongoose || require('mongoose-q')();
+// var mongoose = require('mongoose-q')(require('mongoose'));
+
 var Schema = mongoose.Schema;
 
 const ELEMENT_TYPES = ['container', 'source', 'sink', 'processor'];

@@ -18,7 +18,6 @@ var errorHandler = require('./util/errors/handler');
 require('./api/service.calls');
 
 var mongoose = global.mongoose || require('mongoose-q')();
-//var mongoose = global.mongoose || require('mongoose');
 if (!global.mongoose) {
 	global.mongoose = mongoose;
 }
@@ -98,26 +97,19 @@ var start = function (config, routes, serviceName) {
 				})
 			]
 		});
-<<<<<<< HEAD
 
 		//
 		// FR: add a global error handler so we see problems on the console.
 		//
 		function logErrors(err, req, res, next) {
 			log.error(err.stack);
-  		next(err);
+			next(err);
 		}
 		expressApp.use(logErrors);
 
 		expressApp.use(function(err, req, res, next) {
 			var emptyNext = function(){};
-			if(res.statusCode >= STATUS_CODE_LOGERROR_START) {
-=======
-		expressApp.use(function (err, req, res, next) {
-			var emptyNext = function () {
-			};
 			if (res.statusCode >= STATUS_CODE_LOGERROR_START) {
->>>>>>> 7bba080... adding support for data bricks in pipe service and in UI.
 				errorDetailsLogger(err, req, res, emptyNext);
 			}
 			res.end(); // needed to trigger the callback function in winston-express logger

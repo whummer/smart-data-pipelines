@@ -15,7 +15,7 @@ var app = {};
 describe('pipes.deployment', function() {
 
 	before(function(done) {
-    log.debug("before hook");
+		log.debug("before hook");
 		/* start service(s) */
 		app.users = starters.startUsersService();
 		app.pipes = starters.startPipesService();
@@ -23,12 +23,13 @@ describe('pipes.deployment', function() {
 	});
 
 	after(function(done) {
-    log.debug("after hook");
-    log.debug("Users service shut down");
+		log.debug("after hook");
+		log.debug("Users service shut down");
 		app.users.server.stop();
-    log.debug("Pipes service shut down");
-    app.pipes.server.stop();
-    done();
+		log.debug("Pipes service shut down");
+		if (app.pipes.server)
+			app.pipes.server.stop();
+		done();
 	});
 
 	function wrap(func, testUser) {
@@ -39,10 +40,9 @@ describe('pipes.deployment', function() {
 		};
 	}
 
-	it('creates stream source, sink, processor; and run flow e2e', function(done) {
-		this.timeout(1000*60*2); // high timeout for long-running test
+	it('create a basic pipeline deployment', function(done) {
 
-    done();
+		done();
 	});
 
 });
