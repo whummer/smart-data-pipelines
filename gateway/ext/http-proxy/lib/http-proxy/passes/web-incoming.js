@@ -154,7 +154,7 @@ web_o = Object.keys(web_o).map(function(pass) {
 					if(web_o[i](req, res, proxyRes, options)) { break; }
 				} catch(e) {
 					logger.warn("Cannot call web-outgoing method: " + e);
-					break;
+					return;
 				}
 			}		
 
