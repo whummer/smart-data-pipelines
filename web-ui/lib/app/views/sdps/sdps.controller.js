@@ -91,12 +91,14 @@ angular.module("rioxApp").controller("DataPipesCtrl", function ($scope, $log, gr
 	};
 
 	//
-	// get the font-awesome based icon for given element
+	// get the font-awesome based icon for given element. Return the icon of the template if
+    // element has no subtype yet
 	//
 	$scope.getElementIcon = function (element) {
-		if (element.icon) {
+		if (!element.subtype && element.icon) {
 			return element.icon;
 		}
+
 		//$log.debug('Getting icon for element ', element);
 		var template = getTemplatesForElement(element);
 		return template.icon;
