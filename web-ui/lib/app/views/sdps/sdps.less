@@ -2,9 +2,14 @@
 
 @pipe-element-width: 120px;
 @pipe-element-height: 80px;
+
+@pipe-element-big-width: @pipe-element-width  * 2.5;
+@pipe-element-big-height: @pipe-element-height * 2.5;
+
 @pipe-element-bg: #47b1ff;
 @pipe-element-bg-selected: #ff5e00;
 @pipe-element-font-color: #FFFFFF;
+@pipe-element-description-font-color: #f1f1f1;
 @remove-element-bg: #c7c7c7;
 
 /***************************** Required styles *****************************/
@@ -65,8 +70,8 @@
  */
 .pipeEditor .dropzone .dndPlaceholder {
   background-color: #ddd !important;
-  min-height: 80px;
-  width: 120px;
+  min-height: @pipe-element-height;
+  width: @pipe-element-width;
   display: block;
   position: relative;
 }
@@ -216,20 +221,23 @@
   border-style: dashed;
   border-width: 1px;
   margin-top: 5px;
+  list-style: none;
 }
 
 /********************************** ELEMENT LIST BIG VIEWS *************************************/
 
 .elementBig {
   .element;
-  width: @pipe-element-width * 2;
-  height: @pipe-element-height * 2;
+  color: @pipe-element-description-font-color;
+  background-color: @pipe-element-bg;
+  width: @pipe-element-big-width;
+  min-height: @pipe-element-big-height;
 }
 
 .elementAttachmentBig {
   .elementAttachment;
-  top: 40px;
-  height: 80px;
+  top: @pipe-element-big-height * 0.15;
+  height: @pipe-element-big-height * 0.7;
   border-top: 20px solid transparent;
   border-bottom: 20px solid transparent;
 }
@@ -240,7 +248,7 @@
 
 .sourceBig:after {
   .elementAttachmentBig;
-  right: -15px;
+  right: -8px;
   border-right: 15px solid @pipe-element-bg;
 }
 
@@ -250,13 +258,13 @@
 
 .processorBig:before {
   .elementAttachmentBig;
-  border-right: 15px solid white;
-  right: 225px;
+  border-right: 10px solid white;
+  right: @pipe-element-big-width - 8;
 }
 
 .processorBig:after {
   .elementAttachmentBig;
-  right: -15px;
+  right: -8px;
   border-right: 15px solid @pipe-element-bg;
 }
 
@@ -266,8 +274,8 @@
 
 .sinkBig:before {
   .elementAttachmentBig;
-  right: 225px;
-  border-right: 15px solid white;
+  right: @pipe-element-big-width - 8;
+  border-right: 10px solid white;
 
 }
 
@@ -296,37 +304,33 @@
 
 .sourceSmall:after {
   .elementAttachmentSmall;
-  right: -15px;
-  border-right: 10px solid @pipe-element-bg;
+  right: -10px;
+  border-right: 15px solid @pipe-element-bg;
 }
 
 .processorSmall {
-  .processor;
-  width: @pipe-element-width * 2;
-  height: @pipe-element-height * 2;
+  .elementSmall
 }
 
 .processorSmall:before {
   .elementAttachmentSmall;
+  right: (@pipe-element-width * 0.5) - 10px;
   border-right: 15px solid white;
-  right: 225px;
 }
 
 .processorSmall:after {
   .elementAttachmentSmall;
-  right: -15px;
+  right: -10px;
   border-right: 15px solid @pipe-element-bg;
 }
 
 .sinkSmall {
-  .sink;
-  width: @pipe-element-width * 2;
-  height: @pipe-element-height * 2;
+  .elementSmall;
 }
 
 .sinkSmall:before {
   .elementAttachmentSmall;
-  right: 225px;
+  right: (@pipe-element-width * 0.5) - 10px;
   border-right: 15px solid white;
 }
 

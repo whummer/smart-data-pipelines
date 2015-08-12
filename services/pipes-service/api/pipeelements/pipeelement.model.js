@@ -7,10 +7,9 @@ var Schema = mongoose.Schema;
 
 const ELEMENT_TYPES = ['container', 'source', 'sink', 'processor'];
 
-
 var elementOptionSchema = {};
 elementOptionSchema[NAME] = String;
-elementOptionSchema[VALUE_TYPE] = String;
+elementOptionSchema[TYPE] = String;
 elementOptionSchema[DESCRIPTION] = String;
 elementOptionSchema[PIPE_ELEMENT_OPTION_DEFAULT] = String;
 
@@ -34,6 +33,10 @@ pipeElementSchema[PIPE_ELEMENT_OPTIONS] = [PipeElementOptionSchema];
 var PipeElementSchema = new Schema(pipeElementSchema);
 PipeElementSchema.set('toJSON', {virtuals: true});
 PipeElementSchema.set('toObject', {virtuals: true});
+PipeElementSchema.options.toJSON.transform = function (doc, ret) {
+	delete ret._id;
+	delete ret.__v;
+};
 
 module.exports.Model = mongoose.model('PipeElement', PipeElementSchema);
 module.exports.Schema = PipeElementSchema;

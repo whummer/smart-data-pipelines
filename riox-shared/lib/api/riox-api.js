@@ -85,7 +85,6 @@
 	g.PIPE_ELEMENT_SUBTYPE = "subtype";
 	g.PIPE_ELEMENT_OPTIONS = "options";
 	g.PIPE_ELEMENT_OPTION_DEFAULT = "default";
-	g.VALUE_TYPE = "type";
 	g.AMOUNT = "amount";
 	g.ALLOW_CORS = "allow-cors";
 	g.ORGANIZATION_ID = "organization-id";

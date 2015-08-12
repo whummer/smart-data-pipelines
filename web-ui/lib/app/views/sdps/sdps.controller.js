@@ -62,6 +62,8 @@ angular.module("rioxApp").controller("DataPipesCtrl", function ($scope, $log, gr
 						throw new Error('Unexpeced element type: ' + element.type);
 				}
 			})
+
+            $scope.$apply();
 		})
 	};
 
@@ -80,10 +82,10 @@ angular.module("rioxApp").controller("DataPipesCtrl", function ($scope, $log, gr
 	//
 	// get the correct CSS class for given element
 	//
-	$scope.getClassForElement = function (element, big) {
+	$scope.getClassForElement = function (element, size) {
 		//$log.debug('Getting class for element ', element);
 		if (element.type) {
-			return element.type == 'container' ? 'element-container' : (big ? element.type + 'Big' : element.type);
+			return element.type == 'container' ? 'element-container' : (size ? element.type + size : element.type);
 			//return element.type == 'container' ? 'element-container' : element.type;
 		} else {
 			return element.class == 'container' ? 'element-container' : 'element';

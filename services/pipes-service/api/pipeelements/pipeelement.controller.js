@@ -10,7 +10,7 @@ exports.listAll = function (req, res, next) {
 	log.debug('Listing all pipe elements. Query: ', query);
 	PipeElement.findQ({}).then(pipes => {
 		if (!pipes || pipes.length == 0) {
-			return next(errors.NotFoundError('No pipes found'));
+			return next(errors.NotFoundError('No pipe elements found'));
 		}
 
 		log.info('Loaded %d pipe elements', pipes.length);
