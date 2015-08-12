@@ -108,29 +108,39 @@
 			}
 		});
 
+		var splitByFirstColon = function(string) {
+			var index = string.indexOf(":");
+			var s1 = string.substring(0, index);
+			var s2 = string.substring(index + 1, string.length);
+			return [s1, s2];
+		};
+
 		var queryBackends = function(endpoint, vhost, fulfill, reject) {
-			var splitValue = endpoint.split(":")
+			var index = endpoint.indexOf(":");
 			var baseKey = prefix + 'frontend:' + vhost;
-			if (splitValue && splitValue.length === 2) {
+			if (index >= 0) {
+				var splitValue = splitByFirstColon(endpoint);
+				var serviceID = endpoint.substring(0, index);
+				var targetPath = endpoint.substring(index + 1, endpoint.length);
 
 				// query backends and dead backend indices
 				var multi = client.multi();
-				multi.lrange(baseKey + ":" + splitValue[0], 0, -1);
-				multi.smembers(baseKey + ":" + splitValue[0] + ":dead");
+				multi.lrange(baseKey + ":" + serviceID, 0, -1);
+				multi.smembers(baseKey + ":" + serviceID + ":dead");
 				multi.exec(function (err, replies) {
-					logger.debug("redis.read.%s.data: ", splitValue[0], replies);
+					logger.debug("redis.read.%s.data: ", serviceID, replies);
 					if (err) reject(err);
 					else fulfill({
 						"backends" : replies[0],
-						"service" : splitValue[0],
+						"service" : serviceID,
 						"dead" : replies[1] || [],
-						"targetPath" : splitValue[1]
+						"targetPath" : targetPath
 					});
 				});
 
 			} else {
 				// TODO check how to throw real error
-				reject(util.format("Route is specified incorrectly: '%s', %s", endpoint, splitValue));
+				reject(util.format("Route is specified incorrectly: '%s', %s", endpoint));
 			}
 		};
 
@@ -156,7 +166,7 @@
 								for(var path in data) {
 									var mapping = data[path];
 
-									var splitValue = mapping.split(":");
+									var splitValue = splitByFirstColon(mapping);
 									var endpointID = splitValue[0];
 									var target = splitValue[1];
 
