@@ -4,8 +4,6 @@ import org.springframework.batch.item.file.*;
 import org.springframework.batch.item.file.mapping.*;
 import org.springframework.batch.item.file.transform.*;
 import groovy.json.*
-//def jsonSlurper = new JsonSlurper()
-//def object = jsonSlurper.parseText(payload)
 
 def mappingTable = [
   860435 : "MBA1_8",
@@ -47,6 +45,7 @@ fileReader.setLineMapper(lineMapper);
 def context = new ExecutionContext();
 fileReader.open(context);
 def line = null;
+def result = [];
 while (line = fileReader.read()) {
 
   def id = line.readInt("OBJECTID");
@@ -55,13 +54,20 @@ while (line = fileReader.read()) {
   if (mba) {
     def geoLoc = line.readString("SHAPE").replace("POINT (", "").replace(")", "").split(" ");
     def entry = [
-      "location" : ""+geoLoc[0] + "," + geoLoc[1],
+      "id" : id, 
+      "shortName" : mba,
       "name" : line.readString("NAME"),
+      "location" : "" + geoLoc[1] + "," + geoLoc[0],
       "address" : line.readString("ADRESSE"),
-      "waitingTime" : payload[mba]
+      "waitingTime" : payload[mba],
+      "isOpen" : payload["IsOpen"],
+      "timestamp" : payload["Timestamp"],
+      "wartekreis" : payload["Wartekreis"]
     ]
     payload[mba] = entry;
-    println(entry);
+    //println(entry);
+    result << entry;
   }
 }
-return payload;
+return result;
+

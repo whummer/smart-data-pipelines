@@ -24,6 +24,10 @@ module.exports = {
 		url: appConfig["development"].infra.redis.url
 	},
 
+	kibana: {
+		url: appConfig["development"].infra.kibana.url
+	},
+
 	services: appConfig["development"].services,
 	
 	seedDB: true
