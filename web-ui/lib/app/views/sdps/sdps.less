@@ -6,8 +6,9 @@
 @pipe-element-big-width: @pipe-element-width  * 2.5;
 @pipe-element-big-height: @pipe-element-height * 2.5;
 
-@pipe-element-bg: #47b1ff;
-@pipe-element-bg-light: lighten(@pipe-element-bg, 10%);
+@pipe-element-bg: lighten(#2f4050, 40%);
+//@pipe-element-bg: #47b1ff;
+@pipe-element-bg-light: lighten(@pipe-element-bg, 5%);
 @pipe-element-bg-selected: #ff5e00;
 @pipe-element-font-color: #FFFFFF;
 @pipe-element-description-font-color: darken(@pipe-element-font-color, 0%);
@@ -233,6 +234,7 @@
   background-color: @pipe-element-bg-light;
   width: @pipe-element-big-width;
   min-height: @pipe-element-big-height;
+  border-radius: 0.4em;
   h2 {
     font-weight: 200;
   }
@@ -351,4 +353,17 @@
 
 .subheading-thinner {
   font-weight: 200;
+}
+
+#addPipeButton {
+  -moz-animation-duration: 1s;
+  -webkit-animation-duration: 1s;
+  -moz-animation-delay: 3s;
+  -webkit-animation-delay: 3s;
+  -moz-animation-iteration-count: 1;
+  -webkit-animation-iteration-count: 1;
+}
+
+.btn-primary-light {
+  background-color: @pipe-element-bg-light;
 }

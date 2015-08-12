@@ -19,7 +19,12 @@
           <small>A source brick can be used to ingest data into your Smart Data Pipeline</small>
         </h2>
         <div class="row">
-          <div class="col-lg-4" ng-repeat="element in sources" ng-include="'element.html'"></div>
+          <div class="col-lg-4 v-align" ng-repeat="element in sources" ng-include="'element.html'"></div>
+          <div class="col-lg-4 v-align text-center">
+              <button class="text-center btn btn-primary-light btn-primary  btn-circle btn-xl animated rubberBand "
+                      type="button"><i class="text-center fa fa-lg fa-plus"></i>
+              </button>
+          </div>
         </div>
       </div>
     </div>
@@ -35,7 +40,12 @@
           </small>
         </h2>
         <div class="row">
-          <div class="col-lg-4" ng-repeat="element in processors" ng-include="'element.html'"></div>
+          <div class="col-lg-4 v-align" ng-repeat="element in processors" ng-include="'element.html'"></div>
+          <div class="col-lg-4 v-align" style="margin: 10px">
+            <button class="text-center btn btn-primary btn-primary-light btn-circle btn-xl animated rubberBand"
+                    type="button"><i class="text-center fa fa-lg fa-plus"></i>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -48,7 +58,6 @@
         <h2>
           <small>A sink brick is be used to store, visualize or push data to external systems.</small>
         </h2>
-
         <div class="row">
           <div class="col-lg-4" ng-repeat="element in sinks" ng-include="'element.html'"></div>
         </div>
@@ -57,14 +66,14 @@
 
     <script type="text/ng-template" id="element.html">
 
-      <div class="{{getClassForElement(element, 'Big')}}" style="margin-top: 10px">
+      <div class="{{getClassForElement(element, 'Big')}}" style="margin-top: 30px">
         <div class="row">
           <div class="col-sm-8 v-align">
             <h2 class="text-left" style="margin-left: 5px">{{element.subtype}}</h2>
           </div>
           <div class="col-sm-3 v-align">
             <i style="margin-top:0px; margin-right: 5px;"
-               class="pull-right fa fa-3x fa-{{getElementIcon(element)}} "></i>
+               class="pull-right fa fa-2x fa-{{getElementIcon(element)}} "></i>
           </div>
         </div>
         <div class="row">
