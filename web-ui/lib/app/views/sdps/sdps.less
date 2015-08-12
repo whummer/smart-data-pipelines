@@ -7,9 +7,10 @@
 @pipe-element-big-height: @pipe-element-height * 2.5;
 
 @pipe-element-bg: #47b1ff;
+@pipe-element-bg-light: lighten(@pipe-element-bg, 10%);
 @pipe-element-bg-selected: #ff5e00;
 @pipe-element-font-color: #FFFFFF;
-@pipe-element-description-font-color: #f1f1f1;
+@pipe-element-description-font-color: darken(@pipe-element-font-color, 0%);
 @remove-element-bg: #c7c7c7;
 
 /***************************** Required styles *****************************/
@@ -229,9 +230,12 @@
 .elementBig {
   .element;
   color: @pipe-element-description-font-color;
-  background-color: @pipe-element-bg;
+  background-color: @pipe-element-bg-light;
   width: @pipe-element-big-width;
   min-height: @pipe-element-big-height;
+  h2 {
+    font-weight: 200;
+  }
 }
 
 .elementAttachmentBig {
@@ -249,7 +253,7 @@
 .sourceBig:after {
   .elementAttachmentBig;
   right: -8px;
-  border-right: 15px solid @pipe-element-bg;
+  border-right: 15px solid @pipe-element-bg-light;
 }
 
 .processorBig {
@@ -265,7 +269,7 @@
 .processorBig:after {
   .elementAttachmentBig;
   right: -8px;
-  border-right: 15px solid @pipe-element-bg;
+  border-right: 15px solid @pipe-element-bg-light;
 }
 
 .sinkBig {
@@ -305,7 +309,7 @@
 .sourceSmall:after {
   .elementAttachmentSmall;
   right: -10px;
-  border-right: 15px solid @pipe-element-bg;
+  border-right: 15px solid @pipe-element-bg-light;
 }
 
 .processorSmall {
@@ -321,7 +325,7 @@
 .processorSmall:after {
   .elementAttachmentSmall;
   right: -10px;
-  border-right: 15px solid @pipe-element-bg;
+  border-right: 15px solid @pipe-element-bg-light;
 }
 
 .sinkSmall {
@@ -339,4 +343,12 @@
   float: none;
   display: inline-block;
   vertical-align: middle;
+}
+
+.heading-thicker {
+  font-weight: 200;
+}
+
+.subheading-thinner {
+  font-weight: 200;
 }
