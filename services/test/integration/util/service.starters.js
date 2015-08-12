@@ -4,7 +4,7 @@ var x = exports;
 
 
 var ensureMockgoose = x.ensureMockgoose = function() {
-	var mongoose = global.mongoose || require('mongoose');
+	var mongoose = global.mongoose || require('mongoose-q')();
 	if (!global.mongoose) {
 		global.mongoose = mongoose;
 	}
@@ -143,7 +143,7 @@ x.startPipesService = function() {
 		/* make sure we use mockgoose as DB */
 		ensureMockgoose();
 
-		services.pipes = { port : 3000, sinks: {}, sources: {}, processors: {} };
+		services.pipes = { port : 3000, deployments: {}, pipeelements: {} };
 		services.pipes.url = global.servicesConfig.pipes.url =
 			"http://localhost:" + services.pipes.port + "/api/v1/pipes";
 		// 	services.pipes.deployments.url = global.servicesConfig.pipes.url = services.pipes.url + "/deployments";

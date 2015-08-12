@@ -7,41 +7,6 @@ exports.genShortUUID = global.genShortUUID = function() {
     return id;
 };
 
-//
-// custom API errors
-//
-/*
-exports.NotFoundError = function (message, cause) {
-	this.statusCode = 404;
-	this.message = (message || "");
-	this.cause = (cause || "");
-};
-
-exports.NotFoundError.prototype = Error.prototype;
-
-exports.InternalError = function (message, cause) {
-	this.statusCode = 500;
-	this.message = (message || "");
-	this.cause = (cause || "");
-	Error.captureStackTrace(this, this.constructor);
-};
-
-exports.InternalError.prototype = Error.prototype;
-
-exports.UnprocessableEntity = function (message, cause) {
-	this.statusCode = 422;
-	this.message = (message || "");
-	this.cause = (cause || "");
-};
-
-exports.UnprocessableEntity.prototype = Error.prototype;
-*/
-/*
-exports.NotFoundError = Error.extend('NotFoundError', 404);
-exports.InternalError = Error.extend('InternalError', 500);
-exports.UnprocessableEntity = Error.extend('UnprocessableEntity', 422);
-*/
-
 
 /*
  * Based on

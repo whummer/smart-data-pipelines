@@ -1,5 +1,7 @@
 'use strict';
 
+var fs = require('fs');
+var path = require('path');
 var assert = require('assert');
 var log = global.log || require('winston');
 var superagent = require('superagent');
@@ -7,15 +9,14 @@ var status = require('http-status');
 var test = require('../util/testutil');
 var starters = require('../util/service.starters');
 var riox = require('riox-shared/lib/api/riox-api');
-var promise = require('promise');
-var WebSocket = require('ws');
+var should = require('chai').should();
 
 var app = {};
 
 describe('pipes.deployment', function() {
 
 	before(function(done) {
-    log.debug("before hook");
+		log.debug("before hook");
 		/* start service(s) */
 		app.users = starters.startUsersService();
 		app.pipes = starters.startPipesService();
@@ -23,26 +24,47 @@ describe('pipes.deployment', function() {
 	});
 
 	after(function(done) {
-    log.debug("after hook");
-    log.debug("Users service shut down");
+		log.debug("after hook");
+		log.debug("Users service shut down");
 		app.users.server.stop();
-    log.debug("Pipes service shut down");
-    app.pipes.server.stop();
-    done();
+		log.debug("Pipes service shut down");
+		if (app.pipes.server)
+			app.pipes.server.stop();
+		done();
 	});
 
-	function wrap(func, testUser) {
-		testUser = testUser ? testUser : test.user1;
-		return {
-			callback: func,
-			headers: testUser.tokenHeaders
-		};
-	}
+	it('store and retrieve a pipeline definition', function(done) {
+		var content = JSON.parse(fs.readFileSync(path.join(__dirname, './resources') + "/simple-pipe.json"));
 
-	it('creates stream source, sink, processor; and run flow e2e', function(done) {
-		this.timeout(1000*60*2); // high timeout for long-running test
+		test.user1.post(app.pipes.url).send(content).end(function(err, res) {
+			if (err) {
+				log.error("Unexpected error: ", err)
+				should.fail();
+			}
 
-    done();
+			var locationHeader = res.get("location");
+			log.debug("Response status: ", res.status);
+			log.debug("Response headers: ", res.headers);
+			log.debug("Body: ", JSON.stringify(res.body));
+			res.status.should.equal(201);
+			locationHeader.should.exist;
+			// res.body.id.should.exist;
+
+			test.user2.get(res.get('location')).send().end(function(err, res) {
+				if (err) {
+					log.error("Unexpected error: ", err)
+					should.fail();
+				}
+				log.debug("Response status: ", res.status);
+				log.debug("Response headers: ", res.headers);
+				log.debug("Body: ", JSON.stringify(res.body));
+				res.body.name.should.equal("WartezeitenVisulationzPipe");
+				res.body.elements.length.should.equal(4);
+				res.status.should.equal(200);
+				done();
+			});
+
+		});
 	});
 
 });

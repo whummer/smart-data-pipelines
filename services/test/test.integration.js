@@ -6,7 +6,7 @@ require('riox-services-base/lib/api/service.calls');
 global.servicesConfig = require('riox-services-base/lib/config/services').test.services;
 
 beforeEach(function(){
-  this.timeout(5000);
+	this.timeout(5000);
 })
 
 /* API tests */

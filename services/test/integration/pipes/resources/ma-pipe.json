@@ -10,7 +10,7 @@
 			"elements": [
 				{
 					"class": "source",
-					"type": "http-poll",
+					"type": "http-out",
 					"label": "poll-meldeamt",
 					"description": "poll all meldeamt data per 10sec",
 					"options": {

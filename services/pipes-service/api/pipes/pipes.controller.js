@@ -23,7 +23,7 @@ exports.findById = function (req, res, next) {
 	var pipeId = req.params.id;
 	log.debug('Finding pipe by id %s', pipeId);
 	Pipe.findByIdQ(pipeId).then(pipe => {
-		log.debug('FOund pipe with ID %s', pipeId);
+		log.debug('Found pipe with ID %s', pipeId);
 		return res.json(200, pipe);
 	}).catch(error => {
 		log.error('Cannot load pipe by ID "%s": ', error);
@@ -39,7 +39,8 @@ exports.create = function (req, res, next) {
 
 	pipe.saveQ().then(savedPipe => {
 		log.info('Saved pipe with ID: ', savedPipe._id);
-		return res.json(savedPipe);
+		res.setHeader('Location', req.getUrl() + '/' + savedPipe._id);
+		return res.status(201).end();
 	}).catch(error => {
 		return validationError(error, next);
 	});
@@ -80,4 +81,3 @@ exports.delete = function (req, res, next) {
 var validationError = function (err, next) {
 	return next(errors.UnprocessableEntity("You passed a broken object", err));
 };
-

@@ -1,7 +1,5 @@
 'use strict';
 
-var mongoose = global.mongoose || require('mongoose-q')();
-
 var Schema = mongoose.Schema;
 
 var pipeSchema = {};
@@ -13,7 +11,14 @@ pipeSchema[DESCRIPTION] = String;
 pipeSchema[PIPE_ELEMENTS] = Schema.Types.Mixed;
 
 var Pipe = new Schema(pipeSchema);
+
 Pipe.set('toJSON', {virtuals: true});
+Pipe.options.toJSON.transform = function (doc, ret, options) {
+	// remove the _id an __v of every document before returning the result
+	delete ret._id;
+	delete ret.__v
+}
+
 Pipe.set('toObject', {virtuals: true});
 
 module.exports = mongoose.model('Pipe', Pipe);

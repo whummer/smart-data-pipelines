@@ -222,7 +222,7 @@ function getTokenFromHeaders(req) {
  */
 function setTokenCookie(req, res) {
 	if (!req.user) {
-		res.json(404, {message: 'Something went wrong, please try again.'});
+		res.json(401, {message: 'Something went wrong, please try again.'});
 		return res.end();
 	}
 	var token = signToken(req.user._id, req.user.role);

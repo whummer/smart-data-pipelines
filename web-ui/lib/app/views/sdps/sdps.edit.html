@@ -1,16 +1,22 @@
 <div>
-	<div class="row">
+	<!--<div class="row">
 		<div class="col-lg-12">
 			<h1>DATA PIPELINES</h1>
 		</div>
-	</div>
+	</div>-->
 	<div class="row" style="margin-bottom: 10px">
 		<div class="col-lg-12 ">
 			<div class="ibox float-e-margins">
 				<div class="ibox-title">
-					<h3 ng-class="{'text-muted' : !pipeline.name}">{{pipeline.name ? pipeline.name : 'Untitled' }}</h3>
+					<h2 ng-class="{'text-muted' : !pipeline.name}">
+						{{pipeline.name ? pipeline.name : 'Untitled' }} <small>{{pipeline.description}}</small>
+					</h2>
+
 				</div>
 				<div class="ibox-content pipeEditor">
+
+
+
 
 					<!-- PIPELINE CANVAS -->
 					<!--<div ng-include="'app/views/sdps/sdps.edit.canvas.dragular.html'"></div>-->

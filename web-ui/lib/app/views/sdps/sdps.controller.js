@@ -1,4 +1,4 @@
-angular.module("rioxApp").controller("DataPipesCtrl", function ($scope, $log, growl, $location) {
+angular.module("rioxApp").controller("DataPipesCtrl", function ($scope, $log, growl, $filter) {
 
 	console.log("Withing data pipes PARENT controller");
 
@@ -83,7 +83,8 @@ angular.module("rioxApp").controller("DataPipesCtrl", function ($scope, $log, gr
 	$scope.getClassForElement = function (element, big) {
 		//$log.debug('Getting class for element ', element);
 		if (element.type) {
-			return element.type == 'container' ? 'element-container' : big ? element.type + 'Big' : element.type;
+			return element.type == 'container' ? 'element-container' : (big ? element.type + 'Big' : element.type);
+			//return element.type == 'container' ? 'element-container' : element.type;
 		} else {
 			return element.class == 'container' ? 'element-container' : 'element';
 		}

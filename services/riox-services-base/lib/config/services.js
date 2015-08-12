@@ -80,6 +80,9 @@ envs.forEach(function(env) {
 					hostname: getHost(env, "redis"),
 					url: "redis://" + getHost(env, "redis") + ":6379"
 				},
+				kibana: {
+					url: "http://" + getHost(env, "kibana") + ":5601"
+				},
 				statsd: {
 					hostname: getHost(env, "statsd")
 				}
