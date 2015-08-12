@@ -11,7 +11,10 @@ var fs = require('fs'),
 	memoryMonitor = require('./memorymonitor'),
 	logger = require('winston'),
 	lynx = require('lynx'),
-	expressStatsd = require('express-statsd');
+	expressStatsd = require('express-statsd'),
+	connect = require('connect'),
+	harmon = require('harmon'),
+	through = require('through');
 
 /* constants/configurations */
 var CORS_HEADERS_ENABLED = true;
@@ -301,6 +304,33 @@ Worker.prototype.runServer = function (config) {
 		res.setHeader("Access-Control-Expose-Headers", "Location");
 	};
 
+	var getConnectMiddlewareHandler = function() {
+
+		var connectApp = connect();
+
+		/* handler for injecting stuff */
+		var selects = [];
+		var simpleselect = {};
+		simpleselect.query = "head";
+		simpleselect.func = function (node) {
+			var s = node.createStream({ outer: true });
+			s.pipe(through(function (data) {
+				if(data.toString().indexOf('</head>') > -1) {
+					// TODO make configurable
+					s.write('<script>if(document.domain) { document.domain = document.domain.replace(/^.*\\.([^\\.]+\\.[^\\.]+)/, "$1"); }</script>');
+				}
+				s.write(data);
+			})).pipe(s);
+		}
+		selects.push(simpleselect);
+
+		/* build connect middleware pipeline */
+		connectApp.use(harmon([], selects, true));
+		connectApp.use(httpRequestHandler);
+
+		return connectApp;
+	};
+
 	var httpRequestHandler = function (req, res) {
 
 		res.timer = {
@@ -418,11 +448,11 @@ Worker.prototype.runServer = function (config) {
 			logger.debug("worker.proxyRequest");
 
 			this.cache.getBackend(req.headers.host, req.method, req.url, function (err, code, backend) {
+				if(req.method == "OPTIONS" && CORS_HEADERS_ENABLED) {
+					addCORSHeaders(req, res);
+					return res.end();
+				}
 				if (err) {
-					if(req.method == "OPTIONS" && CORS_HEADERS_ENABLED) {
-						addCORSHeaders(req, res);
-						return res.end();
-					}
 					logger.error(err);
 					return errorMessage(res, err, code);
 				}
@@ -516,7 +546,6 @@ Worker.prototype.runServer = function (config) {
 	var wsRequestHandler = function (req, socket, head) {
 		logger.debug("worker.wsRequestHandler");
 
-;
 		this.cache.getBackend(req.headers.host, req.method, req.url, function (err, code, backend) {
 			if (err) {
 				logger.error("worker.redis.wsRequestHandler:", err);
@@ -601,7 +630,7 @@ Worker.prototype.runServer = function (config) {
 	if (config.http.enabled) {
 		config.http.bind.forEach(function (options) {
 			counter++;
-			var httpServer = http.createServer(httpRequestHandler);
+			var httpServer = http.createServer(getConnectMiddlewareHandler());
 			httpServer.on('connection', tcpConnectionHandler);
 			httpServer.on('upgrade', wsRequestHandler);
 			httpServer.listen(options.port, options.address);
@@ -614,7 +643,7 @@ Worker.prototype.runServer = function (config) {
 	if (config.https.enabled) {
 		config.https.bind.forEach(function (options) {
 			counter++;
-			var httpsServer = https.createServer(options, httpRequestHandler);
+			var httpsServer = https.createServer(options, getConnectMiddlewareHandler());
 			httpsServer.on('connection', tcpConnectionHandler);
 			httpsServer.on('upgrade', wsRequestHandler);
 			httpsServer.listen(options.port, options.address);

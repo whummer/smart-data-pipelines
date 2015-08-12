@@ -4,7 +4,15 @@
 
 'use strict';
 
+var express = require('express');
+
 module.exports = function(app) {
+
+	/* TODO: demo */
+	var router = express.Router();
+	/* Define routes */
+	router.post('/demo', require("./demo/stadtwien.service").demo);
+	app.use('/', router);
 
 	// All undefined asset or api routes should return a 404
 	app.route('/:url(api|auth|components|app|bower_components|assets)/!*')
