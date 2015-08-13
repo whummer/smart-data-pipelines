@@ -28,8 +28,14 @@ angular.module('rioxApp').controller('ListDataPipesCtrl', function ($scope, ngTa
 			$scope.pipes = pipes;
 			$scope.tableParams.reload();
 		}, function (error) {
-			$log.error('Cannot load pipes: ', error);
-			growl.error('Cannot load pipes. See console for details.');
+            if (error.status == 404) {
+                $log.warn('No pipes found.');
+                growl.warning('No pipes found. Please create a new Data Pipe');
+            } else {
+                $log.error('Cannot load pipes: ', error);
+                growl.error('Cannot load pipes. See console for details.');
+            }
+
 		});
 	};
 

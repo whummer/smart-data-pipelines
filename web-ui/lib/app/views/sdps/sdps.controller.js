@@ -61,10 +61,18 @@ angular.module("rioxApp").controller("DataPipesCtrl", function ($scope, $log, gr
 					default:
 						throw new Error('Unexpeced element type: ' + element.type);
 				}
-			})
+			});
 
             $scope.$apply();
-		})
+		}, function(error) {
+            if (error.status == 404) {
+                $log.warn('No SmartBricks found in DB');
+                growl.warning('No SmartBricks found. Please add one.');
+            } else {
+                $log.error('Cannot load SmartBricks: ', error);
+                growl.error('Cannnot load SmartBricks. See console for details');
+            }
+        });
 	};
 
 	//
@@ -86,7 +94,6 @@ angular.module("rioxApp").controller("DataPipesCtrl", function ($scope, $log, gr
 		//$log.debug('Getting class for element ', element);
 		if (element.type) {
 			return element.type == 'container' ? 'element-container' : (size ? element.type + size : element.type);
-			//return element.type == 'container' ? 'element-container' : element.type;
 		} else {
 			return element.class == 'container' ? 'element-container' : 'element';
 		}
