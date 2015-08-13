@@ -12,7 +12,7 @@
 @pipe-element-bg-selected: #ff5e00;
 @pipe-element-font-color: #FFFFFF;
 @pipe-element-description-font-color: darken(@pipe-element-font-color, 0%);
-@remove-element-bg: #c7c7c7;
+@remove-element-bg: #ffbe00;
 
 /***************************** Required styles *****************************/
 
@@ -215,6 +215,7 @@
 
 .removeElementArea {
   background-color: @remove-element-bg;
+  border-color: red;
   border-radius: .25em;
   width: 80px;
   height: 80px;
@@ -224,6 +225,7 @@
   border-width: 1px;
   margin-top: 5px;
   list-style: none;
+  color: white;
 }
 
 /********************************** ELEMENT LIST BIG VIEWS *************************************/
@@ -294,7 +296,6 @@
   min-height: @pipe-element-height * 0.5;
 }
 
-
 .elementAttachmentSmall {
   .elementAttachment;
   top: 10px;
@@ -302,7 +303,6 @@
   border-top: 10px solid transparent;
   border-bottom: 10px solid transparent;
 }
-
 
 .sourceSmall {
   .elementSmall;
@@ -339,8 +339,6 @@
   right: (@pipe-element-width * 0.5) - 10px;
   border-right: 15px solid white;
 }
-
-
 
 /******************************* COMMON STYLES *********************************/
 .v-align {

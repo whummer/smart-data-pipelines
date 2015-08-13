@@ -67,7 +67,7 @@ angular.module("rioxApp").controller("DataPipesCtrl", function ($scope, $log, gr
 		}, function(error) {
             if (error.status == 404) {
                 $log.warn('No SmartBricks found in DB');
-                growl.warning('No SmartBricks found. Please add one.');
+                growl.warning('No SmartBricks found. You will not be able to create new Data Pipes.');
             } else {
                 $log.error('Cannot load SmartBricks: ', error);
                 growl.error('Cannnot load SmartBricks. See console for details');
