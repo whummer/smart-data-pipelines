@@ -37,7 +37,6 @@ angular.module('rioxApp').controller('EditDataPipeCtrl', function ($scope, $filt
 			$scope.selectedItem = item;
 		};
 
-
 		//
 		// save pipeline via service call. if _id property is present its a persistent pipe
 		//
@@ -56,7 +55,6 @@ angular.module('rioxApp').controller('EditDataPipeCtrl', function ($scope, $filt
 			}
 		};
 
-
 		//
 		// remove all elements from pipeline canvas
 		//
@@ -71,7 +69,6 @@ angular.module('rioxApp').controller('EditDataPipeCtrl', function ($scope, $filt
 			$log.debug('Reverting all changes to pipeline ', pipeline.name);
 			loadPipeById(pipeline.id, 'Reverted Changes');
 		};
-
 
 		//
 		// delete given pipeline and go to listview

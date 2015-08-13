@@ -49,12 +49,22 @@
 									<i class="fa fa-undo fa-lg"></i>
 								</button>
 
+
+								<button class="btn btn-lg btn-circle btn-primary pull-right"
+								        ng-show="pipeline.id"
+								        tooltip="Deploy Pipeline"
+								        style="margin-right: 10px;"
+								        ng-click="deployPipeline(pipeline)">
+									<i class="fa fa-fix fa-upload fa-lg"></i>
+								</button>
+
 								<button class="btn btn-lg btn-primary btn-circle pull-right" ng-click="submitDatapipe()"
 								        tooltip="Save Changes"
 								        style="margin-right: 10px;"
 								        style="margin-left: 10px;">
 									<i class="fa fa-floppy-o fa-lg"></i>
 								</button>
+
 							</div>
 
 							<div class="row pull-right">

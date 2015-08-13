@@ -88,6 +88,26 @@ angular.module("rioxApp").controller("DataPipesCtrl", function ($scope, $log, gr
 
 
 	//
+	// deploy pipe
+	//
+	$scope.deployPipeline = function(pipeline) {
+		if (!pipeline.id) {
+			$log.warn('Cannot deploy pipeline. Pipeline has no ID. Save first');
+			growl.error('Cannot deploy an unsaved pipe');
+		} else {
+			$log.debug('Deploying pipe: ', pipeline.id);
+			riox.add.pipedeployment(pipeline, function(deployed) {
+				$log.debug('Pipeline ' + pipeline.id + ' deployed successfully');
+				growl.success('Successfully deployed pipeline '+ pipeline.label);
+			}, function(error) {
+				$log.error('Cannot deploy pipe: ', error);
+				growl.error('Cannot deploy pipeline. See console for details');
+			});
+		}
+	};
+
+
+	//
 	// get the correct CSS class for given element
 	//
 	$scope.getClassForElement = function (element, size) {

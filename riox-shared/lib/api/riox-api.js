@@ -701,8 +701,13 @@
 
 	sh.add.pipes = {};
 	sh.add.pipe = function (obj, callback, errorCallback) {
-		console.log("Adding pipe: ", obj)
+		console.log("Adding pipe: ", obj);
 		return callPOST(servicesConfig.pipes.url, obj, callback, errorCallback);
+	};
+
+	sh.add.pipedeployment = function (obj, callback, errorCallback) {
+		console.log("Adding pipedeployment: ", obj);
+		return callPOST(servicesConfig.pipes.url + '/deployments', obj, callback, errorCallback);
 	};
 	sh.add.pipes.source = function (source, callback, errorCallback) {
 		return callPOST(servicesConfig.pipesources.url, source, callback, errorCallback);
