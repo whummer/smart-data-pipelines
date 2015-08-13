@@ -12,8 +12,27 @@
     </div>
   </div>
 
-  <div class="row animated " id="widget-row" ng-hide="provider_clicked || consumer_clicked">
-    <div class="col-lg-6" style="left: 50%; width: 440px; margin-left: -220px;">
+  <div class="row animated " id="widget-row" >
+    <div class="col-lg-offset-1 col-lg-4" >
+      <a ui-sref="index.apis.wizard.basic">
+        <div class="widget provider-widget-bg p-lg text-center animated"
+             ng-mouseenter="api_hover = true"
+             ng-mouseleave="api_hover = false"
+             ng-class="{pulse: api_hover}">
+          <div class="m-b-md">
+            <i class="fa fa-upload fa-4x"></i>
+            <br/>
+            <h1 class="m-xs heading-thicker">New API</h1>
+            <h3 class="font-bold no-margins">
+              Share your data resources
+            </h3>
+          </div>
+        </div>
+      </a>
+    </div>
+
+
+    <div class="col-lg-offset-1 col-lg-4" >
       <a ui-sref="index.apis.wizard.basic">
         <div class="widget provider-widget-bg p-lg text-center animated"
              ng-mouseenter="provider_hover = true"
@@ -21,11 +40,11 @@
              ng-click="provider_clicked = true"
              ng-class="{pulse: provider_hover}">
           <div class="m-b-md">
-            <i class="fa fa-upload fa-4x"></i>
+            <i class="fa fa-eye fa-4x"></i>
             <br/>
-            <h1 class="m-xs">Create a New API</h1>
+            <h1 class="m-xs heading-thicker">New Smart Data Pipe</h1>
             <h3 class="font-bold no-margins">
-              Use riox to share your data resources
+              Generate insights from raw data
             </h3>
           </div>
         </div>
