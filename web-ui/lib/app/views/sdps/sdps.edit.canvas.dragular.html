@@ -42,10 +42,10 @@
 
 <!-- TEMPLATES -->
 
-<div class="containerWrapper"  ng-controller="PipelineCtrl">
-		<div class='containerHorizontal' dragular>
-			<div ng-repeat="element in pipeline.elements" class="{{element.type}}" ng-click="selectItem(element)">
-				{{element.label}}
-			</div>
+<div class="containerWrapper" ng-controller="PipelineCtrl">
+	<div class='containerHorizontal' dragular>
+		<div ng-repeat="element in pipeline.elements" class="{{element.type}}" ng-click="selectItem(element)">
+			{{element.label}}
 		</div>
+	</div>
 </div>

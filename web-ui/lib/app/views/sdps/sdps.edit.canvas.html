@@ -6,10 +6,11 @@
 
 	<!-- template for element list -->
 	<script type="text/ng-template" id="list.html">
-		<ul dnd-list="elements" dnd-horizontal-list="true" class="itemlist">
+		<ul dnd-list="elements" dnd-horizontal-list="true"
+		    dnd-drop="assignUUID(event, index, item, external, type)" class="itemlist">
 			<li ng-repeat="element in elements"
 			    dnd-draggable="element"
-			    dnd-effect-allowed="copyMove"
+			    dnd-effect-allowed="move"
 			    dnd-external-sources="true"
 			    dnd-selected="selectItem(element)"
 			    dnd-dragstart="logEvent('Started to drag an item', event)"
@@ -22,7 +23,7 @@
 
 
 	<!-- This template is responsible for rendering a container element. It uses
-     the above list template to render each container column -->
+		 the above list template to render each container column -->
 	<script type="text/ng-template" id="container.html">
 		<div class="element-container">
 			<div ng-repeat="elements in element.elements" ng-include="'list.html'"></div>
@@ -38,8 +39,10 @@
 																									processorSelected :(selectedItem == element) && element.type == 'processor'}">
 
 			<i style="margin-top:10px" class="fa fa-2x fa-{{getElementIcon(element)}}"></i><br/>
-			<span ng-show="element.label">{{element.label}}</span>
-			<span ng-hide="element.label">{{element.type}}</span>
+      <span class="subheading-thinner">
+			  <span ng-show="element.label">{{element.label}}</span>
+			  <span ng-hide="element.label">{{element.type}}</span>
+      </span>
 		</div>
 
 	</script>

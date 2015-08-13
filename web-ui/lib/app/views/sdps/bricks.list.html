@@ -1,118 +1,121 @@
 <div class="row">
-  <div class="col-lg-12">
-    <h1 class="heading-thicker">Smart Bricks
-      <small class="subheading-thinner">Smart Bricks are the main elements to build
-        <a ui-sref="index.sdps.list">Smart Data Pipelines</a></small>
-    </h1>
-  </div>
+	<div class="col-lg-12">
+		<h1 class="heading-thicker">Smart Pipes
+			<small class="subheading-thinner">are the main elements to build
+				<a ui-sref="index.sdps.list">Data Pipelines</a></small>
+		</h1>
+	</div>
 </div>
 
 
 <div class="row">
-  <div class="col-lg-12 animated fadeIn">
-    <div class="ibox float-e-margins">
-      <div class="ibox-title">
-        <h3>Sources</h3>
-      </div>
-      <div class="ibox-content">
-        <h2>
-          <small>A source brick can be used to ingest data into your Smart Data Pipeline</small>
-        </h2>
-        <div class="row">
-          <div class="col-lg-4 v-align" ng-repeat="element in sources" ng-include="'element.html'"></div>
-        </div>
-        <div class="row" style="margin-top:15px">
-          <div class="col-lg-12 v-align text-right">
-            <button class="text-center btn btn-primary-light btn-primary  btn-circle btn-lg animated rubberBand attention-delayed"
-                    type="button"><i class="text-center fa fa-lg fa-plus"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+	<div class="col-lg-12 animated fadeIn">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<h3>Sources</h3>
+			</div>
+			<div class="ibox-content">
+				<h2>
+					<small>A source pipe can be used to ingest data into your Smart Data Pipeline</small>
+				</h2>
+				<div class="row">
+					<div class="col-lg-4 v-align" ng-repeat="element in sources" ng-include="'element.html'"></div>
+				</div>
+				<div class="row" style="margin-top:15px">
+					<div class="col-lg-12 v-align text-right">
+						<button
+							class="text-center btn btn-primary-light btn-primary  btn-circle btn-lg animated rubberBand attention-delayed"
+							type="button"><i class="text-center fa fa-lg fa-plus"></i>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
 
-    <div class="ibox float-e-margins">
-      <div class="ibox-title">
-        <h3>Processors</h3>
-      </div>
-      <div class="ibox-content">
-        <h2>
-          <small>
-            A processor brick can be used to filter, transform or enrich data flowing through your data pipe.
-          </small>
-        </h2>
-        <div class="row">
-          <div class="col-lg-4 v-align" ng-repeat="element in processors" ng-include="'element.html'"></div>
-        </div>
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<h3>Processors</h3>
+			</div>
+			<div class="ibox-content">
+				<h2>
+					<small>
+						A processor pipe can be used to filter, transform or enrich data flowing through your data pipe.
+					</small>
+				</h2>
+				<div class="row">
+					<div class="col-lg-4 v-align" ng-repeat="element in processors" ng-include="'element.html'"></div>
+				</div>
 
-        <div class="row" style="margin-top:15px">
-          <div class="col-lg-12 v-align text-right">
-            <button class="text-center btn btn-primary-light btn-primary  btn-circle btn-lg animated rubberBand attention-delayed"
-                    type="button"><i class="text-center fa fa-lg fa-plus"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+				<div class="row" style="margin-top:15px">
+					<div class="col-lg-12 v-align text-right">
+						<button
+							class="text-center btn btn-primary-light btn-primary  btn-circle btn-lg animated rubberBand attention-delayed"
+							type="button"><i class="text-center fa fa-lg fa-plus"></i>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
 
-    <div class="ibox float-e-margins">
-      <div class="ibox-title">
-        <h3>Sinks</h3>
-      </div>
-      <div class="ibox-content">
-        <h2>
-          <small>A sink brick is be used to store, visualize or push data to external systems.</small>
-        </h2>
-        <div class="row">
-          <div class="col-lg-4" ng-repeat="element in sinks" ng-include="'element.html'"></div>
-        </div>
-        <div class="row" style="margin-top:15px">
-          <div class="col-lg-12 v-align text-right">
-            <button class="text-center btn btn-primary-light btn-primary  btn-circle btn-lg animated rubberBand attention-delayed"
-                    type="button"><i class="text-center fa fa-lg fa-plus"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<h3>Sinks</h3>
+			</div>
+			<div class="ibox-content">
+				<h2>
+					<small>A sink pipe is be used to store, visualize or push data to external systems.</small>
+				</h2>
+				<div class="row">
+					<div class="col-lg-4" ng-repeat="element in sinks" ng-include="'element.html'"></div>
+				</div>
+				<div class="row" style="margin-top:15px">
+					<div class="col-lg-12 v-align text-right">
+						<button
+							class="text-center btn btn-primary-light btn-primary  btn-circle btn-lg animated rubberBand attention-delayed"
+							type="button"><i class="text-center fa fa-lg fa-plus"></i>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
 
 
-    <!-- BRICK TEMPLATE -->
-    <script type="text/ng-template" id="element.html">
+		<!-- PIPE TEMPLATE -->
+		<script type="text/ng-template" id="element.html">
 
-      <div class="{{getClassForElement(element, 'Big')}}" style="margin-top: 30px">
-        <div class="row">
-          <div class="col-sm-8 v-align">
-            <h2 class="text-left" style="margin-left: 5px">{{element.subtype}}</h2>
-          </div>
-          <div class="col-sm-3 v-align">
-            <i style="margin-top:0px; margin-right: 5px;"
-               class="pull-right fa fa-2x fa-{{getElementIcon(element)}} "></i>
-          </div>
-        </div>
-        <div class="row">
-          <div style="padding-left: 30px; text-align: left">
-            {{element.description}}
-          </div>
-        </div>
-        <div class="row">
-          <div style="margin-top:15px; padding-left: 30px; padding-right: 30px; text-align: left; ">
-            <h3 class="subheading-thinner">Configurable Options</h3>
-            <ul style="margin-top: -5px" class="list-unstyled m-t-md">
-              <li ng-repeat="option in element.options">
-                <a style="color: white"
-                   ng-click="descriptions[element.subtype + option.name] = !descriptions[element.subtype + option.name]"><strong>&rsaquo;&rsaquo;
-                  {{option.name}}</strong></a><br/>
+			<div class="{{getClassForElement(element, 'Big')}}" style="margin-top: 30px">
+				<div class="row">
+					<div class="col-sm-8 v-align">
+						<h2 class="text-left" style="margin-left: 5px">{{element.subtype}}</h2>
+					</div>
+					<div class="col-sm-3 v-align">
+						<i style="margin-top:0px; margin-right: 5px;"
+						   class="pull-right fa fa-2x fa-{{getElementIcon(element)}} "></i>
+					</div>
+				</div>
+				<div class="row">
+					<div style="padding-left: 30px; text-align: left">
+						{{element.description}}
+					</div>
+				</div>
+				<div class="row">
+					<div style="margin-top:15px; padding-left: 30px; padding-right: 30px; text-align: left; ">
+						<h3 class="subheading-thinner">Configurable Options</h3>
+						<ul style="margin-top: -5px" class="list-unstyled m-t-md">
+							<li ng-repeat="option in element.options">
+								<a style="color: white"
+								   ng-click="descriptions[element.subtype + option.name] = !descriptions[element.subtype + option.name]"><strong>&rsaquo;&rsaquo;
+									{{option.name}}</strong></a><br/>
                 <span class="animated animated-fast"
                       ng-class="{fadeOut: !descriptions[element.subtype + option.name], fadeIn: descriptions[element.subtype + option.name]}"
                       ng-show="descriptions[element.subtype + option.name]">{{option
                   .description}}</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
 
-    </script>
-  </div>
+		</script>
+	</div>
 </div>

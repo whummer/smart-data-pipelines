@@ -35,7 +35,7 @@ angular.module("rioxApp").controller("DataPipesCtrl", function ($scope, $log, gr
 			label: "Container",
 			class: "container",
 			icon: "bars",
-			elements : []
+			elements: []
 		}
 	];
 
@@ -63,16 +63,16 @@ angular.module("rioxApp").controller("DataPipesCtrl", function ($scope, $log, gr
 				}
 			});
 
-            $scope.$apply();
-		}, function(error) {
-            if (error.status == 404) {
-                $log.warn('No SmartBricks found in DB');
-                growl.warning('No SmartBricks found. You will not be able to create new Data Pipes.');
-            } else {
-                $log.error('Cannot load SmartBricks: ', error);
-                growl.error('Cannnot load SmartBricks. See console for details');
-            }
-        });
+			$scope.$apply();
+		}, function (error) {
+			if (error.status == 404) {
+				$log.warn('No Smart Pipes found in DB');
+				growl.warning('No Smart Pipes found. You will not be able to create new Data Pipelines.');
+			} else {
+				$log.error('Cannot load Smart Pipes: ', error);
+				growl.error('Cannnot load Smart Pipes. See console for details');
+			}
+		});
 	};
 
 	//
@@ -101,7 +101,7 @@ angular.module("rioxApp").controller("DataPipesCtrl", function ($scope, $log, gr
 
 	//
 	// get the font-awesome based icon for given element. Return the icon of the template if
-    // element has no subtype yet
+	// element has no subtype yet
 	//
 	$scope.getElementIcon = function (element) {
 		if (!element.subtype && element.icon) {
@@ -115,8 +115,8 @@ angular.module("rioxApp").controller("DataPipesCtrl", function ($scope, $log, gr
 
 	function getTemplatesForElement(element) {
 		var elementsOfSelectedType = element.type == 'source' ?
-				$scope.sources : element.type == 'sink' ?
-				$scope.sinks : $scope.processors;
+			$scope.sources : element.type == 'sink' ?
+			$scope.sinks : $scope.processors;
 
 		//$log.warn('selected type: ', elementsOfSelectedType)
 		return $filter('filter')(elementsOfSelectedType, {subtype: element.subtype})[0];
@@ -128,8 +128,8 @@ angular.module("rioxApp").controller("DataPipesCtrl", function ($scope, $log, gr
 	$scope.showPipelineDefinition = function (pipeline) {
 		var pipelineDefinition = angular.toJson(pipeline, true);
 		showDebugDialog("Here is what your pipeline looks like: ",
-				"Definition of Pipeline '" + pipeline.name + "'",
-				pipelineDefinition);
+			"Definition of Pipeline '" + pipeline.name + "'",
+			pipelineDefinition);
 	};
 
 	//
