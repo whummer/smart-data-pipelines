@@ -70,4 +70,3 @@ while (line = fileReader.read()) {
   }
 }
 return result;
-
