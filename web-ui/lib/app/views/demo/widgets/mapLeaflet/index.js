@@ -43,12 +43,13 @@
 				center: {},
 				objects: {}
 		};
+		$scope.timeField = $scope.timeField || "timestamp";
 
 		var getObjectIDs = function() {
 			return elasticsearch.getObjectIDs($scope.esUrl, $scope.esIndexName, $scope.esTypeName, $scope.idField);
 		};
 		var getAllObjectDetails = function(ids) {
-			return elasticsearch.getAllObjectDetails($scope.esUrl, $scope.esIndexName, $scope.esTypeName, $scope.idField, ids);
+			return elasticsearch.getAllObjectDetails($scope.esUrl, $scope.esIndexName, $scope.esTypeName, $scope.idField, ids, $scope.timeField);
 		};
 
 		leafletData.getMap().then(function(map) {

@@ -568,8 +568,6 @@ Worker.prototype.runServer = function (config) {
 			}
 			if (backend && backend.targetPath) {
 
-				console.log('Backend:', JSON.stringify(backend))
-
 				// Proxy the WebSocket request to the backend
 				proxy.ws(req, socket, head, {
 					target: {

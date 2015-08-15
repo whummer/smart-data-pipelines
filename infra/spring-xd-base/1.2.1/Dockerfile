@@ -72,6 +72,15 @@ ADD common-config.sh /common-config.sh
 ADD start-admin.sh /start-admin.sh
 ADD start-container.sh /start-container.sh
 
+# set locales
+RUN apt-get update && \
+	apt-get install locales && \
+	locale-gen en_US.UTF-8 && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US.UTF-8
+
 USER springxd
 WORKDIR /opt/spring-xd
 

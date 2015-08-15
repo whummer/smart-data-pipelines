@@ -88,9 +88,6 @@ function dashboardCtrl($scope, $state, $log, growl) {
 						received = data.numInvocations;
 					}
 
-					// TODO remove (testing only)
-					//received = window.lastReceived = (window.lastReceived || 120) + (Math.random() - 0.5) * 10;
-
 					/* read chart data */
 					var label = formatTime(new Date());
 					$scope.chart.dataAll[0].push(received);
@@ -128,22 +125,6 @@ function dashboardCtrl($scope, $state, $log, growl) {
 			};
 		});
 		$scope.stats.countries = res;
-		// TODO remove (testing only)
-//		$scope.stats.countries = {
-//			"US": 100,
-//			"DE": 60,
-//			"CH": 10,
-//			"FR": 55,
-//			"UK": 60,
-//			"AU": 75,
-//			"CA": 45,
-//			"AT": 50,
-//			"BR": 75,
-//			"RU": 60,
-//			"ES": 60,
-//			"EG": 60,
-//			"IT": 65,
-//		}
 	};
 
 	$scope.loadInvocationStats = function() {

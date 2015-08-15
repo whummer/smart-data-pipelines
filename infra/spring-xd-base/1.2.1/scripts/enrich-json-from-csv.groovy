@@ -30,6 +30,7 @@ def mappingTable = [
 def resource = new UrlResource(csvFile);
 FlatFileItemReader fileReader=new FlatFileItemReader();
 fileReader.setResource(resource);
+fileReader.setEncoding("UTF-8");
 fileReader.setLinesToSkip(1);
 DefaultLineMapper lineMapper=new DefaultLineMapper();
 DelimitedLineTokenizer tokenizer=new DelimitedLineTokenizer();
@@ -47,6 +48,7 @@ fileReader.open(context);
 def line = null;
 def result = [];
 while (line = fileReader.read()) {
+    println("line: " + line);
 
   def id = line.readInt("OBJECTID");
   def mba = mappingTable[id];
@@ -61,7 +63,7 @@ while (line = fileReader.read()) {
       "address" : line.readString("ADRESSE"),
       "waitingTime" : payload[mba],
       "isOpen" : payload["IsOpen"],
-      "timestamp" : payload["Timestamp"],
+      "time" : payload["Timestamp"],
       "wartekreis" : payload["Wartekreis"]
     ]
     payload[mba] = entry;

@@ -1,46 +1,12 @@
 (function() {
-	var module = angular.module("riox-table", [], function($compileProvider) {
-	
-		$compileProvider.directive('compile', function($compile) {
-			return function(scope, element, attrs) {
-				scope.$watch(
-					function(scope) {
-						return scope.$eval(attrs.compile);
-					},
-					function(value) {
-						element.html(value);
-						$compile(element.contents())(scope);
-					}
-				);
-			};
-		});
-	
-	});
-	
-	module.directive('cell', function ($compile) {
-	    return {
-	    	restrict: "E",
-	    	replace: false,
-	    	template: function(elem, attrs) {
-	    		return '<div compile="template"></div>';
-	    	},
-	    	scope: {
-				template: '=',
-				object: '='
-			},
-		    controller: function($scope) {
-		    	for(var key in $scope.object) {
-		    		$scope[key] = $scope.object[key];
-		    	}
-		    }
-	    }
-	});
-	
+	var module = angular.module("riox-table", ["ngTable"]);
+
 	var tableController = function($scope, $filter, ngTableParams) {
 	
 		$scope.objects = [];
 		$scope.cols = [];
-	
+		$scope.timeField = $scope.timeField || "timestamp";
+
 		var setParams = function() {
 			$scope.tableParams = new ngTableParams({
 		        page: 1,
@@ -62,7 +28,7 @@
 			return elasticsearch.getObjectIDs($scope.esUrl, $scope.esIndexName, $scope.esTypeName, $scope.idField);
 		};
 		var getAllObjectDetails = function(ids) {
-			return elasticsearch.getAllObjectDetails($scope.esUrl, $scope.esIndexName, $scope.esTypeName, $scope.idField, ids);
+			return elasticsearch.getAllObjectDetails($scope.esUrl, $scope.esIndexName, $scope.esTypeName, $scope.idField, ids, $scope.timeField);
 		};
 		
 		var displayObjects = function(objects) {
@@ -115,7 +81,7 @@
 		$scope.loadTable();
 	}
 	
-	module.directive('rioxTable', function ($compile) {
+	module.directive('rioxTable', function () {
 	
 		return {
 	    	restrict: "E",
@@ -136,8 +102,8 @@
 	    		esIndexName: '=',
 	    		esTypeName: '=',
 	    		idField: '=',
-	    		labelTemplate: '=',
-	    		columns: '='
+	    		columns: '=',
+	    		timeField: '='
 			},
 			controller: tableController
 		};
