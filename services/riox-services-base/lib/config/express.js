@@ -22,7 +22,13 @@ module.exports = function(app, config) {
   app.set('view engine', 'html');
   app.use(compression());
   app.use(bodyParser.urlencoded({ extended: false }));
-  app.use(bodyParser.json());
+  app.use(bodyParser.json({strict: true, verify: function(req, res, buf, encoding) {
+	  if(buf.toString() == "") {
+		  var msg = "Invalid (empty) request body";
+		  res.status(422).json({error: msg});
+		  throw msg;
+	  }
+  }}));
   app.use(methodOverride());
   app.use(cookieParser());
 

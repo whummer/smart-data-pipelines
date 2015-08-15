@@ -410,6 +410,11 @@
 		var url = servicesConfig.proxies.url;
 		return callGET(url, callback, errorCallback);
 	};
+	sh.proxy = sh.get.proxy = function (proxy, callback, errorCallback) {
+		var id = proxy[ID] ? proxy[ID] : proxy;
+		var url = servicesConfig.proxies.url + "/" + id;
+		return callGET(url, callback, errorCallback);
+	};
 
 	sh.data = sh.get.data = function (opts, callback, errorCallback) {
 		var url = servicesConfig.thingData.url + "/" +

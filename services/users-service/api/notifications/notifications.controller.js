@@ -17,7 +17,7 @@ function list(query, req, res) {
 	});
 };
 
-exports.index = function(req, res) {
+exports.index = function(req, res, next) {
 	var query = {};
 	query[STATUS] = {"$not": { "$eq": STATUS_DELETED} };
 	return list(query, req, res);
