@@ -8,7 +8,7 @@
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 var express = require('express');
-var config = require('./config/environment');
+var config = global.config = require('./config/environment');
 var riox = require('riox-shared/lib/api/riox-api');
 var log = global.log = require('winston');
 
