@@ -59,7 +59,6 @@ var ipInfosCache = LRUCache({
 
 
 var getOrgForHost = function(host, callback) {
-	var subdomain = host.split(/\./).slice(-3, 1)[0];
 	var query = { all: true };
 	var orgsCache = getCacheEntry(configCache, KEY_ORGANIZATIONS);
 	riox.organizations(query, {
@@ -69,23 +68,100 @@ var getOrgForHost = function(host, callback) {
 			for(var i = 0; i < orgs.length; i ++) {
 				var org = orgs[i];
 				var domains = org[DOMAIN_NAME];
-				if(domains == subdomain || 
-						domains.indexOf(subdomain) >= 0) {
+				if(isSubdomain(host, domains)) {
 					found = org;
 				}
+			}
+			if(!found) {
+				console.warn("No organization found for host:", host);
 			}
 			callback(found);
 		},
 		cache: orgsCache
 	});
 };
-var getProxyForPath = function(method, org, path, callback) {
-	var query = {};
-	query[ORGANIZATION_ID] = org[ID];
+
+var endsWith = function(string, suffix) {
+    return string.indexOf(suffix, string.length - suffix.length) !== -1;
+};
+var getPrefix = function(string, suffix) {
+	var idx = string.indexOf(suffix);
+    return string.substring(0, idx);
+};
+var getSubdomain = function(host, domain) {
+	var prefix = getPrefix(host, domain);
+	if(prefix.length > 1) {
+		prefix = prefix.substring(0, prefix.length - 1);
+	}
+	return prefix;
+};
+var isSubdomain = function(host, domainsList) {
+	for(var i = 0; i < domainsList.length; i ++) {
+		var domain = domainsList[i];
+		var domains = [domain, domain + ".riox.io"];
+		for(var j = 0; j < domains.length; j ++) {
+			var domain = domains[j];
+			if(domain == host)
+				return true;
+			if(endsWith(host, domain))
+				return true;
+		}
+	}
+	return false;
+}
+
+var getSubDomainQuery = function(org, host) {
+	var subdomain = "";
+	if(org[DOMAIN_NAME]) {
+		org[DOMAIN_NAME].forEach(function(domain) { // TODO change to for-loop for better performance
+			var domains = [domain, domain + ".riox.io"];
+			domains.forEach(function(domain) { // TODO change to for-loop for better performance
+				if(endsWith(host, domain)) {
+					subdomain = getSubdomain(host, domain);
+					return;
+				}
+			});
+		});
+	}
+	return subdomain;
+};
+
+var allKeysPresent = function(object, query) {
+	for(var key in query) {
+		if(query[key]) {
+			if(object[key] != query[key])
+				return false;
+		} else {
+			if(object[key])
+				return false;
+		}
+	}
+	return true;
+};
+var filterAPIs = function(list, query) {
+	var result = [];
+	for(var i = 0; i < list.length; i ++) {
+		var obj = list[i];
+		if(allKeysPresent(obj, query)) {
+			result.push(obj);
+		}
+	}
+	return result;
+};
+
+var getProxyForPath = function(host, method, org, path, callback) {
 	var apisCache = getCacheEntry(configCache, KEY_APIS);
-	riox.proxies.all(query, {
+	riox.proxies.all({}, {
 		headers: auth.getInternalCallTokenHeader(),
 		callback: function(list) {
+
+			var query = {};
+			query[ORGANIZATION_ID] = org[ID];
+			query[DOMAIN_NAME] = getSubDomainQuery(org, host);
+			//console.log("query", query);
+
+			list = filterAPIs(list, query);
+
 			var found = false;
 			/* TODO: whu: move functionality into microservice (?) */
 			for(var i = 0; i < list.length; i ++) {
@@ -97,7 +173,7 @@ var getProxyForPath = function(method, org, path, callback) {
 						if(path.match(regex)) {
 							if(found) {
 								logger.warn("Path", path, "matches more than one API " +
-										"for organization", org[ID], ":",
+										"for host", host, ", organization", org[ID], ":",
 										op[URL_PATH], ",", found[KEY_OPERATION][URL_PATH]);
 							}
 							found = {};
@@ -119,7 +195,7 @@ var getProxyForURL = function(method, host, path, query, callback) {
 	var result = {};
 	getOrgForHost(host, function(org) {
 		result[KEY_ORGANIZATION] = org;
-		getProxyForPath(method, org, path, function(res) {
+		getProxyForPath(host, method, org, path, function(res) {
 			result[KEY_API] = res[KEY_API];
 			result[KEY_OPERATION] = res[KEY_OPERATION];
 			callback(result);
