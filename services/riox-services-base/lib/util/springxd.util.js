@@ -10,7 +10,7 @@ var STATUS_DEPLOYED = "deployed";
 var STATUS_FAILED = "failed";
 
 function getBaseURL() {
-	return "http://" + config.xdadmin.hostname + ":" + config.xdadmin.port;
+	return config.xdadmin.url;
 }
 function getStreamsURL() {
 	return getBaseURL() + "/streams/definitions";
@@ -56,7 +56,8 @@ x.createStream = function (streamName, streamDefinition, callback, errorCallback
 	request.post(url, {form: {name: streamName, definition: streamDefinition}},
 		function (error, response, body) {
 			if (error || (response.statusCode >= 400 && response.statusCode < 600)) {
-				var error = "Unable to create Spring XD stream (" + response.statusCode + ")" + error;
+				var error = "Unable to create Spring XD stream " + (!response ? "" : 
+						("(" + response.statusCode + ")")) + ":" + error;
 				/* maybe the stream already exists -> try to find */
 				x.findStream(streamName, function(stream) {
 					if(stream) {

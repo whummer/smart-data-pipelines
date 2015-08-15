@@ -184,7 +184,7 @@ Cache.prototype.getBackend = function (host, method, sourcePath, callback) {
         logger.debug("Cache hit: ", target);
         return callback(false, 0, target);
     } else {
-        logger.debug("Cache miss: %s", target);
+        //logger.debug("Cache miss: %s", target);
     }
     // The entry is not in the LRU cache, let's do a request on Redis
     this.client.read(host, method, sourcePath)
@@ -198,8 +198,7 @@ Cache.prototype.getBackend = function (host, method, sourcePath, callback) {
                 }
             });
 
-            logger.debug("cache.client.read.indexes: ", indexes);
-            logger.debug("cache.client.read.backends:", result.backends);
+            //logger.debug("cache.client.read.backends:", result.backends);
 
             var index = indexes[Math.floor(Math.random() * indexes.length)];
             var backend = url.parse(result.backends[index]);

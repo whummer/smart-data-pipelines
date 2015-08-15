@@ -36,6 +36,12 @@ exports.listAll = function (req, res, next) {
 	if(req.query[ORGANIZATION_ID]) {
 		query[ORGANIZATION_ID] = req.query[ORGANIZATION_ID];
 	}
+	if(typeof req.query[DOMAIN_NAME] != "undefined") {
+		query[DOMAIN_NAME] = req.query[DOMAIN_NAME];
+		if(query[DOMAIN_NAME] === "") {
+			query[DOMAIN_NAME] = {"$or": [{"$exists": false}, {"$exists": true, "$eq": ""}]};
+		}
+	}
 	return list(query, req, res, next);
 };
 

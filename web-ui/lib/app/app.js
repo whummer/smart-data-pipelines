@@ -5,10 +5,10 @@ angular.module('rioxApp', [
 	'ngResource',
 	'ngSanitize',
 	'ui.router',
-	'ui.bootstrap',                 // Bootstrap
-	'ui.sortable',                 // sortable (draggable items)
-	'ui.autocomplete',              // autocomplete
-	'localytics.directives',        // Chosen select
+	'ui.bootstrap',					  // Bootstrap
+	'ui.sortable',					  // sortable (draggable items)
+	'ui.autocomplete',				  // autocomplete
+	'localytics.directives',		  // Chosen select
 	'NgSwitchery',
 	'angular-growl',
 	'ngAnimate',
@@ -21,6 +21,7 @@ angular.module('rioxApp', [
 	'oc.lazyLoad',
 	'chart.js',
 	'ngTable',
+	'leaflet-directive',
 	'dndLists' // drag and drop stuff
 ])
 		.config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider, growlProvider) {
@@ -57,23 +58,22 @@ angular.module('rioxApp', [
 
 		.run(function ($rootScope, $state, Auth) {
 
-		    $rootScope.$on('$stateChangeStart', function (event, toState, toParams) {
+			 $rootScope.$on('$stateChangeStart', function (event, toState, toParams) {
 
-	        	var authRequired = toState.authenticate || (toState.data && toState.data.authenticate);
-		        if($rootScope.stateChangeBypass || toState.name === 'index.login' || !authRequired) {
-		            $rootScope.stateChangeBypass = false;
-		            return;
-		        }
+			  	var authRequired = toState.authenticate || (toState.data && toState.data.authenticate);
+			  	if($rootScope.stateChangeBypass || toState.name === 'index.login' || !authRequired) {
+					$rootScope.stateChangeBypass = false;
+					return;
+				}
 
-		        event.preventDefault();
-		        Auth.isLoggedInAsync(function(user) {
-		            if (user) {
-		                $rootScope.stateChangeBypass = true;
-		                $state.go(toState, toParams);
-		            } else {
-		                $state.go('index.login');
-		            }
-		        });
-
-		    });
+				event.preventDefault();
+				Auth.isLoggedInAsync(function(user) {
+					if (user) {
+						 $rootScope.stateChangeBypass = true;
+						 $state.go(toState, toParams);
+					} else {
+						 $state.go('index.login');
+					}
+				});
+			 });
 		});

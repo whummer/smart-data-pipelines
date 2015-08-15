@@ -13,12 +13,12 @@
 		"lruCache": false
 	},
 	"http": {
-		"port": 8090,
+		"port": 8070,
 		"bind": ["0.0.0.0"]
 	},
 	"https": {
 		"bind": "0.0.0.0",
-		"port": 8091,
+		"port": 8071,
 		"cert": "config/server.crt",
 		"key": "config/server.key"
 	},
