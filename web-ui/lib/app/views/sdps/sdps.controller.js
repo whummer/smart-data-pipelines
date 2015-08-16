@@ -1,135 +1,176 @@
-angular.module("rioxApp").controller("DataPipesCtrl", function ($scope) {
+angular.module("rioxApp").controller("DataPipesCtrl", function ($scope, $log, growl, $filter) {
 
 	console.log("Withing data pipes PARENT controller");
 
 	$scope.trim = window.trim;
 
+	$scope.sources = [];
+	$scope.sinks = [];
+	$scope.processors = [];
+
 	//
-	// sample pipelines
+	// templates for datapipe elements
 	//
-	$scope.samplePipes = [
+	$scope.templates = [
+
 		{
-			"elements": [
-				{
-					"type": "source",
-					"cssClass": "pipeSource",
-					"label": "http-in",
-					"description": "ingest data from API",
-					"config": {
-						"name": "HTTP",
-						"icon": "globe",
-						"availableOptions": [
-							{
-								"name": "URL",
-								"type": "String"
-							},
-							{
-								"name": "Interval",
-								"type": "Number"
-							}
-						],
-						"options": {
-							"URL": "http://www.a1.net",
-							"Interval": 3
-						}
-					}
-				},
-				{
-					"type": "processor",
-					"cssClass": "pipeProcessor",
-					"label": "transform-districts",
-					"description": "transform all this shit",
-					"config": {
-						"name": "Transform",
-						"icon": "gears",
-						"availableOptions": []
-					}
-				},
-				{
-					"type": "sink",
-					"cssClass": "pipeSink",
-					"label": "dashboard",
-					"description": "visualize waiting times in a TABLE",
-					"config": {
-						"name": "Table Visualization",
-						"icon": "table",
-						"availableOptions": []
-					}
-				}
-			],
-			"name": "TestPipe Seppl",
-			"description": "Very cool pipe smoked by seppl",
-			"pipeId": 0
+			label: "Source",
+			class: "element",
+			type: 'source',
+			icon: "download"
 		},
-
 		{
-			"elements": [
-				{
-					"type": "source",
-					"cssClass": "pipeSource",
-					"label": "twitter-search",
-					"description": "ingest data from API",
-					"config": {
-						"name": "TwitterSearch",
-						"icon": "twitter-square",
-						"availableOptions": [
-							{
-								"name": "Query",
-								"type": "String"
-							},
-							{
-								"name": "Geocode",
-								"type": "String"
-							}
-						],
-						"options": {
-							"Query": "strache :(",
-							"Geocode": "43.312331,18.312329,15km"
-						}
-					}
-				},
-				{
-					"type": "processor",
-					"cssClass": "pipeProcessor",
-					"label": "aggregate-3",
-					"description": "aggregates 3 results",
-					"config": {
-						"name": "Aggregator",
-						"icon": "share-alt fa-flip-horizontal",
-						"availableOptions": []
-					}
-				},
-				{
-					"type": "sink",
-					"cssClass": "pipeSink",
-					"label": "dump-to-logfile",
-					"description": "visualize waiting times in a TABLE",
-					"config": {
-						"name": "Logfile",
-						"icon": "file-text-o",
-						"availableOptions": [
-							{
-								"name": "LogfileName",
-								"type": "String"
-							}
-						],
-						"options": {
-							"LogfileName": "/tmp/log.out"
-						}
-					}
-				}
-			],
-			"name": "TestPipe Fritz",
-			"description": "Not so cool this pipe",
-			"pipeId": 1
+			label: "Processor",
+			class: "element",
+			type: 'processor',
+			icon: "cog"
+		},
+		{
+			label: "Sink",
+			class: "element",
+			type: 'sink',
+			icon: "upload"
+		},
+		{
+			label: "Container",
+			class: "container",
+			icon: "bars",
+			elements: []
 		}
-
 	];
 
+
 	//
-	// end sample data
+	// load pipeline elements
 	//
+	$scope.loadPipelineElements = function () {
+		$log.debug('Loading pipeline elements');
+		riox.pipeelements({}, function (elements) {
+			$log.debug('Loaded %s elements', elements.length);
+			elements.forEach(function (element) {
+				switch (element.type) {
+					case 'source' :
+						$scope.sources.push(element);
+						break;
+					case 'sink' :
+						$scope.sinks.push(element);
+						break;
+					case 'processor' :
+						$scope.processors.push(element);
+						break;
+					default:
+						throw new Error('Unexpeced element type: ' + element.type);
+				}
+			});
+
+			$scope.$apply();
+		}, function (error) {
+			if (error.status == 404) {
+				$log.warn('No Smart Pipes found in DB');
+				growl.warning('No Smart Pipes found. You will not be able to create new Data Pipelines.');
+			} else {
+				$log.error('Cannot load Smart Pipes: ', error);
+				growl.error('Cannnot load Smart Pipes. See console for details');
+			}
+		});
+	};
+
+	//
+	// get the available options for the currently selected element
+	//
+	$scope.getAvailableOptions = function (selectedElement) {
+		if (!selectedElement) return;
+		//$log.debug('Getting available options for ', selectedElement.label);
+		var template = getTemplatesForElement(selectedElement);
+		$log.info('Got options: ', template.options);
+		return template.options;
+	};
 
 
+	//
+	// deploy pipe
+	//
+	$scope.deployPipeline = function(pipeline) {
+		if (!pipeline.id) {
+			$log.warn('Cannot deploy pipeline. Pipeline has no ID. Save first');
+			growl.error('Cannot deploy an unsaved pipe');
+		} else {
+			$log.debug('Deploying pipe: ', pipeline.id);
+			var payload = {};
+			payload[PIPE_ID] = pipeline.id;
+			riox.add.pipedeployment(payload, function(deployed) {
+				$log.debug('Pipeline ' + pipeline.id + ' deployed successfully');
+				growl.success('Successfully deployed pipeline '+ pipeline.label);
+			}, function(error) {
+				$log.error('Cannot deploy pipe: ', error);
+				growl.error('Cannot deploy pipeline. See console for details');
+			});
+		}
+	};
+
+
+	//
+	// get the correct CSS class for given element
+	//
+	$scope.getClassForElement = function (element, size) {
+		//$log.debug('Getting class for element ', element);
+		if (element.type) {
+			return element.type == 'container' ? 'element-container' : (size ? element.type + size : element.type);
+		} else {
+			return element.class == 'container' ? 'element-container' : 'element';
+		}
+	};
+
+	//
+	// get the font-awesome based icon for given element. Return the icon of the template if
+	// element has no subtype yet
+	//
+	$scope.getElementIcon = function (element) {
+		if (!element.subtype && element.icon) {
+			return element.icon;
+		}
+
+		//$log.debug('Getting icon for element ', element);
+		var template = getTemplatesForElement(element);
+		return template.icon;
+	};
+
+	function getTemplatesForElement(element) {
+		var elementsOfSelectedType = element.type == 'source' ?
+			$scope.sources : element.type == 'sink' ?
+			$scope.sinks : $scope.processors;
+
+		//$log.warn('selected type: ', elementsOfSelectedType)
+		return $filter('filter')(elementsOfSelectedType, {subtype: element.subtype})[0];
+	}
+
+	//
+	// open datapipe definition in modal view
+	//
+	$scope.showPipelineDefinition = function (pipeline) {
+		var pipelineDefinition = angular.toJson(pipeline, true);
+		showDebugDialog("Here is what your pipeline looks like: ",
+			"Definition of Pipeline '" + pipeline.name + "'",
+			pipelineDefinition);
+	};
+
+	//
+	// delete a pipeline
+	//
+	$scope.deletePipeline = function (pipeline, callback) {
+		var deleteCallback = function () {
+			riox.delete.pipe(pipeline.id, function () {
+				growl.success('Deleted pipeline "' + pipeline.name + '"');
+				callback();
+			}, function (error) {
+				$log.error('Cannot delete pipeline: ', error);
+				growl.error('Cannot delete pipeline "' + pipeline.name + "'. See console for details");
+			})
+		};
+
+		showConfirmDialog("Do you really want to delete pipline '" + pipeline.name + "'?", deleteCallback);
+	};
+
+	$scope.loadPipelineElements();
 
 });

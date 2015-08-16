@@ -4,8 +4,8 @@
 			<li class="nav-header">
 				<div class="dropdown profile-element" style="margin: auto;">
 					<a ui-sref="index.main"><img class="img-responsive"
-					                             src="app/components/img/riox_logo_green3_xs.png"
-					                             style="height: 40px; margin-top: 8px; margin: auto;"/></a>
+																			 src="app/components/img/riox_logo_green3_xs.png"
+																			 style="height: 40px; margin-top: 8px; margin: auto;"/></a>
 				</div>
 			</li>
 			<li ng-class="{active: isActive('/dashboard')}" ng-show="isUserLoggedIn">
@@ -13,10 +13,8 @@
 			</li>
 
 
-
-
 			<li ng-class="{active: isActive('/apis')}" ng-show="isUserLoggedIn">
-				<a ui-sref="index.apis.list"><i class="fa fa-exchange"></i> <span class="nav-label">My APIs</span> <span
+				<a ui-sref="index.apis.list"><i class="fa fa-exchange"></i> <span class="nav-label">APIs</span> <span
 					class="fa arrow"></span></a>
 				<ul class="nav nav-second-level collapse" ng-class="{in: isActive('/apis')}">
 					<li>
@@ -49,13 +47,39 @@
 
 			<li ng-class="{active: isActive('/sdps')}" ng-show="isUserLoggedIn">
 				<a ui-sref="index.sdps.list">
-					<i class="fa fa-filter"></i> <span class="nav-label">My SDPs</span><span class="fa arrow"></span>
+					<i class="fa fa-bar-chart fa-fixed"></i> <span class="nav-label">Data &amp; Analytics </span><span
+					class="fa arrow"></span>
 				</a>
 
 				<ul class="nav nav-second-level collapse" ng-class="{in: isActive('/sdps')}">
+					<!--<li>
+						<a ui-sref="index.sdps.create">
+							<i class="fa fa-ellipsis-h"></i> <span class="nav-label">New Data Pipe</span>
+						</a>
+					</li>-->
+
 					<li>
-						<a ui-sref="index.sdps.create"><i class="fa fa-magic"></i> <span
-							class="nav-label">Create New SDP</span></a>
+						<a ui-sref="index.sdps.list">
+						<!--  <span class="fa-stack">
+								<i class="fa fa-battery-0 fa-stack-1x"></i>
+								<i class="fa fa-ellipsis-h fa-stack-1x"></i>
+
+							</span>
+							<span class="nav-label">Smart Data Pipes</span>-->
+							<i class="fa fa-ellipsis-h fa-fixed"></i> <span class="nav-label">Pipelines</span>
+						</a>
+					</li>
+
+					<!--<li>
+						<a ui-sref="index.sdps.bricks.create">
+							<i class="fa fa-cubes"></i><span class="nav-label">New Smart Brick</span>
+						</a>
+					</li>
+-->
+					<li>
+						<a ui-sref="index.sdps.bricks">
+							<i class="fa fa-cube fa-fixed"></i><span class="nav-label">Building Blocks</span>
+						</a>
 					</li>
 				</ul>
 			</li>
@@ -68,7 +92,7 @@
 				<a ui-sref="index.notifications"><i class="fa fa-bell"></i> <span class="nav-label">Notifications</span></a>
 			</li>
 			<li ng-class="{active: isActive('/settings')}" ng-show="isUserLoggedIn">
-				<a ui-sref="index.settings.account"><i class="glyphicon glyphicon-cog"></i> <span
+				<a ui-sref="index.settings.account"><i class="fa fa-sliders"></i> <span
 					class="nav-label">Settings</span> <span class="fa arrow"></span></a>
 				<ul class="nav nav-second-level collapse" ng-class="{in: isActive('/settings')}">
 					<li>
@@ -84,7 +108,7 @@
 				</ul>
 			</li>
 			<li ng-class="{active: isActive('/admin')}" ng-show="isAdminLoggedIn">
-				<a ui-sref="index.admin"><i class="fa fa-wrench"></i> <span class="nav-label">Admin</span></a>
+				<a ui-sref="index.admin"><i class="fa fa-unlock-alt"></i> <span class="nav-label">Admin</span></a>
 			</li>
 		</ul>
 	</div>

@@ -19,7 +19,7 @@ var all = {
 	root: path.normalize(__dirname + '/../../..'),
 
 	logging: {
-		level: 'debug',
+		level: 'info',
 		timestamp: true,
 		debugStdout: true,
 		colorize: true,

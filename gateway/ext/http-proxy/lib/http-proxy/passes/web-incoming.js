@@ -142,7 +142,7 @@ web_o = Object.keys(web_o).map(function(pass) {
 			}
 		}
 
-		(options.buffer || req).pipe(proxyReq);	
+		(options.buffer || req).pipe(proxyReq);
 
 		proxyReq.on('response', function(proxyRes) {
 			if(server) { server.emit('proxyRes', proxyRes, req, res); }
@@ -156,7 +156,7 @@ web_o = Object.keys(web_o).map(function(pass) {
 					logger.warn("Cannot call web-outgoing method: " + e);
 					return;
 				}
-			}		
+			}
 
 			// Allow us to listen when the proxy has completed
 			proxyRes.on('end', function () {
@@ -164,7 +164,6 @@ web_o = Object.keys(web_o).map(function(pass) {
 			});
 
 			proxyRes.pipe(res);
-		
 		});
 
 		// proxyReq.end();

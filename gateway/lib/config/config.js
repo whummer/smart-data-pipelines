@@ -3,7 +3,7 @@
 	var fs = require('fs'),
 		EventEmitter = require('events').EventEmitter,
 		util = require('util'),
-		logger = require('winston');
+		logger = require('../logging');
 
 	var ConfigError = require('./error'),
 		defaults = require('./defaults');

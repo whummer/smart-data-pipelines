@@ -307,14 +307,14 @@ exports.listConsumers = function(req, res, next) {
 	var user = auth.getCurrentUser(req);
 	var source = req.query.source;
 	if(!source) {
-		return res.status(400).json({error: "Please provide a valid source as query parameter"});
+		return res.status(400).json({error: "Please provide a valid query parameter"});
 	}
 	var query = {};
-	riox.streams.source(source, {
+	riox.proxy(source, {
 		headers: req.headers,
-		callback: function(sourceObj) {
+		callback: function(obj) {
 			/* check authorization */
-			if(!user.hasOrganization(sourceObj[ORGANIZATION_ID])) {
+			if(!user.hasOrganization(obj[ORGANIZATION_ID])) {
 				return res.status(401).json({error: "Access denied"});
 			}
 

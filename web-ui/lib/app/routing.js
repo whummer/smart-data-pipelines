@@ -291,9 +291,17 @@ angular.module('rioxApp').config(function ($stateProvider, $urlRouterProvider) {
 					controller: 'ListDataPipesCtrl'
 				}
 			}
+		},
 
+		'index.sdps.bricks': {
+			url: '/sdps/bricks',
+			views: {
+				"listBricks@index.sdps": {
+					templateUrl: 'app/views/sdps/bricks.list.html',
+					controller: 'ListBricksCtrl'
+				}
+			}
 		}
-
 
 	};
 

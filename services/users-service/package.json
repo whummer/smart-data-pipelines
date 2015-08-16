@@ -1,41 +1,40 @@
 {
-  "name": "riox-users-service",
-  "version": "0.0.1",
-  "dependencies": {
-    "body-parser": "1.12.4",
-    "composable-middleware": "^0.3.0",
-    "compression": "1.4.4",
-    "cookie-parser": "~1.0.1",
-    "cors": "~2.5.3",
-    "ejs": "~0.8.4",
-    "errorhandler": "~1.0.0",
-    "express": "~4.0.0",
-    "express-session": "~1.0.2",
-    "lodash": "2.4.2",
-    "method-override": "~1.0.0",
-    "mongoose": "~4.0.0",
-    "morgan": "~1.0.0",
-    "node-rest-client": "^1.5.0",
-    "node-uuid": "^1.4.3",
-    "passport": "~0.2.0",
-    "passport-facebook": "latest",
-    "passport-google-oauth": "latest",
-    "passport-local": "~0.1.6",
-    "passport-twitter": "latest",
-    "winston": "^1.0.0",
-    "uuid": "2.0.1",
-    "password-generator": "1.0.0",
+	"name": "riox-users-service",
+	"version": "0.0.1",
+	"dependencies": {
+		"body-parser": "1.12.4",
+		"composable-middleware": "^0.3.0",
+		"compression": "1.4.4",
+		"cookie-parser": "~1.0.1",
+		"cors": "~2.5.3",
+		"ejs": "~0.8.4",
+		"errorhandler": "~1.0.0",
+		"express": "~4.0.0",
+		"express-session": "~1.0.2",
+		"lodash": "2.4.2",
+		"method-override": "~1.0.0",
+		"morgan": "~1.0.0",
+		"node-rest-client": "^1.5.0",
+		"node-uuid": "^1.4.3",
+		"passport": "~0.2.0",
+		"passport-facebook": "latest",
+		"passport-google-oauth": "latest",
+		"passport-local": "~0.1.6",
+		"passport-twitter": "latest",
+		"winston": "^1.0.0",
+		"uuid": "2.0.1",
+		"password-generator": "1.0.0",
 
-    "riox-shared": "../../riox-shared/",
-    "riox-services-base": "../riox-services-base/"
-  },
-  "devDependencies": {
-  },
-  "engines": {
-    "node": ">=0.10.0"
-  },
-  "scripts": {
-    "start": "node app.js"
-  },
-  "private": true
+		"riox-shared": "../../riox-shared/",
+		"riox-services-base": "../riox-services-base/"
+	},
+	"devDependencies": {
+	},
+	"engines": {
+		"node": ">=0.10.0"
+	},
+	"scripts": {
+		"start": "node app.js"
+	},
+	"private": true
 }

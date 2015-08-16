@@ -46,6 +46,9 @@ div.jvectormap-label {
 <!-- 		</div> -->
 <!-- 	</div> -->
 
+<!-- 	<div class="col-lg-12" ng-include="'/app/views/demo/stadtwerke/index.html'"> -->
+<!-- 	</div> -->
+
 	<div class="col-lg-6 connectPanels">
 		<div class="ibox float-e-margins">
 			<div class="ibox-title">
@@ -57,9 +60,9 @@ div.jvectormap-label {
 						<input type="checkbox" ng-model="chart.update" ng-change="toggleShowLive()"/> Live Updates
 						<select ng-model="chart.interval" ng-options="i.value as i.label for i in intervals"></select>
 						<canvas id="line" class="chart chart-line" data="chart.data"
-						  labels="chart.labels" legend="true" series="chart.series"
+						  labels="chart.labels" series="chart.series"
 						  click="onClick" options="chart.options">
-						</canvas> 
+						</canvas>
 					</div>
 				</div>
 			</div>
@@ -99,18 +102,6 @@ div.jvectormap-label {
 	</div>
 	<div class="clearfix"></div>
 
-<!-- 	<div class="col-lg-3 connectPanels"> -->
-<!-- 		<div class="ibox float-e-margins"> -->
-<!-- 			<div class="ibox-title"> -->
-<!-- 				<h5>Income</h5> -->
-<!-- 			</div> -->
-<!-- 			<div class="ibox-content"> -->
-<!-- 				<h1 class="no-margins">&euro; 12886.20</h1> -->
-<!-- 				<div class="stat-percent font-bold text-success">98% <i class="fa fa-bolt"></i></div> -->
-<!-- 				<small>Total income per last billing cycle </small> -->
-<!-- 			</div> -->
-<!-- 		</div> -->
-<!-- 	</div> -->
 	<div class="col-lg-2 connectPanels">
 		<div class="ibox float-e-margins">
 			<div class="ibox-title">
@@ -171,7 +162,7 @@ div.jvectormap-label {
 			</div>
 		</div>
 	</div>
+	
 </div>
-
 
 

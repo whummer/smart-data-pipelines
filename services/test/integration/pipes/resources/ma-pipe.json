@@ -1,0 +1,131 @@
+{
+	"name": "WartezeitenVisulationzPipe",
+	"description": "my cool datapipe",
+	"elements": [
+		{
+			"class": "container",
+			"type": "source",
+			"label": "source-container-aemter",
+			"description": "source container for meldeamt, passamt, parkpickerl",
+			"elements": [
+				{
+					"class": "element",
+					"type": "source",
+					"subtype": "http-out",
+					"label": "poll-meldeamt",
+					"description": "poll all meldeamt data per 10sec",
+					"options": {
+						"url": "http://www.wien.gv.at/wartezeiten/meldeservice/wartezeiten.svc/GetWartezeiten",
+						"method": "GET",
+						"interval": 10
+					}
+				},
+				{
+					"class": "element",
+					"type": "source",
+					"subtype": "http-out",
+					"label": "poll-passamt",
+					"description": "poll all passamt data per 10sec",
+					"options": {
+						"url": "http://www.wien.gv.at/wartezeiten/passservice/wartezeiten.svc/GetWartezeiten",
+						"method": "GET",
+						"interval": 10
+					}
+				},
+				{
+					"class": "element",
+					"type": "source",
+					"subtype": "http-out",
+					"label": "poll-parkpickerl",
+					"description": "poll all pickerl data per 10sec",
+					"options": {
+						"url": "http://www.wien.gv.at/wartezeiten/parkpickerl/wartezeiten.svc/GetWartezeiten",
+						"method": "GET",
+						"interval": 10
+					}
+				}
+
+			]
+		},
+
+		{
+			"class": "container",
+			"type": "processor",
+			"label": "processor-container-aemter",
+			"description": "source container for meldeamt, passamt, parkpickerl",
+			"elements": [
+				{
+					"class": "element",
+					"type": "processor",
+					"subtype": "script",
+					"label": "add-discriminator-element-meldeservice",
+					"description": "Adds origin (Meldeservice)",
+					"options": {
+						"location": "json-add-element.groovy",
+						"sync-interval": 60,
+						"variables": {
+							"key" : "origin",
+							"value" : "meldeservice"
+						}
+					}
+				},
+				{
+					"class": "element",
+					"type": "processor",
+					"subtype": "script",
+					"label": "add-discriminator-element-passservice",
+					"description": "Adds origin (Passservice)",
+					"options": {
+						"location": "json-add-element.groovy",
+						"sync-interval": 60,
+						"variables": {
+							"key": "origin",
+							"value" : "passservice"
+						}
+					}
+				},
+				{
+					"class": "element",
+					"type": "processor",
+					"subtype": "script",
+					"label": "add-discriminator-element-passservice",
+					"description": "Adds origin (Packpickerl)",
+					"options": {
+						"location": "json-add-element.groovy",
+						"sync-interval": 60,
+						"variables": {
+							"key": "origin",
+							"value" : "parkpickerlservice"
+						}
+					}
+				}
+			]
+		},
+
+		{
+			"class": "element",
+			"type": "processor",
+			"subtype": "script",
+			"label": "enrich-with-location-data",
+			"description": "enriches payload with location data",
+			"options": {
+				"location": "enrich-json-from-csv.groovy",
+				"sync-interval": 60,
+				"variables": {
+					"csvFile": "file:///opt/xd-data/ma-data.csv"
+				}
+			}
+		},
+		{
+			"class": "element",
+			"type": "sink",
+			"subtype": "map",
+			"label": "visualize-data-in-map",
+			"description": "visualize data in a kibana map",
+			"options": {
+				"index" : "smartcity",
+				"type" : "waitingtimes"
+			}
+		}
+	]
+}

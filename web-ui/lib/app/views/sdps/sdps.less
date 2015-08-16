@@ -2,10 +2,17 @@
 
 @pipe-element-width: 120px;
 @pipe-element-height: 80px;
-@pipe-element-bg: #47b1ff;
+
+@pipe-element-big-width: @pipe-element-width  * 2.5;
+@pipe-element-big-height: @pipe-element-height * 2.5;
+
+@pipe-element-bg: lighten(#2f4050, 40%);
+//@pipe-element-bg: #47b1ff;
+@pipe-element-bg-light: lighten(@pipe-element-bg, 5%);
 @pipe-element-bg-selected: #ff5e00;
 @pipe-element-font-color: #FFFFFF;
-@remove-element-bg: #c7c7c7;
+@pipe-element-description-font-color: darken(@pipe-element-font-color, 0%);
+@remove-element-bg: #ffbe00;
 
 /***************************** Required styles *****************************/
 
@@ -20,11 +27,16 @@
 
 /***************************** Dropzone Styling *****************************/
 
+.pipezone {
+	border-width: 1px;
+	border-color: @pipe-element-bg-light;
+}
+
 /**
  * The dnd-list should always have a min-height,
  * otherwise you can't drop to it once it's empty
  */
-.pipeEditor .dropzone ul[dnd-list] {
+.pipeEditor .pipezone ul[dnd-list] {
 	min-height: 42px;
 	margin: 0;
 	padding-left: 0;
@@ -65,7 +77,8 @@
  */
 .pipeEditor .dropzone .dndPlaceholder {
 	background-color: #ddd !important;
-	min-height: 42px;
+	min-height: @pipe-element-height;
+	width: @pipe-element-width;
 	display: block;
 	position: relative;
 }
@@ -76,10 +89,10 @@
 
 .pipeEditor .dropzone .itemlist > li {
 	color: @pipe-element-font-color;
-	float: left;
 	font-weight: 700;
 	margin-top: 20px;
 	text-align: center;
+	float: left;
 	width: @pipe-element-width;
 	height: @pipe-element-height;
 	margin-left: 10px;
@@ -101,18 +114,20 @@
 
 /***************************** Pipe Source styles *****************************/
 
-.pipeElement {
+.element {
 	width: @pipe-element-width;
-	height: @pipe-element-height;
+	min-height: @pipe-element-height;
 	background-color: @pipe-element-bg;
+	float: left;
 	position: relative;
 	text-align: center;
 	border-radius: .25em;
 	padding-top: 5px;
+	margin-left: 10px;
 	color: @pipe-element-font-color;
 }
 
-.pipeElementAttachment {
+.elementAttachment {
 	content: "";
 	position: absolute;
 	top: 20px;
@@ -124,74 +139,88 @@
 	-moz-transform: rotate(180deg);
 }
 
-.pipeSource {
-	.pipeElement
+.source {
+	.element
 }
 
-.pipeSource:after {
-	.pipeElementAttachment;
+.source:after {
+	.elementAttachment;
 	right: -10px;
 	border-right: 10px solid @pipe-element-bg;
 }
 
-.pipeSourceSelected {
-	.pipeSource;
+.sourceSelected {
+	.source;
 	background-color: @pipe-element-bg-selected !important;
 }
 
-.pipeSourceSelected:after {
-	.pipeElementAttachment;
+.sourceSelected:after {
+	.elementAttachment;
 	border-right: 10px solid @pipe-element-bg-selected !important;
 }
 
 /***************************** Pipe Sink styles *****************************/
 
-.pipeSink {
-	.pipeElement;
+.sink {
+	.element;
 }
 
-.pipeSinkSelected {
-	.pipeSink;
+.sinkSelected {
+	.sink;
 	background-color: @pipe-element-bg-selected !important;
 }
 
-.pipeSink:before {
-	.pipeElementAttachment;
+.sink:before {
+	.elementAttachment;
 	right: 110px;
 	border-right: 10px solid white;
 }
 
 /***************************** Pipe Processor styles *****************************/
 
-.pipeProcessor {
-	.pipeElement;
+.processor {
+	.element;
 }
 
-.pipeProcessorSelected {
-	.pipeProcessor;
+.processorSelected {
+	.processor;
 	background-color: @pipe-element-bg-selected !important;
 }
 
-.pipeProcessor:before {
-	.pipeElementAttachment;
+.processor:before {
+	.elementAttachment;
 	border-right: 10px solid white;
 	right: 110px;
 }
 
-.pipeProcessor:after {
-	.pipeElementAttachment;
+.processor:after {
+	.elementAttachment;
 	right: -10px;
 	border-right: 10px solid @pipe-element-bg;
 }
 
-.pipeProcessorSelected:after {
-	.pipeElementAttachment;
+.processorSelected:after {
+	.elementAttachment;
 	right: -10px;
 	border-right: 10px solid @pipe-element-bg-selected;
 }
 
+/********************************** ELEMENT CONTAINER *************************************/
+.element-container {
+	.element;
+	float: left;
+	margin-left: 10px;
+	background-color: transparent;
+	border-color: @pipe-element-bg;
+	border-style: dashed;
+	width: @pipe-element-width + 10%;
+	height: @pipe-element-height + 10%;
+	color: @pipe-element-bg;
+}
+
 .removeElementArea {
 	background-color: @remove-element-bg;
+	border-color: red;
 	border-radius: .25em;
 	width: 80px;
 	height: 80px;
@@ -200,4 +229,158 @@
 	border-style: dashed;
 	border-width: 1px;
 	margin-top: 5px;
+	list-style: none;
+	color: white;
+}
+
+/********************************** ELEMENT LIST BIG VIEWS *************************************/
+
+.elementBig {
+	.element;
+	color: @pipe-element-description-font-color;
+	background-color: @pipe-element-bg-light;
+	width: @pipe-element-big-width;
+	min-height: @pipe-element-big-height;
+	border-radius: 0.4em;
+	h2 {
+		font-weight: 200;
+	}
+}
+
+.elementAttachmentBig {
+	.elementAttachment;
+	top: @pipe-element-big-height * 0.15;
+	height: @pipe-element-big-height * 0.7;
+	border-top: 20px solid transparent;
+	border-bottom: 20px solid transparent;
+}
+
+.sourceBig {
+	.elementBig;
+}
+
+.sourceBig:after {
+	.elementAttachmentBig;
+	right: -8px;
+	border-right: 15px solid @pipe-element-bg-light;
+}
+
+.processorBig {
+	.elementBig;
+}
+
+.processorBig:before {
+	.elementAttachmentBig;
+	border-right: 10px solid white;
+	right: @pipe-element-big-width - 8;
+}
+
+.processorBig:after {
+	.elementAttachmentBig;
+	right: -8px;
+	border-right: 15px solid @pipe-element-bg-light;
+}
+
+.sinkBig {
+	.elementBig;
+}
+
+.sinkBig:before {
+	.elementAttachmentBig;
+	right: @pipe-element-big-width - 8;
+	border-right: 10px solid white;
+
+}
+
+/********************************** ELEMENT LIST SMALL VIEWS *************************************/
+
+.elementSmall {
+	.element;
+	width: @pipe-element-width * 0.5;
+	height: @pipe-element-height * 0.5;
+	min-height: @pipe-element-height * 0.5;
+}
+
+.elementAttachmentSmall {
+	.elementAttachment;
+	top: 10px;
+	height: 10px;
+	border-top: 10px solid transparent;
+	border-bottom: 10px solid transparent;
+}
+
+.sourceSmall {
+	.elementSmall;
+}
+
+.sourceSmall:after {
+	.elementAttachmentSmall;
+	right: -10px;
+	border-right: 15px solid @pipe-element-bg-light;
+}
+
+.processorSmall {
+	.elementSmall
+}
+
+.processorSmall:before {
+	.elementAttachmentSmall;
+	right: (@pipe-element-width * 0.5) - 10px;
+	border-right: 15px solid white;
+}
+
+.processorSmall:after {
+	.elementAttachmentSmall;
+	right: -10px;
+	border-right: 15px solid @pipe-element-bg-light;
+}
+
+.sinkSmall {
+	.elementSmall;
+}
+
+.sinkSmall:before {
+	.elementAttachmentSmall;
+	right: (@pipe-element-width * 0.5) - 10px;
+	border-right: 15px solid white;
+}
+
+/******************************* COMMON STYLES *********************************/
+.v-align {
+	float: none;
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.heading-thicker {
+	font-weight: 200;
+}
+
+.subheading-thinner {
+	font-weight: 200;
+}
+
+.attention-delayed {
+	-moz-animation-duration: 1s;
+	-webkit-animation-duration: 1s;
+	-moz-animation-delay: 3s;
+	-webkit-animation-delay: 3s;
+	-moz-animation-iteration-count: 1;
+	-webkit-animation-iteration-count: 1;
+}
+
+.animated-fast {
+	-moz-animation-duration: 0.5s;
+	-webkit-animation-duration: 0.5s;
+	-moz-animation-iteration-count: 1;
+	-webkit-animation-iteration-count: 1;
+}
+
+.btn-primary-light {
+	background-color: @pipe-element-bg-light;
+}
+
+.label-deployed {
+	font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	background-color: rgba(0, 130, 0, 0.65);
 }

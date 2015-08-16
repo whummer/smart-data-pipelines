@@ -13,11 +13,11 @@ var cors = require('cors');
 var util = require('./util/util');
 var expressWinston = require('express-winston');
 var log = global.log = require('winston');
-var errorHandler = require('./util/errors/handler')
+var errorHandler = require('./util/errors/handler');
 
 require('./api/service.calls');
 
-var mongoose = global.mongoose || require('mongoose');
+var mongoose = global.mongoose || require('mongoose-q')();
 if (!global.mongoose) {
 	global.mongoose = mongoose;
 }
@@ -62,13 +62,15 @@ var start = function (config, routes, serviceName) {
 					meta: false
 				});
 
-				expressApp.use(function(req, res, next) {
+				expressApp.use(function (req, res, next) {
 					var end = res.end;
-					res.end = function(chunk, encoding) {
-			            res.end = end;
-			            if(res.end) res.end(chunk, encoding);
-						var emptyNext = function(){};
-						if(res.statusCode < STATUS_CODE_LOGERROR_START) {
+					res.end = function (chunk, encoding) {
+						res.end = end;
+						if (res.end) res.end(chunk, encoding);
+						var emptyNext = function () {
+						};
+
+						if (res.statusCode < STATUS_CODE_LOGERROR_START) {
 							requestLogger(req, res, emptyNext);
 						} else {
 							errorDetailsLogger(req, res, emptyNext);
@@ -95,9 +97,19 @@ var start = function (config, routes, serviceName) {
 				})
 			]
 		});
+
+		//
+		// FR: add a global error handler so we see problems on the console.
+		//
+		function logErrors(err, req, res, next) {
+			log.error(err.stack);
+			next(err);
+		}
+		expressApp.use(logErrors);
+
 		expressApp.use(function(err, req, res, next) {
 			var emptyNext = function(){};
-			if(res.statusCode >= STATUS_CODE_LOGERROR_START) {
+			if (res.statusCode >= STATUS_CODE_LOGERROR_START) {
 				errorDetailsLogger(err, req, res, emptyNext);
 			}
 			//next();
@@ -130,7 +142,7 @@ var start = function (config, routes, serviceName) {
 		// Connect to database
 		if (process.env.TEST_MODE) {
 			if (!mongoose.__mockgooseHasBeenApplied) {
-				if(log) log.info("Using TEST mode (mockgoose)");
+				if (log) log.info("Using TEST mode (mockgoose)");
 				var mockgoose = require('mockgoose');
 				mockgoose(mongoose);
 				//mongoose.connect("");
@@ -148,6 +160,14 @@ var start = function (config, routes, serviceName) {
 		if (log && config.logging) {
 			requestLogging = configureRequestLogger(config, requestLogging, expressApp);
 		}
+
+		// gets the Url to simply construct Location headers
+		expressApp.use(function(req, res, next) {
+			req.getUrl = function() {
+				return req.protocol + "://" + req.get('host') + req.originalUrl;
+			}
+			return next();
+		});
 
 		var server = app.server = require('http').createServer(expressApp);
 		var expressConfig = require("./config/express");

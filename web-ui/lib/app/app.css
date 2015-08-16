@@ -1,7 +1,7 @@
 .label {
   background-color: #d1dade;
   color: #5e5e5e;
-  font-family: 'Open Sans';
+  font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 10px;
   font-weight: 600;
   padding: 3px 8px;
@@ -10,9 +10,9 @@
 .badge {
   background-color: #d1dade;
   color: #5e5e5e;
-  font-family: 'Open Sans';
+  font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 400;
   padding-bottom: 4px;
   padding-left: 6px;
   padding-right: 6px;
@@ -25,8 +25,8 @@
 }
 .label-success,
 .badge-success {
-  background-color: #1c84c6;
-  color: #FFFFFF;
+  background-color: rgba(143, 235, 109, 0.9);
+  color: #FFF;
 }
 .label-warning,
 .badge-warning {

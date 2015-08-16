@@ -5,7 +5,7 @@
 		DriverError = require('../utils/drivererror'),
 		redis = require('redis'),
 		// XXX new logging infrastructure not landed yet
-		logger = require('winston'),
+		logger = require('../logging'),
 				// require("../../lib/logging"),
 		util = require('util'),
 		Promise = require('promise');
@@ -19,7 +19,7 @@
 
 		// The principal redis client
 		var clientReady = false;
-		try { 
+		try {
 			var client = redis.createClient(slave.port || 6379, slave.hostname || '127.0.0.1');
 		} catch (e) {
 			logger.debug (e);
@@ -144,7 +144,7 @@
 			}
 		};
 
-		this.read = function (vhost, method, route) {  
+		this.read = function (vhost, method, route) {
 
 			return new Promise(function (fulfill, reject) {
 				var baseKey = prefix + 'frontend:' + vhost;
@@ -188,7 +188,7 @@
 							}
 						});
 					}
-				});            
+				});
 			});
 		};
 
@@ -204,7 +204,7 @@
 		};
 
 		/*
-		 * Adds a route to a given vhost. 
+		 * Adds a route to a given vhost.
 		 */
 		this.add = function(vhost, method, routeMap) {
 			logger.debug("redis.add: { vhost: %s, method: %s, routeMap: %s }", vhost, method, JSON.stringify(routeMap));

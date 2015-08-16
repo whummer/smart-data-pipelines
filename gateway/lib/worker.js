@@ -9,13 +9,22 @@ var fs = require('fs'),
 	httpProxy = require('http-proxy'),
 	cache = require('./cache'),
 	memoryMonitor = require('./memorymonitor'),
-	logger = require('winston'),
+	logger = require('./logging'),
 	lynx = require('lynx'),
-	expressStatsd = require('express-statsd');
+	expressStatsd = require('express-statsd'),
+	connect = require('connect'),
+	harmon = require('harmon'),
+	through = require('through');
 
 /* constants/configurations */
+
+/** enable CORS headers on OPTIONS requests to the gateway */
 var CORS_HEADERS_ENABLED = true;
+/** intercept calls and ask riox services whether access should be granted */
 var ENFORCE_ACCESS_LIMITS = true;
+/** if true, let the gateway be accessed on any arbitrary port */
+var IGNORE_PORT_FOR_HOST_MAPPING = true;
+/** whether to send performance/invocation data to statsd server */
 var SEND_TO_STATSD = false;
 var rootDir = fs.realpathSync(__dirname + '/../');
 var hipacheVersion = require(path.join(__dirname, '..', 'package.json')).version;
@@ -96,7 +105,6 @@ Worker.prototype.runServer = function (config) {
 	var options = {};
 
 
-	console.log(config.extensions)
 	if (config.server.httpKeepAlive !== true) {
 		// Disable the http Agent of the http-proxy library so we force
 		// the proxy to close the connection after each request to the backend
@@ -301,6 +309,33 @@ Worker.prototype.runServer = function (config) {
 		res.setHeader("Access-Control-Expose-Headers", "Location");
 	};
 
+	// var getConnectMiddlewareHandler = function() {
+	//
+	// 	var connectApp = connect();
+	//
+	// 	/* handler for injecting stuff */
+	// 	var selects = [];
+	// 	var simpleselect = {};
+	// 	simpleselect.query = "head";
+	// 	simpleselect.func = function (node) {
+	// 		var s = node.createStream({ outer: true });
+	// 		s.pipe(through(function (data) {
+	// 			if(data.toString().indexOf('</head>') > -1) {
+	// 				// TODO make configurable
+	// 				s.write('<script>if(document.domain) { document.domain = document.domain.replace(/^.*\\.([^\\.]+\\.[^\\.]+)/, "$1"); }</script>');
+	// 			}
+	// 			s.write(data);
+	// 		})).pipe(s);
+	// 	}
+	// 	selects.push(simpleselect);
+	//
+	// 	/* build connect middleware pipeline */
+	// 	connectApp.use(harmon([], selects, true));
+	// 	connectApp.use(httpRequestHandler);
+	//
+	// 	return connectApp;
+	// };
+
 	var httpRequestHandler = function (req, res) {
 
 		res.timer = {
@@ -413,16 +448,26 @@ Worker.prototype.runServer = function (config) {
 			};
 		}.bind(this)());
 
+		var getHostForMapping = function(host) {
+			if(!IGNORE_PORT_FOR_HOST_MAPPING) {
+				return host;
+			}
+			var idx = host.indexOf(":");
+			if(idx < 0) return host;
+			return host.substring(0, idx);
+		};
+
 		// Proxy the HTTP request
 		var proxyRequest = function () {
-			logger.debug("worker.proxyRequest");
+			//logger.debug("worker.proxyRequest");
 
-			this.cache.getBackend(req.headers.host, req.method, req.url, function (err, code, backend) {
+			var mappedHost = getHostForMapping(req.headers.host);
+			this.cache.getBackend(mappedHost, req.method, req.url, function (err, code, backend) {
+				if(req.method == "OPTIONS" && CORS_HEADERS_ENABLED) {
+					addCORSHeaders(req, res);
+					return res.end();
+				}
 				if (err) {
-					if(req.method == "OPTIONS" && CORS_HEADERS_ENABLED) {
-						addCORSHeaders(req, res);
-						return res.end();
-					}
 					logger.error(err);
 					return errorMessage(res, err, code);
 				}
@@ -443,8 +488,7 @@ Worker.prototype.runServer = function (config) {
 				// Proxy the request to the backend
 				res.timer.startBackend = Date.now();
 
-				logger.debug("request path: ", req.url);
-				logger.debug("requests method: ", req.method);
+				logger.debug("request method/path: ", req.method, req.url);
 
 				proxy.emit('start', req, res);
 
@@ -484,7 +528,8 @@ Worker.prototype.runServer = function (config) {
 		// check access/limits
 		if(ENFORCE_ACCESS_LIMITS) {
 			var access = {};
-			access[URL] = "https://" + req.headers.host + "" + req.url;
+			var mappedHost = getHostForMapping(req.headers.host);
+			access[URL] = "https://" + mappedHost + "" + req.url;
 			access[HTTP_METHOD] = req.method;
 			access[ORIGIN] = req.headers.origin;
 			access[SOURCE_IP] = req.connection.remoteAddress;
@@ -516,14 +561,12 @@ Worker.prototype.runServer = function (config) {
 	var wsRequestHandler = function (req, socket, head) {
 		logger.debug("worker.wsRequestHandler");
 
-;
 		this.cache.getBackend(req.headers.host, req.method, req.url, function (err, code, backend) {
 			if (err) {
 				logger.error("worker.redis.wsRequestHandler:", err);
 			}
 			if (backend && backend.targetPath) {
-
-				console.log('Backend:', JSON.stringify(backend))
+				logger.debug('Backend:', JSON.stringify(backend))
 
 				// Proxy the WebSocket request to the backend
 				proxy.ws(req, socket, head, {
@@ -601,6 +644,7 @@ Worker.prototype.runServer = function (config) {
 	if (config.http.enabled) {
 		config.http.bind.forEach(function (options) {
 			counter++;
+			//var httpServer = http.createServer(getConnectMiddlewareHandler());
 			var httpServer = http.createServer(httpRequestHandler);
 			httpServer.on('connection', tcpConnectionHandler);
 			httpServer.on('upgrade', wsRequestHandler);
@@ -614,6 +658,7 @@ Worker.prototype.runServer = function (config) {
 	if (config.https.enabled) {
 		config.https.bind.forEach(function (options) {
 			counter++;
+			// var httpsServer = https.createServer(options, getConnectMiddlewareHandler());
 			var httpsServer = https.createServer(options, httpRequestHandler);
 			httpsServer.on('connection', tcpConnectionHandler);
 			httpsServer.on('upgrade', wsRequestHandler);
