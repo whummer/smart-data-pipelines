@@ -23,7 +23,7 @@ module.exports = function(app, config) {
   app.use(compression());
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(bodyParser.json({strict: true, verify: function(req, res, buf, encoding) {
-	  if(buf.toString() == "") {
+	  if(["POST", "PUT"].indexOf(req.method) >= 0 && buf.toString() === "") {
 		  var msg = "Invalid (empty) request body";
 		  res.status(422).json({error: msg});
 		  throw msg;
