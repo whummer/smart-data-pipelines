@@ -5,7 +5,6 @@ var
 	common = require('../common'),
 	logger = require('winston'),
 	passes = exports,
-	KafkaTransformer = require('./kafka-transformer.js'),
 	util = require('util');
 
 /*!
@@ -89,9 +88,6 @@ var passes = exports;
 
 		if (head && head.length) socket.unshift(head);
 
-
-		logger.debug('extensions: ', options.extensions);
-
 		var proxyReq = (common.isSSL.test(options.target.protocol) ? https : http).request(
 			common.setupOutgoing(options.ssl || {}, options, req)
 		);
@@ -128,17 +124,7 @@ var passes = exports;
 
 			proxySocket
 				.pipe(socket)
-				.pipe(proxySocket);
-
-			// add configured extensions
-			_.each(options.extensions, function(extension) {
-				if (extension.enabled) {
-					logger.info('Enabling extension: %s -> %s', extension.name, extension.enabled);
-					proxySocket.pipe(setupExtension(extension, options.context));
-				} else {
-					logger.debug('Extension is disabled: %s', extension.name);
-				}
-			});
+				.pipe(proxySocket)
 
 			server.emit('open', proxySocket);
 			server.emit('proxySocket', proxySocket);  //DEPRECATED.
@@ -161,12 +147,3 @@ var passes = exports;
 	.forEach(function (func) {
 		passes[func.name] = func;
 	});
-
-
-function setupExtension(extension, context) {
-	switch (extension.name) {
-		case 'kafka' : return new KafkaTransformer("kafka-interceptor", context);
-		default : throw new Error('Unknown extension: ' + extension.name);
-	}
-
-}
