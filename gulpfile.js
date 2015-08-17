@@ -18,7 +18,8 @@ var gulpFiles = {
 	accessService: './services/access-service/gulpfile',
 	pricingService: './services/pricing-service/gulpfile',
 	analyticsService: './services/analytics-service/gulpfile',
-	filesService: './services/files-service/gulpfile'
+	filesService: './services/files-service/gulpfile',
+	demoServices: './demo/gulpfile'
 }
 for(var key in gulpFiles) {
 	try {
@@ -136,6 +137,7 @@ function cleanDir(dir) {
 }
 global.runCmd = function(cmd, args, cwd, env) {
 	var _cwd = cwd || __dirname;
+	console.log(cmd, args, _cwd);
 	return cp.spawn(cmd, args,
 			{env: env || process.env, cwd: _cwd, stdio: 'inherit'})
 }

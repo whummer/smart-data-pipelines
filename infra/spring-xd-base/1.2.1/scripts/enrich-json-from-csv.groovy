@@ -65,6 +65,8 @@ while (line = fileReader.read()) {
       "isOpen" : payload["IsOpen"],
       "time" : payload["Timestamp"],
       "wartekreis" : payload["Wartekreis"]
+      "wartekreis" : payload["Wartekreis"],
+      "origin" : payload["origin"]
     ]
     payload[mba] = entry;
     //println(entry);
