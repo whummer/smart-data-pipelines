@@ -15,11 +15,11 @@
 	<script src="/bower_components/riox-shared/lib/api/riox-api.js"></script>
 	<script src="/bower_components/Chart.js/Chart.js"></script>
 	<script src="/bower_components/angular-chart.js/dist/angular-chart.js"></script>
-	<script src="/app/components/js/service-calls.js"></script>
-	<script src="../widgets/util/elasticsearch.js"></script>
-	<script src="../widgets/mapLeaflet/index.js"></script>
-	<script src="../widgets/table/index.js"></script>
-	<script src="../widgets/timeseries/index.js"></script>
+	<script src="/bower_components/riox-shared/lib/widgets/util/elasticsearch.js"></script>
+	<script src="/bower_components/riox-shared/lib/widgets/mapLeaflet/index.js"></script>
+	<script src="/bower_components/riox-shared/lib/widgets/table/index.js"></script>
+	<script src="/bower_components/riox-shared/lib/widgets/timeseries/index.js"></script>
+	<script src="/bower_components/riox-shared/lib/api/web/service-calls.js"></script>
 	<style type="text/css">
 		body {
 			padding: 30px;
@@ -30,7 +30,7 @@
 		angular.module("demoApp", ["riox-map-leaflet", "riox-table", "riox-timeseries"]);
 		var app = angular.module("demoApp");
 		app.controller("DemoCtrl", function($scope) {
-			$scope.esURL = "http://kibana." + window.location.host + "/elasticsearch/"; // TODO make configurable
+			$scope.esURL = "http://kibana." + window.location.hostname + "/elasticsearch/"; // TODO make configurable
 			$scope.indexName = "smartcity"; // TODO make configurable
 			$scope.typeName = "waitingtimes"; // TODO make configurable
 			$scope.idFieldName = "shortName"; // TODO make configurable

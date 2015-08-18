@@ -16,7 +16,7 @@ RUN apt-get update -y && apt-get install -y --force-yes vim && \
 
 	# install tools needed to fetch dependencies and compile native extensions
 	apt-get install -y python git make g++ && \
-	
+
 	# clean up docs/man pages
 	rm -rf /usr/share/doc /usr/share/man/
 
@@ -48,9 +48,6 @@ ADD ./web-ui/package.json /code/web-ui/
 
 	# now install all other node modules (global flag on: -g)
 RUN gulp deps:install:global && \
-
-	# fix: kafka-node needs to be installed separately (build native deps)
-	npm install -g kafka-node && \
 
 	# clean up npm cache
 	rm -rf /root/.cache /root/.npm /tmp/*

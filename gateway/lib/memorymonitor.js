@@ -18,7 +18,7 @@ function MemoryMonitor(options) {
     }
 
     options = options || {};
-    options.memoryLimit = options.memoryLimit || 200; // 200MB
+    options.memoryLimit = options.memoryLimit || 300; // 300MB
     options.gracefulWait = options.gracefulWait || 120; // 120 seconds
     options.checkInterval = options.checkInterval || 60; // 60 seconds
     options.logHandler = options.logHandler || console.log;

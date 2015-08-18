@@ -7,6 +7,10 @@ var vinylPaths = require('vinyl-paths');
 var runSequence = require('run-sequence');
 var fs = require('fs');
 var cp = require('child_process');
+var mocha = require('gulp-mocha')
+
+var TEST_REPORTER = process.env.TEST_REPORTER ||  'spec'
+var TEST_DIR = "services/test";
 
 
 var gulpFiles = {
@@ -18,7 +22,8 @@ var gulpFiles = {
 	accessService: './services/access-service/gulpfile',
 	pricingService: './services/pricing-service/gulpfile',
 	analyticsService: './services/analytics-service/gulpfile',
-	filesService: './services/files-service/gulpfile'
+	filesService: './services/files-service/gulpfile',
+	demoServices: './demo/gulpfile'
 }
 for(var key in gulpFiles) {
 	try {
@@ -30,9 +35,9 @@ for(var key in gulpFiles) {
 }
 
 var nodeDirs = [".", "services/test", "gateway", "gateway/ext/http-proxy",
-                "services/users-service", "services/access-service", "services/gateway-service", 
-                "services/pricing-service", "services/pipes-service", "services/analytics-service", "services/files-service",
-                "services/riox-services-base", "web-ui"];
+								"services/users-service", "services/access-service", "services/gateway-service",
+								"services/pricing-service", "services/pipes-service", "services/analytics-service", "services/files-service",
+								"services/riox-services-base", "web-ui"];
 var bowerDirs = ["web-ui/lib"];
 
 gulp.task('riox', 'start riox nodejs infrastructure', function() {
@@ -40,8 +45,27 @@ gulp.task('riox', 'start riox nodejs infrastructure', function() {
 			'services:analytics:serve', 'services:gateway:serve', 'services:access:serve', 'services:files:serve');
 });
 
+gulp.task('services:test:unit', 'run unit test of all the services', function() {
+	runSequence('services:pipes:test:unit', 'services:users:test:unit', 'services:pricing:test:unit',
+			 'services:analytics:test:unit', 'services:gateway:test:unit', 'services:access:test:unit', 'services:files:test:unit');
+});
+
+gulp.task('test:integration', 'run all integration test ', function() {
+	return gulp.src(TEST_DIR + '/**/*.js', {read: false})
+			.pipe(mocha({
+					reporter: TEST_REPORTER,
+					reporterOptions: {
+							junit_report_name: "Integration Tests",
+							junit_report_path: TEST_DIR + "/test-report.xml",
+							junit_report_stack: 1
+					},
+					timeout: 15000
+				}
+			));
+});
+
 gulp.task('ui:bootstrap', 'Insert necessary data to boot the riox UI and make the riox APIs accessible.', function() {
-	
+
 	global.config = require("./services/users-service/config/environment");
 	require('./services/riox-services-base/lib/api/service.calls');
 	global.servicesConfig = global.config.services;
