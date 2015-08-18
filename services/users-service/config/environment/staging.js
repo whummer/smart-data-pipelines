@@ -22,6 +22,12 @@ module.exports = {
 		callbackURL:	appConfig.auth.facebook.redirect_uri
 	},
 
+	logging: {
+		requestLogging : {
+		   logAllRequests : false
+		}
+	},
+
 	seedDB: true
 
 };

@@ -15,11 +15,11 @@
 	<script src="/bower_components/riox-shared/lib/api/riox-api.js"></script>
 	<script src="/bower_components/Chart.js/Chart.js"></script>
 	<script src="/bower_components/angular-chart.js/dist/angular-chart.js"></script>
-	<script src="/app/components/js/service-calls.js"></script>
-	<script src="../widgets/util/elasticsearch.js"></script>
-	<script src="../widgets/mapLeaflet/index.js"></script>
-	<script src="../widgets/table/index.js"></script>
-	<script src="../widgets/timeseries/index.js"></script>
+	<script src="/bower_components/riox-shared/lib/widgets/util/elasticsearch.js"></script>
+	<script src="/bower_components/riox-shared/lib/widgets/mapLeaflet/index.js"></script>
+	<script src="/bower_components/riox-shared/lib/widgets/table/index.js"></script>
+	<script src="/bower_components/riox-shared/lib/widgets/timeseries/index.js"></script>
+	<script src="/bower_components/riox-shared/lib/api/web/service-calls.js"></script>
 	<style type="text/css">
 		body {
 			padding: 30px;
@@ -30,19 +30,20 @@
 		angular.module("demoApp", ["riox-map-leaflet", "riox-table", "riox-timeseries"]);
 		var app = angular.module("demoApp");
 		app.controller("DemoCtrl", function($scope) {
-			$scope.esURL = "http://kibana." + window.location.host + "/elasticsearch/"; // TODO make configurable
+			$scope.esURL = "http://kibana." + window.location.hostname + "/elasticsearch/"; // TODO make configurable
 			$scope.indexName = "smartcity"; // TODO make configurable
 			$scope.typeName = "waitingtimes"; // TODO make configurable
-			$scope.idFieldName = "shortName"; // TODO make configurable
+			$scope.idFieldNames = ["shortName","origin"]; // TODO make configurable
 			$scope.valueFieldName = "waitingTime"; // TODO make configurable
 			$scope.locFieldName = "location"; // TODO make configurable
 			$scope.timeFieldName = "timestamp"; // TODO make configurable
 			$scope.mapLabelTemplate = "<table style=\"padding-left: 5px;\"><tr><td><b>K&uuml;rzel</b></td><td>{{shortName}}</td></tr>" +
 					"<tr><td><b>Name</b></td><td>{{name}}</td></tr>" +
+					"<tr><td><b>Amtstyp</b></td><td>{{origin}}</td></tr>" +
 					"<tr><td><b>Warteschlange</b></td><td>{{waitingTime}}</td></tr></table>";
 			$scope.chartLabelTemplate = "{{timestamp.substring(0,15).replace('T','-')}} - {{time}}";
 
-			elasticsearch.getObjectIDs($scope.esURL, $scope.indexName, $scope.typeName, $scope.idFieldName).then(function(ids) {
+			elasticsearch.getObjectIDs($scope.esURL, $scope.indexName, $scope.typeName, $scope.idFieldNames).then(function(ids) {
 				$scope.mbaIDs = ids;
 			});
 			$scope.selectedMBA = "mba1_8";
@@ -56,22 +57,25 @@
 		<h1>Wien Magistratsabteilungen</h1>
 		<div class="panel panel-default">
 			<riox-map-leaflet height="400px" map-markers="map.markers" map-center="map.center"
-				es-index-name="indexName" es-type-name="typeName" id-field="idFieldName" loc-field="locFieldName"
+				es-index-name="indexName" es-type-name="typeName" id-field="idFieldNames" loc-field="locFieldName"
 				label-template="mapLabelTemplate" es-url="esURL"></riox-map-leaflet>
 		</div>
 		<div class="panel panel-default">
 			<riox-table height="400px" map-markers="map.markers" map-center="map.center" time-field="timeFieldName"
-				es-index-name="indexName" es-type-name="typeName" id-field="idFieldName" es-url="esURL"
-				columns="{address:'Adresse', isOpen:'Ge&ouml;ffnet', name:'Name', shortName:'K&uuml;rzel', time:'Zeit', waitingTime:'Wartezeit'}"></riox-table>
+				es-index-name="indexName" es-type-name="typeName" id-field="idFieldNames" es-url="esURL"
+				columns="{address:'Adresse', isOpen:'Ge&ouml;ffnet', name:'Name', shortName:'K&uuml;rzel', time:'Zeit', origin:'Amtstyp', waitingTime:'Wartezeit'}"></riox-table>
 		</div>
 		<h2>Wartezeiten im Zeitverlauf</h2>
 		<div>
 		Gewähltes Amt: <select class="form-control" style="width: 150px;" ng-model="selectedMBA" ng-options="id for id in mbaIDs"></select>
 		</div>
 		<div class="panel panel-default">
-			<riox-timeseries height="100" style="height:100px" map-markers="map.markers" map-center="map.center"
-				es-search="idFieldName + ':' + selectedMBA" es-index-name="indexName" label-template="chartLabelTemplate"
-				es-type-name="typeName" value-field="valueFieldName" time-field="timeFieldName" es-url="esURL" ></riox-timeseries>
+			<riox-timeseries height="100" style="height:100px" es-index-name="indexName" es-type-name="typeName"
+				es-search="[idFieldNames[0] + ':' + selectedMBA + ' ' + idFieldNames[1] + ':parkpickerlservice',
+							idFieldNames[0] + ':' + selectedMBA + ' ' + idFieldNames[1] + ':passservice',
+							idFieldNames[0] + ':' + selectedMBA + ' ' + idFieldNames[1] + ':meldeservice']"
+				label-template="chartLabelTemplate" titles="['Parkpickerl', 'Passamt', 'Meldeservice']"
+				value-field="valueFieldName" time-field="timeFieldName" es-url="esURL" show-legend="true"></riox-timeseries>
 		</div>
 	</div>
 </body>

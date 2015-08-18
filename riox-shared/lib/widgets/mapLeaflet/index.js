@@ -39,13 +39,21 @@
 	var leafletMapController = function($scope, leafletData) {
 
 		$scope.map = {
-				markers: {},
+				markers: [],
 				center: {},
 				objects: {}
 		};
 		$scope.timeField = $scope.timeField || "timestamp";
 
+		var isArray = function(someVar) {
+			return Object.prototype.toString.call( someVar ) === '[object Array]';
+		};
+		var clone = function(obj) {
+			return JSON.parse(JSON.stringify(obj));
+		};
+
 		var getObjectIDs = function() {
+			if(!isArray($scope.idField)) $scope.idField = [$scope.idField];
 			return elasticsearch.getObjectIDs($scope.esUrl, $scope.esIndexName, $scope.esTypeName, $scope.idField);
 		};
 		var getAllObjectDetails = function(ids) {
@@ -85,16 +93,30 @@
 			$scope.map.map.fitBounds(group.getBounds());
 		};
 
+		var findInList = function(list, obj, fields, idxField) {
+			for(var i = 0; i < list.length; i ++) {
+				var tmp = list[i];
+				if(idxField) tmp = tmp[idxField];
+				var equal = true;
+				fields.forEach(function(field) {
+					if(tmp[field] != obj[field]) {
+						equal = false;
+					}
+				});
+				if(equal) return tmp;
+			}
+		};
+
 		var setMarker = function (object) {
 			var loc = getLocation(object[$scope.locField]);
 			var lat = loc.lat;
 			var lng = loc.lng;
 			if (!lat || !lng) return;
 
-			var id = object[$scope.idField];
-			$scope.map.objects[id] = object;
-			var marker = $scope.map.markers[id];
+			var marker = findInList($scope.map.markers, object, $scope.idField, "_key");
 			if (!marker) {
+				var id = "" + new Date().getTime() + "-" + Math.random();
+				$scope.map.objects[id] = object;
 				marker = {
 	                lat: lat,
 	                lng: lng,
@@ -105,7 +127,8 @@
 	                getMessageScope: function() { return $scope; },
 	                _object: object
 	            }
-				$scope.map.markers[id] = marker;
+				marker["_key"] = clone(object);
+				$scope.map.markers.push(marker);
 			}
 			marker.lat = lat;
 			marker.lng = lng;

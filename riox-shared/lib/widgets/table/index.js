@@ -23,7 +23,11 @@
 		        }
 		    });
 		};
-	
+
+		var isArray = function(someVar) {
+			return Object.prototype.toString.call( someVar ) === '[object Array]';
+		};
+
 		var getObjectIDs = function() {
 			return elasticsearch.getObjectIDs($scope.esUrl, $scope.esIndexName, $scope.esTypeName, $scope.idField);
 		};
@@ -77,12 +81,14 @@
 				then(getAllObjectDetails).
 				then(displayObjects);
 		};
-	
-		$scope.loadTable();
+
+		$scope.$watchGroup(['esIndexName', 'esTypeName', 'idField', 'columns', 'timeField'], function() {
+			$scope.loadTable();
+		});
 	}
 	
 	module.directive('rioxTable', function () {
-	
+
 		return {
 	    	restrict: "E",
 	    	replace: false,
@@ -92,7 +98,7 @@
 	    				(!attrs.height ? "" : (' height="' + attrs.height + '"')) +
 	    				(!attrs.style ? "" : (' style="' + attrs.style + '"')) +
 	    				'>' +
-	    				'<tr ng-repeat="r in $data track by r[idField]">' +
+	    				'<tr ng-repeat="r in $data">' +
 	    				'<td ng-repeat="t in $columns" sortable="t.field">{{::r[t.field]}}</td>' +
 	    				'</tr>' +
 	    				'</table>';
