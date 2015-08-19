@@ -25,6 +25,7 @@ git.properties
 .idea
 *.iml
 *.ipr
+test-report.xml
 rebel.xml
 node_modules/
 bower_components/

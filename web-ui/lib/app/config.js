@@ -1,16 +1,18 @@
 /**
  * global app configurations
  */
+'use strict';
 
 var _host = "platform.riox.io";
 var wsProtocol = "ws:";
 if (typeof window != "undefined") {
-	isSecure = window.location.protocol.indexOf("https") === 0;
+	var isSecure = window.location.protocol.indexOf("https") === 0;
 	if (isSecure) {
 		wsProtocol = "wss:";
 	}
 	_host = window.location.host;
 }
+
 
 var appConfig = window.appConfig = {
 	appRootPath: "/app",

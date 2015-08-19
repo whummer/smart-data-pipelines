@@ -46,6 +46,7 @@ ADD sink-websocket.jar /opt/spring-xd/xd/custom-modules/sink/websocket.jar
 ADD analytics-geofence-1.0.0.BUILD-SNAPSHOT.jar /opt/spring-xd/xd/custom-modules/processor/analytics-geofence.jar
 ADD analytics-moving-functions-1.0.0.BUILD-SNAPSHOT.jar /opt/spring-xd/xd/custom-modules/processor/analytics-moving-functions.jar
 #COPY elasticsearch-sink.tgz /tmp/elasticsearch-sink.tgz
+COPY processor-timeseries.tgz /tmp/processor-timeseries.tgz
 
 # Add data
 ADD data/ /opt/xd-data/
@@ -58,7 +59,12 @@ RUN	(test -e /tmp/elasticsearch-sink.tgz || \
 		-O /tmp/elasticsearch-sink.tgz) \
 	&& (cd /tmp && tar xfz elasticsearch-sink.tgz) \
 	&& cp -r /tmp/xd/ /opt/spring-xd/ \
-	&& rm -r /tmp/*
+	&& rm -r /tmp/elasticsearch-sink*
+
+# install processor-timeseries into container
+RUN	(cd /tmp && tar xfz processor-timeseries.tgz) \
+	&& cp -r /tmp/xd/ /opt/spring-xd/ \
+	&& rm -r /tmp/processor-timeseries*
 
 # 1. Make sure that often-used libs are in global XD lib: https://jira.spring.io/browse/XD-1440
 # 2. Cleanup
@@ -73,13 +79,13 @@ ADD start-admin.sh /start-admin.sh
 ADD start-container.sh /start-container.sh
 
 # set locales
-RUN apt-get update && \
-	apt-get install locales && \
-	locale-gen en_US.UTF-8 && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US.UTF-8
+#RUN apt-get update && \
+#	apt-get install locales && \
+#	locale-gen en_US.UTF-8 && \
+#    apt-get clean && \
+#    rm -rf /var/lib/apt/lists/*
+#ENV LANG en_US.UTF-8
+#ENV LANGUAGE en_US.UTF-8
 
 USER springxd
 WORKDIR /opt/spring-xd

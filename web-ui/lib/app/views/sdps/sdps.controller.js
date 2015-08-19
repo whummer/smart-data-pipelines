@@ -1,6 +1,6 @@
 angular.module("rioxApp").controller("DataPipesCtrl", function ($scope, $log, growl, $filter) {
 
-	console.log("Withing data pipes PARENT controller");
+	$log.debug("Withing data pipes PARENT controller");
 
 	$scope.trim = window.trim;
 
@@ -43,36 +43,41 @@ angular.module("rioxApp").controller("DataPipesCtrl", function ($scope, $log, gr
 	//
 	// load pipeline elements
 	//
-	$scope.loadPipelineElements = function () {
-		$log.debug('Loading pipeline elements');
-		riox.pipeelements({}, function (elements) {
-			$log.debug('Loaded %s elements', elements.length);
-			elements.forEach(function (element) {
-				switch (element.type) {
-					case 'source' :
-						$scope.sources.push(element);
-						break;
-					case 'sink' :
-						$scope.sinks.push(element);
-						break;
-					case 'processor' :
-						$scope.processors.push(element);
-						break;
-					default:
-						throw new Error('Unexpeced element type: ' + element.type);
+	$scope.loadPipelineElements = function (query = {}) {
+		$log.debug(`Loading pipeline elements. Query: ${query}`);
+
+		riox.pipeelements(query,
+
+			elements => {
+				$log.debug('Loaded %s elements', elements.length);
+				elements.forEach(function (element) {
+					switch (element.type) {
+						case 'source' :
+							$scope.sources.push(element);
+							break;
+						case 'sink' :
+							$scope.sinks.push(element);
+							break;
+						case 'processor' :
+							$scope.processors.push(element);
+							break;
+						default:
+							throw new Error('Unexpeced element type: ' + element.type);
+					}
+				});
+
+				$scope.$apply();
+			},
+
+			error => {
+				if (error.status == 404) {
+					$log.warn('No Smart Pipes found in DB');
+					growl.warning('No Smart Pipes found. You will not be able to create new Data Pipelines.');
+				} else {
+					$log.error(`Cannot load Smart Pipes: ${error}`);
+					growl.error('Cannnot load Smart Pipes. See console for details');
 				}
 			});
-
-			$scope.$apply();
-		}, function (error) {
-			if (error.status == 404) {
-				$log.warn('No Smart Pipes found in DB');
-				growl.warning('No Smart Pipes found. You will not be able to create new Data Pipelines.');
-			} else {
-				$log.error('Cannot load Smart Pipes: ', error);
-				growl.error('Cannnot load Smart Pipes. See console for details');
-			}
-		});
 	};
 
 	//
@@ -82,7 +87,7 @@ angular.module("rioxApp").controller("DataPipesCtrl", function ($scope, $log, gr
 		if (!selectedElement) return;
 		//$log.debug('Getting available options for ', selectedElement.label);
 		var template = getTemplatesForElement(selectedElement);
-		$log.info('Got options: ', template.options);
+		$log.info(`Got options: ${template.options}`);
 		return template.options;
 	};
 
@@ -90,7 +95,7 @@ angular.module("rioxApp").controller("DataPipesCtrl", function ($scope, $log, gr
 	//
 	// deploy pipe
 	//
-	$scope.deployPipeline = function(pipeline) {
+	$scope.deployPipeline = function (pipeline) {
 		if (!pipeline.id) {
 			$log.warn('Cannot deploy pipeline. Pipeline has no ID. Save first');
 			growl.error('Cannot deploy an unsaved pipe');
@@ -98,16 +103,15 @@ angular.module("rioxApp").controller("DataPipesCtrl", function ($scope, $log, gr
 			$log.debug('Deploying pipe: ', pipeline.id);
 			var payload = {};
 			payload[PIPE_ID] = pipeline.id;
-			riox.add.pipedeployment(payload, function(deployed) {
+			riox.add.pipedeployment(payload, function (deployed) {
 				$log.debug('Pipeline ' + pipeline.id + ' deployed successfully');
-				growl.success('Successfully deployed pipeline '+ pipeline.label);
-			}, function(error) {
+				growl.success('Successfully deployed pipeline ' + pipeline.label);
+			}, function (error) {
 				$log.error('Cannot deploy pipe: ', error);
 				growl.error('Cannot deploy pipeline. See console for details');
 			});
 		}
 	};
-
 
 	//
 	// get the correct CSS class for given element

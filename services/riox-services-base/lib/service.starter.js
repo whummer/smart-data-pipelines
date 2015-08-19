@@ -38,8 +38,9 @@ var start = function (config, routes, serviceName) {
 		if (config.logging.requestLogging) {
 			requestLogging = true;
 
+			var requestLogger = null;
 			if (config.logging.requestLogging.logAllRequests) {
-				var requestLogger = expressWinston.logger({
+				requestLogger = expressWinston.logger({
 					transports: [
 						new log.transports.Console({
 							json: false,
@@ -50,36 +51,38 @@ var start = function (config, routes, serviceName) {
 					expressFormat: true,
 					meta: config.logging.requestLogging.logMeta
 				});
-				var errorDetailsLogger = expressWinston.logger({
-					transports: [
-						new log.transports.Console({
-							json: false,
-							timestamp: true,
-							colorize: true
-						})
-					],
-					expressFormat: true,
-					meta: false
-				});
-
-				expressApp.use(function (req, res, next) {
-					var end = res.end;
-					res.end = function (chunk, encoding) {
-						res.end = end;
-						if (res.end) res.end(chunk, encoding);
-						var emptyNext = function () {
-						};
-
-						if (res.statusCode < STATUS_CODE_LOGERROR_START) {
-							requestLogger(req, res, emptyNext);
-						} else {
-							errorDetailsLogger(req, res, emptyNext);
-						}
-						res.end(); // needed to trigger the callback function in winston-express logger
-					};
-					next();
-				});
 			}
+
+			var errorDetailsLogger = expressWinston.logger({
+				transports: [
+					new log.transports.Console({
+						json: false,
+						timestamp: true,
+						colorize: true
+					})
+				],
+				expressFormat: true,
+				meta: false
+			});
+
+			expressApp.use(function (req, res, next) {
+				var end = res.end;
+				res.end = function (chunk, encoding) {
+					res.end = end;
+					if (res.end) res.end(chunk, encoding);
+					var emptyNext = function () {
+					};
+
+					if (res.statusCode < STATUS_CODE_LOGERROR_START) {
+						if(requestLogger)
+							requestLogger(req, res, emptyNext);
+					} else {
+						errorDetailsLogger(req, res, emptyNext);
+					}
+					res.end(); // needed to trigger the callback function in winston-express logger
+				};
+				next();
+			});
 		}
 		return requestLogging;
 	}

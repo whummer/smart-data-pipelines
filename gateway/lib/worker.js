@@ -250,6 +250,13 @@ Worker.prototype.runServer = function (config) {
 				res.destroy(); // Socket.destroy()
 			}
 			stream.on('data', function (data) {
+				res.on('error', function () {
+					/* whummer: this error may happen occasionally if we are unable to
+					 * write the error message because the underlying connection is already
+					 * closed. This fixes the uncaught error "Error: write after end"
+					 * raised by ServerResponse.OutgoingMessage.write(..) */
+					res.end();
+				});
 				res.write(data);
 			});
 			stream.on('error', function () {
@@ -308,33 +315,6 @@ Worker.prototype.runServer = function (config) {
 		res.setHeader("Access-Control-Max-Age", "1209600");
 		res.setHeader("Access-Control-Expose-Headers", "Location");
 	};
-
-	// var getConnectMiddlewareHandler = function() {
-	//
-	// 	var connectApp = connect();
-	//
-	// 	/* handler for injecting stuff */
-	// 	var selects = [];
-	// 	var simpleselect = {};
-	// 	simpleselect.query = "head";
-	// 	simpleselect.func = function (node) {
-	// 		var s = node.createStream({ outer: true });
-	// 		s.pipe(through(function (data) {
-	// 			if(data.toString().indexOf('</head>') > -1) {
-	// 				// TODO make configurable
-	// 				s.write('<script>if(document.domain) { document.domain = document.domain.replace(/^.*\\.([^\\.]+\\.[^\\.]+)/, "$1"); }</script>');
-	// 			}
-	// 			s.write(data);
-	// 		})).pipe(s);
-	// 	}
-	// 	selects.push(simpleselect);
-	//
-	// 	/* build connect middleware pipeline */
-	// 	connectApp.use(harmon([], selects, true));
-	// 	connectApp.use(httpRequestHandler);
-	//
-	// 	return connectApp;
-	// };
 
 	var httpRequestHandler = function (req, res) {
 
@@ -644,7 +624,6 @@ Worker.prototype.runServer = function (config) {
 	if (config.http.enabled) {
 		config.http.bind.forEach(function (options) {
 			counter++;
-			//var httpServer = http.createServer(getConnectMiddlewareHandler());
 			var httpServer = http.createServer(httpRequestHandler);
 			httpServer.on('connection', tcpConnectionHandler);
 			httpServer.on('upgrade', wsRequestHandler);
@@ -658,7 +637,6 @@ Worker.prototype.runServer = function (config) {
 	if (config.https.enabled) {
 		config.https.bind.forEach(function (options) {
 			counter++;
-			// var httpsServer = https.createServer(options, getConnectMiddlewareHandler());
 			var httpsServer = https.createServer(options, httpRequestHandler);
 			httpsServer.on('connection', tcpConnectionHandler);
 			httpsServer.on('upgrade', wsRequestHandler);
