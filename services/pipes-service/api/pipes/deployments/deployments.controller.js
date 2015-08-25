@@ -5,70 +5,55 @@ var auth = require('riox-services-base/lib/auth/auth.service');
 var riox = require('riox-shared/lib/api/riox-api');
 var errors = require('riox-services-base/lib/util/errors');
 var util = require('util');
+var Promise = require('bluebird');
 
-var JsonProcessor = require('./mapping/json.processor');
+var SpringXdDeployer = require('./springxd/springxd.deployer');
 var log = global.log;
 var Pipe = require('../pipe.model').Model;
 
 exports.create = function (req, res) {
-	log.debug("deployments.controller.create");
-	var pipeId = req.body[PIPE_ID];
+	log.debug("deployments.controller.create: ", JSON.stringify(req.body));
+	let pipeId = req.body[PIPE_ID];
+	let environment = req.body[PIPE_ENVIRONMENT] || 'development';
 
 	// handle missing pipeline ID
 	if (!pipeId) {
 		var error = {};
 		error[ERROR_MESSAGE] = util.format("No '%s' field specified", PIPE_ID);
-		res.json(400, error);
+		// log.debug(error);
+		return res.json(400, error);
 	}
 
 	log.debug("Looking up pipe with id '%s' ...", pipeId);
 	Pipe.findByIdQ(pipeId)
 		.then(function (result) {
-			log.debug("Pipe with id '%s' and name ''%s' found in DB", result.id, result.name);
+			log.debug("Pipe with id '%s' and name '%s' found in DB", result.id, result.name);
+
 
 			// TODO re-implement this is old legacy code that existed before the object model
 			// was created
 			log.debug("pipe definition: %s", JSON.stringify(result));
-			var jt = new JsonProcessor(result);
+			let jt = new SpringXdDeployer(result); //.apply();
 
-			// TODO switch to promises here
-			jt.apply();
+			jt.apply("development")
+			.then(function (result) {
+				log.debug("RESULT: ", JSON.stringify(result));
 
-			res.status(201).end();
+				return res.status(201).end();
+			});
+			// TODO handle and test error
 
-			// 	function(result) {
-			// 		log.info("deployments.controller.create.apply: ", result);
-			// 		res.status(201).end();
-			// 	},
-			// 	function(error) {
-			// 		log.error(error);
-			// 		res.json(500, { "error" : error});
-			// 	}
-			// );
 
 		})
 		.catch(function (err) {
-			log.debug('Pipe "%s" does not exist: %s', pipeId, err);
+			log.debug('Error deploying pipe \'%s\' does not exist: ', pipeId, err);
 			var error = {};
 			error[ERROR_MESSAGE] = util.format("Pipe with id '%s' not found.", pipeId)
 			res.json(404, error);
 		})
 		.done();
 
-	// FR TODO decide to go via REST instead of db model (overkill maybe)
-	// var query = { };
-	// query[PIPE_ID] = req.body[PIPE_ID];
-	// riox.get.pipes(req.body[PIPE_ID], {
-	// 	headers: req.headers,
-	// 	callback:
-	// 		function (pipes) {
-	// 			log.debug("success: ", pipes);
-	// 			}
-	// 	},
-	// 	function error(error) {
-	//
-	// 	}
-	// );
+
 };
 
 exports.list = function (req, res) {

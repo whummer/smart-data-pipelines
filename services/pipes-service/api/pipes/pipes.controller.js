@@ -1,9 +1,10 @@
 'use strict';
 
-var Pipe = require('./pipe.model.js').Model,
-		errors = require('riox-services-base/lib/util/errors'),
-		auth = require('riox-services-base/lib/auth/auth.service'),
-		log = global.log;
+var Pipe = require('./pipe.model.js').Model;
+var	errors = require('riox-services-base/lib/util/errors');
+var	auth = require('riox-services-base/lib/auth/auth.service');
+var	log = global.log;
+var uuid = require('node-uuid');
 
 exports.listAll = function (req, res, next) {
 	Pipe.findQ({}).then(pipes => {
@@ -31,11 +32,29 @@ exports.findById = function (req, res, next) {
 	})
 };
 
+/*
+ * Recursively add UUID to all elements if they don't already have it
+ * TODO fr: currently we do it in the UI but we could think of removing it from there.
+ */
+function addUUIDs(pipe) {
+	for (var i in pipe.elements){
+		var element = pipe.elements[i];
+		if (!element.uuid) {
+			element.uuid = uuid.v4();
+		}
+		if (element.class === 'container') {
+			addUUIDs(element);
+		}
+	}
+};
+
 exports.create = function (req, res, next) {
 	var pipeDef = req.body;
 	var pipe = new Pipe(pipeDef);
 	var user = auth.getCurrentUser(req);
 	pipe[CREATOR_ID] = user[ID];
+
+	addUUIDs(pipe);
 
 	pipe.saveQ().then(savedPipe => {
 		log.info('Saved pipe with ID: ', savedPipe._id);

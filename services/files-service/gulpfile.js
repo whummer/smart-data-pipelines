@@ -3,35 +3,36 @@
  */
 
 var gulp = require('gulp');
+var mocha = require('gulp-mocha')
 
 //
 // build path configuration
 //
 var BASE_DIR = 'services/files-service';
+var TEST_DIR = BASE_DIR + '/test/unit';
+var TEST_REPORTER = process.env.TEST_REPORTER ||  'spec'
 
-//
-// Generic settings
-//
-var settings = {
-	port: '8085'
-};
+gulp.task('services:files:test:unit', 'runs the files-service unit tests', function () {
+	return gulp.src(TEST_DIR + '/**/*.js', {read: false})
+			.pipe(mocha({
+					reporter: TEST_REPORTER,
+					reporterOptions: {
+							junit_report_name: "Unit Tests: " + BASE_DIR,
+							junit_report_path: TEST_DIR + "/test-report.xml",
+							junit_report_stack: 1
+					},
+					timeout: 15000
+				}
+			));
+});
 
 //
 // run service using nodemon
 //
 gulp.task('services:files:serve', 'serve the files-service using nodemon', function () {
-	process.env.PORT = settings.port;
 	runCmd("nodemon", ["app.js"], BASE_DIR);
-
-	// todo cannot use gulp-nodemon atm since require() returns only a static instance
-	// (see https://github.com/JacksonGariety/gulp-nodemon/issues/6)
-	/*return nodemon({
-		script: BASE_DIR + '/app.js',
-		env: { 'RIOX_ENV': 'development' , 'PORT' : dockerSettings.port}
-	});*/
 });
 
 gulp.task('services:files:run', 'runs the files-service', function () {
-	process.env.PORT = settings.port;
 	runCmd("node", ["app.js"], BASE_DIR);
 });

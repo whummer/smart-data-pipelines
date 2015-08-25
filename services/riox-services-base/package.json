@@ -39,7 +39,8 @@
 	},
 	"devDependencies": {
 		"should": "^6.0.3",
-		"connect-livereload": "^0.5.3"
+		"connect-livereload": "^0.5.3",
+		"nock": "^2.10.0"
 	},
 	"engines": {
 		"node": ">=0.10.0"

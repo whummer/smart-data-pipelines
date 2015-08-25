@@ -13,7 +13,7 @@
 		"lruCache": false
 	},
 	"http": {
-		"port": 80,
+		"port": 8070,
 		"bind": "0.0.0.0"
 	},
 	"https": {

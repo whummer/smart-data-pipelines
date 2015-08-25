@@ -20,7 +20,7 @@ install:
 	gulp ui:bower
 
 install-prereq:
-	npm install -g gulp mocha nodemon pm2 linklocal node-gyp gulp-help del vinyl-paths run-sequence bower
+	npm install -g gulp mocha gulp-mocha nodemon pm2 linklocal node-gyp node-pre-gyp gulp-help del vinyl-paths run-sequence bower
 
 uninstall-global:
 	(cd bin && node handle-global-node-packages.js --uninstall && cd ..)

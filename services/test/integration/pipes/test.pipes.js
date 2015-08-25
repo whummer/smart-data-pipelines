@@ -35,7 +35,7 @@ describe('pipes.service', function() {
 	});
 
 	it('stores and retrieves a pipeline definition', function(done) {
-		var content = JSON.parse(fs.readFileSync(path.join(__dirname, './resources') + "/simple-pipe.json"));
+		var content = JSON.parse(fs.readFileSync(path.join(__dirname, './resources') + "/ma-pipe.json"));
 
 		test.user1.post(app.pipes.url).send(content).end(function(err, res) {
 			if (err) {

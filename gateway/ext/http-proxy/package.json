@@ -1,63 +1,61 @@
 {
-  "name": "http-proxy",
-  "version": "1.11.1",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/nodejitsu/node-http-proxy.git"
-  },
-  "description": "HTTP proxying for the masses",
-  "author": "Nodejitsu Inc. <info@nodejitsu.com>",
-  "maintainers": [
-    "yawnt <yawnt@nodejitsu.com>",
-    "indexzero <charlie@nodejitsu.com>"
-  ],
-  "main": "index.js",
-  "dependencies": {
-    "body-parser": "1.12.4",
-    "colors": "^1.1.0",
-    "compression": "1.4.4",
-    "connect": "3.3.5",
-    "connect-gzip": "^0.1.6",
-    "connect-oauth2": "^0.7.2",
-    "connect-ratelimit": "0.0.7",
-    "connect-route": "^0.1.5",
-    "connect-winston": "0.0.1",
-    "event-stream": "3.3.0",
-    "eventemitter3": "1.x.x",
-    "kafka-node": "^0.2.27",
-    "minimist": "1.1.1",
-    "mosca": "0.31.1",
-    "promise": "7.0.3",
-    "requires-port": "0.x.x",
-    "type-of-is": "^3.4.0",
-    "vhost": "^3.0.0",
-    "websocket.io": "^0.2.1",
-    "winston": "^1.0.0"
-  },
-  "devDependencies": {
-    "async": "0.9.0",
-    "blanket": "*",
-    "coveralls": "2.10.0",
-    "dox": "*",
-    "expect.js": "*",
-    "mocha": "1.x",
-    "mocha-lcov-reporter": "*",
-    "semver": "^4.3.3",
-    "socket.io": "0.9.17",
-    "socket.io-client": "*",
-    "ws": "^0.7.1",
-    "tcp-proxy": "0.0.1"
-  },
-  "scripts": {
-    "coveralls": "mocha --require blanket --reporter mocha-lcov-reporter | ./node_modules/coveralls/bin/coveralls.js",
-    "blanket": {
-      "pattern": "lib/http-proxy"
-    },
-    "test": "mocha -R landing test/*-test.js",
-    "test-cov": "mocha --require blanket -R html-cov > cov/coverage.html"
-  },
-  "engines": {
-    "node": ">=0.10.0"
-  },
-  "license": "MIT"
+	"name": "http-proxy",
+	"version": "1.11.1",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/nodejitsu/node-http-proxy.git"
+	},
+	"description": "HTTP proxying for the masses",
+	"author": "Nodejitsu Inc. <info@nodejitsu.com>",
+	"maintainers": [
+		"yawnt <yawnt@nodejitsu.com>",
+		"indexzero <charlie@nodejitsu.com>"
+	],
+	"main": "index.js",
+	"dependencies": {
+		"body-parser": "1.12.4",
+		"colors": "^1.1.0",
+		"compression": "1.4.4",
+		"connect": "3.3.5",
+		"connect-gzip": "^0.1.6",
+		"connect-oauth2": "^0.7.2",
+		"connect-ratelimit": "0.0.7",
+		"connect-route": "^0.1.5",
+		"connect-winston": "0.0.1",
+		"event-stream": "3.3.0",
+		"eventemitter3": "1.x.x",
+		"minimist": "1.1.1",
+		"promise": "7.0.3",
+		"requires-port": "0.x.x",
+		"type-of-is": "^3.4.0",
+		"vhost": "^3.0.0",
+		"websocket.io": "^0.2.1",
+		"winston": "^1.0.0"
+	},
+	"devDependencies": {
+		"async": "0.9.0",
+		"blanket": "*",
+		"coveralls": "2.10.0",
+		"dox": "0.8.0",
+		"expect.js": "0.3.1",
+		"mocha": "^2.2.5",
+		"mocha-lcov-reporter": "*",
+		"semver": "^4.3.3",
+		"socket.io": "1.3.6",
+		"socket.io-client": "1.3.6",
+		"ws": "^0.7.1",
+		"tcp-proxy": "0.0.1"
+	},
+	"scripts": {
+		"coveralls": "mocha --require blanket --reporter mocha-lcov-reporter | ./node_modules/coveralls/bin/coveralls.js",
+		"blanket": {
+			"pattern": "lib/http-proxy"
+		},
+		"test": "mocha -R landing test/*-test.js",
+		"test-cov": "mocha --require blanket -R html-cov > cov/coverage.html"
+	},
+	"engines": {
+		"node": ">=0.10.0"
+	},
+	"license": "MIT"
 }
