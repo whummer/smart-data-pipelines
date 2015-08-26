@@ -38,6 +38,8 @@ public class TimeseriesProcessorOptionMetadata {
 
 	private volatile ClassifierType type = ClassifierType.GAUSSIAN_PROCESSES;
 
+	private volatile Boolean append = false;
+
 	@NotBlank
 	public String getInterval() {
 		return interval;
@@ -75,4 +77,12 @@ public class TimeseriesProcessorOptionMetadata {
 		this.type = type;
 	}
 
+	public Boolean getAppend() {
+		return append;
+	}
+	
+	@ModuleOption("Whether to append the prediction values to the incoming document (append=true) or send only the prediction values (append=false).")
+	public void setAppend(Boolean append) {
+		this.append = append;
+	}
 }

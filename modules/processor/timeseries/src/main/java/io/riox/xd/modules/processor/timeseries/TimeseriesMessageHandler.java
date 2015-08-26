@@ -30,10 +30,10 @@ import net.minidev.json.parser.JSONParser;
  *
  * @author: Waldemar Hummer
  */
-public class TimeseriesMessageHandler /* extends AbstractMessageHandler */ {
+public class TimeseriesMessageHandler {
 
 	private static final int DEFAULT_NUM_STEPS = 1;
-	private static final String KEY_RESULT = "result";
+	private static final String KEY_RESULT = "_timeseries_prediction";
 
 	/**
 	 * Option "interval" (see {@link TimeseriesProcessorOptionMetadata})
@@ -51,6 +51,10 @@ public class TimeseriesMessageHandler /* extends AbstractMessageHandler */ {
 	 * Option "type" (see {@link TimeseriesProcessorOptionMetadata})
 	 */
 	private volatile ClassifierType type;
+	/**
+	 * Option "append" (see {@link TimeseriesProcessorOptionMetadata})
+	 */
+	private volatile Boolean append;
 
 	private final WekaTimeSeries timeseries = new WekaTimeSeries();
 
@@ -70,11 +74,15 @@ public class TimeseriesMessageHandler /* extends AbstractMessageHandler */ {
 		}
 	}
 
+	private boolean doAppend() {
+		return append != null && append;
+	}
+
 	private Map<String, Object> processMessage(Map<String, Object> payload) {
 		//System.out.println("payload " + payload + " - " + interval);
 		timeseries.addInstance(payload);
 		List<Map<String,Object>> list = timeseries.forecast(getNumSteps());
-		Map<String, Object> result = new HashMap<String, Object>();
+		Map<String, Object> result = doAppend() ? payload : new HashMap<String, Object>();
 		result.put(KEY_RESULT, list);
 		return result;
 	}
@@ -91,6 +99,10 @@ public class TimeseriesMessageHandler /* extends AbstractMessageHandler */ {
 
 	public void setInterval(String interval) {
 		this.interval = interval;
+	}
+	
+	public void setAppend(Boolean append) {
+		this.append = append;
 	}
 
 	public void setField(String field) {
