@@ -73,10 +73,6 @@ public class EnricherMessageHandler {
 	 * Option "mappings" (see {@link EnricherProcessorOptionMetadata})
 	 */
 	private volatile String mappings = null;
-	/**
-	 * Option "preMap" (see {@link EnricherProcessorOptionMetadata})
-	 */
-	private volatile String preMap = null;
 
 
 	private final JSONParser json = new JSONParser(JSONParser.DEFAULT_PERMISSIVE_MODE);
@@ -100,10 +96,6 @@ public class EnricherMessageHandler {
 	public <T> T transform(String payload) {
 		try {
 			Map<String, Object> obj = (Map<String,Object>)json.parse(payload);
-			if(preMap != null) {
-				List<Map<String,Object>> mapped = DocMapper.map(obj, preMap);
-				return (T)transform(mapped);
-			}
 			Map<String, Object> result = processMessage(obj);
 			JsonBuilder builder = new JsonBuilder(result);
 			return (T)builder.toString();
@@ -114,10 +106,6 @@ public class EnricherMessageHandler {
 
 	@SuppressWarnings("unchecked")
 	public <T> T transform(Map<String, Object> payload) {
-		if(preMap != null) {
-			List<Map<String,Object>> mapped = DocMapper.map(payload, preMap);
-			return (T) transform(mapped);
-		}
 		return (T) processMessage(payload);
 	}
 
@@ -271,10 +259,6 @@ public class EnricherMessageHandler {
 
 	public void setMappings(String mappings) {
 		this.mappings = mappings;
-	}
-
-	public void setPreMap(String preMap) {
-		this.preMap = preMap;
 	}
 
 	public Long getLastCacheTime() {

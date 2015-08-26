@@ -44,8 +44,6 @@ public class EnricherProcessorOptionMetadata {
 
 	private volatile String mappings = null;
 
-	private volatile String preMap = null;
-
 	@NotNull
 	public Integer getCache() {
 		return cache;
@@ -120,12 +118,4 @@ public class EnricherProcessorOptionMetadata {
 		this.mappings = mappings;
 	}
 
-	public String getPreMap() {
-		return preMap;
-	}
-	
-	@ModuleOption("Apply a map step before enriching. E.g., 'id.*:id:value' turns {id1:v2,id2:v2} into [{id:id1,value:v1},{id:id2,value:v2}]")
-	public void setPreMap(String preMap) {
-		this.preMap = preMap;
-	}
 }

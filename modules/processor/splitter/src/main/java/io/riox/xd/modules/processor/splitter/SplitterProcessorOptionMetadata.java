@@ -15,7 +15,7 @@ public class SplitterProcessorOptionMetadata {
 		return mapping;
 	}
 	
-	@ModuleOption("Apply a map step before enriching. E.g., 'id.*:id:value' turns {id1:v2,id2:v2} into [{id:id1,value:v1},{id:id2,value:v2}]")
+	@ModuleOption("Mapping for splitting up documents. E.g., 'id.*:id:value' turns {id1:v2,id2:v2} into [{id:id1,value:v1},{id:id2,value:v2}]")
 	public void setMapping(String mapping) {
 		this.mapping = mapping;
 	}

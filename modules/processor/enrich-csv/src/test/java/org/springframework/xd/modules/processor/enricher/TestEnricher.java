@@ -1,9 +1,11 @@
 package org.springframework.xd.modules.processor.enricher;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 import io.riox.xd.modules.processor.enricher.EnricherMessageHandler;
-import static org.junit.Assert.*;
 
-import java.util.List;
 import java.util.Map;
 
 import net.minidev.json.parser.JSONParser;
@@ -64,26 +66,6 @@ public class TestEnricher {
 
     	assertNotEquals(cacheTime2, cacheTime3);
 
-    }
-
-    @Test
-    public void testPreMap() throws Exception {
-    	int timeoutSecs = 3;
-    	EnricherMessageHandler h = new EnricherMessageHandler();
-    	h.setCache(-1);
-    	h.setUrl(JSON_FILE_1);
-    	h.setSourceID("longitude");
-    	h.setTargetID("lng");
-    	h.setColumns("");
-    	h.setCache(timeoutSecs);
-    	h.setMappings("_placeholder_:-121.434879");
-    	h.setPreMap("foo.*:id:lng");
-
-    	List<Map<String,Object>> result = h.transform("{\"foo1\":\"somelongitude\",\"foo2\":\"_placeholder_\"}");
-    	assertEquals(2, result.size());
-    	assertTrue(result.get(1).containsKey("zip"));
-    	assertTrue(result.get(1).containsKey("latitude"));
-    	assertTrue(result.get(1).containsKey("city"));
     }
 
     @Test

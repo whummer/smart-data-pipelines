@@ -16,7 +16,6 @@
 				<property name="columns" value="${columns:#{null}}" />
 				<property name="sourceID" value="${sourceID:#{null}}" />
 				<property name="targetID" value="${targetID:#{null}}" />
-				<property name="preMap" value="${preMap:#{null}}" />
 				<property name="mappings" value="${mappings:#{null}}" />
 			</bean>
 		</int:transformer>
