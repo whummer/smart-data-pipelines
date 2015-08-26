@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:http="http://www.springframework.org/schema/integration/http"
+	xmlns:int="http://www.springframework.org/schema/integration"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+                           http://www.springframework.org/schema/integration/http http://www.springframework.org/schema/integration/http/spring-integration-http.xsd">
+	<beans>
+		<int:channel id="input" />
+		<int:transformer input-channel="input" output-channel="output" method="transform">
+			<bean class="io.riox.xd.modules.processor.enricher.EnricherMessageHandler">
+				<property name="url" value="${url:#{null}}" />
+				<property name="cache" value="${cache:#{null}}" />
+				<property name="overwrite" value="${overwrite:#{null}}" />
+				<property name="flat" value="${flat:#{null}}" />
+				<property name="columns" value="${columns:#{null}}" />
+				<property name="sourceID" value="${sourceID:#{null}}" />
+				<property name="targetID" value="${targetID:#{null}}" />
+				<property name="preMap" value="${preMap:#{null}}" />
+				<property name="mappings" value="${mappings:#{null}}" />
+			</bean>
+		</int:transformer>
+		<int:channel id="output" />
+	</beans>
+</beans>
