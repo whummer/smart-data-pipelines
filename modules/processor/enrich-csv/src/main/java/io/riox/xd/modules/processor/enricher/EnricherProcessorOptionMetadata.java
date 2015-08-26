@@ -79,7 +79,7 @@ public class EnricherProcessorOptionMetadata {
 		return flat;
 	}
 
-	@ModuleOption("Wether to put the csv. If false, csv data. Default: true")
+	@ModuleOption("Whether to put the CSV data top-level into the document (CSV columns become top-level document fields). If false, puts the CSV result into a new field. Default: true")
 	public void setFlat(Boolean flat) {
 		this.flat = flat;
 	}

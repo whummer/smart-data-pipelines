@@ -114,8 +114,9 @@ public class TableData {
 	static String readStream(InputStream is) {
 		Scanner s = new java.util.Scanner(is);
 		s.useDelimiter("\\A");
+		String str = s.hasNext() ? s.next() : "";
 	    s.close();
-	    return s.hasNext() ? s.next() : "";
+	    return str;
 	}
 
 	private static String readUrl(String url) {

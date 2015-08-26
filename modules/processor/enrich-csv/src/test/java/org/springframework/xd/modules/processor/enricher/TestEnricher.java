@@ -1,4 +1,4 @@
-package org.springframework.xd.modules.sink.elasticsearch;
+package org.springframework.xd.modules.processor.enricher;
 
 import io.riox.xd.modules.processor.enricher.EnricherMessageHandler;
 import static org.junit.Assert.*;
