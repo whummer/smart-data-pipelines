@@ -1,7 +1,7 @@
 #!/bin/bash
 
-LIBFILE=build/libs/processor-enricher-1.0.0.BUILD-SNAPSHOT.jar
-MODULE=processor/enricher.jar
+LIBFILE=build/libs/processor-enrich-csv-1.0.0.BUILD-SNAPSHOT.jar
+MODULE=processor/enrich-csv.jar
 
 if [ ! -e $LIBFILE ]; then
 	./gradlew clean test bootRepackage

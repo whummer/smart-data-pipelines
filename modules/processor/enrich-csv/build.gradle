@@ -1,0 +1,31 @@
+buildscript {
+	 apply from: '../../modules-parent/buildscript.gradle',
+	 to: buildscript
+}
+apply from: '../../modules-parent/build.gradle'
+apply plugin: 'spring-xd-module'
+
+group = 'io.riox'
+version = '1.0.0.BUILD-SNAPSHOT'
+
+description = "Spring XD 'enrich-csv' processor module"
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+dependencies {
+	//compile ("org.springframework.integration:spring-integration-http:$springIntegrationVersion")
+    compile "org.apache.commons:commons-csv:$commonsCsvVersion"
+
+	provided "org.slf4j:slf4j-api:$slf4jVersion"
+	testCompile "org.slf4j:slf4j-api:$slf4jVersion"
+
+	// Testing
+	testCompile "junit:junit:$junitVersion"
+	testCompile "org.springframework:spring-test:$springVersion"
+	testCompile "org.mockito:mockito-core:$mockitoVersion"
+	testCompile "org.hamcrest:hamcrest-library:$hamcrestVersion"
+
+	//testCompile ("com.jayway.jsonpath:json-path:$jsonPathVersion")
+
+}
