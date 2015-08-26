@@ -81,11 +81,13 @@
 	g.SINK_ID = "sink-id";
 	g.PIPE_DEFINITION = "pipe-definition";
 	g.PIPE_ICON = 'icon';
+	g.ENVIRONMENT = 'envrionment';
 	g.PIPE_ELEMENTS = "elements";
 	g.PIPE_ELEMENT_SUBTYPE = "subtype";
 	g.PIPE_ELEMENT_OPTIONS = "options";
 	g.PIPE_ELEMENT_OPTION_DEFAULT = "default";
 	g.PIPE_DEPLOYMENT_STATUS = "deployment-status";
+	g.PIPE_ENVIRONMENT = "environment";
 	g.ERROR_MESSAGE = "error-message";
 	g.VALUE_TYPE = "type";
 	g.AMOUNT = "amount";

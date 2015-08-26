@@ -2,4 +2,4 @@
 
 source /common-config.sh
 
-./xd/bin/xd-container
+sudo cron && ./xd/bin/xd-container

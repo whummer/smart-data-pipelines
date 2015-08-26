@@ -18,6 +18,10 @@ var usersCache = LRUCache({
 	max: 500,
 	maxAge: 1000 * 60
 });
+var orgsCache = LRUCache({
+	max: 500,
+	maxAge: 1000 * 30
+});
 
 /**
  * Attaches the user object to the request if authenticated
@@ -101,47 +105,58 @@ function fetchOrgs() {
 
 	return compose()
 		.use(isAuthenticated())
-		.use(function meetsRequirements(req, res, next) {
+		.use(function(req, res, next) {
 			if (!req.user.organizations) {
-				riox.organizations({
-					headers: req.headers,
-					callback: function (orgs) {
-						/* add user organizations to request */
-						req.user.organizations = orgs || [];
-						if(!orgs) {
-							log.warn("Unable to get user organizations:", orgs);
-						}
-						/* add convenience functions.
-						 * TODO wh: performance could be improved: don't
-						 * always create these functions on the fly */
-						req.user.hasOrganization = function (org) {
-							var id = org.id ? org.id : org;
-							var found = false;
-							this.organizations.forEach(function (o1) {
-								if (o1.id == id) found = true;
-							});
-							return found;
-						};
-						req.user.getOrganizationIDs = function (org) {
-							var result = [];
-							this.organizations.forEach(function (o1) {
-								result.push(o1.id);
-							});
-							return result;
-						};
-						req.user.getDefaultOrganization = function () {
-							var result = null;
-							this.organizations.forEach(function (org) {
-								if (org[CREATOR_ID] == user.id) result = org;
-							});
-							return result;
-						};
-						next();
+
+				var doAdd = function(orgs) {
+					/* add user organizations to request */
+					req.user.organizations = orgs || [];
+					if(!orgs) {
+						log.warn("Unable to get user organizations:", orgs);
 					}
-				}, function () {
-					res.send(500);
-					res.end();
-				});
+					/* add convenience functions.
+					 * TODO wh: performance could be improved: don't
+					 * always create these functions on the fly */
+					req.user.hasOrganization = function (org) {
+						var id = org.id ? org.id : org;
+						var found = false;
+						this.organizations.forEach(function (o1) {
+							if (o1.id == id) found = true;
+						});
+						return found;
+					};
+					req.user.getOrganizationIDs = function (org) {
+						var result = [];
+						this.organizations.forEach(function (o1) {
+							result.push(o1.id);
+						});
+						return result;
+					};
+					req.user.getDefaultOrganization = function () {
+						var result = null;
+						this.organizations.forEach(function (org) {
+							if (org[CREATOR_ID] == user.id) result = org;
+						});
+						return result;
+					};
+					next();
+				};
+
+				var cachedObj = orgsCache.get(req.headers);
+				if(cachedObj) {
+					doAdd(cachedObj);
+				} else {
+					riox.organizations({
+						headers: req.headers,
+						callback: function(orgs) {
+							orgsCache.set(req.headers, orgs);
+							doAdd(orgs);
+						}
+					}, function () {
+						res.send(500);
+						res.end();
+					});
+				}
 			}
 		});
 }

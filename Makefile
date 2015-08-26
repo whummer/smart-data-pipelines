@@ -20,7 +20,7 @@ install:
 	gulp ui:bower
 
 install-prereq:
-	npm install -g gulp mocha nodemon pm2 linklocal node-gyp gulp-help del vinyl-paths run-sequence bower
+	npm install -g gulp mocha gulp-mocha nodemon pm2 linklocal node-gyp gulp-help del vinyl-paths run-sequence bower
 
 uninstall-global:
 	(cd bin && node handle-global-node-packages.js --uninstall && cd ..)
@@ -43,13 +43,15 @@ push-image:
 	docker push ${IMAGE}:${IMAGE_VERSION}
 
 ###############
-# TARGETS for testing during development
+# TARGETS for testing during CI runs
 ###############
-run-e2e-test:
-	# We have to provide the DNS flag with our internal K8S DNS server. This way we don't have to actually deploy the
-	# container through K8S just for the test.
-	docker run --rm -it --dns=10.0.0.100 -v `pwd`:/code riox/nodejs-base bash -c "cd services && mocha ${TEST_TIMEOUT}"
 
+run-integration-tests:
+	(cd services/test && ../../util/templater.sh k8s.tmpl.yml > k8s.yml)
+	(cd services/test && kubectl create -f k8s.yml --namespace=${RIOX_ENV})
+
+cleanup-integration-tests:
+	(cd services/test && kubectl delete -f k8s.yml --namespace=${RIOX_ENV})
 
 ###############
 # TARGETS for deployment

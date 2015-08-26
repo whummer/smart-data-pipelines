@@ -9,4 +9,4 @@ build:
 push:
 	docker push ${IMAGE}:${VERSION}
 
-.PHONY: build push all
+.PHONY: build push all add-modules

@@ -157,3 +157,11 @@ optional `TEST_TIMEOUT=--no-timeouts` argument. If this does also not help, plea
 ## AWS Cluster Setup & Access
 
 TBD
+
+## Coding Guidelines
+
+In general we stick to common best practices. There are many good articles, blog posts as well as books out there that deal with idiomatic JavaScript, do's and dont's and performance related hints. For instance Doug Crockford's [JavaScript: The good parts](http://javascript.crockford.com/) or [Secrets of the JavaScript Ninja](https://www.manning.com/books/secrets-of-the-javascript-ninja) are worthwhile resources.
+
+However, books, articles or blog posts are not something that you can provide developers with and make them stick to every recommendation that they can find in there. Different sources might even deal with the same issue in conflicting ways. Therefore, we did a little research and found some very comprehensive, easy to read and understand, as well as up-to-date JavaScript coding guidelines at the guys at [rangle.io](http://rangle.io).
+
+*TL;DR*: Stick to the [rangle.io JavaScript coding guidelines](http://rangle.io/guidelines/)
