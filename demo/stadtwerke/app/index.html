@@ -37,6 +37,7 @@
 			$scope.valueFieldName = "waitingTime"; // TODO make configurable
 			$scope.locFieldName = "location"; // TODO make configurable
 			$scope.timeFieldName = "timestamp"; // TODO make configurable
+			$scope.predictionFieldName = "_timeseries_prediction"; // TODO make configurable
 			$scope.mapLabelTemplate = "<table style=\"padding-left: 5px;\"><tr><td><b>K&uuml;rzel</b></td><td>{{shortName}}</td></tr>" +
 					"<tr><td><b>Name</b></td><td>{{name}}</td></tr>" +
 					"<tr><td><b>Amtstyp</b></td><td>{{origin}}</td></tr>" +
@@ -70,12 +71,13 @@
 		Gewähltes Amt: <select class="form-control" style="width: 150px;" ng-model="selectedMBA" ng-options="id for id in mbaIDs"></select>
 		</div>
 		<div class="panel panel-default">
-			<riox-timeseries height="100" style="height:100px" es-index-name="indexName" es-type-name="typeName"
+			<riox-timeseries height="100" style="height:430px; width:100%;" es-index-name="indexName" es-type-name="typeName"
 				es-search="[idFieldNames[0] + ':' + selectedMBA + ' ' + idFieldNames[1] + ':parkpickerlservice',
 							idFieldNames[0] + ':' + selectedMBA + ' ' + idFieldNames[1] + ':passservice',
 							idFieldNames[0] + ':' + selectedMBA + ' ' + idFieldNames[1] + ':meldeservice']"
 				label-template="chartLabelTemplate" titles="['Parkpickerl', 'Passamt', 'Meldeservice']"
-				value-field="valueFieldName" time-field="timeFieldName" es-url="esURL" show-legend="true"></riox-timeseries>
+				value-field="valueFieldName" time-field="timeFieldName" es-url="esURL" show-legend="true"
+				prediction-values="predictionFieldName"></riox-timeseries>
 		</div>
 	</div>
 </body>

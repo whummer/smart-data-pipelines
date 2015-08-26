@@ -14,6 +14,12 @@ var installBower = function(demoName) {
 	runCmd("bower", ["install"], __dirname + "/" + demoName);
 };
 
+var runCmd = function(cmd, args, cwd, env) {
+	var _cwd = cwd || __dirname;
+	return cp.spawn(cmd, args,
+			{env: env || process.env, cwd: _cwd, stdio: 'inherit'})
+};
+
 /* run service using nodemon */
 gulp.task('demo:stadtwerke:serve', function () {
 	installBower("stadtwerke");

@@ -1,25 +1,57 @@
 (function() {
 	var module = angular.module("riox-timeseries", ["chart.js"]);
 
-	var timeseriesController = function($scope, $rootScope, $compile) {
+	var timeseriesController = function($scope, $rootScope) {
 
 		$scope.chart = {};
 		$scope.chart.series = [''];
 		$scope.chart.data = [[]];
-		$scope.chart.dataAll = [[]];
 		$scope.chart.labels = [];
-		$scope.chart.labelsAll = [];
+		$scope.chart.colours = [];
 		$scope.chart.options = {
-				animation : false
+				animation : false,
+				legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\">" +
+						"<% for (var i=0; i<datasets.length; i++){%>" +
+							"<%if(datasets[i].label){%>" +
+								"<li>" +
+								"<span style=\"background-color:<%=datasets[i].strokeColor%>\"></span>" +
+								"<%=datasets[i].label%>" +
+								"</li>" +
+							"<%}%>" +
+						"<%}%>" +
+						"</ul>"
 		};
 
 		$scope.objects = [];
+
+		var addColours = function(count, color) {
+			var colorObj = color ? {
+				fillColor: color,
+				strokeColor: "rgba(200,200,200,1)"
+			} : null;
+			for(var i = 0; i < $scope.titles.length; i ++) {
+				$scope.chart.colours.push(colorObj);
+			}
+		}
 
 		var getItemSeries = function() {
 			if(typeof $scope.esSearch == "string") {
 				$scope.esSearch = [$scope.esSearch];
 			}
-			$scope.chart.series = $scope.titles;
+			var series = $scope.chart.series = [];
+			$scope.chart.colours = [];
+			for(var i = 0; i < $scope.titles.length; i ++) {
+				var title = $scope.titles[i];
+				series.push(title);
+			}
+
+			/* add colors for line charts */
+			addColours($scope.titles.length, null);
+			/* add colors for additional prediction charts. Note: we need to
+			 * add the colors here because for some reason the colors are
+			 * ignored if we add them later in function addPrediction(..) */
+			addColours($scope.titles.length, "rgba(0,0,0,0)");
+
 			var result = [];
 			
 			var createHandler = function(i) {
@@ -30,16 +62,47 @@
 						});
 				});
 			};
-			
+
 			var promise = new Promise(function(r){r()});
 			for(var i = 0; i < $scope.esSearch.length; i ++) {
 				var search = $scope.esSearch[i];
 				promise = promise.then(createHandler(i));
 			};
 			promise = promise.then(function() {
+				var numResults = result.length;
+				for(var i = 0; i < numResults; i ++) {
+					addPrediction(result, i);
+				}
 				return result;
 			});
 			return promise;
+		};
+
+		var addPrediction = function(result, index) {
+			if(!$scope.predictionValues) return;
+			var points = result[index];
+			var numPoints = points.length;
+			var lastItem = points[numPoints - 1];
+			var predValues = lastItem[$scope.predictionValues];
+			var newIndex = result.length;
+			var newLine = result[newIndex] = [];
+			for(var i = 0; i < numPoints; i ++) {
+				newLine.push(null); /* push empty points to fill up array */
+			}
+			newLine[numPoints - 1] = points[numPoints - 1];
+			for(var i = 0; i < predValues.length; i ++) {
+				newLine[numPoints + i] = predValues[i];
+			}
+		};
+
+		var addPredictionTitles = function(objects) {
+			if(!$scope.predictionValues) return;
+			var points = objects[0];
+			var lastItem = points[points.length - 1];
+			var numPredValues = lastItem[$scope.predictionValues].length;
+			for(var i = 0; i < numPredValues; i ++) {
+				$scope.chart.labels.push("t+" + (i + 1));
+			}
 		};
 
 		var replaceTemplate = function(template, scope) {
@@ -62,20 +125,25 @@
 				for(var j = 0; j < series.length; j ++) {
 					var obj = series[j];
 
-					var label = null;
-					if(!$scope.labelTemplate) {
-						label = obj[$scope.timeField];
+					if(obj != null) {
+						var label = null;
+						if(!$scope.labelTemplate) {
+							label = obj[$scope.timeField];
+						} else {
+							var tmpScope = $rootScope.$new(true);
+							angular.extend(tmpScope, obj);
+							label = replaceTemplate($scope.labelTemplate, tmpScope);
+						}
+						if(i == 0) {
+							$scope.chart.labels.push(label);
+						}
+						$scope.chart.data[i][j] = obj[$scope.valueField];
 					} else {
-						var tmpScope = $rootScope.$new(true);
-						angular.extend(tmpScope, obj);
-						label = replaceTemplate($scope.labelTemplate, tmpScope);
+						$scope.chart.data[i][j] = null;
 					}
-					if(i == 0) {
-						$scope.chart.labels.push(label);
-					}
-					$scope.chart.data[i].push(obj[$scope.valueField]);
 				}
 			}
+			addPredictionTitles(objects);
 			$scope.$apply();
 		};
 
@@ -90,7 +158,7 @@
 		});
 	}
 	
-	module.directive('rioxTimeseries', function ($compile) {
+	module.directive('rioxTimeseries', function () {
 
 		return {
 	    	restrict: "E",
@@ -99,7 +167,7 @@
 	    		var str = '<canvas class="chart chart-line" chart-data="chart.data" ' +
 	    			'chart-labels="chart.labels" chart-series="chart.series" ' +
 					'chart-options="chart.options" chart-legend="showLegend" ' +
-	    			'style="'+ attrs.style + '" ' +
+	    			'chart-colours="chart.colours" style="'+ attrs.style + '" ' +
 	    			(!attrs.height ? "" : ('height="'+ attrs.height + '" ')) +
 	    			'>' +
 					'</canvas>';
@@ -114,7 +182,8 @@
 	    		valueField: '=',
 	    		labelTemplate: '=',
 	    		titles: '=',
-	    		showLegend: '='
+	    		showLegend: '=',
+	    		predictionValues: '='
 			},
 			controller: timeseriesController
 		};

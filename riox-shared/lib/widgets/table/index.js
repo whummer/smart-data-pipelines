@@ -99,7 +99,7 @@
 	    				(!attrs.style ? "" : (' style="' + attrs.style + '"')) +
 	    				'>' +
 	    				'<tr ng-repeat="r in $data">' +
-	    				'<td ng-repeat="t in $columns" sortable="t.field">{{::r[t.field]}}</td>' +
+	    				'<td ng-repeat="t in $columns" sortable="t.field">{{r[t.field]}}</td>' +
 	    				'</tr>' +
 	    				'</table>';
 	    	},

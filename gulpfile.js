@@ -122,16 +122,36 @@ gulp.task('deps:install:global', 'parse all dependencies and devDependencies fro
 			addDepToHash(deps, dep, version);
 		}
 	});
-	var str = "npm install --ignore-scripts -g";
-	for(var key in deps) {
-		str += " " + key + "@" + deps[key];
+	var npmStr = "npm install --ignore-scripts -g";
+	var maxDeps = 50;
+	var depsArray = [];
+	
+	function doInstall(depsStr) {
+		var cmdStr = npmStr + " " + depsStr;
+		console.log("Running:", cmdStr);
+		/* exec: synchronous call */
+		cp.execSync(cmdStr, {env: process.env}, function (error, stdout, stderr) {
+			if (error) {
+				console.log("Cannot install node modules.", error);
+			}
+		});
 	}
-	console.log("Running:", str);
-	cp.exec(str, {env: process.env}, function (error, stdout, stderr) {
-		if (error) {
-			console.log("Cannot install node modules.", error);
+	
+	/* get number of dependencies */
+	var numDeps = 0;
+	for(var key in deps) { numDeps++; }
+
+	/* install dependencies in batches of N=maxDeps */
+	var count = 0;
+	var depsStr = "";
+	for(var key in deps) {
+		depsStr += key + "@" + deps[key] + " ";
+		count += 1;
+		if(count % maxDeps == 0 || count == numDeps) {
+			doInstall(depsStr); /* synchronous call */
+			depsStr = "";
 		}
-	});
+	}
 });
 
 function addDepToHash(deps, dep, version) {

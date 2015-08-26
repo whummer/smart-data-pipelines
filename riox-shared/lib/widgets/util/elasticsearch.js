@@ -76,7 +76,7 @@
 	sh.find = function(url, indexName, typeName, query, sort, order, size) {
 		if(!order) order = "desc";
 		if(!size) size = "10";
-		var promise = new Promise(function(resolve) {
+		var promise = new Promise(function(resolve, reject) {
 			var theUrl = url + indexName + "/" + 
 					typeName + "/_search?q=" + query +
 					(!sort ? "" : ("&sort=" + sort + ":" + order)) +
@@ -94,6 +94,9 @@
 					var result = result[0];
 				}
 				resolve(result);
+			}, function(error) {
+				console.log("Unable to retrieve elasticsearch data.", error);
+				reject(error);
 			});
 		});
 		return promise;
