@@ -64,6 +64,10 @@ public class TimeseriesMessageHandler {
 		return builder.toString();
 	}
 
+	public Map<String, Object> transform(Map<String, Object> payload) {
+		return processMessage(payload);
+	}
+
 	@SuppressWarnings("unchecked")
 	private Map<String, Object> processMessage(String payload) {
 		try {
