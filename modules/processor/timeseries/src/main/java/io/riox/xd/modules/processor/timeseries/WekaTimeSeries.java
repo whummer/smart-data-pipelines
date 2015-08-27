@@ -8,6 +8,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import weka.classifiers.evaluation.NumericPrediction;
 import weka.classifiers.functions.GaussianProcesses;
 import weka.classifiers.functions.LinearRegression;
@@ -25,6 +28,7 @@ public class WekaTimeSeries {
 	private static final String CLASS_ATTR_NAME = "__classAttr";
 	private static final Attribute CLASS_ATTRIBUTE = (new Attribute(CLASS_ATTR_NAME, (ArrayList<String>)null));
 	private static final Object VALUE_NOT_A_NUMBER = null; /* value to use for NaN numbers (for message JSON output) */
+	private static final Logger LOG = LoggerFactory.getLogger(WekaTimeSeries.class);
 
 	Instances instances;
 	String[] forecastFields;
@@ -44,7 +48,7 @@ public class WekaTimeSeries {
 		try {
 			List<Map<String,Object>> result = new LinkedList<Map<String,Object>>();
 			if(forecaster == null) {
-				System.err.println("No forecast data available yet.");
+				LOG.warn("No forecast data available yet.");
 				return result;
 			}
 			List<List<NumericPrediction>> forecast = forecaster.forecast(numSteps);
@@ -77,13 +81,16 @@ public class WekaTimeSeries {
 	public void addInstance(Map<String,Object> map) {
 		for(String key : map.keySet()) {
 			Object value = map.get(key);
+			if(value == null) {
+				LOG.warn("Map contains null value for key '" + key + "': " + map);
+			}
 			if(!columnNames.contains(key)) {
 				columnNames.add(key);
 			}
 			if(!columnTypes.containsKey(key)) {
-				columnTypes.put(key, value.getClass());
+				columnTypes.put(key, value == null ? Object.class : value.getClass());
 			} else if(columnTypes.get(key) != value.getClass()) {
-				System.err.println("WARN: different types: " + columnTypes.get(key) + " - " + value.getClass());
+				LOG.warn("Different types: " + columnTypes.get(key) + " - " + value.getClass());
 			}
 		}
 		updateAndGetInstances();

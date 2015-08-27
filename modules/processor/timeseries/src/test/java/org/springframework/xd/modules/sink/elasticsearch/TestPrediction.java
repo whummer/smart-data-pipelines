@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import io.riox.xd.modules.processor.timeseries.TimeseriesMessageHandler;
 import io.riox.xd.modules.processor.timeseries.WekaTimeSeries;
 import io.riox.xd.modules.processor.timeseries.WekaTimeSeries.ClassifierType;
 import net.minidev.json.parser.JSONParser;
@@ -74,11 +75,12 @@ public class TestPrediction {
     	testForecast(timeseries2);
     }
 
-    private void testForecast(WekaTimeSeries timeseries) throws Exception {
-    	timeseries.addInstance(json("{\"time\":\"" + new Date().toString() + "\", \"value\":1, \"value1\":1}"));
-    	timeseries.addInstance(json("{\"time\":\"" + new Date().toString() + "\", \"value\":2, \"value1\":1}"));
-    	timeseries.addInstance(json("{\"time\":\"" + new Date().toString() + "\", \"value\":3, \"value1\":1}"));
-    	timeseries.addInstance(json("{\"time\":\"" + new Date().toString() + "\", \"value\":4, \"value2\":1}"));
+    @SuppressWarnings("unchecked")
+	private void testForecast(WekaTimeSeries timeseries) throws Exception {
+    	timeseries.addInstance((Map<String, Object>) json("{\"time\":\"" + new Date().toString() + "\", \"value\":1, \"value1\":1}"));
+    	timeseries.addInstance((Map<String, Object>) json("{\"time\":\"" + new Date().toString() + "\", \"value\":2, \"value1\":1}"));
+    	timeseries.addInstance((Map<String, Object>) json("{\"time\":\"" + new Date().toString() + "\", \"value\":3, \"value1\":1}"));
+    	timeseries.addInstance((Map<String, Object>) json("{\"time\":\"" + new Date().toString() + "\", \"value\":4, \"value2\":1}"));
     	int interval = 3;
     	List<Map<String,Object>> result = timeseries.forecast(interval);
     	double v1 = (Double) result.get(0).get("value");
@@ -93,24 +95,56 @@ public class TestPrediction {
     	}
     	assertEquals(result.size(), interval);
 
-    	timeseries.addInstance(json("{\"time\":\"" + new Date().toString() + "\", \"value\":3}"));
-    	timeseries.addInstance(json("{\"time\":\"" + new Date().toString() + "\", \"value\":4}"));
+    	timeseries.addInstance((Map<String, Object>) json("{\"time\":\"" + new Date().toString() + "\", \"value\":3}"));
+    	timeseries.addInstance((Map<String, Object>) json("{\"time\":\"" + new Date().toString() + "\", \"value\":4}"));
     	interval = 5;
     	result = timeseries.forecast(interval);
-//    	System.out.println("forecast2: " + result);
     	assertEquals(result.size(), interval);
-    	timeseries.addInstance(json("{\"time\":\"" + new Date().toString() + "\", \"value\":3}"));
-    	timeseries.addInstance(json("{\"time\":\"" + new Date().toString() + "\", \"value\":4}"));
+    	timeseries.addInstance((Map<String, Object>) json("{\"time\":\"" + new Date().toString() + "\", \"value\":3}"));
+    	timeseries.addInstance((Map<String, Object>) json("{\"time\":\"" + new Date().toString() + "\", \"value\":4}"));
     	interval = 4;
     	result = timeseries.forecast(interval);
-//    	System.out.println("forecast3: " + result);
     	assertEquals(result.size(), interval);
     }
 
+    @Test
+	@SuppressWarnings("all")
+    public void testDiscriminator() throws Exception {
+    	TimeseriesMessageHandler handler = new TimeseriesMessageHandler();
+    	handler.setField("value");
+    	handler.setAppend(true);
+    	handler.setDiscriminators("id1, id2");
+    	handler.setInterval("3");
+
+    	String result = handler.transform("["
+    			+ "{\"time\":\"" + new Date().toString() + "\", \"id1\":1, \"id2\":1, \"value\":1},"
+    	    	+ "{\"time\":\"" + new Date().toString() + "\", \"id1\":1, \"id2\":2, \"value\":10}"
+    			+ "]");
+    	result = handler.transform("["
+    			+ "{\"time\":\"" + new Date().toString() + "\", \"id1\":1, \"id2\":1, \"value\":1},"
+    	    	+ "{\"time\":\"" + new Date().toString() + "\", \"id1\":1, \"id2\":2, \"value\":10}"
+    			+ "]");
+    	result = handler.transform("["
+    			+ "{\"time\":\"" + new Date().toString() + "\", \"id1\":1, \"id2\":1, \"value\":1},"
+    	    	+ "{\"time\":\"" + new Date().toString() + "\", \"id1\":1, \"id2\":2, \"value\":10}"
+    			+ "]");
+
+    	List<Map<String,Object>> resultObj = json(result);
+    	System.out.println(resultObj);
+		List<Map<String,Object>> pred1 = (List<Map<String, Object>>) resultObj.get(0).get("_timeseries_prediction");
+    	List<Map<String,Object>> pred2 = (List<Map<String, Object>>) resultObj.get(1).get("_timeseries_prediction");
+
+    	double v1 = (Double) pred1.get(0).get("value");
+    	double v2 = (Double) pred2.get(1).get("value");
+
+    	assertEquals(1, v1, PRECISION);
+    	assertEquals(10, v2, PRECISION);
+    }
+
     @SuppressWarnings("unchecked")
-	private Map<String,Object> json(String json) {
+	private <T> T json(String json) {
     	try {
-			return (Map<String, Object>) parser.parse(json);
+			return (T) parser.parse(json);
 		} catch (ParseException e) {
 			throw new RuntimeException(e);
 		}

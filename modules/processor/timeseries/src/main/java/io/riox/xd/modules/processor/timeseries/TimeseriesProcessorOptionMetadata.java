@@ -40,6 +40,8 @@ public class TimeseriesProcessorOptionMetadata {
 
 	private volatile Boolean append = false;
 
+	private volatile String discriminators = null;
+
 	@NotBlank
 	public String getInterval() {
 		return interval;
@@ -84,5 +86,14 @@ public class TimeseriesProcessorOptionMetadata {
 	@ModuleOption("Whether to append the prediction values to the incoming document (append=true) or send only the prediction values (append=false).")
 	public void setAppend(Boolean append) {
 		this.append = append;
+	}
+	
+	public String getDiscriminators() {
+		return discriminators;
+	}
+	@ModuleOption("A comma-separated list of field names used as discriminators, for handling multiple timeseries predictions for arrays of incoming documents. "
+			+ "E.g., if discriminators='id1,id2', then a separate prediction is started for each unique combination of values for the fields 'id1' and 'id2' in the incoming documents.")
+	public void setDiscriminators(String discriminators) {
+		this.discriminators = discriminators;
 	}
 }

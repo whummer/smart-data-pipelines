@@ -27,6 +27,8 @@ dependencies {
 	compile "nz.ac.waikato.cms.weka:weka-dev:$wekaVersionDev"
 	compile "pentaho.weka:pdm-timeseriesforecasting-ce:$wekaTimeseriesVersion"
 
+	provided "org.slf4j:slf4j-api:$slf4jVersion"
+
 }
 
 repositories {

@@ -14,6 +14,7 @@
 				<property name="min" value="${min:#{null}}" />
                 <property name="type" value="${type:#{null}}"/>
                 <property name="append" value="${append:#{null}}"/>
+                <property name="discriminators" value="${discriminators:#{null}}"/>
 			</bean>
 		</int:transformer>
 		<int:channel id="output" />
