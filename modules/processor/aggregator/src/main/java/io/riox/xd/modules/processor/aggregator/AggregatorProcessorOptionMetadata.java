@@ -13,7 +13,9 @@ public class AggregatorProcessorOptionMetadata {
 
 	private volatile AggregationType type = null;
 
-	private volatile String fields = null;
+	private volatile String field = null;
+
+	private volatile String targetField = null;
 
 	private volatile String groupBy = null;
 
@@ -29,14 +31,23 @@ public class AggregatorProcessorOptionMetadata {
 	public void setType(AggregationType type) {
 		this.type = type;
 	}
-	
-	public String getFields() {
-		return fields;
+
+	public String getField() {
+		return field;
 	}
 
-	@ModuleOption("Fields to aggregate")
-	public void setFields(String fields) {
-		this.fields = fields;
+	@ModuleOption("Name of field to aggregate")
+	public void setField(String field) {
+		this.field = field;
+	}
+
+	public String getTargetField() {
+		return targetField;
+	}
+
+	@ModuleOption("Name of target field to store the aggregation result. If null, a field name is automatically generated.")
+	public void setTargetField(String targetField) {
+		this.targetField = targetField;
 	}
 
 	public String getGroupBy() {

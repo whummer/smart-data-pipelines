@@ -16,10 +16,10 @@ public class DocAggregator {
 			return aggregateMIN(docs, field);
 		} else if(type == AggregationType.MAX) {
 			return aggregateMAX(docs, field);
-		} else if(type == AggregationType.MAX) {
+		} else if(type == AggregationType.SUM) {
 			return aggregateSUM(docs, field);
 		}
-		throw new RuntimeException("Invalid aggregation type " + field);
+		throw new RuntimeException("Invalid aggregation type " + type);
 	}
 
 	public static double aggregateMIN(Collection<Map<String, Object>> docs, String field) {

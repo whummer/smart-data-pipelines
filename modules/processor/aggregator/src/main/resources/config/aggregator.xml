@@ -10,9 +10,11 @@
 		<int:transformer input-channel="input" output-channel="output" method="transform">
 			<bean class="io.riox.xd.modules.processor.aggregator.AggregatorMessageHandler">
 				<property name="type" value="${type:#{null}}" />
-				<property name="fields" value="${fields:#{null}}" />
+				<property name="field" value="${field:#{null}}" />
 				<property name="groupBy" value="${groupBy:#{null}}" />
 				<property name="discriminators" value="${discriminators:#{null}}" />
+				<property name="targetField" value="${targetField:#{null}}" />
+				<property name="append" value="${append:#{null}}" />
 			</bean>
 		</int:transformer>
 		<int:channel id="output" />

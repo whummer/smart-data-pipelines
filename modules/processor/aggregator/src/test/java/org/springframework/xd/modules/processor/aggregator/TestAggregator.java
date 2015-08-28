@@ -26,9 +26,9 @@ public class TestAggregator {
 	JSONParser parser = new JSONParser(JSONParser.DEFAULT_PERMISSIVE_MODE);
 
     @Test
-    public void testAggregate() throws Exception {
+    public void testAggregateMax() throws Exception {
     	AggregatorMessageHandler h = new AggregatorMessageHandler();
-    	h.setFields("value");
+    	h.setField("value");
     	h.setGroupBy("group");
     	h.setDiscriminators("id");
     	h.setType(AggregationType.MAX);
@@ -51,7 +51,7 @@ public class TestAggregator {
     	assertEquals("g2", result.get("group"));
     	doc = "{\"group\":\"g2\",\"id\":3,\"value\":2}";
     	result = h.transform(doc);
-    	assertEquals(2.0, (Double)result.get("_aggregate_MAX"), PRECISION);
+    	assertEquals(3.0, (Double)result.get("_aggregate_MAX"), PRECISION);
     	assertEquals("g2", result.get("group"));
     	doc = "{\"group\":\"g1\",\"id\":1,\"value\":5}";
     	result = h.transform(doc);
@@ -60,6 +60,49 @@ public class TestAggregator {
     	doc = "{\"group\":\"g2\",\"id\":3,\"value\":3}";
     	result = h.transform(doc);
     	assertEquals(3.0, (Double)result.get("_aggregate_MAX"), PRECISION);
+    	assertEquals("g2", result.get("group"));
+    }
+
+    @Test
+    public void testAggregateSum() throws Exception {
+    	AggregatorMessageHandler h = new AggregatorMessageHandler();
+    	h.setField("value");
+    	h.setGroupBy("group");
+    	h.setDiscriminators("id");
+    	h.setTargetField("sum");
+    	h.setType(AggregationType.SUM);
+
+    	/* test groups */
+    	String doc = "{\"group\":\"g1\",\"id\":1,\"value\":1}";
+    	Map<String,Object> result = h.transform(doc);
+    	doc = "{\"group\":\"g1\",\"id\":1,\"value\":2}";
+    	result = h.transform(doc);
+    	assertEquals(2.0, (Double)result.get("sum"), PRECISION);
+    	assertEquals("g1", result.get("group"));
+    	assertEquals(1, result.get("id"));
+
+    	/* test discriminators */
+    	doc = "{\"group\":\"g2\",\"id\":1,\"value\":1}";
+    	result = h.transform(doc);
+    	doc = "{\"group\":\"g1\",\"id\":2,\"value\":3}";
+    	result = h.transform(doc);
+    	assertEquals(5.0, (Double)result.get("sum"), PRECISION);
+    	assertEquals("g1", result.get("group"));
+    	doc = "{\"group\":\"g2\",\"id\":3,\"value\":2}";
+    	result = h.transform(doc);
+    	assertEquals(3.0, (Double)result.get("sum"), PRECISION);
+    	assertEquals("g2", result.get("group"));
+    	doc = "{\"group\":\"g1\",\"id\":1,\"value\":5}";
+    	result = h.transform(doc);
+    	assertEquals(8.0, (Double)result.get("sum"), PRECISION);
+    	assertEquals("g1", result.get("group"));
+    	doc = "{\"group\":\"g2\",\"id\":3,\"value\":3}";
+    	result = h.transform(doc);
+    	assertEquals(4.0, (Double)result.get("sum"), PRECISION);
+    	assertEquals("g2", result.get("group"));
+    	doc = "{\"group\":\"g2\",\"id\":2,\"value\":3}";
+    	result = h.transform(doc);
+    	assertEquals(7.0, (Double)result.get("sum"), PRECISION);
     	assertEquals("g2", result.get("group"));
     }
 

@@ -18,7 +18,6 @@ package io.riox.xd.modules.processor.aggregator;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -41,9 +40,13 @@ public class AggregatorMessageHandler {
 	 */
 	private volatile AggregationType type = null;
 	/**
-	 * Option "fields" (see {@link AggregatorProcessorOptionMetadata})
+	 * Option "field" (see {@link AggregatorProcessorOptionMetadata})
 	 */
-	private volatile String fields = null;
+	private volatile String field = null;
+	/**
+	 * Option "targetField" (see {@link AggregatorProcessorOptionMetadata})
+	 */
+	private volatile String targetField = null;
 	/**
 	 * Option "groupBy" (see {@link AggregatorProcessorOptionMetadata})
 	 */
@@ -65,10 +68,13 @@ public class AggregatorMessageHandler {
 	private final JSONParser json = new JSONParser(JSONParser.DEFAULT_PERMISSIVE_MODE);
 	private final List<String> discriminatorFields = new LinkedList<String>();
 	private final List<String> groupByFields = new LinkedList<String>();
+	private final Map<Group,GroupEntries> groupEntries= new HashMap<>();
 
 	private static final class Group extends HashMap<String,Object> {
 		private static final long serialVersionUID = 1L;
-		Map<Discriminator,Map<String,Object>> docs = new LinkedHashMap<>();
+	}
+	private static class GroupEntries extends HashMap<Discriminator,Map<String,Object>> {
+		private static final long serialVersionUID = 1L;
 	}
 	private static final class Discriminator extends HashMap<String,Object> {
 		private static final long serialVersionUID = 1L;
@@ -83,6 +89,14 @@ public class AggregatorMessageHandler {
 			d.put(field, payload.get(field));
 		}
 		return d;
+	}
+	private GroupEntries getGroupEntries(Group g) {
+		GroupEntries existing = groupEntries.get(g);
+		if(existing == null) {
+			existing = new GroupEntries();
+			groupEntries.put(g, existing);
+		}
+		return existing;
 	}
 	private Group getGroup(Map<String,Object> payload) {
 		Group g = new Group();
@@ -121,11 +135,17 @@ public class AggregatorMessageHandler {
 
 	public Map<String, Object> processMessage(Map<String, Object> payload) {
 		Group g = getGroup(payload);
+		GroupEntries entries = getGroupEntries(g);
 		Discriminator d = getDiscriminator(payload);
-		g.docs.put(d, payload);
-		double aggregated = DocAggregator.aggregate(type, g.docs.values(), fields);
+		entries.put(d, payload);
+		double aggregated = DocAggregator.aggregate(type, entries.values(), field);
 		payload = (append != null && append) ? payload : new HashMap<String,Object>();
-		String field = FIELD_NAME.replace("<type>", "" + type);
+		String field = null;
+		if(!StringUtils.isEmpty(targetField)) {
+			field = targetField;
+		} else {
+			field = FIELD_NAME.replace("<type>", "" + type);
+		}
 		payload.put(field, aggregated);
 		return payload;
 	}
@@ -146,10 +166,17 @@ public class AggregatorMessageHandler {
 					groupBy.split("[\\s,]+")));
 		}
 	}
-	public void setFields(String fields) {
-		this.fields = fields;
+	public void setField(String field) {
+		this.field = field;
+	}
+	public void setAppend(Boolean append) {
+		this.append = append;
 	}
 	public void setType(AggregationType type) {
 		this.type = type;
 	}
+	public void setTargetField(String targetField) {
+		this.targetField = targetField;
+	}
+
 }
