@@ -98,12 +98,19 @@ public class TimeseriesMessageHandler {
 		}
 	}
 
+	private Discriminator getDiscriminator(Map<String,Object> payload) {
+		Discriminator d = new Discriminator();
+		if(StringUtils.isEmpty(discriminators)) {
+			return d;
+		}
+		for(String field : discriminatorFields) {
+			d.map.put(field, payload.get(field));
+		}
+		return d;
+	}
+
 	@SuppressWarnings("all")
 	public <T> T transform(Message<?> msg) {
-		System.out.println("message: " + msg);
-		System.out.println("message: " + msg.getClass());
-		System.out.println(msg.getHeaders());
-		System.out.println(msg.getPayload());
 		Object payload = msg.getPayload();
 		if(payload instanceof Map) {
 			return (T) transform((Map)payload);
@@ -121,12 +128,10 @@ public class TimeseriesMessageHandler {
 	}
 
 	public Map<String, Object> transform(Map<String, Object> payload) {
-		System.out.println("transform(Map) class: " + payload.getClass());
 		return processMessage(payload);
 	}
 
 	public List<Map<String, Object>> transform(List<Map<String,Object>> payload) {
-		System.out.println("transform(List) class: " + payload.getClass());
 		return processMessage(payload);
 	}
 
@@ -151,17 +156,6 @@ public class TimeseriesMessageHandler {
 		return append != null && append;
 	}
 
-	private Discriminator getDiscriminator(Map<String,Object> payload) {
-		Discriminator d = new Discriminator();
-		if(StringUtils.isEmpty(discriminators)) {
-			return d;
-		}
-		for(String field : discriminatorFields) {
-			d.map.put(field, payload.get(field));
-		}
-		return d;
-	}
-
 	private WekaTimeSeries getMatchingTimeseries(Map<String,Object> payload) {
 		Discriminator d = getDiscriminator(payload);
 		WekaTimeSeries existing = timeseries.get(d);
@@ -181,7 +175,6 @@ public class TimeseriesMessageHandler {
 	}
 
 	private Map<String, Object> processMessage(Map<String, Object> payload) {
-		//System.out.println("payload " + payload + " - " + interval);
 		WekaTimeSeries series = getMatchingTimeseries(payload);
 		series.addInstance(payload);
 		List<Map<String,Object>> list = series.forecast(getNumSteps());

@@ -16,22 +16,20 @@
 
 package org.springframework.xd.modules.sink.elasticsearch;
 
+import static org.junit.Assert.assertEquals;
+import io.riox.xd.modules.processor.timeseries.TimeseriesMessageHandler;
+import io.riox.xd.modules.processor.timeseries.WekaTimeSeries;
+import io.riox.xd.modules.processor.timeseries.WekaTimeSeries.ClassifierType;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import io.riox.xd.modules.processor.timeseries.TimeseriesMessageHandler;
-import io.riox.xd.modules.processor.timeseries.WekaTimeSeries;
-import io.riox.xd.modules.processor.timeseries.WekaTimeSeries.ClassifierType;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
-import static org.junit.Assert.*;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.messaging.MessageChannel;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -44,9 +42,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ActiveProfiles("node")
 public class TestPrediction {
 
-    @Autowired
-    @Qualifier("input")
-    MessageChannel outputChannel;
 	JSONParser parser = new JSONParser(JSONParser.DEFAULT_PERMISSIVE_MODE);
 
 	static double PRECISION = 0.0001;
