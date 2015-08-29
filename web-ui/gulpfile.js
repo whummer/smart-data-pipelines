@@ -282,7 +282,7 @@ function getRealScriptsPaths(baseDir) {
 // install bower files
 //
 gulp.task('ui:bower', 'install bower dependencies', function (done) {
-	runCmdSync("rm",  ['-r', 'lib/bower_components/riox-shared'], __dirname);
+	runCmdSync("rm",  ['-rf', 'lib/bower_components/riox-shared'], __dirname);
 	runCmdSync("bower", ["install", "--allow-root"], __dirname);
 	done();
 });

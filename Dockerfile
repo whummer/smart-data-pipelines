@@ -68,9 +68,6 @@ ADD ./web-ui/ /code/web-ui/
 ADD ./gateway/ /code/gateway/
 ADD ./riox-shared/ /code/riox-shared/
 
-# FR: Need to do this explicitly b/c for some reason it is not installed
-RUN npm install -g riox/Mockgoose#master
-
 	# finish up
 RUN rm -rf `find . -name node_modules` && \
 	rm -rf ./web-ui/build/production/ && \

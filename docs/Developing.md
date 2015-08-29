@@ -165,3 +165,9 @@ In general we stick to common best practices. There are many good articles, blog
 However, books, articles or blog posts are not something that you can provide developers with and make them stick to every recommendation that they can find in there. Different sources might even deal with the same issue in conflicting ways. Therefore, we did a little research and found some very comprehensive, easy to read and understand, as well as up-to-date JavaScript coding guidelines at the guys at [rangle.io](http://rangle.io).
 
 *TL;DR*: Stick to the [rangle.io JavaScript coding guidelines](http://rangle.io/guidelines/)
+
+### JavaScript gotchas
+
+#### Promises
+[ES6 Promise Antipatterns](http://www.datchley.name/promise-patterns-anti-patterns/)
+[Bluebird Promise Antipatterns](https://github.com/petkaantonov/bluebird/wiki/Promise-anti-patterns)
