@@ -169,5 +169,5 @@ However, books, articles or blog posts are not something that you can provide de
 ### JavaScript gotchas
 
 #### Promises
-[ES6 Promise Antipatterns](http://www.datchley.name/promise-patterns-anti-patterns/)
-[Bluebird Promise Antipatterns](https://github.com/petkaantonov/bluebird/wiki/Promise-anti-patterns)
+* [ES6 Promise Antipatterns](http://www.datchley.name/promise-patterns-anti-patterns/)
+* [Bluebird Promise Antipatterns](https://github.com/petkaantonov/bluebird/wiki/Promise-anti-patterns)
