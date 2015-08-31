@@ -2,4 +2,4 @@
 
 source /common-config.sh
 
-./xd/bin/xd-admin
+sudo cron && ./xd/bin/xd-admin

@@ -25,10 +25,9 @@
     "express": "~4.0.0",
     "ejs": "~0.8.4",
     "node-basicauth": "0.0.9",
-
     "riox-services-base": "../services/riox-services-base",
     "riox-shared": "../riox-shared"
-  },  
+  },
   "engines": {
     "node": ">=0.10.0"
   },
@@ -37,5 +36,9 @@
     "test": "gulp test",
     "update-webdriver": "node node_modules/grunt-protractor-runner/node_modules/protractor/bin/webdriver-manager update"
   },
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "babel": "^5.8.21",
+    "gulp-babel": "^5.2.0"
+  }
 }

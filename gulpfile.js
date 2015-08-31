@@ -7,6 +7,10 @@ var vinylPaths = require('vinyl-paths');
 var runSequence = require('run-sequence');
 var fs = require('fs');
 var cp = require('child_process');
+var mocha = require('gulp-mocha')
+
+var TEST_REPORTER = process.env.TEST_REPORTER ||  'spec'
+var TEST_DIR = "services/test";
 
 
 var gulpFiles = {
@@ -18,30 +22,60 @@ var gulpFiles = {
 	accessService: './services/access-service/gulpfile',
 	pricingService: './services/pricing-service/gulpfile',
 	analyticsService: './services/analytics-service/gulpfile',
-	filesService: './services/files-service/gulpfile'
+	filesService: './services/files-service/gulpfile',
+	demoServices: './demo/gulpfile'
 }
 for(var key in gulpFiles) {
 	try {
 		require(gulpFiles[key]);
 	} catch(e) {
-		//console.log(e);
+		console.log(e);
 		/* dependency missing -> swallow */
 	}
 }
 
 var nodeDirs = [".", "services/test", "gateway", "gateway/ext/http-proxy",
-                "services/users-service", "services/access-service", "services/gateway-service", 
-                "services/pricing-service", "services/pipes-service", "services/analytics-service", "services/files-service",
-                "services/riox-services-base", "web-ui"];
+								"services/users-service", "services/access-service", "services/gateway-service",
+								"services/pricing-service", "services/pipes-service", "services/analytics-service", "services/files-service",
+								"services/riox-services-base", "web-ui"];
 var bowerDirs = ["web-ui/lib"];
+
 
 gulp.task('riox', 'start riox nodejs infrastructure', function() {
 	runSequence('ui:livereload', 'services:pipes:serve', 'services:users:serve', 'services:pricing:serve',
 			'services:analytics:serve', 'services:gateway:serve', 'services:access:serve', 'services:files:serve');
 });
 
+gulp.task('services:test:unit', 'run unit test of all the services', function() {
+	runSequence('services:pipes:test:unit', 'services:users:test:unit', 'services:pricing:test:unit',
+			 'services:analytics:test:unit', 'services:gateway:test:unit', 'services:access:test:unit', 'services:files:test:unit');
+});
+
+gulp.task('test:integration', 'run all integration test ', function() {
+	var grep = ".*";
+	try {
+		var minimist = require('minimist');
+		var options = minimist(process.argv.slice(2));
+		grep = options.tests;
+	} catch(e) {
+		console.log("WARN: Unable to load npm module 'minimist'. Cannot select tests by regex.", e);
+	}
+	return gulp.src(TEST_DIR + '/test.integration.js', {read: false})
+			.pipe(mocha({
+					reporter: TEST_REPORTER,
+					reporterOptions: {
+							junit_report_name: "Integration Tests",
+							junit_report_path: TEST_DIR + "/test-report.xml",
+							junit_report_stack: 1
+					},
+					grep: grep,
+					timeout: 15000
+				}
+			));
+});
+
 gulp.task('ui:bootstrap', 'Insert necessary data to boot the riox UI and make the riox APIs accessible.', function() {
-	
+
 	global.config = require("./services/users-service/config/environment");
 	require('./services/riox-services-base/lib/api/service.calls');
 	global.servicesConfig = global.config.services;
@@ -125,17 +159,26 @@ function addDepToHash(deps, dep, version) {
 function cleanNodeDir(dir) {
 	cleanDir(dir + "/node_modules");
 }
+
 function cleanBowerDir(dir) {
 	cleanDir(dir + "/bower_components");
 }
+
 function cleanDir(dir) {
 	if(fs.existsSync(dir)) {
 		console.log("Cleaning directory", dir);
 		gulp.src(dir, {read: false}).pipe(vinylPaths(del));
 	}
 }
+
 global.runCmd = function(cmd, args, cwd, env) {
 	var _cwd = cwd || __dirname;
 	return cp.spawn(cmd, args,
 			{env: env || process.env, cwd: _cwd, stdio: 'inherit'})
-}
+};
+
+global.runCmdSync = function(cmd, args, cwd, env) {
+	var _cwd = cwd || __dirname;
+	return cp.spawnSync(cmd, args,
+			{env: env || process.env, cwd: _cwd, stdio: 'inherit'})
+};

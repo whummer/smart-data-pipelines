@@ -1,8 +1,8 @@
 'use strict';
 
 process.env.TEST_MODE = true;
-process.env.NODE_ENV = process.env.RIOX_ENV = "test";
-process.env.RIOX_ENV = 'development' // FR TODO: temp fix to run locally
+process.env.RIOX_ENV = process.env.RIOX_ENV || "test";
+process.env.NODE_ENV = process.env.RIOX_ENV;
 require('riox-services-base/lib/api/service.calls');
 global.servicesConfig = require('riox-services-base/lib/config/services').test.services;
 
@@ -20,7 +20,6 @@ require('./integration/api/test.files');
 //require('./integration/api/test.analytics');
 
 /* Streams integration tests */
-require('./integration/pipes/test.springxd.connector');
 require('./integration/pipes/test.pipes');
 require('./integration/pipes/test.pipes.deployments');
 

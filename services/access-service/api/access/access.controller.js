@@ -9,37 +9,56 @@ var riox = require('riox-shared/lib/api/riox-api');
 var util = require('util');
 var uuid = require('node-uuid');
 var errors = require('riox-services-base/lib/util/errors');
+var LRUCache = require("lru-cache");
 
 var log = global.log || require('winston');
+
+var orgsCache = LRUCache({
+	max: 500,
+	maxAge: 1000 * 20
+});
 
 exports.index = function (req, res, next) {
 	var user = auth.getCurrentUser(req);
 
-	riox.organizations({
-		headers: req.headers,
-		callback: function (orgs) {
-			orgs.push(user); // for now, also consider the user ID
+	function doFind(orgs) {
+		orgs.push(user); // for now, also consider the user ID
 
-			var query = {$or: []};
+		var query = {$or: []};
 
-			orgs.forEach(function (org) {
-				var crit1 = {}, crit2 = {};
-				crit1[PROVIDER_ID] = org.id;
-				crit2[REQUESTOR_ID] = org.id;
-				query.$or.push(crit1);
-				query.$or.push(crit2);
-			});
+		orgs.forEach(function (org) {
+			var crit1 = {}, crit2 = {};
+			crit1[PROVIDER_ID] = org.id;
+			crit2[REQUESTOR_ID] = org.id;
+			query.$or.push(crit1);
+			query.$or.push(crit2);
+		});
 
-			StreamAccess.find(query, function (err, list) {
-				if (err) {
-					return next(errors.InternalError("Cannot lookup stream-access", err));
-					//return res.send(500, err);
-				}
+		StreamAccess.find(query, function (err, list) {
+			if (err) {
+				return next(errors.InternalError("Cannot lookup stream-access", err));
+				//return res.send(500, err);
+			}
 
-				res.json(200, list);
-			});
-		}
-	});
+			res.json(200, list);
+		});
+		
+	}
+
+	if(orgsCache.get(req.headers)) {
+		var orgs = orgsCache.get(req.headers);
+		console.log("orgs from cache", orgs);
+		doFind(orgs);
+	} else {
+		riox.organizations({
+			headers: req.headers,
+			callback: function (orgs) {
+				orgsCache.set(req.headers, orgs);
+				doFind(orgs);
+			}
+		});
+	}
+	
 };
 
 exports.getBySource = function (req, res, next) {

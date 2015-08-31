@@ -7,7 +7,7 @@ module.exports = function (err, req, res, next) {
 		return next();
 	}
 
-	var status = err.status || err.code;
+	var status = err.status || err.code || res.statusCode;
 
 	if (!status) {
 		log.info("No HTTP status available this is an error. Setting status to HTTP 500");

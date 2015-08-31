@@ -35,7 +35,7 @@ describe('pipes.service', function() {
 	});
 
 	it('stores and retrieves a pipeline definition', function(done) {
-		var content = JSON.parse(fs.readFileSync(path.join(__dirname, './resources') + "/simple-pipe.json"));
+		var content = JSON.parse(fs.readFileSync(path.join(__dirname, './resources') + "/ma-vienna-pipe.js"));
 
 		test.user1.post(app.pipes.url).send(content).end(function(err, res) {
 			if (err) {
@@ -59,8 +59,8 @@ describe('pipes.service', function() {
 				log.debug("Response status: ", res.status);
 				log.debug("Response headers: ", res.headers);
 				log.debug("Body: ", JSON.stringify(res.body));
-				res.body.name.should.equal("WartezeitenVisulationzPipe");
-				res.body.elements.length.should.equal(4);
+				res.body.name.should.equal("Vienna Aemter - Waiting times analytics");
+				res.body.elements.length.should.equal(6);
 				res.status.should.equal(200);
 				done();
 			});

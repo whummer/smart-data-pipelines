@@ -10,6 +10,8 @@ angular.module('rioxApp').controller('ApisCtrl',
 			{name: "Websocket Connector", type: "ws"},
 			{name: "MQTT Connector", type: "mqtt"}
 		];
+	
+	var CACHE_ORGANIZATIONS = {};
 
 	/** load proxies */
 	$scope.loadProxies = function() {
@@ -57,18 +59,25 @@ angular.module('rioxApp').controller('ApisCtrl',
 				resolve(list);
 			})
 		});
+		setTimeout(function() {
+			/* reset cache after a short time */
+			CACHE_ORGANIZATIONS = {};
+		}, 10*1000);
 		return promise;
 	};
 
 	/** prepare a single proxy (load organization image, ...) */
 	$scope.prepareProxy = function(el, callback) {
 		if(el[ORGANIZATION_ID]) {
-			riox.organization(el[ORGANIZATION_ID], function(org) {
-				if(org[IMAGE_DATA] && org[IMAGE_DATA][0]) {
-					el.organizationImg = org[IMAGE_DATA][0].href;
-				}
-				el.organization = org;
-				if(callback) callback();
+			riox.organization(el[ORGANIZATION_ID], {
+				callback: function(org) {
+					if(org[IMAGE_DATA] && org[IMAGE_DATA][0]) {
+						el.organizationImg = org[IMAGE_DATA][0].href;
+					}
+					el.organization = org;
+					if(callback) callback();
+				},
+				cache: CACHE_ORGANIZATIONS
 			});
 		} else {
 			if(callback) callback();

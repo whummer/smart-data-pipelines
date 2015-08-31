@@ -41,20 +41,29 @@ var registerUser = function(email, pass, callback) {
 
 var initClientProxy = function(proxy) {
 	proxy.get = function(url) {
-		return superagent.get(url).set("authorization",
-				proxy.tokenHeaders.authorization);
+		return superagent.get(url)
+			.set("authorization", proxy.tokenHeaders.authorization)
+			.set('Content-Type', 'application/json');
 	}
 	proxy.post = function(url) {
-		return superagent.post(url).set("authorization",
-				proxy.tokenHeaders.authorization);
+		return superagent.post(url)
+			.set("authorization", proxy.tokenHeaders.authorization)
+			.set('Content-Type', 'application/json');
 	}
 	proxy.put = function(url) {
-		return superagent.put(url).set("authorization",
-				proxy.tokenHeaders.authorization);
+		return superagent.put(url)
+			.set("authorization", proxy.tokenHeaders.authorization)
+			.set('Content-Type', 'application/json');
 	}
 	proxy.head = function(url) {
-		return superagent.head(url).set("authorization",
-				proxy.tokenHeaders.authorization);
+		return superagent.head(url)
+			.set("authorization",	proxy.tokenHeaders.authorization)
+			.set('Content-Type', 'application/json');
+	}
+	proxy.delete = function(url) {
+		return superagent.del(url)
+			.set("authorization", proxy.tokenHeaders.authorization)
+			.set('Content-Type', 'application/json');
 	}
 }
 
