@@ -72,11 +72,11 @@ public class TestRegex {
 
     	h.setField("foo");
     	h.setRegex("POINT\\s*\\((.*)\\s(.*)\\)");
-    	h.setReplace("$2 $1");
+    	h.setReplace("$2,$1");
     	h.setTargetField(null);
     	payload = "{\"foo\":\"POINT (16.38 48.20)\"}";
 		obj = h.transform((Map)json(payload));
-		assertEquals(obj.get("foo"), "48.20 16.38");
+		assertEquals(obj.get("foo"), "48.20,16.38");
 
     }
 
