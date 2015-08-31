@@ -8,7 +8,7 @@ apply plugin: 'spring-xd-module'
 group = 'io.riox'
 version = '1.0.0.BUILD-SNAPSHOT'
 
-description = "Spring XD 'splitter' processor module"
+description = "Spring XD 'regex' processor module"
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
