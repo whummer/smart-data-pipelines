@@ -54,7 +54,7 @@
 
 			var result = [];
 			
-			var createHandler = function(i) {
+			var createHandler = function(i, search) {
 				return (function() {
 					return elasticsearch.getTimeseries($scope.esUrl, $scope.esIndexName, $scope.esTypeName, search, $scope.timeField, 50).
 						then(function(res) {
@@ -66,7 +66,7 @@
 			var promise = new Promise(function(r){r()});
 			for(var i = 0; i < $scope.esSearch.length; i ++) {
 				var search = $scope.esSearch[i];
-				promise = promise.then(createHandler(i));
+				promise = promise.then(createHandler(i, search));
 			};
 			promise = promise.then(function() {
 				var numResults = result.length;
@@ -90,8 +90,10 @@
 				newLine.push(null); /* push empty points to fill up array */
 			}
 			newLine[numPoints - 1] = points[numPoints - 1];
-			for(var i = 0; i < predValues.length; i ++) {
-				newLine[numPoints + i] = predValues[i];
+			if(predValues) {
+				for(var i = 0; i < predValues.length; i ++) {
+					newLine[numPoints + i] = predValues[i];
+				}
 			}
 		};
 
@@ -99,8 +101,9 @@
 			if(!$scope.predictionValues) return;
 			var points = objects[0];
 			var lastItem = points[points.length - 1];
-			var numPredValues = lastItem[$scope.predictionValues].length;
-			for(var i = 0; i < numPredValues; i ++) {
+			var values = lastItem[$scope.predictionValues];
+			if(!values) return;
+			for(var i = 0; i < values.length; i ++) {
 				$scope.chart.labels.push("t+" + (i + 1));
 			}
 		};
