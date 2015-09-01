@@ -21,7 +21,6 @@ var gulp = global.gulp,
 	babel = require('gulp-babel'),
 	browserSync = require('browser-sync').create(),
 	compress = require('compression'),
-
 	es = require('event-stream');
 
 //
