@@ -15,7 +15,8 @@
 										"label": "poll-meldeamt",
 										"description": "poll all meldeamt data per 10sec",
 										"options": {
-												"url": "https://www.wien.gv.at/wartezeiten/meldeservice/wartezeiten.svc/GetWartezeiten",
+												"url": "http://integration-tests.test.svc.cluster.local:6789/wartezeiten/meldeservice/wartezeiten.svc/GetWartezeiten",
+												"urlExternal": "https://www.wien.gv.at/wartezeiten/meldeservice/wartezeiten.svc/GetWartezeiten",
 												"method": "GET",
 												"interval": 10
 										}
@@ -27,7 +28,8 @@
 										"label": "poll-passamt",
 										"description": "Poll all passamt data per 10sec",
 										"options": {
-												"url": "https://www.wien.gv.at/wartezeiten/passservice/wartezeiten.svc/GetWartezeiten",
+												"url": "http://integration-tests.test.svc.cluster.local:6789/wartezeiten/passservice/wartezeiten.svc/GetWartezeiten",
+												"urlExternal": "https://www.wien.gv.at/wartezeiten/passservice/wartezeiten.svc/GetWartezeiten",
 												"method": "GET",
 												"interval": 10
 										}
@@ -39,7 +41,8 @@
 										"label": "poll-parkpickerl",
 										"description": "Poll all pickerl data per 10sec",
 										"options": {
-												"url": "https://www.wien.gv.at/wartezeiten/parkpickerl/wartezeiten.svc/GetWartezeiten",
+												"url": "http://integration-tests.test.svc.cluster.local:6789/wartezeiten/parkpickerl/wartezeiten.svc/GetWartezeiten",
+												"urlExternal": "https://www.wien.gv.at/wartezeiten/parkpickerl/wartezeiten.svc/GetWartezeiten",
 												"method": "GET",
 												"interval": 10
 										}

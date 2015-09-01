@@ -1,21 +1,42 @@
 {{IMAGE_VERSION=latest}}
+{{PULL_POLICY=Always}}
 apiVersion: v1
-kind: Pod
-metadata:
-  name: integration-tests
-spec:
-  containers:
-  - image: riox/hyperriox:{{IMAGE_VERSION}}
-    name: integration-tests
-    command:
-      [ "sh", "-c", "gulp test:integration && cat services/test/test-report.xml"]
-    env:
-      - name: RIOX_ENV
-        valueFrom:
-          fieldRef:
-            fieldPath: metadata.namespace
-      - name: TEST_REPORTER
-        value: mocha-jenkins-reporter
-  imagePullSecrets:
-    - name: rioxregistrykey
-  restartPolicy: Never
+kind: List
+items:
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      name: "integration-tests"
+    spec:
+      selector:
+        name: "integration-tests"
+      ports:
+      - name: "integration-tests"
+        port: 6789
+        protocol: TCP
+      labels:
+        name: integration-tests
+  - kind: Pod
+    apiVersion: v1
+    metadata:
+      name: integration-tests
+    spec:
+      containers:
+      - image: riox/hyperriox:{{IMAGE_VERSION}}
+        imagePullPolicy: {{PULL_POLICY}}
+        name: integration-tests
+        ports:
+          - port: 6789
+            containerPort: 6789
+        command:
+          [ "sh", "-c", "gulp test:integration && cat services/test/test-report.xml"]
+        env:
+          - name: RIOX_ENV
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: TEST_REPORTER
+            value: mocha-jenkins-reporter
+      imagePullSecrets:
+        - name: rioxregistrykey
+      restartPolicy: Never

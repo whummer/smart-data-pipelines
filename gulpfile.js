@@ -29,7 +29,7 @@ for(var key in gulpFiles) {
 	try {
 		require(gulpFiles[key]);
 	} catch(e) {
-		console.log(e);
+		//console.log(e);
 		/* dependency missing -> swallow */
 	}
 }
@@ -69,7 +69,7 @@ gulp.task('test:integration', 'run all integration test ', function() {
 							junit_report_stack: 1
 					},
 					grep: grep,
-					timeout: 15000
+					timeout: 10*60*1000
 				}
 			));
 });
