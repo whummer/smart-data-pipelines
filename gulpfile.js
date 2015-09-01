@@ -52,6 +52,14 @@ gulp.task('services:test:unit', 'run unit test of all the services', function() 
 });
 
 gulp.task('test:integration', 'run all integration test ', function() {
+	var grep = ".*";
+	try {
+		var minimist = require('minimist');
+		var options = minimist(process.argv.slice(2));
+		grep = options.tests;
+	} catch(e) {
+		console.log("WARN: Unable to load npm module 'minimist'. Cannot select tests by regex.", e);
+	}
 	return gulp.src(TEST_DIR + '/test.integration.js', {read: false})
 			.pipe(mocha({
 					reporter: TEST_REPORTER,
@@ -60,7 +68,8 @@ gulp.task('test:integration', 'run all integration test ', function() {
 							junit_report_path: TEST_DIR + "/test-report.xml",
 							junit_report_stack: 1
 					},
-					timeout: 15000
+					grep: grep,
+					timeout: 10*60*1000
 				}
 			));
 });

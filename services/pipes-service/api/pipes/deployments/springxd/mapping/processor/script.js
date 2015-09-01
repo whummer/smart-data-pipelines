@@ -6,11 +6,15 @@ var Promise = require('bluebird');
 
 module.exports = function (xdConnector, args) {
 	log.debug('springxd.processor.script');
-	let stream = util.format('queue:%s > script --script=%s --variables=\'%s\' > queue:%s',
+	let stream = util.format('queue:%s > script --script=%s ' +
+														'--propertiesLocation=%s ' +
+														'--variables=\'' + transformVariables(args.options.variables) + '\' ' +
+														'> queue:%s',
 														args.previous_id,
 														args.options.location,
-														transformVariables(args.options.variables),
+														args.options.location.replace(".groovy", ".properties"),
 														args.next_id);
+	
 	if (args.dryrun) {
 		log.info('stream (dry-run): ', stream);
 		return Promise.resolve(stream);
@@ -22,5 +26,5 @@ module.exports = function (xdConnector, args) {
 
 function transformVariables(variables) {
 	let val = JSON.stringify(variables).replace(/\":\"/g, "=").replace(/\"|\{|\}/g, "");
-	return util.format('%s', val);
+	return val.replace(/\\\\/g, '\\'); // FIXME this is dangerous
 }

@@ -51,6 +51,10 @@ run-integration-tests:
 	(cd services/test && ../../util/templater.sh k8s.tmpl.yml > k8s.yml)
 	(cd services/test && kubectl create -f k8s.yml --namespace=${RIOX_ENV})
 
+run-integration-tests-local:
+	(cd services/test && PULL_POLICY=IfNotPresent ../../util/templater.sh k8s.tmpl.yml > k8s.yml)
+	(cd services/test && kubectl create -f k8s.yml --namespace=${RIOX_ENV})
+
 cleanup-integration-tests:
 	(cd services/test && kubectl delete -f k8s.yml --namespace=${RIOX_ENV})
 

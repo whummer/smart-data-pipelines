@@ -32,29 +32,13 @@ exports.findById = function (req, res, next) {
 	})
 };
 
-/*
- * Recursively add UUID to all elements if they don't already have it
- * TODO fr: currently we do it in the UI but we could think of removing it from there.
- */
-function addUUIDs(pipe) {
-	for (var i in pipe.elements){
-		var element = pipe.elements[i];
-		if (!element.uuid) {
-			element.uuid = uuid.v4();
-		}
-		if (element.class === 'container') {
-			addUUIDs(element);
-		}
-	}
-};
-
 exports.create = function (req, res, next) {
 	var pipeDef = req.body;
 	var pipe = new Pipe(pipeDef);
 	var user = auth.getCurrentUser(req);
 	pipe[CREATOR_ID] = user[ID];
 
-	addUUIDs(pipe);
+	exports.addUUIDs(pipe);
 
 	pipe.saveQ().then(savedPipe => {
 		log.info('Saved pipe with ID: ', savedPipe._id);
@@ -93,6 +77,22 @@ exports.delete = function (req, res, next) {
 	});
 };
 
+
+/*
+ * Recursively add UUID to all elements if they don't already have it.
+ * TODO fr: currently we do it in the UI but we could think of removing it from there.
+ */
+exports.addUUIDs = function addUUIDs(pipe) {
+	for (var i in pipe.elements){
+		var element = pipe.elements[i];
+		if (!element.uuid) {
+			element.uuid = uuid.v4();
+		}
+		if (element.class === 'container') {
+			addUUIDs(element);
+		}
+	}
+};
 
 //
 // helpers

@@ -6,7 +6,7 @@ var request = Promise.promisify(require('request'));
 Promise.promisifyAll(request);
 var util = require('util');
 
-log.level = 'debug' // TODO remove
+log.level = 'debug' // TODO remove this once the tests are fixed.
 
 const STATUS_DEPLOYING = 'deploying';
 const STATUS_DEPLOYED = 'deployed';
