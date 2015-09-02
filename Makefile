@@ -5,10 +5,11 @@ IMAGE_VERSION?=latest
 TEST_TIMEOUT= # set this to --no-timeouts in case the test times out.
 
 NPATH=/usr/local/lib/node_modules/
-ifeq ($(USE_NODENV), true)
+ifdef NODENV_ROOT
 NPATH=/opt/boxen/nodenv/versions/v0.12.7/lib/node_modules/
 endif
 
+$(info VAR is $(NPATH))
 export NODE_PATH=$(NPATH)
 
 ###############
@@ -20,7 +21,7 @@ install:
 	gulp ui:bower
 
 install-prereq:
-	npm install -g gulp mocha gulp-mocha nodemon pm2 linklocal node-gyp node-pre-gyp gulp-help del vinyl-paths run-sequence bower
+	npm install -g gulp mocha gulp-mocha nodemon pm2 linklocal node-gyp node-pre-gyp gulp-help del vinyl-paths run-sequence bower browsersync babel
 
 uninstall-global:
 	(cd bin && node handle-global-node-packages.js --uninstall && cd ..)

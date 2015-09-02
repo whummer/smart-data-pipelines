@@ -36,6 +36,7 @@ KAFKA_STOP=$(which kafka-server-stop.sh)
 HSQL=$(which hsqldb-server)
 XD_CONTAINER=$(which xd-container)
 XD_ADMIN=$(which xd-admin)
+MONGO=$(which mongod)
 
 KAFKA_CONFIGFILE=/opt/boxen/homebrew/etc/kafka/server.properties
 
@@ -195,6 +196,15 @@ function start_xd_container() {
 	fi
 }
 
+function start_mongo() {
+	if [ "$MONGO" == "" ]; then
+		printf "${red}No mongod found.${reset}\n"
+	else
+		printf "${green}Found mongod at ${MONGO}\n"
+		nohup $MONGO 2>&1 > /tmp/mongo.log &
+	fi
+}
+
 
 #
 # check what to do
@@ -204,6 +214,7 @@ if [ "$START" == 1 ]; then
   start_redis;
   start_hsql;
   start_kafka;
+  start_mongo;
 
   if [ "$XD_ENABLED" == 1 ]; then
 	  start_xd_admin;
@@ -219,6 +230,7 @@ if [ "$KILL" == 1 ]; then
 	$KAFKA_STOP
 	$ZK stop
 	kill -9 $(ps -eaf | grep hsqldb | grep -v grep | awk '{print $2}')
+	pkill mongod
 	CHECK=1;
 fi
 
@@ -259,4 +271,8 @@ if [ "$CHECK" == 1 ]; then
 	# check hsql
 	hsql_ok=$(ps -eaf | grep hsqldb | grep -v grep | awk '{print $1}')
 	check_output "hsqldb" $hsql_ok 
+
+	# check mongo
+	mongo_ok=$(ps -eaf | grep mongod | grep -v grep | awk '{print $1}')
+	check_output "mongod" $mongo_ok
 fi
