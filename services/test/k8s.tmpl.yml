@@ -7,27 +7,34 @@ items:
     apiVersion: v1
     metadata:
       name: "integration-tests"
+      labels:
+        name: integration-tests
     spec:
       selector:
         name: "integration-tests"
       ports:
-      - name: "integration-tests"
+      - name: "mockservice"
         port: 6789
         protocol: TCP
-      labels:
-        name: integration-tests
+      - name: "mockservice1"
+        port: 6788
+        protocol: TCP
   - kind: Pod
     apiVersion: v1
     metadata:
       name: integration-tests
+      labels:
+         name: integration-tests
     spec:
       containers:
       - image: riox/hyperriox:{{IMAGE_VERSION}}
         imagePullPolicy: {{PULL_POLICY}}
         name: integration-tests
         ports:
-          - port: 6789
+          - name: mockservice
             containerPort: 6789
+          - name: mockservice1
+            containerPort: 6788
         command:
           [ "sh", "-c", "gulp test:integration && cat services/test/test-report.xml"]
         env:
