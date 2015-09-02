@@ -10,5 +10,8 @@
     "angular-chart.js": "whummer/angular-chart.js#dist-release",
     "riox-shared": "../../riox-shared"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "resolutions": {
+    "angular": "1.4.4"
+  }
 }

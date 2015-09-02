@@ -12,9 +12,8 @@ var SpringXdConnector = require('./springxd.connector');
  */
 class SpringXdDeployer {
 
-	constructor(pipe) {
-		log.debug("SpringXdDeployer.create: ", pipe.id);
-		this.pipe = pipe;
+	constructor() {
+		log.debug("SpringXdDeployer.constructor");
 		this.xdConnector = new SpringXdConnector(config.springxdadmin.hostname,
 																						config.springxdadmin.port);
 	}
@@ -24,15 +23,29 @@ class SpringXdDeployer {
 	//
 
 	/*
-	 * Applies the pipe defintion to a particular environment.
+	 * Deploys the pipe defintion to a particular environment.
 	 *
 	 * @return a promise array of all elements and their status.
 	 */
-	apply(environment) {
-		log.debug("SpringXdDeployer.apply: ", this.pipe.id);
-		this.deploymentStatus = [];
-		this._deployRecursive(this.pipe, environment, this.deploymentStatus, 0, 0);
-		return Promise.all(this.deploymentStatus)
+	deploy(pipe, environment) {
+		log.debug("SpringXdDeployer.deploy: ", pipe.id);
+		let deploymentStatus = [];
+		this.pipe = pipe;
+		this._deployRecursive(this.pipe, environment, deploymentStatus, 0, 0);
+		return Promise.all(deploymentStatus);
+	};
+
+	/*
+	 * Undeploys the pipe defintion to a particular environment.
+	 *
+	 * @return a promise array of all elements and their status.
+	 */
+	undeploy(pipeDeployment) {
+		log.debug("SpringXdDeployer.undeploy: ", pipeDeployment.id);
+		return Promise.map(pipeDeployment[STATUS], status => {
+			log.debug("SpringXdDeployer.undeploy.status: ", JSON.stringify(status));
+			return this.xdConnector.deleteStream(status.springxd.name);
+		});
 	};
 
 	//
@@ -48,15 +61,17 @@ class SpringXdDeployer {
 			}
 
 			if (element.class === 'container') {
-				let subStatus = [];
+				// let subStatus = [];
 				depth = depth + 1;
-				this._deployRecursive(element, environment, subStatus, index, depth);
+				// TODO enable this if we want status to have same strucutre as pipe
+				// this._deployRecursive(element, environment, subStatus, index, depth);
+				this._deployRecursive(element, environment, deploymentStatus, index, depth);
 				depth = depth - 1;
 				// TODO enable this if we want status to have same strucutre as pipe
 				// deploymentStatus.push(subStatus);
 			} else {
 				// store deployment info as flat list
-				this.deploymentStatus.push(this._deployModule(environment, element, index, i));
+				deploymentStatus.push(this._deployModule(pipe, environment, element, index, i));
 
 				// TODO enable this if we want status to have same strucutre as pipe
 				// deploymentStatus.push(status);
@@ -73,7 +88,7 @@ class SpringXdDeployer {
 	 * @returns a object with the UUID of the element, the deployment status
 	 * and the springxd deployment information.
 	 */
-	_deployModule(environment, element, index, subindex) {
+	_deployModule(pipe, environment, element, index, subindex) {
 		// dynamically load modules
 		var moduleName = util.format("./mapping/%s/%s", element['type'], element['subtype']);
 		log.debug("Loading module name: ", moduleName);
@@ -83,7 +98,7 @@ class SpringXdDeployer {
 				// "dryrun" : true,
 				"id": element.uuid,
 				"previous_id" : element.uuid,
-				"next_id" : this._nextId(index, index, subindex),
+				"next_id" : this._nextId(this.pipe, index, subindex),
 				options : element.options,
 				"environment" : environment
 		};
@@ -113,7 +128,7 @@ class SpringXdDeployer {
 	 * to be in the same position in case it is a container).
 	 */
 	_nextId(pipe, index, subindex) {
-		let elem = this.pipe.elements[index+1];
+		let elem = pipe.elements[index+1];
 		if (elem) {
 			if (elem.class === 'container') { // TODO make a symbol
 				return elem.elements[subindex].uuid; // TODO do we need to check subindex

@@ -72,12 +72,15 @@
 		};
 
 		var getLocation = function(obj) {
+			if(!obj) return {};
 			if(obj.lon) obj.lng = obj.lon;
 			if(obj.lat && obj.lng) return obj;
 			var result = {};
-			var idx = obj.indexOf(",");
-			result.lat = obj.substring(0, idx);
-			result.lng = obj.substring(idx + 1, obj.length);
+			var parts = obj.split(/[\s,]+/);
+			if(parts.length == 2) {
+				result.lat = parts[0];
+				result.lng = parts[1];
+			}
 			if(typeof result.lat == "string") result.lat = parseFloat(result.lat);
 			if(typeof result.lng == "string") result.lng = parseFloat(result.lng);
 			return result;

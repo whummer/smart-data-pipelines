@@ -346,6 +346,10 @@ exports.logAndPermit = function(req, res) {
 		}
 
 		getLimitForUserAndOp(userID, result[KEY_OPERATION][ID], function(limits) {
+			if(!limits) {
+				/* cannot query limits, return status DENIED */
+				return returnAndSave(inv, STATUS_DENIED, res, cacheForPath);
+			}
 			var limit = limits[0];
 			if(limit) {
 				cacheOfUser[KEY_LIMIT] = limit; // TODO

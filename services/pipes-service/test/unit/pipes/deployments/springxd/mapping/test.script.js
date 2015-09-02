@@ -22,7 +22,7 @@ describe('source::script', function() {
 
 		var modulz = require('../../../../../../api/pipes/deployments/springxd/mapping/processor/script');
 		modulz(null, args).then(stream => {
-			stream.should.equal('queue:source > script --script=myscript.groovy --variables=\'key1=value1,key2=value2\' > queue:target');
+			stream.should.equal('queue:source > script --script=myscript.groovy --propertiesLocation=myscript.properties --variables=\'key1=value1,key2=value2\' > queue:target');
 			done();
 		})
 		.catch( err => {

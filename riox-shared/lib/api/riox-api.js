@@ -86,7 +86,6 @@
 	g.PIPE_ELEMENT_SUBTYPE = "subtype";
 	g.PIPE_ELEMENT_OPTIONS = "options";
 	g.PIPE_ELEMENT_OPTION_DEFAULT = "default";
-	g.PIPE_DEPLOYMENT_STATUS = "deployment-status";
 	g.PIPE_ENVIRONMENT = "environment";
 	g.ERROR_MESSAGE = "error-message";
 	g.VALUE_TYPE = "type";
