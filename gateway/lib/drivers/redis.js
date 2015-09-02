@@ -60,26 +60,30 @@
 		var clientWrite;
 
 		if (master) {
-			clientWrite = redis.createClient(master.port, master.hostname);
+			try {
+				clientWrite = redis.createClient(master.port, master.hostname);
 
-			if (master.path && (db = master.path.substr(1))) {
-				clientWrite.select(db);
-			}
-			if (master.auth && (password = master.auth.split(':').pop())) {
-				clientWrite.auth(password);
-			}
-
-			clientWrite.on('error', function (err) {
-				// Re-emit unspecified error as is
-				this.emit(this.ERROR, new DriverError(DriverError.UNSPECIFIED, err));
-			}.bind(this));
-
-			clientWrite.on('ready', function (err) {
-				clientWriteReady = true;
-				if (clientReady) {
-					this.emit(this.READY, err);
+				if (master.path && (db = master.path.substr(1))) {
+					clientWrite.select(db);
 				}
-			}.bind(this));
+				if (master.auth && (password = master.auth.split(':').pop())) {
+					clientWrite.auth(password);
+				}
+	
+				clientWrite.on('error', function (err) {
+					// Re-emit unspecified error as is
+					this.emit(this.ERROR, new DriverError(DriverError.UNSPECIFIED, err));
+				}.bind(this));
+	
+				clientWrite.on('ready', function (err) {
+					clientWriteReady = true;
+					if (clientReady) {
+						this.emit(this.READY, err);
+					}
+				}.bind(this));
+			} catch (e) {
+				logger.warn("Unable to initialize redis writeClient: " + e);
+			}
 		}
 
 		// Redis specific: passiveChecks mechanism
