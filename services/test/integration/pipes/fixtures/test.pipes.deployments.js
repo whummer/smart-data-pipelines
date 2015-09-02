@@ -104,7 +104,7 @@ nock('http://localhost:3000')
 
 
 nock('http://localhost:3000')
-  .post('/api/v1/pipes', {"name":"WartezeitenVisulationzPipe","description":"my cool datapipe","elements":[{"class":"container","type":"source","label":"source-container-aemter","description":"source container for meldeamt, passamt, parkpickerl","elements":[{"class":"element","type":"source","subtype":"http-out","label":"poll-meldeamt","description":"poll all meldeamt data per 10sec","options":{"url":"http://www.wien.gv.at/wartezeiten/meldeservice/wartezeiten.svc/GetWartezeiten","method":"GET","interval":10}},{"class":"element","type":"source","subtype":"http-out","label":"poll-passamt","description":"poll all passamt data per 10sec","options":{"url":"http://www.wien.gv.at/wartezeiten/passservice/wartezeiten.svc/GetWartezeiten","method":"GET","interval":10}},{"class":"element","type":"source","subtype":"http-out","label":"poll-parkpickerl","description":"poll all pickerl data per 10sec","options":{"url":"http://www.wien.gv.at/wartezeiten/parkpickerl/wartezeiten.svc/GetWartezeiten","method":"GET","interval":10}}]},{"class":"container","type":"processor","label":"processor-container-aemter","description":"source container for meldeamt, passamt, parkpickerl","elements":[{"class":"element","type":"processor","subtype":"script","label":"add-discriminator-element-meldeservice","description":"Adds origin (Meldeservice)","options":{"location":"json-add-element.groovy","sync-interval":60,"variables":{"key":"origin","value":"meldeservice"}}},{"class":"element","type":"processor","subtype":"script","label":"add-discriminator-element-passservice","description":"Adds origin (Passservice)","options":{"location":"json-add-element.groovy","sync-interval":60,"variables":{"key":"origin","value":"passservice"}}},{"class":"element","type":"processor","subtype":"script","label":"add-discriminator-element-passservice","description":"Adds origin (Packpickerl)","options":{"location":"json-add-element.groovy","sync-interval":60,"variables":{"key":"origin","value":"parkpickerlservice"}}}]},{"class":"element","type":"processor","subtype":"script","label":"enrich-with-location-data","description":"enriches payload with location data","options":{"location":"enrich-json-from-csv.groovy","sync-interval":60,"variables":{"csvFile":"file:///opt/xd-data/ma-data.csv"}}},{"class":"element","type":"sink","subtype":"map","label":"visualize-data-in-map","description":"visualize data in a kibana map","options":{"index":"smartcity","type":"waitingtimes"}}]})
+  .post('/api/v1/pipes', {"name":"WartezeitenVisulationzPipe","description":"my cool datapipe","elements":[{"class":"container","type":"source","label":"source-container-aemter","description":"source container for meldeamt, passamt, parkpickerl","elements":[{"class":"element","type":"source","subtype":"http-out","label":"poll-meldeamt","description":"poll all meldeamt data per 10sec","options":{"url":"https://www.wien.gv.at/wartezeiten/meldeservice/wartezeiten.svc/GetWartezeiten","method":"GET","interval":10}},{"class":"element","type":"source","subtype":"http-out","label":"poll-passamt","description":"poll all passamt data per 10sec","options":{"url":"https://www.wien.gv.at/wartezeiten/passservice/wartezeiten.svc/GetWartezeiten","method":"GET","interval":10}},{"class":"element","type":"source","subtype":"http-out","label":"poll-parkpickerl","description":"poll all pickerl data per 10sec","options":{"url":"https://www.wien.gv.at/wartezeiten/parkpickerl/wartezeiten.svc/GetWartezeiten","method":"GET","interval":10}}]},{"class":"container","type":"processor","label":"processor-container-aemter","description":"source container for meldeamt, passamt, parkpickerl","elements":[{"class":"element","type":"processor","subtype":"script","label":"add-discriminator-element-meldeservice","description":"Adds origin (Meldeservice)","options":{"location":"json-add-element.groovy","sync-interval":60,"variables":{"key":"origin","value":"meldeservice"}}},{"class":"element","type":"processor","subtype":"script","label":"add-discriminator-element-passservice","description":"Adds origin (Passservice)","options":{"location":"json-add-element.groovy","sync-interval":60,"variables":{"key":"origin","value":"passservice"}}},{"class":"element","type":"processor","subtype":"script","label":"add-discriminator-element-passservice","description":"Adds origin (Packpickerl)","options":{"location":"json-add-element.groovy","sync-interval":60,"variables":{"key":"origin","value":"parkpickerlservice"}}}]},{"class":"element","type":"processor","subtype":"script","label":"enrich-with-location-data","description":"enriches payload with location data","options":{"location":"enrich-json-from-csv.groovy","sync-interval":60,"variables":{"csvFile":"file:///opt/xd-data/ma-data.csv"}}},{"class":"element","type":"sink","subtype":"map","label":"visualize-data-in-map","description":"visualize data in a kibana map","options":{"index":"smartcity","type":"waitingtimes"}}]})
   .reply(201, {"id":"e98bfee716d5"}, { 'x-powered-by': 'Express',
   'access-control-allow-origin': '*',
   vary: 'Origin, Accept-Encoding',
@@ -191,7 +191,7 @@ nock('http://xd-admin.development.svc.cluster.local:9393')
 
 
 nock('http://xd-admin.development.svc.cluster.local:9393')
-  .post('/streams/definitions', "name=development_source_http_out_c20edeaa-6aa4-4787-8d17-7bacd46f4e9d&definition=trigger%20--fixedDelay%3D10%20%7C%20http-client%20--url%3D%27%27%27http%3A%2F%2Fwww.wien.gv.at%2Fwartezeiten%2Fpassservice%2Fwartezeiten.svc%2FGetWartezeiten%27%27%27%20--httpMethod%3DGET%20%3E%20queue%3A28ff0a11-f140-4b7d-88c2-6b23aa888c3b")
+  .post('/streams/definitions', "name=development_source_http_out_c20edeaa-6aa4-4787-8d17-7bacd46f4e9d&definition=trigger%20--fixedDelay%3D10%20%7C%20http-client%20--url%3D%27%27%27https%3A%2F%2Fwww.wien.gv.at%2Fwartezeiten%2Fpassservice%2Fwartezeiten.svc%2FGetWartezeiten%27%27%27%20--httpMethod%3DGET%20%3E%20queue%3A28ff0a11-f140-4b7d-88c2-6b23aa888c3b")
   .reply(201, "", { 'x-application-context': '172.17.0.6:9393',
   'access-control-allow-origin': 'http://localhost:9889',
   'access-control-expose-headers': 'Location',
@@ -204,7 +204,7 @@ nock('http://xd-admin.development.svc.cluster.local:9393')
 
 nock('http://xd-admin.development.svc.cluster.local:9393')
   .get('/streams/definitions/development_source_http_out_c20edeaa-6aa4-4787-8d17-7bacd46f4e9d')
-  .reply(200, {"name":"development_source_http_out_c20edeaa-6aa4-4787-8d17-7bacd46f4e9d","status":"deployed","definition":"trigger --fixedDelay=10 | http-client --url='''http://www.wien.gv.at/wartezeiten/passservice/wartezeiten.svc/GetWartezeiten''' --httpMethod=GET > queue:28ff0a11-f140-4b7d-88c2-6b23aa888c3b","_links":{"self":{"href":"http://xd-admin.development.svc.cluster.local:9393/streams/development_source_http_out_c20edeaa-6aa4-4787-8d17-7bacd46f4e9d"}}}, { 'x-application-context': '172.17.0.6:9393',
+  .reply(200, {"name":"development_source_http_out_c20edeaa-6aa4-4787-8d17-7bacd46f4e9d","status":"deployed","definition":"trigger --fixedDelay=10 | http-client --url='''https://www.wien.gv.at/wartezeiten/passservice/wartezeiten.svc/GetWartezeiten''' --httpMethod=GET > queue:28ff0a11-f140-4b7d-88c2-6b23aa888c3b","_links":{"self":{"href":"http://xd-admin.development.svc.cluster.local:9393/streams/development_source_http_out_c20edeaa-6aa4-4787-8d17-7bacd46f4e9d"}}}, { 'x-application-context': '172.17.0.6:9393',
   'access-control-allow-origin': 'http://localhost:9889',
   'access-control-expose-headers': 'Location',
   pragma: 'no-cache',
@@ -241,7 +241,7 @@ nock('http://xd-admin.development.svc.cluster.local:9393')
 
 
 nock('http://xd-admin.development.svc.cluster.local:9393')
-  .post('/streams/definitions', "name=development_source_http_out_612ba56c-de99-4119-8614-0ca3c2219f22&definition=trigger%20--fixedDelay%3D10%20%7C%20http-client%20--url%3D%27%27%27http%3A%2F%2Fwww.wien.gv.at%2Fwartezeiten%2Fparkpickerl%2Fwartezeiten.svc%2FGetWartezeiten%27%27%27%20--httpMethod%3DGET%20%3E%20queue%3A9a1bec6d-423f-462b-a421-ec15f32f6bce")
+  .post('/streams/definitions', "name=development_source_http_out_612ba56c-de99-4119-8614-0ca3c2219f22&definition=trigger%20--fixedDelay%3D10%20%7C%20http-client%20--url%3D%27%27%27https%3A%2F%2Fwww.wien.gv.at%2Fwartezeiten%2Fparkpickerl%2Fwartezeiten.svc%2FGetWartezeiten%27%27%27%20--httpMethod%3DGET%20%3E%20queue%3A9a1bec6d-423f-462b-a421-ec15f32f6bce")
   .reply(201, "", { 'x-application-context': '172.17.0.6:9393',
   'access-control-allow-origin': 'http://localhost:9889',
   'access-control-expose-headers': 'Location',
@@ -254,7 +254,7 @@ nock('http://xd-admin.development.svc.cluster.local:9393')
 
 nock('http://xd-admin.development.svc.cluster.local:9393')
   .get('/streams/definitions/development_source_http_out_612ba56c-de99-4119-8614-0ca3c2219f22')
-  .reply(200, {"name":"development_source_http_out_612ba56c-de99-4119-8614-0ca3c2219f22","status":"deployed","definition":"trigger --fixedDelay=10 | http-client --url='''http://www.wien.gv.at/wartezeiten/parkpickerl/wartezeiten.svc/GetWartezeiten''' --httpMethod=GET > queue:9a1bec6d-423f-462b-a421-ec15f32f6bce","_links":{"self":{"href":"http://xd-admin.development.svc.cluster.local:9393/streams/development_source_http_out_612ba56c-de99-4119-8614-0ca3c2219f22"}}}, { 'x-application-context': '172.17.0.6:9393',
+  .reply(200, {"name":"development_source_http_out_612ba56c-de99-4119-8614-0ca3c2219f22","status":"deployed","definition":"trigger --fixedDelay=10 | http-client --url='''https://www.wien.gv.at/wartezeiten/parkpickerl/wartezeiten.svc/GetWartezeiten''' --httpMethod=GET > queue:9a1bec6d-423f-462b-a421-ec15f32f6bce","_links":{"self":{"href":"http://xd-admin.development.svc.cluster.local:9393/streams/development_source_http_out_612ba56c-de99-4119-8614-0ca3c2219f22"}}}, { 'x-application-context': '172.17.0.6:9393',
   'access-control-allow-origin': 'http://localhost:9889',
   'access-control-expose-headers': 'Location',
   pragma: 'no-cache',
@@ -266,7 +266,7 @@ nock('http://xd-admin.development.svc.cluster.local:9393')
 
 
 nock('http://xd-admin.development.svc.cluster.local:9393')
-  .post('/streams/definitions', "name=development_source_http_out_679ed4dc-c070-4fa1-9b98-51e3add29dc5&definition=trigger%20--fixedDelay%3D10%20%7C%20http-client%20--url%3D%27%27%27http%3A%2F%2Fwww.wien.gv.at%2Fwartezeiten%2Fmeldeservice%2Fwartezeiten.svc%2FGetWartezeiten%27%27%27%20--httpMethod%3DGET%20%3E%20queue%3A3bfc8b67-850b-48e0-9617-86d4462d69ef")
+  .post('/streams/definitions', "name=development_source_http_out_679ed4dc-c070-4fa1-9b98-51e3add29dc5&definition=trigger%20--fixedDelay%3D10%20%7C%20http-client%20--url%3D%27%27%27https%3A%2F%2Fwww.wien.gv.at%2Fwartezeiten%2Fmeldeservice%2Fwartezeiten.svc%2FGetWartezeiten%27%27%27%20--httpMethod%3DGET%20%3E%20queue%3A3bfc8b67-850b-48e0-9617-86d4462d69ef")
   .reply(201, "", { 'x-application-context': '172.17.0.6:9393',
   'access-control-allow-origin': 'http://localhost:9889',
   'access-control-expose-headers': 'Location',
@@ -279,7 +279,7 @@ nock('http://xd-admin.development.svc.cluster.local:9393')
 
 nock('http://xd-admin.development.svc.cluster.local:9393')
   .get('/streams/definitions/development_source_http_out_679ed4dc-c070-4fa1-9b98-51e3add29dc5')
-  .reply(200, {"name":"development_source_http_out_679ed4dc-c070-4fa1-9b98-51e3add29dc5","status":"deployed","definition":"trigger --fixedDelay=10 | http-client --url='''http://www.wien.gv.at/wartezeiten/meldeservice/wartezeiten.svc/GetWartezeiten''' --httpMethod=GET > queue:3bfc8b67-850b-48e0-9617-86d4462d69ef","_links":{"self":{"href":"http://xd-admin.development.svc.cluster.local:9393/streams/development_source_http_out_679ed4dc-c070-4fa1-9b98-51e3add29dc5"}}}, { 'x-application-context': '172.17.0.6:9393',
+  .reply(200, {"name":"development_source_http_out_679ed4dc-c070-4fa1-9b98-51e3add29dc5","status":"deployed","definition":"trigger --fixedDelay=10 | http-client --url='''https://www.wien.gv.at/wartezeiten/meldeservice/wartezeiten.svc/GetWartezeiten''' --httpMethod=GET > queue:3bfc8b67-850b-48e0-9617-86d4462d69ef","_links":{"self":{"href":"http://xd-admin.development.svc.cluster.local:9393/streams/development_source_http_out_679ed4dc-c070-4fa1-9b98-51e3add29dc5"}}}, { 'x-application-context': '172.17.0.6:9393',
   'access-control-allow-origin': 'http://localhost:9889',
   'access-control-expose-headers': 'Location',
   pragma: 'no-cache',

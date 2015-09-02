@@ -20,7 +20,8 @@
     "ws": "^0.7.1",
     "tmp": "0.0.25",
     "request": "^2.55.0",
-    "http-status": "0.1.8"
+    "http-status": "0.1.8",
+    "minimist": "1.1.1"
   },
   "engines": {
     "node": ">=0.10.0"

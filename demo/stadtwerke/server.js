@@ -15,7 +15,6 @@ var log = global.log = require('winston');
 // Setup server
 var app = express();
 var server = require('http').createServer(app);
-require('./routes')(app);
 require('./config/express')(app);
 
 // Start server

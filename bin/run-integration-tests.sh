@@ -7,6 +7,10 @@ BASEDIR=`dirname $0`
 TEST_REPORTER=${TEST_REPORTER:-spec}
 
 if [[ "$TEST_REPORTER" == "mocha-jenkins-reporter" ]]; then
+
+	# delete in casae there is a leftover
+	(cd $BASEDIR/../ && make cleanup-integration-tests)
+
 	# This branch is for jenkins
 	(cd $BASEDIR/../ && make run-integration-tests)
 
@@ -19,8 +23,13 @@ if [[ "$TEST_REPORTER" == "mocha-jenkins-reporter" ]]; then
 		echo "Pod status: $success"
 		if [[ "$success" == "Succeeded" ]]; then
 			break
+		elif [[ "$success" == "Failed" ]]; then
+			echo "Tests failed (logs below): "
+			kubectl --namespace=$RIOX_ENV logs integration-tests
+			exit 1
 		fi
 	done
+
 	# get the test result from the output
 	kubectl --namespace=$RIOX_ENV logs integration-tests | sed -n '/<testsuites/,/<\/testsuites/p' > $BASEDIR/../services/test/integration-test-report.xml
 

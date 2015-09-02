@@ -315,7 +315,7 @@ gulp.task('ui:nodemon:dev', 'start nodemon for DEV', function (done) {
 			NODE_ENV: "development",
 			PORT: 8081
 		},
-		tasks: ['ui:build:dev']
+		//tasks: ['ui:build:dev']
 	}).on('restart', function (changedFiles) {
 		if (livereload && livereload.server) {
 			util.log(util.colors.magenta('[nodemon] Reloading file via livereload: ', changedFiles));
