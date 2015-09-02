@@ -62,6 +62,9 @@ RUN gulp ui:bower && rm -rf /root/.cache /tmp/*
 # clean up
 #RUN apt-get purge -y git make g++ gcc python perl
 
+# FR: Need to do this explicitly b/c for some reason it is not installed
+RUN npm install -g riox/Mockgoose#master
+
 # now add code dirs
 ADD ./services/ /code/services/
 ADD ./web-ui/ /code/web-ui/

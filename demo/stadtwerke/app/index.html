@@ -33,19 +33,23 @@
 			$scope.esURL = "http://kibana." + window.location.hostname + "/elasticsearch/"; // TODO make configurable
 			$scope.indexName = "smartcity"; // TODO make configurable
 			$scope.typeName = "waitingtimes"; // TODO make configurable
+			$scope.typeNameTimeseries = "waitingtimesSum"; // TODO make configurable
 			$scope.idFieldNames = ["shortName","origin"]; // TODO make configurable
 			$scope.valueFieldName = "waitingTime"; // TODO make configurable
+			$scope.valueFieldNameTimeseries = "waitingTimeSum"; // TODO make configurable
 			$scope.locFieldName = "location"; // TODO make configurable
-			$scope.timeFieldName = "timestamp"; // TODO make configurable
+			$scope.timeFieldName = "Timestamp"; // TODO make configurable
 			$scope.predictionFieldName = "_timeseries_prediction"; // TODO make configurable
 			$scope.mapLabelTemplate = "<table style=\"padding-left: 5px;\"><tr><td><b>K&uuml;rzel</b></td><td>{{shortName}}</td></tr>" +
-					"<tr><td><b>Name</b></td><td>{{name}}</td></tr>" +
+					"<tr><td><b>Name</b></td><td>{{NAME}}</td></tr>" +
 					"<tr><td><b>Amtstyp</b></td><td>{{origin}}</td></tr>" +
 					"<tr><td><b>Warteschlange</b></td><td>{{waitingTime}}</td></tr></table>";
 			$scope.chartLabelTemplate = "{{timestamp.substring(0,15).replace('T','-')}} - {{time}}";
 
 			elasticsearch.getObjectIDs($scope.esURL, $scope.indexName, $scope.typeName, $scope.idFieldNames).then(function(ids) {
-				$scope.mbaIDs = ids;
+				$scope.$apply(function() {
+					$scope.mbaIDs = ids[$scope.idFieldNames[0]];
+				})
 			});
 			$scope.selectedMBA = "mba1_8";
 
@@ -64,21 +68,35 @@
 		<div class="panel panel-default">
 			<riox-table height="400px" map-markers="map.markers" map-center="map.center" time-field="timeFieldName"
 				es-index-name="indexName" es-type-name="typeName" id-field="idFieldNames" es-url="esURL"
-				columns="{address:'Adresse', isOpen:'Ge&ouml;ffnet', name:'Name', shortName:'K&uuml;rzel', time:'Zeit', origin:'Amtstyp', waitingTime:'Wartezeit'}"></riox-table>
+				columns="{ADRESSE:'Adresse', IsOpen:'Ge&ouml;ffnet', NAME:'Name', shortName:'K&uuml;rzel', Timestamp:'Zeit', origin:'Amtstyp', waitingTime:'Wartezeit'}"></riox-table>
 		</div>
+
+		<h2>Wartezeiten in Summe über alle MAs</h2>
+		<div class="panel panel-default">
+			<riox-timeseries height="100" style="height:430px; width:100%;" es-index-name="indexName" es-type-name="typeNameTimeseries"
+				es-search="[idFieldNames[1] + ':parkpickerlservice',
+							idFieldNames[1] + ':passservice',
+							idFieldNames[1] + ':meldeservice']"
+				label-template="chartLabelTemplate" titles="['Parkpickerl', 'Passamt', 'Meldeservice']"
+				value-field="valueFieldNameTimeseries" time-field="timeFieldName" es-url="esURL" show-legend="true"
+				prediction-values="predictionFieldName"></riox-timeseries>
+		</div>
+		
+		
 		<h2>Wartezeiten im Zeitverlauf</h2>
 		<div>
 		Gewähltes Amt: <select class="form-control" style="width: 150px;" ng-model="selectedMBA" ng-options="id for id in mbaIDs"></select>
 		</div>
-		<div class="panel panel-default">
+		<div class="panel panel-default" ng-show="selectedMBA">
 			<riox-timeseries height="100" style="height:430px; width:100%;" es-index-name="indexName" es-type-name="typeName"
-				es-search="[idFieldNames[0] + ':' + selectedMBA + ' ' + idFieldNames[1] + ':parkpickerlservice',
-							idFieldNames[0] + ':' + selectedMBA + ' ' + idFieldNames[1] + ':passservice',
-							idFieldNames[0] + ':' + selectedMBA + ' ' + idFieldNames[1] + ':meldeservice']"
+				es-search="[idFieldNames[0] + ':' + selectedMBA + ' AND ' + idFieldNames[1] + ':parkpickerlservice',
+							idFieldNames[0] + ':' + selectedMBA + ' AND ' + idFieldNames[1] + ':passservice',
+							idFieldNames[0] + ':' + selectedMBA + ' AND ' + idFieldNames[1] + ':meldeservice']"
 				label-template="chartLabelTemplate" titles="['Parkpickerl', 'Passamt', 'Meldeservice']"
 				value-field="valueFieldName" time-field="timeFieldName" es-url="esURL" show-legend="true"
 				prediction-values="predictionFieldName"></riox-timeseries>
 		</div>
+
 	</div>
 </body>
 </html>

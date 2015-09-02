@@ -18,7 +18,7 @@ spec:
       containers:
         - name: xd-admin
           image: riox/springxd-base:1.2.1
-          #imagePullPolicy: Always
+          imagePullPolicy: Always
           args:
             - /start-admin.sh
           ports:

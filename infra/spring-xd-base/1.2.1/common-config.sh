@@ -31,6 +31,3 @@ echo "XD_MESSAGEBUS_KAFKA_ZKADDRESS: ${XD_MESSAGEBUS_KAFKA_ZKADDRESS}"
 # Does not seem to support hot deployment
 #export XD_CUSTOMMODULE_HOME=file:///opt/spring-xd/riox-modules
 #echo "XD_CUSTOMMODULE_HOME: ${XD_CUSTOMMODULE_HOME}"
-
-export SCRIPT_DIR=file:///opt/spring-xd/riox-scripts
-echo "SCRIPT_DIR: ${SCRIPT_DIR}"

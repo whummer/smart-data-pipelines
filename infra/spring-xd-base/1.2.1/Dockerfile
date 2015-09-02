@@ -82,5 +82,8 @@ USER springxd
 RUN crontab -l | { cat; echo "*/1 * * * * /usr/local/bin/aws s3 sync s3://riox-modules /opt/spring-xd/xd/modules"; } | crontab - && \
 		crontab -l | { cat; echo "*/1 * * * * /usr/local/bin/aws s3 sync s3://riox-scripts /opt/spring-xd/riox-scripts"; } | crontab -
 
+RUN echo "scripts:" >> /opt/spring-xd/xd/config/servers.yml && \
+		echo "  dir: file:///opt/spring-xd/riox-scripts" >> /opt/spring-xd/xd/config/servers.yml
+
 WORKDIR /opt/spring-xd
 EXPOSE 9393 9000 9001 9002

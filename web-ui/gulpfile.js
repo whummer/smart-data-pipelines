@@ -1,14 +1,13 @@
 //
 // require gulp and plugins
 //
-var gulp = require('gulp-help')(require('gulp')),
+
+var gulp = global.gulp,
 	nodemon = require('gulp-nodemon'),
 	bowerFiles = require('main-bower-files'),
 	less = require('gulp-less'),
-	path = require('path'),
 	inject = require('gulp-inject'),
 	angular_filesort = require('gulp-angular-filesort'),
-	cp = require('child_process'),
 	rename = require('gulp-rename'),
 	del = require('del'),
 	vinylPaths = require('vinyl-paths'),
@@ -20,6 +19,8 @@ var gulp = require('gulp-help')(require('gulp')),
 	sourcemaps = require('gulp-sourcemaps'),
 	runSequence = require('run-sequence'),
 	babel = require('gulp-babel'),
+	browserSync = require('browser-sync').create(),
+	compress = require('compression'),
 	es = require('event-stream');
 
 //
@@ -61,22 +62,15 @@ var paths = {
 	images: SRC_DIR + '/app/components/img/**/*',
 
 	// html files / views
-	html: SRC_DIR + "/app/**/*.html",
+	html: SRC_DIR + '/app/**/*.html',
 
 	// "main" (index.html) file
 	main: SRC_DIR + '/index.tmpl.html',
 
 	// all in one concatenated and minified JS files
-	minified_js: BUILD_DIR_PROD + "/app/components/js/riox.all.min.js",
+	minified_js: BUILD_DIR_PROD + '/app/components/js/riox.all.min.js'
 
 };
-
-//
-// gulp task definitions
-//
-gulp.task('default', 'i\'m only here for the beer', function () {
-	util.log(util.colors.bold("Howdi. Nothing to expect from me. Only here for the beer!"));
-});
 
 //
 // clean output directories
@@ -96,7 +90,7 @@ gulp.task('ui:copy:dev', 'copies riox-ui sources to DEV build dir', function (do
 
 
 gulp.task('ui:copy:test', 'copies riox-ui sources to TEST build dir', function (done) {
-	copyResources(BUILD_DIR_TEST, done)
+	copyResources(BUILD_DIR_TEST, done);
 });
 
 
@@ -108,25 +102,21 @@ gulp.task('ui:copy:prod', 'copies riox-ui sources to PRODUCTION build dir', func
 // copy the resources, depends on given destination directory
 //
 function copyResources(destinationDirectory, done) {
-	util.log(util.colors.green("Copying resources from " + SRC_DIR + " to " + destinationDirectory));
+	util.log(util.colors.green('Copying resources from ' + SRC_DIR + ' to ' + destinationDirectory));
 
 	var resources = [
 		SRC_DIR + '/**',
-		'!' + "/**/*.less",
-		'!' + "/**/index.tmpl.html",
+		'!' + '/**/*.less',
+		'!' + '/**/index.tmpl.html',
 		'!' + SRC_DIR + '/app/styles/less{,/**}'
 	];
 
-	// for production build we include the minified version of the scripts, so skip the following directory
-	/*if (destinationDirectory === BUILD_DIR_PROD) {
-		resources.push('!' + SRC_DIR + '/app/components/js{,/!**}');
-	}
-*/
-	util.log(util.colors.grey("Resources to copy: " + resources));
+
+	util.log(util.colors.grey('Resources to copy: ' + resources));
 
 	gulp.src(resources)
 		.pipe(gulp.dest(destinationDirectory))
-		.on("end", function () {
+		.on('end', function () {
 			done();
 		});
 }
@@ -139,8 +129,9 @@ gulp.task('ui:less', 'compiles LESS to CSS', function () {
 });
 
 function less2css(target) {
-	console.log('Compiling LESS files to CSS (' + util.colors.magenta(paths.less_main) + ',' + target + ')');
-	return gulp.src([paths.less_main, paths.less_in_views, '!' + paths.less_includes])
+	var lessPaths = [paths.less_main, paths.less_in_views, '!' + paths.less_includes];
+	util.log(util.colors.gray('Compiling LESS files to CSS (' + util.colors.magenta(lessPaths) + ' -> ' + target + ')'));
+	return gulp.src(lessPaths)
 		.pipe(less())
 		.pipe(gulp.dest(target));
 }
@@ -210,10 +201,60 @@ function injectResources(buildDir, cssLocation, ignorePath, minified, done) {
 
 		.pipe(rename('index.html'))// rename from index.tmpl.html to index.html
 		.pipe(gulp.dest(buildDir))
-		.on("end", function () {
+		.on('end', function () {
 			if (done) done();
 		});
 }
+
+
+//
+//
+// browsersync
+//
+//
+gulp.task('ui:browsersync', function () {
+	browserSync.init({
+		logLevel: 'debug',
+		proxy: {
+			target: 'http://127.0.0.1:9090',
+			middleware: [compress()],
+			reqHeaders: function (config) {
+				return {
+					'host': 'platform.riox.io:9090'
+				};
+			}
+		}
+	});
+
+	// reload views
+	gulp.watch(paths.html, function (changed) {
+		gulp.src(changed.path, {base: SRC_DIR})
+			.pipe(gulp.dest(BUILD_DIR_DEV))
+			.on('end', function () {
+				browserSync.reload();
+			});
+	});
+
+	// reload LESS
+	gulp.watch(paths.less, function () {
+		less2css(paths.base + '/app')
+			.pipe(gulp.dest(BUILD_DIR_DEV + '/app'))
+			.on('end', function () {
+				browserSync.reload();
+			});
+	});
+
+	// reload JS
+	gulp.watch(SRC_DIR + '/app/**/*.js', function (changed) {
+		gulp.src(changed.path, {base: SRC_DIR})
+			.pipe(babel())
+			.pipe(gulp.dest(BUILD_DIR_DEV))
+			.on('end', function () {
+				browserSync.reload();
+			});
+	});
+});
+
 
 //
 //
@@ -221,24 +262,25 @@ function injectResources(buildDir, cssLocation, ignorePath, minified, done) {
 //
 //
 
-gulp.task('ui:babel:dev', function () {
+gulp.task('ui:babel:dev', 'Run babel transpiler for DEV build', function () {
 	return runBabel(BUILD_DIR_DEV);
 });
 
-gulp.task('ui:babel:test', function () {
+gulp.task('ui:babel:test', 'Run babel transpiler for TEST build', function () {
 	return runBabel(BUILD_DIR_TEST);
 });
 
-gulp.task('ui:babel:prod', function () {
+gulp.task('ui:babel:prod', 'Run babel transpiler for PROD build', function () {
 	return runBabel(BUILD_DIR_PROD);
 });
 
 function runBabel(buildDir) {
-	util.log(util.colors.green("Running BABEL for build dir " + buildDir));
+	util.log(util.colors.green('Running BABEL for build dir ' + buildDir));
 
-	return gulp.src(SRC_DIR + "/app/**/*.js")
+	return gulp
+		.src(SRC_DIR + '/app/**/*.js')
 		.pipe(babel())
-		.pipe(gulp.dest(buildDir + "/app"));
+		.pipe(gulp.dest(buildDir + '/app'));
 }
 
 
@@ -260,7 +302,7 @@ gulp.task('ui:scriptsmin', 'concatenate, minify and uglify JS script sources', f
 		.pipe(uglify({mangle: false, compress: {sequences: false}}))
 		.pipe(sourcemaps.write())
 		.pipe(gulp.dest(BUILD_DIR_PROD + '/app/components/js'))
-		.on("end", function () {
+		.on('end', function () {
 			done();
 		});
 });
@@ -282,8 +324,8 @@ function getRealScriptsPaths(baseDir) {
 // install bower files
 //
 gulp.task('ui:bower', 'install bower dependencies', function (done) {
-	runCmdSync("rm",  ['-rf', 'lib/bower_components/riox-shared'], __dirname);
-	runCmdSync("bower", ["install", "--allow-root"], __dirname);
+	runCmdSync('rm', ['-r', 'lib/bower_components/riox-shared'], __dirname);
+	runCmdSync('bower', ['install', '--allow-root'], __dirname);
 	done();
 });
 
@@ -293,47 +335,34 @@ gulp.task('ui:bower', 'install bower dependencies', function (done) {
 //
 //
 
-//
-// run dev build and serve UI via nodemon
-//
-gulp.task('ui:serve:dev', 'serve the riox-ui src using nodemon', function (done) {
-	util.log(util.colors.green("Running DEVELOPMENT build"));
-	runSequence('ui:build:dev', 'ui:nodemon:dev', done);
-});
 
 //
 // starts the DEV build with nodemon.
 //
-gulp.task('ui:nodemon:dev', 'start nodemon for DEV', function (done) {
-	util.log("Starting nodemon for DEV");
+gulp.task('ui:serve:dev', 'start nodemon for DEV', function (done) {
+	util.log('Starting nodemon for DEV');
 	nodemon({
-		script: BUILD_DIR_DEV + '/server.js', verbose: true,
-		watch: [SRC_DIR + '/**/*'],
-		ignore: [SRC_DIR + "/bower_components/**/*"],
+		verbose: true,
+		script: BUILD_DIR_DEV + '/server.js',
+		ext: 'html js',
+		watch: [SRC_DIR + '/!**!/!*'],
+		ignore: [SRC_DIR + '/bower_components/!**!/!*'],
 		env: {
-			NODE_PATH: process.env.NODE_PATH || "/opt/boxen/nodenv/versions/v0.12.7/lib/node_modules",
-			NODE_ENV: "development",
+			NODE_PATH: process.env.NODE_PATH || '/opt/boxen/nodenv/versions/v0.12.7/lib/node_modules',
+			NODE_ENV: 'development',
 			PORT: 8081
-		},
-		tasks: ['ui:build:dev']
-	}).on('restart', function (changedFiles) {
-		if (livereload && livereload.server) {
-			util.log(util.colors.magenta('[nodemon] Reloading file via livereload: ', changedFiles));
-			livereload.changed(changedFiles);
 		}
 	});
 
 	done();
-
 });
 
 //
-// livereload browser on client app changes
+// livereload via browsersync on client app changes
 //
-gulp.task('ui:livereload', 'serve the riox-ui using nodemon (with livereload)', ['ui:serve:dev'], function () {
-	util.log(util.colors.green("Starting LIVERELOAD"));
-	livereload();
-	livereload.listen();
+gulp.task('ui:livereload', 'serve the riox-ui using nodemon (with browsersync)',function (done) {
+	util.log(util.colors.green('Running DEVELOPMENT build'));
+	runSequence('ui:build:dev', 'ui:serve:dev', 'ui:browsersync', done);
 });
 
 //
@@ -346,15 +375,20 @@ gulp.task('ui:livereload', 'serve the riox-ui using nodemon (with livereload)', 
 // build DEV
 //
 gulp.task('ui:build:dev', 'create a DEVELOPMENT build of riox-ui', function (done) {
-	util.log(util.colors.green("Running DEVELOPMENT build"));
-	runSequence('ui:clean', 'ui:bower', 'ui:copy:dev', 'ui:babel:dev', 'ui:inject:dev', done);
+	util.log(util.colors.green('Running DEVELOPMENT build'));
+	runSequence('ui:bower', 'ui:copy:dev', 'ui:babel:dev', 'ui:inject:dev', done);
+});
+
+gulp.task('ui:rebuild:dev', 'create a DEVELOPMENT build of riox-ui', function (done) {
+	util.log(util.colors.green('Running DEVELOPMENT build'));
+	runSequence('ui:copy:dev', 'ui:babel:dev', 'ui:inject:dev', done);
 });
 
 //
 // build TEST
 //
 gulp.task('ui:build:test', 'create a TEST build of riox-ui', function (done) {
-	util.log(util.colors.green("Running TEST build"));
+	util.log(util.colors.green('Running TEST build'));
 	runSequence('ui:clean', 'ui:bower', 'ui:copy:test', 'ui:babel:test', 'ui:inject:test', done);
 });
 
@@ -362,7 +396,7 @@ gulp.task('ui:build:test', 'create a TEST build of riox-ui', function (done) {
 // build PROD
 //
 gulp.task('ui:build:prod', 'create a PRODUCTION build of riox-ui', function (done) {
-	util.log(util.colors.green("Running PRODUCTION build"));
+	util.log(util.colors.green('Running PRODUCTION build'));
 	runSequence('ui:clean', 'ui:bower', 'ui:copy:prod', 'ui:babel:prod', 'ui:scriptsmin', 'ui:inject:prod', done);
 });
 
