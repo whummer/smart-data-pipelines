@@ -1,4 +1,38 @@
-<div>
+<div style="position: relative; width: 100%;" id="sdpEditor">
+
+	<div class="row" style="margin-bottom: 10px">
+		<div class="col-lg-2">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5>Building Blocks</h5>
+				</div>
+				<div class="ibox-content" style="height: 500px;">
+					<div ng-include="'/app/views/sdps/sdps.nodered.palette.html'" style="height: 100%;"></div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-6">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5>Pipeline Definition</h5>
+				</div>
+				<div class="ibox-content" style="height: 500px;">
+					<div ng-include="'/app/views/sdps/sdps.nodered.canvas.html'" style="height: 100%;"></div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-4">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5>Explore &amp; Preview</h5>
+				</div>
+				<div class="ibox-content" style="height: 500px;">
+					<div ng-include="'/app/views/sdps/sdps.edit.explore.html'" style="height: 100%;"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<div class="row" style="margin-bottom: 10px">
 		<div class="col-lg-12 ">
 			<div class="ibox float-e-margins">
@@ -13,7 +47,7 @@
 
 					<!-- PIPELINE CANVAS -->
 					<!--<div ng-include="'app/views/sdps/sdps.edit.canvas.dragular.html'"></div>-->
-					<div class="dropzone pipezone" ng-include="'app/views/sdps/sdps.edit.canvas.html'"></div>
+<!-- 					<div class="dropzone pipezone" ng-include="'/app/views/sdps/sdps.edit.canvas.html'"></div> -->
 
 					<!-- PIPELINE PROPERTIES -->
 					<div class="row " style="margin-top: 5px; margin-right: 0px">
@@ -36,6 +70,7 @@
 						</div>
 						<div class="col-lg-6" style="margin-top: 20px">
 							<div class="row">
+
 								<button class="btn btn-lg btn-circle btn-danger pull-right"
 								        tooltip="Delete Pipeline"
 								        ng-click="deletePipelineAndShowList(pipeline)">
@@ -60,9 +95,14 @@
 
 								<button class="btn btn-lg btn-primary btn-circle pull-right" ng-click="submitDatapipe()"
 								        tooltip="Save Changes"
-								        style="margin-right: 10px;"
-								        style="margin-left: 10px;">
+								        style="margin-right: 10px;">
 									<i class="fa fa-floppy-o fa-lg"></i>
+								</button>
+
+								<button class="btn btn-lg btn-primary btn-circle pull-right" ng-click="previewDatapipe()"
+								        tooltip="Preview"
+								        style="margin-right: 10px;">
+									<i class="fa fa-search fa-lg"></i>
 								</button>
 
 							</div>
@@ -82,7 +122,6 @@
 								        style="margin-left: 10px;">
 									<i class="fa fa-search"></i> Show Data Pipe Definition
 								</button>
-
 
 								<button class="btn btn-primary btn-sm pull-right" ng-click="showElementSource = !showElementSource">
 									<i class="fa fa-code"></i> {{showElementSource ? 'Hide' : 'Show'}} Element Source
@@ -107,120 +146,20 @@
 
 	</div>
 
-	<!-- PIPELINE TOOLBOX -->
-	<div class="row">
-		<div class="col-lg-6">
-			<div class=" ibox float-e-margins">
-				<div class="ibox-title">
-					<h5>Pipeline Toolbox</h5>
-				</div>
-				<div class="ibox-content">
-					<div class="row">
-						<div class="pipeToolbox toolbox box box-padding col-sm-10 ">
-							<ul>
-								<li ng-repeat="template in templates"
-								    class="animated"
-								    dnd-draggable="template"
-								    dnd-effect-allowed="copy"
-								    ng-mouseenter="template.hover = true"
-								    ng-mouseleave="template.hover = false"
-								    ng-class="{pulse: template.hover}">
-
-									<div class="{{getClassForElement(template)}}">
-										<i style="margin-top: 10px" class="fa fa-2x fa-{{template.icon}}"></i><br/>
-										<span style="font-weight: 800; ">{{template.label}}</span>
-									</div>
-
-								</li>
-							</ul>
-						</div>
-
-						<div class="col-sm-2 removeElementArea animated"
-						     tooltip="Drag elements here to remove them from the datapipe or click to clear canvas"
-						     ng-mouseenter="trash_hover = true"
-						     ng-mouseleave="trash_hover = false"
-						     ng-class="{pulse: trash_hover}"
-						     dnd-list="[]"
-						     ng-click="clearCanvas()">
-							<i class="fa fa-3x fa-trash"></i><br/>
-						</div>
-
-						<div class="clearfix"></div>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<!-- ELEMENT CONFIGURATION -->
-		<div class="col-lg-6" ng-show="selectedItem">
-			<div class="ibox float-e-margins">
-				<div class="ibox-title">
-					<h5>Details for {{selectedItem.type}} <span ng-show="selectedItem.label"> &rsaquo;&rsaquo;
-						{{selectedItem.label}}
-						&lsaquo;&lsaquo;</span></h5>
-				</div>
-				<div class="ibox-content">
-
-					<form class="form">
-
-						<div class="form-group">
-							<label class="col-lg-4">Label</label>
-							<div class="col-lg-8">
-								<input class="form-control" name="label" ng-model="selectedItem.label"/>
-							</div>
-						</div>
-
-						<div class="form-group">
-							<label class="col-lg-4">Description</label>
-							<div class="col-lg-8">
-								<input class="form-control" name="description" ng-model="selectedItem.description"/>
-							</div>
-						</div>
-
-						<div class="form-group" ng-show="selectedItem.type=='source'">
-							<label class="col-lg-4">Source Type</label>
-							<div class="col-lg-8">
-								<select ng-options="s.subtype as s.subtype for s in sources"
-								        ng-model="selectedItem.subtype"
-								        class="form-control input-sm"></select>
-							</div>
-						</div>
-
-						<div class="form-group" ng-show="selectedItem.type=='processor'">
-							<label class="col-lg-4">Processor Type</label>
-							<div class="col-lg-8">
-								<select ng-options="p.subtype as p.subtype for p in processors"
-								        ng-model="selectedItem.subtype"
-								        class="form-control input-sm"></select>
-							</div>
-						</div>
-
-						<div class="form-group" ng-show="selectedItem.type=='sink'">
-							<label class="col-lg-4">Sink Type</label>
-							<div class="col-lg-8">
-								<select ng-options="s.subtype as s.subtype for s in sinks "
-								        ng-model="selectedItem.subtype"
-								        class="form-control input-sm"></select>
-							</div>
-						</div>
-
-						<div class="form-group" ng-repeat="option in getAvailableOptions(selectedItem)">
-							<label class="col-lg-4">{{option.name}}</label>
-							<div class="col-lg-8">
-								<input class="form-control" name="{{option.name}}"
-								       type="{{option.type == 'Number' ? 'number' : 'text'}}"
-								       ng-model="selectedItem.options[option.name]"/>
-							</div>
-						</div>
-
-						<div class="clearfix"></div>
-					</form>
-				</div>
-			</div>
-		</div>
-
-	</div>
-
-	<div class="clearfix"></div>
-
 </div>
+
+<style type="text/css">
+.container {
+	width: 100%;
+}
+.container.ng-scope {
+	margin: 0px;
+}
+#sdpEditor .ibox-content {
+	padding: 10px;
+}
+#sdpEditor div.row > div {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+</style>

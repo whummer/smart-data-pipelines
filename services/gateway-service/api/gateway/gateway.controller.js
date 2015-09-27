@@ -6,6 +6,7 @@ var riox = require('riox-shared/lib/api/riox-api');
 var driver = require('./driver.redx');
 var logger = require('winston');
 var LRUCache = require("lru-cache");
+var proxy = require('express-http-proxy');
 
 /* globals */
 var organizationsCache = LRUCache({
@@ -134,6 +135,24 @@ var addEndpoints = function(source, params) {
 		});
 	});
 	return prom;
+};
+
+/* PROXY METHODS */
+
+exports.proxyElasticsearch = function(req, res, next) {
+	proxy(config.elasticsearch.url, {
+	    forwardPath: function (req, res, next) {
+	    	console.log(req.url);
+	    	var user = auth.getCurrentUser(req);
+	    	var orgId = user.getDefaultOrganization()[ID];
+	    	var search = "/elasticsearch";
+	    	var index = req.url.indexOf(search) + search.length;
+	    	var url = req.url.substring(index, req.url.length);
+	    	url = url.replace(/\/ORG_ID\//, "/" + orgId + "/");
+	    	console.log(url);
+	        return url;
+	    }
+	})(req, res, next);
 };
 
 

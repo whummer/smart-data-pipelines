@@ -25,8 +25,15 @@ if (!global.servicesConfig && global.config) {
 	global.servicesConfig = global.config.services;
 }
 
+/* Add DNS caching to avoid unnecessary bursting of our DNS system */
+require('dnscache')({
+	"enable" : true,
+	"ttl" : 10, /* Very short TTL so we don't end up using outdated entries */
+	"cachesize" : 1000
+});
+
 /* any status codes >= (gte) to this one will be logged as errors */
-var STATUS_CODE_LOGERROR_START = 400;
+var STATUS_CODE_LOGERROR_START = 405; /* */
 
 var start = function (config, routes, serviceName) {
 

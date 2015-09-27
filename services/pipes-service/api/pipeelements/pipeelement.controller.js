@@ -30,14 +30,14 @@ exports.listNodeRedNodes = function (req, res, next) {
 		var result = [];
 		pipes.forEach(function(el) {
 			var tmp = {};
-			tmp[ID] = "node-red/" + el[PIPE_ELEMENT_SUBTYPE];
-			tmp[NAME] = el[PIPE_ELEMENT_SUBTYPE];
+			tmp[ID] = "node-red/" + el[TYPE];
+			tmp[NAME] = el[TYPE];
 			tmp[ENABLED] = true;
 			tmp["module"] = "node-red";
 			tmp["version"] = "0.11.1";
 			tmp["types"] =
 				[
-				 el[PIPE_ELEMENT_SUBTYPE]
+				 el[TYPE]
 				];
 			result.push(tmp);
 		});

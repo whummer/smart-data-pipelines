@@ -4,6 +4,8 @@ process.env.TEST_MODE = true;
 process.env.RIOX_ENV = process.env.RIOX_ENV || 'test';
 process.env.NODE_ENV = process.env.RIOX_ENV
 
+var riox = require('riox-shared/lib/api/riox-api');
+
 require('./pipes/deployments/springxd/mapping/test.http-out');
 require('./pipes/deployments/springxd/mapping/test.map');
 require('./pipes/deployments/springxd/mapping/test.script');

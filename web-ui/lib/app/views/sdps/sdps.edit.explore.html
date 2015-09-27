@@ -1,0 +1,47 @@
+<div style="position: relative; width: 100%; height: 100%;" id="sdpExplore">
+
+<!-- 	<riox-timeseries style="height: 300px; width: 100%;" pipe-id="'6fd1cf26a230'" pipe-node-id="'simple5'"></riox-timeseries> -->
+
+	<div ng-repeat="node in selection.nodes">
+		<div ng-show="node._def.category == 'output'">
+			<div ng-show="node.type == 'log'">
+			LOG
+			</div>
+
+			<div ng-show="node.type == 'geo-map'">
+				<riox-map-leaflet height="400px" map-markers="map.markers" map-center="map.center"
+					es-index-name="indexName" es-type-name="node.typeName" id-field="idFieldNames"
+					loc-field="locFieldName" label-template="node.labelTemplate" es-url="esURL"></riox-map-leaflet>
+			</div>
+
+			<div ng-show="node.type == 'chart'">
+				<!-- 
+				{{node.typeName}} {{node.search}} {{node.labelTemplate}} {{node.titles}} {{node.valueField}} {{node.timeField}}
+				 -->
+				<riox-timeseries style="height:430px; width:100%;" 
+					es-type-name="node.typeName" es-search="node.search"
+					label-template="node.labelTemplate" titles="node.titles"
+					value-field="node.valueField" time-field="node.timeField" 
+					show-legend="true"></riox-timeseries>
+			</div>
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+</div>
+
+<style type="text/css">
+.container {
+	width: 100%;
+}
+.container.ng-scope {
+	margin: 0px;
+}
+#sdpExplore .ibox-content {
+	padding: 10px;
+}
+#sdpExplore div.row > div {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+</style>

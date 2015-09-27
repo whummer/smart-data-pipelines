@@ -7,18 +7,18 @@ var should = require('chai').should();
 describe('source::script', function() {
 
 	it('generates a custom script tag', function(done) {
-		var args = {
-			dryrun: true,
-			next_id: 'target',
-			previous_id: 'source',
-			options: {
+		var args = {};
+		args["dryrun"] = true;
+		args[ID] = "thisID";
+		args[PARAMS] = {
 				location : 'myscript.groovy',
 				variables : {
 					'key1' : 'value1',
 					'key2' : 'value2'
 				}
-			}
 		};
+		args["previous_id"] = 'source';
+		args["next_id"] = 'target';
 
 		var modulz = require('../../../../../../api/pipes/deployments/springxd/mapping/processor/script');
 		modulz(null, args).then(stream => {

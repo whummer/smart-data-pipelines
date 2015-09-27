@@ -51,13 +51,15 @@ checkSuccess
 
 printLabel "Waiting for the Riox services to settle "
 
-# run in loop with 3 seconds sleep
+# run in loop with some seconds of sleep
+# whu: increased this loop from 30 secs to 120 secs timeout because
+# we have experienced situations where we don't actually run into the race
+# condition, but it takes a really long time for the ELB to be ready
 lb_endpoint=
-for i in `seq 1 10`;
+for i in `seq 1 40`;
 do
-	sleep 3
+	sleep 10
 	lb_endpoint=`kubectl --namespace=${RIOX_ENV} describe service gateway | grep "LoadBalancer Ingress" | awk -F':' '{ print $2 }' | xargs`
-	#echo "AWS ELB endpoint: ${lb_endpoint}"
 	if [[ "$lb_endpoint" != "" ]]; then
 		break
 	fi

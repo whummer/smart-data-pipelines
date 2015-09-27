@@ -34,13 +34,14 @@
 		"uuid": "2.0.1",
 		"readable-stream": "^2.0.0",
 		"lru-cache": "2.6.4",
+		"dnscache": "0.0.3",
 
 		"riox-shared": "file:../../riox-shared"
 	},
 	"devDependencies": {
 		"should": "^6.0.3",
 		"connect-livereload": "^0.5.3",
-		"nock": "^2.10.0"
+		"nock": "2.15.0"
 	},
 	"engines": {
 		"node": ">=0.10.0"

@@ -21,12 +21,12 @@ module.exports = {
 	},
 
 	springxdadmin: {
-		hostname: "xd-admin.development.svc.cluster.local",
+		hostname: appConfig["development"].infra.springxd.hostname,
 		port: 9393
 	},
 
 	elasticsearch: {
-		hostname: "elasticsearch.development.svc.cluster.local",
+		hostname: appConfig["development"].infra.elasticsearch.hostname,
 		port: 9300
 	},
 

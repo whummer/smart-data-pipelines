@@ -51,7 +51,7 @@ angular.module("rioxApp").controller("DataPipesCtrl", function ($scope, $log, gr
 			elements => {
 				$log.debug('Loaded %s elements', elements.length);
 				elements.forEach(function (element) {
-					switch (element.type) {
+					switch (element[CATEGORY]) {
 						case 'source' :
 							$scope.sources.push(element);
 							break;
@@ -62,7 +62,7 @@ angular.module("rioxApp").controller("DataPipesCtrl", function ($scope, $log, gr
 							$scope.processors.push(element);
 							break;
 						default:
-							throw new Error('Unexpeced element type: ' + element.type);
+							throw new Error('Unexpeced element category: ' + element[CATEGORY]);
 					}
 				});
 
@@ -117,20 +117,19 @@ angular.module("rioxApp").controller("DataPipesCtrl", function ($scope, $log, gr
 	// get the correct CSS class for given element
 	//
 	$scope.getClassForElement = function (element, size) {
-		//$log.debug('Getting class for element ', element);
-		if (element.type) {
-			return element.type == 'container' ? 'element-container' : (size ? element.type + size : element.type);
+		if (element[CATEGORY]) {
+			return element[CATEGORY] == 'container' ? 'element-container' : (size ? element.type + size : element.type);
 		} else {
 			return element.class == 'container' ? 'element-container' : 'element';
 		}
 	};
 
 	//
-	// get the font-awesome based icon for given element. Return the icon of the template if
-	// element has no subtype yet
+	// get the font-awesome based icon for given element. Return the icon 
+	// of the template if element has no type yet
 	//
 	$scope.getElementIcon = function (element) {
-		if (!element.subtype && element.icon) {
+		if (!element[TYPE] && element.icon) {
 			return element.icon;
 		}
 
@@ -140,12 +139,12 @@ angular.module("rioxApp").controller("DataPipesCtrl", function ($scope, $log, gr
 	};
 
 	function getTemplatesForElement(element) {
-		var elementsOfSelectedType = element.type == 'source' ?
-			$scope.sources : element.type == 'sink' ?
+		var elementsOfSelectedType = element[CATEGORY] == 'source' ?
+			$scope.sources : element[CATEGORY] == 'sink' ?
 			$scope.sinks : $scope.processors;
 
 		//$log.warn('selected type: ', elementsOfSelectedType)
-		return $filter('filter')(elementsOfSelectedType, {subtype: element.subtype})[0];
+		return $filter('filter')(elementsOfSelectedType, {type: element[TYPE]})[0];
 	}
 
 	//

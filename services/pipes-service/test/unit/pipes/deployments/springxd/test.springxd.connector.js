@@ -73,7 +73,7 @@ describe('springxd.connector', function() {
 			})
 			.then( stream => {
 				log.debug("Undeployed stream: ", stream.name);
-				expect(stream.status).to.equal("undeployed");
+				expect(["undeployed", "unknown"]).to.include(stream.status);
 				expect(stream.name).to.equal(streamName);
 				return stream;
 			})
@@ -105,7 +105,7 @@ describe('springxd.connector', function() {
 		springxd.findStream(streamName)
 			.catch(err => {
 				log.debug(err);
-				expect(err['logref']).to.equal("NoSuchDefinitionException");
+				expect(["NoSuchDefinitionException"]).to.include(err['logref']);
 			})
 			.done(done);
 	});
@@ -116,7 +116,7 @@ describe('springxd.connector', function() {
 		springxd.deployStream(streamName)
 			.catch(err => {
 				log.debug(err);
-				expect(err['logref']).to.equal("NoSuchDefinitionException");
+				expect(["NoSuchDefinitionException"]).to.include(err['logref']);
 			})
 			.done(done);
 	});
@@ -127,7 +127,7 @@ describe('springxd.connector', function() {
 		springxd.undeployStream(streamName)
 			.catch(err => {
 				log.debug(err);
-				expect(err['logref']).to.equal("NoSuchDefinitionException");
+				expect(["IllegalArgumentException", "NoSuchDefinitionException"]).to.include(err['logref']);
 			})
 			.done(done);
 	});

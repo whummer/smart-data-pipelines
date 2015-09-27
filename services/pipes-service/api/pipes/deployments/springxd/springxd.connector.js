@@ -12,6 +12,7 @@ const STATUS_DEPLOYING = 'deploying';
 const STATUS_DEPLOYED = 'deployed';
 const STATUS_FAILED = 'failed';
 const STATUS_UNDEPLOYED = 'undeployed';
+const STATUS_UNKNOWN = 'unknown';
 
 class SpringXdConnector {
 
@@ -23,7 +24,7 @@ class SpringXdConnector {
 
 	waitForStreamStatus(streamName, retries) {
 		log.debug('springxd.connector.waitForStreamStatus: %s', streamName);
-		if (typeof retries == undefined) {
+		if (typeof retries == "undefined") {
 			retries = 5;
 		}
 		if (retries < 0) {
@@ -31,10 +32,13 @@ class SpringXdConnector {
 			log.warn(msg);
 			return Promise.reject(msg);
 		}
+		var thisInst = this;
 		return this.findStream(streamName)
 			.then( stream => {
 				if (stream && stream.status === STATUS_DEPLOYING) {
-					return Promise.delay(2000).then(this.waitForStreamStatus(streamName, retries - 1));
+					return Promise.delay(2000).then(function() {
+						return thisInst.waitForStreamStatus(streamName, retries - 1);
+					});
 				} else {
 					return stream;
 				}
@@ -61,6 +65,8 @@ class SpringXdConnector {
 				} else if (stream.status == STATUS_FAILED) {
 					log.error('Unable to create stream \'%s\' (deploy failed). re-deploying!', streamName);
 					return this.redeployStream(streamName);
+				} else {
+					log.warn("Unexpected status of stream " + streamName + ":", stream.status)
 				}
 			})
 			.catch( err => {
@@ -86,18 +92,46 @@ class SpringXdConnector {
 			});
 	};
 
-	undeployStream(streamName) {
-		log.info('Undeploying XD stream \'%s\'', streamName);
+	undeployStream(streamName, retries) {
+		log.info('Undeploying XD stream \'%s\' with retries %s', streamName, retries);
+
+		if (typeof retries == "undefined") {
+			retries = 3;
+		}
+		if (retries < 0) {
+			let msg = util.format('Failed to undeploy stream \'%s\'.', streamName);
+			log.warn(msg);
+			return Promise.reject(msg);
+		}
 
 		let url = this.streamDeploymentsUrl + '/' + streamName;
 		log.debug('Undeploy request url: ', url);
+		var thisInst = this;
 
 		return request.delAsync(url)
-			.then( () => {
+			.then( res => {
+				//console.log(res);
+				if(res[0] && res[0].statusCode && res[0].statusCode >= 500) {
+					var body = res[0].body;
+					if(typeof body === "string") {
+						body = JSON.parse(body);
+					}
+					if( Object.prototype.toString.call(body) === '[object Array]' ) {
+					    body = body[0];
+					}
+					/* invalid stream name provided? */
+					if(body.logref == "IllegalArgumentException") {
+						return Promise.reject(body);
+					}
+					/* --> retry */
+					return Promise.delay(6000).then(function() {
+						return thisInst.undeployStream(streamName, retries - 1);
+					});
+				}
 				return this.waitForStreamStatus(streamName);
 			})
 			.then(stream => {
-				if(stream.status == STATUS_UNDEPLOYED) {
+				if(stream.status == STATUS_UNDEPLOYED || stream.status == STATUS_UNKNOWN) {
 					return stream;
 				} else {
 					return Promise.reject(stream);
@@ -124,7 +158,7 @@ class SpringXdConnector {
 
 	redeployStream(streamName, retries) {
 		log.info('springxd.connector.redeployStream: ', streamName);
-		if (typeof retries == 'undefined') {
+		if (typeof retries == "undefined") {
 			retries = 5;
 		}
 		if (retries < 0) {
@@ -141,7 +175,52 @@ class SpringXdConnector {
 			});
 	};
 
+	/**
+	 * Find a stream with a given ID.
+	 * Note: currently we need to get the full list and iterate through items (see also 'findStreamDirect' below).
+	 */
 	findStream(xdStreamId) {
+		let url = this.streamsUrl + "?page=0&size=500";
+		console.log(url);
+
+		return new Promise(function (resolve, reject) {
+			log.info('springxd.connector.findStream: ', xdStreamId);
+
+			request.getAsync(url).spread( (response, body) => {
+				//log.debug('springxd.connector.findStream - body: ', body);
+				let json = JSON.parse(body);
+				// FR: there is an open bug in bluebird b/c a 404 should actually be REJECTED and not resolved.
+				if (response.statusCode == 404) {
+					if (json.length > 0)
+						reject(json[0]);
+					else
+						reject(json);
+				} else {
+					if(json._embedded) {
+						var entries = json._embedded.streamDefinitionResourceList;
+						for(var i = 0; i < entries.length; i ++) {
+							var stream = entries[i];
+							if(stream.name == xdStreamId) {
+								return resolve(stream);
+							}
+						}
+					}
+					reject({error: "Cannot find stream: " + xdStreamId, logref: "NoSuchDefinitionException"});
+				}
+			}).catch(e => {
+				log.warn('springxd.connector.findStream - error: ', e.message);
+				reject(e);
+			});
+		});
+	};
+
+	/**
+	 * Directly access API with stream ID: http://<host>:9393/definitions/<streamId>
+	 * NOTE: method currently not supported/implemented in spring cloud data flow!
+	 * Track status here:
+	 * https://github.com/spring-cloud/spring-cloud-dataflow/blob/master/spring-cloud-dataflow-admin/src/main/java/org/springframework/cloud/dataflow/admin/controller/StreamController.java
+	 */
+	findStreamDirect(xdStreamId) {
 		let url = this.streamsUrl + '/' + xdStreamId;
 
 		return new Promise(function (resolve, reject) {
@@ -173,7 +252,11 @@ class SpringXdConnector {
 		log.debug('Delete request url: ', url);
 
 		return request.delAsync(url).spread( (response, body) => {
-			return body;
+			//console.log(response);
+			if(response.statusCode == 200) {
+				return { name: streamName };
+			}
+			return undefined;
 		});
 	};
 

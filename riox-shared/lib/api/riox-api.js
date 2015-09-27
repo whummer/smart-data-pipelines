@@ -29,6 +29,7 @@
 	g.DESCRIPTION = "description";
 	g.CREATION_DATE = "creation-date";
 	g.CREATOR_ID = "creator-id";
+	g.CATEGORY = "category";
 	g.TYPE = "type";
 	g.TYPE_ACCESS_REQUEST = "ACCESS_REQUEST";
 	g.TYPE_ACCESS_UPDATE = "ACCESS_UPDATE";
@@ -83,10 +84,10 @@
 	g.PIPE_ICON = 'icon';
 	g.ENVIRONMENT = 'envrionment';
 	g.PIPE_ELEMENTS = "elements";
-	g.PIPE_ELEMENT_SUBTYPE = "subtype";
-	g.PIPE_ELEMENT_OPTIONS = "options";
 	g.PIPE_ELEMENT_OPTION_DEFAULT = "default";
 	g.PIPE_ENVIRONMENT = "environment";
+	g.EDGES_OUT = "edges-out";
+	g.POSITION = "position";
 	g.ERROR_MESSAGE = "error-message";
 	g.VALUE_TYPE = "type";
 	g.AMOUNT = "amount";
@@ -384,49 +385,6 @@
 		return callGET(url, callback, errorCallback);
 	};
 
-	/*
-	 sh.pipes.sources = sh.get.pipes.sources = function (searchOpts, callback, errorCallback) {
-	 var url = servicesConfig.pipes.url + "/sources";
-	 if (searchOpts && typeof searchOpts.query != "undefined") {
-	 url += "/query";
-	 return callPOST(url, searchOpts, callback, errorCallback);
-	 }
-	 return callGET(url, callback, errorCallback);
-	 };
-
-	 sh.pipes.source = sh.get.pipes.source = function (id, callback, errorCallback) {
-	 if (!id) {
-	 if (callback) callback(null);
-	 return null;
-	 }
-	 return callGET(servicesConfig.pipes.url + "/sources/" + id, callback, errorCallback);
-	 };
-	 sh.pipes.consumed = function (searchOpts, callback, errorCallback) {
-	 var url = servicesConfig.pipes.url + "/consumed";
-	 return callGET(url, callback, errorCallback);
-	 };
-	 sh.pipes.provided = function (searchOpts, callback, errorCallback) {
-	 var url = servicesConfig.pipes.url + "/provided";
-	 if(searchOpts[NAME]) {
-	 url += "/by/name/" + searchOpts[NAME];
-	 }
-	 return callGET(url, callback, errorCallback);
-	 };
-	 sh.pipes.sinks = sh.get.pipes.sinks = function (searchOpts, callback, errorCallback) {
-	 var url = servicesConfig.pipesinks.url;
-	 return callGET(url, callback, errorCallback);
-	 };
-	 sh.pipes.processor = function (id, callback, errorCallback) {
-	 if (!id) {
-	 if (callback) callback(null);
-	 return null;
-	 }
-	 return callGET(servicesConfig.pipeprocessors.url + "/" + id, callback, errorCallback);
-	 };
-	 sh.pipes.processors = function (searchOpts, callback, errorCallback) {
-	 var url = servicesConfig.pipeprocessors.url;
-	 return callGET(url, callback, errorCallback);
-	 };*/
 	sh.analytics = sh.get.analytics = function (callback, errorCallback) {
 		var url = servicesConfig.analytics.url;
 		return callGET(url, callback, errorCallback);
@@ -586,62 +544,63 @@
 		var url = servicesConfig.users.url + "/me/usage";
 		return callGET(url, callback, errorCallback);
 	};
-	sh.properties = sh.get.properties = function (thingType, callback, errorCallback) {
-		var maxThings = 100;
-		if (!thingType.id) {
-			sh.thingType(thingType, function (thingTypeObj) {
-				sh.properties(thingTypeObj, callback);
-			});
-			return;
-		}
-		/* recurse into sub-types */
-		if (thingType.children) {
-			$.each(thingType.children, function (idx, el) {
-				sh.properties(el, callback);
-			});
-		}
-		if (!thingType.properties) {
-			thingType.properties = [];
-		}
-		callback(thingType.properties, thingType);
-		/* recurse into sub-properties */
-		if (thingType.properties) {
-			var recurseProps = function (prop, callback, propNamePrefix) {
-				if (prop.children) {
-					$.each(prop.children, function (idx, subProp) {
-						subProp = clone(subProp);
-						subProp.name = propNamePrefix + subProp.name;
-						callback([subProp], thingType);
-						recurseProps(subProp, callback, subProp.name + ".");
-					});
-				}
-			}
-			$.each(thingType.properties, function (idx, prop) {
-				recurseProps(prop, callback, prop.name + ".");
-			});
-		}
-	};
 
-	sh.propertiesRecursive = function (props, includeComplexProps) {
-		return doGetPropertiesRecursive(props, undefined, undefined, includeComplexProps);
-	}
-	var doGetPropertiesRecursive = function (props, result, propNamePrefix, includeComplexProps) {
-		if (!result) result = [];
-		if (!propNamePrefix) propNamePrefix = "";
-		$.each(props, function (idx, prop) {
-			if (prop.children) {
-				$.each(prop.children, function (idx, subProp) {
-					subProp = clone(subProp);
-					subProp.name = propNamePrefix + subProp.name;
-					sh.propertiesRecursive([subProp], result, subProp.name + ".", includeComplexProps);
-				});
-			}
-			if (includeComplexProps || !prop.children) {
-				result.push(prop);
-			}
-		});
-		return result;
-	};
+	// TODO remove
+//	sh.properties = sh.get.properties = function (thingType, callback, errorCallback) {
+//		var maxThings = 100;
+//		if (!thingType.id) {
+//			sh.thingType(thingType, function (thingTypeObj) {
+//				sh.properties(thingTypeObj, callback);
+//			});
+//			return;
+//		}
+//		/* recurse into sub-types */
+//		if (thingType.children) {
+//			$.each(thingType.children, function (idx, el) {
+//				sh.properties(el, callback);
+//			});
+//		}
+//		if (!thingType.properties) {
+//			thingType.properties = [];
+//		}
+//		callback(thingType.properties, thingType);
+//		/* recurse into sub-properties */
+//		if (thingType.properties) {
+//			var recurseProps = function (prop, callback, propNamePrefix) {
+//				if (prop.children) {
+//					$.each(prop.children, function (idx, subProp) {
+//						subProp = clone(subProp);
+//						subProp.name = propNamePrefix + subProp.name;
+//						callback([subProp], thingType);
+//						recurseProps(subProp, callback, subProp.name + ".");
+//					});
+//				}
+//			}
+//			$.each(thingType.properties, function (idx, prop) {
+//				recurseProps(prop, callback, prop.name + ".");
+//			});
+//		}
+//	};
+//	sh.propertiesRecursive = function (props, includeComplexProps) {
+//		return doGetPropertiesRecursive(props, undefined, undefined, includeComplexProps);
+//	}
+//	var doGetPropertiesRecursive = function (props, result, propNamePrefix, includeComplexProps) {
+//		if (!result) result = [];
+//		if (!propNamePrefix) propNamePrefix = "";
+//		$.each(props, function (idx, prop) {
+//			if (prop.children) {
+//				$.each(prop.children, function (idx, subProp) {
+//					subProp = clone(subProp);
+//					subProp.name = propNamePrefix + subProp.name;
+//					sh.propertiesRecursive([subProp], result, subProp.name + ".", includeComplexProps);
+//				});
+//			}
+//			if (includeComplexProps || !prop.children) {
+//				result.push(prop);
+//			}
+//		});
+//		return result;
+//	};
 
 	var buildQueryURL = function (baseURL, opts) {
 		if (!opts) opts = {};
@@ -950,11 +909,9 @@
 		var url = servicesConfig.pipes.url + "/" + restr[PIPE_ID] + "/restrictions";
 		return callPUT(url, restr, callback, errorCallback);
 	};
-	sh.pipe.apply = function (req, callback, errorCallback) {
-		var id = req[PIPE_ID];
-		if (!id) throw "Invalid " + PIPE_ID;
-		var url = servicesConfig.pipes.url + "/" + id + "/apply";
-		return callPOST(url, req, callback, errorCallback);
+	sh.pipe.preview = function (req, callback, errorCallback) {
+		var url = servicesConfig.pipes.url + "/deployments/preview";
+		return callPUT(url, req, callback, errorCallback);
 	};
 
 

@@ -44,6 +44,8 @@
 				objects: {}
 		};
 		$scope.timeField = $scope.timeField || "timestamp";
+		$scope.esIndexName = $scope.esIndexName || 'ORG_ID'; // TODO don't hardcode here (?)
+		$scope.esUrl = $scope.esUrl || '/api/v1/gateway/elasticsearch/'; // TODO don't hardcode here (?)
 
 		var isArray = function(someVar) {
 			return Object.prototype.toString.call( someVar ) === '[object Array]';

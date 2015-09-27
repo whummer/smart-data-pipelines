@@ -19,7 +19,7 @@ var app = {};
 describe('pipes.deployment', function() {
 
 	// TODO fix this
-	// var recorder = record('test.pipes.deployments', { 'fixtures': __dirname + '/fixtures' });
+	var recorder = record('test.pipes.deployments', { 'fixtures': __dirname + '/fixtures' });
 
 	var resources = {};
 
@@ -131,9 +131,12 @@ describe('pipes.deployment', function() {
 	});
 
 	it ('deploys a valid pipeline and its succeeds', function(done) {
-		this.timeout(75000);
+		this.timeout(2*60*1000); /* this test suite may take quite a long time */
 
-		var content = JSON.parse(fs.readFileSync(path.join(__dirname, './resources') + '/ma-vienna-pipe.js'));
+		var content = JSON.parse(fs.readFileSync(path.join(__dirname, '../../../pipes-service/examples') + '/ma-vienna-pipe.js'));
+		content = JSON.parse(JSON.stringify(content).replace(
+				/www\.wien\.gv\.at/g,
+				'integration-tests.test.svc.cluster.local:6789'));
 		if(isLocalNonKubernetesRun()) {
 			content = JSON.parse(JSON.stringify(content).replace(
 					/integration-tests\.test\.svc\.cluster\.local:6789/g,
@@ -181,7 +184,7 @@ describe('pipes.deployment', function() {
 							// check deployment status for each element
 							Promise.each(res.body[STATUS], function(element) {
 								expect(element.status).to.equal("deployed");
-								expect(element.uuid).to.exist;
+								expect(element.id).to.exist;
 							})
 							.then( function() {
 								// query elasticsearch and ensure stuff from the pipeline made it there
@@ -209,7 +212,6 @@ describe('pipes.deployment', function() {
 													log.error("Error: ", err);
 												}
 												res.status.should.equal(200);
-												// .then( function() { done() } );
 												// TODO ensure streams are really gone
 												done();
 											});

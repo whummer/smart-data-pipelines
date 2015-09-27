@@ -18,6 +18,8 @@
 
 	<link rel="stylesheet" type="text/css" href="/bower_components/angucomplete/angucomplete.css">
 	<link rel="stylesheet" type="text/css" href="/bower_components/font-awesome/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="/bower_components/bootstrap/dist/css/bootstrap.css">
+
 	<!-- bower:css -->
 	<!-- endinject -->
 	<!-- inject:css -->
@@ -32,8 +34,8 @@
 <div growl></div>
 
 <!--[if lt IE 9]>
-<script src="bower_components/es5-shim/es5-shim.js"></script>
-<script src="bower_components/json3/lib/json3.min.js"></script>
+<script src="/bower_components/es5-shim/es5-shim.js"></script>
+<script src="/bower_components/json3/lib/json3.min.js"></script>
 <![endif]-->
 
 <!-- include jquery -->
@@ -72,14 +74,17 @@ window.__patch__setRequestHeader = true;
 <!-- todo find a way to control the order without specifying explicitly -->
 <script src="/app/config.js"></script>
 <script src="/bower_components/riox-shared/lib/api/web/service-calls.js"></script>
-<script src="/bower_components/angular-dropzone/lib/angular-dropzone.js"></script>
-<script src="/bower_components/ace-builds/src-min/ace.js"></script>
+<script src="/bower_components/riox-shared/lib/widgets/util/elasticsearch.js"></script>
+<script src="/bower_components/riox-shared/lib/widgets/mapLeaflet/index.js"></script>
+<script src="/bower_components/riox-shared/lib/widgets/table/index.js"></script>
+<script src="/bower_components/riox-shared/lib/widgets/timeseries/index.js"></script>
+<!-- <script src="/bower_components/angular-dropzone/lib/angular-dropzone.js"></script> -->
+<!-- <script src="/bower_components/ace-builds/src-min/ace.js"></script> -->
 <script src="/app/components/preload/jquery-jvectormap-1.2.2.min.js"></script>
 <script src="/app/components/preload/jquery-jvectormap-world-mill-en.js"></script>
 
 <!-- inject:js -->
 <!-- endinject -->
-
 
 </body>
 </html>

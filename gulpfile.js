@@ -25,13 +25,21 @@ var gulpFiles = {
 	filesService: './services/files-service/gulpfile',
 	demoServices: './demo/gulpfile'
 }
+var depsMissing = false;
 for(var key in gulpFiles) {
-	try {
-		require(gulpFiles[key]);
-	} catch(e) {
-		//console.log(e);
-		/* dependency missing -> swallow */
+	var file = gulpFiles[key] + ".js";
+	if(fs.existsSync(file)) {
+		try {
+			require(gulpFiles[key]);
+		} catch(e) {
+			depsMissing = true;
+			//console.log(e);
+			/* dependency missing -> swallow */
+		}
 	}
+}
+if(depsMissing) {
+	console.log("WARN: Some dependencies are missing. Make sure to run 'make install-prereq' first (as root).")
 }
 
 var nodeDirs = [".", "services/test", "gateway", "gateway/ext/http-proxy",

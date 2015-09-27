@@ -1,0 +1,50 @@
+<script type="text/x-red" data-template-name="geo-map">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-file"></i> <span data-i18n="map.label.name"></span></label>
+        <input type="text" id="node-input-name" data-i18n="[placeholder]map.label.name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-index"><i class="fa fa-file"></i> <span data-i18n="map.label.index"></span></label>
+        <input type="text" id="node-input-index" data-i18n="[placeholder]map.label.index">
+    </div>
+    <div class="form-row">
+        <label for="node-input-typeName"><i class="fa fa-file"></i> <span data-i18n="map.label.typeName"></span></label>
+        <input type="text" id="node-input-typeName" data-i18n="[placeholder]map.label.typeName">
+    </div>
+    <div class="form-tips" id="spawnTip"><span data-i18n="[html]map.tip"></span></div>
+</script>
+
+<script type="text/x-red" data-help-name="geo-map">
+    <p>Display results on a geographical map</p>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('geo-map',{
+        category: 'output',
+        color: "lightyellow",
+        defaults: {
+			"name": {value:""},
+			"index": {value:"", required:true},
+			"typeName": {value:"", required:true}
+        },
+        inputs: 1,
+        outputs: 0,
+        icon: "swap.png",
+        align: "right",
+        label: function() {
+			return this.name || "Display Map";
+        },
+        labelStyle: function() {
+            return this.url?"node_label_italic":"";
+        }
+    });
+</script>
+
+<script type="text/javascript">
+	var locales = {
+			"map.label.name": "Name",
+			"map.label.index": "Elasticsearch Index",
+			"map.label.typeName": "Elasticsearch Type"
+	};
+	i18n.addResources('en-US', 'node-red', locales);
+</script>

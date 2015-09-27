@@ -1,6 +1,5 @@
 'use strict';
 
-// var PipeProcessor = require('./pipeprocessor.model.js');
 var auth = require('riox-services-base/lib/auth/auth.service');
 var riox = require('riox-shared/lib/api/riox-api');
 var errors = require('riox-services-base/lib/util/errors');
@@ -8,7 +7,9 @@ var util = require('util');
 var Promise = require('bluebird');
 var log = global.log;
 
-var SpringXdDeployer = require('./springxd/springxd.deployer');
+//var Deployer = require('./springxd/springxd.deployer');
+var Deployer = require('./springcdf/springcdf.deployer');
+
 var Pipe = require('../pipe.model').Model;
 var PipeDeployment = require('./deployment.model').Model;
 
@@ -26,9 +27,12 @@ exports.findById = function (req, res, next) {
 };
 
 exports.create = function (req, res) {
-	log.debug("deployments.controller.create: ", JSON.stringify(req.body));
-	let pipeId = req.body[PIPE_ID];
-	let environment = req.body[PIPE_ENVIRONMENT] || 'development';
+	var user = auth.getCurrentUser(req);
+	var deployer = new Deployer(); // TODO connect to responsible server
+	var server = getResponsibleServer(req);
+	var pipeId = req.body[ID];
+
+	log.debug("deployments.controller.create: ", JSON.stringify(pipe));
 
 	// handle missing pipeline ID
 	if (!pipeId) {
@@ -38,40 +42,46 @@ exports.create = function (req, res) {
 		return res.json(400, error);
 	}
 
-	log.debug("Looking up pipe with id '%s' ...", pipeId);
-	Pipe.findByIdQ(pipeId)
-		.then( pipe => {
-			log.debug("Pipe with id '%s' and name '%s' found in DB", pipe._id, pipe.name);
-			// log.debug("pipe definition: %s", JSON.stringify(result));
-			return new SpringXdDeployer().deploy(pipe, environment);
-		})
-		.then( deploymentStatus => {
+	Pipe.findByIdQ(pipeId).then(pipe => {
+		log.debug('Found pipe with ID %s', pipeId);
+		return doDeploy(deployer, server.environment, pipe, req, res);
+	}).catch(error => {
+		log.error('Cannot load pipe by ID "%s": ', error);
+		return next(errors.NotFoundError('No such pipe: ', pipeId));
+	});
+};
+
+exports.preview = function(req, res) {
+	var server = getResponsibleServer(req);
+	var user = auth.getCurrentUser(req);
+	var deployer = new Deployer(server.hostname, server.port, user);
+	var pipe = req.body;
+	return doDeploy(deployer, server.environment, pipe, req, res);
+};
+
+var doDeploy = function(deployer, environment, pipe, req, res) {
+	log.debug("Deploy pipe with ID '%s' and name '%s'", pipe._id, pipe.name);
+	// log.debug("pipe definition: %s", JSON.stringify(result));
+	return deployer.
+		deploy(pipe, environment).
+		then( deploymentStatus => {
 			let deployment = new PipeDeployment();
 			let user = auth.getCurrentUser(req);
-			deployment[PIPE_ID] = pipeId;
+			deployment[PIPE_ID] = pipe[ID];
 			deployment[PIPE_ENVIRONMENT] = environment;
 			deployment[CREATOR_ID] = user[ID];
 			deployment[STATUS] = deploymentStatus;
+			log.debug("Done deployment", deployment);
+			res.json(deployment);
 			return deployment;
-		})
-		.then( deployment => {
-
-			deployment.saveQ().then(savedDeployment => {
-				log.info('Saved deployment with ID: ', savedDeployment.id);
-				res.setHeader('Location', req.getUrl() + '/' + savedDeployment.id);
-				return res.json(201, { "id" : savedDeployment.id });
-			}).catch(error => {
-				return validationError(error, next);
-			});
-
-		})
-		.catch( err => {
-			log.debug('Error deploying pipe \'%s\' does not exist: ', pipeId, err);
-			var error = {};
-			error[ERROR_MESSAGE] = util.format("Pipe with id '%s' not found.", pipeId)
-			res.json(404, error);
+		}).
+		catch( error => {
+			log.debug("Deployment error", error);
+			res.status(500);
+			res.json({error: error});
 		});
 };
+
 
 exports.listAll = function (req, res, next) {
 	log.debug("deployments.controller.listAll: ", JSON.stringify(req.body));
@@ -113,7 +123,7 @@ exports.delete = function (req, res, next) {
 
 	PipeDeployment.findByIdQ(id)
 		.then( deployment => {
-			return new SpringXdDeployer().undeploy(deployment);
+			return new Deployer().undeploy(deployment);
 		})
 		.then( status => {
 			log.debug("Status: ", status);
@@ -131,8 +141,17 @@ exports.delete = function (req, res, next) {
 
 
 
-// helpers
-//
+/* HELPER METHODS */
+
 var validationError = function (err, next) {
 	return next(errors.UnprocessableEntity("You passed a broken object", err));
+};
+
+var getResponsibleServer = function(req) {
+	// TODO;
+	return {
+		hostname: "localhost",
+		port: 9393,
+		environment: process.env.RIOX_ENV
+	};
 };

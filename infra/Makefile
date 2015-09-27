@@ -24,13 +24,15 @@ build-images:
 	(cd hyperkube && make build)
 	(cd spring-xd-base && make build)
 	(cd kafka && make build)
-	(cd statsd && make build)
+	(cd nginx && make build)
+	#(cd statsd && make build)
 
 push-images:
 	(cd hyperkube && make push)
 	(cd spring-xd-base && make push)
 	(cd kafka && make push)
-	(cd statsd && make push)
+	(cd nginx && make push)
+	#(cd statsd && make push)
 
 deploy-k8s:
 	$(compose) -f k8s.yml up -d

@@ -1,6 +1,11 @@
 var nock = require('nock');
+var starters = require('../../util/service.starters');
 
-nock('http://localhost:3001')
+var pipesService = starters.startPipesService();
+var usersService = starters.startUsersService();
+var orgsService = starters.startOrganizationsService();
+
+nock('http://localhost:' + usersService.port)
   .post('/api/v1/users/auth/local', {"email":"test1@example.com","password":"test123"})
   .reply(200, {"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOiJlMTk2OTk2ZTEyZDMiLCJpYXQiOjE0NDAxNzAzNDgsImV4cCI6MTQ0MDQyOTU0OH0.ZrRpLTlDgx4wz40fqWgZm5sJpUBrZtYE2vizk_blQYc"}, { 'x-powered-by': 'Express',
   'access-control-allow-origin': '*',
@@ -11,7 +16,7 @@ nock('http://localhost:3001')
   connection: 'close' });
 
 
-nock('http://localhost:3001')
+nock('http://localhost:' + usersService.port)
   .post('/api/v1/users/auth/local', {"email":"test2@example.com","password":"test123"})
   .reply(200, {"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOiJlNjk0MGE1YWRkNDQiLCJpYXQiOjE0NDAxNzAzNDksImV4cCI6MTQ0MDQyOTU0OX0.aofpB34kYJNCBe-jeYAqpGLWPcIuzp3ac4jePpSKOHE"}, { 'x-powered-by': 'Express',
   'access-control-allow-origin': '*',
@@ -22,7 +27,7 @@ nock('http://localhost:3001')
   connection: 'close' });
 
 
-nock('http://localhost:3001')
+nock('http://localhost:' + usersService.port)
   .get('/api/v1/users/me')
   .reply(200, {"name":"test1","email":"test1@example.com","_id":"e196996e12d3","__v":0,"role":"user"}, { 'x-powered-by': 'Express',
   'access-control-allow-origin': '*',
@@ -34,7 +39,7 @@ nock('http://localhost:3001')
   connection: 'close' });
 
 
-nock('http://localhost:3001')
+nock('http://localhost:' + usersService.port)
   .get('/api/v1/users/me')
   .reply(200, {"name":"test2","email":"test2@example.com","_id":"e6940a5add44","__v":0,"role":"user"}, { 'x-powered-by': 'Express',
   'access-control-allow-origin': '*',
@@ -46,7 +51,7 @@ nock('http://localhost:3001')
   connection: 'close' });
 
 
-nock('http://localhost:3001')
+nock('http://localhost:' + orgsService.port)
   .get('/api/v1/organizations/default')
   .reply(200, {"__v":0,"name":"Default Organization","creator-id":"e196996e12d3","image-data":[],"domain":["37a8cb2ebb32"],"_id":"72ec7fb15776","id":"72ec7fb15776"}, { 'x-powered-by': 'Express',
   'access-control-allow-origin': '*',
@@ -58,7 +63,7 @@ nock('http://localhost:3001')
   connection: 'close' });
 
 
-nock('http://localhost:3001')
+nock('http://localhost:' + orgsService.port)
   .get('/api/v1/organizations/default')
   .reply(200, {"__v":0,"name":"Default Organization","creator-id":"e6940a5add44","image-data":[],"domain":["a776ea4f935b"],"_id":"e9cde978fec4","id":"e9cde978fec4"}, { 'x-powered-by': 'Express',
   'access-control-allow-origin': '*',
@@ -70,7 +75,7 @@ nock('http://localhost:3001')
   connection: 'close' });
 
 
-nock('http://localhost:3000')
+nock('http://localhost:' + pipesService.port)
   .post('/api/v1/pipes/deployments')
   .reply(400, {"error":"Invalid (empty) request body"}, { 'x-powered-by': 'Express',
   'access-control-allow-origin': '*',
@@ -81,7 +86,7 @@ nock('http://localhost:3000')
   connection: 'close' });
 
 
-nock('http://localhost:3000')
+nock('http://localhost:' + pipesService.port)
   .post('/api/v1/pipes/deployments', "this-is-not-valid-json")
   .reply(400, {"message":"invalid json"}, { 'x-powered-by': 'Express',
   'access-control-allow-origin': '*',
@@ -92,7 +97,7 @@ nock('http://localhost:3000')
   connection: 'close' });
 
 
-nock('http://localhost:3000')
+nock('http://localhost:' + pipesService.port)
   .post('/api/v1/pipes/deployments', {"pipe-id":"doesnotexist"})
   .reply(404, {"error-message":"Pipe with id 'doesnotexist' not found."}, { 'x-powered-by': 'Express',
   'access-control-allow-origin': '*',
@@ -103,12 +108,12 @@ nock('http://localhost:3000')
   connection: 'close' });
 
 
-nock('http://localhost:3000')
+nock('http://localhost:' + pipesService.port)
   .post('/api/v1/pipes', {"name":"WartezeitenVisulationzPipe","description":"my cool datapipe","elements":[{"class":"container","type":"source","label":"source-container-aemter","description":"source container for meldeamt, passamt, parkpickerl","elements":[{"class":"element","type":"source","subtype":"http-out","label":"poll-meldeamt","description":"poll all meldeamt data per 10sec","options":{"url":"https://www.wien.gv.at/wartezeiten/meldeservice/wartezeiten.svc/GetWartezeiten","method":"GET","interval":10}},{"class":"element","type":"source","subtype":"http-out","label":"poll-passamt","description":"poll all passamt data per 10sec","options":{"url":"https://www.wien.gv.at/wartezeiten/passservice/wartezeiten.svc/GetWartezeiten","method":"GET","interval":10}},{"class":"element","type":"source","subtype":"http-out","label":"poll-parkpickerl","description":"poll all pickerl data per 10sec","options":{"url":"https://www.wien.gv.at/wartezeiten/parkpickerl/wartezeiten.svc/GetWartezeiten","method":"GET","interval":10}}]},{"class":"container","type":"processor","label":"processor-container-aemter","description":"source container for meldeamt, passamt, parkpickerl","elements":[{"class":"element","type":"processor","subtype":"script","label":"add-discriminator-element-meldeservice","description":"Adds origin (Meldeservice)","options":{"location":"json-add-element.groovy","sync-interval":60,"variables":{"key":"origin","value":"meldeservice"}}},{"class":"element","type":"processor","subtype":"script","label":"add-discriminator-element-passservice","description":"Adds origin (Passservice)","options":{"location":"json-add-element.groovy","sync-interval":60,"variables":{"key":"origin","value":"passservice"}}},{"class":"element","type":"processor","subtype":"script","label":"add-discriminator-element-passservice","description":"Adds origin (Packpickerl)","options":{"location":"json-add-element.groovy","sync-interval":60,"variables":{"key":"origin","value":"parkpickerlservice"}}}]},{"class":"element","type":"processor","subtype":"script","label":"enrich-with-location-data","description":"enriches payload with location data","options":{"location":"enrich-json-from-csv.groovy","sync-interval":60,"variables":{"csvFile":"file:///opt/xd-data/ma-data.csv"}}},{"class":"element","type":"sink","subtype":"map","label":"visualize-data-in-map","description":"visualize data in a kibana map","options":{"index":"smartcity","type":"waitingtimes"}}]})
   .reply(201, {"id":"e98bfee716d5"}, { 'x-powered-by': 'Express',
   'access-control-allow-origin': '*',
   vary: 'Origin, Accept-Encoding',
-  location: 'http://localhost:3000/api/v1/pipes/e98bfee716d5',
+  location: 'http://localhost:'  + pipesService.port + '/api/v1/pipes/e98bfee716d5',
   'content-type': 'application/json',
   'content-length': '21',
   date: 'Fri, 21 Aug 2015 15:19:09 GMT',
@@ -315,7 +320,7 @@ nock('http://xd-admin.development.svc.cluster.local:9393')
   server: 'Jetty(8.1.14.v20131031)' });
 
 
-nock('http://localhost:3000')
+nock('http://localhost:' + pipesService.port)
   .post('/api/v1/pipes/deployments', {"pipe-id":"e98bfee716d5"})
   .reply(201, "", { 'x-powered-by': 'Express',
   'access-control-allow-origin': '*',
