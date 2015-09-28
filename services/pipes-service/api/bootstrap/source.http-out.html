@@ -1,0 +1,41 @@
+<script type="text/x-red" data-template-name="http-out">
+    <div class="form-row">
+        <label for="node-input-url"><i class="fa fa-file"></i> <span data-i18n="http-out.label.url"></span></label>
+        <input type="text" id="node-input-url" data-i18n="[placeholder]http-out.label.url">
+    </div>
+    <div class="form-row">
+        <label for="node-input-method"><i class="fa fa-file"></i> <span data-i18n="http-out.label.method"></span></label>
+        <input type="text" id="node-input-method" data-i18n="[placeholder]http-out.label.method">
+    </div>
+    <div class="form-row">
+        <label for="node-input-interval"><i class="fa fa-file"></i> <span data-i18n="http-out.label.interval"></span></label>
+        <input type="text" id="node-input-interval" data-i18n="[placeholder]http-out.label.interval">
+    </div>
+    <div class="form-tips" id="spawnTip"><span data-i18n="[html]http-out.tip"></span></div>
+</script>
+
+<script type="text/x-red" data-help-name="http-out">
+    <p>Polls an outbound HTTP source</p>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('http-out',{
+        category: 'input',
+        color:"darksalmon",
+        defaults: {
+        	url: {value:"",required:true},
+            method: {value:"",required:true},
+            interval: {value:"",required:true}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "arrow-in.png",
+        align: "right",
+        label: function() {
+            return this.url;
+        },
+        labelStyle: function() {
+            return this.url?"node_label_italic":"";
+        }
+    });
+</script>

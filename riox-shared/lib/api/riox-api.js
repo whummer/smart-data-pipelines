@@ -124,6 +124,7 @@
 	g.ENDPOINT = "endpoint";
 	g.BACKEND_ENDPOINTS = "backends";
 	g.VISIBLE = "visible";
+	g.ENABLED = "enabled";
 	g.INPUT = "input";
 	g.OUTPUT = "output";
 	g.PAYLOAD = "payload";
@@ -167,6 +168,7 @@
 	g.MSGTYPE_SUBSCRIBE = "SUBSCRIBE";
 	g.MSGTYPE_DATA = "DATA";
 	g.METRIC_REQUESTS = "REQUESTS";
+	g.HTML = "html";
 
 
 	var shareHook = (typeof window != "undefined") ? window : global;

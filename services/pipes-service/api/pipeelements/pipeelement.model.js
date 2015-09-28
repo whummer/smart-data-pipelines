@@ -27,6 +27,7 @@ pipeElementSchema[CREATION_DATE] = {type: Date, default: Date.now};
 pipeElementSchema[DESCRIPTION] = String;
 pipeElementSchema[PIPE_ICON] = String;
 pipeElementSchema[TYPE] = {type: String, validator: pipeElementTypeValidator};
+pipeElementSchema[HTML] = String;
 pipeElementSchema[PIPE_ELEMENT_SUBTYPE] = String;
 pipeElementSchema[PIPE_ELEMENT_OPTIONS] = [PipeElementOptionSchema];
 
