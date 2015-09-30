@@ -28,6 +28,10 @@ module.exports = {
 		url: appConfig["test"].infra.kibana.url
 	},
 
+	nginx: {
+		url: appConfig["test"].infra.nginx.url
+	},
+
 	services: appConfig["test"].services,
 	
 	seedDB: true

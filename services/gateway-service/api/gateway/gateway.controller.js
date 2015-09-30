@@ -2,7 +2,8 @@
 
 var auth = require('riox-services-base/lib/auth/auth.service');
 var riox = require('riox-shared/lib/api/riox-api');
-var driver = require('./driver.redis');
+//var driver = require('./driver.redis');
+var driver = require('./driver.redx');
 var logger = require('winston');
 var LRUCache = require("lru-cache");
 
@@ -78,6 +79,8 @@ var isArray = function(obj) {
 
 var applySource = function(sourceObj, params, resolve, reject) {
 	if(!sourceObj[OPERATIONS]) sourceObj[OPERATIONS] = [];
+
+	//console.log("sourceObj", sourceObj);
 
 	var promOuter = new Promise(function(resolve, reject) {
 

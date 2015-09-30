@@ -64,7 +64,7 @@ cleanup-integration-tests:
 .PHONY: deploy-services undeploy-services scaledown-services render-template
 
 render-template:
-	(cd gateway && ../util/templater.sh k8s.tmpl.yml > k8s.yml)
+	#(cd gateway && ../util/templater.sh k8s.tmpl.yml > k8s.yml)
 	(cd web-ui && ../util/templater.sh k8s.tmpl.yml > k8s.yml)
 	(cd services/analytics-service && ../../util/templater.sh k8s.tmpl.yml > k8s.yml)
 	(cd services/files-service && ../../util/templater.sh k8s.tmpl.yml > k8s.yml)
@@ -83,7 +83,7 @@ deploy-services: render-template
 	(cd services/access-service && kubectl create -f k8s.yml --namespace=${RIOX_ENV})
 	(cd services/gateway-service && kubectl create -f k8s.yml --namespace=${RIOX_ENV})
 	(cd services/pricing-service && kubectl create -f k8s.yml --namespace=${RIOX_ENV})
-	(cd gateway && kubectl create -f k8s.yml --namespace=${RIOX_ENV})
+	#(cd gateway && kubectl create -f k8s.yml --namespace=${RIOX_ENV})
 
 replace-rc: render-template
 	(cd services/users-service && kubectl replace -f k8s.yml --namespace=${RIOX_ENV})
@@ -94,13 +94,13 @@ replace-rc: render-template
 	(cd services/access-service && kubectl replace -f k8s.yml --namespace=${RIOX_ENV})
 	(cd services/gateway-service && kubectl replace -f k8s.yml --namespace=${RIOX_ENV})
 	(cd services/pricing-service && kubectl replace -f k8s.yml --namespace=${RIOX_ENV})
-	(cd gateway && kubectl replace -f k8s.yml --namespace=${RIOX_ENV})
+	#(cd gateway && kubectl replace -f k8s.yml --namespace=${RIOX_ENV})
 
 rolling-update:
 	kubectl rolling-update --namespace=${RIOX_ENV} users-service --image=riox/hyperriox:${IMAGE_VERSION}
 	kubectl rolling-update --namespace=${RIOX_ENV} analytics-service --image=riox/hyperriox:${IMAGE_VERSION}
 	kubectl rolling-update --namespace=${RIOX_ENV} files-service --image=riox/hyperriox:${IMAGE_VERSION}
-	kubectl rolling-update --namespace=${RIOX_ENV} gateway --image=riox/hyperriox:${IMAGE_VERSION}
+	#kubectl rolling-update --namespace=${RIOX_ENV} gateway --image=riox/hyperriox:${IMAGE_VERSION}
 	kubectl rolling-update --namespace=${RIOX_ENV} riox-ui --image=riox/hyperriox:${IMAGE_VERSION}
 	kubectl rolling-update --namespace=${RIOX_ENV} pipes-service --image=riox/hyperriox:${IMAGE_VERSION}
 	kubectl rolling-update --namespace=${RIOX_ENV} access-service --image=riox/hyperriox:${IMAGE_VERSION}
@@ -109,7 +109,7 @@ rolling-update:
 
 scaledown-services:
 	kubectl scale --replicas=0 rc users-service --namespace=${RIOX_ENV}
-	kubectl scale --replicas=0 rc gateway --namespace=${RIOX_ENV}
+	#kubectl scale --replicas=0 rc gateway --namespace=${RIOX_ENV}
 	kubectl scale --replicas=0 rc riox-ui --namespace=${RIOX_ENV}
 	kubectl scale --replicas=0 rc analytics-service --namespace=${RIOX_ENV}
 	kubectl scale --replicas=0 rc files-service --namespace=${RIOX_ENV}
@@ -120,7 +120,7 @@ scaledown-services:
 
 scaleup-services:
 	kubectl scale --replicas=2 rc users-service --namespace=${RIOX_ENV}
-	kubectl scale --replicas=2 rc gateway --namespace=${RIOX_ENV}
+	#kubectl scale --replicas=2 rc gateway --namespace=${RIOX_ENV}
 	kubectl scale --replicas=2 rc riox-ui --namespace=${RIOX_ENV}
 	kubectl scale --replicas=2 rc analytics-service --namespace=${RIOX_ENV}
 	kubectl scale --replicas=2 rc files-service --namespace=${RIOX_ENV}
@@ -131,7 +131,7 @@ scaleup-services:
 
 undeploy-services:
 	-(cd services/users-service && kubectl stop -f k8s.yml --namespace=${RIOX_ENV})
-	-(cd gateway && kubectl stop -f k8s.yml --namespace=${RIOX_ENV})
+	#-(cd gateway && kubectl stop -f k8s.yml --namespace=${RIOX_ENV})
 	-(cd web-ui && kubectl stop -f k8s.yml --namespace=${RIOX_ENV})
 	-(cd services/analytics-service && kubectl stop -f k8s.yml --namespace=${RIOX_ENV})
 	-(cd services/files-service && kubectl stop -f k8s.yml --namespace=${RIOX_ENV})

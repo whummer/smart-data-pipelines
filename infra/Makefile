@@ -51,6 +51,7 @@ deploy-services:
 	(cd spring-xd-container && make deploy-standalone)
 	(cd elasticsearch && make deploy-standalone)
 	(cd kibana && make deploy)
+	(cd nginx && make deploy)
 	#(cd statsd && make deploy)
 
 undeploy-services:
@@ -63,6 +64,7 @@ undeploy-services:
 	-(cd spring-xd-container && make undeploy-standalone)
 	-(cd elasticsearch && make undeploy-standalone)
 	-(cd kibana && make undeploy)
+	-(cd nginx && make undeploy)
 	#(cd statsd && make undeploy)
 
 # ATTENTION: Use with caution. Stops and removes ALL docker container
