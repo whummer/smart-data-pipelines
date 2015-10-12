@@ -1,6 +1,6 @@
 .label {
-  background-color: #d1dade;
-  color: #5e5e5e;
+  background-color: #D1DADE;
+  color: #5E5E5E;
   font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 10px;
   font-weight: 600;
@@ -8,8 +8,8 @@
   text-shadow: none;
 }
 .badge {
-  background-color: #d1dade;
-  color: #5e5e5e;
+  background-color: #D1DADE;
+  color: #5E5E5E;
   font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 11px;
   font-weight: 400;
@@ -40,7 +40,7 @@
 }
 .label-danger,
 .badge-danger {
-  background-color: #ed5565;
+  background-color: #ED5565;
   color: #FFFFFF;
 }
 .label-info,
@@ -237,7 +237,7 @@ ol.unstyled {
 .footer {
   background: none repeat scroll 0 0 white;
   border-top: 1px solid #e7eaec;
-  color: #2f4050;
+  color: #2F4050;
   bottom: 0;
   left: 0;
   padding: 10px 20px;
@@ -333,7 +333,7 @@ body.body-small .footer.fixed {
   -moz-border-right-colors: none;
   -moz-border-top-colors: none;
   background: none;
-  border-color: #dddddd #dddddd rgba(0, 0, 0, 0);
+  border-color: #DDDDDD #DDDDDD rgba(0, 0, 0, 0);
   border-bottom: #f3f3f4;
   border-image: none;
   border-style: solid;
@@ -602,7 +602,7 @@ table.table-mail tr td {
   color: #ffffff;
 }
 .red-bg {
-  background-color: #ed5565;
+  background-color: #ED5565;
   color: #ffffff;
 }
 .black-bg {
@@ -640,11 +640,11 @@ table.table-mail tr td {
   color: #ffffff;
 }
 .panel-danger {
-  border-color: #ed5565;
+  border-color: #ED5565;
 }
 .panel-danger > .panel-heading {
-  background-color: #ed5565;
-  border-color: #ed5565;
+  background-color: #ED5565;
+  border-color: #ED5565;
   color: #ffffff;
 }
 .progress-bar {
@@ -676,7 +676,7 @@ table.table-mail tr td {
   background-color: #f8ac59;
 }
 .progress-bar-danger {
-  background-color: #ed5565;
+  background-color: #ED5565;
 }
 .panel-title {
   font-size: inherit;
@@ -705,7 +705,7 @@ table.table-mail tr td {
   color: #f8ac59;
 }
 .text-danger {
-  color: #ed5565;
+  color: #ED5565;
 }
 .text-muted {
   color: #888888;
@@ -1003,7 +1003,7 @@ body.modal-open {
   color: #f8ac59;
 }
 .btn-danger.btn-outline {
-  color: #ed5565;
+  color: #ED5565;
 }
 .btn-primary.btn-outline:hover,
 .btn-success.btn-outline:hover,
@@ -1199,8 +1199,8 @@ fieldset[disabled] .btn-warning.active {
   border-color: #f9b66d;
 }
 .btn-danger {
-  background-color: #ed5565;
-  border-color: #ed5565;
+  background-color: #ED5565;
+  border-color: #ED5565;
   color: #FFFFFF;
 }
 .btn-danger:hover,
@@ -1353,40 +1353,40 @@ button.dim:active {
   top: 3px;
 }
 button.btn-primary.dim {
-  box-shadow: inset 0px 0px 0px #66838d, 0px 5px 0px 0px #66838d, 0px 10px 5px #999999;
+  box-shadow: inset 0px 0px 0px #66838d, 0px 5px 0px 0px #66838d, 0px 10px 5px #999;
 }
 button.btn-primary.dim:active {
-  box-shadow: inset 0px 0px 0px #66838d, 0px 2px 0px 0px #66838d, 0px 5px 3px #999999;
+  box-shadow: inset 0px 0px 0px #66838d, 0px 2px 0px 0px #66838d, 0px 5px 3px #999;
 }
 button.btn-default.dim {
-  box-shadow: inset 0px 0px 0px #b3b3b3, 0px 5px 0px 0px #b3b3b3, 0px 10px 5px #999999;
+  box-shadow: inset 0px 0px 0px #b3b3b3, 0px 5px 0px 0px #b3b3b3, 0px 10px 5px #999;
 }
 button.btn-default.dim:active {
-  box-shadow: inset 0px 0px 0px #b3b3b3, 0px 2px 0px 0px #b3b3b3, 0px 5px 3px #999999;
+  box-shadow: inset 0px 0px 0px #b3b3b3, 0px 2px 0px 0px #b3b3b3, 0px 5px 3px #999;
 }
 button.btn-warning.dim {
-  box-shadow: inset 0px 0px 0px #f79d3c, 0px 5px 0px 0px #f79d3c, 0px 10px 5px #999999;
+  box-shadow: inset 0px 0px 0px #f79d3c, 0px 5px 0px 0px #f79d3c, 0px 10px 5px #999;
 }
 button.btn-warning.dim:active {
-  box-shadow: inset 0px 0px 0px #f79d3c, 0px 2px 0px 0px #f79d3c, 0px 5px 3px #999999;
+  box-shadow: inset 0px 0px 0px #f79d3c, 0px 2px 0px 0px #f79d3c, 0px 5px 3px #999;
 }
 button.btn-info.dim {
-  box-shadow: inset 0px 0px 0px #1eacae, 0px 5px 0px 0px #1eacae, 0px 10px 5px #999999;
+  box-shadow: inset 0px 0px 0px #1eacae, 0px 5px 0px 0px #1eacae, 0px 10px 5px #999;
 }
 button.btn-info.dim:active {
-  box-shadow: inset 0px 0px 0px #1eacae, 0px 2px 0px 0px #1eacae, 0px 5px 3px #999999;
+  box-shadow: inset 0px 0px 0px #1eacae, 0px 2px 0px 0px #1eacae, 0px 5px 3px #999;
 }
 button.btn-success.dim {
-  box-shadow: inset 0px 0px 0px #1872ab, 0px 5px 0px 0px #1872ab, 0px 10px 5px #999999;
+  box-shadow: inset 0px 0px 0px #1872ab, 0px 5px 0px 0px #1872ab, 0px 10px 5px #999;
 }
 button.btn-success.dim:active {
-  box-shadow: inset 0px 0px 0px #1872ab, 0px 2px 0px 0px #1872ab, 0px 5px 3px #999999;
+  box-shadow: inset 0px 0px 0px #1872ab, 0px 2px 0px 0px #1872ab, 0px 5px 3px #999;
 }
 button.btn-danger.dim {
-  box-shadow: inset 0px 0px 0px #ea394c, 0px 5px 0px 0px #ea394c, 0px 10px 5px #999999;
+  box-shadow: inset 0px 0px 0px #ea394c, 0px 5px 0px 0px #ea394c, 0px 10px 5px #999;
 }
 button.btn-danger.dim:active {
-  box-shadow: inset 0px 0px 0px #ea394c, 0px 2px 0px 0px #ea394c, 0px 5px 3px #999999;
+  box-shadow: inset 0px 0px 0px #ea394c, 0px 2px 0px 0px #ea394c, 0px 5px 3px #999;
 }
 button.dim:before {
   font-size: 50px;
@@ -1415,7 +1415,7 @@ button.dim:active:before {
   color: #fff;
 }
 body {
-  background-color: #2f4050;
+  background-color: #2F4050;
 }
 #page-wrapper {
   z-index: 10;
@@ -2392,7 +2392,7 @@ table.dataTable thead .sorting:after {
   border-color: #f8ac59;
 }
 .has-error .form-control {
-  border-color: #ed5565;
+  border-color: #ED5565;
 }
 .has-success .control-label {
   color: #76929c;
@@ -2401,7 +2401,7 @@ table.dataTable thead .sorting:after {
   color: #f8ac59;
 }
 .has-error .control-label {
-  color: #ed5565;
+  color: #ED5565;
 }
 .input-group-addon {
   background-color: #fff;
@@ -2425,7 +2425,7 @@ table.dataTable thead .sorting:after {
   box-shadow: none;
 }
 .slider_red .noUi-connect {
-  background: none repeat scroll 0 0 #ed5565;
+  background: none repeat scroll 0 0 #ED5565;
   box-shadow: none;
 }
 /* UI Sortable */
@@ -2817,9 +2817,9 @@ table.dataTable thead .sorting:after {
   border: 1px dashed #bbb;
   min-height: 100px;
   background-color: #e5e5e5;
-  background-image: -webkit-linear-gradient(45deg, #ffffff 25%, transparent 25%, transparent 75%, #ffffff 75%, #ffffff), -webkit-linear-gradient(45deg, #ffffff 25%, transparent 25%, transparent 75%, #ffffff 75%, #ffffff);
-  background-image: -moz-linear-gradient(45deg, #ffffff 25%, transparent 25%, transparent 75%, #ffffff 75%, #ffffff), -moz-linear-gradient(45deg, #ffffff 25%, transparent 25%, transparent 75%, #ffffff 75%, #ffffff);
-  background-image: linear-gradient(45deg, #ffffff 25%, transparent 25%, transparent 75%, #ffffff 75%, #ffffff), linear-gradient(45deg, #ffffff 25%, transparent 25%, transparent 75%, #ffffff 75%, #ffffff);
+  background-image: -webkit-linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff), -webkit-linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff);
+  background-image: -moz-linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff), -moz-linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff);
+  background-image: linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff), linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff);
   background-size: 60px 60px;
   background-position: 0 0, 30px 30px;
 }
@@ -2988,7 +2988,7 @@ label.error {
   background-color: #76929c;
 }
 .toast-error {
-  background-color: #ed5565;
+  background-color: #ED5565;
 }
 .toast-info {
   background-color: #23c6c8;
@@ -3020,7 +3020,7 @@ label.error {
   border-left: 6px solid #1c84c6;
 }
 .inspinia-notify.alert-danger {
-  border-left: 6px solid #ed5565;
+  border-left: 6px solid #ED5565;
 }
 .inspinia-notify.alert-info {
   border-left: 6px solid #76929c;
@@ -3492,7 +3492,7 @@ a.forum-item-title:hover {
 }
 .navbar-default {
   background-color: transparent;
-  border-color: #2f4050;
+  border-color: #2F4050;
 }
 .navbar-top-links li {
   display: inline-block;
@@ -3679,7 +3679,7 @@ body.mini-navbar .navbar-default .nav > li > .nav-second-level li a {
   position: absolute;
   left: 70px;
   top: 0px;
-  background-color: #2f4050;
+  background-color: #2F4050;
   padding: 10px 10px 10px 10px;
   font-size: 12px;
 }
@@ -3729,13 +3729,13 @@ body.mini-navbar .navbar-default .nav > li > .nav-second-level li a {
   transition: all 0.5s;
 }
 .navbar-fixed-top {
-  background: #2f4050;
+  background: #2F4050;
   transition-duration: 0.5s;
   border-bottom: 1px solid #e7eaec !important;
 }
 .navbar-fixed-top,
 .navbar-static-top {
-  background: #2f4050;
+  background: #2F4050;
 }
 .fixed-nav #wrapper {
   margin-top: 60px;

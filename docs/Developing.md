@@ -136,6 +136,40 @@ TBD
 
 TBD
 
+#### Gateway
+
+TL;DR Summary:
+
+```
+make build-image
+(cd infra/ && make deploy-services-local)
+make deploy-services
+chrome http://gateway.development.svc.cluster.local/
+```
+
+Details:
+
+An nginx-based reverse proxy is automatically started within kubernetes when running the 
+infra services. The gateway proxy is available under gateway.<env>.svc.cluster.local where 
+<env> is the kubernetes environment (e.g., development). To use the gateway in development
+mode, you can either:
+
+
+1) Run the riox services within k8s (`make deploy-services-local`). This way, the gateway and the services 
+   are both within k8s and hence the gateway can directly resolve and contact the services by their 
+   DNS names. In this method the riox codebase is mounted as a volume from the host development machine
+   into the microservice containers at `/code`. NOTE: The npm dependencies in the "riox/hyperriox" 
+   base image need to be up-to-date - make sure to run `make build-image` if dependencies are added.
+
+2) Run the riox services locally (`gulp riox`).
+
+ a) Use the kubernetes gateway pod: gateway.development.svc.cluster.local . This works only under
+    Linux and most likely **not** with Mac/Boot2Docker, because nginx is trying to reach the services
+    from within the gateway by calling out to the host via the docker bridge (172.17.42.1). This
+    method needs to be activated by setting ADD_DEV_HOSTS to "yes" in infra/nginx/nginx-controller.yml
+
+ b) Use a local nginx installation. nginx needs to be compiled with lua support, see 
+    infra/nginx/Dockerfile for details. As config file you can use infra/nginx/nginx.conf.
 
 ## Run the e2e tests
 

@@ -23,21 +23,21 @@ replaces=""
 # Reads default values defined as {{VAR=value}} and delete those lines
 # There are evaluated, so you can do {{PATH=$HOME}} or {{PATH=`pwd`}}
 # You can even reference variables defined in the template before
-defaults=$(grep -oE '^\{\{[A-Za-z0-9_]+=.+\}\}' "$template" | sed -e 's/^{{//' -e 's/}}$//')
-for default in $defaults; do
+defaults=$(grep -oE '^\{\{[A-Za-z0-9_]+=.+\}\}' "$template" | sed -e 's/^{{//' -e "s/}}$/\n/")
+while read default; do
     var=$(echo "$default" | grep -oE "^[A-Za-z0-9_]+")
     current=`var_value $var`
 
     # Replace only if var is not set
     if [[ -z "$current" ]]; then
-        eval $default
+	    eval $default
     fi
 
     # remove define line
     replaces="-e '/^{{$var=/d' $replaces"
     vars="$vars
 $current"
-done
+done <<< "$defaults"
 
 vars=$(echo $vars | sort | uniq)
 
