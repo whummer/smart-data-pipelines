@@ -37,6 +37,7 @@ deploy-k8s:
 
 deploy-k8s-dns:
 	(cd k8s-dns && make deploy)
+	(../bin/handleSkyDnsEntries.sh insert)
 
 undeploy-k8s-dns:
 	(cd k8s-dns && make undeploy)
