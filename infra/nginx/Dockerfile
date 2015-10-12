@@ -56,7 +56,8 @@ ENTRYPOINT ["./entrypoint.bash"]
 
 
 ADD	./nginx.conf /usr/local/openresty/nginx/conf/nginx.conf
-ADD ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-ADD ./addDevHosts.sh /root/addDevHosts.sh
+#ADD ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+#ADD ./addDevHosts.sh /root/addDevHosts.sh
 
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+#CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+CMD ["nginx", "-c", "/usr/local/openresty/nginx/conf/nginx.conf"]
