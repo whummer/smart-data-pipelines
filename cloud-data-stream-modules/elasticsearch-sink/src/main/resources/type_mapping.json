@@ -1,0 +1,18 @@
+{
+	"%TYPE%": {
+		"_timestamp": {
+			"enabled": true
+		},
+		"dynamic_templates": [
+			{
+				"geo_location": {
+					"mapping": {
+						"type": "geo_point"
+					},
+
+					"match": "location"
+				}
+			}
+		]
+	}
+}
