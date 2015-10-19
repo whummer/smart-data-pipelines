@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>io.riox.cloud.stream.module</groupId>
-	<artifactId>cvs-enricher-processor</artifactId>
+	<artifactId>csv-enricher-processor</artifactId>
 	<version>1.0.0.BUILD-SNAPSHOT</version>
 	<properties>
 		<commons-csv.version>1.2</commons-csv.version>
