@@ -1,34 +1,20 @@
 package io.riox.cloud.stream.module.elasticsearch;
 
-import com.jayway.jsonpath.JsonPath;
-import org.apache.commons.io.FileUtils;
-import org.elasticsearch.action.ActionFuture;
 import org.elasticsearch.action.get.GetRequest;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.client.Client;
-import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.cloud.stream.annotation.Bindings;
 import org.springframework.cloud.stream.messaging.Sink;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.util.StringUtils;
-import org.springframework.util.SystemPropertyUtils;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.UUID;
 
-import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
@@ -63,6 +49,9 @@ public class ElasticsearchSinkNodeModeIntegrationTests {
 	@Autowired
 	private Client client;
 
+	@Autowired
+	private ElasticsearchSinkTestUtil testUtil;
+
 	@Test
 	public void contextLoads() {
 		assertNotNull(properties);
@@ -74,9 +63,8 @@ public class ElasticsearchSinkNodeModeIntegrationTests {
 	@Test(timeout = RETRIES * DELAY_BEFORE_GET)
 	public void testNodeModePassthrough() throws Exception {
 		String documentId = UUID.randomUUID().toString();
-		String payload = StringUtils.replace(MockUtils.SOURCE_INPUT, "%ID%", documentId);
+		String payload = testUtil.getSampleDocumentWithId("tweet.json", documentId);
 		sink.input().send(MessageBuilder.withPayload(payload).build());
-
 		boolean created = false;
 		GetResponse document = null;
 		do {

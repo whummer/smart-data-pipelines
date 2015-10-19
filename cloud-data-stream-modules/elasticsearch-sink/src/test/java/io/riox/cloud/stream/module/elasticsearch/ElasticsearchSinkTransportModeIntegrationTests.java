@@ -2,8 +2,13 @@ package io.riox.cloud.stream.module.elasticsearch;
 
 import com.jayway.jsonpath.JsonPath;
 import org.apache.commons.io.FileUtils;
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
+import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
 import org.elasticsearch.client.Client;
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +30,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
@@ -55,13 +61,23 @@ public class ElasticsearchSinkTransportModeIntegrationTests {
 	private Sink sink;
 
 	@Autowired
-	Client client;
-
-	@Autowired
-	ApplicationContext context;
+	private Client client;
 
 	@Autowired
 	private ElasticsearchSinkProperties properties;
+
+	@Autowired
+	private ElasticsearchSinkTestUtil testUtil;
+
+	@Before
+	public void setup() throws ExecutionException, InterruptedException {
+		IndicesExistsRequest existsRequest = new IndicesExistsRequest("twitter");
+		if (client.admin().indices().exists(existsRequest).get().isExists()) {
+			DeleteIndexRequest twitterIndex = new DeleteIndexRequest("twitter");
+			DeleteIndexResponse response = client.admin().indices().delete(twitterIndex).get();
+			Assert.assertTrue(response.isAcknowledged());
+		}
+	}
 
 	@Test
 	public void contextLoads() {
@@ -75,11 +91,8 @@ public class ElasticsearchSinkTransportModeIntegrationTests {
 	public void testTransportModePassthrough() throws Exception {
 		RestTemplate restTemplate = new TestRestTemplate();
 		String documentId = UUID.randomUUID().toString();
-		File tweetFile = context.getResource("classpath:tweet_with_location.json").getFile();
-		String tweet = FileUtils.readFileToString(tweetFile);
-		String payload = StringUtils.replace(tweet, "%ID%", documentId);
+		String payload = testUtil.getSampleDocumentWithId("tweet.json", documentId);
 		sink.input().send(MessageBuilder.withPayload(payload).build());
-
 		ResponseEntity<String> response;
 		do {
 			Thread.sleep(DELAY_BEFORE_RETRY);
@@ -88,5 +101,27 @@ public class ElasticsearchSinkTransportModeIntegrationTests {
 
 		String id = JsonPath.read(response.getBody(), "$._id");
 		assertThat("ID does not match: " + documentId, documentId, is(id));
+	}
+
+	@Test(timeout = RETRIES * DELAY_BEFORE_RETRY)
+	public void testTransportModeLocationQuery() throws Exception {
+		RestTemplate restTemplate = new TestRestTemplate();
+		String id1 = UUID.randomUUID().toString();
+		String tweetWithinDistance = testUtil.getSampleDocumentWithId("tweet_with_location_within_distance.json", id1);
+
+		String id2 = UUID.randomUUID().toString();
+		String tweetOutsideDistance = testUtil.getSampleDocumentWithId("tweet_with_location_outside_distance.json", id2);
+
+		sink.input().send(MessageBuilder.withPayload(tweetWithinDistance).build());
+		sink.input().send(MessageBuilder.withPayload(tweetOutsideDistance).build());
+
+		ResponseEntity<String> response;
+		do {
+			Thread.sleep(DELAY_BEFORE_RETRY);
+			response = restTemplate.getForEntity("http://localhost:9200/twitter/_search", String.class);
+		} while (response.getStatusCode() != HttpStatus.OK);
+
+		int totalHits = JsonPath.read(response.getBody(), "$.hits.total");
+		assertThat("Hits does not equal '2'", totalHits, is(2));
 	}
 }

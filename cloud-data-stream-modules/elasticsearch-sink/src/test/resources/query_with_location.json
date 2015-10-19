@@ -1,0 +1,15 @@
+{
+	"query": {
+		"filtered": {
+			"query": {
+				"match_all": {}
+			},
+			"filter": {
+				"geo_distance": {
+					"distance": "1km",
+					"tweet.location": "48.15,16.44"
+				}
+			}
+		}
+	}
+}
