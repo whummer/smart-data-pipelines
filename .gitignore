@@ -1,19 +1,17 @@
-/.metadata/
-/.bundle/
-/.yardoc
-/Gemfile.lock
-/_yardoc/
-/coverage/
-/doc/
-/pkg/
-/spec/reports/
-tmp/
-test-output/
-*.bundle
-*.so
-*.o
-*.a
-*.log
+/cloud-data-stream-modules/elasticsearch-sink/target
+*.class
+
+.gradle/
+bin/
+build/
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.war
+*.ear
+
 .project
 .classpath
 *.classpath
