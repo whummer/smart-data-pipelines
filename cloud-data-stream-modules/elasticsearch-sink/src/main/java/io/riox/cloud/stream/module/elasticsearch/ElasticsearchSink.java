@@ -75,10 +75,6 @@ public class ElasticsearchSink {
 
 			TypesExistsResponse response = client.admin().indices().typesExists(typesExistsRequest).get();
 			if (!response.isExists()) {
-				/*XContentParser parser = XContentHelper.createParser(new BytesArray(mapping));
-				Map<String, Object> indexMapping = parser.map();
-				Map<String, Object> typeMapping = new HashMap<>();
-				typeMapping.put(properties.getType(), indexMapping);*/
 				File typeMappingFile = context.getResource("classpath:type_mapping.json").getFile();
 				String typeMapping = FileUtils.readFileToString(typeMappingFile);
 				typeMapping = StringUtils.replace(typeMapping, "%TYPE%", properties.getType());

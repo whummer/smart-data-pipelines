@@ -24,13 +24,14 @@ import static org.junit.Assert.assertThat;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = {ElasticsearchSinkApplication.class,
-		ElasticsearchSinkNodeModeTestConfiguration.class})
+	ElasticsearchSinkNodeModeTestConfiguration.class})
 @WebIntegrationTest({
 	"server.port:0",
 	"es.mode:node",
 	"es.index:twitter",
 	"es.type:tweet",
 	"es.idPath=$.id",
+	"logging.level.=WARN",
 	"es.clusterName=riox",
 })
 public class ElasticsearchSinkNodeModeIntegrationTests {

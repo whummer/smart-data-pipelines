@@ -5,6 +5,12 @@ import org.apache.commons.io.FileUtils;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
+import org.elasticsearch.action.admin.indices.mapping.delete.DeleteMappingRequest;
+import org.elasticsearch.action.delete.DeleteRequest;
+import org.elasticsearch.action.delete.DeleteResponse;
+import org.elasticsearch.action.deletebyquery.DeleteByQueryResponse;
+import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.junit.Assert;
 import org.junit.Before;
@@ -48,6 +54,7 @@ import static org.junit.Assert.assertNotNull;
 	"es.index:twitter",
 	"es.type:tweet",
 	"es.hosts=localhost:9300",
+		"logging.level.=WARN",
 	"es.idPath=$.id"
 })
 public class ElasticsearchSinkTransportModeIntegrationTests {
@@ -73,9 +80,12 @@ public class ElasticsearchSinkTransportModeIntegrationTests {
 	public void setup() throws ExecutionException, InterruptedException {
 		IndicesExistsRequest existsRequest = new IndicesExistsRequest("twitter");
 		if (client.admin().indices().exists(existsRequest).get().isExists()) {
-			DeleteIndexRequest twitterIndex = new DeleteIndexRequest("twitter");
-			DeleteIndexResponse response = client.admin().indices().delete(twitterIndex).get();
-			Assert.assertTrue(response.isAcknowledged());
+			DeleteByQueryResponse response = client.prepareDeleteByQuery("twitter")
+				.setSource("{\"query\" : { \"match_all\" : {} }}")
+				.get();
+
+			int status = response.status().getStatus();
+			Assert.assertThat("Delete by query did not return HTTP 200: " + status, HttpStatus.OK.value(), is(status));
 		}
 	}
 
@@ -118,10 +128,21 @@ public class ElasticsearchSinkTransportModeIntegrationTests {
 		ResponseEntity<String> response;
 		do {
 			Thread.sleep(DELAY_BEFORE_RETRY);
-			response = restTemplate.getForEntity("http://localhost:9200/twitter/_search", String.class);
+			response = restTemplate.getForEntity("http://localhost:9200/twitter/tweet/_search", String.class);
 		} while (response.getStatusCode() != HttpStatus.OK);
 
 		int totalHits = JsonPath.read(response.getBody(), "$.hits.total");
-		assertThat("Hits does not equal '2'", totalHits, is(2));
+		assertThat("Total hits does not equal '2'", totalHits, is(2));
+
+		String queryWithLocation = testUtil.getFileContent("query_with_location.json");
+		SearchRequest searchRequest = new SearchRequest(new String[]{"twitter"}, queryWithLocation.getBytes());
+		SearchResponse searchResponse = client.search(searchRequest).get();
+		long withinDistanceHits = searchResponse.getHits().totalHits();
+
+		// check that we have a single result
+		assertThat("There should be exactly one document within distance", withinDistanceHits, is(1L));
+
+		// check that the ID matches the ID from 'tweet_with_location_within_distance.json'
+		assertThat(searchResponse.getHits().getAt(0).getId(), is(id1));
 	}
 }

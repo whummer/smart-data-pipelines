@@ -28,7 +28,7 @@ public class ElasticsearchSinkNodeModeTestConfiguration {
 	@Bean(name = "elasticsearchClient")
 	public Client nodeClient() throws Exception {
 		String dataDir = FileUtils.getTempDirectoryPath() + UUID.randomUUID().toString();
-		log.info("Creating test ES client with dataDir '{}'", dataDir);
+		log.warn("Creating test ES client with dataDir '{}'", dataDir);
 		System.setProperty("es.dataPath", dataDir);
 		Settings settings = settingsBuilder().put("path.data", dataDir).build();
 		return nodeBuilder().settings(settings).clusterName(properties.getClusterName()).node().client();
