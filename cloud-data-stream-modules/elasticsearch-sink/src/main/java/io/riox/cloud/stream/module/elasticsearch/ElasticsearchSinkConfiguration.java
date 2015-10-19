@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.Assert;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,6 +34,21 @@ public class ElasticsearchSinkConfiguration {
 
 	@Autowired
 	private ElasticsearchSinkProperties properties;
+
+	@PostConstruct
+	public void dumpConfig() {
+		log.info("---------------------------------------------------------");
+		log.info("     elasticsearch-sink config     ");
+		log.info("");
+		log.info("es.mode:        {}", properties.getMode());
+		log.info("es.clusterName: {}", properties.getClusterName());
+		log.info("es.index:       {}", properties.getIndex());
+		log.info("es.type:        {}", properties.getType());
+		log.info("es.dataPath:    {}", properties.getDataPath());
+		log.info("es.hosts:       {}", properties.getHosts());
+		log.info("es.idPath:      {}", properties.getIdPath());
+		log.info("---------------------------------------------------------");
+	}
 
 	@Bean(name = "elasticsearchClient")
 	@ConditionalOnProperty(name = "es.mode", havingValue = "transport")

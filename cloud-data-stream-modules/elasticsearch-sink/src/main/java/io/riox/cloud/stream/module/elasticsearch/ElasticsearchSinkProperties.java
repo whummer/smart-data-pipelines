@@ -19,20 +19,19 @@ import javax.validation.constraints.AssertTrue;
 @Data
 public class ElasticsearchSinkProperties {
 
-	public enum SinkMode {
-		transport,
-		node;
-	}
+	private String mode;
 
 	private String hosts = "localhost:9300";
+
 	private String index;
+
 	private String type;
+
 	private String idPath;
+
 	private String clusterName;
+
 	private String dataPath;
-	private SinkMode mode = SinkMode.transport;
-	private boolean guessSchemas;
-	private boolean timestamped;
 
 	@NotBlank(message = "You have to provide the Elasticsearch index using '--es.index=someIndex'")
 	public String getIndex() {
@@ -44,15 +43,24 @@ public class ElasticsearchSinkProperties {
 		return type;
 	}
 
+	@NotBlank(message = "You have to provide '--es.mode' with either 'node' or 'transport'")
+	public String getMode() {
+		return mode;
+	}
+
 	@AssertTrue(message = "When using es.mode='node' you have to provide '--es.cluster=myCluster'")
 	public boolean validateNodeModeSettings() {
-		return mode != SinkMode.node || !StringUtils.isEmpty(clusterName);
+		return "node".equals(mode) || !StringUtils.isEmpty(clusterName);
 	}
 
 	@AssertTrue(message = "When using es.mode='transport' you have to provide '--es.hosts=hostA:portA,hostB:portB'")
 	public boolean validateTransportModeSettings() {
-		return mode != SinkMode.transport || !StringUtils.isEmpty(hosts);
+		return "transport".equals(mode) || !StringUtils.isEmpty(hosts);
 	}
 
 
+	@AssertTrue(message = "Only 'node' and 'transport' are valid for '--es.mode'")
+	public boolean validateMode() {
+		return "node".equals(mode) || "transport".equals(mode);
+	}
 }
