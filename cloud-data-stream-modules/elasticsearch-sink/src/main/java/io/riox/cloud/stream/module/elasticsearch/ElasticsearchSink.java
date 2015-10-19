@@ -4,6 +4,8 @@ import groovy.json.JsonBuilder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
@@ -29,6 +31,8 @@ import org.springframework.util.StringUtils;
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -42,6 +46,7 @@ import java.util.concurrent.ExecutionException;
  * @author Marius Bogoevici
  * @author Oliver Moser
  */
+@SuppressWarnings("Duplicates")
 @EnableBinding(Sink.class)
 @Data
 @Slf4j
@@ -59,8 +64,10 @@ public class ElasticsearchSink {
 	@PostConstruct
 	public void init() throws ExecutionException, InterruptedException, IOException {
 		IndicesExistsResponse indexExistsResponse = client.admin().indices().exists(new IndicesExistsRequest(properties.getIndex())).get();
-		File indexMappingFile = context.getResource("classpath:index_mapping.json").getFile();
-		String indexMapping = FileUtils.readFileToString(indexMappingFile);
+		InputStream indexMappingInputStream = context.getResource("classpath:/index_mapping.json").getInputStream();
+		OutputStream baos = new ByteArrayOutputStream();
+		IOUtils.copy(indexMappingInputStream, baos);
+		String indexMapping = baos.toString();
 
 		if (!indexExistsResponse.isExists()) {
 			log.info("Index '{}' does not exist, creating it with dynamic mapping: \n{}", properties.getIndex(),
