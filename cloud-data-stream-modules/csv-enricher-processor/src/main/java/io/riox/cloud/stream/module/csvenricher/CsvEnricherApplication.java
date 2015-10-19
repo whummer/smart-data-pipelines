@@ -10,7 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class CsvEnricherApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(CsvEnricherApplication.class);
+		SpringApplication.run(CsvEnricherApplication.class, args);
 	}
 
 }

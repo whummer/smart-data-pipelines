@@ -10,6 +10,7 @@ import org.springframework.integration.annotation.Transformer;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHandlingException;
 
+import javax.annotation.PostConstruct;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -58,7 +59,6 @@ public class CsvEnricher {
 	private static class Mappings {
 		List<Mapping> mappings = new LinkedList<Mapping>();
 	}
-
 
 	@Transformer(inputChannel = Processor.INPUT, outputChannel = Processor.OUTPUT)
 	public Object transform(Message<?> message) {
@@ -155,7 +155,7 @@ public class CsvEnricher {
 			cols = new String[0];
 		}
 
-		TableData table = TableData.readCSV(properties.getUrl(), properties.getColumns() != null, cols);
+		TableData table = TableData.readCSV(properties.getLocation(), properties.getColumns() != null, cols);
 		return (T) table;
 	}
 

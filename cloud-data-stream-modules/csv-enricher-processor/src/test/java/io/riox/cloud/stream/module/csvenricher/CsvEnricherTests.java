@@ -29,7 +29,7 @@ import static org.junit.Assert.*;
 @WebIntegrationTest({
 	"server.port:0",
 	"csv.cache=3",
-	"csv.url=http://samplecsvs.s3.amazonaws.com/Sacramentorealestatetransactions.csv",
+	"csv.location=http://samplecsvs.s3.amazonaws.com/Sacramentorealestatetransactions.csv",
 	"csv.sourceID=longitude",
 	"csv.targetID=lng",
 	"csv.columns=",

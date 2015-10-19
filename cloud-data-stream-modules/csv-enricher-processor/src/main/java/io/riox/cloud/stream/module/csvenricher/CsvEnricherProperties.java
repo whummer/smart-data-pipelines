@@ -4,6 +4,8 @@ import lombok.Data;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import javax.validation.constraints.NotNull;
+
 
 /**
  * Module options for the {@code enricher} processor module
@@ -15,13 +17,13 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Data
 public class CsvEnricherProperties {
 
-	private String url;
-
 	private int cache = -1;
 
 	private boolean overwrite = false;
 
 	private boolean flat = true;
+
+	private String location;
 
 	private String columns;
 
@@ -31,8 +33,8 @@ public class CsvEnricherProperties {
 
 	private String mappings;
 
-	@NotBlank
-	public String getUrl() {
-		return this.url;
+	@NotBlank(message = "You need to provide the CSV reference via '--csv.location'")
+	public String getLocation() {
+		return location;
 	}
 }
