@@ -132,9 +132,9 @@ gulp.task('deps:install:global', 'parse all dependencies and devDependencies fro
 		}
 	});
 	var npmStr = "npm install --ignore-scripts -g";
-	var maxDeps = 50;
+	var maxDeps = 30;
 	var depsArray = [];
-	
+
 	function doInstall(depsStr) {
 		var cmdStr = npmStr + " " + depsStr;
 		console.log("Running:", cmdStr);

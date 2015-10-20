@@ -15,7 +15,7 @@ var getHost = function(env, service) {
 		return uiFrontends[env];
 	}
 	return service + "." + env + "." + domain;
-}
+};
 
 var appConfig = {
 	auth: {
@@ -83,6 +83,9 @@ envs.forEach(function(env) {
 				},
 				kibana: {
 					url: "http://" + getHost(env, "kibana") + ":5601"
+				},
+				nginx: {
+					url: "http://" + getHost(env, "nginx-config") + ":8082"
 				},
 				statsd: {
 					hostname: getHost(env, "statsd")

@@ -1,9 +1,0 @@
-kind: Service
-apiVersion: v1
-metadata:
-  name: xd-admin
-spec:
-  selector:
-    name: xd-admin
-  ports:
-    - port: 9393

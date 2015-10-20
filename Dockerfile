@@ -9,20 +9,35 @@ WORKDIR /code/
 ENV NODE_PATH /usr/local/lib/node_modules/
 
 # TODO: whu: temporary fix: gd.tuwien.ac.at is currently not working :/
-#RUN sed -i s/httpredir.debian.org/debian.mirror.lrz.de/g /etc/apt/sources.list
+RUN sed -i s/httpredir.debian.org/debian.mirror.lrz.de/g /etc/apt/sources.list
+
+RUN \
 
 	# install some commonly used tools inside the container
-RUN apt-get update -y && apt-get install -y --force-yes vim && \
+	apt-get update -y && apt-get install -y --force-yes vim && \
 
 	# install tools needed to fetch dependencies and compile native extensions
-	apt-get install -y python git make g++ && \
+	apt-get install -y python git make g++ libkrb5-dev && \
 
-	# clean up docs/man pages
-	rm -rf /usr/share/doc /usr/share/man/
+	# clean up 
+	apt-get autoremove -y && apt-get clean && \
+	rm -rf /usr/share/doc /usr/share/man/ /var/lib/apt/lists/* /tmp/*
 
 # install prerequisites
 ADD ./Makefile /code/
-RUN make install-prereq && \
+RUN \
+
+	# install prerequisites
+	#npm config set registry http://registry.npmjs.eu && \
+	#npm config set proxy http://web4d.ftp.sh:40445/ && \
+	#npm config set https-proxy http://web4d.ftp.sh:40445/ && \
+	npm config set strict-ssl false && \
+	#npm install npm -g && \
+	#npm install -g npm@3.3.6 && \
+	npm install -g npm@2.14.8 && \
+	npm cache clean && rm -rf /tmp/* /root/.npm && \
+	#npm config ls -l && \
+	make install-prereq && \
 
 	# clean up npm cache
 	rm -rf /root/.cache /root/.npm /tmp/*

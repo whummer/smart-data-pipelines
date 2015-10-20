@@ -2,7 +2,7 @@
 
 
 *IMPORTANT: Please read carefully esp. if you have read it before as things
-change quickly (e.g., Kubernetes upgrade from v0.16 to v1.0.0).*
+change quickly.*
 
 ## Prerequisites
 
@@ -12,7 +12,8 @@ change quickly (e.g., Kubernetes upgrade from v0.16 to v1.0.0).*
 * [make](http://www.gnu.org/software/make/manual/make.html)
 * Boot2docker with at least 4GB or RAM if you are using a Mac.
 
-We assume that all the command below, are executed in the folder where this README.md is located.
+We assume that all the commands below, are executed in the root folder of the
+project.
 
 
 ## Local Kubernetes Setup
@@ -25,40 +26,71 @@ that runs all third party services including DNS.
 This way you have them in the cache and Kubernetes does not need to download them from the registry.
 
 ```sh
-(cd ../infra && make build-images)
+(cd infra && make build-images)
 ```
 
 #### Create a Kubernetes config file in `.kube/config`
 
 ```sh
-cp ../infra/cluster/kubeconfig ~/.kube/config
+cp infra/cluster/kubeconfig ~/.kube/config
 ```
 
 This contains both, the Kubernetes config for local development and the AWS
 cluster access.
 
-#### Bring up the base Kubernetes environment
+#### Setup kubectl
 
-```sh
-(cd ../infra && make deploy-k8s)
-```
-
-At this point, you should have a running Kubernetes cluster. Test it out by installing the `kubectl` binary (*Important*: you need kubectl version 1.0.0. Please update if you come from a previous version.)
+Install the Kubernetes `kubectl` binary (*Important*: you need kubectl version >= 1.0.0. Please update if you come from a previous version.)
 ([OS X](https://storage.googleapis.com/kubernetes-release/release/v1.0.0/bin/darwin/amd64/kubectl))
 ([Linux](https://storage.googleapis.com/kubernetes-release/release/v1.0.0/bin/linux/amd64/kubectl))
 
 
-*Note:*
-On OS/X you will now need to set up port forwarding via ssh (and leave that shell open):
+#### Mac OS requirements
+
+On OS/X you will now need to set up port forwarding via ssh and also open some
+ports on the underlying VM that runs docker (virtualbox).
+
+Run the following command in a separate shell and leave it open.
 
 ```sh
-boot2docker ssh -L8080:localhost:8080
+./infra/bin/virtualbox-k8s-tunnel.sh
+```
+
+Run the following commands to setup a route to access the k8s pods from localhost and
+some key port forwarding rules for services that we need to expose (such as etcd).
+
+```sh
+./infra/bin/virtualbox-portforward.sh
+./infra/bin/rirtualbox-route.sh
+```
+
+#### Bring up the Kubernetes environment
+
+Run the following utility script:
+
+```
+./infra/bin/rioxRestartAll.sh
+```
+
+This will setup the whole Riox infrastructure based on Kubernetes for you.
+If you want to learn more read the script or execute the steps below to do it
+manually.
+
+
+#### TL;DR Summary
+
+
+#### Deploy the base Kubernetes enviroment
+
+```sh
+(cd infra && make deploy-k8s)
 ```
 
 #### Deploy the Kubernetes DNS servers
 
+
 ```sh
-(cd ../infra && make deploy-k8s-dns)
+(cd infra && make deploy-k8s-dns)
 ```
 
 List the nodes in your cluster by running:
@@ -96,45 +128,113 @@ This should print:
 ```
 NAME       LABELS                                                                           SELECTOR           IP(S)        PORT(S)
 kube-dns   k8s-app=kube-dns,kubernetes.io/cluster-service=true,kubernetes.io/name=KubeDNS   k8s-app=kube-dns   10.0.0.100   53/UDP
-                                                                                                                           53/TCP
+																																																													 53/TCP
 ```
 
 #### Deploy all third-party services required by Riox
 
 ```sh
-(cd ../infra && make deploy-services)
+(cd infra && make deploy-services)
 ```
 
 In case you want to undeploy all services:
 ```sh
-(cd ../infra && make undeploy-services)
+(cd infra && make undeploy-services)
 ```
 
-#### Test the DNS name resolution from you workstation
+#### Test the DNS name resolution from your workstation
 
 Run the following script to see if your DNS resolution works from your
 workstation.
 ```sh
-./bin/validate-dev-env.sh
+./infra/bin/validate-dev-env.sh
 ```
 
 If you are running OS X and boot2docker, you need to set a route to access
 the Kubernetes services incl. DNS directly:
 
 ```sh
-sudo route -n add 10.0.0.0/16 192.168.59.103
+./infra/bin/rirtualbox-route.sh
 ```
 
 This assumes that `192.168.59.103` is your host-only NIC in Virtualbox.
 You can validate this by running `boot2docker ssh ifconfig eth1`.
 
-## Build the code
-
-TBD
-
 ## Run the code
 
-TBD
+#### Riox Microservices
+
+If you are just getting started with Riox development, you first need to
+install all the NodeJS dependencies.
+
+```sudo make install-prereq```
+
+This will install all required libraries globally.
+
+After that, you need to run:
+
+```
+make install
+```
+
+This will install all the required libaries for Riox. ***Keep in mind that you
+have to re-run this script every time you add third party libraries to our
+code or you make changes to the shared libraries (such as in `riox-shared` or
+`services/riox-services-base`).
+
+Finally, you need to start all the Riox microservices with:
+
+```
+gulp riox
+```
+
+
+#### Riox Gateway
+
+For local development, you need to install Nginx with LUA extension for dynamic
+configuration via Redis.
+
+##### One time MacOS setup
+
+
+```
+# Install Lua and Nginx based OpenResty
+brew install lua51 # you need this version!
+brew install luajit
+brew install homebrew/nginx/openresty
+
+# Install Lua modules
+luarocks-5.1 install luasocket && \
+luarocks-5.1 install ansicolors && \
+luarocks-5.1 install luasec 0.4-4 && \
+luarocks-5.1 install lua-cjson 2.1.0-1 && \
+luarocks-5.1 install busted 1.9.0-1 && \
+luarocks-5.1 install lapis 1.0.4-1 && \
+luarocks-5.1 install moonscript 0.2.4-1 && \
+luarocks-5.1 install inspect 1.2-2
+
+# Checkout Redx - Redis Extension for Nginx
+sudo git clone https://github.com/whummer/redx.git /opt/redx
+```
+##### One time Linux setup
+
+TODO @whummer
+
+#### Start the Gateway:
+
+Ensure that you have the Kubernetes infrastructure running and the DNS resolution works.
+
+```
+sudo openresty -c ~/Code/riox/gw-redx/riox/infra/nginx/nginx.dev.conf
+```
+
+Add the following entry to your `/etc/hosts` file:
+
+```
+127.0.0.1       platform.riox.io
+```
+
+Now go to `http://platform.riox.io` and you should see the Riox webapp.
 
 
 ## Run the e2e tests

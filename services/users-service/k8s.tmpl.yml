@@ -1,4 +1,6 @@
 {{IMAGE_VERSION=latest}}
+{{PULL_POLICY=Always}}
+{{BASE_PATH=$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )}}
 apiVersion: v1
 kind: List
 items:
@@ -22,6 +24,7 @@ items:
           containers:
             - name: users-service
               image: riox/hyperriox:{{IMAGE_VERSION}}
+              imagePullPolicy: {{PULL_POLICY}}
               ports:
                 - containerPort: 8084
               command:
@@ -38,6 +41,13 @@ items:
                   port: 8084
                 initialDelaySeconds: 60
                 timeoutSeconds: 3
+              {{MOUNT_LOCAL_CMD}}volumeMounts:
+                {{MOUNT_LOCAL_CMD}}- mountPath: "/code"
+                  {{MOUNT_LOCAL_CMD}}name: "riox-code-dir"
+          {{MOUNT_LOCAL_CMD}}volumes:
+            {{MOUNT_LOCAL_CMD}}- hostPath:
+                {{MOUNT_LOCAL_CMD}}path: {{BASE_PATH}}
+              {{MOUNT_LOCAL_CMD}}name: riox-code-dir
 
   - kind: Service
     apiVersion: v1

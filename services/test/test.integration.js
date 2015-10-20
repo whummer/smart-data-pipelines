@@ -13,7 +13,6 @@ beforeEach(function(){
 /* API tests */
 //require('./integration/api/test.streams');
 //require('./integration/api/test.streamaccess');
-//require('./integration/api/test.streamconsents');
 require('./integration/api/test.users');
 require('./integration/api/test.organizations');
 require('./integration/api/test.files');
@@ -21,7 +20,7 @@ require('./integration/api/test.files');
 
 /* Streams integration tests */
 require('./integration/pipes/test.pipes');
-require('./integration/pipes/test.pipes.deployments');
+//require('./integration/pipes/test.pipes.deployments');
 
 /* Stream integration test with analytics */
 //require('./integration/streams/test.moving-avg.apply.js');

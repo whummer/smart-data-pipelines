@@ -1,9 +1,9 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: xd-outbound
+  name: scd-admin-k8s
 spec:
   selector:
-    name: xd-container
+    name: scd-admin-k8s
   ports:
-    - port: 9001
+    - port: 9393

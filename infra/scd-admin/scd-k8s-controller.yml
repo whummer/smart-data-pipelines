@@ -1,0 +1,45 @@
+kind: ReplicationController
+apiVersion: v1
+metadata:
+  name: scd-admin-k8s
+  labels:
+    name: scd-admin-k8s
+spec:
+  replicas: 1
+  selector:
+    name: scd-admin-k8s
+  template:
+    metadata:
+      labels:
+        name: scd-admin-k8s
+    spec:
+      imagePullSecrets:
+        - name: rioxregistrykey
+      containers:
+        - name: scd-admin-k8s
+          image: riox/spring-stream-dataflow:1.0.0.BUILD-SNAPSHOT
+          #imagePullPolicy: Always
+          env:
+            - name: KUBERNETES_TRUST_CERTIFICATES
+              value: "true"
+            - name: KUBERNETES_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          args:
+            - /start-admin-k8s.sh
+          ports:
+            - containerPort: 9393
+
+          readinessProbe:
+            httpGet:
+              path: /management/health
+              port: 9393
+            initialDelaySeconds: 15
+            timeoutSeconds: 2
+          livenessProbe:
+            httpGet:
+              path: /management/health
+              port: 9393
+            initialDelaySeconds: 180
+            timeoutSeconds: 3

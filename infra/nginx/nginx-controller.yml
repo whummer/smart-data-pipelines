@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  labels:
+    name: gateway
+  name: gateway
+spec:
+  replicas: 1
+  selector:
+    name: gateway
+  template:
+    metadata:
+      labels:
+         name: gateway
+    spec:
+      imagePullSecrets:
+        - name: rioxregistrykey
+      containers:
+      - name: gateway
+        image: riox/nginx
+        imagePullPolicy: Always
+        env:
+          - name: OUR_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: "REDIS_HOST"
+            value: "'redis.$(OUR_NAMESPACE).svc.cluster.local'"
+          - name: "REDIS_PORT"
+            value: "'6379'"
+          - name: "MAX_PATH_LENGTH"
+            value: "3"
+          #- name: "ADD_DEV_HOSTS"
+          #  value: "yes"
+        ports:
+        - name: api
+          containerPort: 8082
+        - name: http
+          containerPort: 80
+        - name: https
+          containerPort: 443
