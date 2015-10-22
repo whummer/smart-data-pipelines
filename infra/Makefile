@@ -39,6 +39,7 @@ deploy-k8s:
 
 deploy-k8s-dns:
 	(cd k8s-dns && make deploy)
+	(../bin/handleSkyDnsEntries.sh insert)
 
 undeploy-k8s-dns:
 	(cd k8s-dns && make undeploy)
@@ -49,9 +50,10 @@ deploy-services:
 	#(cd mysql && make deploy-standalone)
 	(cd redis && make deploy-standalone)
 	#(cd kafka && make deploy-standalone)
-	(cd scd-admin && make deploy-admin-local)
-	(cd scd-admin && make deploy-admin-k8s)
+	#(cd scd-admin && make deploy-admin-local)
+	#(cd scd-admin && make deploy-admin-k8s)
 	(cd elasticsearch && make deploy-standalone)
+	(cd nginx && make deploy)
 	#(cd kibana && make deploy)
 	#(cd statsd && make deploy)
 
@@ -61,9 +63,10 @@ undeploy-services:
 	#-(cd mysql && make undeploy-standalone)
 	-(cd redis && make undeploy-standalone)
 	#-(cd kafka && make undeploy-standalone)
-	-(cd scd-admin && make undeploy-admin-local)
-	-(cd scd-admin && make undeploy-admin-k8s)
+	-(cd scd-admin && make undeploy-admin-local) # TODO remove
+	-(cd scd-admin && make undeploy-admin-k8s) # TODO remove
 	-(cd elasticsearch && make undeploy-standalone)
+	-(cd nginx && make undeploy)
 	#-(cd kibana && make undeploy)
 	#(cd statsd && make undeploy)
 

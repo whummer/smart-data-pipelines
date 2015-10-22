@@ -19,6 +19,7 @@ var pipeElementTypeValidator = function (type) {
 
 var pipeElementSchema = {};
 pipeElementSchema['_id'] = {type: String, default: genShortUUID};
+pipeElementSchema[NAME] = String;
 pipeElementSchema[CREATOR_ID] = String;
 pipeElementSchema[CREATION_DATE] = {type: Date, default: Date.now};
 pipeElementSchema[DESCRIPTION] = String;

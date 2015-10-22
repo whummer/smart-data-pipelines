@@ -6,7 +6,7 @@
 var log = global.log || require('winston');
 var util = require('riox-services-base/lib/util/errors');
 
-module.exports = function (app, server) {
+var x = function (app, server) {
 
 	/* API routes */
 	app.use('/api/v1/proxies', require('./api/proxies'));
@@ -19,3 +19,9 @@ module.exports = function (app, server) {
 	app.use('/healthz', require("riox-services-base/lib/health/health-simple.js"));
 
 };
+
+x.preload = function (app, server) {
+	require('./api/forward')(app, server);
+};
+
+module.exports = x;

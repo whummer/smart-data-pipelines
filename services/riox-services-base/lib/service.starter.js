@@ -159,7 +159,17 @@ var start = function (config, routes, serviceName) {
 				mongoose.__mockgooseHasBeenApplied = true;
 			}
 		} else {
-			mongoose.connect(config.mongo.uri, config.mongo.options);
+			var reconnectTimeout = 1000*10;
+			var doConnect = function() {
+				mongoose.connect(config.mongo.uri, config.mongo.options);
+			}
+			var db = mongoose.connection;
+			db.on('error', function(error) {
+				log.warn("Unable to connect to database (MongoDB):", config.mongo.uri, 
+						". Re-connecting in " + reconnectTimeout + "ms");
+				setTimeout(doConnect, reconnectTimeout);
+			});
+			doConnect();
 		}
 
 		//
@@ -181,6 +191,9 @@ var start = function (config, routes, serviceName) {
 
 		var server = app.server = require('http').createServer(expressApp);
 		var expressConfig = require("./config/express");
+		if(routes.preload) {
+			routes.preload(expressApp, server);
+		}
 		expressConfig(expressApp, config);
 		routes(expressApp, server);
 

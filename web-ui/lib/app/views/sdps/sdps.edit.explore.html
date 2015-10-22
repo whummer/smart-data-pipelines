@@ -3,6 +3,14 @@
 <!-- 	<riox-timeseries style="height: 300px; width: 100%;" pipe-id="'6fd1cf26a230'" pipe-node-id="'simple5'"></riox-timeseries> -->
 
 	<div ng-repeat="node in selection.nodes">
+		<div ng-show="node._def.category == 'input'">
+			<div ng-show="node.type == 'http-in'">
+				<div class="form-group">
+					<textarea class="form-control" style="min-height: 200px" ng-model="testData.request"></textarea>
+					<button ng-click="pushTestData()" class="btn btn-primary form-control">Push test data</button>
+				</div>
+			</div>
+		</div>
 		<div ng-show="node._def.category == 'output'">
 			<div ng-show="node.type == 'log'">
 			LOG
@@ -10,8 +18,8 @@
 
 			<div ng-show="node.type == 'geo-map'">
 				<riox-map-leaflet height="400px" map-markers="map.markers" map-center="map.center"
-					es-index-name="indexName" es-type-name="node.typeName" id-field="idFieldNames"
-					loc-field="locFieldName" label-template="node.labelTemplate" es-url="esURL"></riox-map-leaflet>
+					es-type-name="node.typeName" id-field="node.idField" time-field="'time'"
+					loc-field="node.locFieldName" label-template="node.labelTemplate"></riox-map-leaflet>
 			</div>
 
 			<div ng-show="node.type == 'chart'">

@@ -90,8 +90,11 @@ envs.forEach(function(env) {
 				elasticsearch: {
 					hostname: getHost(env, "elasticsearch")
 				},
-				springxd: {
-					hostname: getHost(env, "xd-admin")
+				springcdf: {
+					hostname: getHost(env, "scd-admin-k8s")
+				},
+				springcdfLocal: {
+					hostname: getHost(env, "scd-admin-local")
 				},
 				statsd: {
 					hostname: getHost(env, "statsd")

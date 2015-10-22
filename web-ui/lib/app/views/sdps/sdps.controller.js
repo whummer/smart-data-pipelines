@@ -1,4 +1,4 @@
-angular.module("rioxApp").controller("DataPipesCtrl", function ($scope, $log, growl, $filter) {
+angular.module("rioxApp").controller("DataPipesCtrl", function ($scope, $log, growl, $filter, $state) {
 
 	$log.debug("Withing data pipes PARENT controller");
 
@@ -118,7 +118,8 @@ angular.module("rioxApp").controller("DataPipesCtrl", function ($scope, $log, gr
 	//
 	$scope.getClassForElement = function (element, size) {
 		if (element[CATEGORY]) {
-			return element[CATEGORY] == 'container' ? 'element-container' : (size ? element.type + size : element.type);
+			return element[CATEGORY] == 'container' ? 'element-container' : 
+					(size ? element[CATEGORY] + size : element[CATEGORY]);
 		} else {
 			return element.class == 'container' ? 'element-container' : 'element';
 		}
@@ -173,6 +174,12 @@ angular.module("rioxApp").controller("DataPipesCtrl", function ($scope, $log, gr
 
 		showConfirmDialog("Do you really want to delete pipline '" + pipeline.name + "'?", deleteCallback);
 	};
+
+	/* get nav. bar stack */
+	$scope.getNavPart = function() {
+		return { sref: "index.sdps.list", name: "Pipelines" };
+	}
+	$scope.setNavPath($scope, $state);
 
 	$scope.loadPipelineElements();
 

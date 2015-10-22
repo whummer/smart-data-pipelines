@@ -31,20 +31,6 @@ describe('/files', function() {
 			on("close", callback);
 	};
 
-	var upload = function(user, filepath, filename, callback) {
-		test.user1.
-		post(app.files.url + "/upload").
-		attach(filename, filepath).
-		end(function(err,res) {
-			if(err) {
-				console.log(err.response.error);
-			} else {
-				var fileID = res.body.fileID ? res.body.fileID : res.body;
-				callback(fileID);
-			}
-		});
-	}
-
 	function checksum (file, algorithm, encoding) {
 	    return crypto
 	        .createHash(algorithm || 'md5')
@@ -56,17 +42,21 @@ describe('/files', function() {
 		var tmpName1 = tmp.fileSync().name;
 		var tmpName2 = tmp.fileSync().name;
 		fs.writeFileSync(tmpName1, "Test file content ...");
-		upload(test.user1, tmpName1, "uploaded.txt", function(fileId) {
+		test.uploadFile(app, test.user1, tmpName1, function(fileId) {
 			download(app.files.url + "/" + fileId, tmpName2, function() {
-				assert.equal(checksum(tmpName1), checksum(tmpName2));
+				assert.equal(checksum(tmpName1), checksum(tmpName2), 
+						"'" + fs.readFileSync(tmpName1) + "' != '" + fs.readFileSync(tmpName2) + "'");
 				done();
 			});
 		});
 	});
 
 	it('does not allow a non-admin user to access the service', function(done) {
-		superagent.post(app.files.url).send({}).end(function(err, res) {
-			assert.equal(res.status, status.UNAUTHORIZED);
+		var tmpName1 = tmp.fileSync().name;
+		fs.writeFileSync(tmpName1, "Test file content ...");
+		test.uploadFile(app, superagent, tmpName1, function(result) {
+			assert.fail("should not be OK");
+		}, function(result) {
 			done();
 		});
 	});

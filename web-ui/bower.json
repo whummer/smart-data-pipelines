@@ -62,7 +62,6 @@
     "switchery": "~0.7.0",
     "dropzone": "~4.0.1",
     "jquery": "~1.11.0",
-    "ace-builds": "master",
-    "font-awesome": "~4.4.0"
+    "ace-builds": "master"
   }
 }

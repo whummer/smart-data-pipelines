@@ -489,7 +489,7 @@ gulp.task('ui:build:prod', 'create a PRODUCTION build of riox-ui', function (don
 //
 // serve PROD build task (to check build) - NO LIVE RELOAD
 //
-gulp.task('ui:serve:prod', 'serve the PRODUCTION build of riox-ui (8081)', ['ui:build:prod'], function (done) {
+gulp.task('ui:serve:prod', 'serve the PRODUCTION build of riox-ui (8081)', function (done) {
 	var env = process.env;
 	env.NODE_ENV = "production";
 	env.PORT = "8081";

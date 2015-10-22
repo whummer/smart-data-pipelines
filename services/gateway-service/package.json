@@ -14,7 +14,7 @@
 		"express.io": "1.1.13",
 		"redis": "0.12.1",
 		"lru-cache": "2.6.4",
-		"express-http-proxy": "0.6.0",
+		"simple-http-proxy": "0.5.11",
 
 		"riox-shared": "../../riox-shared",
 		"riox-services-base": "../riox-services-base"

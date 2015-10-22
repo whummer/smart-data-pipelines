@@ -26,7 +26,9 @@ exports.findById = function (req, res, next) {
 	var pipeId = req.params.id;
 	log.debug('Finding pipe by id %s', pipeId);
 	Pipe.findByIdQ(pipeId).then(pipe => {
-		log.debug('Found pipe with ID %s', pipeId);
+		if(!pipe) {
+			return res.status(404).json({ error: "No pipe found for ID " + pipeId });
+		}
 		return res.json(200, pipe);
 	}).catch(error => {
 		log.error('Cannot load pipe by ID "%s": ', error);

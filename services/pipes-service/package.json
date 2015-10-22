@@ -7,9 +7,11 @@
 		"method-override": "~1.0.0",
 		"morgan": "~1.0.0",
 		"request": "^2.55.0",
+		"node-kubernetes-client": "0.2.3",
+		"winston": "^1.0.0",
+
 		"riox-services-base": "../riox-services-base",
-		"riox-shared": "../../riox-shared",
-		"winston": "^1.0.0"
+		"riox-shared": "../../riox-shared"
 	},
 	"devDependencies": {
 		"babel": "^5.8.21"

@@ -1,11 +1,28 @@
-angular.module('rioxApp').controller('EditDataPipeCtrl', function ($scope, $filter, $stateParams, growl, $log, $location) {
+angular.module('rioxApp').controller('EditDataPipeCtrl', function ($scope, $stateParams, growl, $log, $location, $state) {
 
-	var PREDEFINED_NODERED_KEYS = ["id", "type", "x","y","z", "wires"];
+	var PREDEFINED_NODERED_KEYS =
+		[
+		 "id", "type", "x","y","z", "wires",
+		 "deployStatus", "changed", "valid", "dirty",
+		 "outputs", "inputs", "ports"
+		];
 
 	var NODERED_TO_XD_CATEGORY = {
 			"input": "source",
 			"function": "processor",
 			"output": "sink"
+	};
+	
+	$scope.testData = {
+		request: JSON.stringify({
+			id: 1,
+			time: 1,
+			value: 10,
+			location: {
+				lat: 48.2,
+				lon: 16.3667
+			}
+		}, null, '\t')
 	};
 
 	$scope.selection = {
@@ -27,7 +44,6 @@ angular.module('rioxApp').controller('EditDataPipeCtrl', function ($scope, $filt
 		showEditorDialog(
 			"Paste the definition of your pipeline below",
 			"Import Datapipe", {options: {mode: 'json'}}, function (content) {
-				console.log("Got EditorContent: ", content);
 				$scope.pipeline = angular.fromJson(content);
 			});
 	};
@@ -39,52 +55,47 @@ angular.module('rioxApp').controller('EditDataPipeCtrl', function ($scope, $filt
 		$scope.selectedItem = item;
 	};
 
-	/* save pipeline via service call. if _id property is present its a persistent pipe */
+	/* save pipeline via service call. 
+	 * if _id property is present its a persistent pipe */
 	$scope.submitDatapipe = function () {
-		var payload = angular.copy($scope.pipeline);
 
 		/* prepare payload */
-		var nodeRedNodes = RED.nodes.createCompleteNodeSet();
-		payload[PIPE_ELEMENTS] = [];
-		var i,j;
-		for(i = 0; i < nodeRedNodes.length; i ++) {
-			var n = nodeRedNodes[i];
-			if(n["type"] != "tab") {
-				var node = {};
-				payload[PIPE_ELEMENTS].push(node);
-				node[ID] = n["id"];
-				node[TYPE] = n["type"];
-				node[POSITION] = {x: n["x"], y: n["y"], z: n["z"]};
-				node[EDGES_OUT] = [];
-				for(j = 0; j < n["wires"].length; j ++) {
-					var list = n["wires"][j];
-					list.forEach(function(wireEnd) {
-						node[EDGES_OUT].push(wireEnd);
-					});
-				}
-				node[PARAMS] = {};
-				for(var key in n) {
-					if(PREDEFINED_NODERED_KEYS.indexOf(key) < 0) {
-						node[PARAMS][key] = n[key];
-					}
-				}
-			}
-		}
-		//console.log(payload);
+		var payload = constructCurrentPipeline(true);
 
 		if ($scope.pipeline.id) {
 			riox.save.pipe(payload, function (response) {
 				setNodesClean();
-				$log.info('Updated datapipe. Response: ', response);
 				growl.info("Datapipe updated successfully.");
 			});
 		} else {
 			riox.add.pipe(payload, function (response) {
 				setNodesClean();
-				$log.info('Saved datapipe. Response: ', response);
+				$state.go('index.sdps.create', {pipeId: response[ID]});
 				growl.info("Datapipe saved successfully.");
 			});
 		}
+	};
+
+	$scope.pushTestData = function() {
+		var node = $scope.selection.nodes[0];
+		if(!node || node._def[CATEGORY] != "input") {
+			return;
+		}
+		var testData = $scope.testData.request;
+		try {
+			testData = JSON.parse(testData);
+		} catch(e) {
+			// no JSON
+		}
+		var pipeID = $scope.pipeline[ID];
+		var inputID = node[ID];
+		var url = servicesConfig.pipes.url + "/deployments/by/pipe/" + pipeID + "/input/" + inputID;
+		riox.callPOST(url, testData, function(result) {
+			console.log("result", result);
+		}, function(error) {
+			console.log("error", error);
+			growl.error('Cannot push test data. See console for details.');
+		});
 	};
 
 	$scope.previewDatapipe = function() {
@@ -140,17 +151,86 @@ angular.module('rioxApp').controller('EditDataPipeCtrl', function ($scope, $filt
 			// when the editor loads the node-red JS files later, RED.loadFlows() will 
 			// be automatically called and loads the flow with the given pipeId.
 
+			/* initialize pipe elements */
+			$scope.pipeline[PIPE_ELEMENTS].forEach(function(el) {
+				if(el[TYPE] == "script") {
+					/* load script code */
+					var loc = el[PARAMS].scriptLocation;
+					if(loc) {
+						$.get(loc, function(data, response) {
+							el[PARAMS].code = data;
+							var setCode = function(code, el, retries) {
+								if(retries < 0) return;
+								var node = getNodeRedNodeForPipeElement(el);
+								if(node) {
+									node.code = data;
+								} else {
+									setTimeout(function() {
+										setCode(code, el, retries - 1);
+									}, 1500);
+								}
+							}
+							setCode(data, el, 5);
+						});
+					}
+				}
+			});
+
 		}, function (error) {
 			$log.error('Cannot load pipe %s for editing: %s', pipeId, error);
 			growl.error('Cannot load pipe. See console for details');
 		});
 	}
 
-	function constructCurrentPipeline() {
+	function pollPipeStatus() {
+		if($scope.pipeline && $scope.pipeline[ID]) {
+			var pipeId = $scope.pipeline[ID];
+			var query = {};
+			query[PIPE_ID] = pipeId;
+			var timeoutShort = 1000*10;
+			var timeoutLong = 1000*60;
+			riox.pipe.deployments(query, function(deployment) {
+				//console.log("deployment", deployment);
+				deployment[PIPE_ELEMENTS].forEach(function(el) {
+					var node = getNodeRedNodeForPipeElement(el);
+					if(el[STATUS] == STATUS_UNKNOWN) el[STATUS] = "deployed";
+					node.deployStatus = el[STATUS];
+					node.dirty = true;
+				});
+				RED.view.redraw();
+				setTimeout(function() {
+					pollPipeStatus();
+				}, timeoutLong);
+			}, function(error) {
+				setTimeout(function() {
+					pollPipeStatus(pipeId);
+				}, timeoutShort);
+			});
+		} else {
+			setTimeout(function() {
+				pollPipeStatus();
+			}, timeoutShort);
+		}
+	}
+
+	function getNodeRedNodeForPipeElement(pipeEl) {
+		var result = null;
+		RED.nodes.eachNode(function(el) {
+			if(el[ID] == pipeEl[ID]) {
+				result = el;
+			}
+		});
+		return result;
+	}
+
+	function constructCurrentPipeline(excludeMetadata) {
 		var result = {};
 		result[PIPE_ELEMENTS] = [];
 		result[ID] = $scope.pipeline[ID];
 		result[NAME] = $scope.pipeline[NAME];
+		
+		var METADATA_ATTRS = ["_def", "_ports", "__theNode", "_", "$$hashKey"];
+		
 		RED.nodes.eachNode(function(node) {
 			var n = {};
 			n[ID] = node[ID].substring(0, 8);
@@ -160,23 +240,51 @@ angular.module('rioxApp').controller('EditDataPipeCtrl', function ($scope, $filt
 
 			for(var key in node) {
 				if(PREDEFINED_NODERED_KEYS.indexOf(key) < 0) {
-					n[PARAMS][key] = node[key];
+					if(!excludeMetadata || METADATA_ATTRS.indexOf(key) < 0) {
+						n[PARAMS][key] = node[key];
+					}
 				}
 			}
 			n[CATEGORY] = NODERED_TO_XD_CATEGORY[node._def.category];
+			n[POSITION] = {x: node["x"], y: node["y"], z: node["z"]};
 
 			result[PIPE_ELEMENTS].push(n);
 			node.__theNode = n;
-			console.log(node);
+			//console.log(node);
 		});
 		RED.nodes.eachLink(function(link) {
-			console.log(link);
 			var tgt = link.target[ID].substring(0, 8);
 			link.source.__theNode[EDGES_OUT].push(tgt);
 		});
-		console.log(result);
+		if(excludeMetadata) {
+			RED.nodes.eachNode(function(node) {
+				delete node.__theNode;
+			});
+		}
 		return result;
 	}
+
+	/* callback, when user confirms the node edit dialog with "OK" */
+	window.nodeRedOneditsave = function(node) {
+		if(node) {
+			if(node[TYPE] == "script") {
+				var code = $("#node-input-code").val();
+				console.log("node.scriptLocation", node.scriptLocation);
+				if(!node.scriptLocation) {
+					riox.add.file(code, function(result) {
+						node.scriptLocation = servicesConfig.files.url + "/" + result.fileID;
+					});
+				} else {
+					var info = {};
+					info[URL] = node.scriptLocation;
+					info[CONTENT] = code;
+					riox.save.file(info, function(result) {
+						/* upload ok */
+					});
+				}
+			}
+		}
+	};
 
 	/* assign UUIDs (iff there is none) to element when they are dropped on the canvas */
 	$scope.assignUUID = function(event, index, item) {
@@ -247,9 +355,18 @@ angular.module('rioxApp').controller('EditDataPipeCtrl', function ($scope, $filt
 		});
 	};
 
+	/* get nav. bar stack */
+	$scope.getNavPart = function() {
+		return { sref: "index.sdps.create", name: "Edit Pipeline" };
+	}
+	$scope.setNavPath($scope, $state);
+
 	/* add event listeners */
 	setTimeout(function() {
 		RED.events.on("view:selection-changed", $scope.onSelectionChange);
 	}, 1000);
+
+	/* poll the pipe deployment status */
+	pollPipeStatus();
 
 });

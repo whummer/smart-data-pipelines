@@ -13,7 +13,7 @@ RUN \
 	apt-get install -y build-essential curl libreadline-dev libncurses5-dev libpcre3-dev libssl-dev libperl-dev lua5.2 luarocks perl wget git openssl dnsmasq supervisor psmisc && \
 
 	# Compile openresty from source.
-	wget http://openresty.org/download/ngx_openresty-1.7.2.1.tar.gz && \
+	wget http://openresty.org/download/ngx_openresty-1.9.3.1.tar.gz && \
 	tar -xzvf ngx_openresty-*.tar.gz && \
 	rm -f ngx_openresty-*.tar.gz && \
 	cd ngx_openresty-* && \
@@ -33,6 +33,7 @@ RUN \
 	luarocks install lapis 1.0.4-1 && \
 	luarocks install moonscript 0.2.4-1 && \
 	luarocks install inspect 1.2-2 && \
+	luarocks install luajwt 1.3-2 && \
 
 	# clean up
 	apt-get remove -y build-essential libreadline-dev libncurses5-dev libpcre3-dev libssl-dev libperl-dev && apt-get autoremove -y && apt-get clean && \

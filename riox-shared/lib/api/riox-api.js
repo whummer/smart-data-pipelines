@@ -41,9 +41,6 @@
 	g.TYPE_FIXED_PRICE = "FIXED";
 	g.TYPE_VARIABLE_PRICE = "VARIABLE";
 	g.PERIOD = "period";
-	g.THING_TYPE = "thing-type";
-	g.THING_ID = "thing-id";
-	g.THINGS = "things";
 	g.URL = "url";
 	g.DEACTIVATED = "deactivated";
 	g.PROPERTIES = "properties";
@@ -61,10 +58,10 @@
 	g.TIMEUNIT_MINUTE = "MINUTE";
 	g.TIME_FROM = "from";
 	g.TIME_TO = "to";
+	g.CONTENT = "content";
 	g.DOMAIN_NAME = "domain";
 	g.IMAGE_DATA = "image-data";
 	g.INVITER_ID = "inviter-id";
-	g.SIMULATION_ID = "simulation-id";
 	g.START_TIME = "start-time";
 	g.END_TIME = "end-time";
 	g.USER_ID = "user-id";
@@ -102,6 +99,7 @@
 	g.CONNECTOR = "connector";
 	g.MEMBER = "member";
 	g.TAGS = "tags";
+	g.DETAILS = "details";
 	g.TEXT = "text";
 	g.PARAMS = "params";
 	g.CREATED = "created";
@@ -117,6 +115,12 @@
 	g.STATUS_UNREAD = "UNREAD";
 	g.STATUS_READ = "READ";
 	g.STATUS_DELETED = "DELETED";
+	g.STATUS_DEPLOYING = "DEPLOYING";
+	g.STATUS_DEPLOYED = "DEPLOYED";
+	g.STATUS_FAILED = "FAILED";
+	g.STATUS_UNDEPLOYED = "UNDEPLOYED";
+	g.STATUS_NOT_DEPLOYABLE = "STATUS_NOT_DEPLOYABLE";
+	g.STATUS_RUNNING = "RUNNING";
 	g.RESULT_STATUS = "result-status";
 	g.PERMIT_MODE = "permit";
 	g.PERMIT_MODE_AUTO = "AUTO";
@@ -176,9 +180,6 @@
 	Object.keys(g).forEach(function (gKey) {
 		shareHook[gKey] = sh[gKey] = g[gKey];
 	});
-	/*for (key in g) {
-	 shareHook[key] = sh[key] = g[key];
-	 }*/
 
 	/* initialize authentication info */
 	sh.login = function (options, callback, errorCallback) {
@@ -278,17 +279,6 @@
 
 	sh.get = {};
 
-	sh.app = sh.get.app = function (opts, callback, errorCallback) {
-		if (!opts) {
-			if (callback) callback(null);
-			return null;
-		}
-		var path = "/" + opts;
-		if (opts.appKey) {
-			path = "/by/appKey/" + opts.appKey;
-		}
-		return callGET(servicesConfig.apps.url + path, callback, errorCallback);
-	};
 	sh.me = function (callback, errorCallback) {
 		return callGET(servicesConfig.users.url + "/me", callback, errorCallback);
 	};
@@ -306,42 +296,6 @@
 		}
 		return callGET(url, callback, errorCallback);
 	};
-	sh.actions = sh.get.actions = function (opts, callback, errorCallback) {
-		return callPOST(servicesConfig.users.url + "/actions/query", opts, callback, errorCallback);
-	};
-	sh.apps = sh.get.apps = function (callback, errorCallback) {
-		return callGET(servicesConfig.apps.url, callback, errorCallback);
-	};
-	sh.thingType = sh.get.thingType = function (id, callback, errorCallback) {
-		if (!id) {
-			if (callback) callback(null);
-			return null;
-		}
-		return callGET(servicesConfig.thingTypes.url + "/" + id, callback, errorCallback);
-	};
-	sh.thingTypes = sh.get.thingTypes = function (callback, errorCallback) {
-		var maxThings = 100;
-		return callGET(servicesConfig.thingTypes.url + "?page=0&size=" + maxThings, callback, errorCallback);
-	};
-	sh.things = sh.get.things = function (opts, callback, errorCallback) {
-		if (!opts) opts = {};
-		var maxResults = opts.maxResults ? opts.maxResults : 100;
-		var suffix = "?page=0&size=" + maxResults;
-		if (opts.appId) {
-			suffix = "/by/application/" + opts.appId;
-		}
-		return callGET(servicesConfig.things.url + suffix, callback, errorCallback);
-	};
-	sh.thing = sh.get.thing = function (id, callback, errorCallback) {
-		if (!id) {
-			if (callback) callback(null);
-			return null;
-		}
-		return callGET(servicesConfig.things.url + "/" + id, callback, errorCallback);
-	};
-	sh.triggers = sh.get.triggers = function (callback, errorCallback) {
-		return callGET(servicesConfig.triggers.url, callback, errorCallback);
-	};
 	sh.certificates = sh.get.certificates = function (callback, errorCallback) {
 		return callGET(servicesConfig.certificates.url, callback, errorCallback);
 	};
@@ -353,8 +307,8 @@
 
 	sh.pipe = {};
 	sh.pipes = {};
+	sh.get.pipe = {};
 	sh.get.pipes = {};
-
 	sh.pipes = sh.get.pipes = function (searchOpts, callback, errorCallback) {
 
 		var url = servicesConfig.pipes.url;
@@ -369,7 +323,6 @@
 
 		return callGET(url, callback, errorCallback);
 	};
-
 	sh.pipeelements = sh.get.pipeelements = function (searchOpts, callback, errorCallback) {
 
 		var url = servicesConfig.pipeelements.url;
@@ -384,7 +337,15 @@
 
 		return callGET(url, callback, errorCallback);
 	};
-
+	sh.pipe.deployments = sh.get.pipe.deployments = function (searchOpts, callback, errorCallback) {
+		var url = servicesConfig.pipes.url + "/deployments";
+		if(typeof searchOpts === "string") {
+			url += "/" + searchOpts;
+		} else if(searchOpts[PIPE_ID]) {
+			url += "/by/pipe/" + searchOpts[PIPE_ID];
+		}
+		return callGET(url, callback, errorCallback);
+	};
 	sh.analytics = sh.get.analytics = function (callback, errorCallback) {
 		var url = servicesConfig.analytics.url;
 		return callGET(url, callback, errorCallback);
@@ -396,23 +357,8 @@
 		var url = buildQueryURL(servicesConfig.stats.url, opts);
 		return callGET(url, callback, errorCallback);
 	};
-	sh.simulationTypes = sh.get.simulationTypes = function (callback, errorCallback) {
-		var maxResults = 100;
-		return callGET(servicesConfig.simulationTypes.url + "?page=0&size=" + maxResults, callback, errorCallback);
-	};
 	sh.notifications = sh.get.notifications = function (opts, callback, errorCallback) {
 		return callGET(servicesConfig.notifications.url, callback, errorCallback);
-	};
-	sh.simulations = sh.get.simulations = function (callback, errorCallback) {
-		var maxResults = 100;
-		return callGET(servicesConfig.simulations.url + "?page=0&size=" + maxResults, callback, errorCallback);
-	};
-	sh.simulationByThingIdAndPropertyName = sh.get.simulationByThingIdAndPropertyName = function (opts, callback, errorCallback) {
-		var maxResults = 100;
-		var thingId = opts.thingId;
-		var propertyName = opts.propertyName;
-		return callGET(servicesConfig.simulations.url + "?page=0&size=" + maxResults + "&thingId="
-				+ thingId + "&propertyName=" + propertyName, callback, errorCallback);
 	};
 	sh.proxies = sh.get.proxies = function (searchOpts, callback, errorCallback) {
 		var url = servicesConfig.proxies.url;
@@ -424,22 +370,9 @@
 		return callGET(url, callback, errorCallback);
 	};
 
-	sh.data = sh.get.data = function (opts, callback, errorCallback) {
-		var url = servicesConfig.thingData.url + "/" +
-				opts[THING_ID] + "/" + opts[PROPERTY_NAME];
-		if (opts.amount) {
-			url += "/history?amount=" + opts.amount;
-		}
-		return callGET(url, callback, errorCallback);
-	};
 	sh.config = sh.get.config = function (callback, errorCallback) {
 		assertAuth();
 		var url = servicesConfig.users.url + "/by/email/" + authInfo.email + "/config";
-		return callGET(url, callback, errorCallback);
-	};
-	sh.driver = sh.get.driver = function (opts, callback, errorCallback) {
-		var url = servicesConfig.drivers.url + "/forThing/" +
-				opts[THING_ID] + "/" + opts[PROPERTY_NAME];
 		return callGET(url, callback, errorCallback);
 	};
 	sh.plans = sh.get.plans = function (callback, errorCallback) {
@@ -545,63 +478,6 @@
 		return callGET(url, callback, errorCallback);
 	};
 
-	// TODO remove
-//	sh.properties = sh.get.properties = function (thingType, callback, errorCallback) {
-//		var maxThings = 100;
-//		if (!thingType.id) {
-//			sh.thingType(thingType, function (thingTypeObj) {
-//				sh.properties(thingTypeObj, callback);
-//			});
-//			return;
-//		}
-//		/* recurse into sub-types */
-//		if (thingType.children) {
-//			$.each(thingType.children, function (idx, el) {
-//				sh.properties(el, callback);
-//			});
-//		}
-//		if (!thingType.properties) {
-//			thingType.properties = [];
-//		}
-//		callback(thingType.properties, thingType);
-//		/* recurse into sub-properties */
-//		if (thingType.properties) {
-//			var recurseProps = function (prop, callback, propNamePrefix) {
-//				if (prop.children) {
-//					$.each(prop.children, function (idx, subProp) {
-//						subProp = clone(subProp);
-//						subProp.name = propNamePrefix + subProp.name;
-//						callback([subProp], thingType);
-//						recurseProps(subProp, callback, subProp.name + ".");
-//					});
-//				}
-//			}
-//			$.each(thingType.properties, function (idx, prop) {
-//				recurseProps(prop, callback, prop.name + ".");
-//			});
-//		}
-//	};
-//	sh.propertiesRecursive = function (props, includeComplexProps) {
-//		return doGetPropertiesRecursive(props, undefined, undefined, includeComplexProps);
-//	}
-//	var doGetPropertiesRecursive = function (props, result, propNamePrefix, includeComplexProps) {
-//		if (!result) result = [];
-//		if (!propNamePrefix) propNamePrefix = "";
-//		$.each(props, function (idx, prop) {
-//			if (prop.children) {
-//				$.each(prop.children, function (idx, subProp) {
-//					subProp = clone(subProp);
-//					subProp.name = propNamePrefix + subProp.name;
-//					sh.propertiesRecursive([subProp], result, subProp.name + ".", includeComplexProps);
-//				});
-//			}
-//			if (includeComplexProps || !prop.children) {
-//				result.push(prop);
-//			}
-//		});
-//		return result;
-//	};
-
 	var buildQueryURL = function (baseURL, opts) {
 		if (!opts) opts = {};
 		var url = baseURL;
@@ -618,24 +494,6 @@
 
 	sh.add = {};
 
-	sh.add.thingType = function (thingType, callback, errorCallback) {
-		return callPOST(servicesConfig.thingTypes.url, thingType, callback, errorCallback);
-	};
-	sh.add.app = function (app, callback, errorCallback) {
-		return callPOST(servicesConfig.apps.url, app, callback, errorCallback);
-	};
-	sh.add.thing = function (thing, callback, errorCallback) {
-		return callPOST(servicesConfig.things.url, thing, callback, errorCallback);
-	};
-	sh.add.simulationType = function (simType, callback, errorCallback) {
-		return callPOST(servicesConfig.simulationTypes.url, simType, callback, errorCallback);
-	};
-	sh.add.trigger = function (trigger, callback, errorCallback) {
-		if (!trigger.type) {
-			trigger.type = "FUNCTION";
-		}
-		return callPOST(servicesConfig.triggers.url, trigger, callback, errorCallback);
-	};
 	sh.add.organization = function (organization, callback, errorCallback) {
 		return callPOST(servicesConfig.organizations.url, organization, callback, errorCallback);
 	};
@@ -647,12 +505,6 @@
 	};
 	sh.add.notification = function (notification, callback, errorCallback) {
 		return callPOST(servicesConfig.notifications.url, notification, callback, errorCallback);
-	};
-	sh.add.data = function (opts, dataItem, callback, errorCallback) {
-		var url = servicesConfig.thingData.url + "/" +
-				opts[THING_ID] + "/" +
-				opts[PROPERTY_NAME];
-		return callPOST(url, dataItem, callback, errorCallback);
 	};
 	sh.add.access = sh.add.access || {};
 	sh.add.access.role = function (role, callback, errorCallback) {
@@ -671,14 +523,9 @@
 
 	sh.add.pipes = {};
 	sh.add.pipe = function (obj, callback, errorCallback) {
-		console.log("Adding pipe: ", obj);
 		return callPOST(servicesConfig.pipes.url, obj, callback, errorCallback);
 	};
 
-	sh.add.pipedeployment = function (obj, callback, errorCallback) {
-		console.log("Adding pipedeployment: ", obj);
-		return callPOST(servicesConfig.pipes.url + '/deployments', obj, callback, errorCallback);
-	};
 	sh.add.pipes.source = function (source, callback, errorCallback) {
 		return callPOST(servicesConfig.pipesources.url, source, callback, errorCallback);
 	};
@@ -704,7 +551,10 @@
 		var url = servicesConfig.pricing.url + "/plans";
 		return callPOST(url, plan, callback, errorCallback);
 	};
-
+	sh.add.file = function (file, callback, errorCallback) {
+		var url = servicesConfig.files.url + "/upload";
+		return doUploadFile(url, file, callback, errorCallback);
+	};
 
 	/* methods for PUTting data */
 
@@ -712,12 +562,6 @@
 
 	sh.save.me = function (me, callback, errorCallback) {
 		return callPUT(servicesConfig.users.url + "/me", me, callback, errorCallback);
-	};
-	sh.save.thingType = function (thingType, callback, errorCallback) {
-		return callPUT(servicesConfig.thingTypes.url, thingType, callback, errorCallback);
-	};
-	sh.save.app = function (app, callback, errorCallback) {
-		return callPUT(servicesConfig.apps.url, app, callback, errorCallback);
 	};
 	sh.save.organization = function (organization, callback, errorCallback) {
 		return callPUT(servicesConfig.organizations.url + "/" + organization.id, organization, callback, errorCallback);
@@ -727,15 +571,6 @@
 	};
 	sh.save.certificate = function (certificate, callback, errorCallback) {
 		return callPUT(servicesConfig.certificates.url + "/" + certificate.id, certificate, callback, errorCallback);
-	};
-	sh.save.thing = function (thing, callback, errorCallback) {
-		return callPUT(servicesConfig.things.url, thing, callback, errorCallback);
-	};
-	sh.save.simulationType = function (simType, callback, errorCallback) {
-		return callPUT(servicesConfig.simulationTypes.url, simType, callback, errorCallback);
-	};
-	sh.save.trigger = function (trigger, callback, errorCallback) {
-		return callPUT(servicesConfig.triggers.url, trigger, callback, errorCallback);
 	};
 	sh.save.notification = function (notification, callback, errorCallback) {
 		return callPUT(servicesConfig.notifications.url, notification, callback, errorCallback);
@@ -753,11 +588,6 @@
 	sh.save.proxy = function (obj, callback, errorCallback) {
 		var id = assertID(obj);
 		return callPUT(servicesConfig.proxies.url + "/" + id, obj, callback, errorCallback);
-	};
-	sh.save.driver = function (driver, callback, errorCallback) {
-		var url = servicesConfig.drivers.url + "/forThing/" +
-				driver[THING_ID] + "/" + driver[PROPERTY_NAME];
-		return callPUT(url, driver, callback, errorCallback);
 	};
 	sh.save.config = function (config, callback, errorCallback) {
 		var url = servicesConfig.users.url + "/by/email/" + authInfo.email + "/config";
@@ -792,37 +622,15 @@
 		var url = servicesConfig.pricing.url + "/plans/" + plan.id;
 		return callPUT(url, plan, callback, errorCallback);
 	};
+	sh.save.file = function (file, callback, errorCallback) {
+		var url = file[URL] ? file[URL] : (servicesConfig.files.url + "/" + file[ID]);
+		return doUploadFile(url, file[CONTENT], callback, errorCallback);
+	};
 
 	/* methods for DELETEing data */
 
 	sh.delete = {};
 
-	sh.delete.thingType = function (thingType, callback, errorCallback) {
-		var id = thingType.id ? thingType.id : thingType;
-		return callDELETE(servicesConfig.thingTypes.url + "/" + id, callback, errorCallback);
-	};
-	sh.delete.app = function (app, callback, errorCallback) {
-		var id = app.id ? app.id : app;
-		return callDELETE(servicesConfig.apps.url + "/" + id, callback, errorCallback);
-	};
-	sh.delete.thing = function (thing, callback, errorCallback) {
-		var id = thing.id ? thing.id : thing;
-		return callDELETE(servicesConfig.things.url + "/" + id, callback, errorCallback);
-	};
-	sh.delete.simulationType = function (simType, callback, errorCallback) {
-		var id = simType.id ? simType.id : simType;
-		return callDELETE(servicesConfig.simulationTypes.url + "/" + id, callback, errorCallback);
-	};
-	sh.delete.simulation = function (id, callback, errorCallback) {
-		return callDELETE(servicesConfig.simulations.url + "/" + id, callback, errorCallback);
-	};
-	sh.delete.trigger = function (trigger, callback, errorCallback) {
-		var id = trigger.id ? trigger.id : trigger;
-		return callDELETE(servicesConfig.triggers.url + "/" + id, callback, errorCallback);
-	};
-	sh.delete.triggersForCreator = function (creatorId, callback, errorCallback) {
-		return callDELETE(servicesConfig.triggers.url + "?creatorId=" + creatorId, callback, errorCallback);
-	};
 	sh.delete.pipe = function (obj, callback, errorCallback) {
 		var id = obj.id ? obj.id : obj;
 		return callDELETE(servicesConfig.pipes.url + "/" + id, callback, errorCallback);
@@ -830,11 +638,6 @@
 	sh.delete.sink = function (sink, callback, errorCallback) {
 		var id = sink.id ? sink.id : sink;
 		return callDELETE(servicesConfig.pipesinks.url + "/" + id, callback, errorCallback);
-	};
-	sh.delete.driver = function (opts, callback, errorCallback) {
-		var url = servicesConfig.drivers.url + "/resetFor/" +
-				opts[THING_ID] + "/" + opts[PROPERTY_NAME];
-		return callGET(url, callback, errorCallback);
 	};
 	sh.delete.access = function (access, callback, errorCallback) {
 		var url = servicesConfig.access.url + "/" + access.id;
@@ -913,6 +716,10 @@
 		var url = servicesConfig.pipes.url + "/deployments/preview";
 		return callPUT(url, req, callback, errorCallback);
 	};
+	sh.pipe.deploy = function (req, callback, errorCallback) {
+		var url = servicesConfig.pipes.url + "/deployments/deploy";
+		return callPUT(url, req, callback, errorCallback);
+	};
 
 
 	/* methods for access permissions */
@@ -960,15 +767,6 @@
 			}
 		}
 		sh.organization.membership(memId, nextCall, errorCallback);
-	}
-
-	/* methods for simulation control */
-
-	sh.sim = {};
-	sh.sim.gen = function (request, callback, errorCallback) {
-		var type = request.type == "GPS" ? "traffic" : "curve";
-		var url = servicesConfig.simulations.url + "/gen/" + type;
-		return callPOST(url, request, callback, errorCallback);
 	}
 
 	/* UTILITY METHODS */
@@ -1120,52 +918,27 @@
 		return ws;
 	};
 
-	/* subscribe via websocket */
-	sh.subscribe = function (options, callback) {
-		var ws = connectWebsocket(function (ws) {
-			var msg = {
-				type: "SUBSCRIBE",
-				thingId: options.thingId,
-				propertyName: options.propertyName
-			};
-			if (options.clientId) {
-				msg.clientId = options.clientId;
-			}
-			ws.send(JSON.stringify(msg));
-		});
-		ws.onmessage = function (msg) {
-			var data = JSON.parse(msg.data);
-			if (callback) {
-				var result = callback(data);
-				if (result === false) {
-					// unsubscribe
-					var msg = {
-						type: "UNSUBSCRIBE",
-						thingId: options.thingId,
-						propertyName: options.propertyName
-					};
-					ws.send(JSON.stringify(msg));
-				}
-			}
-		}
-	};
-
-	/* unsubscribe all via websocket */
-
-	sh.unsubscribeAll = function (callback) {
-		connectWebsocket(function (ws) {
-			var msg = {
-				type: "UNSUBSCRIBE",
-				unsubscribeAll: true
-			};
-			ws.send(JSON.stringify(msg));
-			if (callback) {
-				callback(ws);
-			}
-		});
-	};
-
 	/* HELPER METHODS */
+
+	var doUploadFile = function(url, content, callback, errorCallback) {
+		// Define the boundary
+		var boundary = "---a52b3f2495c75e44";
+		if(typeof content === "undefined") {
+			content = "";
+		}
+		var body = '--' + boundary + '\r\n'
+		         + 'Content-Disposition: form-data; name="uploadfile";'
+		         + 'filename="uploadfile"\r\n'
+		         + 'Content-type: plain/text\r\n\r\n'
+		         + content + '\r\n'
+		         + '--'+ boundary + '--';
+
+		var opts = {};
+		opts.callback = callback.callback || callback;
+		opts.headers = callback.headers || {};
+		opts.headers["content-type"] = "multipart/form-data; boundary=" + boundary;
+		return callPOST(url, body, opts, errorCallback);
+	}
 
 	var assertID = function (obj) {
 		var id = obj.id || obj._id;

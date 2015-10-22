@@ -27,7 +27,6 @@
 			"type": "elasticsearch",
 			"params": {
 				"name": "ES out",
-				"index": "smartcity",
 				"typeName": "waitingtimes"
 			},
 			"edges-out": ["simple4", "simple5"]
@@ -38,8 +37,8 @@
 			"type": "geo-map",
 			"params": {
 				"name": "Draw Map",
-				"index": "smartcity",
-				"typeName": "waitingtimes"
+				"typeName": "waitingtimes",
+				"idField": "id"
 			}
 		},
 		{
@@ -48,7 +47,6 @@
 			"type": "chart",
 			"params": {
 				"name": "Draw Chart",
-				"index": "smartcity",
 				"typeName": "waitingtimes",
 				"valueField": "value",
 				"timeField": "time",
