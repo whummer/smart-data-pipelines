@@ -1,0 +1,25 @@
+import java.lang.invoke.LambdaForm.Compiled;
+
+/*
+NOTE: This configuration is convenient for maintaining shared configuration across multiple projects in the samples repo.
+If copying this example, it may be simpler to declare the
+required configuration inline.
+*/
+buildscript {
+	 apply from: '../../modules-parent/buildscript.gradle',
+	 to: buildscript
+}
+apply from: '../../modules-parent/build.gradle'
+apply plugin: 'spring-xd-module'
+
+group = 'io.riox.analytics'
+version = '1.0.0.BUILD-SNAPSHOT'
+
+description = "Singleton HTTP source"
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+configurations {
+	compile.exclude module: 'log4j-over-slf4j'
+}

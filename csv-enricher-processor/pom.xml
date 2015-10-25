@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>io.riox.cloud.stream.module</groupId>
+	<artifactId>csv-enricher-processor</artifactId>
+	<version>1.0.0.BUILD-SNAPSHOT</version>
+
+	<parent>
+		<artifactId>spring-cloud-stream-modules</artifactId>
+		<groupId>org.springframework.cloud.stream.module</groupId>
+		<version>1.0.0.BUILD-SNAPSHOT</version>
+	</parent>
+	
+	<properties>
+		<commons-csv.version>1.2</commons-csv.version>
+		<docker.image.prefix>riox</docker.image.prefix>
+		<docker.image.name>spring-cloud-stream-module-csv-enricher-processor</docker.image.name>
+	</properties>
+	
+
+	<dependencies>
+
+		<!-- SPRING DEPENDENCIES -->
+		<dependency>
+			<groupId>org.springframework.cloud.stream.module</groupId>
+			<artifactId>spring-cloud-stream-modules-common-configuration</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.integration</groupId>
+			<artifactId>spring-integration-java-dsl</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
+		</dependency>
+
+		<!-- 3rd PARTY DEPENDENCIES -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.jayway.jsonpath</groupId>
+			<artifactId>json-path</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.groovy</groupId>
+			<artifactId>groovy-json</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-csv</artifactId>
+			<version>${commons-csv.version}</version>
+		</dependency>
+
+		<!-- TEST DEPENDENCIES -->
+		<dependency>
+			<groupId>org.springframework.cloud.stream.module</groupId>
+			<artifactId>spring-cloud-stream-modules-test-support</artifactId>
+			<version>1.0.0.BUILD-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.integration</groupId>
+			<artifactId>spring-integration-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>0.3.5</version>
+				<configuration>
+					<imageName>${docker.image.prefix}/${docker.image.name}:${project.version}</imageName>
+					<dockerDirectory>src/main/docker</dockerDirectory>
+					<serverId>docker-hub</serverId>
+					<resources>
+						<resource>
+							<targetPath>/</targetPath>
+							<directory>${project.build.directory}</directory>
+							<include>${project.build.finalName}-exec.jar</include>
+						</resource>
+					</resources>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>riox</id>
+			<distributionManagement>
+				<repository>
+					<id>riox-releases-repo</id>
+					<url>http://mvnrepo.riox.io/nexus/content/repositories/releases</url>
+				</repository>
+				<snapshotRepository>
+					<id>riox-snapshots-repo</id>
+					<url>http://mvnrepo.riox.io/nexus/content/repositories/snapshots</url>
+				</snapshotRepository>
+			</distributionManagement>
+
+			<repositories>
+				<repository>
+					<id>riox-snapshots-repo</id>
+					<url>http://mvnrepo.riox.io/nexus/content/repositories/snapshots</url>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+				</repository>
+				<repository>
+					<id>riox-releases-repo</id>
+					<url>http://mvnrepo.riox.io/nexus/content/repositories/releases</url>
+				</repository>
+			</repositories>
+		</profile>
+	</profiles>
+</project>

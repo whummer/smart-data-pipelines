@@ -1,0 +1,33 @@
+buildscript {
+	 apply from: '../../modules-parent/buildscript.gradle',
+	 to: buildscript
+}
+apply from: '../../modules-parent/build.gradle'
+apply plugin: 'spring-xd-module'
+
+group = 'io.riox'
+version = '1.0.0.BUILD-SNAPSHOT'
+
+description = "Spring XD sink module for ElasticSearch"
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+dependencies {
+//  compile "org.springframework:spring-core:$springVersion"
+//		compile "com.jayway.jsonpath:json-path:$jsonPathVersion"
+		compile ("org.springframework.integration:spring-integration-http:$springIntegrationVersion")
+		compile ("org.springframework.data:spring-data-elasticsearch:$springDataElasticSearchVersion")
+		compile ("org.elasticsearch:elasticsearch:$elasticSearchVersion")
+
+		// Testing
+		testCompile "junit:junit:$junitVersion"
+		testCompile "org.springframework:spring-test:$springVersion"
+//		testCompile "org.springframework:spring-messaging:$springVersion"
+		testCompile "org.mockito:mockito-core:$mockitoVersion"
+		testCompile "org.hamcrest:hamcrest-library:$hamcrestVersion"
+
+		testCompile("com.jayway.jsonpath:json-path:$jsonPathVersion")
+		//provided "org.springframework.integration:spring-integration-kafka:$kafkaVersion"
+
+}
