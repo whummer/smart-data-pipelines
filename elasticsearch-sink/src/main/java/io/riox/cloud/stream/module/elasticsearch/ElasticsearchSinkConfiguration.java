@@ -1,6 +1,7 @@
 package io.riox.cloud.stream.module.elasticsearch;
 
 import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
@@ -15,6 +16,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.util.Assert;
 
 import javax.annotation.PostConstruct;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -47,6 +49,7 @@ public class ElasticsearchSinkConfiguration {
 		log.info("es.dataPath:    {}", properties.getDataPath());
 		log.info("es.hosts:       {}", properties.getHosts());
 		log.info("es.idPath:      {}", properties.getIdPath());
+		log.info("es.timestamp:   {}", properties.getTimestamp());
 		log.info("---------------------------------------------------------");
 	}
 
@@ -55,8 +58,13 @@ public class ElasticsearchSinkConfiguration {
 	public Client transportClient() throws Exception {
 		log.info("Creating new transport client for hosts: {}", properties.getHosts());
 		Settings settings = settingsBuilder()
-				.put("client.transport.ignore_cluster_name", true).build();
-		TransportClient client = new TransportClient(settings).addTransportAddresses(getTransportAddresses());
+				.put("client.transport.ignore_cluster_name", true)
+				.put("threadpool.bulk.size", 4 * Runtime.getRuntime().availableProcessors())
+				.put("threadpool.bulk.queue_size", 32 * Runtime.getRuntime().availableProcessors())
+				.build();
+		@SuppressWarnings("resource")
+		TransportClient client = new TransportClient(settings);
+		client = client.addTransportAddresses(getTransportAddresses());
 		client.connectedNodes();
 		return client;
 	}

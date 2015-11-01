@@ -3,6 +3,7 @@ package io.riox.cloud.stream.module.elasticsearch;
 import groovy.json.JsonBuilder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
@@ -28,7 +29,10 @@ import org.springframework.messaging.MessageHandlingException;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import javax.annotation.PostConstruct;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,7 +50,7 @@ import java.util.concurrent.ExecutionException;
  * @author Marius Bogoevici
  * @author Oliver Moser
  */
-@SuppressWarnings("Duplicates")
+@SuppressWarnings("all")
 @EnableBinding(Sink.class)
 @Data
 @Slf4j
@@ -60,6 +64,8 @@ public class ElasticsearchSink {
 
 	@Autowired
 	private ApplicationContext context;
+
+	private static final ObjectMapper JSON = new ObjectMapper();
 
 	@PostConstruct
 	public void init() throws ExecutionException, InterruptedException, IOException {
@@ -100,7 +106,7 @@ public class ElasticsearchSink {
 
 	@ServiceActivator(inputChannel = Sink.INPUT)
 	public void handleMessage(Message<?> message) throws Exception {
-		log.info("Accepted message: {}", message);
+		log.debug("Accepted message: {}", message);
 		try {
 			if (message.getPayload() instanceof List<?>) {
 				processMessage((List<?>) message.getPayload());
@@ -115,20 +121,20 @@ public class ElasticsearchSink {
 	private void processMessage(List<?> messages) throws Exception {
 		for (Object o : messages) {
 			if (o instanceof String) {
-				processMessage((String) o);
+				Map<String,Object> map = JSON.readValue((String)o, Map.class);
+				processMessage(map);
 			} else if (o instanceof List<?>) {
 				processMessage((List<?>) o);
 			} else if (o instanceof Map<?, ?>) {
-				Map<?, ?> map = (Map<?, ?>) o;
-				JsonBuilder builder = new JsonBuilder(map);
-				processMessage(builder.toString());
+				Map<String,Object> map = (Map<String,Object>) o;
+				processMessage(map);
 			} else {
 				throw new RuntimeException("Cannot extract payload from message: " + o + (o == null ? "" : (" - " + o.getClass())));
 			}
 		}
 	}
 
-	private void processMessage(String payload) throws Exception {
+	private void processMessage(Map<String,Object> payload) throws Exception {
 		IndexRequest request;
 		if (properties.getIdPath() == null) {
 			request = new IndexRequest(properties.getIndex(), properties.getType());
@@ -139,6 +145,15 @@ public class ElasticsearchSink {
 			} else {
 				throw new RuntimeException("The id must be a single value");
 			}
+		}
+
+		if(!StringUtils.isEmpty(properties.getTimestamp())) {
+			String key = properties.getTimestamp();
+			Object existing = payload.get(key);
+			if(existing != null) {
+				log.info("Overwriting existing timestamp field '" + key + "': " + existing);
+			}
+			payload.put(key, System.currentTimeMillis());
 		}
 
 		// source the payload

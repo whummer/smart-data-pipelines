@@ -1,46 +1,34 @@
 package io.riox.cloud.stream.module.elasticsearch;
 
-import com.jayway.jsonpath.JsonPath;
-import org.apache.commons.io.FileUtils;
-import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
-import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+
+import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
-import org.elasticsearch.action.admin.indices.mapping.delete.DeleteMappingRequest;
-import org.elasticsearch.action.delete.DeleteRequest;
-import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.deletebyquery.DeleteByQueryResponse;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.TestRestTemplate;
 import org.springframework.boot.test.WebIntegrationTest;
-import org.springframework.cloud.cloudfoundry.com.fasterxml.jackson.core.json.PackageVersion;
 import org.springframework.cloud.stream.annotation.Bindings;
 import org.springframework.cloud.stream.messaging.Sink;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.File;
-import java.util.UUID;
-import java.util.concurrent.ExecutionException;
-
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
-import static org.junit.Assert.assertNotNull;
+import com.jayway.jsonpath.JsonPath;
 
 /**
  * @author Marius Bogoevici

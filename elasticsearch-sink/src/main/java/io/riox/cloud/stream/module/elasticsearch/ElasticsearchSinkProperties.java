@@ -1,12 +1,12 @@
 package io.riox.cloud.stream.module.elasticsearch;
 
+import javax.validation.constraints.AssertTrue;
+
 import lombok.Data;
+
 import org.hibernate.validator.constraints.NotBlank;
-import org.springframework.boot.autoconfigure.transaction.TransactionAutoConfiguration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.util.StringUtils;
-
-import javax.validation.constraints.AssertTrue;
 
 
 /**
@@ -32,6 +32,8 @@ public class ElasticsearchSinkProperties {
 	private String clusterName;
 
 	private String dataPath;
+
+	private String timestamp;
 
 	@NotBlank(message = "You have to provide the Elasticsearch index using '--es.index=someIndex'")
 	public String getIndex() {
