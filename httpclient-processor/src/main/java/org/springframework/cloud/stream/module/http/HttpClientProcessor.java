@@ -78,20 +78,24 @@ public class HttpClientProcessor {
 				clazz = properties.getExpectedReturnType().getValue(Class.class);
 			}
 
-			HttpMethod method = HttpMethod.valueOf(properties.getHttpMethod());
-			String url = properties.getUrl().getValue(String.class);
-			Object body = properties.getBody() == null ? null : properties.getBody().getValue(message);
-			URI uri = new URI(url);
-			HttpEntity<?> requestEntity = new RequestEntity<Object>(body, headers, method, uri);
-			ResponseEntity<?> httpResponse = restTemplate.exchange(
-					uri, 
-					HttpMethod.valueOf(properties.getHttpMethod()),
-					requestEntity,
-					clazz);
-			return httpResponse.getBody();
-		} catch (Exception e) {
-			LOG.warn("Error in HTTP request", e);
-			return null;
+			try {
+				HttpMethod method = HttpMethod.valueOf(properties.getHttpMethod());
+				String url = properties.getUrl().getValue(String.class);
+				Object body = properties.getBody() == null ? null : properties.getBody().getValue(message);
+				URI uri = new URI(url);
+				HttpEntity<?> requestEntity = new RequestEntity<Object>(body, headers, method, uri);
+				ResponseEntity<?> httpResponse = restTemplate.exchange(
+						uri, 
+						HttpMethod.valueOf(properties.getHttpMethod()),
+						requestEntity,
+						clazz);
+				return httpResponse.getBody();
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		} catch (RuntimeException e) {
+			LOG.warn("Error in HTTP request: " + e);
+			throw e;
 		}
 	}
 

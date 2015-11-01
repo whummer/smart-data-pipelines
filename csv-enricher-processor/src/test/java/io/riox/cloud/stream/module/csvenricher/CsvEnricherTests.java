@@ -82,10 +82,12 @@ public abstract class CsvEnricherTests {
 		return enrichedMap;
 	}
 
-	Map<String, Object> pushAndPoll(String payload) throws InterruptedException {
+	@SuppressWarnings("unchecked")
+	<T> T pushAndPoll(String payload) throws InterruptedException {
 		channels.input().send(new GenericMessage<>(payload));
 		Message<?> enrichedMessage = collector.forChannel(channels.output()).poll(5, TimeUnit.SECONDS);
-		return parser.parseMap(enrichedMessage.getPayload().toString());
+		Object result = enrichedMessage.getPayload();
+		return (T)result;
 	}
 
 	@WebIntegrationTest(value={
@@ -128,4 +130,31 @@ public abstract class CsvEnricherTests {
 		}
 	}
 
+	@WebIntegrationTest(value={
+		"server.port:0",
+//		"csv.location=http://data.wien.gv.at/daten/geo?service=WFS&request=GetFeature&version=1.1.0&typeName=ogdwien:AMTOGD&srsName=EPSG:4326&outputFormat=csv",
+		"csv.location=http://pastebin.com/raw.php?i=6wKuCFNr",
+		"csv.sourceID=OBJECTID",
+		"csv.targetID=shortName",
+		"csv.columns=",
+		"csv.mappings=860435:MBA1_8,859029:MBA2,859030:MBA3,859057:MBA4_5,859050:MBA6_7,859042:MBA9,859032:MBA10,860422:MBA11,859051:MBA12,859058:MBA13_14,859037:MBA15,859060:MBA16,860503:MBA17,860425:MBA18,859028:MBA19,859026:MBA20,859065:MBA21,859040:MBA22,859076:MBA23"
+	}, randomPort=true)
+	public static class TestOpenDataVienna extends CsvEnricherTests {
+		@Test
+		public void testAlias() throws Exception {
+			Map<String, Object> enrichedMap = pushAndPoll("{\"IsOpen\":false, \"Timestamp\":\"14:43\", \"Wartekreis\":0, \"origin\":\"passservice\", \"shortName\":\"MBA2\", \"waitingTime\":0}");
+			assertTrue(enrichedMap.containsKey("SHAPE"));
+			assertTrue(enrichedMap.containsKey("NAME"));
+			assertTrue(enrichedMap.containsKey("Wartekreis"));
+			assertEquals(enrichedMap.get("OBJECTID"), "859029");
+
+			enrichedMap = pushAndPoll("{\"IsOpen\":false, \"Timestamp\":\"14:43\", \"Wartekreis\":0, \"origin\":\"passservice\", \"shortName\":\"MBA3\", \"waitingTime\":0}");
+			assertTrue(enrichedMap.containsKey("SHAPE"));
+			assertTrue(enrichedMap.containsKey("NAME"));
+			assertTrue(enrichedMap.containsKey("Wartekreis"));
+			assertEquals(enrichedMap.get("OBJECTID"), "859030");
+			
+			assertTrue(enrichedMap.getClass().getName().startsWith("java.util."));
+		}
+	}
 }

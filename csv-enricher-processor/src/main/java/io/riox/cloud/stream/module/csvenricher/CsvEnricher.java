@@ -2,14 +2,12 @@ package io.riox.cloud.stream.module.csvenricher;
 
 import groovy.json.JsonBuilder;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 import lombok.extern.slf4j.Slf4j;
-import net.minidev.json.parser.JSONParser;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.EnableBinding;
@@ -17,6 +15,8 @@ import org.springframework.cloud.stream.messaging.Processor;
 import org.springframework.integration.annotation.Transformer;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHandlingException;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * MessageHandler implementation for message enricher (e.g., load static data from CSV).
@@ -36,7 +36,7 @@ public class CsvEnricher {
 
 	private static final String FIELD_ENTRY = "_entry";
 
-	private final JSONParser json = new JSONParser(JSONParser.DEFAULT_PERMISSIVE_MODE);
+	private final ObjectMapper json = new ObjectMapper();
 
 	final AtomicReference<Object> cachedObject = new AtomicReference<>();
 
@@ -61,13 +61,16 @@ public class CsvEnricher {
 	}
 
 	@Transformer(inputChannel = Processor.INPUT, outputChannel = Processor.OUTPUT)
-	public Object transform(Message<?> message) {
+	@SuppressWarnings("unchecked")
+	public <T> T transform(Message<?> message) {
 		log.info("Accepted message: {}", message);
 		try {
 			if (message.getPayload() instanceof List<?>) {
-				return processMessage((List<?>) message.getPayload());
+				return (T)processMessage((List<?>) message.getPayload());
+			} else if (message.getPayload() instanceof String) {
+				return (T)processMessage((String) message.getPayload());
 			} else {
-				return processMessage(Arrays.asList(message.getPayload()));
+				return (T)processMessage((Map<String,Object>) message.getPayload());
 			}
 		} catch (Exception e) {
 			throw new MessageHandlingException(message, e);
@@ -75,33 +78,34 @@ public class CsvEnricher {
 	}
 
 	@SuppressWarnings("unchecked")
-	private Object processMessage(String payload) {
+	private <T> T processMessage(String payload) {
 		try {
-			Map<String, Object> obj = (Map<String, Object>) json.parse(payload);
-			Map<String, Object> result = processMessage(obj);
-			JsonBuilder builder = new JsonBuilder(result);
-			return builder.toString();
+			Map<String, Object> obj = (Map<String, Object>) json.readValue(payload, Map.class);
+			return (T)processMessage(obj);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	private Object processMessage(List<?> messages) throws Exception {
+	@SuppressWarnings("unchecked")
+	private <T> List<T> processMessage(List<?> messages) throws Exception {
+		List<T> result = new LinkedList<>();
 		for (Object o : messages) {
+			T item = null;
 			if (o instanceof String) {
-				return processMessage((String) o);
+				item = processMessage((String) o);
 			} else if (o instanceof List<?>) {
-				processMessage((List<?>) o);
+				item = (T)processMessage((List<?>) o);
 			} else if (o instanceof Map<?, ?>) {
 				Map<?, ?> map = (Map<?, ?>) o;
 				JsonBuilder builder = new JsonBuilder(map);
-				return processMessage(builder.toString());
+				item = processMessage(builder.toString());
 			} else {
 				throw new RuntimeException("Cannot extract payload from message: " + o + (o == null ? "" : (" - " + o.getClass())));
 			}
+			result.add(item);
 		}
-
-		return null;
+		return result;
 	}
 
 
