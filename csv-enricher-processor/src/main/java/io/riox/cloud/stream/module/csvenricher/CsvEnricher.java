@@ -1,21 +1,22 @@
 package io.riox.cloud.stream.module.csvenricher;
 
 import groovy.json.JsonBuilder;
+
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
+
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.parser.JSONParser;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.messaging.Processor;
 import org.springframework.integration.annotation.Transformer;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHandlingException;
-
-import javax.annotation.PostConstruct;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * MessageHandler implementation for message enricher (e.g., load static data from CSV).
@@ -24,7 +25,6 @@ import java.util.concurrent.atomic.AtomicReference;
  * @author Oliver Moser
  */
 
-@SuppressWarnings("Duplicates")
 @EnableBinding(Processor.class)
 @Slf4j
 public class CsvEnricher {
@@ -74,7 +74,7 @@ public class CsvEnricher {
 		}
 	}
 
-
+	@SuppressWarnings("unchecked")
 	private Object processMessage(String payload) {
 		try {
 			Map<String, Object> obj = (Map<String, Object>) json.parse(payload);
@@ -142,14 +142,14 @@ public class CsvEnricher {
 		}
 
 		if (doFetch) {
-			T item = fetchItem();
+			T item = fetchTableData();
 			setCached(item);
 		}
 		return (T) cachedObject.get();
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T> T fetchItem() {
+	private <T> T fetchTableData() {
 		String[] cols = properties.getColumns() == null ? new String[0] : properties.getColumns().split("\\s*,\\s*");
 		if (cols.length == 1 && cols[0].trim().equals("")) {
 			cols = new String[0];
@@ -160,7 +160,7 @@ public class CsvEnricher {
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T> T getItem() {
+	private <T> T getTableData() {
 		T cached = getCached();
 		if (cached != null)
 			return cached;
@@ -183,7 +183,7 @@ public class CsvEnricher {
 	}
 
 	private Map<String, Object> processMessage(Map<String, Object> payload) {
-		TableData table = getItem();
+		TableData table = getTableData();
 		String tgtIDValue = properties.getSourceID() == null ? null : (String) payload.get(properties.getTargetID());
 		if (tgtIDValue == null) {
 			log.warn("Unable to find '" + properties.getTargetID() + "' in message: " + payload);
@@ -206,8 +206,9 @@ public class CsvEnricher {
 
 		if (rec != null) {
 			if (properties.isFlat()) {
+				Map<String,Object> recAsMap = rec.asMap();
 				for (String key : table.getHeaderMap().keySet()) {
-					setPayload(payload, key, rec.asMap().get(key));
+					setPayload(payload, key, recAsMap.get(key));
 				}
 			} else {
 				setPayload(payload, FIELD_ENTRY, rec);

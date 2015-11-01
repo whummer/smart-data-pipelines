@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
  */
 public class TableData {
 
-	private final Logger LOG = LoggerFactory.getLogger(TableData.class);
+	private static final Logger LOG = LoggerFactory.getLogger(TableData.class);
 	private static final String CHARSET = "UTF-8";
 
 	private Map<String,Integer> headerMap = new LinkedHashMap<String,Integer>();
@@ -36,9 +36,17 @@ public class TableData {
 
 		public Map<String,Object> asMap() {
 			Map<String,Object> map = new HashMap<String,Object>();
-			for(String key : mapping.keySet()) {
-				int index = mapping.get(key);
-				map.put(key, values.get(index));
+			if(mapping != null) {
+				for(String key : mapping.keySet()) {
+					int index = mapping.get(key);
+					map.put(key, values.get(index));
+				}
+			} else {
+				/* need to assume column numbers as titles */
+				//LOG.warn("Column headers not configured - using numeric column indices as column header names.");
+				for(int i = 0; i < values.size(); i ++) {
+					map.put("" + i, values.get(i));
+				}
 			}
 			return map;
 		}

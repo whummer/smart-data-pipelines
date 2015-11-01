@@ -1,10 +1,9 @@
 package io.riox.cloud.stream.module.csvenricher;
 
 import lombok.Data;
+
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-
-import javax.validation.constraints.NotNull;
 
 
 /**
