@@ -6,6 +6,8 @@ REPO_URL=https://repo.spring.io/libs-snapshot
 GROUP_ID=org.springframework.cloud.stream.module
 VERSION=1.0.0.BUILD-SNAPSHOT
 
+MAVEN_DEPENDENCY_PLUGIN_VERSION=2.10
+
 # ADD NEW MODULES HERE!!
 MODULES=( \
 	counter-sink \
@@ -26,13 +28,13 @@ MODULES=( \
 	twitterstream-source \
 )
 
-mkdir ${BASEDIR}/jars
-mkdir ${BASEDIR}/dockerfiles
+mkdir -p ${BASEDIR}/jars
+mkdir -p ${BASEDIR}/dockerfiles
 
 for module in "${MODULES[@]}"
 do
 	echo "Fetching module: ${module}"
-	mvn org.apache.maven.plugins:maven-dependency-plugin:get \
+	mvn org.apache.maven.plugins:maven-dependency-plugin:${MAVEN_DEPENDENCY_PLUGIN_VERSION}:get \
 			-DremoteRepositories=${REPO_URL} \
 			-DgroupId=${GROUP_ID} \
 			-DartifactId=${module} \
