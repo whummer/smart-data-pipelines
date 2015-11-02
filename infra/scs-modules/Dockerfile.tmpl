@@ -1,7 +1,5 @@
 FROM delitescere/jdk
-MAINTAINER riox <dev@riox.io>
-
-ENV SCSD_VERSION 1.0.0.BUILD-SNAPSHOT
+MAINTAINER Riox Image Admin <dev@riox.io>
 
 # Alpine Linux doesn't use pam, which means that there is no /etc/nsswitch.conf,
 # but Java relies on /etc/nsswitch.conf to check the order of DNS resolving
@@ -9,13 +7,6 @@ ENV SCSD_VERSION 1.0.0.BUILD-SNAPSHOT
 # To fix this we just create /etc/nsswitch.conf and add the following line:
 RUN echo 'hosts: files mdns4_minimal [NOTFOUND=return] dns mdns4' >> /etc/nsswitch.conf
 
-# install Spring Cloud Stream Dataflow
-ADD jar/*.jar /opt/spring-dataflow/admin.jar
+ENTRYPOINT ["java", "-jar", "/module.jar"]
 
-# Add start scripts
-ADD common-config.sh /common-config.sh
-ADD start-admin-k8s.sh /start-admin-k8s.sh
-ADD start-admin-local.sh /start-admin-local.sh
-
-WORKDIR /opt/spring-dataflow
-EXPOSE 8080
+ADD jars/{{MODULE_NAME}}.jar /module.jar

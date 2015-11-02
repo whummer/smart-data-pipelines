@@ -2,7 +2,9 @@
 
 . /common-config.sh
 
-crond && java -jar admin.jar \
+java -jar admin.jar \
+	--spring.cloud.config.enabled=false \
 	--spring.profiles.active=kubernetes \
 	--kubernetes.imagePullSecret=rioxregistrykey \
-	--kubernetes.moduleLauncherImage=riox/spring-stream-module-launcher
+	--kubernetes.usePreBakedImagePerModule=true \
+	--kubernetes.imageRepository=riox
