@@ -83,35 +83,38 @@
 		<!-- PIPE TEMPLATE -->
 		<script type="text/ng-template" id="element.html">
 
-			<div class="{{getClassForElement(element, 'Big')}}" style="margin-top: 30px">
+			<div class="{{getClassForElement(element, 'Big')}}" style="margin-top: 30px;">
 				<div class="row">
-					<div class="col-sm-8 v-align">
-						<h2 class="text-left" style="margin-left: 5px">{{element.subtype}}</h2>
+					<div style="float: left">
+						<h2 class="text-left" style="">{{element[NAME]}}</h2>
 					</div>
-					<div class="col-sm-3 v-align">
-						<i style="margin-top:0px; margin-right: 5px;"
-							 class="pull-right fa fa-2x fa-{{getElementIcon(element)}} "></i>
+					<div class="pull-right">
+						<i style="" class="pull-right fa fa-2x fa-{{getElementIcon(element)}} "></i>
 					</div>
 				</div>
 				<div class="row">
-					<div style="padding-left: 30px; text-align: left">
+					<div style="text-align: left">
 						{{element.description}}
 					</div>
 				</div>
 				<div class="row">
-					<div style="margin-top:15px; padding-left: 30px; padding-right: 30px; text-align: left; ">
-						<h3 class="subheading-thinner">Configurable Options</h3>
-						<ul style="margin-top: -5px" class="list-unstyled m-t-md">
+					<div style="margin-top:15px; text-align: left;">
+						<h3 class="subheading-thinner" style="border-bottom: 1px solid white;">Configurable Options</h3>
+						<div style="height: 100px; overflow: auto;">
+						<ul style="margin-top: -5px;" class="list-unstyled m-t-md">
 							<li ng-repeat="option in element.options">
-								<a style="color: white"
-									 ng-click="descriptions[element.subtype + option.name] = !descriptions[element.subtype + option.name]"><strong>&rsaquo;&rsaquo;
-									{{option.name}}</strong></a><br/>
+								<a style="color: white" 
+										ng-click="descriptions[element.subtype + option.name] = !descriptions[element.subtype + option.name]">
+									<strong>&rsaquo;&rsaquo;{{option.name}}</strong></a><br/>
 								<span class="animated animated-fast"
-											ng-class="{fadeOut: !descriptions[element.subtype + option.name], fadeIn: descriptions[element.subtype + option.name]}"
+											ng-class="{
+												fadeOut: !descriptions[element.subtype + option.name], 
+												fadeIn: descriptions[element.subtype + option.name]}"
 											ng-show="descriptions[element.subtype + option.name]">{{option
 									.description}}</span>
 							</li>
 						</ul>
+						</div>
 					</div>
 				</div>
 			</div>

@@ -1,0 +1,44 @@
+<script type="text/x-red" data-template-name="websocket-in">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-file"></i> <span data-i18n="websocket-in.label.name"></span></label>
+        <input type="text" id="node-input-name" data-i18n="[placeholder]websocket-in.label.name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-port"><i class="fa fa-file"></i> <span data-i18n="websocket-in.label.port"></span></label>
+        <input type="text" id="node-input-port" data-i18n="[placeholder]websocket-in.label.port">
+    </div>
+    <div class="form-tips" id="spawnTip"><span data-i18n="[html]websocket-in.tip"></span></div>
+</script>
+
+<script type="text/x-red" data-help-name="websocket-in">
+    <p>Incoming Websocket connection</p>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('websocket-in',{
+        category: 'input',
+        color: "salmon",
+        defaults: {
+        	name: {value:""},
+			port: {value:"", required:true}
+        },
+        inputs: 0,
+        outputs: 1,
+        icon: "arrow-in.png",
+        align: "right",
+        label: function() {
+            return this.name || "Websocket" + (this.port ? (" (Port " + this.port + ")") : "");
+        },
+        labelStyle: function() {
+            return this.url ? "node_label_italic":"";
+        }
+    });
+</script>
+
+<script type="text/javascript">
+	var locales = {
+		"websocket-in.label.name": "Name",
+		"websocket-in.label.port": "Port"
+	};
+	i18n.addResources('en-US', 'node-red', locales);
+</script>

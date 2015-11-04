@@ -13,6 +13,7 @@ var gulp = global.gulp,
 	vinylPaths = require('vinyl-paths'),
 	util = require('gulp-util'),
 	uglify = require('gulp-uglify'),
+	minifyCss = require('gulp-minify-css'),
 	concat = require('gulp-concat'),
 	livereload = require('gulp-livereload'),
 	gulpFilter = require('gulp-filter'),
@@ -32,6 +33,18 @@ var BUILD_DIR = BASE_DIR + '/build';
 var BUILD_DIR_DEV = BUILD_DIR + '/development';
 var BUILD_DIR_TEST = BUILD_DIR + '/test';
 var BUILD_DIR_PROD = BUILD_DIR + '/production';
+var RIOX_ALL_MIN_JS = "riox.all.min.js";
+var RIOX_ALL_MIN_CSS = "riox.all.min.css";
+var RIOX_DEPS_ALL_MIN_JS = "riox.deps.all.min.js";
+var RIOX_DEPS_ALL_MIN_CSS = "riox.deps.all.min.css";
+
+var BOWER_CONFIG = {
+	paths: {
+		bowerDirectory: BASE_DIR + '/lib/bower_components',
+		bowerJson: BASE_DIR + '/bower.json',
+		bowerRc: BASE_DIR + '/.bowerrc'
+	}
+};
 
 var paths = {
 	// app base
@@ -53,7 +66,7 @@ var paths = {
 	less_in_views: SRC_DIR + '/app/**/*.less',
 
 	// glob for all CSS files
-	css: [SRC_DIR + '/app/styles/css/**/*.css', SRC_DIR + '/app/views/**/*.css', SRC_DIR + '/app/app.css'],
+	css: ['/app/styles/css/**/*.css', '/app/views/**/*.css', '/app/app.css'],
 
 	// "main" LESS file (the one that imports all other less files)
 	less_main: SRC_DIR + '/app/app.less',
@@ -68,9 +81,25 @@ var paths = {
 	main: SRC_DIR + '/index.tmpl.html',
 
 	// all in one concatenated and minified JS files
-	minified_js: BUILD_DIR_PROD + '/app/components/js/riox.all.min.js'
+	minified_js: BUILD_DIR_PROD + '/app/' + RIOX_ALL_MIN_JS,
+
+	// all of our riox CSS definitions in one concatenated and minified file
+	minified_css: BUILD_DIR_PROD + '/app/' + RIOX_ALL_MIN_CSS,
+
+	// all in one concatenated and minified JS files (bower dependencies)
+	minified_deps_js: BUILD_DIR_PROD + '/app/' + RIOX_DEPS_ALL_MIN_JS,
+
+	// all CSS definitions of bower_dependencies in one concatenated and minified file
+	minified_deps_css: BUILD_DIR_PROD + '/app/' + RIOX_DEPS_ALL_MIN_CSS
 
 };
+
+
+//todo om: check how we can do this right (not explicitly filtering those)
+var jqueryFilter = function() { return gulpFilter(['**', '!jquery.js']); };
+var vectorMapFilter = function() { return gulpFilter(['**', '!**/jquery-jvectormap*.js']); };
+var aceFilter = function() { return gulpFilter(['**', '!**/ace.js']); };
+var bootstrapFilter = function() { return gulpFilter(['**', '!**/bootstrap.css']); };
 
 //
 // clean output directories
@@ -158,46 +187,42 @@ gulp.task('ui:inject:prod', 'inject resources (CSS, JS) into index.html (PROD)',
 
 
 function injectResources(buildDir, cssLocation, ignorePath, minified, done) {
-	var cssFiles = less2css(cssLocation);
-
 	util.log(util.colors.green('Injecting resources into ' + buildDir));
 
-	// todo om: check how we can do this right (not explicitly filtering those)
-	var jqueryFilter = gulpFilter(['**', '!jquery.js']);
-	var vectorMapFilter = gulpFilter(['**', '!**/jquery-jvectormap*.js']);
-	var aceFilter = gulpFilter(['**', '!**/ace.js']);
+	var cssFiles = less2css(cssLocation);
 
-	// we need to add the buildDir in front of the script sources at this point since we
-	// already copied the scripts to the build dir
+	// we need to add the buildDir in front of the script sources at
+	// this point since we already copied the scripts to the build dir
 	var scripts;
 	if (minified) {
 		scripts = paths.minified_js;
+		util.log(util.colors.green('Using deps scripts for injection: ' + paths.minified_deps_js));
 	} else {
 		scripts = getRealScriptsPaths(buildDir);
+		util.log(util.colors.green('Using source files from bower_components as dependencies'));
 	}
 
 	util.log(util.colors.green('Using scripts for injection: ' + scripts));
 
-	var bowerConfig = {
-		paths: {
-			bowerDirectory: BASE_DIR + '/lib/bower_components',
-			bowerJson: BASE_DIR + '/bower.json',
-			bowerRc: BASE_DIR + '/.bowerrc'
-		}
-	};
-
 	gulp.src(paths.main)
 
-		.pipe(inject(gulp.src(bowerFiles(bowerConfig), {read: false})
-			.pipe(jqueryFilter), {name: 'bower', ignorePath: ignorePath}))
+		.pipe(inject(
+			(minified ?
+				gulp.src([paths.minified_deps_js, paths.minified_deps_css]) :
+				gulp.src(bowerFiles(BOWER_CONFIG), {read: false}).pipe(jqueryFilter())
+			), {name: 'bower', ignorePath: ignorePath}))
 
-		.pipe(inject(es.merge(
-			cssFiles, // compiled less files
-			gulp.src(paths.css), // plain CSS files
-			gulp.src(scripts)
-				.pipe(aceFilter)
-				.pipe(vectorMapFilter)
-				.pipe(angular_filesort())), {ignorePath: ignorePath}))
+		.pipe(inject(
+			(minified ?
+				gulp.src([paths.minified_js, paths.minified_css]) :
+				es.merge(
+					cssFiles, // compiled less files
+					gulp.src(getRealCssPaths(SRC_DIR)), // plain CSS files
+					gulp.src(scripts)
+						.pipe(aceFilter())
+						.pipe(vectorMapFilter())
+						.pipe(angular_filesort()))
+			), {ignorePath: ignorePath}))
 
 		.pipe(rename('index.html'))// rename from index.tmpl.html to index.html
 		.pipe(gulp.dest(buildDir))
@@ -206,6 +231,46 @@ function injectResources(buildDir, cssLocation, ignorePath, minified, done) {
 		});
 }
 
+gulp.task('ui:changewatch', function () {
+	changeWatch(false);
+});
+
+gulp.task('ui:changewatch:browsersync', function () {
+	changeWatch(true);
+});
+
+function changeWatch(doUseBrowserSync) {
+	// reload views
+	gulp.watch(paths.html, function (changed) {
+		gulp.src(changed.path, {base: SRC_DIR})
+			.pipe(gulp.dest(BUILD_DIR_DEV))
+			.on('end', function () {
+				if(doUseBrowserSync)
+					browserSync.reload();
+			});
+	});
+
+	// reload LESS
+	gulp.watch(paths.less, function () {
+		less2css(paths.base + '/app')
+			.pipe(gulp.dest(BUILD_DIR_DEV + '/app'))
+			.on('end', function () {
+				if(doUseBrowserSync)
+					browserSync.reload();
+			});
+	});
+
+	// reload JS
+	gulp.watch(SRC_DIR + '/app/**/*.js', function (changed) {
+		gulp.src(changed.path, {base: SRC_DIR})
+			.pipe(babel())
+			.pipe(gulp.dest(BUILD_DIR_DEV))
+			.on('end', function () {
+				if(doUseBrowserSync)
+					browserSync.reload();
+			});
+	});
+}
 
 //
 //
@@ -216,42 +281,14 @@ gulp.task('ui:browsersync', function () {
 	browserSync.init({
 		logLevel: 'debug',
 		proxy: {
-			target: 'http://127.0.0.1:9090',
+			target: 'http://127.0.0.1:8081',
 			middleware: [compress()],
 			reqHeaders: function (config) {
 				return {
-					'host': 'platform.riox.io:9090'
+					'host': 'platform.riox.io:8081'
 				};
 			}
 		}
-	});
-
-	// reload views
-	gulp.watch(paths.html, function (changed) {
-		gulp.src(changed.path, {base: SRC_DIR})
-			.pipe(gulp.dest(BUILD_DIR_DEV))
-			.on('end', function () {
-				browserSync.reload();
-			});
-	});
-
-	// reload LESS
-	gulp.watch(paths.less, function () {
-		less2css(paths.base + '/app')
-			.pipe(gulp.dest(BUILD_DIR_DEV + '/app'))
-			.on('end', function () {
-				browserSync.reload();
-			});
-	});
-
-	// reload JS
-	gulp.watch(SRC_DIR + '/app/**/*.js', function (changed) {
-		gulp.src(changed.path, {base: SRC_DIR})
-			.pipe(babel())
-			.pipe(gulp.dest(BUILD_DIR_DEV))
-			.on('end', function () {
-				browserSync.reload();
-			});
 	});
 });
 
@@ -290,32 +327,67 @@ function runBabel(buildDir) {
 //
 //
 gulp.task('ui:scriptsmin', 'concatenate, minify and uglify JS script sources', function (done) {
-	var vectorMapFilter = gulpFilter(['**', '!**/jquery-jvectormap*.js']);
-	var aceFilter = gulpFilter(['**', '!**/ace.js']);
+	function minOwnScripts() {
+		return gulp.src(getRealScriptsPaths(BUILD_DIR_PROD))
+			.pipe(aceFilter())
+			.pipe(vectorMapFilter())
+			.pipe(angular_filesort())
+			.pipe(sourcemaps.init()) // TODO whu: not sure we need this?
+			.pipe(concat(RIOX_ALL_MIN_JS))
+			.pipe(uglify({mangle: false, compress: {sequences: false}}))
+			.pipe(sourcemaps.write()) // TODO whu: not sure we need this?
+			.pipe(gulp.dest(BUILD_DIR_PROD + '/app'));
+	}
+	function minDepsScripts() {
+		return gulp.src(bowerFiles(BOWER_CONFIG))
+			.pipe(gulpFilter('*.js'))
+			.pipe(jqueryFilter())
+			.pipe(concat(RIOX_DEPS_ALL_MIN_JS))
+			.pipe(uglify({mangle: false, compress: {sequences: false}}))
+			.pipe(gulp.dest(BUILD_DIR_PROD + '/app'));
+	}
+	function minOwnCss() {
+		return gulp.src(getRealCssPaths(BUILD_DIR_PROD))
+			.pipe(gulpFilter('*.css'))
+			.pipe(concat(RIOX_ALL_MIN_CSS))
+			.pipe(minifyCss())
+			.pipe(gulp.dest(BUILD_DIR_PROD + '/app'));
+	}
+	function minDepsCss() {
+		return gulp.src(bowerFiles(BOWER_CONFIG))
+			.pipe(gulpFilter('*.css'))
+			.pipe(bootstrapFilter())
+			.pipe(concat(RIOX_DEPS_ALL_MIN_CSS))
+			.pipe(minifyCss())
+			.pipe(gulp.dest(BUILD_DIR_PROD + '/app'));
+	}
 
-	gulp.src(getRealScriptsPaths(BUILD_DIR_PROD))
-		.pipe(aceFilter)
-		.pipe(vectorMapFilter)
-		.pipe(angular_filesort())
-		.pipe(sourcemaps.init())
-		.pipe(concat('riox.all.min.js'))
-		.pipe(uglify({mangle: false, compress: {sequences: false}}))
-		.pipe(sourcemaps.write())
-		.pipe(gulp.dest(BUILD_DIR_PROD + '/app/components/js'))
-		.on('end', function () {
-			done();
+	minOwnScripts().on('end', function () {
+		minDepsScripts().on('end', function () {
+			minOwnCss().on('end', function () {
+				minDepsCss().on('end', function () {
+					done();
+				});
+			});
 		});
+	});
 });
 
 //
 // scripts helper for inject and scriptsmin tasks
 //
 function getRealScriptsPaths(baseDir) {
-	return paths.scripts.map(function (script) {
-		if (script.charAt(0) == '!') {
-			return '!' + baseDir + script.substr(1);
+	return getRealPaths(paths.scripts, baseDir);
+}
+function getRealCssPaths(baseDir) {
+	return getRealPaths(paths.css, baseDir);
+}
+function getRealPaths(thePaths, baseDir) {
+	return thePaths.map(function (file) {
+		if (file.charAt(0) == '!') {
+			return '!' + baseDir + file.substr(1);
 		} else {
-			return baseDir + script;
+			return baseDir + file;
 		}
 	});
 }
@@ -358,11 +430,19 @@ gulp.task('ui:serve:dev', 'start nodemon for DEV', function (done) {
 });
 
 //
-// livereload via browsersync on client app changes
+// livereload on client app changes
 //
-gulp.task('ui:livereload', 'serve the riox-ui using nodemon (with browsersync)',function (done) {
+gulp.task('ui:livereload', 'serve the riox-ui with live reloading of file changes',function (done) {
 	util.log(util.colors.green('Running DEVELOPMENT build'));
-	runSequence('ui:build:dev', 'ui:serve:dev', 'ui:browsersync', done);
+	runSequence('ui:build:dev', 'ui:serve:dev', 'ui:changewatch', done);
+});
+
+//
+// livereload on client app changes, including browsersync
+//
+gulp.task('ui:livereload:browsersync', 'serve the riox-ui with live reloading of file changes (and with browsersync)',function (done) {
+	util.log(util.colors.green('Running DEVELOPMENT build'));
+	runSequence('ui:build:dev', 'ui:serve:dev', 'ui:browsersync', 'ui:changewatch:browsersync', done);
 });
 
 //
@@ -409,7 +489,7 @@ gulp.task('ui:build:prod', 'create a PRODUCTION build of riox-ui', function (don
 //
 // serve PROD build task (to check build) - NO LIVE RELOAD
 //
-gulp.task('ui:serve:prod', 'serve the PRODUCTION build of riox-ui (8081)', ['ui:build:prod'], function (done) {
+gulp.task('ui:serve:prod', 'serve the PRODUCTION build of riox-ui (8081)', function (done) {
 	var env = process.env;
 	env.NODE_ENV = "production";
 	env.PORT = "8081";

@@ -40,6 +40,9 @@ build-image:
 	docker build -t ${IMAGE}:${IMAGE_VERSION} .
 	#infra/bin/docker-squash-image.sh
 
+build-test-image:
+	docker build -f services/test/Dockerfile -t riox/hyperriox-test:${IMAGE_VERSION} .
+
 push-image:
 	docker push ${IMAGE}:${IMAGE_VERSION}
 
@@ -52,8 +55,10 @@ run-integration-tests:
 	(cd services/test && kubectl create -f k8s.yml --namespace=${RIOX_ENV})
 
 run-integration-tests-local:
-	(cd services/test && PULL_POLICY=IfNotPresent ../../util/templater.sh k8s.tmpl.yml > k8s.yml)
+	(cd services/test && PULL_POLICY=IfNotPresent IMAGE_NAME=hyperriox-test ../../util/templater.sh k8s.tmpl.yml > k8s.yml)
 	(cd services/test && kubectl create -f k8s.yml --namespace=${RIOX_ENV})
+	echo "Trying to attach to stdout of test process after a short while..."
+	sleep 15 && kubectl logs -f integration-tests
 
 cleanup-integration-tests:
 	(cd services/test && kubectl delete -f k8s.yml --namespace=${RIOX_ENV})

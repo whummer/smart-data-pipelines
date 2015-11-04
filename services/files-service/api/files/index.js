@@ -8,7 +8,7 @@ var auth = require('riox-services-base/lib/auth/auth.service');
 var router = express.Router();
 
 router.post('/upload', auth.isAuthenticated(), controller.upload, controller.uploadFix);
-router.post('/', auth.isAuthenticated(), controller.create);
+router.post('/:id', auth.isAuthenticated(), controller.update, controller.updateFix);
 router.get('/:id', /*auth.isAuthenticated(),*/ controller.download);
 router.delete('/:id', auth.isAuthenticated(), controller.remove);
 

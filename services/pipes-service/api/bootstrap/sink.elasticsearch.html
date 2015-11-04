@@ -1,0 +1,52 @@
+<script type="text/x-red" data-template-name="elasticsearch">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-file"></i> <span data-i18n="elasticsearch.label.name"></span></label>
+        <input type="text" id="node-input-name" data-i18n="[placeholder]elasticsearch.label.name">
+    </div>
+	<!--
+    <div class="form-row">
+        <label for="node-input-index"><i class="fa fa-file"></i> <span data-i18n="elasticsearch.label.index"></span></label>
+        <input type="text" id="node-input-index" data-i18n="[placeholder]elasticsearch.label.index">
+    </div>
+	-->
+    <div class="form-row">
+        <label for="node-input-typeName"><i class="fa fa-file"></i> <span data-i18n="elasticsearch.label.typeName"></span></label>
+        <input type="text" id="node-input-typeName" data-i18n="[placeholder]elasticsearch.label.typeName">
+    </div>
+    <div class="form-tips" id="spawnTip"><span data-i18n="[html]elasticsearch.tip"></span></div>
+</script>
+
+<script type="text/x-red" data-help-name="elasticsearch">
+    <p>Outgoing Websocket connection</p>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('elasticsearch',{
+        category: 'output',
+        color: "yellow",
+        defaults: {
+        	name: {value:""},
+        	//index: {value:"", required:true},
+        	typeName: {value:"", required:true}
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "debug.png",
+        align: "right",
+        label: function() {
+            return "Elasticsearch" + (this.index ? (" (" + this.index + "/" + this.typeName + ")") : "");
+        },
+        labelStyle: function() {
+            return this.port ? "node_label_italic":"";
+        }
+    });
+</script>
+
+<script type="text/javascript">
+	var locales = {
+		"elasticsearch.label.name": "Name",
+		//"elasticsearch.label.index": "Index",
+		"elasticsearch.label.typeName": "Type"
+	};
+	i18n.addResources('en-US', 'node-red', locales);
+</script>

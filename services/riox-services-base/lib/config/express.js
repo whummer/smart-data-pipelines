@@ -17,7 +17,6 @@ var session = require('express-session');
 module.exports = function(app, config) {
 	var env = app.get('env');
 
-	//app.set('views', config.root + '/app/views');
 	app.engine('html', require('ejs').renderFile);
 	app.set('view engine', 'html');
 	app.use(compression());

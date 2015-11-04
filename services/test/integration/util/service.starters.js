@@ -17,64 +17,12 @@ var ensureMockgoose = x.ensureMockgoose = function() {
 	}
 };
 
-// TODO FR obsolete should be removed
-// x.startStreamsService = function() {
-// 	if(!services.streams) {
-// 		/* make sure we use mockgoose as DB */
-// 		ensureMockgoose();
-// 		/* prepare and run service */
-// 		services.streams = { port : 3000, sinks: {}, sources: {}, processors: {} };
-// 		services.streams.url = global.servicesConfig.streams.url =
-// 			"http://localhost:" + services.streams.port + "/api/v1/streams";
-// 		services.streams.sources.url = global.servicesConfig.streamsources.url = services.streams.url + "/sources";
-// 		services.streams.sinks.url = global.servicesConfig.streamsinks.url = services.streams.url + "/sinks";
-// 		services.streams.processors.url = global.servicesConfig.streamprocessors.url = services.streams.url + "/processors";
-// 		process.env.SERVICE_PORT = services.streams.port;
-// 		services.streams.server = require('../../../pipes-service/app.js');
-// 	}
-// 	if(!services.streams.server.started)
-// 		services.streams.server.start();
-// 	return services.streams;
-// }
-
-// x.startStreamsAccessService = function() {
-// 	if(!services.access) {
-// 		/* make sure we use mockgoose as DB */
-// 		ensureMockgoose();
-// 		/* prepare and run service */
-// 		services.access = { port : 3000 };
-// 		services.access.url = global.servicesConfig.access.url =
-// 			"http://localhost:" + services.access.port + "/api/v1/access";
-// 		x.startStreamsService();
-// 		services.access.server = services.streams.server;
-// 	}
-// 	if(!services.access.server.started)
-// 		services.access.server.start();
-// 	return services.access;
-// }
-
-// x.startStreamsConsentsService = function() {
-// 	if(!services.consents) {
-// 		/* make sure we use mockgoose as DB */
-// 		ensureMockgoose();
-// 		/* prepare and run service */
-// 		services.consents = { port : 3000 };
-// 		services.consents.url = global.servicesConfig.consents.url =
-// 			"http://localhost:" + services.consents.port + "/api/v1/consents";
-// 		x.startStreamsService();
-// 		services.consents.server = services.streams.server;
-// 	}
-// 	if(!services.consents.server.started)
-// 		services.consents.server.start();
-// 	return services.consents;
-// }
-
 x.startUsersService = function() {
 	if(!services.users) {
 		/* make sure we use mockgoose as DB */
 		ensureMockgoose();
 		/* prepare and run service */
-		services.users = { port : 3001 };
+		services.users = { port : 3003 };
 		services.users.url = global.servicesConfig.users.url =
 			"http://localhost:" + services.users.port + "/api/v1/users";
 		process.env.SERVICE_PORT = services.users.port;
@@ -90,7 +38,7 @@ x.startOrganizationsService = function() {
 		/* make sure we use mockgoose as DB */
 		ensureMockgoose();
 		/* prepare and run service */
-		services.organizations = { port : 3001 };
+		services.organizations = { port : 3003 };
 		services.organizations.url = global.servicesConfig.organizations.url =
 			"http://localhost:" + services.organizations.port + "/api/v1/organizations";
 		process.env.SERVICE_PORT = services.organizations.port;
@@ -143,7 +91,7 @@ x.startPipesService = function() {
 		/* make sure we use mockgoose as DB */
 		ensureMockgoose();
 
-		services.pipes = { port : 3000, deployments: {} };
+		services.pipes = { port : 3002, deployments: {} };
 		services.pipes.url = global.servicesConfig.pipes.url =
 			"http://localhost:" + services.pipes.port + "/api/v1/pipes";
 		services.pipes.deployments.url
