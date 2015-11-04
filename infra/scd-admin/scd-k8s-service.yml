@@ -1,9 +1,0 @@
-kind: Service
-apiVersion: v1
-metadata:
-  name: scd-admin-k8s
-spec:
-  selector:
-    name: scd-admin-k8s
-  ports:
-    - port: 9393

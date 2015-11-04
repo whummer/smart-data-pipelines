@@ -1,8 +1,5 @@
 'use strict';
 
-// var mongoose = global.mongoose || require('mongoose-q')();
-// var mongoose = require('mongoose-q')(require('mongoose'));
-
 var Schema = mongoose.Schema;
 
 const ELEMENT_TYPES = ['container', 'source', 'sink', 'processor'];
@@ -22,13 +19,15 @@ var pipeElementTypeValidator = function (type) {
 
 var pipeElementSchema = {};
 pipeElementSchema['_id'] = {type: String, default: genShortUUID};
+pipeElementSchema[NAME] = String;
 pipeElementSchema[CREATOR_ID] = String;
 pipeElementSchema[CREATION_DATE] = {type: Date, default: Date.now};
 pipeElementSchema[DESCRIPTION] = String;
 pipeElementSchema[PIPE_ICON] = String;
+pipeElementSchema[CATEGORY] = String;
 pipeElementSchema[TYPE] = {type: String, validator: pipeElementTypeValidator};
-pipeElementSchema[PIPE_ELEMENT_SUBTYPE] = String;
-pipeElementSchema[PIPE_ELEMENT_OPTIONS] = [PipeElementOptionSchema];
+pipeElementSchema[HTML] = String;
+pipeElementSchema[OPTIONS] = [PipeElementOptionSchema];
 
 var PipeElementSchema = new Schema(pipeElementSchema);
 PipeElementSchema.set('toJSON', {virtuals: true});

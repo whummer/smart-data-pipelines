@@ -11,7 +11,7 @@ var LRUCache = require("lru-cache");
 var validateJwt = expressJwt({secret: config.secrets.session});
 
 //var INTERNAL_USER_ID = "000000000000000000000000"; // Mongodb ID format
-var INTERNAL_USER_ID = "000000000000"; // Mongodb ID format
+var INTERNAL_USER_ID = "000000000000";
 var expiresInMinutes = 60 * 24 * 3; // 3 days expiration time
 
 var usersCache = LRUCache({
@@ -135,7 +135,7 @@ function fetchOrgs() {
 					req.user.getDefaultOrganization = function () {
 						var result = null;
 						this.organizations.forEach(function (org) {
-							if (org[CREATOR_ID] == user.id) result = org;
+							if (org[CREATOR_ID] == req.user.id) result = org;
 						});
 						return result;
 					};

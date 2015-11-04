@@ -40,6 +40,9 @@ build-image:
 	docker build -t ${IMAGE}:${IMAGE_VERSION} .
 	#infra/bin/docker-squash-image.sh
 
+build-test-image:
+	docker build -f services/test/Dockerfile -t riox/hyperriox-test:${IMAGE_VERSION} .
+
 push-image:
 	docker push ${IMAGE}:${IMAGE_VERSION}
 
@@ -52,8 +55,10 @@ run-integration-tests:
 	(cd services/test && kubectl create -f k8s.yml --namespace=${RIOX_ENV})
 
 run-integration-tests-local:
-	(cd services/test && PULL_POLICY=IfNotPresent ../../util/templater.sh k8s.tmpl.yml > k8s.yml)
+	(cd services/test && PULL_POLICY=IfNotPresent IMAGE_NAME=hyperriox-test ../../util/templater.sh k8s.tmpl.yml > k8s.yml)
 	(cd services/test && kubectl create -f k8s.yml --namespace=${RIOX_ENV})
+	echo "Trying to attach to stdout of test process after a short while..."
+	sleep 15 && kubectl logs -f integration-tests
 
 cleanup-integration-tests:
 	(cd services/test && kubectl delete -f k8s.yml --namespace=${RIOX_ENV})
@@ -64,36 +69,16 @@ cleanup-integration-tests:
 .PHONY: deploy-services undeploy-services scaledown-services render-template
 
 render-template:
-	(cd web-ui && MOUNT_LOCAL_CMD='#' ../util/templater.sh k8s.tmpl.yml > k8s.yml)
-	(cd services/analytics-service && MOUNT_LOCAL_CMD='#' ../../util/templater.sh k8s.tmpl.yml > k8s.yml)
-	(cd services/files-service && MOUNT_LOCAL_CMD='#' ../../util/templater.sh k8s.tmpl.yml > k8s.yml)
-	(cd services/pipes-service && MOUNT_LOCAL_CMD='#' ../../util/templater.sh k8s.tmpl.yml > k8s.yml)
-	(cd services/users-service && MOUNT_LOCAL_CMD='#' ../../util/templater.sh k8s.tmpl.yml > k8s.yml)
-	(cd services/access-service && MOUNT_LOCAL_CMD='#' ../../util/templater.sh k8s.tmpl.yml > k8s.yml)
-	(cd services/gateway-service && MOUNT_LOCAL_CMD='#' ../../util/templater.sh k8s.tmpl.yml > k8s.yml)
-	(cd services/pricing-service && MOUNT_LOCAL_CMD='#' ../../util/templater.sh k8s.tmpl.yml > k8s.yml)
-
-render-template-local:
-	(cd web-ui && PULL_POLICY=IfNotPresent ../util/templater.sh k8s.tmpl.yml > k8s.yml)
-	(cd services/analytics-service && PULL_POLICY=IfNotPresent ../../util/templater.sh k8s.tmpl.yml > k8s.yml)
-	(cd services/files-service && PULL_POLICY=IfNotPresent ../../util/templater.sh k8s.tmpl.yml > k8s.yml)
-	(cd services/pipes-service && PULL_POLICY=IfNotPresent ../../util/templater.sh k8s.tmpl.yml > k8s.yml)
-	(cd services/users-service && PULL_POLICY=IfNotPresent ../../util/templater.sh k8s.tmpl.yml > k8s.yml)
-	(cd services/access-service && PULL_POLICY=IfNotPresent ../../util/templater.sh k8s.tmpl.yml > k8s.yml)
-	(cd services/gateway-service && PULL_POLICY=IfNotPresent ../../util/templater.sh k8s.tmpl.yml > k8s.yml)
-	(cd services/pricing-service && PULL_POLICY=IfNotPresent ../../util/templater.sh k8s.tmpl.yml > k8s.yml)
+	(cd web-ui && ../util/templater.sh k8s.tmpl.yml > k8s.yml)
+	(cd services/analytics-service && ../../util/templater.sh k8s.tmpl.yml > k8s.yml)
+	(cd services/files-service && ../../util/templater.sh k8s.tmpl.yml > k8s.yml)
+	(cd services/pipes-service && ../../util/templater.sh k8s.tmpl.yml > k8s.yml)
+	(cd services/users-service && ../../util/templater.sh k8s.tmpl.yml > k8s.yml)
+	(cd services/access-service && ../../util/templater.sh k8s.tmpl.yml > k8s.yml)
+	(cd services/gateway-service && ../../util/templater.sh k8s.tmpl.yml > k8s.yml)
+	(cd services/pricing-service && ../../util/templater.sh k8s.tmpl.yml > k8s.yml)
 
 deploy-services: render-template
-	(cd web-ui && kubectl create -f k8s.yml --namespace=${RIOX_ENV})
-	(cd services/users-service && kubectl create -f k8s.yml --namespace=${RIOX_ENV})
-	(cd services/analytics-service && kubectl create -f k8s.yml --namespace=${RIOX_ENV})
-	(cd services/files-service && kubectl create -f k8s.yml --namespace=${RIOX_ENV})
-	(cd services/pipes-service && kubectl create -f k8s.yml --namespace=${RIOX_ENV})
-	(cd services/access-service && kubectl create -f k8s.yml --namespace=${RIOX_ENV})
-	(cd services/gateway-service && kubectl create -f k8s.yml --namespace=${RIOX_ENV})
-	(cd services/pricing-service && kubectl create -f k8s.yml --namespace=${RIOX_ENV})
-
-deploy-services-local: render-template-local
 	(cd web-ui && kubectl create -f k8s.yml --namespace=${RIOX_ENV})
 	(cd services/users-service && kubectl create -f k8s.yml --namespace=${RIOX_ENV})
 	(cd services/analytics-service && kubectl create -f k8s.yml --namespace=${RIOX_ENV})

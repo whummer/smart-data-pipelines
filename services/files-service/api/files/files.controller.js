@@ -11,23 +11,15 @@ var HEADER_VALUE_INTERNAL_USE_ONLY = "__internal__";
 
 var directory = exports.directory = "/var/tmp/riox-file-service-data";
 
-exports.upload = multer(
-		{ dest: directory }
-);
+var multerUpload = multer({
+	dest: directory
+	}).single("uploadfile");
 
-var getMetadataFile = function(fileID) {
-	return directory + "/" + fileID + ".metadata";
-}
+exports.upload = multerUpload;
 
 exports.uploadFix = function(req, res, next){
 	var result = {files : {}};
-	var fileID = null;
-	var keys = Object.keys(req.files);
-	keys.forEach(function(key) {
-		var val = req.files[key];
-		fileID = val.name;
-		result.files[key] = fileID;
-	});
+	var fileID = req.file.filename;
 	result.fileID = fileID;
 	res.set("Location", fileID);
 	if(req.get(HEADER_NAME_ALLOW_ORIGIN) == HEADER_VALUE_INTERNAL_USE_ONLY) {
@@ -36,14 +28,29 @@ exports.uploadFix = function(req, res, next){
 		options[HEADER_NAME_ALLOW_ORIGIN] = HEADER_VALUE_INTERNAL_USE_ONLY;
 		fs.writeFileSync(optionsFile, JSON.stringify(options));
 	}
-	if(keys.length == 1) {
-		result = fileID;
-	}
     res.json(result);
 };
 
-exports.create = function(req, res, next) {
-	// TODO
+exports.update = multerUpload;
+
+exports.updateFix = function(req, res, next){
+	var result = {files : {}};
+	var actualFileID = req.params.id;
+	var tmpFileID = req.file.filename;
+	result.fileID = actualFileID;
+	res.set("Location", actualFileID);
+	if(req.get(HEADER_NAME_ALLOW_ORIGIN) == HEADER_VALUE_INTERNAL_USE_ONLY) {
+		var optionsFile = getMetadataFile(actualFileID);
+		var options = {};
+		options[HEADER_NAME_ALLOW_ORIGIN] = HEADER_VALUE_INTERNAL_USE_ONLY;
+		fs.writeFileSync(optionsFile, JSON.stringify(options));
+	}
+	/* move/update files */
+	var tmpFile = idToFilepath(tmpFileID);
+	var actualFile = idToFilepath(actualFileID);
+	fs.renameSync(tmpFile, actualFile);
+
+    res.json(result);
 };
 
 exports.download = function(req, res, next) {
@@ -65,7 +72,11 @@ exports.download = function(req, res, next) {
 	}
 
 	var filename = idToFilepath(id);
-	var pipe = fs.createReadStream(filename).pipe(res);
+	if(fs.existsSync(filename)) {
+		fs.createReadStream(filename).pipe(res);
+	} else {
+		res.status(404).json({});
+	}
 };
 
 exports.remove = function(req, res, next) {
@@ -80,3 +91,7 @@ exports.remove = function(req, res, next) {
 var idToFilepath = function(id) {
 	return directory + "/" + id;
 };
+
+var getMetadataFile = function(fileID) {
+	return directory + "/" + fileID + ".metadata";
+}

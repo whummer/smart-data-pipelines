@@ -14,7 +14,6 @@
 				);
 			};
 		});
-
 	});
 
 	module.directive('markerLabel', function ($compile) {
@@ -44,6 +43,9 @@
 				objects: {}
 		};
 		$scope.timeField = $scope.timeField || "timestamp";
+		$scope.locField = $scope.locField || "location";
+		$scope.esIndexName = $scope.esIndexName || 'ORG_ID'; // TODO don't hardcode here (?)
+		$scope.esUrl = $scope.esUrl || '/api/v1/gateway/elasticsearch/'; // TODO don't hardcode here (?)
 
 		var isArray = function(someVar) {
 			return Object.prototype.toString.call( someVar ) === '[object Array]';
@@ -67,6 +69,7 @@
 		var displayObjects = function(objects) {
 			objects.forEach(function(obj) {
 				setMarker(obj);
+				console.log(obj);
 			});
 			fitMapZoomToMarkers();
 		};
@@ -139,6 +142,10 @@
 		};
 
 		$scope.displayMap = function() {
+			if(!$scope.idField) {
+				console.warn("Required attribute 'id-field' not specified for <riox-map-leaflet>.");
+				return;
+			}
 			getObjectIDs().
 				then(getAllObjectDetails).
 				then(displayObjects);
@@ -165,6 +172,7 @@
 	    		esIndexName: '=',
 	    		esTypeName: '=',
 	    		idField: '=',
+	    		timeField: '=',
 	    		locField: '=',
 	    		labelTemplate: '='
 			},

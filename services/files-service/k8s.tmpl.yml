@@ -41,13 +41,6 @@ items:
                   port: 8087
                 initialDelaySeconds: 30
                 timeoutSeconds: 3
-              {{MOUNT_LOCAL_CMD}}volumeMounts:
-                {{MOUNT_LOCAL_CMD}}- mountPath: "/code"
-                  {{MOUNT_LOCAL_CMD}}name: "riox-code-dir"
-          {{MOUNT_LOCAL_CMD}}volumes:
-            {{MOUNT_LOCAL_CMD}}- hostPath:
-                {{MOUNT_LOCAL_CMD}}path: {{BASE_PATH}}
-              {{MOUNT_LOCAL_CMD}}name: riox-code-dir
 
   - kind: Service
     apiVersion: v1

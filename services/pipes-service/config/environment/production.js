@@ -20,13 +20,14 @@ module.exports = {
 		port: 2181
 	},
 
-	springxdadmin: {
-		hostname: "xd-admin.production.svc.cluster.local",
-		port: 9393
+	redis: {
+		hostname: appConfig["production"].infra.redis.hostname,
+		port: 6379,
+		url: appConfig["production"].infra.redis.url
 	},
 
 	elasticsearch: {
-		hostname: "elasticsearch.production.svc.cluster.local",
+		hostname: appConfig["production"].infra.elasticsearch.hostname,
 		port: 9300
 	},
 

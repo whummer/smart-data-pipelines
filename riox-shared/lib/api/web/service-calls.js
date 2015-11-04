@@ -67,7 +67,7 @@ var __transformResult = function(data) {
 		return data;
 	}
 	data = '{"__result": ' + data + '}';
-	json = JSON.parse(data);
+	var json = JSON.parse(data).__result;
 	return json;
 }
 
@@ -91,7 +91,7 @@ $.ajaxSetup({
     converters: {
         "text json": function(data) {
 			var result = JSON.parse( data + "" );
-			return { __result: result };
+			return result; //{ __result: result };
 		}
     }
 });
@@ -121,12 +121,19 @@ var __getConfig = function($http) {
 		headers: __defaultHeaders,
 		transformResponse: __transformResult
 	};
+	var headers = $http ? $http.headers : {};
 	if(!$http || !$http.get) {
 		if(window.rootScope) {
 			$http = rootScope.http;
 		} else {
 			$http = $;
 			options = null;
+		}
+	}
+	if(headers) {
+		if(!options) options = {headers: {}};
+		for(var key in headers) {
+			options.headers[key] = headers[key];
 		}
 	}
 	return {
@@ -173,6 +180,7 @@ sh.invokeGET = function($http, url, callback, errorCallback) {
 	}).
 	error(function(data, status, headers, config) {
 		if(window.setLoadingStatus) setLoadingStatus(false);
+		//console.log("invocation error", data, status, headers);
 		if(errorCallback) {
 			errorCallback(data, status, headers, config);
 		} else {
@@ -185,8 +193,14 @@ sh.invokePOST = function($http, url, body, callback, errorCallback) {
 	if(window.setLoadingStatus) setLoadingStatus(true);
 	var cfg = __getConfig($http);
 	$http = cfg.http;
-	var options = cfg.options;
-	$http.post(url, body, options).
+	var options = cfg.options || {};
+	var params = {
+		type: "POST",
+		url: url,
+		data: body,
+		headers: options.headers
+	};
+	$http.ajax(params).
 	success(function(data, status, headers, config) {
 		if(window.setLoadingStatus) setLoadingStatus(false);
 		callback(data, status, headers, config);

@@ -21,8 +21,12 @@ angular.module('rioxApp', [
 	'oc.lazyLoad',
 	'chart.js',
 	'ngTable',
-	//'dragularModule'
 	'leaflet-directive',
+
+	'riox-map-leaflet',
+	'riox-table',
+	'riox-timeseries',
+
 	'dndLists' // drag and drop stuff
 ])
 		.config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider, growlProvider) {
