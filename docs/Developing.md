@@ -216,9 +216,32 @@ luarocks-5.1 install inspect 1.2-2
 # Checkout Redx - Redis Extension for Nginx
 sudo git clone https://github.com/whummer/redx.git /opt/redx
 ```
-##### One time Linux setup
 
-TODO @whummer
+##### One time Linux setup (Debian/Ubuntu)
+
+```
+# Install Lua and Nginx based OpenResty
+sudo apt-get update
+wget https://openresty.org/download/ngx_openresty-1.9.3.1.tar.gz
+tar -xvzf ngx_openresty-1.9.3.1.tar.gz
+apt-get install libpcre3 libpcre3-dev libssl-dev
+(cd ngx_openresty-1.9.3.1 && ./configure && make && sudo make install)
+sudo ln -s /usr/local/openresty/nginx/sbin/nginx /usr/bin/openresty
+
+# Install Lua modules
+sudo apt-get install luarocks
+luarocks install luasocket && \
+luarocks install ansicolors && \
+luarocks install luasec 0.4-4 && \ # may require: OPENSSL_LIBDIR=/usr/lib/x86_64-linux-gnu/
+luarocks install lua-cjson 2.1.0-1 && \
+luarocks install busted 1.9.0-1 && \
+luarocks install lapis 1.0.4-1 && \
+luarocks install moonscript 0.2.4-1 && \
+luarocks install inspect 1.2-2
+
+# Checkout Redx - Redis Extension for Nginx
+sudo git clone https://github.com/whummer/redx.git /opt/redx
+```
 
 #### Start the Gateway:
 
