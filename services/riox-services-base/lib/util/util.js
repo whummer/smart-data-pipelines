@@ -7,6 +7,9 @@ exports.genShortUUID = global.genShortUUID = function() {
     return id;
 };
 
+exports.clone = global.clone = function (obj) {
+	return JSON.parse(JSON.stringify(obj));
+};
 
 /*
  * Based on

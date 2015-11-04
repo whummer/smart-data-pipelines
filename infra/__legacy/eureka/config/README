@@ -1,3 +1,0 @@
-For running eureka set the following properties for Tomcat:
-
-export CATALINA_OPTS='-Deureka.datacenter=cloud -Deureka.registration.enabled=true -Deureka.environment=prod'

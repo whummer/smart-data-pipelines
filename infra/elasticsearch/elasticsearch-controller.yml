@@ -13,9 +13,11 @@ spec:
       labels:
          name: elasticsearch
     spec:
+      imagePullSecrets:
+        - name: rioxregistrykey
       containers:
       - name: elasticsearch
-        image: kubernetes/elasticsearch:1.0
+        image: riox/elasticsearch
         env:
           - name: "CLUSTER_NAME"
             value: "elasticsearch"

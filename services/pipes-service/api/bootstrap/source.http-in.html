@@ -1,0 +1,44 @@
+<script type="text/x-red" data-template-name="http-in">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-file"></i> <span data-i18n="http-in.label.name"></span></label>
+        <input type="text" id="node-input-name" data-i18n="[placeholder]http-in.label.name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-port"><i class="fa fa-file"></i> <span data-i18n="http-in.label.port"></span></label>
+        <input type="text" id="node-input-port" data-i18n="[placeholder]http-in.label.port">
+    </div>
+    <div class="form-tips" id="spawnTip"><span data-i18n="[html]http-in.tip"></span></div>
+</script>
+
+<script type="text/x-red" data-help-name="http-in">
+    <p>Creates an inbound HTTP input</p>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('http-in',{
+        category: 'input',
+        color:"lightsalmon",
+        defaults: {
+        	name: {value:""},
+            port: {value:"8080", required:true}
+        },
+        inputs: 0,
+        outputs: 1,
+        icon: "arrow-in.png",
+        align: "right",
+        label: function() {
+            return this.name || "HTTP" + (this.port ? (" (Port " + this.port + ")") : "");
+        },
+        labelStyle: function() {
+            return this.url?"node_label_italic":"";
+        }
+    });
+</script>
+
+<script type="text/javascript">
+	var locales = {
+		"http-in.label.name": "Name",
+		"http-in.label.port": "Port"
+	};
+	i18n.addResources('en-US', 'node-red', locales);
+</script>

@@ -14,10 +14,57 @@ exports.listAll = function (req, res, next) {
 		}
 
 		log.info('Loaded %d pipe elements', pipes.length);
-		return res.json(200, pipes);
+		return res.json(pipes);
 	}).catch(error => {
 		log.error('Cannot list pipe elements: ', error);
 		return next(errors.InternalError('Cannot list pipe elements', error));
+	});
+};
+
+exports.listNodeRedNodes = function (req, res, next) {
+	var query = req.query || {};
+	PipeElement.findQ({}).then(pipes => {
+		if (!pipes || pipes.length == 0) {
+			return next(errors.NotFoundError('No pipe elements found'));
+		}
+		var result = [];
+		pipes.forEach(function(el) {
+			var tmp = {};
+			tmp[ID] = "node-red/" + el[TYPE];
+			tmp[NAME] = el[TYPE];
+			tmp[ENABLED] = true;
+			tmp["module"] = "node-red";
+			tmp["version"] = "0.11.1";
+			tmp["types"] =
+				[
+				 el[TYPE]
+				];
+			result.push(tmp);
+		});
+		return res.json(result);
+	}).catch(error => {
+		log.error('Cannot list node-red nodes: ', error);
+		return next(errors.InternalError('Cannot list node-red nodes', error));
+	});
+};
+
+exports.listNodeRedNodesHtml = function (req, res, next) {
+	var query = req.query || {};
+	PipeElement.findQ({}).then(pipes => {
+		if (!pipes || pipes.length == 0) {
+			return next(errors.NotFoundError('No pipe elements found'));
+		}
+		var result = "";
+		pipes.forEach(function(el) {
+			var html = el[HTML];
+			if(html) {
+				result += "\n" + html;
+			}
+		});
+		return res.send(result);
+	}).catch(error => {
+		log.error('Cannot generate node-red HTML: ', error);
+		return next(errors.InternalError('Cannot generate node-red HTML', error));
 	});
 };
 

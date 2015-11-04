@@ -1,0 +1,68 @@
+<script type="text/x-red" data-template-name="chart">
+	<div class="form-row">
+		<label for="node-input-name"><i class="fa fa-file"></i> <span data-i18n="chart.label.name"></span></label>
+		<input type="text" id="node-input-name" data-i18n="[placeholder]chart.label.name">
+	</div>
+	<div class="form-row">
+		<label for="node-input-typeName"><i class="fa fa-file"></i> <span data-i18n="chart.label.typeName"></span></label>
+		<input type="text" id="node-input-typeName" data-i18n="[placeholder]chart.label.typeName">
+	</div>
+	<div class="form-row">
+		<label for="node-input-search"><i class="fa fa-file"></i> <span data-i18n="chart.label.search"></span></label>
+		<input type="text" id="node-input-search" data-i18n="[placeholder]chart.label.search">
+	</div>
+	<div class="form-row">
+		<label for="node-input-titles"><i class="fa fa-file"></i> <span data-i18n="chart.label.titles"></span></label>
+		<input type="text" id="node-input-titles" data-i18n="[placeholder]chart.label.titles">
+	</div>
+	<div class="form-row">
+		<label for="node-input-timeField"><i class="fa fa-file"></i> <span data-i18n="chart.label.timeField"></span></label>
+		<input type="text" id="node-input-timeField" data-i18n="[placeholder]chart.label.timeField">
+	</div>
+	<div class="form-row">
+		<label for="node-input-valueField"><i class="fa fa-file"></i> <span data-i18n="chart.label.valueField"></span></label>
+		<input type="text" id="node-input-valueField" data-i18n="[placeholder]chart.label.valueField">
+	</div>
+	<div class="form-tips" id="spawnTip"><span data-i18n="[html]chart.tip"></span></div>
+</script>
+
+<script type="text/x-red" data-help-name="chart">
+	<p>Display results on a 2D chart</p>
+</script>
+
+<script type="text/javascript">
+	RED.nodes.registerType('chart',{
+		category: 'output',
+		color: "lightyellow",
+		defaults: {
+			"name": {value:""},
+			"typeName": {value:"", required:true},
+			"timeField": {value:"", required:true},
+			"valueField": {value:"", required:true},
+			"search": {value:"", required:true},
+			"titles": {value:"", required:true}
+		},
+		inputs: 1,
+		outputs: 0,
+		icon: "swap.png",
+		align: "right",
+		label: function() {
+			return this.name || "Display Chart";
+		},
+		labelStyle: function() {
+			return this.url?"node_label_italic":"";
+		}
+	});
+</script>
+
+<script type="text/javascript">
+	var locales = {
+		"chart.label.name": "Name",
+		"chart.label.typeName": "ES Type",
+		"chart.label.search": "ES Chart Search",
+		"chart.label.titles": "Chart Title",
+		"chart.label.timeField": "Time Field (x-axis)",
+		"chart.label.valueField": "Value Field (y-axis)"
+	};
+	i18n.addResources('en-US', 'node-red', locales);
+</script>

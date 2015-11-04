@@ -28,16 +28,12 @@ ADD ./Makefile /code/
 RUN \
 
 	# install prerequisites
-	#npm config set registry http://registry.npmjs.eu && \
-	#npm config set proxy http://web4d.ftp.sh:40445/ && \
-	#npm config set https-proxy http://web4d.ftp.sh:40445/ && \
 	npm config set strict-ssl false && \
 	#npm install npm -g && \
 	#npm install -g npm@3.3.6 && \
 	npm install -g npm@2.14.8 && \
 	npm cache clean && rm -rf /tmp/* /root/.npm && \
-	#npm config ls -l && \
-	make install-prereq && \
+	make install-prereq > /dev/null && \
 
 	# clean up npm cache
 	rm -rf /root/.cache /root/.npm /tmp/*
@@ -47,8 +43,6 @@ ADD ./gulpfile.js ./package.json /code/
 
 # add package.json files to prepare npm install
 ADD ./bin/ /code/bin/
-ADD ./gateway/package.json /code/gateway/
-ADD ./gateway/ext/http-proxy/package.json /code/gateway/ext/http-proxy/
 ADD ./services/riox-services-base/package.json /code/services/riox-services-base/
 ADD ./services/files-service/package.json /code/services/files-service/
 ADD ./services/users-service/package.json /code/services/users-service/
@@ -74,16 +68,12 @@ ADD ./web-ui/*gulpfile.js /code/web-ui/
 ADD ./web-ui/.bowerrc /code/web-ui/
 RUN gulp ui:bower && rm -rf /root/.cache /tmp/*
 
-# clean up
-#RUN apt-get purge -y git make g++ gcc python perl
-
 # FR: Need to do this explicitly b/c for some reason it is not installed
 RUN npm install -g riox/Mockgoose#master
 
 # now add code dirs
 ADD ./services/ /code/services/
 ADD ./web-ui/ /code/web-ui/
-ADD ./gateway/ /code/gateway/
 ADD ./riox-shared/ /code/riox-shared/
 
 	# finish up
@@ -93,9 +83,13 @@ RUN rm -rf `find . -name node_modules` && \
 	# set config to use link-local before running npm install
 	echo '{"build":{"linklocal":true}}' > /root/.rioxrc && \
 
-	# link local deps && \
+	# link local deps
 	gulp deps:clean:local && \
 	node bin/preinstall.js && \
-	gulp ui:bower
+	gulp ui:bower && \
+
+	# Finish by making production build of Web UI code. Note: need to set
+	# a high stack size, due to: https://github.com/mishoo/UglifyJS2/issues/414
+	node --stack-size=10000 `which gulp` ui:build:prod
 
 CMD ["/bin/bash"]

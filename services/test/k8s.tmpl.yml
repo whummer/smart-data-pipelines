@@ -1,3 +1,4 @@
+{{IMAGE_NAME=hyperriox}}
 {{IMAGE_VERSION=latest}}
 {{PULL_POLICY=Always}}
 apiVersion: v1
@@ -19,6 +20,21 @@ items:
       - name: "mockservice1"
         port: 6788
         protocol: TCP
+      - name: "mockservice2"
+        port: 3001
+        protocol: TCP
+      - name: "mockservice3"
+        port: 3002
+        protocol: TCP
+      - name: "mockservice4"
+        port: 3003
+        protocol: TCP
+      - name: "mockservice5"
+        port: 3004
+        protocol: TCP
+      - name: "mockservice6"
+        port: 3005
+        protocol: TCP
   - kind: Pod
     apiVersion: v1
     metadata:
@@ -27,7 +43,7 @@ items:
          name: integration-tests
     spec:
       containers:
-      - image: riox/hyperriox:{{IMAGE_VERSION}}
+      - image: riox/{{IMAGE_NAME}}:{{IMAGE_VERSION}}
         imagePullPolicy: {{PULL_POLICY}}
         name: integration-tests
         ports:
@@ -35,6 +51,16 @@ items:
             containerPort: 6789
           - name: mockservice1
             containerPort: 6788
+          - name: mockservice2
+            containerPort: 3001
+          - name: mockservice3
+            containerPort: 3002
+          - name: mockservice4
+            containerPort: 3003
+          - name: mockservice5
+            containerPort: 3004
+          - name: mockservice6
+            containerPort: 3005
         command:
           [ "sh", "-c", "gulp test:integration && cat services/test/test-report.xml"]
         env:

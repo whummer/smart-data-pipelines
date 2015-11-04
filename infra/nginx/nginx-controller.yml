@@ -30,12 +30,10 @@ spec:
             value: "'6379'"
           - name: "MAX_PATH_LENGTH"
             value: "3"
-          #- name: "ADD_DEV_HOSTS"
-          #  value: "yes"
         ports:
         - name: api
           containerPort: 8082
         - name: http
-          containerPort: 80
+          containerPort: 8080
         - name: https
-          containerPort: 443
+          containerPort: 8443

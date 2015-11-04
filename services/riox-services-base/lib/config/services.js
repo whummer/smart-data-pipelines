@@ -87,6 +87,15 @@ envs.forEach(function(env) {
 				nginx: {
 					url: "http://" + getHost(env, "nginx-config") + ":8082"
 				},
+				elasticsearch: {
+					hostname: getHost(env, "elasticsearch")
+				},
+				springcdf: {
+					hostname: getHost(env, "scd-admin-k8s")
+				},
+				springcdfLocal: {
+					hostname: getHost(env, "scd-admin-local")
+				},
 				statsd: {
 					hostname: getHost(env, "statsd")
 				}

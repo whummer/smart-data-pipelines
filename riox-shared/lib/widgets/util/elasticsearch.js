@@ -81,7 +81,7 @@
 					typeName + "/_search?q=" + query +
 					(!sort ? "" : ("&sort=" + sort + ":" + order)) +
 					"&size=" + size;
-			riox.callGET(theUrl, function(data) {
+			var handleResult = function(data) {
 				var result = [];
 				if(!data.hits.hits.length) {
 					console.log("No results for query:", theUrl);
@@ -94,9 +94,18 @@
 					var result = result[0];
 				}
 				resolve(result);
-			}, function(error) {
-				console.log("Unable to retrieve elasticsearch data.", error);
-				reject(error);
+			};
+			riox.callGET(theUrl, handleResult, 
+			function(result) {
+				if(result.status == 200 && result.responseText) {
+					/* looks like the underlying ajax call was unable to convert the result to JSON.
+					 * This sometimes happens if ES returns documents which, e.g., contain unquoted field names. */
+					var data = eval("(" + result.responseText + ")");
+					handleResult(data);
+				} else {
+					console.log("Unable to retrieve elasticsearch data.", result);
+					reject(result);
+				}
 			});
 		});
 		return promise;

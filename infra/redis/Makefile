@@ -15,9 +15,9 @@ deploy-standalone:
 
 undeploy-standalone:
 	@echo "Undeploying Redis ..."
-	kubectl stop -f redis-master.yml --namespace=${RIOX_ENV}
-	kubectl stop -f redis-master-service.yml --namespace=${RIOX_ENV}
-	kubectl stop -f redis-sentinel-service.yml --namespace=${RIOX_ENV}
+	-(kubectl stop -f redis-master.yml --namespace=${RIOX_ENV})
+	-(kubectl stop -f redis-master-service.yml --namespace=${RIOX_ENV})
+	-(kubectl stop -f redis-sentinel-service.yml --namespace=${RIOX_ENV})
 
 deploy-cluster:
 	kubectl create -f redis-master.yml --namespace=${RIOX_ENV}
