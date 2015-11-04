@@ -21,6 +21,13 @@
 						"<%}%>" +
 						"</ul>"
 		};
+		$scope.esIndexName = $scope.esIndexName || 'ORG_ID'; // TODO don't hardcode here (?)
+		$scope.esUrl = $scope.esUrl || '/api/v1/gateway/elasticsearch/'; // TODO don't hardcode here (?)
+		$scope.titles = $scope.titles || [];
+		$scope.esSearch = $scope.esSearch || [];
+		if(typeof $scope.titles === "string") {
+			$scope.titles = [$scope.titles];
+		}
 
 		$scope.objects = [];
 
@@ -29,13 +36,13 @@
 				fillColor: color,
 				strokeColor: "rgba(200,200,200,1)"
 			} : null;
-			for(var i = 0; i < $scope.titles.length; i ++) {
+			for(var i = 0; i < count; i ++) {
 				$scope.chart.colours.push(colorObj);
 			}
 		}
 
 		var getItemSeries = function() {
-			if(typeof $scope.esSearch == "string") {
+			if(typeof $scope.esSearch === "string") {
 				$scope.esSearch = [$scope.esSearch];
 			}
 			var series = $scope.chart.series = [];
@@ -148,10 +155,56 @@
 			}
 			addPredictionTitles(objects);
 			$scope.$apply();
+
+			/* NOTE: whu: in some situations it happens that the 
+			 * scope.apply call is not propagated to the scope of the underlying 
+			 * chart. We don't know why this happens at this point, but as a quick 
+			 * fix we make this check here and apply the changes within the 
+			 * chart scope manually.
+			 */
+			if($scope.chart.data && !$scope.$$childHead.data) {
+				$scope.$$childHead.$apply(function() {
+					$scope.$$childHead.data = $scope.chart.data;
+					$scope.$$childHead.labels = $scope.chart.labels;
+					$scope.$$childHead.options = $scope.chart.options;
+					$scope.$$childHead.series = $scope.chart.series;
+					$scope.$$childHead.colours = $scope.chart.colours;
+					$scope.$$childHead.legend = $scope.showLegend;
+					$scope.$$childHead.chartType = "Line";
+				});
+			}
 		};
 
 		$scope.loadChart = function() {
-			getItemSeries().
+			var prom = Promise.resolve();
+			if($scope.pipeId) {
+				/* load pipe details from service */
+				prom = prom.then(function() {
+					return new Promise(function(resolve, reject) {
+						riox.pipes($scope.pipeId, function(pipe) {
+							//console.log(pipe);
+							var els = pipe[PIPE_ELEMENTS];
+							for(var i = 0; i < els.length; i ++) {
+								var pipeEl = els[i];
+								if(pipeEl[ID] == $scope.pipeNodeId) {
+									$scope.esIndexName = pipeEl[PARAMS].index || 'ORG_ID';
+									$scope.esTypeName = pipeEl[PARAMS].typeName;
+									$scope.esSearch = pipeEl[PARAMS].search;
+									$scope.timeField = pipeEl[PARAMS].timeField;
+									$scope.valueField = pipeEl[PARAMS].valueField;
+									$scope.labelTemplate = pipeEl[PARAMS].labelTemplate;
+									$scope.titles = pipeEl[PARAMS].titles;
+									$scope.predictionValues = pipeEl[PARAMS].predictionValues;
+									resolve(pipeEl);
+								}
+							}
+							reject({error: "Unable to find pipe element id '" + $scope.pipeNodeId + "' within pipe '" + $scope.pipeId + "'"});
+						}, reject);
+					});
+				});
+			}
+			prom.
+				then(getItemSeries).
 				then(displayObjects);
 		};
 
@@ -160,7 +213,7 @@
 			$scope.loadChart();
 		});
 	}
-	
+
 	module.directive('rioxTimeseries', function () {
 
 		return {
@@ -177,6 +230,8 @@
 	    		return str;
 	    	},
 	    	scope: {
+	    		pipeId: '=',
+	    		pipeNodeId: '=',
 	    		esUrl: '=',
 	    		esIndexName: '=',
 	    		esTypeName: '=',

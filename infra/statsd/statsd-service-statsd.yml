@@ -1,9 +1,0 @@
-kind: Service
-apiVersion: v1beta2
-id: statsd
-port: 8125
-containerPort: 8125
-protocol: UDP
-selector:
-  name: statsd
-

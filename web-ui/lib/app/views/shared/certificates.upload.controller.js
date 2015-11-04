@@ -7,6 +7,7 @@ angular.module('rioxApp').controller('CertUploadCtrl',
 
 	var HEADER_NAME_ALLOW_ORIGIN = "access-control-allow-origin";
 	var HEADER_VALUE_INTERNAL_USE_ONLY = "__internal__";
+	var HEADER_NAME_CONTENT_TYPE = "content-type";
 
     var upload = function (files, callback) {
     	if(!files) return;
@@ -19,10 +20,11 @@ angular.module('rioxApp').controller('CertUploadCtrl',
         var url = fileServiceURL + '/upload';
         var headers = {};
         headers[HEADER_NAME_ALLOW_ORIGIN] = HEADER_VALUE_INTERNAL_USE_ONLY;
+        //headers[HEADER_NAME_CONTENT_TYPE] = "multiplart/form-data";
         Upload.upload({
             url: url,
             file: file,
-            fileFormDataName: 'filedata',
+            fileFormDataName: 'uploadfile',
             transformRequest: angular.identity,
             headers: headers
         }).success(callback);
@@ -31,6 +33,7 @@ angular.module('rioxApp').controller('CertUploadCtrl',
     var uploadCRT = function() {
     	if(!$scope.filesSelectCRT) return;
 		upload($scope.filesSelectCRT, function (data, status, headers, config) {
+			if(data.fileID) data = data.fileID;
    			var id = data.replace(/"/g, "");
    			$scope.resourceData.certCRT = id;
         });
@@ -39,6 +42,7 @@ angular.module('rioxApp').controller('CertUploadCtrl',
     var uploadKEY = function() {
     	if(!$scope.filesSelectKEY) return;
 		upload($scope.filesSelectKEY, function (data, status, headers, config) {
+			if(data.fileID) data = data.fileID;
    			var id = data.replace(/"/g, "");
    			$scope.resourceData.certKEY = id;
         });

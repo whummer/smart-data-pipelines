@@ -20,13 +20,27 @@ module.exports = {
 		port: 2181
 	},
 
-	springxdadmin: {
-		hostname: "xd-admin.development.svc.cluster.local",
-		port: 9393
+	// TODO
+//	cdfLocal: {
+//		hostname: appConfig["development"].infra.springcdfLocal.hostname,
+//		port: 9393,
+//		url: "http://" + appConfig["development"].infra.springcdfLocal.hostname + ":" + 9393
+//	},
+//
+//	cdf: {
+//		hostname: appConfig["development"].infra.springcdf.hostname,
+//		port: 9393,
+//		url: "http://" + appConfig["development"].infra.springcdf.hostname + ":" + 9393
+//	},
+
+	redis: {
+		hostname: appConfig["development"].infra.redis.hostname,
+		port: 6379,
+		url: appConfig["development"].infra.redis.url
 	},
 
 	elasticsearch: {
-		hostname: "elasticsearch.development.svc.cluster.local",
+		hostname: appConfig["development"].infra.elasticsearch.hostname,
 		port: 9300
 	},
 

@@ -1,0 +1,50 @@
+<script type="text/x-red" data-template-name="script">
+	<div class="form-row">
+		<label for="node-input-name"><i class="fa fa-file"></i> <span data-i18n="script.label.name"></span></label>
+		<input type="text" id="node-input-name" data-i18n="[placeholder]script.label.name" />
+	</div>
+	<div class="form-row">
+		<label for="node-input-code"><i class="fa fa-file"></i> <span data-i18n="script.label.code"></span></label>
+		<textarea style="width: 70%; min-height: 150px;" id="node-input-code" data-i18n="[placeholder]script.label.code"></textarea>
+	</div>
+	<div class="form-tips" id="spawnTip"><span data-i18n="[html]script.tip"></span></div>
+</script>
+
+<script type="text/x-red" data-help-name="script">
+	<p>transform a payload by executing a script</p>
+</script>
+
+<script type="text/javascript">
+	RED.nodes.registerType('script',{
+		category: 'function',
+		color: "paleturquoise",
+		defaults: {
+			"name": {value:""},
+			"scriptLocation": {value:"", required: true},
+			"code": {value:"", required: true}
+		},
+		inputs: 1,
+		outputs: 1,
+		icon: "template.png",
+		align: "right",
+		label: function() {
+			return this.name || trim(this.location, 30);
+		},
+		labelStyle: function() {
+			return this.url ? "node_label_italic":"";
+		},
+		oneditsave: function(node) {
+			if(window.nodeRedOneditsave) {
+				nodeRedOneditsave(this);
+			}
+		}
+	});
+</script>
+z
+<script type="text/javascript">
+	var locales = {
+			"script.label.name": "Name",
+			"script.label.code": "Code (Groovy)"
+	};
+	i18n.addResources('en-US', 'node-red', locales);
+</script>

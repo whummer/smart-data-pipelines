@@ -14,10 +14,10 @@ if [[ "$TEST_REPORTER" == "mocha-jenkins-reporter" ]]; then
 	# This branch is for jenkins
 	(cd $BASEDIR/../ && make run-integration-tests)
 
-	# wait for the tests to finish (4ish min)
-	for i in `seq 1 50`;
+	# wait for the tests to finish
+	for i in `seq 1 60`;
 	do
-		sleep 5
+		sleep 15
 		success=`kubectl get pods --namespace=$RIOX_ENV -o template integration-tests --template={{.status.phase}}`
 		echo "Waiting for test to finish..."
 		echo "Pod status: $success"

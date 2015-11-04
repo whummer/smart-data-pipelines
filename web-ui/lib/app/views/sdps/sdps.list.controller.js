@@ -1,7 +1,5 @@
 angular.module('rioxApp').controller('ListDataPipesCtrl', function ($scope, ngTableParams, $log, growl) {
 
-	console.log("Withing data pipes LIST controller");
-
 	//
 	// model for our data pipes
 	//

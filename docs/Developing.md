@@ -239,20 +239,29 @@ Now go to `http://platform.riox.io` and you should see the Riox webapp.
 
 ## Run the e2e tests
 
-*This section is outdated. Will be updated shortly.*
+To run the e2e tests locally, we use a separate image `riox/hyperriox-test` which is derived from
+the main `riox/hyperriox` image and optimized for fast building.
 
-Our e2e tests run in a docker image `riox/nodejs-base:latest` that is automatically built by
-our CI infrastructure. The following command starts within a docker container to have access to
-all the Kubernetes services via DNS. You can manually create and upload one with the `build` and `push
-targets in the `Makefile`.
-
-```sh
-make run-e2e-test [TEST_TIMEOUT=--no-timeouts]
+The base image can be built once, and needs to be updated every time there is a change in 
+the npm dependencies:
+```
+make build-image
 ```
 
-You should see all the tests passing. If you get a timeout error, re-run the command with the
-optional `TEST_TIMEOUT=--no-timeouts` argument. If this does also not help, please file an issue.
+To build the test image, run (this should build fast and can be repeated for every code change):
+```
+make build-test-image
+```
 
+To run the integration tests, make sure your `kubeconfig config view` points to the local `dev`
+environment, then run:
+```
+make run-integration-tests-local
+```
+
+This command creates an integration test pod in your local kubernetes environment. The command 
+automatically attaches to the stdout/stderr output of the pod, so you can watch the test output 
+as the test runs.
 
 ## AWS Cluster Setup & Access
 

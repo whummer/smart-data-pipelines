@@ -32,6 +32,12 @@ module.exports = {
 		url: appConfig["test"].infra.nginx.url
 	},
 
+	elasticsearch: {
+		hostname: appConfig["test"].infra.elasticsearch.hostname,
+		port: 9300,
+		url: "http://" + appConfig["test"].infra.elasticsearch.hostname + ":9200/"
+	},
+
 	services: appConfig["test"].services,
 	
 	seedDB: true

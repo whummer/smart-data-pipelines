@@ -11,6 +11,8 @@ var router = express.Router();
 // CRUD for pipeelements
 //
 router.get('/', auth.isAuthenticated(), pipeElementsCtrl.listAll);
+router.get('/nodes', auth.isAuthenticated(), pipeElementsCtrl.listNodeRedNodes);
+router.get('/nodes_html', auth.isAuthenticated(), pipeElementsCtrl.listNodeRedNodesHtml);
 router.get('/:id', auth.isAuthenticated(), pipeElementsCtrl.findById);
 router.post('/', auth.isAuthenticated(), pipeElementsCtrl.create);
 router.delete('/:id', auth.isAuthenticated(), pipeElementsCtrl.delete);

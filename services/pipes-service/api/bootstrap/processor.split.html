@@ -1,0 +1,44 @@
+<script type="text/x-red" data-template-name="split">
+	<div class="form-row">
+		<label for="node-input-name"><i class="fa fa-file"></i> <span data-i18n="split.label.name"></span></label>
+		<input type="text" id="node-input-name" data-i18n="[placeholder]split.label.name">
+	</div>
+	<div class="form-row">
+		<label for="node-input-mapping"><i class="fa fa-file"></i> <span data-i18n="split.label.mapping"></span></label>
+		<input type="text" id="node-input-mapping" data-i18n="[placeholder]split.label.mapping">
+	</div>
+	<div class="form-tips" id="spawnTip"><span data-i18n="[html]split.tip"></span></div>
+</script>
+
+<script type="text/x-red" data-help-name="split">
+	<p>split a payload</p>
+</script>
+
+<script type="text/javascript">
+	RED.nodes.registerType('split',{
+		category: 'function',
+		color: "powderblue",
+		defaults: {
+			"name": {value:""},
+			"mapping": {value:"", required:true}
+		},
+		inputs: 1,
+		outputs: 1,
+		icon: "switch.png",
+		align: "right",
+		label: function() {
+			return this.name || trim(this.mapping, 30);
+		},
+		labelStyle: function() {
+			return this.url?"node_label_italic":"";
+		}
+	});
+</script>
+
+<script type="text/javascript">
+	var locales = {
+		"split.label.name": "Name",
+		"split.label.mapping": "Mapping"
+	};
+	i18n.addResources('en-US', 'node-red', locales);
+</script>

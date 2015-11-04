@@ -1,8 +1,0 @@
-kind: Service
-apiVersion: v1beta2
-id: graphite
-port: 2003
-containerPort: 2003
-selector:
-  name: statsd
-

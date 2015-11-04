@@ -135,4 +135,19 @@ app.authDefault = function(callback) {
 	});
 }
 
+app.uploadFile = function(cfg, user, filepath, callback, errorCallback) {
+	var filename = "uploadfile";
+	return user.
+	post(cfg.files.url + "/upload").
+	attach(filename, filepath).
+	end(function(err,res) {
+		if(err) {
+			errorCallback(err);
+		} else {
+			var fileID = res.body.fileID ? res.body.fileID : res.body;
+			callback(fileID);
+		}
+	});
+}
+
 module.exports = app;

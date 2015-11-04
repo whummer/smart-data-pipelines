@@ -1,0 +1,41 @@
+<script type="text/x-red" data-template-name="transform">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-file"></i> <span data-i18n="transform.label.name"></span></label>
+        <input type="text" id="node-input-name" data-i18n="[placeholder]transform.label.name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-script"><i class="fa fa-file"></i> <span data-i18n="transform.label.script"></span></label>
+        <input type="text" id="node-input-script" data-i18n="[placeholder]transform.label.script">
+    </div>
+    <div class="form-tips" id="spawnTip"><span data-i18n="[html]transform.tip"></span></div>
+</script>
+
+<script type="text/x-red" data-help-name="transform">
+    <p>Transforms a payload</p>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('transform',{
+        category: 'function',
+        color: "lightblue",
+        defaults: {},
+        inputs: 1,
+        outputs: 1,
+        icon: "range.png",
+        align: "right",
+        label: function() {
+            return "Transform";
+        },
+        labelStyle: function() {
+            return this.script ? "node_label_italic":"";
+        }
+    });
+</script>
+
+<script type="text/javascript">
+	var locales = {
+			"transform.label.name": "Name",
+			"transform.label.script": "Script"
+	};
+	i18n.addResources('en-US', 'node-red', locales);
+</script>
