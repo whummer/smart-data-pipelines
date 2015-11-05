@@ -16,7 +16,7 @@ var Promise = require('bluebird');
 
 var app = {};
 
-describe('pipes.deployment', function() {
+describe('pipes.deploy.mavienna', function() {
 
 	// TODO fix this
 	var recorder = record('test.pipes.deployments', { 'fixtures': __dirname + '/fixtures' });
@@ -66,11 +66,6 @@ describe('pipes.deployment', function() {
 			test.authDefault(done);
 		}, 2000);
 
-		/* this tells the services and bootstrap scripts not
-		 * to loop forever using setTimeout(..) etc. because
-		 * otherwise the process would never terminate. */
-		global.avoidLoopingForever = true;
-
 	});
 
 	after(function(done) {
@@ -83,8 +78,31 @@ describe('pipes.deployment', function() {
 
 		// recorder.after(done);
 		resources.server.close();
-		done();
-	});
+
+		/* finish by cleaning up */
+		cleanup(done);
+	});	
+
+	var cleanup = function(done) {
+		// TODO cleanup uploaded test files in files-service
+		if(resources.state.locationHeader) {
+			test.user1
+			.delete(resources.state.locationHeader)
+			.send()
+			.end(function(err, res) {
+				log.debug("Response: ", res.body);
+				if (err) {
+					log.error("Error: ", err);
+				}
+				resources.state.locationHeader = null;
+				res.status.should.equal(200);
+				// TODO ensure streams are really gone
+				if(done) done();
+			});
+		} else {
+			if(done) done();
+		}
+	}
 
 	it ('deploys bogus (non-json) request should fail with a 400 code', function(done) {
 		var payload = ''
@@ -141,13 +159,13 @@ describe('pipes.deployment', function() {
 	it ('deploys a valid pipeline and its succeeds', function(done) {
 		this.timeout(10*60*1000); /* this test suite may take quite a long time */
 
-		var content = JSON.parse(fs.readFileSync(path.join(__dirname,
-				'../../../pipes-service/examples') + '/ma-vienna-pipe.js'));
+		var content = JSON.parse(fs.readFileSync(path.join(__dirname, 
+				'../../../pipes-service/examples') + '/test-ma-vienna-pipe.js'));
 		content = JSON.parse(JSON.stringify(content).replace(
 				/www\.wien\.gv\.at/g,
 				'integration-tests.' + process.env.RIOX_ENV + '.svc.cluster.local:6789'));
 
-		var state = {};
+		var state = resources.state = {};
 
 		Promise.resolve()
 		.then(function() {
@@ -317,18 +335,7 @@ describe('pipes.deployment', function() {
 		.then( function() {
 			/* Step 7. */
 			console.log("7) clean-up: delete the pipe deployment");
-			test.user1
-			.delete(state.locationHeader)
-			.send()
-			.end(function(err, res) {
-				log.debug("Response: ", res.body);
-				if (err) {
-					log.error("Error: ", err);
-				}
-				res.status.should.equal(200);
-				// TODO ensure streams are really gone; cleanup uploaded test files in files-service
-				done();
-			});
+			cleanup(done);
 		});
 	});
 

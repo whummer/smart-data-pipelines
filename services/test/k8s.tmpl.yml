@@ -62,7 +62,7 @@ items:
           - name: mockservice6
             containerPort: 3005
         command:
-          [ "sh", "-c", "gulp test:integration && cat services/test/test-report.xml"]
+          [ "sh", "-c", "node --harmony `which gulp` test:integration && cat services/test/test-report.xml"]
         env:
           - name: RIOX_ENV
             valueFrom:

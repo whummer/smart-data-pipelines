@@ -63,6 +63,6 @@
     "dropzone": "~4.0.1",
     "jquery": "~1.11.0",
     "ace-builds": "master",
-    "lodash": "^3.10.0"
+    "chosen": "~1.4.2"
   }
 }

@@ -119,11 +119,15 @@ class K8SConnector {
 			var prom = this._deployContainer(cont);
 			promises.push(prom);
 		}
-		return Promise.all(promises).then(result => {
-			result = {};
+		return Promise.all(promises).then(promiseResult => {
 			/* wait until all containers are deployed */
 			return self.waitForContainerStatuses(containerIDs).then(statuses => {
-				result.status = statuses.length <= 0 ? STATUS_NOT_DEPLOYABLE : STATUS_DEPLOYED;
+				var result = {};
+				result.status = STATUS_DEPLOYED;
+				if(statuses.length == 1) {
+					result[ID] = containerIDs[0];
+					result.status = statuses[0].status;
+				}
 				for(var status of statuses) {
 					if(status.status != STATUS_RUNNING) {
 						result.status = STATUS_FAILED;
@@ -146,11 +150,10 @@ class K8SConnector {
 		self._getClient().then(function(client) {
 			return self._findControllersByLabel(labels).then(function(controllers) {
 				return Promise.map(controllers, function(controller) {
-					//console.log("undeploy single:", controller);
 					var uid = controller.metadata.name;
 					return new Promise(function(resolve, reject) {
 						client.replicationControllers.delete(uid, function(result) {
-							console.log("undeploy replicationControllers result", result);
+							//log.debug("undeploy replicationControllers result", result);
 							resolve(result);
 						});
 					})
@@ -161,7 +164,19 @@ class K8SConnector {
 						var uid = pod.metadata.name;
 						return new Promise(function(resolve, reject) {
 							client.pods.delete(uid, function(result) {
-								console.log("undeploy pods result", result);
+								//log.debug("undeploy pods result", result);
+								resolve(result);
+							});
+						})
+					});
+				})
+			}).then(function() {
+				return self._findServicesByLabel(labels).then(function(services) {
+					return Promise.map(services, function(service) {
+						var uid = service.metadata.name;
+						return new Promise(function(resolve, reject) {
+							client.services.delete(uid, function(result) {
+								//log.debug("undeploy services result", result);
 								resolve(result);
 							});
 						})
@@ -241,7 +256,7 @@ class K8SConnector {
 	 */
 	waitForPodStatus(labels) {
 		var timeout = 1000 * 10;
-		var numRetries = 20;
+		var numRetries = 30;
 		var self = this;
 		var loop = function(retries, resolve, reject) {
 			if(retries <= 0) {
@@ -308,6 +323,10 @@ class K8SConnector {
 			self._getClient().then(function(client) {
 				var name = state.container[ID];
 				var port = self._getServicePort(state.container);
+				if(typeof port === "string") {
+					port = parseInt(port);
+				}
+
 				var service = {
 					metadata: {
 						name: name,
@@ -381,12 +400,17 @@ class K8SConnector {
 					}
 				};
 				var coordinates = state.container.coordinates;
+
 				/* SET CONTAINER TEMPLATE */
 				templCont.name = name;
 				templCont.image = self._getImageName(coordinates);
 				templCont.imagePullPolicy = IMAGE_PULL_POLICY;
 				templCont.ports = [];
+				/* set container port(s) */
 				var port = self._getServicePort(state.container);
+				if(typeof port === "string") {
+					port = parseInt(port);
+				}
 				if(port > 0) {
 					templCont.ports.push({
 						protocol: PROTOCOL_TCP,
@@ -491,10 +515,10 @@ class K8SConnector {
 			args.push(cmd);
 		}
 		if(container.next_id) {
-			args.push("--spring.cloud.stream.bindings.output.destination=" + container.next_id);
+			args.push("--spring.cloud.stream.bindings.output.destination=topic:" + container.next_id);
 		}
 		if(container.previous_id) {
-			args.push("--spring.cloud.stream.bindings.input.destination=" + container.previous_id);
+			args.push("--spring.cloud.stream.bindings.input.destination=topic:" + container.previous_id);
 		}
 		return args;
 	}
@@ -524,7 +548,6 @@ class K8SConnector {
 									state.status = STATUS_PENDING;
 								}
 							}
-							//console.log("==>", state.status);
 							return resolve(state);
 						}
 					}
@@ -574,6 +597,13 @@ class K8SConnector {
 	}
 
 	/**
+	 * Get services by a map of labels.
+	 */
+	_findServicesByLabel(labels) {
+		return this._findResourcesByLabel(labels, "services");
+	}
+
+	/**
 	 * Get a client to connect to the K8S API.
 	 */
 	_getClient() {
@@ -591,7 +621,7 @@ class K8SConnector {
 			});
 			return self.client;
 		}).catch(function(e) {
-			log.info('K8S Service account file not found on pod, defaulting to development settings. ' + e);
+			//log.info('K8S Service account file not found on pod, defaulting to development settings. ' + e);
 			self.client = new Client({
 				host:  self.hostname + ':' + self.port,
 				protocol: self.protocol,
