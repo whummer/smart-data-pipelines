@@ -79,7 +79,9 @@ envs.forEach(function(env) {
 				},
 				redis: {
 					hostname: getHost(env, "redis"),
-					url: "redis://" + getHost(env, "redis") + ":6379"
+					url: "redis://" + getHost(env, "redis") + ":6379",
+					sentinels: getHost(env, "redis-sentinel") + ":26379",
+					master: "mymaster"
 				},
 				kibana: {
 					url: "http://" + getHost(env, "kibana") + ":5601"

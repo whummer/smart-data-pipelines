@@ -328,7 +328,7 @@ exports.insertInternalCallUser = function() {
 	var query = { _id: id };
 	User.findOne(query, function(err, user) {
 	    if (err) {
-	    	console.log("ERROR: Could not save internal user!", err); // TODO handle this error
+	    	console.log("ERROR: Could not query existing internal user!", err); // TODO handle this error
 	    	return;
 	    }
 	    if (!user)  {
@@ -341,7 +341,7 @@ exports.insertInternalCallUser = function() {
 	    		role: "internal"
 	    	});
 	    	newUser.save(function(err, userResult) {
-		    	if(err) console.log("ERROR: Could not save user!"); // TODO handle this error
+		    	if(err) console.log("ERROR: Could not save user!", err); // TODO handle this error
 		    });
 	    };
 	});

@@ -17,7 +17,7 @@ spec:
         - name: rioxregistrykey
       containers:
       - name: gateway
-        image: riox/nginx:1.0.0
+        image: riox/nginx:1.1.0
         imagePullPolicy: Always
         env:
           - name: OUR_NAMESPACE
@@ -28,6 +28,10 @@ spec:
             value: "'redis.$(OUR_NAMESPACE).svc.cluster.local'"
           - name: "REDIS_PORT"
             value: "'6379'"
+          - name: "REDIS_SENTINEL_HOST"
+            value: "'redis-sentinel.$(OUR_NAMESPACE).svc.cluster.local'"
+          - name: "REDIS_SENTINEL_PORT"
+            value: "'26379'"
           - name: "MAX_PATH_LENGTH"
             value: "3"
         ports:

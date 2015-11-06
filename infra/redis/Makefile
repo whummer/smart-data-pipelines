@@ -31,9 +31,11 @@ deploy-cluster:
 	#kubectl delete pods redis-master --namespace=${RIOX_ENV}
 
 undeploy-cluster:
-	kubectl stop -f redis-controller.yml --namespace=${RIOX_ENV}
-	kubectl stop -f redis-sentinel-controller.yml --namespace=${RIOX_ENV}
-	kubectl stop -f redis-sentinel-service.yml --namespace=${RIOX_ENV}
+	-(kubectl scale rc redis --replicas=0  --namespace=${RIOX_ENV})
+	-(kubectl stop -f redis-master.yml --namespace=${RIOX_ENV})
+	-(kubectl stop -f redis-controller.yml --namespace=${RIOX_ENV})
+	-(kubectl stop -f redis-sentinel-controller.yml --namespace=${RIOX_ENV})
+	-(kubectl stop -f redis-sentinel-service.yml --namespace=${RIOX_ENV})
 
 
 .PHONY: deploy-cluster undeploy-cluster deploy-standalone undeploy-standalone

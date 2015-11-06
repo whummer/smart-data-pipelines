@@ -23,7 +23,9 @@ module.exports = {
 	redis: {
 		hostname: appConfig["test"].infra.redis.hostname,
 		port: 6379,
-		url: appConfig["test"].infra.redis.url
+		url: appConfig["test"].infra.redis.url,
+		master: appConfig["test"].infra.redis.master,
+		sentinels: appConfig["test"].infra.redis.sentinels
 	},
 
 	elasticsearch: {
