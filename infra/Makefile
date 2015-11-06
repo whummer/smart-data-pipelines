@@ -48,7 +48,7 @@ deploy-services:
 	(cd mongodb && make deploy-standalone)
 	(cd redis && make deploy-standalone)
 	(cd elasticsearch && make deploy-standalone)
-	(cd nginx && make deploy)
+	#(cd nginx && make deploy)
 
 undeploy-services:
 	-(cd mongodb && make undeploy)
