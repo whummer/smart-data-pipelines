@@ -17,7 +17,8 @@ export NODE_PATH=$(NPATH)
 ###############
 install:
 	(cd bin && node handle-global-node-packages.js && cd ..)
-	npm install
+	(cd bin && node preinstall.js && cd ..)
+	#npm install
 	gulp ui:bower
 
 install-prereq:
