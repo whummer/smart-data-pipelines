@@ -1,5 +1,7 @@
 'use strict';
 
+require('babel-core/register');
+
 var Pipe = require('./pipe.model.js').Model;
 var	errors = require('riox-services-base/lib/util/errors');
 var	auth = require('riox-services-base/lib/auth/auth.service');

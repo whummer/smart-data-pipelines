@@ -263,7 +263,7 @@ function changeWatch(doUseBrowserSync) {
 	// reload JS
 	gulp.watch(SRC_DIR + '/app/**/*.js', function (changed) {
 		gulp.src(changed.path, {base: SRC_DIR})
-			.pipe(babel())
+			.pipe(babel({ presets: ['es2015'] }))
 			.pipe(gulp.dest(BUILD_DIR_DEV))
 			.on('end', function () {
 				if(doUseBrowserSync)
@@ -316,7 +316,7 @@ function runBabel(buildDir) {
 
 	return gulp
 		.src(SRC_DIR + '/app/**/*.js')
-		.pipe(babel())
+		.pipe(babel({ presets: ['es2015'] })) 
 		.pipe(gulp.dest(buildDir + '/app'));
 }
 
