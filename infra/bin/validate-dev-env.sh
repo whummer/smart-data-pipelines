@@ -69,9 +69,36 @@ if [ -n "$docker_info" ]; then
 else
   printf "${red}   ${error} FAIL${reset}\n"
   echo "  Potential fixes:"
-  echo "    - [OS X] run 'docker-machine restart docker-vm' or 'boot2docker up'"
+  echo "    - [OS X] run 'docker-machine restart docker-vm' or 'boot2docker restart'"
 fi
 echo ""
+
+#
+# verify routes and port forwards on Mac OS only
+#
+if [ "$(uname)" == "Darwin" ]; then
+	printf "Verifying etcd SSH tunnel for docker-machine: "
+	etcd_tunnel_up=$(ps -eaf | grep ssh | grep "4001:localhost:4001")
+	if [ -n "$etcd_tunnel_up" ]; then
+		printf "${green}   ${checkmark} PASS${reset}\n"
+	else
+	  printf "${red}   ${error} FAIL${reset}\n"
+	  echo "  Potential fixes:"
+	  echo "    - [OS X] run 'boot2docker ssh -L4001:4001:localhost:4001' or 'ssh -i ~/.docker/machine/machines/docker-vm/id_rsa -f -N -L 4001:localhost:4001 docker@192.168.99.100"
+	fi
+	echo ""
+
+	printf "Verifying k8s API SSH tunnel for docker-machine: "
+	k8s_tunnel_up=$(ps -eaf | grep ssh | grep "8080:localhost:8080")
+	if [ -n "$k8s_tunnel_up" ]; then
+		printf "${green}   ${checkmark} PASS${reset}\n"
+	else
+	  printf "${red}   ${error} FAIL${reset}\n"
+	  echo "  Potential fixes:"
+	  echo "    - [OS X] run 'boot2docker ssh -L8080:localhost:8080' or 'ssh -i ~/.docker/machine/machines/docker-vm/id_rsa -f -N -L 8080:localhost:8080 docker@192.168.99.100"
+	fi
+	echo ""
+fi
 
 #
 # Verify k8s master
@@ -169,7 +196,7 @@ if [ "$check_openresty" -eq 1 ]; then
 		echo "    - [Linux] Install openresty: see https://github.com/riox/riox/blob/develop/docs/Developing.md"
 		echo "    - [OS X]  Install openresty: brew install lua51 luajit homebrew/nginx/openresty"
 	else
-		$(${openresty} -t 2&>1 /dev/null)
+		$(sudo ${openresty} -t 2&>1 /dev/null)
 
 		if [ "$?" -eq 1 ]; then
 			printf "${red}   ${error} FAIL${reset}\n"
