@@ -32,7 +32,7 @@ for(var key in gulpFiles) {
 			require(gulpFiles[key]);
 		} catch(e) {
 			depsMissing = true;
-			//console.log(e);
+			console.log("including file: " + file, e);
 			/* dependency missing -> swallow */
 		}
 	}
@@ -41,7 +41,7 @@ if(depsMissing) {
 	console.log("WARN: Some dependencies are missing. Make sure to run 'make install-prereq' first (as root).")
 }
 
-var nodeDirs = [".", "services/test", 
+var nodeDirs = [".", "services/test",
 								"services/users-service", "services/access-service", "services/gateway-service",
 								"services/pricing-service", "services/pipes-service", "services/analytics-service", "services/files-service",
 								"services/riox-services-base", "web-ui"];
@@ -88,7 +88,6 @@ gulp.task('ui:bootstrap', 'Insert necessary data to boot the riox UI and make th
 	global.servicesConfig = global.config.services;
 	var riox = require("./riox-shared/lib/api/riox-api");
 	require("./riox-shared/lib/api/riox-api-admin")(riox);
-	//global.config = require("./riox-services-base/lib/config/merge")(global.config, config);
 
 	riox.users._bootstrap({}, function() {
 		console.log("Successfully inserted users metadata");
@@ -152,7 +151,7 @@ gulp.task('deps:install:global', 'parse all dependencies and devDependencies fro
 			}
 		});
 	}
-	
+
 	/* get number of dependencies */
 	var numDeps = 0;
 	for(var key in deps) { numDeps++; }

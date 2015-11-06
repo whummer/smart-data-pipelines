@@ -2,7 +2,7 @@
  * Created by omoser on 16/04/15.
  */
 
-require('babel/register');
+require('babel-core/register');
 
 var gulp = require('gulp');
 var mocha = require('gulp-mocha')

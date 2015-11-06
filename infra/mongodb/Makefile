@@ -1,5 +1,7 @@
 SHELL := /bin/bash
 RIOX_ENV?=development
+IMAGE=riox/mongo
+VERSION=latest
 
 CLUSTER_REPLICAS?=3
 REPLICA_SET=rs0
@@ -66,4 +68,11 @@ undeploy:
 
 	@echo "Undeployed Mongo."
 
-.PHONY: deploy undeploy deploy-cluster deploy-standalone status
+
+build:
+	docker build -t ${IMAGE}:${VERSION} .
+
+push:
+	docker push ${IMAGE}:${VERSION}
+
+.PHONY: build push deploy undeploy deploy-cluster deploy-standalone status

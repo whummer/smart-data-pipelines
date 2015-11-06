@@ -1,5 +1,5 @@
 'use strict';
-require("babel/register"); // enable ES6 features
+require("babel-core/register"); // enable ES6 features
 
 var express = require('express'),
 		pipeElementsCtrl = require('./pipeelement.controller'),

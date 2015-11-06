@@ -24,11 +24,15 @@ build-images:
 	(cd hyperkube && make build)
 	(cd kafka && make build)
 	(cd nginx && make build)
+	(cd elasticsearch && make build)
+	(cd mongodb && make build)
 
 push-images:
 	(cd hyperkube && make push)
 	(cd kafka && make push)
 	(cd nginx && make push)
+	(cd elasticsearch && make push)
+	(cd mongodb && make build)
 
 deploy-k8s:
 	$(compose) -f k8s.yml up -d

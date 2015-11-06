@@ -13,9 +13,11 @@ spec:
       labels:
         name: mongo-2
     spec:
+      imagePullSecrets:
+        - name: rioxregistrykey
       containers:
           - name: mongo
-            image: mongo:3.0.2
+            image: riox/mongo
             args: ["--smallfiles", "--replSet=rs0"]
             ports:
               - containerPort: 27017

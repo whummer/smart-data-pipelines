@@ -21,7 +21,7 @@ install:
 	gulp ui:bower
 
 install-prereq:
-	npm install -g gulp@3.9.0 gulp-help@1.6.1 mocha gulp-mocha nodemon pm2 linklocal node-gyp node-pre-gyp del vinyl-paths run-sequence bower browser-sync babel
+	npm install --unsafe-perm -g gulp@3.9.0 gulp-help@1.6.1 mocha gulp-mocha nodemon pm2 linklocal node-gyp node-pre-gyp del vinyl-paths run-sequence bower browser-sync
 
 uninstall-global:
 	(cd bin && node handle-global-node-packages.js --uninstall && cd ..)
