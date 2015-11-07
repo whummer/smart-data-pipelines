@@ -14,8 +14,14 @@ beforeEach(function(){
 require('./integration/api/test.users');
 require('./integration/api/test.organizations');
 require('./integration/api/test.files');
-//require('./integration/api/test.analytics');
 
 /* Streams integration tests */
-require('./integration/pipes/test.pipes');
-require('./integration/pipes/test.pipes.deployments');
+require('./integration/pipes/test.store.pipes');
+require('./integration/pipes/test.deploy.mavienna');
+require('./integration/pipes/test.deploy.httpin-transform-split');
+
+/* this tells the services and bootstrap scripts not 
+ * to loop forever using setTimeout(..) etc. because 
+ * otherwise the process would never terminate. */
+global.avoidLoopingForever = true;
+

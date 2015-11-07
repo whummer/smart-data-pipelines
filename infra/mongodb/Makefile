@@ -19,7 +19,7 @@ deploy-standalone:
 		$(MAKE) undeploy ; \
 	fi
 
-	kubectl create -f mongodb-controller-single.yml --namespace=${RIOX_ENV}
+	kubectl create -f mongodb-controller-single.yml --namespace=${RIOX_ENV} --validate=false
 	kubectl create -f mongodb-service-single.yml --namespace=${RIOX_ENV}
 
 deploy-cluster: 

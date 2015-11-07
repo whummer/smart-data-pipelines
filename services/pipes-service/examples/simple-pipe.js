@@ -1,5 +1,5 @@
 {
-	"name": "Simple Demo Pipe",
+	"name": "Simple Demo Pipe (1)",
 	"description": "HTTP in - transform - elasticsearch out",
 	"elements": [
 		{
