@@ -9,7 +9,7 @@ ifdef NODENV_ROOT
 NPATH=/opt/boxen/nodenv/versions/v0.12.7/lib/node_modules/
 endif
 
-$(info VAR is $(NPATH))
+$(info NODE_PATH is $(NPATH))
 export NODE_PATH=$(NPATH)
 
 ###############
@@ -18,7 +18,6 @@ export NODE_PATH=$(NPATH)
 install:
 	(cd bin && node handle-global-node-packages.js && cd ..)
 	(cd bin && node preinstall.js && cd ..)
-	#npm install
 	gulp ui:bower
 
 install-prereq:

@@ -29,9 +29,9 @@
     "preinstall": "node bin/preinstall.js",
     "test": "gulp test"
   },
-	  "babel" : {
-	    "presets": ["es2015"]
-	  },
+  "babel" : {
+    "presets": ["es2015"]
+  },
 
   "private": true
 }
