@@ -4,13 +4,18 @@ source ./common.sh
 : ${RIOX_ENV:=development}
 
 # define hosts to check DNS for
-declare -a hosts=('mongo' 'redis');
+declare -a hosts=('mongo' 'redis'  'riox-ui' 'users-service' 'organizations-service' 'access-service' \
+ 'files-service' 'notifications-service'  'certificates-service' 'ratings-service' 'statistics-service' \
+ 'gateway-service' 'proxies-service' 'pipes-service');
 
 # define required luarocks (for openresty)
 declare -a lua_libs=('luasocket' 'ansicolors' 'luasec' 'lua-cjson' 'busted' 'lapis' 'moonscript' 'inspect' 'luajwt');
 
 # cluster DNS IP
 declare dns_server=10.0.0.100
+
+# openresty config file
+declare openresty_config=nginx.dev.conf
 
 # cli arguments
 check_host_dns=1
@@ -109,11 +114,11 @@ if [ "$output" == "ok" ]; then
 	printf "${green}   ${checkmark} PASS${reset}\n"
 else
   printf "${red}   ${error} FAIL${reset}\n"
-
   echo "  Potential fixes:"
   echo "    - [OS X] Ensure route exists: sudo route -n add 10.0.0.0/16 192.168.59.103"
   echo "    - [OS X] Ensure port forward is open: boot2docker ssh -L8080:localhost:8080"
 fi
+
 echo ""
 
 #
@@ -126,12 +131,11 @@ if [ "$check_k8s_dns" -eq 1 ]; then
 		printf "${green}   ${checkmark} PASS${reset}\n"
 	else
 	  printf "${red}   ${error} FAIL${reset}\n"
-
 	  echo "  Potential fixes:"
 	  echo "    - [ALL]  Restart kube2sky because it often hangs : docker ps | grep kube2sky | awk -F' ' '{ print \$1 }' | xargs docker   restart"
 	  echo "    - [OS X] Ensure route exists: sudo route -n add 10.0.0.0/16 192.168.59.103"
-
 	fi
+
 	echo ""
 fi
 
@@ -179,6 +183,15 @@ if [ "$check_lua_env" -eq 1 ]; then
 			printf "${green}   ${checkmark} PASS: '${lib}' exists ${reset}\n"
 		fi
 	done
+
+	echo ""
+
+	printf "Verifying LUA_PATH: "
+	if [ -z "$LUA_PATH" ] || [ -z "$LUA_CPATH" ]; then
+		printf "${yellow}   ${warning} LUA_PATH and/or LUA_CPATH are not set, might cause trouble ${reset}\n"
+	else
+		printf "${green}   ${checkmark} PASS${reset}\n"
+	fi
 fi
 
 echo ""
@@ -187,7 +200,7 @@ echo ""
 # Verify openresty
 #
 if [ "$check_openresty" -eq 1 ]; then
-	printf "Verifying Openresty (sudo required): "
+	printf "Verifying Openresty config (sudo required): "
 	openresty=$(which openresty)
 	if [ -z "$openresty" ]; then
 		printf "${red}   ${error} FAIL${reset}\n"
@@ -196,7 +209,7 @@ if [ "$check_openresty" -eq 1 ]; then
 		echo "    - [Linux] Install openresty: see https://github.com/riox/riox/blob/develop/docs/Developing.md"
 		echo "    - [OS X]  Install openresty: brew install lua51 luajit homebrew/nginx/openresty"
 	else
-		$(sudo ${openresty} -t 2&>1 /dev/null)
+		$(sudo ${openresty} -t -c ${openresty_config} 2> /dev/null)
 
 		if [ "$?" -eq 1 ]; then
 			printf "${red}   ${error} FAIL${reset}\n"
@@ -205,6 +218,16 @@ if [ "$check_openresty" -eq 1 ]; then
 		else
 			printf "${green}   ${checkmark} PASS${reset}\n"
 		fi
+	fi
+
+	printf "Verifying Openresty is running: "
+	openresty_running=$(ps -eaf | grep openresty | grep -v grep)
+	if [ -z "$openresty_running" ]; then
+		printf "${red}   ${error} FAIL${reset}\n"
+		echo "  Potential fixes:"
+		echo "    - [ALL]  start openresty via 'sudo openresty -c nginx.dev.conf'"
+	else
+		printf "${green}   ${checkmark} PASS${reset}\n"
 	fi
 fi
 

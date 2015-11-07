@@ -9,7 +9,7 @@ ifeq ($(USE_FIG), true)
 compose = fig
 endif
 
-.PHONY: build-images push-images deploy-k8s deploy-k8s-dns deploy-services clean
+.PHONY: build-images push-images deploy-k8s deploy-k8s-dns deploy-services deploy-services-dev clean
 
 init-cluster:
 	(cd k8s-namespaces && make deploy)
