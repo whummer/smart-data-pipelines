@@ -17,7 +17,7 @@ spec:
         - name: rioxregistrykey
       containers:
       - name: gateway
-        image: riox/nginx
+        image: riox/nginx:1.0.0
         imagePullPolicy: Always
         env:
           - name: OUR_NAMESPACE
@@ -34,6 +34,6 @@ spec:
         - name: api
           containerPort: 8082
         - name: http
-          containerPort: 80
+          containerPort: 8080
         - name: https
-          containerPort: 443
+          containerPort: 8443

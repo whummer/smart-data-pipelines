@@ -58,7 +58,7 @@ describe('pipes.deployment', function() {
 		app.pipes = starters.startPipesService();
 		app.files = starters.startFilesService();
 		app.files.url = global.servicesConfig.files.url =
-			"http://integration-tests." + process.env.RIOX_ENV + 
+			"http://integration-tests." + process.env.RIOX_ENV +
 			".svc.cluster.local:" + app.files.port + "/api/v1/files";
 
 		// TODO promisify!
@@ -66,8 +66,8 @@ describe('pipes.deployment', function() {
 			test.authDefault(done);
 		}, 2000);
 
-		/* this tells the services and bootstrap scripts not 
-		 * to loop forever using setTimeout(..) etc. because 
+		/* this tells the services and bootstrap scripts not
+		 * to loop forever using setTimeout(..) etc. because
 		 * otherwise the process would never terminate. */
 		global.avoidLoopingForever = true;
 
@@ -84,7 +84,7 @@ describe('pipes.deployment', function() {
 		// recorder.after(done);
 		resources.server.close();
 		done();
-	});	
+	});
 
 	it ('deploys bogus (non-json) request should fail with a 400 code', function(done) {
 		var payload = ''
@@ -141,7 +141,7 @@ describe('pipes.deployment', function() {
 	it ('deploys a valid pipeline and its succeeds', function(done) {
 		this.timeout(10*60*1000); /* this test suite may take quite a long time */
 
-		var content = JSON.parse(fs.readFileSync(path.join(__dirname, 
+		var content = JSON.parse(fs.readFileSync(path.join(__dirname,
 				'../../../pipes-service/examples') + '/ma-vienna-pipe.js'));
 		content = JSON.parse(JSON.stringify(content).replace(
 				/www\.wien\.gv\.at/g,
@@ -231,7 +231,7 @@ describe('pipes.deployment', function() {
 
 					res.status.should.equal(201);
 					expect(res.body).to.exist;
-					let content = res.body;
+					var content = res.body;
 					//log.debug('Body: ', JSON.stringify(content));
 
 					expect(content.id).to.exist;
@@ -271,8 +271,8 @@ describe('pipes.deployment', function() {
 			console.log("5) query elasticsearch and ensure stuff from the pipeline made it there");
 			return new Promise(function(resolve, reject) {
 				var indexName = test.user1.orgs.default[ID];
-				let url = "http://elasticsearch."+ process.env.RIOX_ENV + 
-					".svc.cluster.local:9200/" + indexName + 
+				var url = "http://elasticsearch."+ process.env.RIOX_ENV +
+					".svc.cluster.local:9200/" + indexName +
 					"/waitingtimes/_search?q=shortName:MBA3";
 				log.info("Query ES:", url);
 				var retries = 30;

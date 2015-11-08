@@ -9,7 +9,7 @@ ifeq ($(USE_FIG), true)
 compose = fig
 endif
 
-.PHONY: build-images push-images deploy-k8s deploy-k8s-dns deploy-services clean
+.PHONY: build-images push-images deploy-k8s deploy-k8s-dns deploy-services deploy-services-dev clean
 
 init-cluster:
 	(cd k8s-namespaces && make deploy)
@@ -24,11 +24,15 @@ build-images:
 	(cd hyperkube && make build)
 	(cd kafka && make build)
 	(cd nginx && make build)
+	(cd elasticsearch && make build)
+	(cd mongodb && make build)
 
 push-images:
 	(cd hyperkube && make push)
 	(cd kafka && make push)
 	(cd nginx && make push)
+	(cd elasticsearch && make push)
+	(cd mongodb && make build)
 
 deploy-k8s:
 	$(compose) -f k8s.yml up -d
@@ -45,6 +49,11 @@ deploy-services:
 	(cd redis && make deploy-standalone)
 	(cd elasticsearch && make deploy-standalone)
 	(cd nginx && make deploy)
+
+deploy-services-dev: deploy-services
+	(cd mongodb && make deploy-standalone)
+	(cd redis && make deploy-standalone)
+	(cd elasticsearch && make deploy-standalone)
 
 undeploy-services:
 	-(cd mongodb && make undeploy)

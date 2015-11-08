@@ -38,7 +38,7 @@ done
 (cd $BASEDIR/../ && make init-cluster)
 (cd  $BASEDIR/../ && make deploy-k8s-dns)
 sleep 2
-(cd  $BASEDIR/../ && make deploy-services)
+(cd  $BASEDIR/../ && make deploy-services-dev)
 
 code=
 while [ "$code" != "0" ]; do

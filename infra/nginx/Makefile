@@ -1,6 +1,6 @@
 RIOX_ENV?=development
 IMAGE=riox/nginx
-VERSION=latest
+VERSION=1.0.0
 
 deploy:
 	@echo "Deploying Nginx..."

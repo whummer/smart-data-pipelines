@@ -9,7 +9,7 @@ ifdef NODENV_ROOT
 NPATH=/opt/boxen/nodenv/versions/v0.12.7/lib/node_modules/
 endif
 
-$(info VAR is $(NPATH))
+$(info NODE_PATH is $(NPATH))
 export NODE_PATH=$(NPATH)
 
 ###############
@@ -17,11 +17,11 @@ export NODE_PATH=$(NPATH)
 ###############
 install:
 	(cd bin && node handle-global-node-packages.js && cd ..)
-	npm install
+	(cd bin && node preinstall.js && cd ..)
 	gulp ui:bower
 
 install-prereq:
-	npm install -g gulp@3.9.0 gulp-help@1.6.1 mocha gulp-mocha nodemon pm2 linklocal node-gyp node-pre-gyp del vinyl-paths run-sequence bower browser-sync babel
+	npm install --unsafe-perm -g gulp@3.9.0 gulp-help@1.6.1 mocha gulp-mocha nodemon pm2 linklocal node-gyp node-pre-gyp del vinyl-paths run-sequence bower browser-sync
 
 uninstall-global:
 	(cd bin && node handle-global-node-packages.js --uninstall && cd ..)
@@ -58,10 +58,11 @@ run-integration-tests-local:
 	(cd services/test && PULL_POLICY=IfNotPresent IMAGE_NAME=hyperriox-test ../../util/templater.sh k8s.tmpl.yml > k8s.yml)
 	(cd services/test && kubectl create -f k8s.yml --namespace=${RIOX_ENV})
 	echo "Trying to attach to stdout of test process after a short while..."
-	sleep 15 && kubectl logs -f integration-tests
+	sleep 15 && kubectl --namespace=${RIOX_ENV} logs -f integration-tests
 
 cleanup-integration-tests:
-	(cd services/test && kubectl delete -f k8s.yml --namespace=${RIOX_ENV})
+	-(cd services/test && kubectl delete -f k8s.yml --namespace=${RIOX_ENV})
+	-kubectl delete rc,pod,service -l role=scsm-module --namespace=${RIOX_ENV}
 
 ###############
 # TARGETS for deployment

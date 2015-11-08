@@ -211,7 +211,8 @@ luarocks-5.1 install lua-cjson 2.1.0-1 && \
 luarocks-5.1 install busted 1.9.0-1 && \
 luarocks-5.1 install lapis 1.0.4-1 && \
 luarocks-5.1 install moonscript 0.2.4-1 && \
-luarocks-5.1 install inspect 1.2-2
+luarocks-5.1 install inspect 1.2-2 && \
+luarocks-5.1 install luajwt 1.3-2
 
 # Checkout Redx - Redis Extension for Nginx
 sudo git clone https://github.com/whummer/redx.git /opt/redx
@@ -237,7 +238,8 @@ luarocks install lua-cjson 2.1.0-1 && \
 luarocks install busted 1.9.0-1 && \
 luarocks install lapis 1.0.4-1 && \
 luarocks install moonscript 0.2.4-1 && \
-luarocks install inspect 1.2-2
+luarocks install inspect 1.2-2 && \
+luarocks install luajwt 1.3-2
 
 # Checkout Redx - Redis Extension for Nginx
 sudo git clone https://github.com/whummer/redx.git /opt/redx

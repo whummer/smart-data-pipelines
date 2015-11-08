@@ -17,7 +17,7 @@ const PREFIX_MODULE_ARTIFACT_ID = "spring-cloud-stream-module-";
 const SESSION_AFFINITY_NONE = "None";
 const TYPE_CLUSTER_IP = "ClusterIP";
 const PROTOCOL_TCP = "TCP";
-const IMAGE_PULL_POLICY_ALWAYS = "Always";
+const IMAGE_PULL_POLICY = "IfNotPresent";
 const RESTART_POLICY_ALWAYS = "Always";
 const DNS_POLICY_CLUSTER_FIRST = "ClusterFirst";
 
@@ -97,8 +97,8 @@ class K8SConnector {
 
 			containerIDs.push(cont[ID]);
 
-			/* set incoming and outgoing links (of the pipe element), 
-			 * as well as links between the containers if the pipe element 
+			/* set incoming and outgoing links (of the pipe element),
+			 * as well as links between the containers if the pipe element
 			 * consists of multiple containers */
 			if(i == 0) {
 				cont.previous_id = cont.pipeElement.previous_id;
@@ -173,10 +173,10 @@ class K8SConnector {
 
 	/**
 	 * Some elements in our pipelines are sort of "dummy nodes" which are
-	 * visible to the user in the pipeline, but not actually deployed to 
+	 * visible to the user in the pipeline, but not actually deployed to
 	 * Spring CDF (e.g., map/chart visualization nodes, comment nodes, ...).
-	 * 
-	 * This method determines whether a given pipe element is an actual pipe 
+	 *
+	 * This method determines whether a given pipe element is an actual pipe
 	 * element that is deployed to CDF or not.
 	 */
 	isActualPipeElement(pipeEl) {
@@ -225,7 +225,7 @@ class K8SConnector {
 	}
 
 	/**
-	 * Determine the deployment status for a given pipe element. Wait 
+	 * Determine the deployment status for a given pipe element. Wait
 	 * until the status is actually available, i.e., is not "Pending".
 	 */
 	waitForPipeElementStatus(node, environment) {
@@ -384,7 +384,7 @@ class K8SConnector {
 				/* SET CONTAINER TEMPLATE */
 				templCont.name = name;
 				templCont.image = self._getImageName(coordinates);
-				templCont.imagePullPolicy = IMAGE_PULL_POLICY_ALWAYS;
+				templCont.imagePullPolicy = IMAGE_PULL_POLICY;
 				templCont.ports = [];
 				var port = self._getServicePort(state.container);
 				if(port > 0) {
@@ -445,7 +445,7 @@ class K8SConnector {
 	 */
 	_getServicePort(container) {
 		return !container.pipeElement[PARAMS] ? 0 :
-			(container.pipeElement[PARAMS][KEY_PORT] || 
+			(container.pipeElement[PARAMS][KEY_PORT] ||
 			container.pipeElement[PARAMS][KEY_SERVER_PORT]);
 	}
 
@@ -527,7 +527,7 @@ class K8SConnector {
 	}
 
 	/**
-	 * Get resources by a map of labels. 'resourceType' can be one of 
+	 * Get resources by a map of labels. 'resourceType' can be one of
 	 * "pods" or "replicationControllers".
 	 */
 	_findResourcesByLabel(labels, resourceType) {

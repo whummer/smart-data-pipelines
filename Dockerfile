@@ -19,7 +19,7 @@ RUN \
 	# install tools needed to fetch dependencies and compile native extensions
 	apt-get install -y python git make g++ libkrb5-dev && \
 
-	# clean up 
+	# clean up
 	apt-get autoremove -y && apt-get clean && \
 	rm -rf /usr/share/doc /usr/share/man/ /var/lib/apt/lists/* /tmp/*
 

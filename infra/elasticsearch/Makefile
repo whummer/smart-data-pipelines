@@ -1,4 +1,6 @@
 RIOX_ENV?=development
+IMAGE=riox/elasticsearch
+VERSION=latest
 
 deploy-standalone:
 	@echo "Deploying Elasticsearch standalone..."
@@ -10,4 +12,10 @@ undeploy-standalone:
 	kubectl stop -f elasticsearch-controller.yml --namespace=${RIOX_ENV}
 	kubectl stop -f elasticsearch-service.yml --namespace=${RIOX_ENV}
 
-.PHONY: deploy-standalone undeploy-standalone
+build:
+	docker build -t ${IMAGE}:${VERSION} .
+
+push:
+	docker push ${IMAGE}:${VERSION}
+
+.PHONY: deploy-standalone undeploy-standalone build push

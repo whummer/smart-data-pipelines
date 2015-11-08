@@ -13,14 +13,16 @@
 		"riox-services-base": "../riox-services-base",
 		"riox-shared": "../../riox-shared"
 	},
-	"devDependencies": {
-		"babel": "^5.8.21"
-	},
 	"engines": {
 		"node": ">=0.10.0"
 	},
 	"scripts": {
 		"start": "node app.js"
+	},
+	"babel": {
+		"presets": [
+			"es2015"
+		]
 	},
 	"private": true
 }
