@@ -11,7 +11,7 @@ module.exports = function (pipeElement, user) {
 	timeMod.coordinates = {
 			groupId: "riox",
 			artifactId: "time-source",
-			version: "1.0.0"
+			version: "1.0.1"
 	};
 
 	/* set cmd args */
@@ -31,7 +31,7 @@ module.exports = function (pipeElement, user) {
 	httpMod.coordinates = {
 			groupId: "riox",
 			artifactId: "httpclient-processor",
-			version: "1.0.0"
+			version: "1.0.1"
 	};
 
 	/* set cmd args */

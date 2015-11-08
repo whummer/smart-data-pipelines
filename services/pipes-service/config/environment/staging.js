@@ -13,7 +13,9 @@ module.exports = {
 	redis: {
 		hostname: appConfig["staging"].infra.redis.hostname,
 		port: 6379,
-		url: appConfig["staging"].infra.redis.url
+		url: appConfig["staging"].infra.redis.url,
+		master: appConfig["staging"].infra.redis.master,
+		sentinels: appConfig["staging"].infra.redis.sentinels
 	},
 
 	services: appConfig["staging"].services,

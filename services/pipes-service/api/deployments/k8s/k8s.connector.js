@@ -461,8 +461,16 @@ class K8SConnector {
 			}
 		}
 		env.push({
-				name: "SPRING_REDIS_HOST",
-				value: config.redis.hostname
+			name: "SPRING_REDIS_HOST",
+			value: config.redis.hostname
+		});
+		env.push({
+			name: "SPRING_REDIS_SENTINEL_MASTER",
+        	value: config.redis.master
+		});
+		env.push({
+			name: "SPRING_REDIS_SENTINEL_NODES",
+        	value: config.redis.sentinels
 		});
 		return env;
 	}

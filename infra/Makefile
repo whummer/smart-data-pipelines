@@ -46,18 +46,18 @@ undeploy-k8s-dns:
 
 deploy-services:
 	(cd mongodb && make deploy-standalone)
-	(cd redis && make deploy-standalone)
+	(cd redis && make deploy-cluster)
 	(cd elasticsearch && make deploy-standalone)
 	(cd nginx && make deploy)
 
 deploy-services-dev: deploy-services
 	(cd mongodb && make deploy-standalone)
-	(cd redis && make deploy-standalone)
+	(cd redis && make deploy-cluster)
 	(cd elasticsearch && make deploy-standalone)
 
 undeploy-services:
 	-(cd mongodb && make undeploy)
-	-(cd redis && make undeploy-standalone)
+	-(cd redis && make undeploy-cluster)
 	-(cd elasticsearch && make undeploy-standalone)
 	-(cd nginx && make undeploy)
 

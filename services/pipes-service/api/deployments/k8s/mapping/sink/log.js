@@ -9,7 +9,7 @@ module.exports = function (pipeElement, user) {
 	mod.coordinates = {
 			groupId: "riox",
 			artifactId: "log-sink",
-			version: "1.0.0"
+			version: "1.0.1"
 	};
 
 	/* set cmd args */

@@ -40,7 +40,7 @@ RUN \
 	rm -rf /var/lib/apt/lists/* /tmp/*
 
 # install redx
-RUN git clone https://github.com/whummer/redx.git /opt/redx
+RUN git clone --recursive https://github.com/whummer/redx.git /opt/redx
 
 # adjust permissions to run as non-privileged user
 RUN chmod 777 -R /opt/redx /usr/local/openresty /dev/stdout /dev/stderr /dev/stdin
