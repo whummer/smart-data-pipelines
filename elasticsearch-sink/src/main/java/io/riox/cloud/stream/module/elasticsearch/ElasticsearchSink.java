@@ -88,8 +88,10 @@ public class ElasticsearchSink {
 
 			TypesExistsResponse response = client.admin().indices().typesExists(typesExistsRequest).get();
 			if (!response.isExists()) {
-				File typeMappingFile = context.getResource("classpath:type_mapping.json").getFile();
-				String typeMapping = FileUtils.readFileToString(typeMappingFile);
+				InputStream typeMappingInputStream = context.getResource("classpath:/type_mapping.json").getInputStream();
+				OutputStream baos1 = new ByteArrayOutputStream();
+				IOUtils.copy(typeMappingInputStream, baos1);
+				String typeMapping = baos1.toString();
 				typeMapping = StringUtils.replace(typeMapping, "%TYPE%", properties.getType());
 				log.info("Using the following mapping for type '{}': \n{}", properties.getType(), typeMapping);
 				PutMappingRequest putMappingRequest
