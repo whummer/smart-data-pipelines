@@ -12,11 +12,11 @@ endif
 .PHONY: build-images push-images deploy-k8s deploy-k8s-dns deploy-services deploy-services-dev clean
 
 init-cluster:
-	(cd k8s-namespaces && make deploy)
-	(cd cluster && kubectl create -f secrets.yml --namespace=production)
-	(cd cluster && kubectl create -f secrets.yml --namespace=staging)
-	(cd cluster && kubectl create -f secrets.yml --namespace=test)
-	(cd cluster && kubectl create -f secrets.yml --namespace=development)
+	-(cd k8s-namespaces && make deploy)
+	-(cd cluster && kubectl create -f secrets.yml --namespace=production)
+	-(cd cluster && kubectl create -f secrets.yml --namespace=staging)
+	-(cd cluster && kubectl create -f secrets.yml --namespace=test)
+	-(cd cluster && kubectl create -f secrets.yml --namespace=development)
 
 build-push: build-images push-images
 
@@ -50,7 +50,7 @@ deploy-services:
 	(cd elasticsearch && make deploy-standalone)
 	(cd nginx && make deploy)
 
-deploy-services-dev: deploy-services
+deploy-services-dev:
 	(cd mongodb && make deploy-standalone)
 	(cd redis && make deploy-cluster)
 	(cd elasticsearch && make deploy-standalone)

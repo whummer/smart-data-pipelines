@@ -102,12 +102,13 @@ angular.module('rioxApp').controller('EditDataPipeCtrl', function ($scope, $stat
 		});
 	};
 
-	$scope.previewDatapipe = function() {
-		var pipe = constructCurrentPipeline();
-		riox.pipe.preview(pipe, function() {
-			console.log("preview deployed");
-		});
-	};
+	// TODO remove?
+//	$scope.previewDatapipe = function() {
+//		var pipe = constructCurrentPipeline();
+//		riox.pipe.preview(pipe, function() {
+//			console.log("preview deployed");
+//		});
+//	};
 
 	var setNodesClean = function() {
 		RED.nodes.eachNode(function(node) {
@@ -216,30 +217,40 @@ angular.module('rioxApp').controller('EditDataPipeCtrl', function ($scope, $stat
 			var pipeId = $scope.pipeline[ID];
 			var query = {};
 			query[PIPE_ID] = pipeId;
-			var timeoutShort = 1000*10;
+			var timeoutShort = 1000*3;
+			var timeoutMedium = 1000*10;
 			var timeoutLong = 1000*60;
 			riox.pipe.deployments(query, function(deployment) {
+				var timeout = timeoutLong;
 				deployment[PIPE_ELEMENTS].forEach(function(el) {
 					var node = getNodeRedNodeForPipeElement(el);
-					if(el[STATUS] && el[STATUS] == STATUS_UNKNOWN) {
-						el[STATUS] = STATUS_DEPLOYED;
+					if(node) {
+						if(el[STATUS]) {
+							if(el[STATUS] == STATUS_UNKNOWN) {
+								el[STATUS] = STATUS_DEPLOYED;
+							} else if(el[STATUS] == STATUS_UNDEPLOYED) {
+								el[STATUS] = STATUS_FAILED;
+							}
+						}
+						node.deployStatus = el[STATUS].toLowerCase();
+						node.dirty = true;
+					} else {
+						timeout = timeoutShort;
 					}
-					node.deployStatus = el[STATUS].toLowerCase();
-					node.dirty = true;
 				});
 				RED.view.redraw();
 				setTimeout(function() {
 					pollPipeStatus();
-				}, timeoutLong);
+				}, timeout);
 			}, function(error) {
 				setTimeout(function() {
 					pollPipeStatus(pipeId);
-				}, timeoutShort);
+				}, timeoutMedium);
 			});
 		} else {
 			setTimeout(function() {
 				pollPipeStatus();
-			}, timeoutShort);
+			}, timeoutMedium);
 		}
 	}
 
