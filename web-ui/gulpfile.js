@@ -109,9 +109,7 @@ gulp.task('ui:clean', 'remove build directories', function () {
 });
 
 //
-//
 // COPY TASKS. These tasks copy all required resources to the "build" directory
-//
 //
 gulp.task('ui:copy:dev', 'copies riox-ui sources to DEV build dir', function (done) {
 	copyResources(BUILD_DIR_DEV, done);
@@ -316,7 +314,7 @@ function runBabel(buildDir) {
 
 	return gulp
 		.src(SRC_DIR + '/app/**/*.js')
-		.pipe(babel({ presets: ['es2015'] })) 
+		.pipe(babel({ presets: ['es2015'] }))
 		.pipe(gulp.dest(buildDir + '/app'));
 }
 
@@ -397,7 +395,11 @@ function getRealPaths(thePaths, baseDir) {
 //
 gulp.task('ui:bower', 'install bower dependencies', function (done) {
 	runCmdSync('rm', ['-rf', 'lib/bower_components/riox-shared'], __dirname);
-	runCmdSync('bower', ['install', '--allow-root'], __dirname);
+	var result = runCmdSync('bower', ['install', '--allow-root'], __dirname);
+	if(result.status !== 0) {
+		util.log(util.colors.red('Error: Bower run returned error exit code: ' + result.status + "."));
+		return process.exit(result.status);
+	}
 	done();
 });
 
