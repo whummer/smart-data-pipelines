@@ -9,6 +9,9 @@ import net.lightbody.bmp.filters.RequestFilter;
 import net.lightbody.bmp.util.HttpMessageContents;
 import net.lightbody.bmp.util.HttpMessageInfo;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.junit.BeforeClass;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
@@ -27,6 +30,8 @@ public class AbstractProxyTest {
 	protected static WebDriver driver = null;
 	protected static String rioxUrl = null;
 	protected static String fakeHost = null;
+	protected Logger log = LoggerFactory.getLogger(getClass());
+
 
 	@BeforeClass
 	public static void beforeAll() {
@@ -63,8 +68,8 @@ public class AbstractProxyTest {
 		proxy.addRequestFilter(new RequestFilter() {
 			public HttpResponse filterRequest(HttpRequest request,
 					HttpMessageContents contents, HttpMessageInfo messageInfo) {
-               request.headers().set("Host", fakeHost);
-               return null;
+							 request.headers().set("Host", fakeHost);
+							 return null;
 			}
 		});
 

@@ -19,6 +19,14 @@ body {
 	background-color: @page-bg;
 }
 
+#mainView {
+	padding-left: 0px;
+	padding-right: 0px;
+	position: relative;
+	padding-bottom: 30px;
+	z-index: 10;
+}
+
 #page-wrapper {
 	z-index: 10;
 }
@@ -316,6 +324,13 @@ label.text-cell {
   margin-bottom: 0px;
 }
 
+
+/* Fix "row" class which seems to have negative margins */
+
+.row {
+    margin-right: 0px;
+    margin-left: 0px;
+}
 
 /* iOS style switches from http://jsfiddle.net/ProLoser/bM4C9/ */
 

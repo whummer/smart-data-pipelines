@@ -5,7 +5,7 @@
     </div>
     <div class="form-row">
         <label for="node-input-port"><i class="fa fa-file"></i> <span data-i18n="websocket-in.label.port"></span></label>
-        <input type="text" id="node-input-port" data-i18n="[placeholder]websocket-in.label.port">
+        <input type="number" id="node-input-port" data-i18n="[placeholder]websocket-in.label.port">
     </div>
     <div class="form-tips" id="spawnTip"><span data-i18n="[html]websocket-in.tip"></span></div>
 </script>
@@ -15,12 +15,14 @@
 </script>
 
 <script type="text/javascript">
-    RED.nodes.registerType('websocket-in',{
+    RED.nodes.registerType('websocket-in', {
         category: 'input',
         color: "salmon",
         defaults: {
-        	name: {value:""},
-			port: {value:"", required:true}
+        	name: {value: ""},
+			port: {value: "", required: true,
+				validate: function(v) { return v > 1024 && v <= 65535 }
+			}
         },
         inputs: 0,
         outputs: 1,
@@ -38,7 +40,11 @@
 <script type="text/javascript">
 	var locales = {
 		"websocket-in.label.name": "Name",
-		"websocket-in.label.port": "Port"
+		"websocket-in.label.port": "Port",
+		"websocket-in.tip": "Hint: This module opens an inbound <a href=\"https://tools.ietf.org/html/rfc6455\">WebSocket</a> " +
+			"port that allows you to push data into your pipeline. " +
+			"<a href=\"https://en.wikipedia.org/wiki/Cross-origin_resource_sharing\">CORS</a> headers are enabled, " +
+			"so you can push data directly from a Web browser using JavaScript."
 	};
 	i18n.addResources('en-US', 'node-red', locales);
 </script>

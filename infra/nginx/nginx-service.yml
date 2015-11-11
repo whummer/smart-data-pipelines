@@ -2,6 +2,7 @@ apiVersion: v1
 kind: List
 items:
   - kind: Service
+    apiVersion: v1
     metadata:
       name: gateway
       labels:
@@ -19,6 +20,7 @@ items:
       type: LoadBalancer
 
   - kind: Service
+    apiVersion: v1
     metadata:
       name: nginx-config
       labels:
