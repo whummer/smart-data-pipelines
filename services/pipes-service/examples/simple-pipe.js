@@ -1,4 +1,5 @@
 {
+	"id": "sample1",
 	"name": "Simple Demo Pipe (1)",
 	"description": "HTTP in - transform - elasticsearch out",
 	"elements": [

@@ -1,4 +1,5 @@
 {
+	"id": "sample3",
 	"name": "Vienna Aemter - Waiting times analytics",
 	"description": "Analyses and visualizes the waiting times of the key citizen services of the Vienna government",
 	"elements": [
