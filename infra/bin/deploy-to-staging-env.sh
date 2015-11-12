@@ -27,20 +27,23 @@ export VERSION=v`cat $BASEDIR/../../VERSION`
 IMAGE=riox/hyperriox
 
 # Check if rolling upgrade is required by: if the VERSION in the
-# source tree has not been tagged before (i.e. a git tag exists),
+# source tree has not been tagged before (i.e. a git tag in origin exists),
 # then we need to roll out
-echo `git tag | grep $VERSION`
-if [[ `git tag | grep $VERSION` != "" ]]; then
+
+tag_code=`git ls-remote --exit-code origin refs/tags/v$VERSION`
+if [[ ${tag_code} -eq 0 ]]; then
 	echo "Git tag for version ${VERSION} already exists. No rollout required. Phewww :)."
 	exit 0
 fi
+
+echo "No Git tag v${VERSION} found."
 
 echo "###"
 echo "Performing rolling upgrade to $VERSION ..."
 echo "###"
 
-# Create the git tag and push it
-git tag -a ${VERSION} -m 'Staging release tag for ${VERSION}'
+# Create the git tag (forced locally) and push it
+git tag -a ${VERSION} -f -m 'Staging release tag for ${VERSION}'
 git push origin ${VERSION}
 
 # Tag the docker image with the git tag

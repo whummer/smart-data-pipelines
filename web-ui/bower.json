@@ -34,6 +34,8 @@
     "ng-file-upload": "4.0.3",
     "riox-shared": "../riox-shared",
     "angular-ui-ace": "~0.2.3",
+    "angular-ui-layout": "whummer/ui-layout#master",
+    "angular-resizable": "1.2.0",
     "ace-builds": "riox/ace-builds#master",
     "ng-alias": "whummer/ng-alias#master",
     "ng-tags-input": "2.3.0",
@@ -63,6 +65,6 @@
     "dropzone": "~4.0.1",
     "jquery": "~1.11.0",
     "ace-builds": "master",
-    "lodash": "^3.10.0"
+    "chosen": "~1.4.2"
   }
 }
