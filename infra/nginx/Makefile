@@ -1,6 +1,12 @@
 RIOX_ENV?=development
 IMAGE=riox/nginx
-VERSION=1.1.0
+VERSION=1.1.1
+
+build:
+	docker build -t ${IMAGE}:${VERSION} .
+
+push:
+	docker push ${IMAGE}:${VERSION}
 
 deploy:
 	@echo "Deploying Nginx..."
@@ -12,10 +18,5 @@ undeploy:
 	kubectl stop -f nginx-controller.yml --namespace=${RIOX_ENV}
 	kubectl stop -f nginx-service.yml --namespace=${RIOX_ENV}
 
-build:
-	docker build -t ${IMAGE}:${VERSION} .
-
-push:
-	docker push ${IMAGE}:${VERSION}
 
 .PHONY: deploy undeploy build push

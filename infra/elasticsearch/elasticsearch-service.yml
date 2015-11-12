@@ -11,6 +11,8 @@ spec:
   - name: db
     port: 9200
     targetPort: es
+    nodePort: 0
   - name: db-transport
     port: 9300
     targetPort: es-transport
+    nodePort: 0

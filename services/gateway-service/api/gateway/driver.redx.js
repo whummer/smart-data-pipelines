@@ -104,7 +104,7 @@ exports.addOperation = function(source, op, params) {
 					var args = {
 						data: { frontends: [newEntry] }
 					};
-					console.log("add frontend", newEntry);
+					//console.log("add frontend", newEntry);
 					var req = client.post(getUrl(url), args, function(data,response) {
 						//console.log("POSTed operation");
 						if(data.message != "OK") {

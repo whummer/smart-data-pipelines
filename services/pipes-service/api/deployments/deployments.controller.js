@@ -8,8 +8,8 @@ var Promise = require('bluebird');
 var Client = require('node-rest-client').Client;
 var log = global.log;
 
-var ENVIRONMENT_PROD = "PROD";
-var ENVIRONMENT_TEST = "TEST";
+var ENVIRONMENT_PROD = 'PROD';
+var ENVIRONMENT_TEST = 'TEST';
 
 var Deployer = require('./k8s/k8s.deployer');
 var Connector = require('./k8s/k8s.connector');
@@ -27,7 +27,7 @@ exports.findByPipeId = function (req, res, next) {
 			getDeploymentDetails(deployment, req, res, next);
 		} else {
 			res.status(404);
-			return res.json({error: "No deployment found for PIPE_ID " + req.params.id});
+			return res.json({error: 'No deployment found for PIPE_ID ' + req.params.id});
 		}
 	}).catch(error => {
 		log.error('Cannot load deployment: %s', error);
@@ -37,7 +37,7 @@ exports.findByPipeId = function (req, res, next) {
 };
 
 exports.findById = function (req, res, next) {
-	log.debug("deployments.controller.findById");
+	log.debug('deployments.controller.findById');
 	var id = req.params.id;
 	PipeDeployment.findByIdQ(id).then(deployment => {
 		getDeploymentDetails(deployment, req, res, next);
@@ -51,7 +51,6 @@ var getDeploymentDetails = function(deployment, req, res, next) {
 	var id = req.params.id;
 	var pipeId = deployment[PIPE_ID];
 	var environment = deployment[PIPE_ENVIRONMENT];
-	//console.log("get deployment", deployment);
 
 	var result = clone(deployment);
 
@@ -59,10 +58,7 @@ var getDeploymentDetails = function(deployment, req, res, next) {
 	Pipe.findByIdQ(pipeId).then(pipe => {
 		log.debug('Found pipe with ID %s', pipeId);
 
-		//var server = getResponsibleServer(req, ENVIRONMENT_TEST); // TODO dont hardcode environment
-		var connector = new Connector({
-			//namespace: server.namespace // TODO remove
-		});
+		var connector = new Connector();
 
 		result[PIPE_ELEMENTS] = result[PIPE_ELEMENTS] || [];
 
@@ -81,14 +77,13 @@ var getDeploymentDetails = function(deployment, req, res, next) {
 					/* fetch deployment info */
 					return connector.waitForPipeElementStatus(node, environment).
 						then(status => {
-							//console.log("--> deployment status", status);
 							var statusString = status[STATUS];
 							if(statusString === STATUS_RUNNING) {
 								statusString = STATUS_DEPLOYED;
 							}
 							nodeStatus[STATUS] = statusString;
 						}).catch(error => {
-							log.warn("Error getting deployment details.", error);
+							log.warn('Error getting deployment details.', error);
 							nodeStatus[STATUS] = STATUS_UNKNOWN;
 						});
 				} else {
@@ -102,7 +97,8 @@ var getDeploymentDetails = function(deployment, req, res, next) {
 		}
 
 		Promise.all(proms).then(function() {
-			return res.json(200, result);
+			log.warn("Got all deployment details.", result);
+			return res.json(result);
 		});
 	}).catch(error => {
 		log.error('Cannot load deployment: %s', error);
@@ -112,25 +108,21 @@ var getDeploymentDetails = function(deployment, req, res, next) {
 
 exports.deploy = function (req, res) {
 	var user = auth.getCurrentUser(req);
-//	var server = getResponsibleServer(req, ENVIRONMENT_PROD);
 	var environment = ENVIRONMENT_PROD;
 	var deployer = new Deployer({user: user});
 	var pipeId = req.body[PIPE_ID];
 
-	//log.debug("deployments.controller.create: ", JSON.stringify(pipe));
-
-	// handle missing pipeline ID
+	/* handle missing pipeline ID */
 	if (!pipeId) {
 		var error = {};
-		error[ERROR_MESSAGE] = util.format("No '%s' field specified", PIPE_ID);
-		// log.debug(error);
+		error[ERROR_MESSAGE] = util.format('No "%s" field specified', PIPE_ID);
 		return res.json(400, error);
 	}
 
 	Pipe.findByIdQ(pipeId).then(pipe => {
 		if(!pipe) {
 			var error = {};
-			error[ERROR_MESSAGE] = "Cannot find pipe with ID '" + pipeId + "'";
+			error[ERROR_MESSAGE] = 'Cannot find pipe with ID "' + pipeId + '"';
 			log.warn(error[ERROR_MESSAGE]);
 			return res.status(404).json(error);
 		}
@@ -145,8 +137,6 @@ exports.deploy = function (req, res) {
 };
 
 exports.preview = function(req, res) {
-//	var server = getResponsibleServer(req, ENVIRONMENT_TEST);
-	//console.log("using server", server);
 	var user = auth.getCurrentUser(req);
 	var deployer = new Deployer({user: user});
 	var pipe = req.body;
@@ -155,8 +145,7 @@ exports.preview = function(req, res) {
 };
 
 var doDeploy = function(deployer, environment, pipe, req, res) {
-	log.debug("Deploy pipe with ID '%s' and name '%s'", pipe[ID], pipe.name);
-	// log.debug("pipe definition: %s", JSON.stringify(result));
+	log.debug('Deploy pipe with ID "%s" and name "%s"', pipe[ID], pipe.name);
 
 	/* set a higher request timeout as this call may take a while! */
 	// TODO: make this function an aysnc operation
@@ -166,18 +155,19 @@ var doDeploy = function(deployer, environment, pipe, req, res) {
 
 	return deployer.
 		deploy(pipe, environment).
-		then(deploymentStatus => {
+		then(deploymentStatuses => {
 			let deployment = new PipeDeployment();
 			let user = auth.getCurrentUser(req);
 			deployment[PIPE_ID] = pipe[ID];
 			deployment[PIPE_ENVIRONMENT] = environment;
 			deployment[CREATOR_ID] = user[ID];
-			deployment[STATUS] = deploymentStatus;
-			log.debug("saving deployment", JSON.stringify(deployment));
+			deployment[STATUS] = getCommonDenominatorStatus(deploymentStatuses);
+			deployment[PIPE_ELEMENTS] = deploymentStatuses;
+			log.debug('saving deployment', JSON.stringify(deployment));
 			deployment.saveQ().then(deployment => {
-				var location = servicesConfig.pipedeployments.url + "/" + deployment[ID];
+				var location = servicesConfig.pipedeployments.url + '/' + deployment[ID];
 				res.setHeader('Location', location);
-				log.debug("Done deployment. Location:", location);
+				log.debug('Done deployment. Location:', location);
 				res.status(201);
 				return res.json({'id': deployment.id});
 			}).catch(error => {
@@ -185,11 +175,31 @@ var doDeploy = function(deployer, environment, pipe, req, res) {
 			});
 		}).
 		catch( error => {
-			log.debug("Deployment error", error);
+			log.debug('Deployment error', error);
 			res.status(500);
 			res.json({error: error});
 		});
 };
+
+var getCommonDenominatorStatus = function(deploymentStatuses) {
+	var result = STATUS_UNKNOWN;
+	for(var pipeElementStatus of deploymentStatuses) {
+		if(pipeElementStatus.status === STATUS_FAILED) {
+			/* if one element failed, the entire pipe deployment is failed */
+			return STATUS_FAILED;
+		}
+		if(pipeElementStatus.status === STATUS_DEPLOYED) {
+			/* set the DEPLOYED status */
+			result = pipeElementStatus.status;
+		} else if(pipeElementStatus.status === STATUS_NOT_DEPLOYABLE) {
+			/* only set this if we haven't seen a DEPLOYED status before */
+			if(result === STATUS_UNKNOWN) {
+				result = pipeElementStatus.status;
+			}
+		}
+	}
+	return result;
+}
 
 exports.input = function(req, res, next) {
 	var user = auth.getCurrentUser(req);
@@ -202,14 +212,13 @@ exports.input = function(req, res, next) {
 		pipe[PIPE_ELEMENTS].forEach(function(pipeEl) {
 			if(pipeEl[ID] == inputID) {
 				var url = getUrlForInputNode(user, pipe, pipeEl);
-				log.debug("POSTing test data to:", url);
+				log.debug('POSTing test data to:', url);
 				var client = new Client();
 				var args = {
 					data: req.body,
-					headers:{"Content-Type": "application/json"} 
+					headers:{'Content-Type': 'application/json'} 
 				};
 				var inputReq = client.post(url, args, function(data, response) {
-					//log.debug("test data response", response);
 					res.send(data);
 				});
 				inputReq.on('error', function(err) {
@@ -218,14 +227,12 @@ exports.input = function(req, res, next) {
 			}
 		});
 	}).catch(error => {
-		log.error('Cannot find pipe: ', error);
-		return next(errors.InternalError('Cannot find pipe', error));
+		log.error('Cannot POST input data to pipe: ', error);
+		return next(errors.InternalError('Cannot POST input data to pipe', error));
 	});
 };
 
 exports.listAll = function (req, res, next) {
-	log.debug("deployments.controller.listAll: ", JSON.stringify(req.body));
-
 	PipeDeployment.findQ({}).then(deployments => {
 		if (!deployments || deployments.length == 0) {
 			return next(errors.NotFoundError('No deployments found'));
@@ -239,7 +246,6 @@ exports.listAll = function (req, res, next) {
 };
 
 exports.delete = function (req, res, next) {
-	log.debug("deployments.controller.delete: ", JSON.stringify(req.body));
 
 	let id = req.params.id;
 	log.debug('Deleting deployment with id %s', id);
@@ -250,7 +256,7 @@ exports.delete = function (req, res, next) {
 			return deployer.undeploy(deployment);
 		})
 		.then( status => {
-			log.debug("Status: ", status);
+			log.debug('Status: ', status);
 			return PipeDeployment.remove({_id: id});
 		})
 		.then( pipeId => {
@@ -270,32 +276,11 @@ exports.delete = function (req, res, next) {
 var getUrlForInputNode = function(user, pipe, pipeEl) {
 	var orgID = user.getDefaultOrganization()[ID];
 	var connector = new Connector();
-	var id = connector.getStreamIdForPipeElement(pipeEl);
-	var suffix = 
-		pipeEl[TYPE] ==
-			"http-in" ? "http" : 
-			"websocket" ? "websocket" : null;
-	if(!suffix) {
-		throw "Unknown pipe element type: " + pipeEl[TYPE];
-	}
-	return "http://" + id + "-" + suffix + "." + process.env.RIOX_ENV + ".svc.cluster.local:" + pipeEl[PARAMS].port + "/messages";
+	var id = connector.getServiceNameForPipeElement(pipeEl);
+	return 'http://' + id + '.' + process.env.RIOX_ENV +
+			'.svc.cluster.local:' + pipeEl[PARAMS].port + '/messages';
 };
 
 var validationError = function (err, next) {
-	return next(errors.UnprocessableEntity("You passed a broken object", err));
+	return next(errors.UnprocessableEntity('You passed a broken object', err));
 };
-
-// TODO remove
-//var getResponsibleServer = function(req, environment) {
-//	var options = [ENVIRONMENT_PROD, ENVIRONMENT_TEST];
-//	if(options.indexOf(environment) < 0) {
-//		throw "Invalid environment specified: '" + environment;
-//	}
-//	// TODO remove
-//	return {
-//		//hostname: environment == ENVIRONMENT_TEST ? config.cdfLocal.hostname : config.cdf.hostname,
-////		hostname: config.cdf.hostname,
-////		port: 9393,
-//		environment: environment
-//	};
-//};

@@ -3,12 +3,6 @@
         <label for="node-input-name"><i class="fa fa-file"></i> <span data-i18n="elasticsearch.label.name"></span></label>
         <input type="text" id="node-input-name" data-i18n="[placeholder]elasticsearch.label.name">
     </div>
-	<!--
-    <div class="form-row">
-        <label for="node-input-index"><i class="fa fa-file"></i> <span data-i18n="elasticsearch.label.index"></span></label>
-        <input type="text" id="node-input-index" data-i18n="[placeholder]elasticsearch.label.index">
-    </div>
-	-->
     <div class="form-row">
         <label for="node-input-typeName"><i class="fa fa-file"></i> <span data-i18n="elasticsearch.label.typeName"></span></label>
         <input type="text" id="node-input-typeName" data-i18n="[placeholder]elasticsearch.label.typeName">
@@ -26,8 +20,9 @@
         color: "yellow",
         defaults: {
         	name: {value:""},
-        	//index: {value:"", required:true},
-        	typeName: {value:"", required:true}
+        	typeName: {value:"", required:true,
+            	validate:function(v) { return v.match(/^[a-zA-Z][0-9a-zA-Z]{0,15}$/); }
+        	}
         },
         inputs: 1,
         outputs: 1,
@@ -45,8 +40,9 @@
 <script type="text/javascript">
 	var locales = {
 		"elasticsearch.label.name": "Name",
-		//"elasticsearch.label.index": "Index",
-		"elasticsearch.label.typeName": "Type"
+		"elasticsearch.label.typeName": "Type",
+		"elasticsearch.tip": "Stores data to an Elasticsearch database. The " + 
+			"<tt>type</tt> parameter may contain only lower-case characters and numbers."
 	};
 	i18n.addResources('en-US', 'node-red', locales);
 </script>
