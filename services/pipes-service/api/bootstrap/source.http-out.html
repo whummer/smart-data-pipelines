@@ -5,15 +5,22 @@
 	</div>
 	<div class="form-row">
 		<label for="node-input-url"><i class="fa fa-file"></i> <span data-i18n="http-out.label.url"></span></label>
-		<input type="text" id="node-input-url" data-i18n="[placeholder]http-out.label.url">
+		<input type="url" id="node-input-url" data-i18n="[placeholder]http-out.label.url">
 	</div>
 	<div class="form-row">
 		<label for="node-input-method"><i class="fa fa-file"></i> <span data-i18n="http-out.label.method"></span></label>
-		<input type="text" id="node-input-method" data-i18n="[placeholder]http-out.label.method">
+		<select id="node-input-method">
+			<option value="GET">GET</option>
+			<option value="POST">POST</option>
+			<option value="PUT">PUT</option>
+			<option value="DELETE">DELETE</option>
+			<option value="HEAD">HEAD</option>
+			<option value="OPTIONS">OPTIONS</option>
+		</select>
 	</div>
 	<div class="form-row">
 		<label for="node-input-interval"><i class="fa fa-file"></i> <span data-i18n="http-out.label.interval"></span></label>
-		<input type="text" id="node-input-interval" data-i18n="[placeholder]http-out.label.interval">
+		<input type="number" id="node-input-interval" data-i18n="[placeholder]http-out.label.interval">
 	</div>
 	<div class="form-tips" id="spawnTip"><span data-i18n="[html]http-out.tip"></span></div>
 </script>
@@ -50,7 +57,9 @@
 		"http-out.label.name": "Name",
 		"http-out.label.url": "URL",
 		"http-out.label.method": "Method",
-		"http-out.label.interval": "Interval"
+		"http-out.label.interval": "Interval",
+		"http-out.tip": "Hint: The <b>http-out</b> module calls out to an existing HTTP resource. " +
+			"If you require an <i>inbound</i> module that allows you to push data into your pipeline, try using the <b>http-in</b> module."
 	};
 	i18n.addResources('en-US', 'node-red', locales);
 </script>

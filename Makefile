@@ -56,7 +56,7 @@ run-integration-tests:
 
 run-integration-tests-local:
 	(cd services/test && PULL_POLICY=IfNotPresent IMAGE_NAME=hyperriox-test ../../util/templater.sh k8s.tmpl.yml > k8s.yml)
-	(cd services/test && kubectl create -f k8s.yml --namespace=${RIOX_ENV})
+	(cd services/test && kubectl create -f k8s.yml --namespace=${RIOX_ENV} --validate=false)
 	echo "Trying to attach to stdout of test process after a short while..."
 	sleep 15 && kubectl --namespace=${RIOX_ENV} logs -f integration-tests
 

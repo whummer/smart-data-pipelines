@@ -10,7 +10,6 @@ var LRUCache = require("lru-cache");
 
 var validateJwt = expressJwt({secret: config.secrets.session});
 
-//var INTERNAL_USER_ID = "000000000000000000000000"; // Mongodb ID format
 var INTERNAL_USER_ID = "000000000000";
 var expiresInMinutes = 60 * 24 * 3; // 3 days expiration time
 
@@ -142,14 +141,15 @@ function fetchOrgs() {
 					next();
 				};
 
-				var cachedObj = orgsCache.get(req.headers);
+				var cacheKey = req.headers.authorization;
+				var cachedObj = !cacheKey ? null : orgsCache.get(cacheKey);
 				if(cachedObj) {
 					doAdd(cachedObj);
 				} else {
 					riox.organizations({
 						headers: req.headers,
 						callback: function(orgs) {
-							orgsCache.set(req.headers, orgs);
+							orgsCache.set(cacheKey, orgs);
 							doAdd(orgs);
 						}
 					}, function () {

@@ -7,11 +7,11 @@ metadata:
 spec:
   replicas: 1
   selector:
-    name: "mongo-1"
+    name: mongo-1
   template:
     metadata:
       labels:
-        name: "mongo-1"
+        name: mongo-1
     spec:
       imagePullSecrets:
         - name: rioxregistrykey
