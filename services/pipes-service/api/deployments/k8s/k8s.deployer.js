@@ -14,7 +14,6 @@ class K8SDeployer {
 
 	constructor(configs) {
 		configs = configs || {};
-		log.debug("Deployer.constructor");
 		this.connector = new Connector();
 		this.user = configs.user;
 	}
@@ -33,7 +32,6 @@ class K8SDeployer {
 		let deploymentStatus = [];
 		this.pipe = pipe;
 		this._deployAll(this.pipe, environment, deploymentStatus);
-		console.log("deploymentStatus.length", deploymentStatus.length);
 		return Promise.all(deploymentStatus);
 	};
 
@@ -44,8 +42,8 @@ class K8SDeployer {
 	 */
 	undeploy(pipeDeployment) {
 		log.debug("Deployer.undeploy: ", pipeDeployment[ID]);
-		return Promise.map(pipeDeployment[STATUS], status => {
-			log.debug("Deployer.undeploy.status: ", JSON.stringify(status));
+		return Promise.map(pipeDeployment[PIPE_ELEMENTS], status => {
+			log.debug("Deployer.undeploy.container: ", status[ID]);
 			return this.connector.removeContainers(status);
 		});
 	};
@@ -118,7 +116,6 @@ class K8SDeployer {
 		var edgeConnectedDirectly = false;
 		if(edgesOut.length > 0) {
 			if(useDirectEdgesToOptimizeDeployment && edgesOut.length == 1) {
-				//var nextInEdges = this._getIncomingEdges(pipe, edgesOut[0].targetNode);
 				args["next_id"] = edgesOut[0].target + "-in";
 				edgeConnectedDirectly = true;
 			} else {
@@ -130,8 +127,6 @@ class K8SDeployer {
 			args["previous_id"] = element.id + "-in";
 		}
 
-		//log.debug("Module arguments: ", args);
-	
 		var promises = [];
 
 		/* create module definition */
@@ -164,15 +159,10 @@ class K8SDeployer {
 				} else {
 					/* add this edge */
 
-					var queueIn = "queue:" + edge.source + "-out";
-					var queueOut = "queue:" + edge.target + "-in";
-
-					//var streamDef = queueIn + " > " + queueOut;
-					/* TODO: two "transform"s required because direct bridging between queues is currently not supported :/ */
-					var streamDef = queueIn + " > t1: transform | t2: transform > " + queueOut;
-
-					var streamId = "edge-" + edge.source + "-to-" + edge.target;
-					var linkDeployStatus = this.connector.createPipeElement(streamId, streamDef);
+					var moduleImport = require("./mapping/processor/bridge");
+					var linkDeployStatus = moduleImport(element, edge.targetNode).then(function(containers) {
+						return self.connector.deployContainers(containers);
+					});
 					/* add promise results to status array */
 					promises.push(linkDeployStatus);
 				}
@@ -182,14 +172,17 @@ class K8SDeployer {
 		promises.forEach(function(p) {
 			p = p.then(stream => {
 				var result = {};
-				result[ID] = element[ID];
+				result[ID] = stream[ID] || element[ID];
 				result[STATUS] = stream[STATUS];
+				if(result[STATUS] === STATUS_RUNNING) {
+					result[STATUS] = STATUS_DEPLOYED;
+				}
 				result[DETAILS] = stream;
 				return result;
 			})
 			.catch(error => {
 				var result = {};
-				result[ID] = element[ID];
+				result[ID] = error[ID] || element[ID];
 				result[STATUS] = STATUS_FAILED;
 				result[DETAILS] = error;
 				return Promise.reject(result);

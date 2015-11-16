@@ -8,22 +8,6 @@
         <input type="text" id="node-input-url" data-i18n="[placeholder]enrich.label.url">
     </div>
     <div class="form-row">
-        <label for="node-input-cache"><i class="fa fa-file"></i> <span data-i18n="enrich.label.cache"></span></label>
-        <input type="text" id="node-input-cache" data-i18n="[placeholder]enrich.label.cache">
-    </div>
-    <div class="form-row">
-        <label for="node-input-overwrite"><i class="fa fa-file"></i> <span data-i18n="enrich.label.overwrite"></span></label>
-        <input type="text" id="node-input-overwrite" data-i18n="[placeholder]enrich.label.overwrite">
-    </div>
-    <div class="form-row">
-        <label for="node-input-flat"><i class="fa fa-file"></i> <span data-i18n="enrich.label.flat"></span></label>
-        <input type="text" id="node-input-flat" data-i18n="[placeholder]enrich.label.flat">
-    </div>
-    <div class="form-row">
-        <label for="node-input-columns"><i class="fa fa-file"></i> <span data-i18n="enrich.label.columns"></span></label>
-        <input type="text" id="node-input-columns" data-i18n="[placeholder]enrich.label.columns">
-    </div>
-    <div class="form-row">
         <label for="node-input-sourceID"><i class="fa fa-file"></i> <span data-i18n="enrich.label.sourceID"></span></label>
         <input type="text" id="node-input-sourceID" data-i18n="[placeholder]enrich.label.sourceID">
     </div>
@@ -32,8 +16,24 @@
         <input type="text" id="node-input-targetID" data-i18n="[placeholder]enrich.label.targetID">
     </div>
     <div class="form-row">
+        <label for="node-input-columns"><i class="fa fa-file"></i> <span data-i18n="enrich.label.columns"></span></label>
+        <input type="text" id="node-input-columns" data-i18n="[placeholder]enrich.placeholder.columns">
+    </div>
+    <div class="form-row">
         <label for="node-input-mappings"><i class="fa fa-file"></i> <span data-i18n="enrich.label.mappings"></span></label>
         <input type="text" id="node-input-mappings" data-i18n="[placeholder]enrich.label.mappings">
+    </div>
+    <div class="form-row">
+        <label for="node-input-cache"><i class="fa fa-file"></i> <span data-i18n="enrich.label.cache"></span></label>
+        <input type="number" id="node-input-cache" data-i18n="[placeholder]enrich.label.cache">
+    </div>
+    <div class="form-row">
+        <label for="node-input-overwrite"><i class="fa fa-file"></i> <span data-i18n="enrich.label.overwrite"></span></label>
+        <input type="text" id="node-input-overwrite" data-i18n="[placeholder]enrich.label.overwrite">
+    </div>
+    <div class="form-row">
+        <label for="node-input-flat"><i class="fa fa-file"></i> <span data-i18n="enrich.label.flat"></span></label>
+        <span><input type="checkbox" id="node-input-flat" /> <span data-i18n="[html]enrich.description.flat"></span>
     </div>
     <div class="form-tips" id="spawnTip"><span data-i18n="[html]enrich.tip"></span></div>
 </script>
@@ -48,14 +48,14 @@
         color: "aliceblue",
         defaults: {
 			"name": {value:""},
-			"url": {value:""},
-			"cache": {value:""},
-			"overwrite": {value:""},
-			"flat": {value:""},
-			"columns": {value:"", required:true},
+			"url": {value:"", required:true},
 			"sourceID": {value:"", required:true},
 			"targetID": {value:"", required:true},
-			"mappings": {value:"", required:true}
+			"mappings": {value:"", required:true},
+			"columns": {value:""},
+			"cache": {value: -1},
+			"overwrite": {value: true},
+			"flat": {value: true}
 		},
         inputs: 1,
         outputs: 1,
@@ -74,13 +74,18 @@
 	var locales = {
 			"enrich.label.name": "Name",
 			"enrich.label.url": "URL",
-			"enrich.label.cache": "Cache",
+			"enrich.label.cache": "Cache Seconds",
 			"enrich.label.overwrite": "Overwrite",
 			"enrich.label.flat": "Flat",
-			"enrich.label.columns": "Columns",
+			"enrich.label.columns": "Custom Columns",
 			"enrich.label.sourceID": "sourceID",
 			"enrich.label.targetID": "targetID",
-			"enrich.label.mappings": "Mappings"
+			"enrich.label.mappings": "Mappings",
+			"enrich.description.flat": "Insert the values as direct children of the message root.",
+			"enrich.tip": "Enriches a message with values from an external CSV file. By default, " + 
+				"the values are inserted as direct children of the message root. To insert the values " +
+				"under a new field <tt>_entry</tt>, deactivate the <tt>flat</tt> property.",
+			"enrich.placeholder.columns": "Comma-separated list of names"
 	};
 	i18n.addResources('en-US', 'node-red', locales);
 </script>

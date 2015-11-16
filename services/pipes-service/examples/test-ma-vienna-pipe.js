@@ -1,4 +1,5 @@
 {
+	"id": "sample3",
 	"name": "Vienna Aemter - Waiting times analytics",
 	"description": "Analyses and visualizes the waiting times of the key citizen services of the Vienna government",
 	"elements": [
@@ -44,6 +45,7 @@
 			"params": {
 				"name": "Meldeservice",
 				"location": "${scripts.dir}/json-add-element.groovy",
+				"language": "Groovy",
 				"sync-interval": 60,
 				"variables": {
 					"key": "origin",
@@ -59,6 +61,7 @@
 			"params": {
 				"name": "Passservice",
 				"location": "${scripts.dir}/json-add-element.groovy",
+				"language": "Groovy",
 				"sync-interval": 60,
 				"variables": {
 					"key": "origin",
@@ -74,6 +77,7 @@
 			"params": {
 				"name": "Parkpickerl",
 				"location": "${scripts.dir}/json-add-element.groovy",
+				"language": "Groovy",
 				"sync-interval": 60,
 				"variables": {
 					"key": "origin",
@@ -114,6 +118,7 @@
 			"params": {
 				"name": "Regex Replacer",
 				"location": "${scripts.dir}/regexReplace.groovy",
+				"language": "Groovy",
 				"variables": {
 					"field": "SHAPE",
 					"targetField": "location",

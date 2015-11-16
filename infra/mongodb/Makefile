@@ -20,7 +20,7 @@ deploy-standalone:
 	fi
 
 	kubectl create -f mongodb-controller-single.yml --namespace=${RIOX_ENV}
-	kubectl create -f mongodb-service-single.yml --namespace=${RIOX_ENV}
+	kubectl create -f mongodb-service-single.yml --namespace=${RIOX_ENV}  --validate=false
 
 deploy-cluster: 
 	@echo "Deploying MongoDB in replicated mode. #Replicas: ${CLUSTER_REPLICAS}"

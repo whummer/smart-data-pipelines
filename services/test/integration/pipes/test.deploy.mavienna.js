@@ -16,7 +16,7 @@ var Promise = require('bluebird');
 
 var app = {};
 
-describe('pipes.deployment', function() {
+describe('pipes.deploy.mavienna', function() {
 
 	// TODO fix this
 	var recorder = record('test.pipes.deployments', { 'fixtures': __dirname + '/fixtures' });
@@ -29,21 +29,21 @@ describe('pipes.deployment', function() {
 		var app = express();
 		app.get('/wartezeiten/passservice/wartezeiten.svc/GetWartezeiten', function (req, res) {
 			var result = {"IsOpen":false,"MBA10":0,"MBA11":0,"MBA12":0,"MBA13_14":0,"MBA15":0,"MBA16":0,"MBA17":0,"MBA18":0,"MBA19":0,"MBA1_8":0,"MBA2":0,"MBA20":0,"MBA21":0,"MBA22":0,"MBA23":0,"MBA3":0,"MBA4_5":0,"MBA6_7":0,"MBA9":0,"Timestamp":"14:43","Wartekreis":0};
-			console.log("INFO: mock service result: passservice");
+			log.debug("Mock service result: passservice");
 			res.json(result);
 		});
 		app.get('/wartezeiten/parkpickerl/wartezeiten.svc/GetWartezeiten', function (req, res) {
 			var result = {"IsOpen":false,"MBA10":0,"MBA11":0,"MBA12":0,"MBA13_14":0,"MBA15":0,"MBA16":0,"MBA17":0,"MBA18":0,"MBA19":0,"MBA1_8":0,"MBA2":0,"MBA20":0,"MBA21":0,"MBA22":0,"MBA23":0,"MBA3":0,"MBA4_5":0,"MBA6_7":0,"MBA9":0,"Timestamp":"14:46","Wartekreis":0};
-			console.log("INFO: mock service result: parkpickerl");
+			log.debug("Mock service result: parkpickerl");
 			res.json(result);
 		});
 		app.get('/wartezeiten/meldeservice/wartezeiten.svc/GetWartezeiten', function (req, res) {
 			var result = {"IsOpen":false,"MBA10":0,"MBA11":0,"MBA12":0,"MBA13_14":0,"MBA15":0,"MBA16":0,"MBA17":0,"MBA18":0,"MBA19":0,"MBA1_8":0,"MBA2":0,"MBA20":0,"MBA21":0,"MBA22":0,"MBA23":0,"MBA3":0,"MBA4_5":0,"MBA6_7":0,"MBA9":0,"Timestamp":"14:46","Wartekreis":0};
-			console.log("INFO: mock service result: meldeservice");
+			log.debug("Mock service result: meldeservice");
 			res.json(result);
 		});
 		/* start server async. Should be up and running when we need it later. */
-		console.log("INFO: starting server on port 6789");
+		log.info("Starting server on port 6789");
 		resources.server = app.listen(6789);
 	}
 
@@ -66,25 +66,47 @@ describe('pipes.deployment', function() {
 			test.authDefault(done);
 		}, 2000);
 
-		/* this tells the services and bootstrap scripts not
-		 * to loop forever using setTimeout(..) etc. because
-		 * otherwise the process would never terminate. */
-		global.avoidLoopingForever = true;
-
 	});
 
 	after(function(done) {
 		log.debug('after hook - Services shut down');
-		app.users.server.stop();
-		if (app.pipes.server)
-			app.pipes.server.stop();
-		if (app.files.server)
-			app.files.server.stop();
 
-		// recorder.after(done);
-		resources.server.close();
-		done();
-	});
+		/* finish by cleaning up */
+		cleanup(function() {
+			app.users.server.stop();
+			if (app.pipes.server)
+				app.pipes.server.stop();
+			if (app.files.server)
+				app.files.server.stop();
+
+			// recorder.after(done);
+			resources.server.close();
+
+			done();
+		});
+	});	
+
+	var cleanup = function(done) {
+		// TODO cleanup uploaded test files in files-service
+		if(resources.state.locationHeader) {
+			test.user1
+			.delete(resources.state.locationHeader)
+			.send()
+			.end(function(err, res) {
+				if (err) {
+					log.error("Error in cleanup: ", err, resources.state.locationHeader);
+				} else {
+					log.debug("Response: ", res.body);
+				}
+				resources.state.locationHeader = null;
+				res.status.should.equal(200);
+				// TODO ensure streams are really gone
+				if(done) done();
+			});
+		} else {
+			if(done) done();
+		}
+	}
 
 	it ('deploys bogus (non-json) request should fail with a 400 code', function(done) {
 		var payload = ''
@@ -141,13 +163,13 @@ describe('pipes.deployment', function() {
 	it ('deploys a valid pipeline and its succeeds', function(done) {
 		this.timeout(10*60*1000); /* this test suite may take quite a long time */
 
-		var content = JSON.parse(fs.readFileSync(path.join(__dirname,
-				'../../../pipes-service/examples') + '/ma-vienna-pipe.js'));
+		var content = JSON.parse(fs.readFileSync(path.join(__dirname, 
+				'../../../pipes-service/examples') + '/test-ma-vienna-pipe.js'));
 		content = JSON.parse(JSON.stringify(content).replace(
 				/www\.wien\.gv\.at/g,
 				'integration-tests.' + process.env.RIOX_ENV + '.svc.cluster.local:6789'));
 
-		var state = {};
+		var state = resources.state = {};
 
 		Promise.resolve()
 		.then(function() {
@@ -162,16 +184,16 @@ describe('pipes.deployment', function() {
 							url: "http://integration-tests." + process.env.RIOX_ENV + ".svc.cluster.local:" + app.files.port + "/api/v1/files"
 						}
 				};
-				console.log("Uploading test files to URL:", fileServiceRef.files.url);
+				log.debug("Uploading test files to URL:", fileServiceRef.files.url);
 				test.uploadFile(fileServiceRef, test.user1, regexScript, function(result) {
 					state.regexScriptFileID = result;
-					console.log("state.regexScriptFileID", state.regexScriptFileID);
+					log.debug("state.regexScriptFileID", state.regexScriptFileID);
 					test.uploadFile(fileServiceRef, test.user1, csvData, function(result) {
 						state.csvDataFileID = result;
-						console.log("state.csvDataFileID", state.csvDataFileID);
+						log.debug("state.csvDataFileID", state.csvDataFileID);
 						test.uploadFile(fileServiceRef, test.user1, addjsonScript, function(result) {
 							state.addjsonScriptFileID = result;
-							console.log("state.addjsonScriptFileID", state.addjsonScriptFileID);
+							log.debug("state.addjsonScriptFileID", state.addjsonScriptFileID);
 
 							/* set the file URLs in the request */
 							content[PIPE_ELEMENTS].forEach(function(pipeEl) {
@@ -229,14 +251,15 @@ describe('pipes.deployment', function() {
 						should.fail();
 					}
 
+					var locationHeader = res.get("location");
+					state.locationHeader = locationHeader;
+
 					res.status.should.equal(201);
 					expect(res.body).to.exist;
 					var content = res.body;
 					//log.debug('Body: ', JSON.stringify(content));
 
 					expect(content.id).to.exist;
-					var locationHeader = res.get("location");
-					state.locationHeader = locationHeader;
 
 					resolve();
 				});
@@ -254,7 +277,8 @@ describe('pipes.deployment', function() {
 						return reject(err);
 					}
 					log.debug("Response: ", res.body);
-					expect(res.body[PIPE_ID]).to.equal(state.payload[PIPE_ID])
+					expect(res.body[PIPE_ID]).to.equal(state.payload[PIPE_ID]);
+					expect(res.body.status).to.equal(STATUS_DEPLOYED);
 
 					/* check deployment status for each element */
 					for(var element of res.body[PIPE_ELEMENTS]) {
@@ -317,18 +341,7 @@ describe('pipes.deployment', function() {
 		.then( function() {
 			/* Step 7. */
 			console.log("7) clean-up: delete the pipe deployment");
-			test.user1
-			.delete(state.locationHeader)
-			.send()
-			.end(function(err, res) {
-				log.debug("Response: ", res.body);
-				if (err) {
-					log.error("Error: ", err);
-				}
-				res.status.should.equal(200);
-				// TODO ensure streams are really gone; cleanup uploaded test files in files-service
-				done();
-			});
+			cleanup(done);
 		});
 	});
 

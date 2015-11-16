@@ -63,8 +63,8 @@ public class AbstractProxyTest {
 		proxy.addRequestFilter(new RequestFilter() {
 			public HttpResponse filterRequest(HttpRequest request,
 					HttpMessageContents contents, HttpMessageInfo messageInfo) {
-               request.headers().set("Host", fakeHost);
-               return null;
+							 request.headers().set("Host", fakeHost);
+							 return null;
 			}
 		});
 
