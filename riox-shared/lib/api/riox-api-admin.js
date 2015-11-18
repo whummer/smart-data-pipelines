@@ -24,24 +24,11 @@
 		}
 
 		/* rating/billing of API calls */
+
 		sh.ratings = sh.ratings || {};
 		sh.ratings.logAndPermit = function (access, callback, errorCallback) {
 			return riox.callPOST(servicesConfig.ratings.url + "/logAndPermit", access, callback, errorCallback);
 		};
-
-		/* manage sources */
-
-		/*sh.pipes.sources.all = function(query, callback, errorCallback) {
-		 var url = servicesConfig.pipes.url + "/sources/all?";
-		 if(query[ORGANIZATION_ID]) {
-		 url += ORGANIZATION_ID + "=" + query[ORGANIZATION_ID];
-		 }
-		 return riox.callGET(url, callback, errorCallback);
-		 };
-		 sh.pipes._bootstrap = function(options, callback, errorCallback) {
-		 options = options ? options : {};
-		 return riox.callPOST(servicesConfig.pipes.url + "/_bootstrap", options, callback, errorCallback);
-		 };*/
 
 		/* manage pricing plans */
 

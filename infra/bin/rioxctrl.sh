@@ -211,10 +211,10 @@ function start_mongo() {
 #
 if [ "$START" == 1 ]; then
   start_zookeeper;
-  start_redis;
-  start_hsql;
+  #start_redis;
+  #start_hsql;
   start_kafka;
-  start_mongo;
+  #start_mongo;
 
   if [ "$XD_ENABLED" == 1 ]; then
 	  start_xd_admin;

@@ -15,7 +15,7 @@ if [[ "$TEST_REPORTER" == "mocha-jenkins-reporter" ]]; then
 	(cd $BASEDIR/../ && make run-integration-tests)
 
 	# wait for the tests to finish
-	for i in `seq 1 60`;
+	for i in `seq 1 80`;
 	do
 		sleep 15
 		success=`kubectl get pods --namespace=$RIOX_ENV -o template integration-tests --template={{.status.phase}}`

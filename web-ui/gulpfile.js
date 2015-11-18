@@ -109,9 +109,7 @@ gulp.task('ui:clean', 'remove build directories', function () {
 });
 
 //
-//
 // COPY TASKS. These tasks copy all required resources to the "build" directory
-//
 //
 gulp.task('ui:copy:dev', 'copies riox-ui sources to DEV build dir', function (done) {
 	copyResources(BUILD_DIR_DEV, done);
@@ -316,7 +314,7 @@ function runBabel(buildDir) {
 
 	return gulp
 		.src(SRC_DIR + '/app/**/*.js')
-		.pipe(babel({ presets: ['es2015'] })) 
+		.pipe(babel({ presets: ['es2015'] }))
 		.pipe(gulp.dest(buildDir + '/app'));
 }
 
@@ -327,6 +325,10 @@ function runBabel(buildDir) {
 //
 //
 gulp.task('ui:scriptsmin', 'concatenate, minify and uglify JS script sources', function (done) {
+	var uglifyOpts = {
+			mangle: false, 
+			compress: {sequences: false}
+	};
 	function minOwnScripts() {
 		return gulp.src(getRealScriptsPaths(BUILD_DIR_PROD))
 			.pipe(aceFilter())
@@ -334,7 +336,7 @@ gulp.task('ui:scriptsmin', 'concatenate, minify and uglify JS script sources', f
 			.pipe(angular_filesort())
 			.pipe(sourcemaps.init()) // TODO whu: not sure we need this?
 			.pipe(concat(RIOX_ALL_MIN_JS))
-			.pipe(uglify({mangle: false, compress: {sequences: false}}))
+			.pipe(uglify(uglifyOpts))
 			.pipe(sourcemaps.write()) // TODO whu: not sure we need this?
 			.pipe(gulp.dest(BUILD_DIR_PROD + '/app'));
 	}
@@ -343,7 +345,7 @@ gulp.task('ui:scriptsmin', 'concatenate, minify and uglify JS script sources', f
 			.pipe(gulpFilter('*.js'))
 			.pipe(jqueryFilter())
 			.pipe(concat(RIOX_DEPS_ALL_MIN_JS))
-			.pipe(uglify({mangle: false, compress: {sequences: false}}))
+			.pipe(uglify(uglifyOpts))
 			.pipe(gulp.dest(BUILD_DIR_PROD + '/app'));
 	}
 	function minOwnCss() {
@@ -397,7 +399,11 @@ function getRealPaths(thePaths, baseDir) {
 //
 gulp.task('ui:bower', 'install bower dependencies', function (done) {
 	runCmdSync('rm', ['-rf', 'lib/bower_components/riox-shared'], __dirname);
-	runCmdSync('bower', ['install', '--allow-root'], __dirname);
+	var result = runCmdSync('bower', ['install', '--allow-root'], __dirname);
+	if(result.status !== 0) {
+		util.log(util.colors.red('Error: Bower run returned error exit code: ' + result.status + "."));
+		return process.exit(result.status);
+	}
 	done();
 });
 

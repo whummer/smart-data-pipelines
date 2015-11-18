@@ -97,17 +97,30 @@ angular.module("rioxApp").controller("DataPipesCtrl", function ($scope, $log, gr
 	//
 	$scope.deployPipeline = function (pipeline) {
 		if (!pipeline.id) {
-			$log.warn('Cannot deploy pipeline. Pipeline has no ID. Save first');
-			growl.error('Cannot deploy an unsaved pipe');
+			growl.error('Cannot deploy an unsaved pipe. Please save it first.');
 		} else {
-			$log.debug('Deploying pipe: ', pipeline.id);
 			var payload = {};
 			payload[PIPE_ID] = pipeline.id;
-			riox.add.pipedeployment(payload, function (deployed) {
-				$log.debug('Pipeline ' + pipeline.id + ' deployed successfully');
+			riox.pipe.deploy(payload, function (deployed) {
 				growl.success('Successfully deployed pipeline ' + pipeline.label);
 			}, function (error) {
-				$log.error('Cannot deploy pipe: ', error);
+				growl.error('Cannot deploy pipeline. See console for details');
+			});
+		}
+	};
+
+	//
+	// deploy pipe
+	//
+	$scope.undeployPipeline = function (pipeline) {
+		if (!pipeline.id) {
+			growl.error('Cannot undeploy an unsaved pipe.');
+		} else {
+			var payload = {};
+			payload[PIPE_ID] = pipeline.id;
+			riox.pipe.undeploy(payload, function (deployed) {
+				growl.success('Successfully undeployed pipeline ' + pipeline.label);
+			}, function (error) {
 				growl.error('Cannot deploy pipeline. See console for details');
 			});
 		}

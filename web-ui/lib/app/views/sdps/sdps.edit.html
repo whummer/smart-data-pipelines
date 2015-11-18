@@ -1,115 +1,138 @@
-<div style="position: relative; width: 100%;" id="sdpEditor">
+<div style="position: relative;" id="sdpEditor">
 
-	<div class="row" style="margin-bottom: 10px">
-		<div class="col-lg-2">
-			<div class="ibox float-e-margins">
-				<div class="ibox-title">
-					<h5>Building Blocks</h5>
+	<div ui-layout id="sdpEditorContainer" resizable r-directions="['bottom']">
+
+		<ui-layout options="{ flow : 'column' }" class="stretch">
+			<sidebar ui-layout-container size="15%" min-size="180px" class="stretch">
+				<div class="ibox float-e-margins stretch">
+					<div class="ibox-title resizehide">
+						<h5>Building Blocks</h5>
+					</div>
+					<div class="ibox-content resizehide">
+						<div ng-include="'/app/views/sdps/sdps.nodered.palette.html'" style="height: 100%;"></div>
+					</div>
 				</div>
-				<div class="ibox-content" style="height: 500px;">
-					<div ng-include="'/app/views/sdps/sdps.nodered.palette.html'" style="height: 100%;"></div>
-				</div>
-			</div>
-		</div>
-		<div class="col-lg-6">
-			<div class="ibox float-e-margins">
-				<div class="ibox-title">
-					<h5>Pipeline Definition</h5>
-				</div>
-				<div class="ibox-content" style="height: 500px;">
-					<div ng-include="'/app/views/sdps/sdps.nodered.canvas.html'" style="height: 100%;"></div>
-				</div>
-			</div>
-		</div>
-		<div class="col-lg-4">
-			<div class="ibox float-e-margins">
-				<div class="ibox-title">
-					<h5>Explore &amp; Preview</h5>
-				</div>
-				<div class="ibox-content" style="height: 500px;">
-					<div ng-include="'/app/views/sdps/sdps.edit.explore.html'" style="height: 100%;"></div>
+			</sidebar>
+			<div ui-layout-container size="60%" min-size="250px" class="stretch">
+				<div class="ibox float-e-margins stretch">
+					<div class="ibox-title resizehide">
+						<h5>Pipeline Definition</h5>
+					</div>
+					<div class="ibox-content resizehide">
+						<div ng-include="'/app/views/sdps/sdps.nodered.canvas.html'" style="height: 100%;"></div>
+					</div>
 				</div>
 			</div>
-		</div>
+			<sidebar ui-layout-container size="25%" min-size="160px" class="stretch">
+				<div class="ibox float-e-margins stretch">
+					<div class="ibox-title resizehide">
+						<h5>Explore &amp; Preview</h5>
+					</div>
+					<div class="ibox-content resizehide">
+						<div ng-include="'/app/views/sdps/sdps.edit.explore.html'" style="height: 100%;"></div>
+					</div>
+				</div>
+			</sidebar>
+		</ui-layout>
+
 	</div>
 
-	<div class="row" style="margin-bottom: 10px">
-		<div class="col-lg-12 ">
-			<div class="ibox float-e-margins">
-				<div class="ibox-title">
-					<h2 class="heading-thicker" ng-class="{'text-muted' : !pipeline.name}">
-						{{pipeline.name ? pipeline.name : 'Untitled' }}
-						<small class="subheading-thinner">{{pipeline.description}}</small>
-					</h2>
+	<div class="clearfix"></div>
 
-				</div>
-				<div class="ibox-content pipeEditor">
+<!-- 	<div class="row" style="margin-bottom: 10px"> -->
+<!-- 		<div class="col-lg-2"> -->
+<!-- 			<div class="ibox float-e-margins"> -->
+<!-- 				<div class="ibox-title"> -->
+<!-- 					<h5>Building Blocks</h5> -->
+<!-- 				</div> -->
+<!-- 				<div class="ibox-content" style="height: 500px;"> -->
+<!-- 					<div ng-include="'/app/views/sdps/sdps.nodered.palette.html'" style="height: 100%;"></div> -->
+<!-- 				</div> -->
+<!-- 			</div> -->
+<!-- 		</div> -->
+<!-- 		<div class="col-lg-6"> -->
+<!-- 			<div class="ibox float-e-margins"> -->
+<!-- 				<div class="ibox-title"> -->
+<!-- 					<h5>Pipeline Definition</h5> -->
+<!-- 				</div> -->
+<!-- 				<div class="ibox-content" style="height: 500px;"> -->
+<!-- 					<div ng-include="'/app/views/sdps/sdps.nodered.canvas.html'" style="height: 100%;"></div> -->
+<!-- 				</div> -->
+<!-- 			</div> -->
+<!-- 		</div> -->
+<!-- 		<div class="col-lg-4"> -->
+<!-- 			<div class="ibox float-e-margins"> -->
+<!-- 				<div class="ibox-title"> -->
+<!-- 					<h5>Explore &amp; Preview</h5> -->
+<!-- 				</div> -->
+<!-- 				<div class="ibox-content" style="height: 500px;"> -->
+<!-- 					<div ng-include="'/app/views/sdps/sdps.edit.explore.html'" style="height: 100%;"></div> -->
+<!-- 				</div> -->
+<!-- 			</div> -->
+<!-- 		</div> -->
+<!-- 	</div> -->
 
-					<!-- PIPELINE PROPERTIES -->
-					<div class="row " style="margin-top: 5px; margin-right: 0px">
-						<div class="col-lg-6">
-							<form class="form">
-								<div class="form-group">
-									<label class="col-sm-4">Label</label>
-									<div class="col-sm-8">
-										<input class="form-control" name="label" ng-model="pipeline.name"/>
-									</div>
+	<div style="margin-bottom: 10px; margin-top: 20px">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<h2 class="heading-thicker" ng-class="{'text-muted' : !pipeline.name}">
+					{{pipeline.name ? pipeline.name : 'Untitled' }}
+					<small class="subheading-thinner">{{pipeline.description}}</small>
+				</h2>
+
+			</div>
+			<div class="ibox-content pipeEditor">
+
+				<!-- PIPELINE PROPERTIES -->
+				<div class="row " style="margin-top: 5px; margin-right: 0px">
+					<div class="col-lg-6">
+						<form class="form">
+							<div class="form-group">
+								<label class="col-sm-4">Label</label>
+								<div class="col-sm-8">
+									<input class="form-control" name="label" ng-model="pipeline.name"/>
 								</div>
-								<div class="form-group">
-									<label class="col-sm-4">Description</label>
-									<div class="col-sm-8">
-										<input class="form-control" name="description" ng-model="pipeline.description"/>
-									</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-4">Description</label>
+								<div class="col-sm-8">
+									<input class="form-control" name="description" ng-model="pipeline.description"/>
 								</div>
-								<div class="clearfix"></div>
-							</form>
-						</div>
-						<div class="col-lg-6" style="margin-top: 20px">
-							<div class="row">
-
-								<button class="btn btn-lg btn-circle btn-danger pull-right"
-								        tooltip="Delete Pipeline"
-								        ng-click="deletePipelineAndShowList(pipeline)">
-									<i class="fa fa-trash fa-lg"></i>
-								</button>
-
-								<button class="btn btn-lg btn-circle btn-warning pull-right"
-								        tooltip="Revert Changes"
-								        style="margin-right: 10px;"
-								        ng-click="revertChanges(pipeline)">
-									<i class="fa fa-undo fa-lg"></i>
-								</button>
-
-								<button class="btn btn-lg btn-circle btn-primary pull-right"
-								        ng-show="pipeline.id"
-								        tooltip="Deploy Pipeline"
-								        style="margin-right: 10px;"
-								        ng-click="deployPipeline(pipeline)">
-									<i class="fa fa-fix fa-upload fa-lg"></i>
-								</button>
-
-								<button class="btn btn-lg btn-primary btn-circle pull-right" ng-click="submitDatapipe()"
-								        tooltip="Save Changes"
-								        style="margin-right: 10px;">
-									<i class="fa fa-floppy-o fa-lg"></i>
-								</button>
-
-								<button class="btn btn-lg btn-primary btn-circle pull-right" ng-click="previewDatapipe()"
-								        tooltip="Preview"
-								        style="margin-right: 10px;">
-									<i class="fa fa-search fa-lg"></i>
-								</button>
-
 							</div>
-
-							<div class="row pull-right">
-								<a ng-click="showAdvanced = !showAdvanced"><h3 class="subheading-thinner">Show Advanced<i
-									style="margin-left: 10px;" class="fa"
-									ng-class="{'fa-caret-left' : !showAdvanced, 'fa-caret-down' : showAdvanced}"></i></h3></a>
-							</div>
-
 							<div class="clearfix"></div>
+						</form>
+					</div>
+					<div class="col-lg-6" style="margin-top: 20px;">
+						<div>
+							<button class="btn btn-lg btn-circle btn-danger pull-right"
+							        tooltip="Undeploy Pipeline"
+							        ng-click="undeployPipeline(pipeline)">
+								<i class="fa fa-download fa-lg"></i>
+							</button>
 
+							<button class="btn btn-lg btn-circle btn-warning pull-right"
+							        ng-show="pipeline.id"
+							        tooltip="Deploy Pipeline"
+							        style="margin-right: 10px;"
+							        ng-click="deployPipeline(pipeline)">
+								<i class="fa fa-fix fa-upload fa-lg"></i>
+							</button>
+
+							<button class="btn btn-lg btn-primary btn-circle pull-right" ng-click="submitDatapipe()"
+							        tooltip="Save Changes"
+							        style="margin-right: 10px;">
+								<i class="fa fa-floppy-o fa-lg"></i>
+							</button>
+
+						</div ng-show="false">
+							<div class="clearfix"></div>
+							<div>
+								<div class="row pull-right">
+								<a ng-click="showAdvanced = !showAdvanced">Show Advanced<i
+									style="margin-left: 10px;" class="fa"
+									ng-class="{'fa-caret-left' : !showAdvanced, 'fa-caret-down' : showAdvanced}"></i></a>
+							</div>
+							<div class="clearfix"></div>
 							<div class="row animated animated-faster" ng-show="showAdvanced"
 							     ng-class="{fadeIn : showAdvanced, fadeOut: !showAdvanced}">
 
@@ -128,15 +151,14 @@
 								</button>
 
 							</div>
-
 						</div>
-					</div>
-					<div class="row" ng-show="selectedItem && showElementSource">
-						<div class="col-lg-12">{{selectedItem}}</div>
+
 					</div>
 				</div>
+				<div class="row" ng-show="selectedItem && showElementSource">
+					<div class="col-lg-12">{{selectedItem}}</div>
+				</div>
 			</div>
-
 		</div>
 
 	</div>
@@ -152,10 +174,12 @@
 }
 .ui-dialog {
 	z-index: 1000;
-	max-width: 550px;
+	max-width: 650px;
 }
 .ui-dialog-titlebar {
 	cursor: move;
+}
+#sdpEditor {
 }
 #sdpEditor .ibox-content {
 	padding: 10px;
@@ -164,4 +188,89 @@
 	padding-left: 10px;
 	padding-right: 10px;
 }
+.ui-splitbar {
+	background: none;
+}
+.ui-layout-column > .ui-splitbar > a, .ui-layout-row > .ui-splitbar > a {
+	color: #444444;
+}
+.ui-layout-column > .ui-splitbar {
+	background: none;
+}
+.ui-layout-hidden {
+	display: none;
+}
+
+#sdpEditorContainer {
+	min-height: 580px;
+	position: relative;
+	overflow: visible;
+	margin-top: 40px;
+}
+#sdpEditorContainer .stretch {
+	height: 100%;
+	overflow: visible;
+}
+#sdpEditorContainer .resizehide {
+	overflow: hidden;
+}
+#sdpEditorContainer .ibox-title, #sdpEditorContainer .ibox-content {
+	position: absolute;
+	width: 100%;
+}
+#sdpEditorContainer .ibox-title {
+	margin-top: -45px;
+}
+#sdpEditorContainer .ibox-content {
+	height: 100%;
+}
+.form-row select, .form-row input, .form-row label {
+	width: auto;
+}
+div.form-row > :nth-child(1) {
+	width: 25%;
+}
+div.form-row > :nth-child(2) {
+	width: 74%;
+}
+.form-tips {
+	max-width: none;
+}
+
+
+.rg-right, .rg-left, .rg-top, .rg-bottom {
+  display: block;
+  width: 14px;
+  height: 14px;
+  line-height: 14px;
+  position: absolute;
+  z-index: 1;
+  -moz-user-select: -moz-none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  background: transparent;
+}
+.rg-right span, .rg-left span, .rg-top span, .rg-bottom span {
+  position: absolute;
+  box-sizing: border-box;
+  display: block;
+  border: 1px solid #ccc;
+}
+.rg-top span, .rg-bottom span {
+  border-width: 1px 0;
+  left: 50%;
+  margin: 3.5px 0 0 -10px;
+  width: 20px;
+  height: 7px;
+}
+.rg-bottom {
+  cursor: row-resize;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  margin-bottom: -14px;
+}
+
+
 </style>

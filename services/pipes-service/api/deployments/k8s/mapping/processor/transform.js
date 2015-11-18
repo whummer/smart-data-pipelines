@@ -4,22 +4,25 @@ var log = global.log || require('winston');
 var util = require('util');
 var Promise = require('bluebird');
 
-module.exports = function (connector, args) {
-	log.debug('springxd.processor.transform');
+module.exports = function (pipeElement, user) {
 
-	let stream = util.format('queue:%s > ' + 
-			't1: transform ' +
-			'| t2: transform ' + // TODO: currently needed due to bug in SCDF
-			'> queue:%s',
-				args.previous_id,
-				args.next_id
-			);
+	var mod = {};
+	mod.coordinates = {
+			groupId: "riox",
+			artifactId: "transform-processor",
+			version: "1.0.0.BUILD-SNAPSHOT"
+	};
 
-	if (args.dryrun) {
-		log.info('stream (dry-run): ', stream);
-		return Promise.resolve(stream);
-	} else {
-		let streamId = connector.getStreamIdForPipeElement(args);
-		return connector.createStream(streamId, stream);
-	}
+	/* set cmd args */
+	mod.cmdArgs = [];
+
+	/* set environment variables */
+	mod.env = {};
+	mod.env.JAVA_TOOL_OPTIONS = "-Xmx100M";
+
+	/* set ID of this module */
+	mod[ID] = pipeElement[ID];
+
+	/* return the result as an array */
+	return Promise.resolve([mod]);
 };

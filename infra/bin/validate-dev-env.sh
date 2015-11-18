@@ -1,10 +1,13 @@
 #!/bin/bash
-source ./common.sh
+
+dir=`dirname "$0"`
+me=`basename $0`
+source $dir/common.sh
 
 : ${RIOX_ENV:=development}
 
 # define hosts to check DNS for
-declare -a hosts=('mongo' 'redis'  'riox-ui' 'users-service' 'organizations-service' 'access-service' \
+declare -a hosts=('mongo' 'redis-sentinel'  'riox-ui' 'users-service' 'organizations-service' 'access-service' \
  'files-service' 'notifications-service'  'certificates-service' 'ratings-service' 'statistics-service' \
  'gateway-service' 'proxies-service' 'pipes-service');
 
@@ -18,6 +21,7 @@ declare dns_server=10.0.0.100
 declare openresty_config=nginx.dev.conf
 
 # cli arguments
+check_routing=1
 check_host_dns=1
 check_k8s_dns=1
 check_lua_env=1
@@ -26,23 +30,24 @@ check_redx=1
 silent=1
 
 read -r -d '' HELP_TEXT <<'USAGE_TEXT'
-Usage: kube-up.sh [-fndursh]
 Available options are:
-	-f  disable forward to port 8080 on docker machine (required for kubectl)
-	-n  disable adding route to enable local name resolution via skyDNS
-	-d  disable skyDNS
-	-u  disable kube-ui
-	-r  start local docker registry
+	-d  disable k8s DNS check
+	-h  disable host DNS check (mongo, redis etc.)
+	-l  disable LUA checks
+	-o  disable openresty checks
+	-x  disable redx checks
+	-r  disable route checks
 	-s  silent mode
-	-h  show this help text
+	-?  show this help text
 USAGE_TEXT
 
 function show_help {
+	echo "Usage: $me [-dhloxrs?]"
 	echo "$HELP_TEXT"
     exit 0
 }
 
-while getopts "dhlors?:" opt; do
+while getopts "dhloxrs?:" opt; do
     case "$opt" in
     \?)
         show_help
@@ -56,7 +61,9 @@ while getopts "dhlors?:" opt; do
 		;;
 	o)  check_openresty=0
 		;;
-	r)  check_redx=1
+	r)  check_route=0
+		;;
+	x)  check_redx=0
 		;;
 	s)  silent=1
 		;;
@@ -82,6 +89,31 @@ echo ""
 # verify routes and port forwards on Mac OS only
 #
 if [ "$(uname)" == "Darwin" ]; then
+
+	if [ "$check_route" -eq 1 ]; then
+		docker_net=${DOCKER_MACHINE_NET:=10.0.0.0/16}
+		docker_machine_ip=$(docker-machine ip docker-vm)
+		if [ $? -ne 0 ]; then
+			exit -1;
+		fi
+
+		rx='([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])'
+		printf "Verifying routing:"
+
+		if [[ $docker_machine_ip =~ ^$rx\.$rx\.$rx\.$rx$ ]]; then
+			default_gateway=$(route -n get default | grep gateway | awk '{print $2}')
+			existing_route_gateway=$(route -n get $docker_net | grep gateway | awk '{print $2}')
+			if [ "$existing_route_gateway" == "$docker_machine_ip" ]; then
+				printf "${green}   ${checkmark} PASS\n${reset}"
+			else
+				printf "${red}    ${error} FAIL\n${reset}"
+			fi
+		else
+			printf "${red}   ${error} FAIL: No valid IP address for docker machine $machine_name: $docker_machine_ip\n\n${reset}"
+		fi
+	fi
+
+	echo "" 
 	printf "Verifying etcd SSH tunnel for docker-machine: "
 	etcd_tunnel_up=$(ps -eaf | grep ssh | grep "4001:localhost:4001")
 	if [ -n "$etcd_tunnel_up" ]; then
@@ -126,7 +158,7 @@ echo ""
 #
 if [ "$check_k8s_dns" -eq 1 ]; then
 	printf "Verifying K8S DNS Connectivity: "
-	output=`dig @${dns_server} +short kubernetes.default.svc.cluster.local`
+	output=`dig @${dns_server} +time=1 +tries=1 +short kubernetes.default.svc.cluster.local`
 	if [ "$output" == "10.0.0.1" ]; then
 		printf "${green}   ${checkmark} PASS${reset}\n"
 	else
@@ -147,12 +179,12 @@ if [ "$check_host_dns" -eq 1 ]; then
 	echo "Verifying DNS Resolution: "
 	for h in "${hosts[@]}"
 	do
-		output=`dig @${dns_server} +short ${h}.${RIOX_ENV}.svc.cluster.local 2>/dev/null`
+		output=`dig @${dns_server} +time=1 +tries=1 +short ${h}.${RIOX_ENV}.svc.cluster.local 2>/dev/null`
 		printf "   %-30s " "$h.${RIOX_ENV}.svc.cluster.local:"
-		if [ -z "$output" ]; then
+		if [ -z "$output" ] || [[ "$output" =~ "connection timed out" ]]; then
 			printf "${red}   ${error} FAIL${reset}\n"
 		else
-			printf "${green}   ${checkmark} PASS${reset}\n"
+			printf "${green}   ${checkmark} PASS ${reset}\n"
 		fi
 	done
 
@@ -163,7 +195,7 @@ fi
 # Verify luarocks
 #
 if [ "$check_lua_env" -eq 1 ]; then
-	printf "Verifying Luarocks: \n"
+	printf "Verifying Luarocks (binary): "
 	luarocks=$(which luarocks-5.1)
 	if [ -z "$luarocks" ]; then
 		luarocks=$(which luarocks)
@@ -172,8 +204,13 @@ if [ "$check_lua_env" -eq 1 ]; then
 		else
 			printf "${green}   ${checkmark} PASS${reset}\n"
 		fi
+	else
+		printf "${green}   ${checkmark} PASS${reset}\n"
 	fi
 
+	echo ""
+
+	printf "Verifying Luarocks (libraries): \n"
 	for lib in "${lua_libs[@]}"
 	do
 		exists=$(${luarocks} list 2> /dev/null | grep ${lib})
@@ -200,26 +237,27 @@ echo ""
 # Verify openresty
 #
 if [ "$check_openresty" -eq 1 ]; then
-	printf "Verifying Openresty config (sudo required): "
-	openresty=$(which openresty)
-	if [ -z "$openresty" ]; then
-		printf "${red}   ${error} FAIL${reset}\n"
+	#printf "Verifying Openresty config (sudo required): "
+	#openresty=$(which openresty)
+	#if [ -z "$openresty" ]; then
+		#printf "${red}   ${error} FAIL${reset}\n"
 
-		echo "  Potential fixes:"
-		echo "    - [Linux] Install openresty: see https://github.com/riox/riox/blob/develop/docs/Developing.md"
-		echo "    - [OS X]  Install openresty: brew install lua51 luajit homebrew/nginx/openresty"
-	else
-		$(sudo ${openresty} -t -c ${openresty_config} 2> /dev/null)
+		#echo "  Potential fixes:"
+		#echo "    - [Linux] Install openresty: see https://github.com/riox/riox/blob/develop/docs/Developing.md"
+		#echo "    - [OS X]  Install openresty: brew install lua51 luajit homebrew/nginx/openresty"
+	#else
+		#$(sudo ${openresty} -t -c ${openresty_config} 2> /dev/null)
+#
+		#if [ "$?" -eq 1 ]; then
+			#printf "${red}   ${error} FAIL${reset}\n"
+			#echo "  Potential fixes:"
+			#echo "    - [ALL]  Verify that you are in sudoers file and that openresty config is OK"
+		#else
+			#printf "${green}   ${checkmark} PASS${reset}\n"
+		#fi
+	#fi
 
-		if [ "$?" -eq 1 ]; then
-			printf "${red}   ${error} FAIL${reset}\n"
-			echo "  Potential fixes:"
-			echo "    - [ALL]  Verify that you are in sudoers file and that openresty config is OK"
-		else
-			printf "${green}   ${checkmark} PASS${reset}\n"
-		fi
-	fi
-
+	echo "" 
 	printf "Verifying Openresty is running: "
 	openresty_running=$(ps -eaf | grep openresty | grep -v grep)
 	if [ -z "$openresty_running" ]; then
@@ -232,6 +270,25 @@ if [ "$check_openresty" -eq 1 ]; then
 fi
 
 echo ""
+
+
+#
+# verify redx
+#
+printf "Verifying redx is up2date"
+if [ "$check_redx" -eq 1 ]; then
+	changed=`git pull --dry-run | grep -q -v 'Already up-to-date.'`
+	if [ -n "$changed" ]; then
+		printf "${red}   ${error} FAIL${reset}\n"
+		echo "  Potential fixes:"
+		echo "    - [ALL]  execute: cd /opt/redx && git pulll"
+	else
+		printf "${green}   ${checkmark} PASS${reset}\n"
+	fi
+fi
+
+
+
 
 #
 # Verify zookeeper is UP if we started kafka

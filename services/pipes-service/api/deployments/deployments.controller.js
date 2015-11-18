@@ -51,7 +51,6 @@ var getDeploymentDetails = function(deployment, req, res, next) {
 	var id = req.params.id;
 	var pipeId = deployment[PIPE_ID];
 	var environment = deployment[PIPE_ENVIRONMENT];
-	//console.log("get deployment", deployment);
 
 	var result = clone(deployment);
 
@@ -59,10 +58,7 @@ var getDeploymentDetails = function(deployment, req, res, next) {
 	Pipe.findByIdQ(pipeId).then(pipe => {
 		log.debug('Found pipe with ID %s', pipeId);
 
-		//var server = getResponsibleServer(req, ENVIRONMENT_TEST); // TODO dont hardcode environment
-		var connector = new Connector({
-			//namespace: server.namespace // TODO remove
-		});
+		var connector = new Connector();
 
 		result[PIPE_ELEMENTS] = result[PIPE_ELEMENTS] || [];
 
@@ -81,7 +77,6 @@ var getDeploymentDetails = function(deployment, req, res, next) {
 					/* fetch deployment info */
 					return connector.waitForPipeElementStatus(node, environment).
 						then(status => {
-							//console.log("--> deployment status", status);
 							var statusString = status[STATUS];
 							if(statusString === STATUS_RUNNING) {
 								statusString = STATUS_DEPLOYED;
@@ -102,7 +97,8 @@ var getDeploymentDetails = function(deployment, req, res, next) {
 		}
 
 		Promise.all(proms).then(function() {
-			return res.json(200, result);
+			log.warn("Got all deployment details.", result);
+			return res.json(result);
 		});
 	}).catch(error => {
 		log.error('Cannot load deployment: %s', error);
@@ -112,18 +108,14 @@ var getDeploymentDetails = function(deployment, req, res, next) {
 
 exports.deploy = function (req, res) {
 	var user = auth.getCurrentUser(req);
-//	var server = getResponsibleServer(req, ENVIRONMENT_PROD);
 	var environment = ENVIRONMENT_PROD;
 	var deployer = new Deployer({user: user});
 	var pipeId = req.body[PIPE_ID];
 
-	//log.debug("deployments.controller.create: ", JSON.stringify(pipe));
-
-	// handle missing pipeline ID
+	/* handle missing pipeline ID */
 	if (!pipeId) {
 		var error = {};
 		error[ERROR_MESSAGE] = util.format("No '%s' field specified", PIPE_ID);
-		// log.debug(error);
 		return res.json(400, error);
 	}
 
@@ -145,8 +137,6 @@ exports.deploy = function (req, res) {
 };
 
 exports.preview = function(req, res) {
-//	var server = getResponsibleServer(req, ENVIRONMENT_TEST);
-	//console.log("using server", server);
 	var user = auth.getCurrentUser(req);
 	var deployer = new Deployer({user: user});
 	var pipe = req.body;
@@ -156,7 +146,6 @@ exports.preview = function(req, res) {
 
 var doDeploy = function(deployer, environment, pipe, req, res) {
 	log.debug("Deploy pipe with ID '%s' and name '%s'", pipe[ID], pipe.name);
-	// log.debug("pipe definition: %s", JSON.stringify(result));
 
 	/* set a higher request timeout as this call may take a while! */
 	// TODO: make this function an aysnc operation
@@ -166,13 +155,14 @@ var doDeploy = function(deployer, environment, pipe, req, res) {
 
 	return deployer.
 		deploy(pipe, environment).
-		then(deploymentStatus => {
+		then(deploymentStatuses => {
 			let deployment = new PipeDeployment();
 			let user = auth.getCurrentUser(req);
 			deployment[PIPE_ID] = pipe[ID];
 			deployment[PIPE_ENVIRONMENT] = environment;
 			deployment[CREATOR_ID] = user[ID];
-			deployment[STATUS] = deploymentStatus;
+			deployment[STATUS] = getCommonDenominatorStatus(deploymentStatuses);
+			deployment[PIPE_ELEMENTS] = deploymentStatuses;
 			log.debug("saving deployment", JSON.stringify(deployment));
 			deployment.saveQ().then(deployment => {
 				var location = servicesConfig.pipedeployments.url + "/" + deployment[ID];
@@ -190,6 +180,26 @@ var doDeploy = function(deployer, environment, pipe, req, res) {
 			res.json({error: error});
 		});
 };
+
+var getCommonDenominatorStatus = function(deploymentStatuses) {
+	var result = STATUS_UNKNOWN;
+	for(var pipeElementStatus of deploymentStatuses) {
+		if(pipeElementStatus.status === STATUS_FAILED) {
+			/* if one element failed, the entire pipe deployment is failed */
+			return STATUS_FAILED;
+		}
+		if(pipeElementStatus.status === STATUS_DEPLOYED) {
+			/* set the DEPLOYED status */
+			result = pipeElementStatus.status;
+		} else if(pipeElementStatus.status === STATUS_NOT_DEPLOYABLE) {
+			/* only set this if we haven't seen a DEPLOYED status before */
+			if(result === STATUS_UNKNOWN) {
+				result = pipeElementStatus.status;
+			}
+		}
+	}
+	return result;
+}
 
 exports.input = function(req, res, next) {
 	var user = auth.getCurrentUser(req);
@@ -284,18 +294,3 @@ var getUrlForInputNode = function(user, pipe, pipeEl) {
 var validationError = function (err, next) {
 	return next(errors.UnprocessableEntity("You passed a broken object", err));
 };
-
-// TODO remove
-//var getResponsibleServer = function(req, environment) {
-//	var options = [ENVIRONMENT_PROD, ENVIRONMENT_TEST];
-//	if(options.indexOf(environment) < 0) {
-//		throw "Invalid environment specified: '" + environment;
-//	}
-//	// TODO remove
-//	return {
-//		//hostname: environment == ENVIRONMENT_TEST ? config.cdfLocal.hostname : config.cdf.hostname,
-////		hostname: config.cdf.hostname,
-////		port: 9393,
-//		environment: environment
-//	};
-//};

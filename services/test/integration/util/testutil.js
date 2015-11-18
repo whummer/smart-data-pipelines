@@ -4,6 +4,8 @@ var assert = require('assert');
 var superagent = require('superagent');
 var status = require('http-status');
 var starters = require('./service.starters');
+var should = require('chai').should();
+var Connector = require('../../../pipes-service/api/deployments/k8s/k8s.connector');
 
 var app = {};
 var services = {};
@@ -149,5 +151,25 @@ app.uploadFile = function(cfg, user, filepath, callback, errorCallback) {
 		}
 	});
 }
+
+app.ensurePodsCleanedUp = function(pipeId, done) {
+	var connector = new Connector();
+	var retries = 3;
+	var timeout = 5*1000;
+	function doCheck() {
+		connector._findPodsForPipe(pipeId).then(function(pods) {
+			if(pods.length === 0) {
+				if(done) done();
+			} else {
+				retries --;
+				if(retries < 0) {
+					return should.fail("Unable to ensure cleanup. " + pods.length + " remaining pods: " + pods);
+				}
+				setTimeout(doCheck, timeout);
+			}
+		});
+	}
+	doCheck();
+};
 
 module.exports = app;

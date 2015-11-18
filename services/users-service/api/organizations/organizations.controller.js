@@ -76,8 +76,8 @@ exports.getOwnAll = function(req, res, next) {
 	findOrCreateDefault(user[ID], function(org) {
 		var result = [org];
 		var query = {};
-		query[MEMBER] = user[ID].toString ? user[ID].toString() : user[ID];
-		if(typeof req.query.all == "undefined") {
+		query[MEMBER] = user[ID];
+		if(typeof req.query.all === "undefined") {
 			query[STATUS] = STATUS_CONFIRMED;
 		}
 		Membership.find(query, function(err, list) {
@@ -188,7 +188,7 @@ exports.listMemberships = function(req, res, next) {
 			}
 		});
 		if(!userHasOrg && result.length <= 0) {
-			return res.status(401).send();
+			return res.status(401).send({error: "No permission to list the members of this organization."});
 		}
 		res.json(result);
 	});
@@ -291,36 +291,39 @@ exports.invite = function(req, res, next) {
 
 	var state = {};
 
-	var findMem = function(org) {
+	var findInvitee = function(org) {
 		state.org = org;
+		return findUser(req, inv[MEMBER]);
+	};
+	var findMem = function(invitee) {
+		state.invitee = invitee;
+		if(!invitee || !invitee[ID]) {
+			throw "Unable to find user for invitation: " + inv[MEMBER];
+		}
 		var query = {};
-		query[ORGANIZATION_ID] = org[ID];
-		query[MEMBER] = inv[MEMBER];
+		query[ORGANIZATION_ID] = state.org[ID];
+		query[MEMBER] = invitee[ID];
 		query[CREATOR_ID] = inv[CREATOR_ID];
 		return findOrCreateMembership(query);
 	};
-	var findInvitee = function(mem) {
+	var notify = function(mem) {
 		state.mem = mem;
 		if(state.mem._isNew) {
-			return findUser(req, inv[MEMBER]);
-		}
-	};
-	var notify = function(invitee) {
-		if(state.mem._isNew) {
 			createNotification(req, TYPE_INVITE, state.org, state.mem);
-			email.sendInvitationMail(user, invitee, state.mem, state.org);
+			email.sendInvitationMail(user, state.invitee, state.mem, state.org);
 		}
 		res.json(state.mem);
-	};
-	var error = function(err) {
-		return next(err);
 	};
 
 	/* start promise chain */
 	findOrg(inv[ORGANIZATION_ID]).
-	then(findMem, error).
-	then(findInvitee, error).
-	then(notify, error);
+	then(findInvitee).
+	then(findMem).
+	then(notify).
+	catch(function(error) {
+		log.info(error);
+		res.status(500).send({error: error});
+	});
 
 };
 
