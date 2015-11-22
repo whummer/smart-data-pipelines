@@ -19,8 +19,10 @@
         category: 'output',
         color: "yellow",
         defaults: {
-        	name: {value:""},
-			port: {value:"", required:true}
+        	name: {value: ""},
+			port: {value: "", required:true,
+				validate: function(v) { return v > 1024 && v <= 65535 }
+			}
         },
         inputs: 1,
         outputs: 0,
@@ -38,7 +40,11 @@
 <script type="text/javascript">
 	var locales = {
 		"websocket-out.label.name": "Name",
-		"websocket-out.label.port": "Port"
+		"websocket-out.label.port": "Port",
+		"websocket-out.tip": "Hint: This module opens an outbound <a href=\"https://tools.ietf.org/html/rfc6455\">WebSocket</a> " +
+			"port that allows you to receive results and subscribe to notifications from your pipeline. " +
+			"<a href=\"https://en.wikipedia.org/wiki/Cross-origin_resource_sharing\">CORS</a> headers are enabled, " +
+			"so you can connect directly from a Web browser using JavaScript."
 	};
 	i18n.addResources('en-US', 'node-red', locales);
 </script>

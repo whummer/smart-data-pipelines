@@ -106,142 +106,6 @@ angular.module('rioxApp').config(function ($stateProvider, $urlRouterProvider) {
 			authenticate: true
 		},
 
-		/* APIs */
-		'index.apis': {
-			abstract: true,
-			url: "/apis",
-			templateUrl: "app/views/apis/apis.html",
-			controller: "ApisCtrl",
-			data: {
-				/* this flag in this 'data' bag is propagated to all child-states */
-				authenticate: true
-			}
-		},
-		'index.apis.list': {
-			url: "",
-			views: {
-				"apiList@index.apis": {
-					templateUrl: "app/views/apis/apis.list.html",
-					controller: "ApisEndpointsCtrl"
-				}
-			}
-		},
-		'index.apis.list.single': {
-			url: "/{sourceId}",
-			views: {
-				"apiDetails@index.apis": {
-					templateUrl: "app/views/apis/apis.single.html",
-					controller: "ApisEndpointsSingleCtrl"
-				}
-			}
-		},
-
-		/* APIs wizard/setup */
-		'index.apis.wizard': {
-			url: "/wizard?debug",
-			views: {
-				"apiList@index.apis": {
-					templateUrl: "app/views/apis/wizard/wizard.html",
-					controller: "ApisWizardCtrl"
-				}
-			}
-		},
-		'index.apis.wizard.basic': {
-			url: '/basic',
-			templateUrl: 'app/views/apis/wizard/basic.html'
-		},
-		'index.apis.wizard.connector': {
-			url: '/connector',
-			templateUrl: 'app/views/apis/wizard/data_connector.html'
-		},
-		'index.apis.wizard.security': {
-			url: '/security',
-			templateUrl: 'app/views/apis/wizard/security.html',
-			controller: 'WizardSecurityCtrl'
-		},
-		'index.apis.wizard.data_access': {
-			url: '/access',
-			templateUrl: 'app/views/apis/wizard/data_access.html'
-		},
-//		'index.apis.wizard.data_pricing': {
-//			url: '/pricing',
-//			templateUrl: 'app/views/apis/wizard/data_pricing.html'
-//		},
-		'index.apis.wizard.data_items': {
-			url: '/items',
-			templateUrl: 'app/views/apis/wizard/data_items.html',
-			controller: 'WizardItemsCtrl'
-		},
-		'index.apis.wizard.deployment': {
-			url: '/deployment',
-			templateUrl: 'app/views/apis/wizard/deployment.html'
-		},
-
-		/* access control */
-		'index.apis.access': {
-			url: "/{sourceId}/access",
-			views: {
-				"apiDetails@index.apis": {
-					templateUrl: "app/views/access/access.html",
-					controller: "AccessCtrl"
-				}
-			}
-		},
-
-		/* operations */
-		'index.apis.operations': {
-			url: "/{sourceId}/operations",
-			views: {
-				"apiDetails@index.apis": {
-					templateUrl: "app/views/operations/operations.html",
-					controller: "OperationsCtrl"
-				}
-			}
-		},
-		'index.apis.operations.single': {
-			url: "/{operationId}",
-			templateUrl: "app/views/operations/operations.single.html",
-			controller: "OperationsSingleCtrl"
-		},
-
-		/* schemas */
-		'index.apis.schemas': {
-			url: "/{sourceId}/schemas",
-			views: {
-				"apiDetails@index.apis": {
-					templateUrl: "app/views/schemas/schemas.html",
-					controller: "SchemasCtrl"
-				}
-			}
-		},
-		'index.apis.schemas.single': {
-			url: "/{schemaId}",
-			templateUrl: "app/views/schemas/schemas.single.html",
-			controller: "SchemasSingleCtrl"
-		},
-
-		/* pricing */
-		'index.apis.pricing': {
-			url: "/{sourceId}/pricing",
-			views: {
-				"apiDetails@index.apis": {
-					templateUrl: "app/views/pricing/pricing.html",
-					controller: "PricingCtrl"
-				}
-			}
-		},
-
-		/* rating */
-		'index.apis.rating': {
-			url: "/{sourceId}/rating",
-			views: {
-				"apiDetails@index.apis": {
-					templateUrl: "app/views/rating/rating.html",
-					controller: "RatingCtrl"
-				}
-			}
-		},
-
 		/* statistics */
 		'index.statistics': {
 			url: "/statistics",
@@ -293,14 +157,16 @@ angular.module('rioxApp').config(function ($stateProvider, $urlRouterProvider) {
 			}
 		},
 
-		'index.sdps.bricks': {
-			url: '/bricks',
-			views: {
-				"listBricks@index.sdps": {
-					templateUrl: 'app/views/sdps/bricks.list.html',
-					controller: 'ListBricksCtrl'
-				}
-			}
+		/** Help section **/
+		'index.help': {
+			url: '/help',
+			templateUrl: 'app/views/help/bricks.list.html',
+			controller: 'ListBricksCtrl'
+		},
+		'index.help.databricks': {
+			url: '/databricks',
+			templateUrl: 'app/views/help/bricks.list.html',
+			controller: 'ListBricksCtrl'
 		}
 
 	};

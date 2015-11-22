@@ -40,7 +40,7 @@ var appConfig = window.appConfig = {
 	// List of user roles
 	userRoles: [
 		'guest', 	// non-registered user
-		'apiKey',	// (anonymous) user identified via API Key
+		//'apiKey',	// (anonymous) user identified via API Key
 		'user',		// registered user
 		'admin'		// admin
 	]

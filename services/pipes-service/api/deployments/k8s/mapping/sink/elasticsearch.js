@@ -5,7 +5,7 @@ var Promise = require('bluebird');
 
 module.exports = function (pipeElement, user) {
 
-	/* determine ES index: index name should match the 
+	/* determine ES index: index name should match the
 	 * ID of one of the calling user's organizations */
 	var index = pipeElement[PARAMS].index;
 	if(!index || (user && !user.hasOrganization(index))) {
@@ -17,7 +17,7 @@ module.exports = function (pipeElement, user) {
 	mod.coordinates = {
 			groupId: "riox",
 			artifactId: "elasticsearch-sink",
-			version: "1.0.0.BUILD-SNAPSHOT"
+			version: "1.0.1"
 	};
 
 	/* set cmd args */

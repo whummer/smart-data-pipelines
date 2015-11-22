@@ -9,7 +9,7 @@ module.exports = function (pipeElement, user) {
 	httpIn.coordinates = {
 			groupId: "riox",
 			artifactId: "http-source",
-			version: "1.0.0.BUILD-SNAPSHOT"
+			version: "1.0.2"
 	};
 
 	/* set cmd args */

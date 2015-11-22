@@ -215,7 +215,7 @@ luarocks-5.1 install inspect 1.2-2 && \
 luarocks-5.1 install luajwt 1.3-2
 
 # Checkout Redx - Redis Extension for Nginx
-sudo git clone https://github.com/whummer/redx.git /opt/redx
+sudo git clone --recursive https://github.com/whummer/redx.git /opt/redx
 ```
 
 ##### One time Linux setup (Debian/Ubuntu)
@@ -242,7 +242,7 @@ luarocks install inspect 1.2-2 && \
 luarocks install luajwt 1.3-2
 
 # Checkout Redx - Redis Extension for Nginx
-sudo git clone https://github.com/whummer/redx.git /opt/redx
+sudo git clone --recursive https://github.com/whummer/redx.git /opt/redx
 ```
 
 #### Start the Gateway:

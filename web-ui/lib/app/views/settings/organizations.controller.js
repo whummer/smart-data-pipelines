@@ -50,6 +50,7 @@ app.controller('OrganizationsController',
 			var email = $("#inputNewMem_value").val();
 			if(!email.match($scope.emailPattern)) {
 				growl.warning("Please select a user from the list, or type a valid email address.");
+				$scope.newMember = null;
 				return;
 			}
 			mem[MEMBER] = email; 
@@ -67,12 +68,16 @@ app.controller('OrganizationsController',
 				console.log(error);
 			}
 		});
+		/* explicitly reset $scope.newMember */
+		$scope.newMember = null;
 	};
 
 	var loadOrgs = function() {
 		$scope.orgInfo = {};
 		var user = $scope.getCurrentUser();
-		var query = {};
+		var query = {
+				all: true
+		};
 		riox.organizations(query, function(orgs) {
 			$scope.orgInfo.orgs = orgs;
 			$.each(orgs, function(idx, org) {
@@ -108,6 +113,8 @@ app.controller('OrganizationsController',
 	   				});
 	   				org[STATUS] = org.membership ? org.membership[STATUS] : "OWNER";
 	   				$scope.$apply();
+	   			}, function() {
+	   				console.log("Unable to access members of organization", org);
 	   			});
 			});
 			$scope.$apply();
@@ -130,11 +137,9 @@ app.controller('OrganizationsController',
 	};
 
     var upload = function (files) {
-    	//console.log("upload", files, angular.identity);
         for (var i = 0; i < files.length; i++) {
             var file = files[i];
             var url = fileServiceURL + '/upload';
-            //console.log("url", url, file, XMLHttpRequest, XMLHttpRequest.prototype);
             Upload.upload({
                 url: url,
                 file: file,
@@ -142,9 +147,7 @@ app.controller('OrganizationsController',
                 'transformRequest': angular.identity
             }).progress(function (evt) {
                 var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-                //console.log('progress: ' + progressPercentage + '% ' + evt.config.file.name);
             }).success(function (data, status, headers, config) {
-                //console.log('file ' + config.file.name + 'uploaded. Response: ' + data);
 	   			var selOrg = $scope.selected.organization;
 	   			var id = data.replace(/"/g, "");
 	   			selOrg.imageUrl = fileServiceURLAbs + "/" + id;

@@ -3,9 +3,8 @@
 angular.module('rioxApp')
   .controller('LoginCtrl', function ($scope, Auth, $location, $window) {
 	$scope.user = {};
-	$scope.errors1 = {};
-	$scope.errors2 = {};
-	$scope.loginType = "userPass";
+	$scope.errors = {};
+	$scope.loginType = "userPass"; // there could be other soon (oAuth)
 
 	$scope.login = function(form) {
 		$scope.submitted = true;
@@ -16,21 +15,16 @@ angular.module('rioxApp')
 			if($scope.loginType == "userPass") {
 				request[EMAIL] = $scope.user.email;
 				request[PASSWORD] = $scope.user.password;
-			} else if($scope.loginType == "apiKey") {
-				request[API_KEY] = $scope.user.apiKey;
 			}
 
-			Auth.
-			login(request).
+			Auth.login(request).
 			then( function() {
 				// Logged in, redirect to home
 				$location.path('/');
 			}).
 			catch(function(err) {
 				if($scope.loginType == "userPass") {
-					$scope.errors1.other = err.message || err.error;
-				} else if($scope.loginType == "apiKey") {
-					$scope.errors2.other = err.message || err.error;
+					$scope.errors.other = err.message || err.error;
 				}
 			});
 		}

@@ -5,12 +5,14 @@ angular.module('rioxApp', [
 	'ngResource',
 	'ngSanitize',
 	'ui.router',
-	'ui.bootstrap',					  // Bootstrap
-	'ui.sortable',					  // sortable (draggable items)
-	'ui.autocomplete',				  // autocomplete
-	'localytics.directives',		  // Chosen select
+	'ui.bootstrap',				// Bootstrap
+	'ui.sortable',				// sortable (draggable items)
+	'ui.autocomplete',			// autocomplete
+	'ui.layout',				// resizable layout containers with dividers
+	'localytics.directives',	// Chosen select
+	'angularResizable',			// resizable containers (e.g., pipes editor)
+	'angular-growl',			// growl messages
 	'NgSwitchery',
-	'angular-growl',
 	'ngAnimate',
 	'hljs',
 	'ui.ace',

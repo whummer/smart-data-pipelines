@@ -100,11 +100,7 @@ printLabel "Running integration tests"
 checkSuccess
 
 printLabel "Running selenium test on latest deployment: ${lb_endpoint}"
-if [ -e "/usr/bin/xvfb-run" ]; then
-	(cd $BASEDIR/../../e2e/selenium/e2e.ui && xvfb-run mvn -Driox.endpoint="${lb_endpoint}" test)
-else
-	(cd $BASEDIR/../../e2e/selenium/e2e.ui && mvn -Driox.endpoint="${lb_endpoint}" test)
-fi
+(cd $BASEDIR/../../e2e/selenium/e2e.ui && mvn -Driox.endpoint="${lb_endpoint}" test)
 checkSuccess
 
 # Only cleanup at success

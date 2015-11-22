@@ -8,8 +8,8 @@ BASEDIR=`dirname $REALPATH`
 
 export RIOX_ENV=development
 
-kubectl_output=`kubectl get nodes | grep "compute.internal"`
-if [[ "$kubectl_output" != "" || $? -eq 1 ]]; then
+kubectl_output=`kubectl config view | grep current-context:`
+if [[ "$kubectl_output" =~ "aws_kubernetes" ]]; then
 	echo "==== ATTENTION =========== "
 	echo "Looks like kubectl is pointing to AWS!"
 	echo "========================== "

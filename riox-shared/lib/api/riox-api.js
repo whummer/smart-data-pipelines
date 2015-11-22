@@ -119,8 +119,9 @@
 	g.STATUS_DEPLOYED = "DEPLOYED";
 	g.STATUS_FAILED = "FAILED";
 	g.STATUS_UNDEPLOYED = "UNDEPLOYED";
-	g.STATUS_NOT_DEPLOYABLE = "STATUS_NOT_DEPLOYABLE";
+	g.STATUS_NOT_DEPLOYABLE = "NOT_DEPLOYABLE";
 	g.STATUS_RUNNING = "RUNNING";
+	g.STATUS_NOT_FOUND = "NOT_FOUND";
 	g.RESULT_STATUS = "result-status";
 	g.PERMIT_MODE = "permit";
 	g.PERMIT_MODE_AUTO = "AUTO";
@@ -385,13 +386,7 @@
 			callback = query;
 		}
 		var url = servicesConfig.organizations.url;
-		if (query.all) url += "/all";
-		return callGET(url, callback, errorCallback);
-	};
-	sh.organizations.memberships = sh.get.organizations.memberships = function (org, callback, errorCallback) {
-		var orgId = org[ID] ? org[ID] : org;
-		if (typeof orgId != "string") throw "Please provide a valid organization ID.";
-		var url = servicesConfig.organizations.url + "/" + orgId + "/memberships";
+		if (query.all) url += "?all";
 		return callGET(url, callback, errorCallback);
 	};
 	sh.organizations.memberships = sh.get.organizations.memberships = function (org, callback, errorCallback) {

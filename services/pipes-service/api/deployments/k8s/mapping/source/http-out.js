@@ -11,7 +11,7 @@ module.exports = function (pipeElement, user) {
 	timeMod.coordinates = {
 			groupId: "riox",
 			artifactId: "time-source",
-			version: "1.0.1"
+			version: "1.0.2"
 	};
 
 	/* set cmd args */
@@ -20,7 +20,6 @@ module.exports = function (pipeElement, user) {
 
 	/* set environment variables */
 	timeMod.env = {};
-	timeMod.env.JAVA_TOOL_OPTIONS = "-Xmx80M";
 
 	/* set ID of this module */
 	timeMod[ID] = pipeElement[ID] + "-1";
@@ -31,7 +30,7 @@ module.exports = function (pipeElement, user) {
 	httpMod.coordinates = {
 			groupId: "riox",
 			artifactId: "httpclient-processor",
-			version: "1.0.1"
+			version: "1.0.2"
 	};
 
 	/* set cmd args */
@@ -44,7 +43,6 @@ module.exports = function (pipeElement, user) {
 
 	/* set environment variables */
 	httpMod.env = {};
-	httpMod.env.JAVA_TOOL_OPTIONS = "-Xmx200M";
 
 	/* return the result as an array */
 	return Promise.resolve([timeMod, httpMod]);

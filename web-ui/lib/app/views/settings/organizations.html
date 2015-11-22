@@ -17,12 +17,11 @@
 						<td>{{org.creatorDisplayName}}</td>
 						<td>{{org[STATUS]}}</td>
 						<td>
-							<a class="fa fa-search" 
-									title="Show Details" ng-click="selected.organization = org"></a>
-							<a class="fa fa-check" ng-show="org[STATUS] == STATUS_PENDING || org[STATUS] == STATUS_REJECTED"
-									title="Acceopt Invitation" ng-click="acceptInvitation(org)"></a>
-							<a class="fa fa-remove" ng-show="org[STATUS] == STATUS_CONFIRMED"
-									title="Cancel Membership" ng-click="rejectInvitation(org)"></a>
+							<a title="Show Details" ng-click="selected.organization = org"><i class="fa fa-search"></i></a>
+							<a ng-show="org[STATUS] == STATUS_PENDING || org[STATUS] == STATUS_REJECTED"
+									title="Accept Invitation" ng-click="acceptInvitation(org)"><i class="fa fa-check"></i></a>
+							<a ng-show="org[STATUS] == STATUS_CONFIRMED"
+									title="Cancel Membership" ng-click="rejectInvitation(org)"><i class="fa fa-remove"></i></a>
 						</td>
 					</tr>
 				</table>

@@ -32,6 +32,7 @@ const KEY_PORT = 			"port";
 const KEY_SERVER_PORT = 	"server.port";
 const SPRING_MARKER_KEY = 	"role";
 const SPRING_MARKER_VALUE =	"scsm-module";
+const SCSM_PIPE = 			"scsm-pipe";
 const SCSM_GROUP = 			"scsm-group";
 const SCSM_LABEL = 			"scsm-label";
 const SCSM_EXTENSION = 		"scsm-extension";
@@ -119,14 +120,17 @@ class K8SConnector {
 			var prom = this._deployContainer(cont);
 			promises.push(prom);
 		}
-		return Promise.all(promises).then(result => {
-			result = {};
+		return Promise.all(promises).then(promiseResult => {
 			/* wait until all containers are deployed */
 			return self.waitForContainerStatuses(containerIDs).then(statuses => {
-				result.status = statuses.length <= 0 ? STATUS_NOT_DEPLOYABLE : STATUS_DEPLOYED;
+				var result = {};
+				result[STATUS] = STATUS_DEPLOYED;
+				if(containerIDs.length === 1) {
+					result[ID] = containerIDs[0];
+				}
 				for(var status of statuses) {
-					if(status.status != STATUS_RUNNING) {
-						result.status = STATUS_FAILED;
+					if(status[STATUS] != STATUS_RUNNING) {
+						result[STATUS] = STATUS_FAILED;
 					}
 				}
 				log.debug("=> statuses for containerIDs", containerIDs, ":", statuses, "-", result);
@@ -143,14 +147,12 @@ class K8SConnector {
 		var labels = {};
 		labels[SCSM_GROUP] = pipeElementId;
 		var self = this;
-		self._getClient().then(function(client) {
+		return self._getClient().then(function(client) {
 			return self._findControllersByLabel(labels).then(function(controllers) {
 				return Promise.map(controllers, function(controller) {
-					//console.log("undeploy single:", controller);
 					var uid = controller.metadata.name;
 					return new Promise(function(resolve, reject) {
 						client.replicationControllers.delete(uid, function(result) {
-							console.log("undeploy replicationControllers result", result);
 							resolve(result);
 						});
 					})
@@ -161,12 +163,22 @@ class K8SConnector {
 						var uid = pod.metadata.name;
 						return new Promise(function(resolve, reject) {
 							client.pods.delete(uid, function(result) {
-								console.log("undeploy pods result", result);
 								resolve(result);
 							});
 						})
 					});
-				})
+				});
+			}).then(function() {
+				return self._findServicesByLabel(labels).then(function(services) {
+					return Promise.map(services, function(service) {
+						var uid = service.metadata.name;
+						return new Promise(function(resolve, reject) {
+							client.services.delete(uid, function(result) {
+								resolve(result);
+							});
+						})
+					});
+				});
 			});
 		});
 	}
@@ -194,7 +206,7 @@ class K8SConnector {
 		var labels = {};
 		labels[SCSM_GROUP] = node[ID];
 		labels[SCSM_LABEL] = node[TYPE];
-		return findStatusForPodLabels(labels);
+		return this.findStatusForPodLabels(labels);
 	}
 
 	/**
@@ -209,7 +221,7 @@ class K8SConnector {
 				return reject({error: "Unable to get k8s deployment status for pod with labels: " + JSON.stringify(labels)});
 			}
 			self._getPodsStatus(labels).then(status => {
-				if(!status.status) {
+				if(!status[STATUS]) {
 					return setTimeout(function() {
 						loop(retries - 1, resolve, reject);
 					}, timeout);
@@ -241,19 +253,26 @@ class K8SConnector {
 	 */
 	waitForPodStatus(labels) {
 		var timeout = 1000 * 10;
-		var numRetries = 20;
+		var numRetries = 30;
 		var self = this;
+		var lastStatus;
 		var loop = function(retries, resolve, reject) {
 			if(retries <= 0) {
-				return reject({error: "Unable to wait for pod deployment status (timeout) for labels: " + JSON.stringify(labels)});
+				return reject({error: "Unable to wait for pod deployment status (timeout) for labels: " + 
+					JSON.stringify(labels) + ". Status: " + lastStatus});
 			}
 			self.findStatusForPodLabels(labels).then(function(status) {
-				if(self._listContains([STATUS_PENDING], status.status)) {
+				lastStatus = status[STATUS];
+				if(self._listContains([STATUS_PENDING, STATUS_NOT_FOUND], status[STATUS])) {
+					var newRetries = retries - (status[STATUS] == STATUS_NOT_FOUND ? 5 : 1); /* Allow less retries for NOT_FOUND */
 					return setTimeout(function() {
-						loop(retries - 1, resolve, reject);
+						loop(newRetries, resolve, reject);
 					}, timeout);
+				} else {
+					return resolve(status);
 				}
-				return resolve(status);
+			}).catch(function(error) {
+				reject(error);
 			});
 		}
 		return new Promise(function(resolve, reject) {
@@ -273,6 +292,10 @@ class K8SConnector {
 		var labels = {};
 		labels[NAME] = containerID;
 		return this.waitForPodStatus(labels);
+	}
+
+	getServiceNameForPipeElement(element) {
+		return element[ID];
 	}
 
 	/*
@@ -306,8 +329,12 @@ class K8SConnector {
 		var self = this;
 		return new Promise(function(resolve, reject) {
 			self._getClient().then(function(client) {
-				var name = state.container[ID];
+				var name = self.getServiceNameForPipeElement(state.container);
 				var port = self._getServicePort(state.container);
+				if(typeof port === "string") {
+					port = parseInt(port);
+				}
+
 				var service = {
 					metadata: {
 						name: name,
@@ -324,11 +351,12 @@ class K8SConnector {
 						}]
 					}
 				};
-				service.spec.selector[SCSM_GROUP] = state.container[ID];
+				service.spec.selector[SCSM_GROUP] = state.container.pipeElement[ID];
 				service.spec.selector[SCSM_LABEL] = state.container.pipeElement[TYPE];
 				var labels = service.metadata.labels;
 				labels[SPRING_MARKER_KEY] = SPRING_MARKER_VALUE;
-				labels[SCSM_GROUP] = state.container[ID];
+				labels[SCSM_GROUP] = state.container.pipeElement[ID];
+				labels[SCSM_PIPE] = state.container.pipeElement[PIPE_ID];
 				labels[SCSM_LABEL] = state.container.pipeElement[TYPE];
 
 				client.services.create(service, function(err, result) {
@@ -381,12 +409,17 @@ class K8SConnector {
 					}
 				};
 				var coordinates = state.container.coordinates;
+
 				/* SET CONTAINER TEMPLATE */
 				templCont.name = name;
 				templCont.image = self._getImageName(coordinates);
 				templCont.imagePullPolicy = IMAGE_PULL_POLICY;
 				templCont.ports = [];
+				/* set container port(s) */
 				var port = self._getServicePort(state.container);
+				if(typeof port === "string") {
+					port = parseInt(port);
+				}
 				if(port > 0) {
 					templCont.ports.push({
 						protocol: PROTOCOL_TCP,
@@ -410,13 +443,13 @@ class K8SConnector {
 				labels[SCSM_EXTENSION] = coordinates.extension;
 				labels[SCSM_CLASSIFIER] = coordinates.classifier;
 				labels[SCSM_GROUP] = state.container.pipeElement[ID];
+				labels[SCSM_PIPE] = state.container.pipeElement[PIPE_ID];
 				labels[SCSM_LABEL] = state.container.pipeElement[TYPE];
 				rc.spec.selector[NAME] = name;
 				rc.spec.template.metadata.labels[SCSM_GROUP] = state.container.pipeElement[ID];
+				rc.spec.template.metadata.labels[SCSM_PIPE] = state.container.pipeElement[PIPE_ID];
 				rc.spec.template.metadata.labels[SCSM_LABEL] = state.container.pipeElement[TYPE];
 				rc.spec.template.metadata.labels[SPRING_MARKER_KEY] = SPRING_MARKER_VALUE;
-
-				//console.log(JSON.stringify(rc, null, '\t'));
 
 				client.replicationControllers.create(rc, function(err, result) {
 					if(err && err.message.reason === "AlreadyExists") {
@@ -460,10 +493,11 @@ class K8SConnector {
 				env.push(envEntry);
 			}
 		}
-		env.push({
-			name: "SPRING_REDIS_HOST",
-			value: config.redis.hostname
-		});
+		/* pass either
+		 * - SPRING_REDIS_HOST
+		 * or
+		 * - SPRING_REDIS_SENTINEL_MASTER and SPRING_REDIS_SENTINEL_NODES
+		 */
 		env.push({
 			name: "SPRING_REDIS_SENTINEL_MASTER",
         	value: config.redis.master
@@ -491,10 +525,10 @@ class K8SConnector {
 			args.push(cmd);
 		}
 		if(container.next_id) {
-			args.push("--spring.cloud.stream.bindings.output.destination=" + container.next_id);
+			args.push("--spring.cloud.stream.bindings.output.destination=topic:" + container.next_id);
 		}
 		if(container.previous_id) {
-			args.push("--spring.cloud.stream.bindings.input.destination=" + container.previous_id);
+			args.push("--spring.cloud.stream.bindings.input.destination=topic:" + container.previous_id);
 		}
 		return args;
 	}
@@ -512,22 +546,24 @@ class K8SConnector {
 					}
 					var podList = pods[0].items;
 					var state = {};
+					state[STATUS] = STATUS_UNDEPLOYED;
 					for(var pod of podList) {
 						if(_.isMatch(pod.metadata.labels, podLabels)) {
-							state.status = pod.status.phase.toUpperCase();
+							state[STATUS] = pod.status.phase.toUpperCase();
 							var allReady = true;
 							if(pod.status.containerStatuses) {
 								for(var contStatus of pod.status.containerStatuses) {
 									allReady = allReady && contStatus.ready;
 								}
 								if(!allReady) {
-									state.status = STATUS_PENDING;
+									state[STATUS] = STATUS_PENDING;
 								}
 							}
-							//console.log("==>", state.status);
 							return resolve(state);
 						}
 					}
+					/* pod not found (yet) */
+					state[STATUS] = STATUS_NOT_FOUND;
 					return resolve(state);
 				});
 			});
@@ -560,6 +596,15 @@ class K8SConnector {
 	}
 
 	/**
+	 * Get pods for a given pipe ID.
+	 */
+	_findPodsForPipe(pipeID) {
+		var labels = {};
+		labels[SCSM_PIPE] = pipeID;
+		return this._findPodsByLabel(labels);
+	}
+
+	/**
 	 * Get pods by a map of labels.
 	 */
 	_findPodsByLabel(labels) {
@@ -571,6 +616,13 @@ class K8SConnector {
 	 */
 	_findControllersByLabel(labels) {
 		return this._findResourcesByLabel(labels, "replicationControllers");
+	}
+
+	/**
+	 * Get services by a map of labels.
+	 */
+	_findServicesByLabel(labels) {
+		return this._findResourcesByLabel(labels, "services");
 	}
 
 	/**
@@ -591,7 +643,7 @@ class K8SConnector {
 			});
 			return self.client;
 		}).catch(function(e) {
-			log.info('K8S Service account file not found on pod, defaulting to development settings. ' + e);
+			//log.info('K8S Service account file not found on pod, defaulting to development settings. ' + e);
 			self.client = new Client({
 				host:  self.hostname + ':' + self.port,
 				protocol: self.protocol,

@@ -12,76 +12,10 @@
 				<a ui-sref="index.dashboard"><i class="fa fa-dashboard"></i> <span class="nav-label">Dashboard</span></a>
 			</li>
 
-
-			<li ng-class="{active: isActive('/apis')}" ng-show="isUserLoggedIn">
-				<a ui-sref="index.apis.list"><i class="fa fa-exchange"></i> <span class="nav-label">APIs</span> <span
-					class="fa arrow"></span></a>
-				<ul class="nav nav-second-level collapse" ng-class="{in: isActive('/apis')}">
-					<li>
-						<a ui-sref="index.apis.wizard.basic"><i class="fa fa-magic"></i> <span
-							class="nav-label">Create New API</span></a>
-					</li>
-					<li ng-show="shared.selectedAPI">
-						<a ui-sref="index.apis.operations({sourceId: shared.selectedAPI.id})"><i class="fa fa-list"></i> <span
-							class="nav-label">Operations</span></a>
-					</li>
-					<li ng-show="shared.selectedAPI">
-						<a ui-sref="index.apis.schemas({sourceId: shared.selectedAPI.id})"><i class="fa fa-file-code-o"></i> <span
-							class="nav-label">Data Schemas</span></a>
-					</li>
-					<li ng-show="shared.selectedAPI">
-						<a ui-sref="index.apis.access({sourceId: shared.selectedAPI.id})"><i class="fa fa-lock"></i> <span
-							class="nav-label">Access Control</span></a>
-					</li>
-					<li ng-show="shared.selectedAPI">
-						<a ui-sref="index.apis.rating({sourceId: shared.selectedAPI.id})"><i class="fa fa-ban"></i> <span
-							class="nav-label">Rating</span></a>
-					</li>
-					<li ng-show="shared.selectedAPI">
-						<a ui-sref="index.apis.pricing({sourceId: shared.selectedAPI.id})"><i class="fa fa-money"></i> <span
-							class="nav-label">Pricing</span></a>
-					</li>
-				</ul>
-			</li>
-
-
 			<li ng-class="{active: isActive('/sdps')}" ng-show="isUserLoggedIn">
 				<a ui-sref="index.sdps.list">
-					<i class="fa fa-bar-chart fa-fixed"></i> <span class="nav-label">Data &amp; Analytics </span><span
-					class="fa arrow"></span>
+					<i class="fa fa-ellipsis-h fa-fixed"></i> <span class="nav-label">My Pipelines</span>
 				</a>
-
-				<ul class="nav nav-second-level collapse" ng-class="{in: isActive('/sdps')}">
-					<!--<li>
-						<a ui-sref="index.sdps.create">
-							<i class="fa fa-ellipsis-h"></i> <span class="nav-label">New Data Pipe</span>
-						</a>
-					</li>-->
-
-					<li>
-						<a ui-sref="index.sdps.list">
-						<!--  <span class="fa-stack">
-								<i class="fa fa-battery-0 fa-stack-1x"></i>
-								<i class="fa fa-ellipsis-h fa-stack-1x"></i>
-
-							</span>
-							<span class="nav-label">Smart Data Pipes</span>-->
-							<i class="fa fa-ellipsis-h fa-fixed"></i> <span class="nav-label">Pipelines</span>
-						</a>
-					</li>
-
-					<!--<li>
-						<a ui-sref="index.sdps.bricks.create">
-							<i class="fa fa-cubes"></i><span class="nav-label">New Smart Brick</span>
-						</a>
-					</li>
--->
-					<li>
-						<a ui-sref="index.sdps.bricks">
-							<i class="fa fa-cube fa-fixed"></i><span class="nav-label">Building Blocks</span>
-						</a>
-					</li>
-				</ul>
 			</li>
 
 
@@ -100,15 +34,23 @@
 							class="nav-label">Organizations</span></a>
 					</li>
 					<li>
-						<a ui-sref="index.settings.security"><i class="fa fa-lock"></i> <span class="nav-label">Security</span></a>
-					</li>
-					<li>
 						<a ui-sref="index.settings.billing"><i class="fa fa-credit-card"></i> <span class="nav-label">Billing</span></a>
 					</li>
 				</ul>
 			</li>
 			<li ng-class="{active: isActive('/admin')}" ng-show="isAdminLoggedIn">
 				<a ui-sref="index.admin"><i class="fa fa-unlock-alt"></i> <span class="nav-label">Admin</span></a>
+			</li>
+			<li ng-class="{active: isActive('/help/databricks')}" ng-show="isUserLoggedIn">
+				<a ui-sref="index.help.databricks"><i class="fa fa-question-circle"></i> <span
+					class="nav-label">Help</span> <span class="fa arrow"></span></a>
+				<ul class="nav nav-second-level collapse" ng-class="{in: isActive('/help/databricks')}">
+					<li>
+						<a ui-sref="index.help.databricks">
+							<i class="fa fa-cube fa-fixed"></i><span class="nav-label">Data Bricks</span>
+						</a>
+					</li>
+				</ul>
 			</li>
 		</ul>
 	</div>

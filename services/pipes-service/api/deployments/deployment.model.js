@@ -11,13 +11,12 @@ deploymentSchema[PIPE_ENVIRONMENT] = String;
 deploymentSchema[STATUS] = Schema.Types.Mixed;
 
 var elementSchema = {};
-elementSchema['_id'] = {type: String, default: genShortUUID};
+elementSchema['_id'] = false;
+elementSchema[ID] = String;
 elementSchema[STATUS] = String;
+elementSchema[DETAILS] = Schema.Types.Mixed;
 var ElementSchema = new Schema(elementSchema);
 deploymentSchema[PIPE_ELEMENTS] = [ElementSchema];
-ElementSchema.virtual(ID).get(function() {
-    return this._id;
-});
 ElementSchema.set('toJSON', {virtuals: true});
 ElementSchema.options.toJSON.transform = function (doc, ret, options) {
 	delete ret._id;
