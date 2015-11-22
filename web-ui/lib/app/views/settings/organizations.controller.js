@@ -11,8 +11,8 @@ app.controller('OrganizationsController',
 	$scope.emailPattern = /^[a-z]+[a-z0-9._]+@[a-z]+\.[a-z.]{2,5}$/;
 	$scope.currentUser = $scope.getCurrentUser();
 
-	$scope.saveOrganization = function() {
-		var org = $scope.selected.organization;
+	$scope.saveOrganization = function(orgToSave) {
+		var org = orgToSave || $scope.selected.organization;
 		if(!org) return;
 		org = clone(org);
 		var url = org.imageUrl;
@@ -23,7 +23,7 @@ app.controller('OrganizationsController',
 		riox.save.organization(org, function() {
 			growl.success("Organization details saved successfully.");
 			loadOrgs();
-			Auth.loadOrganization();
+			Auth.loadOrganizations();
 		});
 	};
 
@@ -116,6 +116,7 @@ app.controller('OrganizationsController',
 	   			}, function() {
 	   				console.log("Unable to access members of organization", org);
 	   			});
+
 			});
 			$scope.$apply();
 		});
@@ -155,7 +156,7 @@ app.controller('OrganizationsController',
             });
         }
     };
-    
+
     $scope.deleteImage = function() {
     	$scope.selected.organization.imageUrl = null;
     	$scope.selected.organization[IMAGE_DATA] = [];
