@@ -18,8 +18,10 @@ function list(query, req, res) {
 };
 
 exports.index = function(req, res, next) {
+	var user = auth.getCurrentUser(req);
 	var query = {};
 	query[STATUS] = {"$not": { "$eq": STATUS_DELETED} };
+	query[RECIPIENT_ID] = user[ID];
 	return list(query, req, res);
 };
 

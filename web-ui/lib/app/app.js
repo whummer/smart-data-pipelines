@@ -12,6 +12,7 @@ angular.module('rioxApp', [
 	'localytics.directives',	// Chosen select
 	'angularResizable',			// resizable containers (e.g., pipes editor)
 	'angular-growl',			// growl messages
+	'xeditable',				// in-place editable text
 	'NgSwitchery',
 	'ngAnimate',
 	'hljs',
@@ -63,9 +64,12 @@ angular.module('rioxApp', [
 			};
 		})
 
-		.run(function ($rootScope, $state, Auth) {
+		.run(function ($rootScope, $state, Auth, editableOptions) {
 
-			 $rootScope.$on('$stateChangeStart', function (event, toState, toParams) {
+			/* bootstrap 3 theme for in-place editable text */
+			editableOptions.theme = 'bs3';
+
+			$rootScope.$on('$stateChangeStart', function (event, toState, toParams) {
 
 					var authRequired = toState.authenticate || (toState.data && toState.data.authenticate);
 					if($rootScope.stateChangeBypass || toState.name === 'index.login' || !authRequired) {
@@ -76,11 +80,11 @@ angular.module('rioxApp', [
 				event.preventDefault();
 				Auth.isLoggedInAsync(function(user) {
 					if (user) {
-						 $rootScope.stateChangeBypass = true;
-						 $state.go(toState, toParams);
+						$rootScope.stateChangeBypass = true;
+						$state.go(toState, toParams);
 					} else {
-						 $state.go('index.login');
+						$state.go('index.login');
 					}
 				});
-			 });
+			});
 		});
