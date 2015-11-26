@@ -36,25 +36,21 @@
 									<th>Description</th>
 									<th>Elements</th>
 									<th>Definition</th>
-									<th>Edit</th>
-									<th>Delete</th>
+<!-- 									<th>Edit</th> -->
 								</tr>
 								</thead>
 								<tbody>
 								<tr ng-repeat="p in $data">
 									<td><span class="label label-success label-deployed">deployed</span></td>
-									<td>{{p.name}}</td>
+									<td><a ui-sref="index.sdps.create({pipeId: p.id})">{{p.name}}</a></td>
 									<td>{{trim(p.description, 60)}}</td>
 									<td>{{p.elements.length}}</td>
 									<td>
 										<a ng-click="showPipelineDefinition(p)"><i class="fa fa-search"></i></a>
 									</td>
-									<td>
-										<a ui-sref="index.sdps.create({pipeId: p.id})"><i class="fa fa-edit"></i></a>
-									</td>
-									<td>
-										<a ng-click="deletePipelineAndReload(p)"><i class="fa fa-remove"></i></a>
-									</td>
+<!-- 									<td> -->
+<!-- 										<a ui-sref="index.sdps.create({pipeId: p.id})"><i class="fa fa-edit"></i></a> -->
+<!-- 									</td> -->
 								</tr>
 								</tbody>
 							</table>

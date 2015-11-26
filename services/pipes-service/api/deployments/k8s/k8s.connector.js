@@ -146,41 +146,22 @@ class K8SConnector {
 		var pipeElementId = deploymentInfo[ID];
 		var labels = {};
 		labels[SCSM_GROUP] = pipeElementId;
-		var self = this;
-		return self._getClient().then(function(client) {
-			return self._findControllersByLabel(labels).then(function(controllers) {
-				return Promise.map(controllers, function(controller) {
-					var uid = controller.metadata.name;
-					return new Promise(function(resolve, reject) {
-						client.replicationControllers.delete(uid, function(result) {
-							resolve(result);
-						});
-					})
-				});
-			}).then(function() {
-				return self._findPodsByLabel(labels).then(function(pods) {
-					return Promise.map(pods, function(pod) {
-						var uid = pod.metadata.name;
-						return new Promise(function(resolve, reject) {
-							client.pods.delete(uid, function(result) {
-								resolve(result);
-							});
-						})
-					});
-				});
-			}).then(function() {
-				return self._findServicesByLabel(labels).then(function(services) {
-					return Promise.map(services, function(service) {
-						var uid = service.metadata.name;
-						return new Promise(function(resolve, reject) {
-							client.services.delete(uid, function(result) {
-								resolve(result);
-							});
-						})
-					});
-				});
-			});
-		});
+		return this._removeByLabels(labels);
+	}
+
+	/**
+	 * Remove the deployed containers for a given pipe element.
+	 */
+	removeEntirePipeDeployment(pipeId) {
+		if(pipeId[PIPE_ID]) {
+			pipeId = pipeId[PIPE_ID];
+		}
+		if(!pipeId) {
+			throw "Invalid pipe ID for undeployment: " + pipeId;
+		}
+		var labels = {};
+		labels[SCSM_PIPE] = pipeId;
+		return this._removeByLabels(labels);
 	}
 
 	/**
@@ -295,7 +276,9 @@ class K8SConnector {
 	}
 
 	getServiceNameForPipeElement(element) {
-		return element[ID];
+		/* Note: service names must always start with a letter to form a valid DNS 952 label 
+		 * (at most 24 characters, matching regex [a-z]([-a-z0-9]*[a-z0-9])?) */
+		return "s-" + element[ID];
 	}
 
 	/*
@@ -460,6 +443,47 @@ class K8SConnector {
 						return reject(err);
 					}
 					resolve(result);
+				});
+			});
+		});
+	}
+
+	/**
+	 * Remove deployed services, replication controllers, and pods with given labels.
+	 */
+	_removeByLabels(labels) {
+		var self = this;
+		return self._getClient().then(function(client) {
+			return self._findControllersByLabel(labels).then(function(controllers) {
+				return Promise.map(controllers, function(controller) {
+					var uid = controller.metadata.name;
+					return new Promise(function(resolve, reject) {
+						client.replicationControllers.delete(uid, function(result) {
+							resolve(result);
+						});
+					})
+				});
+			}).then(function() {
+				return self._findPodsByLabel(labels).then(function(pods) {
+					return Promise.map(pods, function(pod) {
+						var uid = pod.metadata.name;
+						return new Promise(function(resolve, reject) {
+							client.pods.delete(uid, function(result) {
+								resolve(result);
+							});
+						})
+					});
+				});
+			}).then(function() {
+				return self._findServicesByLabel(labels).then(function(services) {
+					return Promise.map(services, function(service) {
+						var uid = service.metadata.name;
+						return new Promise(function(resolve, reject) {
+							client.services.delete(uid, function(result) {
+								resolve(result);
+							});
+						})
+					});
 				});
 			});
 		});

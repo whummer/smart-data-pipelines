@@ -42,10 +42,12 @@ class K8SDeployer {
 	 */
 	undeploy(pipeDeployment) {
 		log.debug("Deployer.undeploy: ", pipeDeployment[ID]);
-		return Promise.map(pipeDeployment[PIPE_ELEMENTS], status => {
-			log.debug("Deployer.undeploy.container: ", status[ID]);
-			return this.connector.removeContainers(status);
-		});
+		// TODO remove
+//		return Promise.map(pipeDeployment[PIPE_ELEMENTS], status => {
+//			log.debug("Deployer.undeploy.container: ", status[ID]);
+//			return this.connector.removeContainers(status);
+//		});
+		return this.connector.removeEntirePipeDeployment(pipeDeployment);
 	};
 
 	/* 

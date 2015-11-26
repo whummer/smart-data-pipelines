@@ -4,7 +4,7 @@
 	"description": "HTTP in - transform - elasticsearch out",
 	"elements": [
 		{
-			"id": "simple1",
+			"id": "1simple1",
 			"category": "source",
 			"type": "http-in",
 			"params": {
@@ -14,7 +14,7 @@
 			"edges-out": ["simple2"]
 		},
 		{
-			"id": "simple2",
+			"id": "1simple2",
 			"category": "processor",
 			"type": "transform",
 			"params": {
@@ -23,7 +23,7 @@
 			"edges-out": ["simple3"]
 		},
 		{
-			"id": "simple3",
+			"id": "1simple3",
 			"category": "sink",
 			"type": "elasticsearch",
 			"params": {
@@ -33,7 +33,7 @@
 			"edges-out": ["simple4", "simple5"]
 		},
 		{
-			"id": "simple4",
+			"id": "1simple4",
 			"category": "sink",
 			"type": "geo-map",
 			"params": {
@@ -43,7 +43,7 @@
 			}
 		},
 		{
-			"id": "simple5",
+			"id": "1simple5",
 			"category": "sink",
 			"type": "chart",
 			"params": {

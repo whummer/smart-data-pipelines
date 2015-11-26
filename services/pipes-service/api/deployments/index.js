@@ -11,6 +11,7 @@ router.post('/by/pipe/:pipeID/input/:inputID', auth.isAuthenticated(), auth.fetc
 router.get('/by/pipe/:id', auth.isAuthenticated(), deploymentsCtrl.findByPipeId);
 router.get('/:id', auth.isAuthenticated(), deploymentsCtrl.findById);
 router.get('/', auth.isAuthenticated(), deploymentsCtrl.listAll);
-router.delete('/:id', auth.isAuthenticated(), deploymentsCtrl.delete);
+router.delete('/by/pipe/:id', auth.isAuthenticated(), auth.fetchOrgs(), deploymentsCtrl.deleteByPipeId);
+router.delete('/:id', auth.isAuthenticated(), auth.fetchOrgs(), deploymentsCtrl.delete);
 
 module.exports = router;

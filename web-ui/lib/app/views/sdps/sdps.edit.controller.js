@@ -1,4 +1,4 @@
-angular.module('rioxApp').controller('EditDataPipeCtrl', function ($scope, $stateParams, growl, $log, $location, $state) {
+angular.module('rioxApp').controller('EditDataPipeCtrl', function ($scope, $stateParams, growl, $log, $location, $state, $timeout) {
 
 	var PREDEFINED_NODERED_KEYS =
 		[
@@ -31,8 +31,11 @@ angular.module('rioxApp').controller('EditDataPipeCtrl', function ($scope, $stat
 
 	/* the container for our pipeline elements */
 	$scope.pipeline = {
-		elements: []
+		elements: [],
+		name: "Untitled Pipeline",
+		description: "Untitled Pipeline"
 	};
+	$scope.pipeDeployed = "unknown";
 
 	/* edit existing pipeline */
 	if ($stateParams.pipeId) {
@@ -59,12 +62,31 @@ angular.module('rioxApp').controller('EditDataPipeCtrl', function ($scope, $stat
 		$scope.selectedItem = item;
 	};
 
+	$scope.savePipelineDescription = function(newValue) {
+		/* set new name and save */
+		$scope.pipeline[DESCRIPTION] = newValue;
+		$scope.submitDatapipe();
+	};
+	$scope.savePipelineName = function(newName) {
+		if(!newName || newName.match(/^\s*$/)) {
+			growl.error("Please enter a valid name for the pipeline.");
+			return "invalid name";
+		}
+		/* set new name and save */
+		$scope.pipeline[NAME] = newName;
+		$scope.submitDatapipe();
+	};
+
 	/* save pipeline via service call. 
 	 * if _id property is present its a persistent pipe */
 	$scope.submitDatapipe = function () {
 
 		/* prepare payload */
 		var payload = constructCurrentPipeline(true);
+
+		if(!payload[NAME] || payload[NAME].match(/^\s*$/)) {
+			return growl.error("Please enter a valid name for the pipeline.");
+		}
 
 		if ($scope.pipeline.id) {
 			riox.save.pipe(payload, function (response) {
@@ -80,6 +102,51 @@ angular.module('rioxApp').controller('EditDataPipeCtrl', function ($scope, $stat
 		}
 	};
 
+
+	/*
+	 * deploy pipeline
+	 */
+	$scope.deployPipeline = function (pipeline) {
+		if (!pipeline.id) {
+			growl.error('Cannot deploy an unsaved pipe. Please save it first.');
+		} else {
+			var payload = {};
+			payload[PIPE_ID] = pipeline.id;
+			riox.pipe.deploy(payload, function (deployed) {
+				growl.success('Successfully started pipeline deployment.');
+				$scope.pipeDeployed = true;
+			}, function (error) {
+				growl.error('Cannot deploy pipeline. See console for details');
+				$scope.pipeDeployed = false;
+			});
+		}
+	};
+
+	/*
+	 * undeploy pipeline
+	 */
+	$scope.undeployPipeline = function (pipeline) {
+		if (!pipeline.id) {
+			growl.error('Cannot undeploy an unsaved pipe.');
+		} else {
+			var payload = {};
+			payload[PIPE_ID] = pipeline.id;
+			riox.pipe.undeploy(payload, function (deployed) {
+				$scope.$apply(function() {
+					$scope.pipeDeployed = false;
+					/* set status unknown */
+					setAllPipeElementsStatuses(STATUS_UNKNOWN);
+				});
+				growl.success('Successfully undeployed pipeline.');
+			}, function (error) {
+				growl.error('Cannot deploy pipeline. See console for details');
+			});
+		}
+	};
+
+	/*
+	 * push test data to the pipeline
+	 */
 	$scope.pushTestData = function() {
 		var node = $scope.selection.nodes[0];
 		if(!node || node._def[CATEGORY] != "input") {
@@ -117,7 +184,7 @@ angular.module('rioxApp').controller('EditDataPipeCtrl', function ($scope, $stat
 				node.changed = false;
 			}
 		});
-		// Once deployed, cannot undo back to a clean state
+		/* Once deployed, cannot undo back to a clean state */
 		RED.history.markAllDirty();
 		RED.view.redraw();
 		RED.events.emit("deploy");
@@ -138,9 +205,16 @@ angular.module('rioxApp').controller('EditDataPipeCtrl', function ($scope, $stat
 	/* delete given pipeline and go to listview */
 	$scope.deletePipelineAndShowList = function (pipeline) {
 		$scope.deletePipeline(pipeline, function () {
-			$location.path('/sdps/sdps/list'); // todo check routes, somethings wrong here
+			$state.go('index.sdps.list');
 		});
 	};
+
+	function pipeEditorLoadedCallback() {
+		/* poll the pipe deployment status */
+		pollPipeStatus();
+		/* align elements */
+		autoAlignIfNecessary();
+	}
 
 	function autoAlignIfNecessary() {
 		var allInPosition00 = true;
@@ -174,7 +248,7 @@ angular.module('rioxApp').controller('EditDataPipeCtrl', function ($scope, $stat
 					RED.loadFlows = function() {
 						loadFlowsOriginal().then(function() {
 							/* callback on pipe loaded */
-							autoAlignIfNecessary();
+							pipeEditorLoadedCallback();
 						});
 					}
 					RED.loadFlows.__patched = true;
@@ -195,7 +269,7 @@ angular.module('rioxApp').controller('EditDataPipeCtrl', function ($scope, $stat
 								if(node) {
 									node.code = data;
 								} else {
-									setTimeout(function() {
+									$timeout(function() {
 										setCode(code, el, retries - 1);
 									}, 1500);
 								}
@@ -212,15 +286,29 @@ angular.module('rioxApp').controller('EditDataPipeCtrl', function ($scope, $stat
 		});
 	}
 
+	/* set the deployment status of all pipeline elements */
+	function setAllPipeElementsStatuses(status) {
+		status = status.toLowerCase();
+		RED.nodes.eachNode(function(node) {
+			node.deployStatus = status;
+			node.dirty = true;
+		});
+	}
+
 	function pollPipeStatus() {
+		if($scope._scopeDestroyed) {
+			return;
+		}
+
 		if($scope.pipeline && $scope.pipeline[ID]) {
 			var pipeId = $scope.pipeline[ID];
 			var query = {};
 			query[PIPE_ID] = pipeId;
 			var timeoutShort = 1000*3;
 			var timeoutMedium = 1000*10;
-			var timeoutLong = 1000*60;
+			var timeoutLong = 1000*60*3;
 			riox.pipe.deployments(query, function(deployment) {
+				$scope.pipeDeployed = true;
 				var timeout = timeoutLong;
 				deployment[PIPE_ELEMENTS].forEach(function(el) {
 					var node = getNodeRedNodeForPipeElement(el);
@@ -239,16 +327,17 @@ angular.module('rioxApp').controller('EditDataPipeCtrl', function ($scope, $stat
 					}
 				});
 				RED.view.redraw();
-				setTimeout(function() {
+				$timeout(function() {
 					pollPipeStatus();
-				}, timeout);
+				}, timeoutLong);
 			}, function(error) {
-				setTimeout(function() {
+				$scope.pipeDeployed = false;
+				$timeout(function() {
 					pollPipeStatus(pipeId);
 				}, timeoutMedium);
 			});
 		} else {
-			setTimeout(function() {
+			$timeout(function() {
 				pollPipeStatus();
 			}, timeoutMedium);
 		}
@@ -269,6 +358,7 @@ angular.module('rioxApp').controller('EditDataPipeCtrl', function ($scope, $stat
 		result[PIPE_ELEMENTS] = [];
 		result[ID] = $scope.pipeline[ID];
 		result[NAME] = $scope.pipeline[NAME];
+		result[DESCRIPTION] = $scope.pipeline[DESCRIPTION];
 
 		var METADATA_ATTRS = ["_def", "_ports", "__theNode", "_", "$$hashKey"];
 
@@ -400,11 +490,13 @@ angular.module('rioxApp').controller('EditDataPipeCtrl', function ($scope, $stat
 	$scope.setNavPath($scope, $state);
 
 	/* add event listeners */
-	setTimeout(function() {
+	$timeout(function() {
 		RED.events.on("view:selection-changed", $scope.onSelectionChange);
 	}, 1000);
 
-	/* poll the pipe deployment status */
-	pollPipeStatus();
+	/* destroy poll timer once scope is destroyed */
+	$scope.$on("$destroy", function() {
+		$scope._scopeDestroyed = true;
+	});
 
 });
