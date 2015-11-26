@@ -56,6 +56,10 @@ var getDeploymentDetails = function(deployment, req, res, next) {
 
 	/* find pipe */
 	Pipe.findByIdQ(pipeId).then(pipe => {
+		if(!pipe) {
+			return res.status(404).send({error: 'Cannot find pipe with ID "' + pipeId + '"'});
+		}
+
 		log.debug('Found pipe with ID %s', pipeId);
 
 		var connector = new Connector();

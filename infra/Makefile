@@ -65,17 +65,20 @@ deploy-services:
 	(cd redis && make deploy-cluster)
 	(cd elasticsearch && make deploy-standalone)
 	(cd nginx && make deploy)
+	(cd cassandra && make deploy-cluster)
 
 deploy-services-dev:
 	(cd mongodb && make deploy-standalone)
 	(cd redis && make deploy-cluster)
 	(cd elasticsearch && make deploy-standalone)
+	(cd cassandra && make deploy-cluster)
 
 undeploy-services:
 	-(cd mongodb && make undeploy)
 	-(cd redis && make undeploy-cluster)
 	-(cd elasticsearch && make undeploy-standalone)
 	-(cd nginx && make undeploy)
+	-(cd cassandra && make undeploy-cluster)
 
 # ATTENTION: Use with caution. Stops and removes ALL docker container
 clean:
