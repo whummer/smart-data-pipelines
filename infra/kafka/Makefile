@@ -1,10 +1,10 @@
-VERSION=latest
+VERSION=0.8.2.2
 IMAGE=riox/kafka
 RIOX_ENV?=development
 KAFKA_CLUSTER_INSTANCES?=3
 
 build:
-	docker build -t ${IMAGE}:${VERSION} ${VERSION}
+	docker build -t ${IMAGE}:${VERSION} latest
 
 push:
 	docker push ${IMAGE}:${VERSION}

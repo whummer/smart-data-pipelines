@@ -9,6 +9,11 @@ ifeq ($(USE_FIG), true)
 compose = fig
 endif
 
+#
+# This is for using OpenShift CLI (OC) when we deploy to RI
+#
+DEPLOYER_CLI?=kubectl
+
 .PHONY: build-images push-images deploy-k8s deploy-k8s-dns deploy-services deploy-services-dev clean
 
 init-cluster:
@@ -17,6 +22,17 @@ init-cluster:
 	-(cd cluster && kubectl create -f secrets.yml --namespace=staging)
 	-(cd cluster && kubectl create -f secrets.yml --namespace=test)
 	-(cd cluster && kubectl create -f secrets.yml --namespace=development)
+
+#
+# Init target for RI Infrastructure
+#
+init-oc-projects:
+	-oc new-project riox-staging
+	-oc new-project riox-production
+	-oc new-project riox-test
+	-(cd cluster && kubectl create -f secrets.yml --namespace=riox-production)
+	-(cd cluster && kubectl create -f secrets.yml --namespace=riox-staging)
+	-(cd cluster && kubectl create -f secrets.yml --namespace=riox-test)
 
 build-push: build-images push-images
 

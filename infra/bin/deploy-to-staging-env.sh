@@ -18,7 +18,7 @@
 # 6. [FUTURE] We roll back the release in case the UI tests fail.
 ##
 
-: ${SHA1?"Need to set SHA1 to last successfully tested commit"}
+: ${sha1?"Need to set sha1 to last successfully tested commit"}
 
 BASEDIR=`dirname $0`
 
@@ -26,7 +26,7 @@ export RIOX_ENV=staging
 export VERSION=v`cat $BASEDIR/../../VERSION`
 IMAGE=riox/hyperriox
 
-if [[ $GIT_BRANCH != "origin/develop" ]];then
+if [[ $sha1 != "develop" ]]; then
 	echo "Aborting: we are only rolling out branch 'develop' to staging (no PRs or other branches)"
 	exit 0
 fi
@@ -52,7 +52,7 @@ git tag -a ${VERSION} -f -m "Staging release tag for ${VERSION}"
 git push origin ${VERSION}
 
 # Tag the docker image with the git tag
-docker tag ${IMAGE}:${SHA1} ${IMAGE}:${VERSION}
+docker tag ${IMAGE}:${sha1} ${IMAGE}:${VERSION}
 docker push ${IMAGE}:${VERSION}
 
 (cd $BASEDIR/../../ && RIOX_ENV=staging IMAGE_VERSION=${VERSION} make rolling-update)

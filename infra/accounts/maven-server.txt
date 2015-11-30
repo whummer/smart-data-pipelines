@@ -1,7 +1,0 @@
-host: mvnrepo.riox.io
-user: admin
-pwd: Vw2gPct!
-
-
-user: deployment
-pwd: Xdr67&uk.

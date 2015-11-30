@@ -13,9 +13,11 @@ items:
       ports:
       - name: http
         port: 80
+        nodePort: 0
         targetPort: http
       - name: https
         port: 443
+        nodePort: 0
         targetPort: https
       type: LoadBalancer
 
@@ -31,4 +33,5 @@ items:
       ports:
       - name: api
         port: 8082
+        nodePort: 0
         targetPort: api

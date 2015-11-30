@@ -10,6 +10,7 @@ spec:
   containers:
     - name: master
       image: riox/redis:2.8
+      imagePullPolicy: Always
       env:
         - name: MASTER
           value: "true"
@@ -23,6 +24,7 @@ spec:
           name: data
     - name: sentinel
       image: riox/redis:2.8
+      imagePullPolicy: Always
       env:
         - name: SENTINEL
           value: "true"

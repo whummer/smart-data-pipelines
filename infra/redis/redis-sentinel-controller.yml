@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: sentinel
-        image: kubernetes/redis:v1
+        image: riox/redis:2.8
         env:
           - name: SENTINEL
             value: "true"

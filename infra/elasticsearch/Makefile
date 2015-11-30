@@ -9,8 +9,8 @@ deploy-standalone:
 
 undeploy-standalone:
 	@echo "Undeploying Elasticsearch standalone..."
-	kubectl stop -f elasticsearch-controller.yml --namespace=${RIOX_ENV}
-	kubectl stop -f elasticsearch-service.yml --namespace=${RIOX_ENV}
+	-kubectl stop -f elasticsearch-controller.yml --namespace=${RIOX_ENV}
+	-kubectl stop -f elasticsearch-service.yml --namespace=${RIOX_ENV}
 
 build:
 	docker build -t ${IMAGE}:${VERSION} .

@@ -15,7 +15,7 @@ declare -a hosts=('mongo' 'redis-sentinel'  'riox-ui' 'users-service' 'organizat
 declare -a lua_libs=('luasocket' 'ansicolors' 'luasec' 'lua-cjson' 'busted' 'lapis' 'moonscript' 'inspect' 'luajwt');
 
 # cluster DNS IP
-declare dns_server=10.0.0.100
+declare dns_server=10.0.0.10
 
 # openresty config file
 declare openresty_config=nginx.dev.conf
@@ -44,19 +44,19 @@ USAGE_TEXT
 function show_help {
 	echo "Usage: $me [-dhloxrs?]"
 	echo "$HELP_TEXT"
-    exit 0
+		exit 0
 }
 
 while getopts "dhloxrs?:" opt; do
-    case "$opt" in
-    \?)
-        show_help
-        exit 0
-        ;;
-    d)  check_k8s_dns=0
-        ;;
-    h)  check_host_dns=0
-        ;;
+		case "$opt" in
+		\?)
+				show_help
+				exit 0
+				;;
+		d)  check_k8s_dns=0
+				;;
+		h)  check_host_dns=0
+				;;
 	l)  check_lua_env=0
 		;;
 	o)  check_openresty=0
@@ -67,7 +67,7 @@ while getopts "dhloxrs?:" opt; do
 		;;
 	s)  silent=1
 		;;
-    esac
+		esac
 done
 
 
@@ -79,9 +79,9 @@ docker_info=$(docker info 2>/dev/null | grep "Containers")
 if [ -n "$docker_info" ]; then
 	printf "${green}   ${checkmark} PASS${reset}\n"
 else
-  printf "${red}   ${error} FAIL${reset}\n"
-  echo "  Potential fixes:"
-  echo "    - [OS X] run 'docker-machine restart docker-vm' or 'boot2docker restart'"
+	printf "${red}   ${error} FAIL${reset}\n"
+	echo "  Potential fixes:"
+	echo "    - [OS X] run 'docker-machine restart docker-vm' or 'boot2docker restart'"
 fi
 echo ""
 
@@ -113,15 +113,15 @@ if [ "$(uname)" == "Darwin" ]; then
 		fi
 	fi
 
-	echo "" 
+	echo ""
 	printf "Verifying etcd SSH tunnel for docker-machine: "
 	etcd_tunnel_up=$(ps -eaf | grep ssh | grep "4001:localhost:4001")
 	if [ -n "$etcd_tunnel_up" ]; then
 		printf "${green}   ${checkmark} PASS${reset}\n"
 	else
-	  printf "${red}   ${error} FAIL${reset}\n"
-	  echo "  Potential fixes:"
-	  echo "    - [OS X] run 'boot2docker ssh -L4001:4001:localhost:4001' or 'ssh -i ~/.docker/machine/machines/docker-vm/id_rsa -f -N -L 4001:localhost:4001 docker@192.168.99.100"
+		printf "${red}   ${error} FAIL${reset}\n"
+		echo "  Potential fixes:"
+		echo "    - [OS X] run 'boot2docker ssh -L4001:4001:localhost:4001' or 'ssh -i ~/.docker/machine/machines/docker-vm/id_rsa -f -N -L 4001:localhost:4001 docker@192.168.99.100"
 	fi
 	echo ""
 
@@ -130,9 +130,9 @@ if [ "$(uname)" == "Darwin" ]; then
 	if [ -n "$k8s_tunnel_up" ]; then
 		printf "${green}   ${checkmark} PASS${reset}\n"
 	else
-	  printf "${red}   ${error} FAIL${reset}\n"
-	  echo "  Potential fixes:"
-	  echo "    - [OS X] run 'boot2docker ssh -L8080:localhost:8080' or 'ssh -i ~/.docker/machine/machines/docker-vm/id_rsa -f -N -L 8080:localhost:8080 docker@192.168.99.100"
+		printf "${red}   ${error} FAIL${reset}\n"
+		echo "  Potential fixes:"
+		echo "    - [OS X] run 'boot2docker ssh -L8080:localhost:8080' or 'ssh -i ~/.docker/machine/machines/docker-vm/id_rsa -f -N -L 8080:localhost:8080 docker@192.168.99.100"
 	fi
 	echo ""
 fi
@@ -145,10 +145,10 @@ output=`curl -s localhost:8080/healthz`
 if [ "$output" == "ok" ]; then
 	printf "${green}   ${checkmark} PASS${reset}\n"
 else
-  printf "${red}   ${error} FAIL${reset}\n"
-  echo "  Potential fixes:"
-  echo "    - [OS X] Ensure route exists: sudo route -n add 10.0.0.0/16 192.168.59.103"
-  echo "    - [OS X] Ensure port forward is open: boot2docker ssh -L8080:localhost:8080"
+	printf "${red}   ${error} FAIL${reset}\n"
+	echo "  Potential fixes:"
+	echo "    - [OS X] Ensure route exists: sudo route -n add 10.0.0.0/16 192.168.59.103"
+	echo "    - [OS X] Ensure port forward is open: boot2docker ssh -L8080:localhost:8080"
 fi
 
 echo ""
@@ -162,10 +162,10 @@ if [ "$check_k8s_dns" -eq 1 ]; then
 	if [ "$output" == "10.0.0.1" ]; then
 		printf "${green}   ${checkmark} PASS${reset}\n"
 	else
-	  printf "${red}   ${error} FAIL${reset}\n"
-	  echo "  Potential fixes:"
-	  echo "    - [ALL]  Restart kube2sky because it often hangs : docker ps | grep kube2sky | awk -F' ' '{ print \$1 }' | xargs docker   restart"
-	  echo "    - [OS X] Ensure route exists: sudo route -n add 10.0.0.0/16 192.168.59.103"
+		printf "${red}   ${error} FAIL${reset}\n"
+		echo "  Potential fixes:"
+		echo "    - [ALL]  Restart kube2sky because it often hangs : docker ps | grep kube2sky | awk -F' ' '{ print \$1 }' | xargs docker   restart"
+		echo "    - [OS X] Ensure route exists: sudo route -n add 10.0.0.0/16 192.168.59.103"
 	fi
 
 	echo ""
@@ -257,7 +257,7 @@ if [ "$check_openresty" -eq 1 ]; then
 		#fi
 	#fi
 
-	echo "" 
+	echo ""
 	printf "Verifying Openresty is running: "
 	openresty_running=$(ps -eaf | grep openresty | grep -v grep)
 	if [ -z "$openresty_running" ]; then
@@ -305,4 +305,3 @@ if [ $? -eq 0 ]; then
 
 
 fi
-

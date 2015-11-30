@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 RIOX_ENV?=development
 IMAGE=riox/mongo
-VERSION=latest
+VERSION=3.0
 
 CLUSTER_REPLICAS?=3
 REPLICA_SET=rs0
@@ -11,7 +11,7 @@ REPLICA_SUFFIXES:= $(shell seq 1 ${CLUSTER_REPLICAS})
 DEPLOYED_CONTROLLERS=$(shell kubectl get rc --namespace=${RIOX_ENV} | grep mongo | awk '{print $4}' | cut -d'=' -f 2)
 DEPLOYED_SERVICES=$(shell kubectl get services --namespace=${RIOX_ENV} | grep mongo | awk '{print $3}' | cut -d'=' -f 2)
 
-deploy: deploy-standalone 
+deploy: deploy-standalone
 
 deploy-standalone:
 	@echo "Deploying MongoDB in standalone mode."
@@ -22,7 +22,7 @@ deploy-standalone:
 	kubectl create -f mongodb-controller-single.yml --namespace=${RIOX_ENV}
 	kubectl create -f mongodb-service-single.yml --namespace=${RIOX_ENV}  --validate=false
 
-deploy-cluster: 
+deploy-cluster:
 	@echo "Deploying MongoDB in replicated mode. #Replicas: ${CLUSTER_REPLICAS}"
 	@for SUFFIX in ${REPLICA_SUFFIXES} ; do \
 		kubectl create -f mongodb-controller-$${SUFFIX}.yml --namespace=${RIOX_ENV}; \
@@ -44,7 +44,7 @@ undeploy:
 	else \
 		echo "Deployed controllers: $(DEPLOYED_CONTROLLERS)"; \
 	fi
-		
+
 
 	@for CTRL in $(DEPLOYED_CONTROLLERS) ; do \
 		if [[ "$$CTRL" == mongo* ]]; then \

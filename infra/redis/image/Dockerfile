@@ -2,13 +2,16 @@ FROM redis:2.8
 RUN apt-get update
 RUN apt-get install -yy -q python
 
-COPY redis-master.conf /redis-master/redis.conf
-COPY redis-slave.conf /redis-slave/redis.conf
-COPY run.sh /run.sh
-COPY sentinel.py /sentinel.py
+COPY files/redis-master.conf /redis-master/redis.conf
+COPY files/redis-slave.conf /redis-slave/redis.conf
+COPY files/run.sh /redis/run.sh
+COPY files/sentinel.py /redis/sentinel.py
+COPY files/sentinel.conf /redis/sentinel.conf
 
-#RUN groupadd --gid 45123 riox && useradd --uid 45123 --gid riox riox
-#USER riox
+RUN mkdir data/ && \
+		chmod -R 777 /redis /data /redis-slave /redis-master
 
-CMD [ "/run.sh" ]
+USER nobody
+WORKDIR /redis
+CMD [ "/redis/run.sh" ]
 ENTRYPOINT [ "sh", "-c" ]

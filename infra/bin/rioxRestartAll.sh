@@ -43,7 +43,7 @@ sleep 2
 code=
 while [ "$code" != "0" ]; do
 	echo "Waiting for DNS"
-	dig @10.0.0.100 mongo.development.svc.cluster.local | grep ANSWER
+	dig @10.0.0.10 mongo.development.svc.cluster.local | grep ANSWER
 	code=$?
 	sleep 3
 done
