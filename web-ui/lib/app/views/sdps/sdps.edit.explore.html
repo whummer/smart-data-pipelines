@@ -35,6 +35,16 @@
 		</div>
 	</div>
 
+	<div ng-show="!selection.nodes.length">
+		<h4>Pipeline Description</h4>
+		<span editable-textarea="pipeline.description" e-form="pipeDescriptionForm"  e-rows="6" onbeforesave="savePipelineDescription($data)">
+			{{pipeline.description}}
+		</span>
+		<a ng-click="pipeDescriptionForm.$show()" ng-hide="pipeDescriptionForm.$visible">
+			<i class="fa fa-edit"></i>
+		</a>
+	</div>
+
 	<div class="clearfix"></div>
 </div>
 

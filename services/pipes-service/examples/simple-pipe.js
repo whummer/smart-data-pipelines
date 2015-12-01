@@ -4,36 +4,36 @@
 	"description": "HTTP in - transform - elasticsearch out",
 	"elements": [
 		{
-			"id": "simple1",
+			"id": "1simple1",
 			"category": "source",
 			"type": "http-in",
 			"params": {
 				"name": "HTTP in",
 				"port": 7788
 			},
-			"edges-out": ["simple2"]
+			"edges-out": ["1simple2"]
 		},
 		{
-			"id": "simple2",
+			"id": "1simple2",
 			"category": "processor",
 			"type": "transform",
 			"params": {
 				"name": "Transform"
 			},
-			"edges-out": ["simple3"]
+			"edges-out": ["1simple3"]
 		},
 		{
-			"id": "simple3",
+			"id": "1simple3",
 			"category": "sink",
 			"type": "elasticsearch",
 			"params": {
 				"name": "ES out",
 				"typeName": "waitingtimes"
 			},
-			"edges-out": ["simple4", "simple5"]
+			"edges-out": ["1simple4", "1simple5"]
 		},
 		{
-			"id": "simple4",
+			"id": "1simple4",
 			"category": "sink",
 			"type": "geo-map",
 			"params": {
@@ -43,7 +43,7 @@
 			}
 		},
 		{
-			"id": "simple5",
+			"id": "1simple5",
 			"category": "sink",
 			"type": "chart",
 			"params": {

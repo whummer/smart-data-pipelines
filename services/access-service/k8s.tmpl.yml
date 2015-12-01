@@ -25,6 +25,13 @@ items:
             - name: access-service
               image: riox/hyperriox:{{IMAGE_VERSION}}
               imagePullPolicy: {{PULL_POLICY}}
+              resources:
+                requests:
+                  memory: "128Mi"
+                  cpu: "50m"
+                limits:
+                  memory: "350Mi"
+                  cpu: "100m"
               ports:
                 - containerPort: 8089
               command:

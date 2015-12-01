@@ -274,16 +274,15 @@ describe('pipes.deploy.mavienna', function() {
 			/* Step 4. */
 			console.log("4) check deployment status of the pipe:", state.locationHeader);
 			return new Promise(function(resolve, reject) {
-				test.user1
-				.get(state.locationHeader)
-				.send()
-				.end(function(err, res) {
+				test.user1.get(state.locationHeader)
+				.send().end(function(err, res) {
 					if(err) {
+						console.warn("Unable to check deployment status", err);
 						return reject(err);
 					}
 					log.debug("Response: ", res.body);
 					expect(res.body[PIPE_ID]).to.equal(state.payload[PIPE_ID]);
-					expect(res.body.status).to.equal(STATUS_DEPLOYED);
+					expect(res.body[STATUS]).to.equal(STATUS_DEPLOYED);
 
 					/* check deployment status for each element */
 					for(var element of res.body[PIPE_ELEMENTS]) {

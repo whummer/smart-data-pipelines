@@ -4,8 +4,8 @@
 
 		<ui-layout options="{ flow : 'column' }" class="stretch">
 			<sidebar ui-layout-container size="15%" min-size="180px" class="stretch">
-				<div class="ibox float-e-margins stretch">
-					<div class="ibox-title resizehide">
+				<div class="ibox">
+					<div class="ibox-title">
 						<h5>Building Blocks</h5>
 					</div>
 					<div class="ibox-content resizehide">
@@ -13,10 +13,45 @@
 					</div>
 				</div>
 			</sidebar>
-			<div ui-layout-container size="60%" min-size="250px" class="stretch">
-				<div class="ibox float-e-margins stretch">
-					<div class="ibox-title resizehide">
-						<h5>Pipeline Definition</h5>
+			<div ui-layout-container="central" size="60%" min-size="250px" class="stretch">
+				<div class="ibox">
+					<div class="ibox-title pipeTitle">
+						<h5>Pipeline:</h5>
+						<div class="pipeName">
+							<span editable-text="pipeline.name" e-form="pipelineNameForm" onbeforesave="savePipelineName($data)">
+								{{pipeline.name}}
+							</span>
+							<a ng-click="pipelineNameForm.$show()" ng-hide="pipelineNameForm.$visible">
+								<i class="fa fa-edit"></i>
+							</a>
+						</div>
+						<div class="pipeActions">
+							<button class="btn btn-danger"
+									ng-show="pipeline.id && pipeDeployed == true"
+									tooltip="Undeploy Pipeline"
+									ng-click="undeployPipeline(pipeline)">
+								<i class="fa fa-download fa-lg"></i>
+							</button>
+
+							<button class="btn btn-warning"
+									ng-show="pipeline.id && pipeDeployed == false"
+									tooltip="Deploy Pipeline"
+									ng-click="deployPipeline(pipeline)">
+								<i class="fa fa-fix fa-upload fa-lg"></i>
+							</button>
+
+							<button class="btn btn-danger"
+									ng-show="pipeline.id"
+									tooltip="Delete Pipeline"
+									ng-click="deletePipeline(pipeline)">
+								<i class="fa fa-remove fa-lg"></i>
+							</button>
+
+							<button class="btn btn-primary" ng-click="submitDatapipe()"
+									tooltip="Save Changes">
+								<i class="fa fa-floppy-o fa-lg"></i>
+							</button>
+						</div>
 					</div>
 					<div class="ibox-content resizehide">
 						<div ng-include="'/app/views/sdps/sdps.nodered.canvas.html'" style="height: 100%;"></div>
@@ -37,131 +72,95 @@
 
 	</div>
 
-	<div class="clearfix"></div>
+	<div class="clearfix" style="margin-bottom: 10px;"></div>
 
-<!-- 	<div class="row" style="margin-bottom: 10px"> -->
-<!-- 		<div class="col-lg-2"> -->
-<!-- 			<div class="ibox float-e-margins"> -->
-<!-- 				<div class="ibox-title"> -->
-<!-- 					<h5>Building Blocks</h5> -->
-<!-- 				</div> -->
-<!-- 				<div class="ibox-content" style="height: 500px;"> -->
-<!-- 					<div ng-include="'/app/views/sdps/sdps.nodered.palette.html'" style="height: 100%;"></div> -->
-<!-- 				</div> -->
+<!-- 	<div style="margin-bottom: 10px; margin-top: 20px"> -->
+<!-- 		<div class="ibox float-e-margins"> -->
+<!-- 			<div class="ibox-title"> -->
+<!-- 				<h2 class="heading-thicker" ng-class="{'text-muted' : !pipeline.name}"> -->
+<!-- 					{{pipeline.name ? pipeline.name : 'Untitled' }} -->
+<!-- 					<small class="subheading-thinner">{{pipeline.description}}</small> -->
+<!-- 				</h2> -->
 <!-- 			</div> -->
-<!-- 		</div> -->
-<!-- 		<div class="col-lg-6"> -->
-<!-- 			<div class="ibox float-e-margins"> -->
-<!-- 				<div class="ibox-title"> -->
-<!-- 					<h5>Pipeline Definition</h5> -->
+<!-- 			<div class="ibox-content"> -->
+<!-- 				PIPELINE PROPERTIES -->
+<!-- 				<div class="row " style="margin-top: 5px; margin-right: 0px"> -->
+<!-- 					<div class="col-lg-6"> -->
+<!-- 						<form class="form"> -->
+<!-- 							<div class="form-group"> -->
+<!-- 								<label class="col-sm-4">Label</label> -->
+<!-- 								<div class="col-sm-8"> -->
+<!-- 									<input class="form-control" name="label" ng-model="pipeline.name"/> -->
+<!-- 								</div> -->
+<!-- 							</div> -->
+<!-- 							<div class="form-group"> -->
+<!-- 								<label class="col-sm-4">Description</label> -->
+<!-- 								<div class="col-sm-8"> -->
+<!-- 									<input class="form-control" name="description" ng-model="pipeline.description"/> -->
+<!-- 								</div> -->
+<!-- 							</div> -->
+<!-- 							<div class="clearfix"></div> -->
+<!-- 						</form> -->
+<!-- 					</div> -->
+<!-- 					<div class="col-lg-6" style="margin-top: 20px;"> -->
+<!-- 						<div> -->
+<!-- 							<button class="btn btn-lg btn-circle btn-danger pull-right" -->
+<!-- 							        tooltip="Undeploy Pipeline" -->
+<!-- 							        ng-click="undeployPipeline(pipeline)"> -->
+<!-- 								<i class="fa fa-download fa-lg"></i> -->
+<!-- 							</button> -->
+							
+<!-- 							<button class="btn btn-lg btn-circle btn-danger pull-right" -->
+<!-- 							        tooltip="Delete Pipeline" -->
+<!-- 							        ng-click="deletePipeline(pipeline)"> -->
+<!-- 								<i class="fa fa-remove fa-lg"></i> -->
+<!-- 							</button> -->
+
+<!-- 							<button class="btn btn-lg btn-circle btn-warning pull-right" -->
+<!-- 							        ng-show="pipeline.id" -->
+<!-- 							        tooltip="Deploy Pipeline" -->
+<!-- 							        style="margin-right: 10px;" -->
+<!-- 							        ng-click="deployPipeline(pipeline)"> -->
+<!-- 								<i class="fa fa-fix fa-upload fa-lg"></i> -->
+<!-- 							</button> -->
+
+<!-- 							<button class="btn btn-lg btn-primary btn-circle pull-right" ng-click="submitDatapipe()" -->
+<!-- 							        tooltip="Save Changes" -->
+<!-- 							        style="margin-right: 10px;"> -->
+<!-- 								<i class="fa fa-floppy-o fa-lg"></i> -->
+<!-- 							</button> -->
+<!-- 						</div ng-show="false"> -->
+<!-- 							<div class="clearfix"></div> -->
+<!-- 							<div> -->
+<!-- 								<div class="row pull-right"> -->
+<!-- 								<a ng-click="showAdvanced = !showAdvanced">Show Advanced<i -->
+<!-- 									style="margin-left: 10px;" class="fa" -->
+<!-- 									ng-class="{'fa-caret-left' : !showAdvanced, 'fa-caret-down' : showAdvanced}"></i></a> -->
+<!-- 							</div> -->
+<!-- 							<div class="clearfix"></div> -->
+<!-- 							<div class="row animated animated-faster" ng-show="showAdvanced" -->
+<!-- 							     ng-class="{fadeIn : showAdvanced, fadeOut: !showAdvanced}"> -->
+<!-- 								<button class="btn btn-primary btn-sm pull-right" ng-click="showPipelineDefinition(pipeline)" -->
+<!-- 								        style="margin-left: 10px;"> -->
+<!-- 									<i class="fa fa-search"></i> Show Data Pipe Definition -->
+<!-- 								</button> -->
+<!-- 								<button class="btn btn-primary btn-sm pull-right" ng-click="showElementSource = !showElementSource"> -->
+<!-- 									<i class="fa fa-code"></i> {{showElementSource ? 'Hide' : 'Show'}} Element Source -->
+<!-- 								</button> -->
+<!-- 								<button class="btn btn-primary btn-sm pull-right" ng-click="importPipeline()" -->
+<!-- 								        style="margin-right: 10px; margin-left: 10px;"> -->
+<!-- 									<i class="fa fa-plus"></i> Import Data Pipe -->
+<!-- 								</button> -->
+<!-- 							</div> -->
+<!-- 						</div> -->
+<!-- 					</div> -->
 <!-- 				</div> -->
-<!-- 				<div class="ibox-content" style="height: 500px;"> -->
-<!-- 					<div ng-include="'/app/views/sdps/sdps.nodered.canvas.html'" style="height: 100%;"></div> -->
-<!-- 				</div> -->
-<!-- 			</div> -->
-<!-- 		</div> -->
-<!-- 		<div class="col-lg-4"> -->
-<!-- 			<div class="ibox float-e-margins"> -->
-<!-- 				<div class="ibox-title"> -->
-<!-- 					<h5>Explore &amp; Preview</h5> -->
-<!-- 				</div> -->
-<!-- 				<div class="ibox-content" style="height: 500px;"> -->
-<!-- 					<div ng-include="'/app/views/sdps/sdps.edit.explore.html'" style="height: 100%;"></div> -->
+<!-- 				<div class="row" ng-show="selectedItem && showElementSource"> -->
+<!-- 					<div class="col-lg-12">{{selectedItem}}</div> -->
 <!-- 				</div> -->
 <!-- 			</div> -->
 <!-- 		</div> -->
 <!-- 	</div> -->
-
-	<div style="margin-bottom: 10px; margin-top: 20px">
-		<div class="ibox float-e-margins">
-			<div class="ibox-title">
-				<h2 class="heading-thicker" ng-class="{'text-muted' : !pipeline.name}">
-					{{pipeline.name ? pipeline.name : 'Untitled' }}
-					<small class="subheading-thinner">{{pipeline.description}}</small>
-				</h2>
-
-			</div>
-			<div class="ibox-content pipeEditor">
-
-				<!-- PIPELINE PROPERTIES -->
-				<div class="row " style="margin-top: 5px; margin-right: 0px">
-					<div class="col-lg-6">
-						<form class="form">
-							<div class="form-group">
-								<label class="col-sm-4">Label</label>
-								<div class="col-sm-8">
-									<input class="form-control" name="label" ng-model="pipeline.name"/>
-								</div>
-							</div>
-							<div class="form-group">
-								<label class="col-sm-4">Description</label>
-								<div class="col-sm-8">
-									<input class="form-control" name="description" ng-model="pipeline.description"/>
-								</div>
-							</div>
-							<div class="clearfix"></div>
-						</form>
-					</div>
-					<div class="col-lg-6" style="margin-top: 20px;">
-						<div>
-							<button class="btn btn-lg btn-circle btn-danger pull-right"
-							        tooltip="Undeploy Pipeline"
-							        ng-click="undeployPipeline(pipeline)">
-								<i class="fa fa-download fa-lg"></i>
-							</button>
-
-							<button class="btn btn-lg btn-circle btn-warning pull-right"
-							        ng-show="pipeline.id"
-							        tooltip="Deploy Pipeline"
-							        style="margin-right: 10px;"
-							        ng-click="deployPipeline(pipeline)">
-								<i class="fa fa-fix fa-upload fa-lg"></i>
-							</button>
-
-							<button class="btn btn-lg btn-primary btn-circle pull-right" ng-click="submitDatapipe()"
-							        tooltip="Save Changes"
-							        style="margin-right: 10px;">
-								<i class="fa fa-floppy-o fa-lg"></i>
-							</button>
-
-						</div ng-show="false">
-							<div class="clearfix"></div>
-							<div>
-								<div class="row pull-right">
-								<a ng-click="showAdvanced = !showAdvanced">Show Advanced<i
-									style="margin-left: 10px;" class="fa"
-									ng-class="{'fa-caret-left' : !showAdvanced, 'fa-caret-down' : showAdvanced}"></i></a>
-							</div>
-							<div class="clearfix"></div>
-							<div class="row animated animated-faster" ng-show="showAdvanced"
-							     ng-class="{fadeIn : showAdvanced, fadeOut: !showAdvanced}">
-
-								<button class="btn btn-primary btn-sm pull-right" ng-click="showPipelineDefinition(pipeline)"
-								        style="margin-left: 10px;">
-									<i class="fa fa-search"></i> Show Data Pipe Definition
-								</button>
-
-								<button class="btn btn-primary btn-sm pull-right" ng-click="showElementSource = !showElementSource">
-									<i class="fa fa-code"></i> {{showElementSource ? 'Hide' : 'Show'}} Element Source
-								</button>
-
-								<button class="btn btn-primary btn-sm pull-right" ng-click="importPipeline()"
-								        style="margin-right: 10px; margin-left: 10px;">
-									<i class="fa fa-plus"></i> Import Data Pipe
-								</button>
-
-							</div>
-						</div>
-
-					</div>
-				</div>
-				<div class="row" ng-show="selectedItem && showElementSource">
-					<div class="col-lg-12">{{selectedItem}}</div>
-				</div>
-			</div>
-		</div>
-
-	</div>
 
 </div>
 
@@ -179,6 +178,22 @@
 .ui-dialog-titlebar {
 	cursor: move;
 }
+/* disable ui-layout animation as it breaks the UI. */
+.animate-column {
+	-webkit-transition: width .0s;
+	-moz-transition: width .0s;
+	-ms-transition: width .0s;
+	-o-transition: width .0s;
+	transition: width .0s;
+
+	-webkit-transition: left .0s;
+	-moz-transition: left .0s;
+	-ms-transition: left .0s;
+	-o-transition: left .0s;
+	transition: left .0s;
+}
+
+
 #sdpEditor {
 }
 #sdpEditor .ibox-content {
@@ -202,7 +217,8 @@
 }
 
 #sdpEditorContainer {
-	min-height: 580px;
+	min-height: 500px;
+	height: 700px;
 	position: relative;
 	overflow: visible;
 	margin-top: 40px;
@@ -236,41 +252,53 @@ div.form-row > :nth-child(2) {
 .form-tips {
 	max-width: none;
 }
-
+.pipeName {
+	margin-bottom: 7px;
+	margin-left: 20px;
+	padding: 0;
+	line-height: 1.1;
+	float: left;
+}
+.pipeActions {
+	float: right;
+	margin-top: -5px;
+}
+.pipeTitle button.btn {
+	padding: 1px 4px;
+}
 
 .rg-right, .rg-left, .rg-top, .rg-bottom {
-  display: block;
-  width: 14px;
-  height: 14px;
-  line-height: 14px;
-  position: absolute;
-  z-index: 1;
-  -moz-user-select: -moz-none;
-  -ms-user-select: none;
-  -webkit-user-select: none;
-  user-select: none;
-  background: transparent;
+	display: block;
+	width: 14px;
+	height: 14px;
+	line-height: 14px;
+	position: absolute;
+	z-index: 1;
+	-moz-user-select: -moz-none;
+	-ms-user-select: none;
+	-webkit-user-select: none;
+	user-select: none;
+	background: transparent;
 }
 .rg-right span, .rg-left span, .rg-top span, .rg-bottom span {
-  position: absolute;
-  box-sizing: border-box;
-  display: block;
-  border: 1px solid #ccc;
+	position: absolute;
+	box-sizing: border-box;
+	display: block;
+	border: 1px solid #ccc;
 }
 .rg-top span, .rg-bottom span {
-  border-width: 1px 0;
-  left: 50%;
-  margin: 3.5px 0 0 -10px;
-  width: 20px;
-  height: 7px;
+	border-width: 1px 0;
+	left: 50%;
+	margin: 3.5px 0 0 -10px;
+	width: 20px;
+	height: 7px;
 }
 .rg-bottom {
-  cursor: row-resize;
-  width: 100%;
-  bottom: 0;
-  left: 0;
-  margin-bottom: -14px;
+	cursor: row-resize;
+	width: 100%;
+	bottom: 0;
+	left: 0;
+	margin-bottom: -14px;
 }
-
 
 </style>

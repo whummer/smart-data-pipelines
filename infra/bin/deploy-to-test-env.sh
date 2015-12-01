@@ -74,7 +74,7 @@ fi
 
 printf "Waiting for Riox services to be ready "
 output=
-for i in `seq 1 60`;
+for i in `seq 1 80`;
 do
 	output=`curl -s -H "Host: demo.riox.io" http://${lb_endpoint}`
 	if [[ "$output" =~ "riox.all.min.js" ]]; then
