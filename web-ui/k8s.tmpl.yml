@@ -25,6 +25,13 @@ items:
             - name: riox-ui
               image: riox/hyperriox:{{IMAGE_VERSION}}
               imagePullPolicy: {{PULL_POLICY}}
+              resources:
+                requests:
+                  memory: "128Mi"
+                  cpu: "50m"
+                limits:
+                  memory: "512Mi"
+                  cpu: "100m"
               ports:
                 - containerPort: 8081
               command:

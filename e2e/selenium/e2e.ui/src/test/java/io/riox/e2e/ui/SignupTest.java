@@ -10,8 +10,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.openqa.selenium.Alert;
-import org.openqa.selenium.security.UserAndPassword;
 
 /**
  * Tests the signup functionality.
@@ -42,27 +40,27 @@ public class SignupTest extends AbstractProxyTest {
 		}
 
 		WebElement firstNameField = new WebDriverWait(driver, TIMEOUT_SHORT)
-			.until(ExpectedConditions.presenceOfElementLocated(By.name("firstname")));
+			.until(ExpectedConditions.visibilityOfElementLocated(By.name("firstname")));
 		firstNameField.sendKeys("firstname");
 		log.info("firstNameField entered...");
 
 		WebElement lastNameField = new WebDriverWait(driver, TIMEOUT_SHORT)
-			.until(ExpectedConditions.presenceOfElementLocated(By.name("lastname")));
+			.until(ExpectedConditions.visibilityOfElementLocated(By.name("lastname")));
 		lastNameField.sendKeys("lastname");
 		log.info("lastNameField entered...");
 
 		WebElement emailField = new WebDriverWait(driver, TIMEOUT_SHORT)
-			.until(ExpectedConditions.presenceOfElementLocated(By.name("email")));
+			.until(ExpectedConditions.visibilityOfElementLocated(By.name("email")));
 		emailField.sendKeys(UUID.randomUUID().toString() + "@example.com");
 		log.info("emailField entered...");
 
 		WebElement passwordField = new WebDriverWait(driver, TIMEOUT_SHORT)
-			.until(ExpectedConditions.presenceOfElementLocated(By.name("password")));
+			.until(ExpectedConditions.visibilityOfElementLocated(By.name("password")));
 		passwordField.sendKeys("test123");
 		log.info("passwordField entered...");
 
 		WebElement form = new WebDriverWait(driver, TIMEOUT_SHORT)
-			.until(ExpectedConditions.presenceOfElementLocated(By.name("formSignup")));
+			.until(ExpectedConditions.visibilityOfElementLocated(By.name("formSignup")));
 		form.submit();
 		log.info("formSignup submitted...");
 
@@ -73,7 +71,7 @@ public class SignupTest extends AbstractProxyTest {
 
 		/* PROVIDE MISSING INFORMATION */
 		WebElement orgField = new WebDriverWait(driver, TIMEOUT_SHORT)
-			.until(ExpectedConditions.presenceOfElementLocated(By.name("organization")));
+			.until(ExpectedConditions.visibilityOfElementLocated(By.name("organization")));
 		orgField.sendKeys("Test_Organization");
 		log.info("orgField entered...");
 

@@ -154,8 +154,8 @@ app.uploadFile = function(cfg, user, filepath, callback, errorCallback) {
 
 app.ensurePodsCleanedUp = function(pipeId, done) {
 	var connector = new Connector();
-	var retries = 3;
-	var timeout = 5*1000;
+	var retries = 4;
+	var timeout = 7*1000;
 	function doCheck() {
 		connector._findPodsForPipe(pipeId).then(function(pods) {
 			if(pods.length === 0) {
@@ -163,7 +163,9 @@ app.ensurePodsCleanedUp = function(pipeId, done) {
 			} else {
 				retries --;
 				if(retries < 0) {
-					return should.fail("Unable to ensure cleanup. " + pods.length + " remaining pods: " + pods);
+					var msg = "Unable to ensure cleanup. " + pods.length + " remaining pods: " + pods;
+					console.warn(msg);
+					return should.fail(msg);
 				}
 				setTimeout(doCheck, timeout);
 			}

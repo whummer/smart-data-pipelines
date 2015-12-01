@@ -17,8 +17,14 @@ spec:
         - name: rioxregistrykey
       containers:
           - name: mongo
-            imagePullPolicy: Always
             image: riox/mongo:3.0
+            resources:
+              requests:
+                memory: "256Mi"
+                cpu: "100m"
+              limits:
+                memory: "512Mi"
+                cpu: "250m"
             args: ["--smallfiles"]
             ports:
               - containerPort: 27017

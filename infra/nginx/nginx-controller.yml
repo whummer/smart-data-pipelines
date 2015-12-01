@@ -18,7 +18,13 @@ spec:
       containers:
       - name: gateway
         image: riox/nginx:1.1.1
-        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
         env:
           - name: OUR_NAMESPACE
             valueFrom:

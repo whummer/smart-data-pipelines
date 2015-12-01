@@ -155,6 +155,7 @@ describe('pipes.deploy.httpin-transform-split', function() {
 				.send()
 				.end(function(err, res) {
 					if(err) {
+						console.warn("Cannot determine deployment status", err);
 						return reject(err);
 					}
 					log.debug("Response: ", res.body);
@@ -188,14 +189,17 @@ describe('pipes.deploy.httpin-transform-split', function() {
 				/* CONNECT TO WEBSOCKET */
 
 				var wsPipeEl = pipeElements[pipeElements.length - 1];
-				var wsURL = "ws://" + wsPipeEl[ID] + "." + process.env.RIOX_ENV +
+				var wsServiceName = 's-' + wsPipeEl[ID];
+				var wsURL = "ws://" + wsServiceName + "." + process.env.RIOX_ENV +
 					".svc.cluster.local:" + wsPipeEl[PARAMS].port + "/";
 				log.info("wsURL", wsURL);
 				var subscribeRetries = 15;
 				var subscribeTimeout = 10*1000;
 				function loopSubscribe() {
 					if(--subscribeRetries < 0) {
-						return reject("Cannot subscribe to Websocket. Giving up.");
+						var msg = "Cannot subscribe to Websocket. Giving up.";
+						console.warn(msg);
+						return reject(msg);
 					}
 					wsClient.connect(wsURL, null);
 				}
@@ -238,7 +242,8 @@ describe('pipes.deploy.httpin-transform-split', function() {
 				/* SEND TEST DATA TO HTTP-IN */
 
 				var httpPipeEl = pipeElements[0];
-				var httpURL = "http://" + httpPipeEl[ID] + "." + process.env.RIOX_ENV +
+				var httpServiceName = 's-' + httpPipeEl[ID];
+				var httpURL = "http://" + httpServiceName + "." + process.env.RIOX_ENV +
 					".svc.cluster.local:" + httpPipeEl[PARAMS].port + "/messages";
 				log.info("httpURL", httpURL);
 				var sendRetries = 15;
@@ -270,8 +275,11 @@ describe('pipes.deploy.httpin-transform-split', function() {
 					return req;
 				}
 				var loopSend = function() {
+					if(firstMessageReceived) return;
 					if(--sendRetries < 0) {
-						return reject("Cannot send message to HTTP input. Giving up.");
+						var msg = "Cannot send message to HTTP input. Giving up.";
+						console.warn(msg);
+						return reject(msg);
 					}
 					setTimeout(function() {
 						doSend(true);
@@ -282,8 +290,8 @@ describe('pipes.deploy.httpin-transform-split', function() {
 			});
 		})
 		.then( function() {
-			/* Step 7. */
-			console.log("7) clean-up: delete the pipe deployment");
+			/* Step 6. */
+			console.log("6) clean-up: delete the pipe deployment");
 			cleanup(done);
 		})
 		.catch( function(error) {

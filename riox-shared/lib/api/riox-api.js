@@ -715,6 +715,16 @@
 		var url = servicesConfig.pipes.url + "/deployments/deploy";
 		return callPUT(url, req, callback, errorCallback);
 	};
+	sh.pipe.undeploy = function (req, callback, errorCallback) {
+		var url = "";
+		if(req[PIPE_ID]) {
+			url = servicesConfig.pipes.url + "/deployments/by/pipe/" + req[PIPE_ID];
+		} else {
+			var id = req[ID] ? req[ID] : req;
+			url = servicesConfig.pipes.url + "/deployments/" + id;
+		}
+		return callDELETE(url, callback, errorCallback);
+	};
 
 
 	/* methods for access permissions */
@@ -780,25 +790,10 @@
 	}
 
 	var callGET = sh.callGET = function (url, options, errorCallback) {
-		var m = mem();
 		if (!options)
 			options = {};
 
 		var callback = options.callback ? options.callback : options;
-		if (options.doCacheResults && m[url]) {
-			if (typeof callback == "function") {
-				setTimeout(function () {
-					callback(m[url]);
-				}, 0);
-			}
-			return m[url];
-		}
-		var entry = m[url] = {};
-		if (ttl > 0) {
-			setTimeout(function () {
-				delete m[url];
-			}, ttl);
-		}
 		errorCallback = wrapDefaultErrorCallback(errorCallback);
 		invokeGET(options, url,
 				function (data, status, headers, config) {
@@ -806,22 +801,12 @@
 						callback(data, status, headers, config);
 						return;
 					}
-					if (typeof data.__result != "undefined") data = data.__result;
-					if (Array.isArray(data)) {
-						m[url] = data;
-					} else if (typeof data == "object") {
-						if (typeof $ != "undefined") {
-							$.extend(entry, data);
-						}
-					} else {
-						m[url] = data;
-					}
-					if (typeof callback == "function") {
+					if (typeof data.__result !== "undefined") data = data.__result;
+					if (typeof callback === "function") {
 						callback(data, status, headers, config);
 					}
 				}, errorCallback
 		);
-		return entry;
 	};
 
 	var callPOSTorPUT = function (invokeFunc, url, body, options, errorCallback) {
@@ -858,22 +843,6 @@
 					}
 				}, errorCallback
 		);
-	};
-
-	/* "shared memory", used as entity cache */
-
-	var mem = sh.mem = function () {
-		var gl = typeof window == "undefined" ? global : window;
-		if (gl.rootScope) {
-			if (!gl.rootScope.shared) {
-				gl.rootScope.shared = {};
-			}
-			return gl.rootScope;
-		}
-		if (!gl.sharedMem) {
-			gl.sharedMem = {};
-		}
-		return gl.sharedMem;
 	};
 
 	/* WEBSOCKET FUNCTIONS */

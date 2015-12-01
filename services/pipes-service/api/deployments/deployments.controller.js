@@ -97,7 +97,9 @@ var getDeploymentDetails = function(deployment, req, res, next) {
 		}
 
 		Promise.all(proms).then(function() {
-			log.warn("Got all deployment details.", result);
+			log.info("Got all deployment details.", result);
+			/* determine status of deployment */
+			result[STATUS] = getCommonDenominatorStatus(result[PIPE_ELEMENTS]);
 			return res.json(result);
 		});
 	}).catch(error => {
@@ -151,34 +153,43 @@ var doDeploy = function(deployer, environment, pipe, req, res) {
 	// TODO: make this function an aysnc operation
 	req.setTimeout(1000*60*5);
 
-	// TODO: think about how we deal with existing deployments --> update them!
+	// TODO: think about how we deal with existing deployments --> update them?
 
-	return deployer.
-		deploy(pipe, environment).
-		then(deploymentStatuses => {
-			let deployment = new PipeDeployment();
-			let user = auth.getCurrentUser(req);
-			deployment[PIPE_ID] = pipe[ID];
-			deployment[PIPE_ENVIRONMENT] = environment;
-			deployment[CREATOR_ID] = user[ID];
-			deployment[STATUS] = getCommonDenominatorStatus(deploymentStatuses);
-			deployment[PIPE_ELEMENTS] = deploymentStatuses;
-			log.debug('saving deployment', JSON.stringify(deployment));
-			deployment.saveQ().then(deployment => {
-				var location = servicesConfig.pipedeployments.url + '/' + deployment[ID];
-				res.setHeader('Location', location);
-				log.debug('Done deployment. Location:', location);
-				res.status(201);
-				return res.json({'id': deployment.id});
-			}).catch(error => {
-				return validationError(error, next);
+	/* create deployment entry */
+	let user = auth.getCurrentUser(req);
+	let deployment = new PipeDeployment();
+	deployment[PIPE_ID] = pipe[ID];
+	deployment[PIPE_ENVIRONMENT] = environment;
+	deployment[CREATOR_ID] = user[ID];
+	deployment.saveQ().then(deployment => {
+		var location = servicesConfig.pipedeployments.url + '/' + deployment[ID];
+		res.setHeader('Location', location);
+		log.debug('Deployment started. Location:', location);
+		res.status(201).json({'id': deployment.id});
+
+		/* return from service method, start async deployment */
+		deployer.
+			deploy(pipe, environment).
+			then(deploymentStatuses => {
+				deployment[STATUS] = getCommonDenominatorStatus(deploymentStatuses);
+				deployment[PIPE_ELEMENTS] = deploymentStatuses;
+				log.debug('saving deployment', JSON.stringify(deployment));
+				deployment.saveQ().then(deployment => {
+					log.debug('Deployment ' + deployment[ID] + ' finished.');
+				}).catch(error => {
+					return validationError(error, next);
+				});
+			}).
+			catch( error => {
+				log.debug('Deployment error', error);
+				res.status(500);
+				res.json({error: error});
 			});
-		}).
-		catch( error => {
-			log.debug('Deployment error', error);
-			res.status(500);
-			res.json({error: error});
-		});
+
+	}).catch(error => {
+		return validationError(error, next);
+	});
+
 };
 
 var getCommonDenominatorStatus = function(deploymentStatuses) {
@@ -249,27 +260,54 @@ exports.delete = function (req, res, next) {
 
 	let id = req.params.id;
 	log.debug('Deleting deployment with id %s', id);
-	var deployer = new Deployer();
 
 	PipeDeployment.findByIdQ(id)
 		.then( deployment => {
-			return deployer.undeploy(deployment);
+			deleteDeployment(deployment, req, res, next);
 		})
-		.then( status => {
-			log.debug('Status: ', status);
-			return PipeDeployment.remove({_id: id});
-		})
-		.then( pipeId => {
-			log.debug('Deleted deployment: ', pipeId);
-			return res.json(201);
-		})
-		.catch( error => {
-			log.error('Cannot delete deployment with id %d: %s', id, error);
-			return next(errors.InternalError('Cannot delete deployment', error));
-		});
 };
 
+exports.deleteByPipeId = function (req, res, next) {
+	var query = {};
+	query[PIPE_ID] = req.params.id;
+	PipeDeployment.findQ(query).then(deployments => {
+		if(deployments.length && deployments[0]) {
+			var deployment = deployments[0];
+			log.debug('Found deployment for PIPE_ID %s', req.params.id);
+			deleteDeployment(deployment, req, res, next);
+		} else {
+			/* return 200 success, to make this idempotent */
+			res.status(200);
+			return res.json({message: "No deployment found."});
+		}
+	}).catch(error => {
+		log.error('Cannot load deployment: %s', error);
+		res.status(404);
+		res.json({error: 'No deployment for pipe:' + req.params.id});
+	});
+};
 
+var deleteDeployment = function(deployment, req, res, next) {
+	var deployer = new Deployer();
+	var id = deployment[ID];
+
+	return Promise.resolve().
+	then( () => {
+		return deployer.undeploy(deployment);
+	}).
+	then( status => {
+		log.debug('Status: ', status);
+		return PipeDeployment.remove({_id: id});
+	}).
+	then( pipeId => {
+		log.debug('Deleted deployment: ', id);
+		return res.json(201);
+	}).
+	catch( error => {
+		log.error('Cannot delete deployment with id', id, error);
+		return next(errors.InternalError('Cannot delete deployment', error));
+	});
+};
 
 /* HELPER METHODS */
 

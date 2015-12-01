@@ -91,41 +91,6 @@ angular.module("rioxApp").controller("DataPipesCtrl", function ($scope, $log, gr
 		return template.options;
 	};
 
-
-	//
-	// deploy pipe
-	//
-	$scope.deployPipeline = function (pipeline) {
-		if (!pipeline.id) {
-			growl.error('Cannot deploy an unsaved pipe. Please save it first.');
-		} else {
-			var payload = {};
-			payload[PIPE_ID] = pipeline.id;
-			riox.pipe.deploy(payload, function (deployed) {
-				growl.success('Successfully deployed pipeline ' + pipeline.label);
-			}, function (error) {
-				growl.error('Cannot deploy pipeline. See console for details');
-			});
-		}
-	};
-
-	//
-	// deploy pipe
-	//
-	$scope.undeployPipeline = function (pipeline) {
-		if (!pipeline.id) {
-			growl.error('Cannot undeploy an unsaved pipe.');
-		} else {
-			var payload = {};
-			payload[PIPE_ID] = pipeline.id;
-			riox.pipe.undeploy(payload, function (deployed) {
-				growl.success('Successfully undeployed pipeline ' + pipeline.label);
-			}, function (error) {
-				growl.error('Cannot deploy pipeline. See console for details');
-			});
-		}
-	};
-
 	//
 	// get the correct CSS class for given element
 	//
@@ -175,6 +140,11 @@ angular.module("rioxApp").controller("DataPipesCtrl", function ($scope, $log, gr
 	// delete a pipeline
 	//
 	$scope.deletePipeline = function (pipeline, callback) {
+		if(!callback) {
+			callback = function() {
+				$state.go('index.sdps.list');
+			}
+		}
 		var deleteCallback = function () {
 			riox.delete.pipe(pipeline.id, function () {
 				growl.success('Deleted pipeline "' + pipeline.name + '"');

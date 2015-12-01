@@ -52,7 +52,8 @@ git tag -a ${VERSION} -f -m "Staging release tag for ${VERSION}"
 git push origin ${VERSION}
 
 # Tag the docker image with the git tag
-docker tag ${IMAGE}:${sha1} ${IMAGE}:${VERSION}
+echo "Tagging image ${IMAGE}:${GIT_COMMIT} with new tag ${IMAGE}:${VERSION}"
+docker tag ${IMAGE}:${GIT_COMMIT} ${IMAGE}:${VERSION}
 docker push ${IMAGE}:${VERSION}
 
 (cd $BASEDIR/../../ && RIOX_ENV=staging IMAGE_VERSION=${VERSION} make rolling-update)
