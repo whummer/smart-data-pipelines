@@ -4,6 +4,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
+import java.io.File;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
@@ -12,8 +13,14 @@ import org.elasticsearch.action.deletebyquery.DeleteByQueryResponse;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.common.io.FileSystemUtils;
+import org.elasticsearch.common.settings.ImmutableSettings;
+import org.elasticsearch.node.Node;
+import org.elasticsearch.node.NodeBuilder;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,8 +49,8 @@ import com.jayway.jsonpath.JsonPath;
 	"es.index:twitter",
 	"es.type:tweet",
 	"es.hosts=localhost:9300",
-		"logging.level.=WARN",
-	"es.idPath=$.id"
+	"es.idPath=$.id",
+	"logging.level.=WARN"
 })
 public class ElasticsearchSinkTransportModeIntegrationTests {
 
@@ -63,6 +70,34 @@ public class ElasticsearchSinkTransportModeIntegrationTests {
 
 	@Autowired
 	private ElasticsearchSinkTestUtil testUtil;
+
+	private static Node node;
+
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
+		if (node == null) {
+			/* First we delete old data */
+			File dataDir = new File("./target/es/data");
+			if(dataDir.exists()) {
+				FileSystemUtils.deleteRecursively(dataDir, true);
+			}
+			
+			/* Then we start our node for tests */
+			node = NodeBuilder
+				.nodeBuilder()
+				.settings(
+					ImmutableSettings.settingsBuilder()
+					.put("gateway.type", "local")
+					.put("path.data", "./target/es/data")		
+					.put("path.logs", "./target/es/logs")		
+					.put("path.work", "./target/es/work")		
+				).node();
+
+			/* Wait for green status */
+			node.client().admin().cluster().prepareHealth()
+					.setWaitForGreenStatus().execute().actionGet(); 
+		}
+	}
 
 	@Before
 	public void setup() throws ExecutionException, InterruptedException {
@@ -101,7 +136,10 @@ public class ElasticsearchSinkTransportModeIntegrationTests {
 		assertThat("ID does not match: " + documentId, documentId, is(id));
 	}
 
-	@Test(timeout = RETRIES * DELAY_BEFORE_RETRY)
+	/* whu: This test case is disabled, because we removed the functionality to
+	 * automatically convert all fields named "location" to a geo_point field */
+	@Ignore
+	//@Test(timeout = RETRIES * DELAY_BEFORE_RETRY)
 	public void testTransportModeLocationQuery() throws Exception {
 		RestTemplate restTemplate = new TestRestTemplate();
 		String id1 = UUID.randomUUID().toString();

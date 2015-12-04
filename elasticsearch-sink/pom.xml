@@ -19,6 +19,13 @@
 	<artifactId>elasticsearch-sink</artifactId>
 	<version>1.0.0.BUILD-SNAPSHOT</version>
 
+	<properties>
+		<commons-lang3.version>3.3.2</commons-lang3.version>
+		<docker.image.prefix>riox</docker.image.prefix>
+		<docker.image.name>spring-cloud-stream-module-elasticsearch-sink</docker.image.name>
+    <docker.image.version>1.0.1</docker.image.version>
+	</properties>
+
 	<dependencies>
 
 		<!-- SPRING DEPENDENCIES -->
@@ -81,7 +88,7 @@
 				<artifactId>docker-maven-plugin</artifactId>
 				<version>0.3.5</version>
 				<configuration>
-					<imageName>${docker.image.prefix}/${docker.image.name}:${project.version}</imageName>
+					<imageName>${docker.image.prefix}/${docker.image.name}:${docker.image.version}</imageName>
 					<dockerDirectory>src/main/docker</dockerDirectory>
 					<serverId>docker-hub</serverId>
 					<resources>
@@ -95,35 +102,5 @@
 			</plugin>
 		</plugins>
 	</build>
-
-	<profiles>
-		<profile>
-			<id>riox</id>
-			<distributionManagement>
-				<repository>
-					<id>riox-releases-repo</id>
-					<url>http://mvnrepo.riox.io/nexus/content/repositories/releases</url>
-				</repository>
-				<snapshotRepository>
-					<id>riox-snapshots-repo</id>
-					<url>http://mvnrepo.riox.io/nexus/content/repositories/snapshots</url>
-				</snapshotRepository>
-			</distributionManagement>
-
-			<repositories>
-				<repository>
-					<id>riox-snapshots-repo</id>
-					<url>http://mvnrepo.riox.io/nexus/content/repositories/snapshots</url>
-					<snapshots>
-						<enabled>true</enabled>
-					</snapshots>
-				</repository>
-				<repository>
-					<id>riox-releases-repo</id>
-					<url>http://mvnrepo.riox.io/nexus/content/repositories/releases</url>
-				</repository>
-			</repositories>
-		</profile>
-	</profiles>
 
 </project>
