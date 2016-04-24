@@ -2,12 +2,8 @@
 // require gulp and plugins
 //
 var gulp = global.gulp = require('gulp-help')(require('gulp'));
-var del = require('del');
-var vinylPaths = require('vinyl-paths');
-var runSequence = require('run-sequence');
 var fs = require('fs');
 var cp = require('child_process');
-var mocha = require('gulp-mocha')
 
 var TEST_REPORTER = process.env.TEST_REPORTER ||  'spec'
 var TEST_DIR = "services/test";
@@ -49,16 +45,19 @@ var bowerDirs = ["web-ui/lib"];
 
 
 gulp.task('riox', 'start riox nodejs infrastructure', function() {
+	var runSequence = require('run-sequence');
 	runSequence('ui:livereload', 'services:pipes:serve', 'services:users:serve', 'services:pricing:serve',
 			'services:analytics:serve', 'services:gateway:serve', 'services:access:serve', 'services:files:serve');
 });
 
 gulp.task('services:test:unit', 'run unit test of all the services', function() {
+	var runSequence = require('run-sequence');
 	runSequence('services:pipes:test:unit', 'services:users:test:unit', 'services:pricing:test:unit',
 			 'services:analytics:test:unit', 'services:gateway:test:unit', 'services:access:test:unit', 'services:files:test:unit');
 });
 
 gulp.task('test:integration', 'run all integration test ', function() {
+	var mocha = require('gulp-mocha');
 	var grep = ".*";
 	try {
 		var minimist = require('minimist');
@@ -193,6 +192,8 @@ function cleanBowerDir(dir) {
 }
 
 function cleanDir(dir) {
+	var del = require('del');
+var vinylPaths = require('vinyl-paths');
 	if(fs.existsSync(dir)) {
 		console.log("Cleaning directory", dir);
 		gulp.src(dir, {read: false}).pipe(vinylPaths(del));

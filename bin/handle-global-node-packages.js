@@ -1,8 +1,15 @@
+var resolve = require('path').resolve;
+
+// CHDIR
+process.chdir(resolve(__dirname + '/..'))
+
+
 var npm = require("npm");
 var fs = require('fs');
 var cp = require('child_process');
-var resolve = require('path').resolve;
 var semver = require('./semver');
+var merge = require('../services/riox-services-base/lib/config/merge');
+
 
 //
 // the directories where package.json's are looked up
@@ -43,44 +50,69 @@ process.argv.forEach(function (val, index, array) {
 
 
 //
-// MAIN
-//
-
-process.chdir(resolve('..'))
-
-
-//
 // first find all globally installed packages
 //
-var globallyInstalled = {};
-npm.load({global: true, parseable: true, long: false}, function (err) {
-	if (err) {
-		console.log("cannot load NPM: ", err);
-		return;
-	}
-
-	npm.commands.ls([], true, function (err, data) {
+var installDepsGlobally = function() {
+	var globallyInstalled = {};
+	npm.load({global: true, parseable: true, long: false}, function (err) {
 		if (err) {
-			console.log("Cannot list globally install packages");
+			console.log("cannot load NPM: ", err);
 			return;
 		}
 
-		Object.keys(data.dependencies).forEach(function (dep) {
-			var version = data.dependencies[dep].version;
-			if (verbose) {
-				console.log("Name: >>> " + dep + " >>> Version: " + version);
+		npm.commands.ls([], true, function (err, data) {
+			if (err) {
+				console.log("Cannot list globally install packages");
+				return;
 			}
 
-			globallyInstalled[dep] = version;
-		});
+			Object.keys(data.dependencies).forEach(function (dep) {
+				var version = data.dependencies[dep].version;
+				if (verbose) {
+					console.log("Name: >>> " + dep + " >>> Version: " + version);
+				}
 
-		//
-		// then install all packages from the package.json's in nodedirs if they are not yet
-		// installed globally
-		//
-		installGlobalIfNotExists(globallyInstalled);
+				globallyInstalled[dep] = version;
+			});
+
+			//
+			// then install all packages from the package.json's in nodedirs if they are not yet
+			// installed globally
+			//
+			installGlobalIfNotExists(globallyInstalled);
+		});
 	});
-});
+};
+
+
+var findDuplicateDeps = function() {
+	var deps = {};
+	nodeDirs.forEach(function (dir) {
+		deps[dir] = JSON.parse(fs.readFileSync(dir + "/package.json"));
+	});
+	nodeDirs.forEach(function (dir1) {
+		var deps1 = deps[dir1];
+		nodeDirs.forEach(function (dir2) {
+			var deps2 = deps[dir2];
+			if(dir1 != dir2) {
+				allDeps1 = merge(deps1.dependencies, deps1.devDependencies)
+				for (var d1 in allDeps1) {
+					allDeps2 = merge(deps2.dependencies, deps2.devDependencies)
+					for (var d2 in allDeps2) {
+						var v1 = allDeps1[d1];
+						var v2 = allDeps2[d2];
+						if(d1 == d2 && ! localModule(v1)) {
+							console.log("WARN: Found duplicate dependency '" + d1 + "' in " + [dir1, dir2]);
+							if(v1 != v2) {
+								console.log(" -> version is also different: " + [v1, v2])
+							}
+						}
+					}
+				}
+			}
+		});
+	});
+};
 
 
 //
@@ -177,3 +209,7 @@ function addDepToHash(deps, dep, version) {
 
 	deps[dep] = version;
 }
+
+findDuplicateDeps();
+//installDepsGlobally();
+//installDepsLocally();

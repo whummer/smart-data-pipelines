@@ -51,11 +51,11 @@ push-image:
 ###############
 
 run-integration-tests:
-	(cd services/test && ../../util/templater.sh k8s.tmpl.yml > k8s.yml)
+	(cd services/test && ../../bin/templater.sh k8s.tmpl.yml > k8s.yml)
 	(cd services/test && kubectl create -f k8s.yml --namespace=${RIOX_ENV})
 
 run-integration-tests-local:
-	(cd services/test && PULL_POLICY=IfNotPresent IMAGE_NAME=hyperriox-test ../../util/templater.sh k8s.tmpl.yml > k8s.yml)
+	(cd services/test && PULL_POLICY=IfNotPresent IMAGE_NAME=hyperriox-test ../../bin/templater.sh k8s.tmpl.yml > k8s.yml)
 	(cd services/test && kubectl create -f k8s.yml --namespace=${RIOX_ENV} --validate=false)
 	echo "Trying to attach to stdout of test process after a short while..."
 	sleep 15 && kubectl --namespace=${RIOX_ENV} logs -f integration-tests
@@ -70,14 +70,14 @@ cleanup-integration-tests:
 .PHONY: deploy-services undeploy-services scaledown-services render-template
 
 render-template:
-	(cd web-ui && ../util/templater.sh k8s.tmpl.yml > k8s.yml)
-	(cd services/analytics-service && ../../util/templater.sh k8s.tmpl.yml > k8s.yml)
-	(cd services/files-service && ../../util/templater.sh k8s.tmpl.yml > k8s.yml)
-	(cd services/pipes-service && ../../util/templater.sh k8s.tmpl.yml > k8s.yml)
-	(cd services/users-service && ../../util/templater.sh k8s.tmpl.yml > k8s.yml)
-	(cd services/access-service && ../../util/templater.sh k8s.tmpl.yml > k8s.yml)
-	(cd services/gateway-service && ../../util/templater.sh k8s.tmpl.yml > k8s.yml)
-	(cd services/pricing-service && ../../util/templater.sh k8s.tmpl.yml > k8s.yml)
+	(cd web-ui && ../bin/templater.sh k8s.tmpl.yml > k8s.yml)
+	(cd services/analytics-service && ../../bin/templater.sh k8s.tmpl.yml > k8s.yml)
+	(cd services/files-service && ../../bin/templater.sh k8s.tmpl.yml > k8s.yml)
+	(cd services/pipes-service && ../../bin/templater.sh k8s.tmpl.yml > k8s.yml)
+	(cd services/users-service && ../../bin/templater.sh k8s.tmpl.yml > k8s.yml)
+	(cd services/access-service && ../../bin/templater.sh k8s.tmpl.yml > k8s.yml)
+	(cd services/gateway-service && ../../bin/templater.sh k8s.tmpl.yml > k8s.yml)
+	(cd services/pricing-service && ../../bin/templater.sh k8s.tmpl.yml > k8s.yml)
 
 deploy-services: render-template
 	(cd web-ui && kubectl create -f k8s.yml --namespace=${RIOX_ENV})

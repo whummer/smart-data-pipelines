@@ -12,9 +12,9 @@ warning="\xE2\x9A\xA0"
 error="\xE2\x9C\x97"
 
 function bailOut {
-  message=$1
-  printf "${red} ${error}  $message${reset}\n"
-  exit -1
+	message=$1
+	printf "${red} ${error}  $message${reset}\n"
+	exit -1
 }
 
 #
@@ -37,23 +37,23 @@ USAGE_TEXT
 function show_help {
 	echo "Usage: $me [-tcv?]"
 	echo "$HELP_TEXT"
-    exit 0
+		exit 0
 }
 
 while getopts "tcvp?:" opt; do
-    case "$opt" in
-    \?) show_help
-        exit 0
-        ;;
-    t)  skip_tests=1
-        ;;
-    c)  skip_cleanup=1
-        ;;
-    p)  skip_push=1
-        ;;
+		case "$opt" in
+		\?) show_help
+				exit 0
+				;;
+		t)  skip_tests=1
+				;;
+		c)  skip_cleanup=1
+				;;
+		p)  skip_push=1
+				;;
 	v)  verbose=1
 		;;
-    esac
+		esac
 done
 
 
@@ -122,7 +122,7 @@ fi
 #
 # process all modules except 'common'
 #
-MODULE_GLOB=$(find . -type d -d 1 -not -name 'common' -not -name '.*')
+MODULE_GLOB=$(find . -mindepth 1 -maxdepth 1 -type d -not -name 'common' -not -name '.*')
 
 for module in ${MODULE_GLOB}
 do
@@ -130,12 +130,12 @@ do
 	printf "%-70s" "${yellow}Processing module '${module_basename}'${reset}..."
 	dockerfile=$DOCKERFILES_DIR/Dockerfile-${module_basename}
 	image=riox/spring-cloud-stream-module-${module_basename}:${VERSION}
-	jar_file=$(find $module -name "*-exec.jar")
+	jar_file=$(find $module -name '*-exec.jar')
 	cp $jar_file $JARS_DIR/
 
 	jar_file_basename=`basename $jar_file`
 	final_jar_name="jars/${jar_file_basename}"
-	MODULE_NAME=${final_jar_name} ${BASEDIR}/../../util/templater.sh ${BASEDIR}/Dockerfile_Kafka.tmpl > ${dockerfile}
+	MODULE_NAME=${final_jar_name} ${BASEDIR}/../../bin/templater.sh ${BASEDIR}/Dockerfile_Kafka.tmpl > ${dockerfile}
 
 	#
 	# build Docker image

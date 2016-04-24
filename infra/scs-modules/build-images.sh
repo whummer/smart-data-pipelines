@@ -46,7 +46,7 @@ do
 
 	echo "Building docker image for '${module}'"
 	dockerfile=dockerfiles/Dockerfile-${module}
-	MODULE_NAME=${module} ${BASEDIR}/../../util/templater.sh Dockerfile.tmpl > ${dockerfile}
+	MODULE_NAME=${module} ${BASEDIR}/../../bin/templater.sh Dockerfile.tmpl > ${dockerfile}
 	image=riox/spring-cloud-stream-module-${module}:${VERSION}
 	docker build -t ${image} -f ${dockerfile} .
 

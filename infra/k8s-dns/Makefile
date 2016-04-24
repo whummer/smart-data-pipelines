@@ -1,6 +1,6 @@
 deploy:
 	@echo "Deploying Kubernetes DNS ..."
-	../../util/templater.sh dns-endpoint.tmpl.yml > dns-endpoint.yml
+	../../bin/templater.sh dns-endpoint.tmpl.yml > dns-endpoint.yml
 	kubectl create -f dns-endpoint.yml --namespace=kube-system
 	kubectl create -f dns-service.yml  --namespace=kube-system --validate=false
 
