@@ -34,7 +34,7 @@ for(var key in gulpFiles) {
 	}
 }
 if(depsMissing) {
-	console.log("WARN: Some dependencies are missing. Make sure to run 'make install-prereq' first (as root).")
+	console.log("WARN: Some dependencies are missing. Make sure to run 'make install-prereq' first.")
 }
 
 var nodeDirs = [".", "services/test",

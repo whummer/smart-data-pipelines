@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: redis
-        image: riox/redis:2.8
+        image: kubernetes/redis:v1
         ports:
         - containerPort: 6379
         resources:

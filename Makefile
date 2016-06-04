@@ -15,16 +15,33 @@ export NODE_PATH=$(NPATH)
 ###############
 # TARGETS for setting up all node dependencies
 ###############
+
+install-prereq:
+	npm install --unsafe-perm -g gulp linklocal bower nodemon pm2
+	npm install
+	make install
+	make install-gateway
+	# gulp gulp-help mocha gulp-mocha node-gyp node-pre-gyp del vinyl-paths run-sequence browser-sync merge
+
 install:
 	(cd bin && node handle-global-node-packages.js && cd ..)
 	(cd bin && node preinstall.js && cd ..)
 	gulp ui:bower
 
-install-prereq:
-	npm install --unsafe-perm -g gulp@3.9.0 gulp-help@1.6.1 mocha gulp-mocha nodemon pm2 linklocal node-gyp node-pre-gyp del vinyl-paths run-sequence bower browser-sync
-
-uninstall-global:
-	(cd bin && node handle-global-node-packages.js --uninstall && cd ..)
+install-gateway:
+	brew install lua51 # you need this version!
+	brew install luajit
+	brew install homebrew/nginx/openresty
+	luarocks-5.1 install luasocket
+	luarocks-5.1 install ansicolors
+	luarocks-5.1 install luasec 0.4-4
+	luarocks-5.1 install lua-cjson 2.1.0-1
+	luarocks-5.1 install busted 1.9.0-1
+	luarocks-5.1 install lapis 1.0.4-1
+	luarocks-5.1 install moonscript 0.2.4-1
+	luarocks-5.1 install inspect 1.2-2
+	luarocks-5.1 install luajwt 1.3-2
+	sudo git clone --recursive https://github.com/whummer/redx.git /opt/redx
 
 clean:
 	gulp deps:clean:all
@@ -34,11 +51,24 @@ pm2-run:
 
 
 ###############
-# TARGETS for building the Hyperriox image (container all the microservices)
+# TARGETS for running the infrastructure
+###############
+
+infra:
+	infra/bin/rioxStartAll.sh
+
+infra-stop:
+	docker ps | grep google_containers | awk '{print $$1}' | xargs docker rm -f
+
+tunnel:
+	infra/bin/dockermachine-route.sh
+	infra/bin/dockermachine-k8s-tunnel.sh
+
+###############
+# TARGETS for building the Hyperriox image (contains all the microservices)
 ###############
 build-image:
 	docker build -t ${IMAGE}:${IMAGE_VERSION} .
-	#infra/bin/docker-squash-image.sh
 
 build-test-image:
 	docker build -f services/test/Dockerfile -t riox/hyperriox-test:${IMAGE_VERSION} .
@@ -67,7 +97,13 @@ cleanup-integration-tests:
 ###############
 # TARGETS for deployment
 ###############
-.PHONY: deploy-services undeploy-services scaledown-services render-template
+
+services:
+	gulp riox
+
+start-gateway:
+	cat /etc/hosts | grep platform.riox.io || (echo '127.0.0.1 platform.riox.io' | sudo tee -a /etc/hosts)
+	sudo openresty -c $(shell pwd)/infra/nginx/nginx.dev.conf
 
 render-template:
 	(cd web-ui && ../bin/templater.sh k8s.tmpl.yml > k8s.yml)
@@ -138,3 +174,5 @@ undeploy-services:
 	-(cd services/access-service && kubectl stop -f k8s.yml --namespace=${RIOX_ENV})
 	-(cd services/gateway-service && kubectl stop -f k8s.yml --namespace=${RIOX_ENV})
 	-(cd services/pricing-service && kubectl stop -f k8s.yml --namespace=${RIOX_ENV})
+
+.PHONY: deploy-services undeploy-services scaledown-services render-template infra services

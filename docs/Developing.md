@@ -250,7 +250,7 @@ sudo git clone --recursive https://github.com/whummer/redx.git /opt/redx
 Ensure that you have the Kubernetes infrastructure running and the DNS resolution works.
 
 ```
-sudo openresty -c ~/Code/riox/gw-redx/riox/infra/nginx/nginx.dev.conf
+sudo openresty -c <path_to_riox>/infra/nginx/nginx.dev.conf
 ```
 
 Add the following entry to your `/etc/hosts` file:

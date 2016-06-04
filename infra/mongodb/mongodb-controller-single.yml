@@ -13,23 +13,22 @@ spec:
       labels:
         name: mongo
     spec:
-      imagePullSecrets:
-        - name: rioxregistrykey
       containers:
-          - name: mongo
-            image: riox/mongo:3.0
-            resources:
-              requests:
-                memory: "256Mi"
-                cpu: "100m"
-              limits:
-                memory: "512Mi"
-                cpu: "250m"
-            args: ["--smallfiles"]
-            ports:
-              - containerPort: 27017
-#            volumeMounts:
-#              - name: mongo-db-mount
-#                mountPath: /data/mongo/db
+        - name: mongo
+          image: mongo
+          imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "250m"
+          args: ["--smallfiles"]
+          ports:
+            - containerPort: 27017
+          # volumeMounts:
+          #   - name: mongo-db-mount
+          #     mountPath: /data/mongo/db
 #      volumes:
 #        - name: mongo-db-mount

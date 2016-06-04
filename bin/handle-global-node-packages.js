@@ -3,13 +3,11 @@ var resolve = require('path').resolve;
 // CHDIR
 process.chdir(resolve(__dirname + '/..'))
 
-
 var npm = require("npm");
 var fs = require('fs');
 var cp = require('child_process');
 var semver = require('./semver');
-var merge = require('../services/riox-services-base/lib/config/merge');
-
+var merge = require('merge');
 
 //
 // the directories where package.json's are looked up
@@ -95,9 +93,9 @@ var findDuplicateDeps = function() {
 		nodeDirs.forEach(function (dir2) {
 			var deps2 = deps[dir2];
 			if(dir1 != dir2) {
-				allDeps1 = merge(deps1.dependencies, deps1.devDependencies)
+				allDeps1 = merge.recursive(true, deps1.dependencies, deps1.devDependencies)
 				for (var d1 in allDeps1) {
-					allDeps2 = merge(deps2.dependencies, deps2.devDependencies)
+					allDeps2 = merge.recursive(true, deps2.dependencies, deps2.devDependencies)
 					for (var d2 in allDeps2) {
 						var v1 = allDeps1[d1];
 						var v2 = allDeps2[d2];
@@ -114,6 +112,17 @@ var findDuplicateDeps = function() {
 	});
 };
 
+var installDepsLocally = function() {
+	var cmd = "npm install && linklocal";
+	nodeDirs.forEach(function (dir) {
+		console.log("Installing node modules in directory", dir);
+		var proc = cp.execSync(cmd, {cwd: dir, env: process.env}, function (error, stdout, stderr) {
+			if (error) {
+				console.log("Cannot install node modules in directory: ", dir, error);
+			}
+		});
+	});
+};
 
 //
 // HELPERS
@@ -212,4 +221,4 @@ function addDepToHash(deps, dep, version) {
 
 findDuplicateDeps();
 //installDepsGlobally();
-//installDepsLocally();
+installDepsLocally();
