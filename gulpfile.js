@@ -110,6 +110,7 @@ gulp.task('deps:clean:all', 'clean all node_modules and bower_components directo
 	bowerDirs.forEach(function(dir) {
 		cleanBowerDir(dir);
 	});
+	cleanDir("web-ui/build/");
 });
 
 gulp.task('deps:clean:local', 'clean all local riox modules from all node_modules and bower_components directories', function() {

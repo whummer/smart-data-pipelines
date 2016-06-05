@@ -1,5 +1,3 @@
-VERSION=latest
-IMAGE=riox/kafka
 
 deploy:
 	@echo "Deploying Namespaces ..."
