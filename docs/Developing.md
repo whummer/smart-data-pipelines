@@ -114,7 +114,7 @@ kubectl get pods --namespace=kube-system
 
 This should print:
 ```
-riox@rioxs-macbook-pro:~/Code/riox/develop/infra$ kubectl get pods --namespace=kube-system
+$ kubectl get pods --namespace=kube-system
 NAME                READY     STATUS    RESTARTS   AGE
 kube-dns-v8-4g56n   2/2       Running   0          9h
 ```

@@ -13,6 +13,6 @@ OBSOLETE:
 ---------
 
 # Insert batch
-job create importMagistratsaemter --definition "filejdbc --resources=file:///Users/riox/csvdir/*.csv --names=FID,OBJECTID,SHAPE,NAME,ADRESSE,SE_ANNO_CAD_DATA --tableName=magistratsaemter --initializeDatabase=true" --deploy
+job create importMagistratsaemter --definition "filejdbc --resources=file:~/csvdir/*.csv --names=FID,OBJECTID,SHAPE,NAME,ADRESSE,SE_ANNO_CAD_DATA --tableName=magistratsaemter --initializeDatabase=true" --deploy
 stream create --name importMagistratsAemterTrigger --definition "trigger --fixedDelay=10 > queue:job:importMagistratsaemter" --deploy
 stream create readMagistratsaemter --definition "jdbc --fixedDelay=1 --url=jdbc:hsqldb:hsql://localhost:9101/xdjob --query=\"select SHAPE,NAME,ADRESSE from magistratsaemter where NAME LIKE '%Magistratisches Bezirksamt%'\" | log" --deploy

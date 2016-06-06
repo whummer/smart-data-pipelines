@@ -15,7 +15,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
  * Tests the signup functionality.
  *
  * @author Waldemar Hummer
- * @author riox
  */
 public class SignupTest extends AbstractProxyTest {
 

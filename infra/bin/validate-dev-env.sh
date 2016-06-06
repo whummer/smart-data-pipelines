@@ -241,10 +241,6 @@ if [ "$check_openresty" -eq 1 ]; then
 	#openresty=$(which openresty)
 	#if [ -z "$openresty" ]; then
 		#printf "${red}   ${error} FAIL${reset}\n"
-
-		#echo "  Potential fixes:"
-		#echo "    - [Linux] Install openresty: see https://github.com/riox/riox/blob/develop/docs/Developing.md"
-		#echo "    - [OS X]  Install openresty: brew install lua51 luajit homebrew/nginx/openresty"
 	#else
 		#$(sudo ${openresty} -t -c ${openresty_config} 2> /dev/null)
 #

@@ -11,7 +11,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
  * Tests the login functionality.
- * @author riox
  */
 public class LoginTest extends AbstractProxyTest {
 
@@ -34,13 +33,13 @@ public class LoginTest extends AbstractProxyTest {
 
 		WebElement emailField = new WebDriverWait(driver, TIMEOUT_SHORT)
 			.until(ExpectedConditions.visibilityOfElementLocated(By.name("email")));
-		emailField.sendKeys(TEST_FR_EMAIL);
+		emailField.sendKeys(TEST_OM_EMAIL);
 
 		log.info("Email entered...");
 
 		WebElement passwordField = new WebDriverWait(driver, TIMEOUT_SHORT)
 			.until(ExpectedConditions.visibilityOfElementLocated(By.name("password")));
-		passwordField.sendKeys(TEST_FR_PASS);
+		passwordField.sendKeys(TEST_OM_PASS);
 
 		log.info("Password entered...");
 
@@ -51,7 +50,7 @@ public class LoginTest extends AbstractProxyTest {
 		log.info("Form submitted...");
 
 		WebElement logoutField = new WebDriverWait(driver, TIMEOUT_SHORT)
-			.until(ExpectedConditions.presenceOfElementLocated(By.partialLinkText(TEST_FR_NAME)));
+			.until(ExpectedConditions.presenceOfElementLocated(By.partialLinkText(TEST_OM_NAME)));
 
 		log.info("Logout link found...");
 

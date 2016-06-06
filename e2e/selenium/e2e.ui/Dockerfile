@@ -1,5 +1,5 @@
 FROM java:openjdk-8-jdk
-MAINTAINER riox Roenberg
+MAINTAINER Riox
 
 ADD . /code
 WORKDIR /code

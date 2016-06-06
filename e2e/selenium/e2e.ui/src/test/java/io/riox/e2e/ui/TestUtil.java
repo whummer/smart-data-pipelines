@@ -13,7 +13,6 @@ import static io.riox.e2e.ui.Constants.*;
  * page, log in as a particular user, etc.
  *
  * @author Waldemar Hummer
- * @author riox
  */
 public class TestUtil {
 

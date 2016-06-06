@@ -14,9 +14,9 @@ public class Constants {
 	public static final String TEST_USER2_EMAIL = "test2@example.com";
 	public static final String TEST_USER2_PASS = "test123";
 
-	public static final String TEST_FR_NAME = "F.R.";
-	public static final String TEST_FR_EMAIL = "om@riox.io";
-	public static final String TEST_FR_PASS = "test123";
+	public static final String TEST_OM_NAME = "O.M.";
+	public static final String TEST_OM_EMAIL = "om@riox.io";
+	public static final String TEST_OM_PASS = "test123";
 
 	public static final String TEST_WH_NAME = "W.H.";
 	public static final String TEST_WH_EMAIL = "wh@riox.io";

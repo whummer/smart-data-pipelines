@@ -22,8 +22,6 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 /**
  * This class setups a Proxy server that handles spoofs the host name
  * of the AWS load balancer to "platform.riox.io".
- *
- * @author riox
  */
 public class AbstractProxyTest {
 

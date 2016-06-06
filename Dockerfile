@@ -1,5 +1,4 @@
 FROM node:0.12.7-slim
-MAINTAINER riox
 MAINTAINER Waldemar Hummer
 
 # change workdir
