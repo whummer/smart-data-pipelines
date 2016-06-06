@@ -1,18 +1,3 @@
-/*
-@import 'styles/less/badgets_labels.less';
-@import 'styles/less/base.less';
-@import 'styles/less/buttons.less';
-@import 'styles/less/elements.less';
-@import 'styles/less/media.less';
-@import 'styles/less/mixins.less';
-@import 'styles/less/navigation.less';
-@import 'styles/less/pages.less';
-@import 'styles/less/rtl.less';
-@import 'styles/less/sidebar.less';
-@import 'styles/less/skins.less';
-@import 'styles/less/theme-config.less';
-@import 'styles/less/typography.less';
-*/
 .error {
   color: red;
   font-weight: 900;

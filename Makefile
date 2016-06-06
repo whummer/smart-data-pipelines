@@ -59,6 +59,8 @@ infra:
 
 infra-stop:
 	docker ps | grep google_containers | awk '{print $$1}' | xargs docker rm -f
+	docker ps | grep kubernetes/redis | awk '{print $$1}' | xargs docker rm -f
+	docker ps | grep mongo | grep entrypoint.sh | awk '{print $$1}' | xargs docker rm -f
 
 tunnel:
 	infra/bin/dockermachine-route.sh
