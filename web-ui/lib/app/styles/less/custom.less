@@ -39,8 +39,11 @@ body {
 	font-size: 14px;
 	height: auto;
 }
+#topnavbar {
+  height: 40px;
+}
 #topnavbar .navLinks {
-	height: 45px;
+	height: 40px;
 	z-index: 5;
 	position: relative;
 }
@@ -52,11 +55,13 @@ body {
 	padding-right: 6px;
 }
 
+#topnavbar .navbar-top-links li {
+  float: left;
+}
+
 #topnavbar .navbar-top-links li a {
 	padding-top: 12px;
 	padding-bottom: 7px;
-	height: 40px;
-	min-height: 40px;
 }
 #topnavbar .navbar-top-links > li.active {
 	border-left: none;
@@ -65,7 +70,6 @@ body {
 }
 #topnavbar .navbar-top-links > li.active a {
 	padding-top: 8px;
-	height: 41px;
 }
 
 body.mini-navbar #side-menu .nav-second-level {
@@ -362,4 +366,33 @@ label.text-cell {
     -webkit-box-shadow: inset 0 0 1px rgba(0,0,0,.5), inset 0 0 30px @consumer-bg;
 }
 
+.box-header, .box-header h5 {
+  display: inline-block;
+  font-size: 16px;
+  margin: 0;
+  line-height: 1;
+}
 
+.clearfix {
+  clear: both;
+  overflow: auto;
+}
+
+.box-header {
+  width: 100%;
+}
+
+.main-header .sidebar-toggle {
+  padding-bottom: 10px;
+  padding-top: 10px;
+}
+
+.main-header > .navbar {
+  min-height: 40px;
+}
+
+body.mini-navbar .logo,
+.sidebar-mini.sidebar-collapse .sidebar-menu > li:hover > a > span:not(.pull-right),
+.sidebar-mini.sidebar-collapse .sidebar-menu > li:hover > .treeview-menu {
+  display: none !important;
+}

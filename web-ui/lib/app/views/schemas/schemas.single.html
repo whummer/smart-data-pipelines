@@ -1,10 +1,10 @@
 <div class="row" ng-show="selectedSchema">
 	<div class="col-lg-6">
-		<div class="ibox float-e-margins">
-			<div class="ibox-title">
+		<div class="ibox box float-e-margins">
+			<div class="ibox-title box-header with-border">
 				<h5>Data Schema Items</h5>
 			</div>
-			<div class="ibox-content">
+			<div class="ibox-content box-body">
 
 				<!-- DATA SCHEMAS -->
 				<div ng-show="selectedSchema">
@@ -77,11 +77,11 @@
 	</div>
 
 	<div class="col-lg-5">
-		<div class="ibox float-e-margins">
-			<div class="ibox-title">
+		<div class="ibox box float-e-margins">
+			<div class="ibox-title box-header with-border">
 				<h5>Schema Editor</h5>
 			</div>
-			<div class="ibox-content">
+			<div class="ibox-content box-body">
 				<div class="row">
 				<div style="height: 170px; width: 90%; margin-left: 20px;" class="col-sm-12" ui-ace="{mode:'json'}"
 					 ng-model="payload"></div>

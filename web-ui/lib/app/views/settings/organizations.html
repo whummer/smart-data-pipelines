@@ -1,11 +1,11 @@
 <div class="col-lg-12">
 
 <div class="row">
-	<div class="ibox float-e-margins">
-		<div class="ibox-title">
+	<div class="ibox box float-e-margins">
+		<div class="ibox-title box-header with-border">
 			<h5>Your Organizations</h5>
 		</div>
-		<div class="ibox-content">
+		<div class="ibox-content box-body">
 			<div class="table-responsive">
 				<table class="table table-striped" ng-show="orgInfo.orgs.length">
 					<tr>
@@ -50,11 +50,11 @@
 </div>
 
 <!-- <div class="row" ng-show="selected.organization" ng-alias="selOrg = selected.organization"> -->
-<!-- 	<div class="ibox float-e-margins" ng-alias="isOwner = selOrg[STATUS] == 'OWNER'"> -->
-<!-- 		<div class="ibox-title"> -->
+<!-- 	<div class="ibox box float-e-margins" ng-alias="isOwner = selOrg[STATUS] == 'OWNER'"> -->
+<!-- 		<div class="ibox-title box-header with-border"> -->
 <!-- 			<h5>Organization Details</h5> -->
 <!-- 		</div> -->
-<!-- 		<div class="ibox-content"> -->
+<!-- 		<div class="ibox-content box-body"> -->
 <!-- 			<div class="row"> -->
 <!-- 				<div style="float: left; max-width: 450px;"> -->
 <!-- 					<div> -->
@@ -115,11 +115,11 @@
 
 <div class="row" ng-show="selected.organization && (selected.organization[STATUS] == STATUS_CONFIRMED || selected.organization[STATUS] == 'OWNER')">
 	<div class="col-lg-7" style="padding-left: 0px;">
-		<div class="ibox float-e-margins">
-			<div class="ibox-title">
+		<div class="ibox box float-e-margins">
+			<div class="ibox-title box-header with-border">
 				<h5>Organization Members</h5>
 			</div>
-			<div class="ibox-content">
+			<div class="ibox-content box-body">
 				<div class="table-responsive" ng-show="selected.organization.memberships.length">
 					<table class="table table-striped">
 						<tr>
@@ -145,11 +145,11 @@
 	</div>
 	
 	<div class="col-lg-5" style="padding-right: 0px;">
-		<div class="ibox float-e-margins">
-			<div class="ibox-title">
+		<div class="ibox box float-e-margins">
+			<div class="ibox-title box-header with-border">
 				<h5>Invite New Members</h5>
 			</div>
-			<div class="ibox-content">
+			<div class="ibox-content box-body">
 				<div class="row">
 					<div class="form-group">
 						<label for="inputNewMem" class="col-sm-4 control-label">Select User

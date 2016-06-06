@@ -4,19 +4,20 @@
 
 		<ui-layout options="{ flow : 'column' }" class="stretch">
 			<sidebar ui-layout-container size="15%" min-size="180px" class="stretch">
-				<div class="ibox">
-					<div class="ibox-title">
+				<div class="ibox box">
+					<div class="ibox-title box-header with-border">
 						<h5>Building Blocks</h5>
 					</div>
-					<div class="ibox-content resizehide">
+					<div class="ibox-content box-body resizehide">
 						<div ng-include="'/app/views/sdps/sdps.nodered.palette.html'" style="height: 100%;"></div>
+						<div class="clearfix"></div>
 					</div>
 				</div>
 			</sidebar>
 			<div ui-layout-container="central" size="60%" min-size="250px" class="stretch">
-				<div class="ibox">
-					<div class="ibox-title pipeTitle">
-						<h5>Pipeline:</h5>
+				<div class="ibox box">
+					<div class="ibox-title box-header pipeTitle">
+						<h5 style="float:left">Pipeline:</h5>
 						<div class="pipeName">
 							<span editable-text="pipeline.name" e-form="pipelineNameForm" onbeforesave="savePipelineName($data)">
 								{{pipeline.name}}
@@ -53,17 +54,17 @@
 							</button>
 						</div>
 					</div>
-					<div class="ibox-content resizehide">
+					<div class="ibox-content box-body resizehide">
 						<div ng-include="'/app/views/sdps/sdps.nodered.canvas.html'" style="height: 100%;"></div>
 					</div>
 				</div>
 			</div>
 			<sidebar ui-layout-container size="25%" min-size="160px" class="stretch">
-				<div class="ibox float-e-margins stretch">
-					<div class="ibox-title resizehide">
+				<div class="ibox box float-e-margins stretch">
+					<div class="ibox-title box-header resizehide">
 						<h5>Explore &amp; Preview</h5>
 					</div>
-					<div class="ibox-content resizehide">
+					<div class="ibox-content box-body resizehide">
 						<div ng-include="'/app/views/sdps/sdps.edit.explore.html'" style="height: 100%;"></div>
 					</div>
 				</div>
@@ -75,14 +76,14 @@
 	<div class="clearfix" style="margin-bottom: 10px;"></div>
 
 <!-- 	<div style="margin-bottom: 10px; margin-top: 20px"> -->
-<!-- 		<div class="ibox float-e-margins"> -->
-<!-- 			<div class="ibox-title"> -->
+<!-- 		<div class="ibox box float-e-margins"> -->
+<!-- 			<div class="ibox-title box-header with-border"> -->
 <!-- 				<h2 class="heading-thicker" ng-class="{'text-muted' : !pipeline.name}"> -->
 <!-- 					{{pipeline.name ? pipeline.name : 'Untitled' }} -->
 <!-- 					<small class="subheading-thinner">{{pipeline.description}}</small> -->
 <!-- 				</h2> -->
 <!-- 			</div> -->
-<!-- 			<div class="ibox-content"> -->
+<!-- 			<div class="ibox-content box-body"> -->
 <!-- 				PIPELINE PROPERTIES -->
 <!-- 				<div class="row " style="margin-top: 5px; margin-right: 0px"> -->
 <!-- 					<div class="col-lg-6"> -->
@@ -223,11 +224,14 @@
 	overflow: visible;
 	margin-top: 40px;
 }
+#sdpEditorContainer .stretch .box {
+	height: 100%;
+}
 #sdpEditorContainer .stretch {
 	height: 100%;
 	overflow: visible;
 }
-#sdpEditorContainer .resizehide {
+#sdpEditorContainer .resizehide1 {
 	overflow: hidden;
 }
 #sdpEditorContainer .ibox-title, #sdpEditorContainer .ibox-content {

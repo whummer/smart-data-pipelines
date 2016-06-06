@@ -1,60 +1,13 @@
-<section class="sidebar">
-	<ul class="sidebar-menu" ng-alias="isUserLoggedIn = hasRole('user') ; isAdminLoggedIn = hasRole('admin')">
-
-
-			<li ng-class="{active: isActive('/dashboard')}" ng-show="isUserLoggedIn">
-				<a ui-sref="index.dashboard"><i class="fa fa-dashboard"></i>
-					<span class="nav-label">Dashboard</span>
-				</a>
-			</li>
-
-			<li ng-class="{active: isActive('/sdps')}" ng-show="isUserLoggedIn">
-				<a ui-sref="index.sdps.list">
-					<i class="fa fa-ellipsis-h fa-fixed"></i> <span class="nav-label">My Pipelines</span>
-				</a>
-			</li>
-
-
-			<li ng-class="{active: isActive('/statistics')}" ng-show="isUserLoggedIn">
-				<a ui-sref="index.statistics"><i class="fa fa-line-chart"></i> <span class="nav-label">Statistics</span></a>
-			</li>
-			<li ng-class="{active: isActive('/notifications')}" ng-show="isUserLoggedIn">
-				<a ui-sref="index.notifications"><i class="fa fa-bell"></i> <span class="nav-label">Notifications</span></a>
-			</li>
-			<li ng-class="{active: isActive('/settings')}" class="treeview" ng-show="isUserLoggedIn">
-				<a ui-sref="index.settings.account"><i class="fa fa-sliders"></i> <span
-					class="nav-label">Settings</span> 
-					<i class="fa fa-angle-left pull-right"></i></a>
-				<ul class="nav nav-second-level collapse treeview-menu" ng-class="{in: isActive('/settings')}">
-					<li>
-						<a ui-sref="index.settings.organizations"><i class="fa fa-group"></i> <span
-							class="nav-label">Organizations</span></a>
-					</li>
-					<li>
-						<a ui-sref="index.settings.billing"><i class="fa fa-credit-card"></i> <span class="nav-label">Billing</span></a>
-					</li>
-				</ul>
-			</li>
-			<li ng-class="{active: isActive('/admin')}" ng-show="isAdminLoggedIn">
-				<a ui-sref="index.admin"><i class="fa fa-unlock-alt"></i> <span class="nav-label">Admin</span></a>
-			</li>
-			<li ng-class="{active: isActive('/help/databricks')}" ng-show="isUserLoggedIn">
-				<a ui-sref="index.help.databricks"><i class="fa fa-question-circle"></i> <span
-					class="nav-label">Help</span> <span class="fa arrow"></span></a>
-				<ul class="nav nav-second-level collapse" ng-class="{in: isActive('/help/databricks')}">
-					<li>
-						<a ui-sref="index.help.databricks">
-							<i class="fa fa-cube fa-fixed"></i><span class="nav-label">Data Bricks</span>
-						</a>
-					</li>
-				</ul>
-			</li>
-	</ul>
-</section>
-
-<!-- <nav class="navbar-default navbar-static-side" role="navigation">
+<nav class="navbar-default navbar-static-side" role="navigation">
 	<div class="sidebar-collapse">
 		<ul class="nav" id="side-menu" ng-alias="isUserLoggedIn = hasRole('user') ; isAdminLoggedIn = hasRole('admin')">
+			<li class="nav-header">
+				<div class="dropdown profile-element" style="margin: auto;">
+					<a ui-sref="index.main"><img class="img-responsive"
+																			 src="app/components/img/riox_logo_green3_xs.png"
+																			 style="height: 40px; margin-top: 8px; margin: auto;"/></a>
+				</div>
+			</li>
 			<li ng-class="{active: isActive('/dashboard')}" ng-show="isUserLoggedIn">
 				<a ui-sref="index.dashboard"><i class="fa fa-dashboard"></i> <span class="nav-label">Dashboard</span></a>
 			</li>
@@ -109,4 +62,4 @@
 	});
 	$.fn.metisMenu.Constructor.prototype.hide = function () {
 	};
-</script> -->
+</script>

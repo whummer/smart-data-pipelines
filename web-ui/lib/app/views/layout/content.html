@@ -1,24 +1,71 @@
-<!-- Wrapper-->
-<div id="wrapper" class="" >
 
-	<!-- Left nav. bar -->
-	<div ng-include="'app/views/layout/leftnavbar.html'"></div>
 
-    <!-- Page wraper -->
-    <!-- ng-class with current state name give you the ability to extended customization your view -->
-    <div id="page-wrapper" class="gray-bg {{$state.current.name}}">
+<div class="wrapper">
 
-        <!-- Nav. bar -->
-        <div ng-include="'app/views/layout/topnavbar.html'"></div>
+  <header class="main-header">
+    <!-- Logo -->
+    <a class="logo" ui-sref="index.main">
+        <!-- <div class="dropdown profile-element" style="margin: auto;"> -->
+                <img class="img-responsive" src="app/components/img/riox_logo_green3_xs.png"
+                        style="height: 40px; margin-top: 8px; margin: auto;"/>
+        <!-- </div> -->
+    </a>
+    <nav class="navbar navbar-static-top" id="topnavbar">
+        <div style="float: left">
+          <a href="#" class="sidebar-toggle navbar-minimalize" data-toggle="offcanvas" role="button">
+              <span class="sr-only">Toggle navigation</span>
+          </a>
+        </div>
+        <script>
+        //Close menu in canvas mode
+        $('.navbar-minimalize').click( function() {
+            $("body").toggleClass("mini-navbar");
+        });
+        </script>
+        <div class="navLinks" style="float: right">
+            <ul class="nav navbar-top-links navbar-right" style="margin-right: 10px;" ng-alias="__loggedIn = isLoggedIn()">
+                <li ng-show="__loggedIn" class="dropdown" ng-class="{active: isActive('/notifications')}">
+                        <a ui-sref="index.notifications"><span class="fa fa-bell"></span> {{shared.notifications.unreadDisplay}}
+                    </a></li>
+                <li ng-hide="__loggedIn" ng-class="{active: isActive('/signup')}"><a
+                    ui-sref="index.signup">Sign up</a></li>
+                <li ng-hide="__loggedIn" ng-class="{active: isActive('/login')}"><a
+                    ui-sref="index.login">Login</a></li>
+                <li ng-show="__loggedIn" ng-class="{active: isActive('/settings')}"><a
+                    ui-sref="index.settings.account">User: {{ getCurrentUser()[NAME] }}
+                        <span class="glyphicon glyphicon-cog" style="margin-left: 10px;"></span></a></li>
+                <li ng-show="__loggedIn" ng-class="{active: isActive('/logout')}"><a
+                    ng-click="logout()"> Logout <i class="fa fa-sign-out" style="margin-left: 10px;"></i></a></li>
+            </ul>
+        </div>
+    </nav>
+  </header>
+  <!-- Left side column. contains the logo and sidebar -->
+  <aside class="main-sidebar">
+    <div ng-include="'app/views/layout/leftnavbar.html'"></div>
+  </aside>
 
-        <!-- Main view  -->
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <section class="content-header">
+        <div class="border-bottom navPath">
+            <div style="float: left;">
+                <a ui-sref="index.main">Home</a>
+                <span ng-repeat="n in shared.navigationPath"> /
+                    <a ui-sref="{{n.sref}}" ng-show="n.sref">{{n.name}}</a>
+                    <span ng-show="!n.sref">{{n.name}}</span>
+                </span>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </section>
+
+    <section class="content">
         <div ui-view id="mainView"></div>
-
-        <!-- Footer -->
+    </section>
+  </div>
+  <footer class="main-footer">
         <div ng-include="'app/views/layout/footer.html'"></div>
-
-    </div>
-    <!-- End page wrapper-->
+  </footer>
 
 </div>
-<!-- End wrapper-->
