@@ -9,21 +9,23 @@ ifdef NODENV_ROOT
 NPATH=/opt/boxen/nodenv/versions/v0.12.7/lib/node_modules/
 endif
 
-$(info NODE_PATH is $(NPATH))
 export NODE_PATH=$(NPATH)
 
-###############
-# TARGETS for setting up all node dependencies
-###############
+usage:             ## Show this help.
+	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//'
 
-install-prereq:
+
+#--------------
+# TARGETS for setting up all node dependencies
+#--------------
+
+install-prereq:    ## Install prerequisites (may have to be run as root)
 	npm install --unsafe-perm -g gulp linklocal bower nodemon pm2
-	npm install
-	make install
 	make install-gateway
 	# gulp gulp-help mocha gulp-mocha node-gyp node-pre-gyp del vinyl-paths run-sequence browser-sync merge
 
-install:
+install:           ## Install all npm and bower dependencies
+	npm install
 	(cd bin && node handle-global-node-packages.js && cd ..)
 	(cd bin && node preinstall.js && cd ..)
 	gulp ui:bower
@@ -41,34 +43,35 @@ install-gateway:
 	luarocks-5.1 install moonscript 0.2.4-1
 	luarocks-5.1 install inspect 1.2-2
 	luarocks-5.1 install luajwt 1.3-2
-	sudo git clone --recursive https://github.com/whummer/redx.git /opt/redx
+	test -d /opt/redx/ || sudo git clone --recursive https://github.com/whummer/redx.git /opt/redx
 
-clean:
+clean:             ## Cleanup, delete bower/npm dependencies
 	gulp deps:clean:all
 
 pm2-run:
 	(pm2 delete all && pm2 flush; cd services && pm2 start riox-pm2.json && cd .. && pm2 logs)
 
 
-###############
+#--------------
 # TARGETS for running the infrastructure
-###############
+#--------------
 
-infra:
+tunnel:            ## Set up SSH tunnel (required for docker-machine on OSX)
+	infra/bin/dockermachine-route.sh
+	infra/bin/dockermachine-k8s-tunnel.sh
+
+infra:             ## Start the infrastructure inside a local Kubernetes cluster
 	infra/bin/rioxStartAll.sh
 
-infra-stop:
+infra-stop:        ## Stop/destroy the local infrastructure
 	docker ps | grep google_containers | awk '{print $$1}' | xargs docker rm -f
 	docker ps | grep kubernetes/redis | awk '{print $$1}' | xargs docker rm -f
 	docker ps | grep mongo | grep entrypoint.sh | awk '{print $$1}' | xargs docker rm -f
 
-tunnel:
-	infra/bin/dockermachine-route.sh
-	infra/bin/dockermachine-k8s-tunnel.sh
-
-###############
+#--------------
 # TARGETS for building the Hyperriox image (contains all the microservices)
-###############
+#--------------
+
 build-image:
 	docker build -t ${IMAGE}:${IMAGE_VERSION} .
 
@@ -78,9 +81,9 @@ build-test-image:
 push-image:
 	docker push ${IMAGE}:${IMAGE_VERSION}
 
-###############
+#--------------
 # TARGETS for testing during CI runs
-###############
+#--------------
 
 run-integration-tests:
 	(cd services/test && ../../bin/templater.sh k8s.tmpl.yml > k8s.yml)
@@ -96,14 +99,14 @@ cleanup-integration-tests:
 	-(cd services/test && kubectl delete -f k8s.yml --namespace=${RIOX_ENV})
 	-kubectl delete rc,pod,service -l role=scsm-module --namespace=${RIOX_ENV}
 
-###############
+#--------------
 # TARGETS for deployment
-###############
+#--------------
 
-services:
+services:          ## Start the application services
 	gulp riox
 
-start-gateway:
+start-gateway:     ## Start the gateway proxy
 	cat /etc/hosts | grep platform.riox.io || (echo '127.0.0.1 platform.riox.io' | sudo tee -a /etc/hosts)
 	sudo openresty -c $(shell pwd)/infra/nginx/nginx.dev.conf
 
